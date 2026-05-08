@@ -1,0 +1,1772 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0593-c7ed-75e2-ba94-3a3be8648876
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sourceforge.htmlunit:htmlunit:2.70.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.70.0" when "$version$" is replaced with "2.70.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+- Set "coordinates" to "net.sourceforge.htmlunit:htmlunit:2.70.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.70.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream project, then patch the JSON in place with version-tokenized URLs where possible.
+web search: 
+web search: Maven Central net.sourceforge.htmlunit htmlunit 2.70.0 sources jar tests jar pom scm
+web search: 
+web search: https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/
+web search: 
+web search: site:github.com/HtmlUnit/htmlunit/releases/tag 2.70.0 HtmlUnit
+codex
+Maven Central has the 2.70.0 JAR, sources JAR, and javadoc JAR, so I’m going to prefer those for source and documentation. I still need the exact upstream tag format for the test-suite URL.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+{
+  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0"
+}
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/HtmlUnit/htmlunit.git '*2.70.0*'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.sourceforge.htmlunit</groupId>
+    <artifactId>htmlunit</artifactId>
+    <version>2.70.0</version>
+    <name>HtmlUnit</name>
+    <organization>
+        <name>Gargoyle Software Inc.</name>
+        <url>http://www.GargoyleSoftware.com/</url>
+    </organization>
+    <packaging>jar</packaging>
+    <description>
+        A headless browser intended for use in testing web-based applications.
+    </description>
+    <url>http://htmlunit.sourceforge.net</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+        <additionalparam>-Xdoclint:none</additionalparam>
+
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+
+        <htmlunitcssparser.version>1.14.0</htmlunitcssparser.version>
+        <htmlunitneko.version>2.70.0</htmlunitneko.version>
+        <htmlunitcorejs.version>2.70.0</htmlunitcorejs.version>
+        <htmlunitxpath.version>2.70.0</htmlunitxpath.version>
+
+        <htmlunitdriver.version>4.7.2</htmlunitdriver.version>
+        <selenium.version>4.7.2</selenium.version>
+
+        <httpcomponents.version>4.5.14</httpcomponents.version>
+        <jetty.version>9.4.50.v20221201</jetty.version>
+        <log4j.version>2.19.0</log4j.version>
+
+        <!-- As a property, as it is included in Checkstyle build -->
+        <checkstyle.version>9.3</checkstyle.version>
+        <spotbugs.version>4.7.3</spotbugs.version>
+        <pmd.version>6.50.0</pmd.version>
+        <archunit.version>1.0.1</archunit.version>
+        <dependencycheck.version>8.0.1</dependencycheck.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <testExcludes>
+                        <exclude>**/CodeChecker.java</exclude>
+                    </testExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <suppressionsLocation>checkstyle_suppressions.xml</suppressionsLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.7.3.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs</artifactId>
+                        <version>${spotbugs.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Url>${project.url}</Url>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
+                        </manifestEntries>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.10.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.4.2</version>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <attach>false</attach>
+                    <descriptors>
+                        <descriptor>${basedir}/src/assembly/bin-distribution.xml</descriptor>
+                        <descriptor>${basedir}/src/assembly/src-distribution.xml</descriptor>
+                    </descriptors>
+                    <recompressZippedFiles>true</recompressZippedFiles>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <quiet>true</quiet>
+                    <doclint>html,missing,reference,syntax</doclint>
+                    <detectLinks>true</detectLinks>
+                    <detectJavaApiLink>true</detectJavaApiLink>
+                    <excludePackageNames>netscape:netscape.*:com.gargoylesoftware.htmlunit.platform.util</excludePackageNames>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${dependencycheck.version}</version>
+                <configuration>
+                    <suppressionFiles>owasp-suppressions.xml</suppressionFiles>
+                    <failBuildOnCVSS>0</failBuildOnCVSS>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6.3</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>1.8.0</version>
+                                </requireJavaVersion>
+                                <dependencyConvergence />
+                            </rules>
+                        </configuration>
+
+ succeeded in 338ms:
+81a258045f41d69d9eca318a9a50736dc43ae62f	refs/tags/2.70.0
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0.pom | sed -n '220,520p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+                        </configuration>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.13.0</version>
+                <configuration>
+                    <tag>${project.name}-${project.version}</tag>
+                    <message>Release ${project.version}</message>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>5.1.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>com.gargoylesoftware.htmlunit.*</Export-Package>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Embed-Dependency>*;scope=compile;inline=**</Embed-Dependency>
+                        <Import-Package>*;resolution:=optional</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.simplify4u.plugins</groupId>
+                <artifactId>pgpverify-maven-plugin</artifactId>
+                <version>1.17.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>without-library-and-huge-tests</id>
+            <activation>
+                <property>
+                    <name>withoutLibsHuge</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.22.2</version>
+                        <configuration>
+                            <!-- see https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class -->
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <excludes>
+                                <exclude>**/libraries/*.java</exclude>
+                                <exclude>**/huge/*.java</exclude>
+                            </excludes>
+                            <argLine>-Xms128m -Xmx512m -Dsun.reflect.noInflation=true</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>only-library-tests</id>
+            <activation>
+                <property>
+                    <name>onlyLibs</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.22.2</version>
+                        <configuration>
+                            <!-- see https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class -->
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <includes>
+                                <include>**/libraries/*.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/libraries/JQuery3x3x1Test.java</exclude>
+                            </excludes>
+                            <argLine>-Xms128m -Xmx512m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jquery3-tests</id>
+            <activation>
+                <property>
+                    <name>onlyjquery3</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.22.2</version>
+                        <configuration>
+                            <!-- see https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class -->
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <includes>
+                                <include>**/libraries/JQuery3x3x1Test.java</include>
+                            </includes>
+                            <argLine>-Xms128m -Xmx512m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>only-huge-tests-closes</id>
+            <activation>
+                <property>
+                    <name>onlyHugeCloses</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.22.2</version>
+                        <configuration>
+                            <!-- see https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class -->
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <includes>
+                                <include>**/huge/ElementClosesElementTest.java</include>
+                            </includes>
+                            <argLine>-Xms256m -Xmx512m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>only-huge-tests-a-c</id>
+            <activation>
+                <property>
+                    <name>onlyHugeAC</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.22.2</version>
+                        <configuration>
+                            <!-- see https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class -->
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <includes>
+                                <include>**/huge/HostParentOfATest.java</include>
+                                <include>**/huge/HostParentOfBTest.java</include>
+                                <include>**/huge/HostParentOfCTest.java</include>
+                            </includes>
+                            <argLine>-Xms512m -Xmx1024m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>only-huge-tests-d-g</id>
+            <activation>
+                <property>
+                    <name>onlyHugeDG</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.22.2</version>
+                        <configuration>
+                            <!-- see https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class -->
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <includes>
+                                <include>**/huge/HostParentOfDTest.java</include>
+                                <include>**/huge/HostParentOfFTest.java</include>
+                            </includes>
+                            <argLine>-Xms512m -Xmx1024m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>only-huge-tests-h-l</id>
+            <activation>
+                <property>
+                    <name>onlyHugeHL</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.22.2</version>
+                        <configuration>
+                            <!-- see https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class -->
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <includes>
+                                <include>**/huge/HostParentOfHTest.java</include>
+                                <include>**/huge/HostParentOfITest.java</include>
+                            </includes>
+                            <argLine>-Xms512m -Xmx1024m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>only-huge-tests-m-o</id>
+            <activation>
+                <property>
+                    <name>onlyHugeMO</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.22.2</version>
+                        <configuration>
+                            <!-- see https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class -->
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <includes>
+                                <include>**/huge/HostParentOfMTest.java</include>
+                                <include>**/huge/HostParentOfNTest.java</include>
+                            </includes>
+                            <argLine>-Xms512m -Xmx1024m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>only-huge-tests-p-r</id>
+            <activation>
+                <property>
+                    <name>onlyHugePR</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.22.2</version>
+                        <configuration>
+                            <!-- see https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class -->
+                            <useSystemClassLoader>false</useSystemClassLoader>
+                            <includes>
+                                <include>**/huge/HostParentOfPTest.java</include>
+                            </includes>
+                            <argLine>-Xms512m -Xmx1024m</argLine>
+                            <systemPropertyVariables>
+                                <htmlunit.maven>maven</htmlunit.maven>
+                            </systemPropertyVariables>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-sources.jar && curl -fsI https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 03:14:12 GMT
+content-type: application/java-archive
+content-length: 2062734
+cf-ray: 9f854afe6e16bc44-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1513063
+etag: "a69f14c6eaaaae6c72940bc8900328f2"
+last-modified: Sun, 22 Jan 2023 18:04:53 GMT
+x-checksum-md5: a69f14c6eaaaae6c72940bc8900328f2
+x-checksum-sha1: fc4edf1d8ec66b9d29c242a4e3ea3fe7b631ab89
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 08 May 2026 03:14:12 GMT
+content-type: application/java-archive
+content-length: 10036624
+cf-ray: 9f854afedb85a285-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 389974
+etag: "d108b7202b193b1bf3c676d9995d9c01"
+last-modified: Sun, 22 Jan 2023 18:04:54 GMT
+x-checksum-md5: d108b7202b193b1bf3c676d9995d9c01
+x-checksum-sha1: 9e4237fb0a0a839408e972b8cc3710e830f9dedb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-tests.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/HtmlUnit/htmlunit/tree/2.70.0/src/test' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ exited 22 in 226ms:
+HTTP/2 404 
+date: Fri, 08 May 2026 03:14:13 GMT
+content-type: text/html
+cf-ray: 9f854afe7e0abc4d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 596ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 03:14:13 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ed05411694d031f9a849087adcd4753e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=A%2BOuBSHQC57dfsGf5IjHVS7QzTDqtfnTnxNZmn%2B8ZmL0sy1dGRyiVoXXatqUM2tcmkFc80Pw%2BGj5J9f0C5aPvzD0yLjTdtANOIbvpIJvVdTcW5ysMEPwprWPPwJOzi8NoLhODiUTFAa954AypJqCiL0qEGrNR%2FYVEUUAXH8oVVxeOcpQstFUmGayoh2xQcZRpDOWaMlugQzaYWKAbdPZk4F8kEnpQG%2BzhPC%2Fahe7KBAgqrfz1uhO%2FsoR3PWxU%2BwYO9nRrFFXRvm7Z26m9Rwtvw%3D%3D--Cn8UMaFer5fAkkmi--Zfr4hB1FdC6%2BN5HQies3RA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2048403816.1778210052; expires=Sat, 08 May 2027 03:14:12 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 03:14:12 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 511F:27D20C:B20FD89:8C89283:69FD5504
+
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url.*repo1.maven.org|test-code-url.*github.com/.*/tree/\\"'$version'"\\"'$|documentation-url.*javadoc'"' build/discovered-artifact-metadata | head -n 40" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0.pom | rg -n '<scm>|<connection>|<developerConnection>|<url>|<tag>|<description>|<packaging>|<name>' -C 2" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+7-    <artifactId>htmlunit</artifactId>
+8-    <version>2.70.0</version>
+9:    <name>HtmlUnit</name>
+10-    <organization>
+11:        <name>Gargoyle Software Inc.</name>
+12:        <url>http://www.GargoyleSoftware.com/</url>
+13-    </organization>
+14:    <packaging>jar</packaging>
+15:    <description>
+16-        A headless browser intended for use in testing web-based applications.
+17-    </description>
+18:    <url>http://htmlunit.sourceforge.net</url>
+19-
+20-    <properties>
+--
+230-                <version>1.13.0</version>
+231-                <configuration>
+232:                    <tag>${project.name}-${project.version}</tag>
+233-                    <message>Release ${project.version}</message>
+234-                </configuration>
+--
+267-            <activation>
+268-                <property>
+269:                    <name>withoutLibsHuge</name>
+270-                </property>
+271-            </activation>
+--
+296-            <activation>
+297-                <property>
+298:                    <name>onlyLibs</name>
+299-                </property>
+300-            </activation>
+--
+327-            <activation>
+328-                <property>
+329:                    <name>onlyjquery3</name>
+330-                </property>
+331-            </activation>
+--
+355-            <activation>
+356-                <property>
+357:                    <name>onlyHugeCloses</name>
+358-                </property>
+359-            </activation>
+--
+383-            <activation>
+384-                <property>
+385:                    <name>onlyHugeAC</name>
+386-                </property>
+387-            </activation>
+--
+413-            <activation>
+414-                <property>
+415:                    <name>onlyHugeDG</name>
+416-                </property>
+417-            </activation>
+--
+442-            <activation>
+443-                <property>
+444:                    <name>onlyHugeHL</name>
+445-                </property>
+446-            </activation>
+--
+471-            <activation>
+472-                <property>
+473:                    <name>onlyHugeMO</name>
+474-                </property>
+475-            </activation>
+--
+500-            <activation>
+501-                <property>
+502:                    <name>onlyHugePR</name>
+503-                </property>
+504-            </activation>
+--
+528-            <activation>
+529-                <property>
+530:                    <name>onlyHugeS</name>
+531-                </property>
+532-            </activation>
+--
+556-            <activation>
+557-                <property>
+558:                    <name>onlyHugeS2</name>
+559-                </property>
+560-            </activation>
+--
+584-            <activation>
+585-                <property>
+586:                    <name>onlyHugeTZ</name>
+587-                </property>
+588-            </activation>
+--
+662-    <issueManagement>
+663-        <system>GitHub</system>
+664:        <url>https://github.com/HtmlUnit/htmlunit/issues/</url>
+665-    </issueManagement>
+666-    <inceptionYear>2002</inceptionYear>
+667-    <licenses>
+668-        <license>
+669:            <name>Apache License, Version 2.0</name>
+670:            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+671-            <distribution>repo</distribution>
+672-        </license>
+673-    </licenses>
+674:    <scm>
+675:        <connection>scm:git:https://github.com/HtmlUnit/htmlunit</connection>
+676:        <developerConnection>scm:git:https://github.com/HtmlUnit/htmlunit</developerConnection>
+677:        <url>https://github.com/HtmlUnit/htmlunit</url>
+678-    </scm>
+679-    <ciManagement>
+680-        <system>Jenkins</system>
+681:        <url>https://jenkins.wetator.org/view/HtmlUnit/</url>
+682-    </ciManagement>
+683-    <mailingLists>
+684-        <mailingList>
+685:            <name>HtmlUnit Users</name>
+686-            <subscribe>https://lists.sourceforge.net/lists/listinfo/htmlunit-user</subscribe>
+687-            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/htmlunit-user</unsubscribe>
+--
+695-        </mailingList>
+696-        <mailingList>
+697:            <name>HtmlUnit Developers</name>
+698-            <subscribe>https://lists.sourceforge.net/lists/listinfo/htmlunit-develop</subscribe>
+699-            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/htmlunit-develop</unsubscribe>
+--
+709-    <developers>
+710-        <developer>
+711:            <name>Mike Bowler</name>
+712-            <id>mbowler</id>
+713-            <email>mbowler@GargoyleSoftware.com</email>
+714-            <organization>Gargoyle Software Inc.</organization>
+715:            <url>http://www.sphericalimprovement.com/blogs/mbowler/</url>
+716-            <timezone>-5</timezone>
+717-        </developer>
+718-        <developer>
+719:            <name>David K. Taylor</name>
+720-            <id>dktaylor</id>
+721-        </developer>
+722-        <developer>
+723:            <name>Brad Clarke</name>
+724-            <id>bradclarke</id>
+725-            <email>bradclarke@users.sourceforge.net</email>
+726:            <url>http://www.bradclarke.com/</url>
+727-            <timezone>-6</timezone>
+728-        </developer>
+729-        <developer>
+730:            <name>Marc Guillemot</name>
+731-            <id>mguillem</id>
+732-            <email>mguillem@users.sourceforge.net</email>
+733:            <url>http://mguillem.wordpress.com/</url>
+734-            <timezone>+1</timezone>
+735-        </developer>
+736-        <developer>
+737:            <name>Chris Erskine</name>
+738-            <id>cerskine</id>
+739-            <email>cerskine@users.sourceforge.net</email>
+--
+741-        </developer>
+742-        <developer>
+743:            <name>Daniel Gredler</name>
+744-            <id>sdanig</id>
+745-            <email>sdanig@users.sourceforge.net</email>
+746:            <url>http://daniel.gredler.net/</url>
+747-            <timezone>-5</timezone>
+748-        </developer>
+749-        <developer>
+750:            <name>Ahmed Ashour</name>
+751-            <id>asashour</id>
+752-            <email>asashour@users.sourceforge.net</email>
+753:            <url>http://asashour.blogspot.com/</url>
+754-            <timezone>+3</timezone>
+755-        </developer>
+756-        <developer>
+757:            <name>Sudhan Moghe</name>
+758-            <id>sudhan_moghe</id>
+759-            <email>sudhan_moghe@users.sourceforge.net</email>
+--
+761-        </developer>
+762-        <developer>
+763:            <name>Ronald Brill</name>
+764-            <id>rbri</id>
+765-            <email>rbri@rbri.de</email>
+766:            <url>http://www.wetator.org/</url>
+767-            <timezone>+1</timezone>
+768-        </developer>
+--
+770-    <contributors>
+771-        <contributor>
+772:            <name>Noboru Sinohara</name>
+773-        </contributor>
+774-        <contributor>
+775:            <name>Mike J. Bresnahan</name>
+776-            <email>gudujarlson@sf.net</email>
+777-        </contributor>
+778-        <contributor>
+779:            <name>Dominique Broeglin</name>
+780-        </contributor>
+781-        <contributor>
+782:            <name>Alex Nikiforoff</name>
+783-        </contributor>
+784-        <contributor>
+785:            <name>Barnaby Court</name>
+786-        </contributor>
+787-        <contributor>
+788:            <name>Andreas Hangler</name>
+789-        </contributor>
+790-        <contributor>
+791:            <name>Jun Chen</name>
+792-            <email>chen_jun@users.sourceforge.net</email>
+793-        </contributor>
+794-        <contributor>
+795:            <name>Christian Sell</name>
+796-            <email>cse@dynabean.de</email>
+797-        </contributor>
+798-        <contributor>
+799:            <name>Darrell DeBoer</name>
+800-        </contributor>
+801-        <contributor>
+802:            <name>David D. Kilzer</name>
+803-        </contributor>
+804-        <contributor>
+805:            <name>Ben Curren</name>
+806-            <email>bcurren@esomnie.com</email>
+807-        </contributor>
+808-        <contributor>
+809:            <name>Mike Williams</name>
+810-        </contributor>
+811-        <contributor>
+812:            <name>Mike Gallaher</name>
+813-        </contributor>
+814-        <contributor>
+815:            <name>Dierk Koenig</name>
+816-        </contributor>
+817-        <contributor>
+818:            <name>Mike Bresnahan</name>
+819-        </contributor>
+820-        <contributor>
+821:            <name>Sergey Gorelkin</name>
+822-        </contributor>
+823-        <contributor>
+824:            <name>Chris Eldredge</name>
+825-        </contributor>
+826-        <contributor>
+827:            <name>Hans Donner</name>
+828-        </contributor>
+829-        <contributor>
+830:            <name>Michael Ottati</name>
+831-        </contributor>
+832-        <contributor>
+833:            <name>George Murnock</name>
+834-        </contributor>
+835-        <contributor>
+836:            <name>Kent Tong</name>
+837-        </contributor>
+838-        <contributor>
+839:            <name>Alfred Nathaniel</name>
+840-        </contributor>
+841-        <contributor>
+842:            <name>Bruce Faulkner</name>
+843-        </contributor>
+844-        <contributor>
+845:            <name>Ray Suliteanu</name>
+846-        </contributor>
+847-        <contributor>
+848:            <name>Denis N. Antonioli</name>
+849-        </contributor>
+850-        <contributor>
+851:            <name>Stefan Anzinger</name>
+852-        </contributor>
+853-        <contributor>
+854:            <name>Lothar Märkle</name>
+855-        </contributor>
+856-        <contributor>
+857:            <name>Ian Lovejoy</name>
+858-        </contributor>
+859-        <contributor>
+860:            <name>Paul King</name>
+861-        </contributor>
+862-        <contributor>
+863:            <name>Vikram Shitole</name>
+864-        </contributor>
+865-        <contributor>
+866:            <name>Mark van Leeuwen</name>
+867-        </contributor>
+868-        <contributor>
+869:            <name>Brad Murray</name>
+870-        </contributor>
+871-        <contributor>
+872:            <name>Julien Henry</name>
+873-        </contributor>
+874-        <contributor>
+875:            <name>Andre Soereng</name>
+876-        </contributor>
+877-        <contributor>
+878:            <name>Karel Kolman</name>
+879-        </contributor>
+880-        <contributor>
+881:            <name>Bruce Chapman</name>
+882-        </contributor>
+883-        <contributor>
+884:            <name>Kristian Muntau</name>
+885-        </contributor>
+886-        <contributor>
+887:            <name>Sam Hough</name>
+888-        </contributor>
+889-        <contributor>
+890:            <name>Deryk Sinotte</name>
+891-        </contributor>
+892-        <contributor>
+893:            <name>Martin Tamme</name>
+894-        </contributor>
+895-        <contributor>
+896:            <name>Philip Graf</name>
+897-        </contributor>
+898-        <contributor>
+899:            <name>Rodney Gitzel</name>
+900-        </contributor>
+901-        <contributor>
+902:            <name>Matt Ryall</name>
+903-        </contributor>
+904-        <contributor>
+905:            <name>Rob Di Marco</name>
+906-        </contributor>
+907-        <contributor>
+908:            <name>Gareth Davis</name>
+909-        </contributor>
+910-        <contributor>
+911:            <name>David Bylsma</name>
+912-        </contributor>
+913-        <contributor>
+914:            <name>Dmitri Zoubkov</name>
+915-        </contributor>
+916-        <contributor>
+917:            <name>Stuart Begg</name>
+918-        </contributor>
+919-        <contributor>
+920:            <name>Rene Schwietzke</name>
+921-        </contributor>
+922-        <contributor>
+923:            <name>Ethan Glasser-Camp</name>
+924-        </contributor>
+925-        <contributor>
+926:            <name>Marco Cova</name>
+927-        </contributor>
+928-        <contributor>
+929:            <name>Mike Dirolf</name>
+930-        </contributor>
+931-        <contributor>
+932:            <name>Mirko Friedenhagen</name>
+933-        </contributor>
+934-        <contributor>
+935:            <name>Richard Eggert</name>
+936-        </contributor>
+937-        <contributor>
+938:            <name>Tomasz Kalkosinski</name>
+939-        </contributor>
+940-        <contributor>
+941:            <name>Peter Faller</name>
+942-        </contributor>
+943-        <contributor>
+944:            <name>Benoit Heinrich</name>
+945-        </contributor>
+946-        <contributor>
+947:            <name>Amit Manjhi</name>
+948-        </contributor>
+949-        <contributor>
+950:            <name>Nicolas Belisle</name>
+951-        </contributor>
+952-        <contributor>
+953:            <name>Amit Khanna</name>
+954-        </contributor>
+955-        <contributor>
+956:            <name>Nikolai Avteniev</name>
+957-        </contributor>
+958-        <contributor>
+959:            <name>Kostadin Chikov</name>
+960-        </contributor>
+961-        <contributor>
+962:            <name>Adam Doupe</name>
+963-        </contributor>
+964-        <contributor>
+965:            <name>Daniel Wagner-Hall</name>
+966-        </contributor>
+967-        <contributor>
+968:            <name>James Phillpotts</name>
+969-        </contributor>
+970-        <contributor>
+971:            <name>Benson Margulies</name>
+972-        </contributor>
+973-        <contributor>
+974:            <name>Pieter Herroelen</name>
+975-        </contributor>
+976-        <contributor>
+977:            <name>David Gileadi</name>
+978-        </contributor>
+979-        <contributor>
+980:            <name>Martin Huber</name>
+981-        </contributor>
+982-        <contributor>
+983:            <name>Frank Danek</name>
+984-        </contributor>
+985-        <contributor>
+986:            <name>Andrea Martino</name>
+987-        </contributor>
+988-        <contributor>
+989:            <name>John J Murdoch</name>
+990-        </contributor>
+991-        <contributor>
+992:            <name>Guy Burton</name>
+993-        </contributor>
+994-        <contributor>
+995:            <name>Chuck Dumont</name>
+996-        </contributor>
+997-        <contributor>
+998:            <name>Sebastian Cato</name>
+999-        </contributor>
+1000-        <contributor>
+1001:            <name>Carsten Steul</name>
+1002-        </contributor>
+1003-        <contributor>
+1004:            <name>Jake Cobb</name>
+1005-        </contributor>
+1006-        <contributor>
+1007:            <name>David Ostrovsky</name>
+1008-        </contributor>
+1009-        <contributor>
+1010:            <name>Matthias Brandt</name>
+1011-        </contributor>
+1012-        <contributor>
+1013:            <name>Jacob Childress</name>
+1014-        </contributor>
+1015-        <contributor>
+1016:            <name>Joerg Werner</name>
+1017-        </contributor>
+1018-        <contributor>
+1019:            <name>Adam Afeltowicz</name>
+1020-        </contributor>
+1021-        <contributor>
+1022:            <name>Madis P&#x00e4;rn</name>
+1023-        </contributor>
+1024-        <contributor>
+1025:            <name>Michael Rimov</name>
+1026-        </contributor>
+1027-        <contributor>
+1028:            <name>Rob Kodey</name>
+1029-        </contributor>
+1030-        <contributor>
+1031:            <name>Leszek Hoppe</name>
+1032-        </contributor>
+1033-        <contributor>
+1034:            <name>Natasha Lazarova</name>
+1035-        </contributor>
+1036-        <contributor>
+1037:            <name>Anton Demydenko</name>
+1038-        </contributor>
+1039-        <contributor>
+1040:            <name>Colin Alworth</name>
+1041-        </contributor>
+1042-        <contributor>
+1043:            <name>Ween Jiann</name>
+1044-        </contributor>
+1045-        <contributor>
+1046:            <name>Atsushi Nakagawa</name>
+1047-        </contributor>
+1048-        <contributor>
+1049:            <name>Hartmut Arlt</name>
+1050-        </contributor>
+1051-        <contributor>
+1052:            <name>Le Stephane</name>
+1053-        </contributor>
+1054-        <contributor>
+1055:            <name>Michael Anstis</name>
+1056-        </contributor>
+1057-        <contributor>
+1058:            <name>Alex Gorbatovsky</name>
+1059-        </contributor>
+1060-        <contributor>
+1061:            <name>Ronny Shapiro</name>
+1062-        </contributor>
+1063-        <contributor>
+1064:            <name>Rural Hunter</name>
+1065-        </contributor>
+1066-        <contributor>
+1067:            <name>Thorsten Wendelmuth</name>
+1068-        </contributor>
+1069-        <contributor>
+1070:            <name>Markus Heiden</name>
+1071-        </contributor>
+1072-        <contributor>
+1073:            <name>Dennis Duysak</name>
+1074-        </contributor>
+1075-        <contributor>
+1076:            <name>Raik Bieniek</name>
+1077-        </contributor>
+1078-        <contributor>
+1079:            <name>Uberto Barbini</name>
+1080-        </contributor>
+1081-        <contributor>
+1082:            <name>cdalexndr</name>
+1083-        </contributor>
+1084-        <contributor>
+1085:            <name>Sergio Moreno</name>
+1086-            <email>sergio.moreno@blueliv.com</email>
+1087-        </contributor>
+1088-        <contributor>
+1089:            <name>Antoni Reus</name>
+1090-        </contributor>
+1091-        <contributor>
+1092:            <name>Harald Albers</name>
+1093-        </contributor>
+1094-        <contributor>
+1095:            <name>Michael Lueck</name>
+1096-        </contributor>
+1097-        <contributor>
+1098:            <name>Ashley Frieze</name>
+1099-        </contributor>
+1100-        <contributor>
+1101:            <name>Bharatwaaj Shankaranarayanan</name>
+1102-        </contributor>
+1103-        <contributor>
+1104:            <name>Lai Quang Duong</name>
+1105-        </contributor>
+1106-    </contributors>
+--
+1432-        <site>
+1433-            <id>htmlunit-website</id>
+1434:            <name>HtmlUnit WebSite - Sourceforge</name>
+1435:            <url>scp://shell.sourceforge.net/home/project-web/htmlunit/htdocs/</url>
+1436-        </site>
+1437-        <snapshotRepository>
+1438-            <id>sonatype-nexus-snapshots</id>
+1439:            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+1440-        </snapshotRepository>
+1441-        <repository>
+1442-            <id>sonatype-nexus-staging</id>
+1443:            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+1444-        </repository>
+1445-    </distributionManagement>
+--
+1454-            </releases>
+1455-            <id>OSS Sonatype snapshots</id>
+1456:            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+1457-        </repository>
+1458-    </repositories>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/HtmlUnit/htmlunit/contents/src/test?ref=2.70.0 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0.jar -o /tmp/htmlunit-2.70.0.jar && jar tf /tmp/htmlunit-2.70.0.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 167ms:
+[
+  {
+    "name": "java",
+    "path": "src/test/java",
+    "sha": "eec71a91f5f26539a92a158c744d5c7f0f7f7d61",
+    "size": 0,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit/contents/src/test/java?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit/tree/2.70.0/src/test/java",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit/git/trees/eec71a91f5f26539a92a158c744d5c7f0f7f7d61",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit/contents/src/test/java?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit/git/trees/eec71a91f5f26539a92a158c744d5c7f0f7f7d61",
+      "html": "https://github.com/HtmlUnit/htmlunit/tree/2.70.0/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "src/test/resources",
+    "sha": "62ad9ee6de4db0a1cac7e64821091c5c51a17095",
+    "size": 0,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit/contents/src/test/resources?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit/tree/2.70.0/src/test/resources",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit/git/trees/62ad9ee6de4db0a1cac7e64821091c5c51a17095",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit/contents/src/test/resources?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit/git/trees/62ad9ee6de4db0a1cac7e64821091c5c51a17095",
+      "html": "https://github.com/HtmlUnit/htmlunit/tree/2.70.0/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 232ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/gargoylesoftware/
+com/gargoylesoftware/htmlunit/
+com/gargoylesoftware/htmlunit/activex/
+com/gargoylesoftware/htmlunit/activex/javascript/
+com/gargoylesoftware/htmlunit/activex/javascript/msxml/
+com/gargoylesoftware/htmlunit/attachment/
+com/gargoylesoftware/htmlunit/css/
+com/gargoylesoftware/htmlunit/html/
+com/gargoylesoftware/htmlunit/html/applets/
+com/gargoylesoftware/htmlunit/html/impl/
+com/gargoylesoftware/htmlunit/html/parser/
+com/gargoylesoftware/htmlunit/html/parser/neko/
+com/gargoylesoftware/htmlunit/html/serializer/
+com/gargoylesoftware/htmlunit/html/xpath/
+com/gargoylesoftware/htmlunit/httpclient/
+com/gargoylesoftware/htmlunit/javascript/
+com/gargoylesoftware/htmlunit/javascript/background/
+com/gargoylesoftware/htmlunit/javascript/configuration/
+com/gargoylesoftware/htmlunit/javascript/host/
+com/gargoylesoftware/htmlunit/javascript/host/animations/
+com/gargoylesoftware/htmlunit/javascript/host/arrays/
+com/gargoylesoftware/htmlunit/javascript/host/canvas/
+com/gargoylesoftware/htmlunit/javascript/host/canvas/ext/
+com/gargoylesoftware/htmlunit/javascript/host/crypto/
+com/gargoylesoftware/htmlunit/javascript/host/css/
+com/gargoylesoftware/htmlunit/javascript/host/dom/
+com/gargoylesoftware/htmlunit/javascript/host/event/
+com/gargoylesoftware/htmlunit/javascript/host/fetch/
+com/gargoylesoftware/htmlunit/javascript/host/file/
+com/gargoylesoftware/htmlunit/javascript/host/geo/
+com/gargoylesoftware/htmlunit/javascript/host/html/
+com/gargoylesoftware/htmlunit/javascript/host/idb/
+com/gargoylesoftware/htmlunit/javascript/host/intl/
+com/gargoylesoftware/htmlunit/javascript/host/media/
+com/gargoylesoftware/htmlunit/javascript/host/media/midi/
+com/gargoylesoftware/htmlunit/javascript/host/media/presentation/
+com/gargoylesoftware/htmlunit/javascript/host/media/rtc/
+
+codex
+The upstream tag is exactly `2.70.0`, and the repository exposes `src/test` at that tag. Maven does not publish a `tests.jar` for this version, so the test URL should use the tagged GitHub test tree rather than a Maven artifact.
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' build/discovered-artifact-metadata | head -n 20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' build/discovered-artifact-metadata | head -n 20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' build/discovered-artifact-metadata | head -n 20" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'not-for-native-image|replacement|language' -S . | head -n 80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+./COVERAGE.md:| [`com.github.jknack:handlebars`](https://github.com/jknack/handlebars.java) | 4.3.1<br>– 4.4.0 | 100.0% (13/13 calls) | <details><summary>Show</summary> Handlebars.java is a Java implementation of the Handlebars template language for rendering logic-less, semantic templates on the JVM. It parses templates and applies them to Java objects with support for helpers, partials, loaders, escaping, and i18n.</details> |
+./COVERAGE.md:| [`com.google.protobuf:protobuf-java`](https://github.com/protocolbuffers/protobuf) | 2.5.0 | 100.0% (5/5 calls) | <details><summary>Show</summary> Protocol Buffers are Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data. The protobuf-java artifact provides the Java runtime API used by generated Java message classes to parse, serialize, and work with Protocol Buffer messages.</details> |
+./COVERAGE.md:| [`com.intellij:annotations`](https://github.com/JetBrains/intellij-community) | 12.0 | 100% (0/0 calls) | <details><summary>Show</summary> IntelliJ IDEA Annotations provides annotation types such as @NotNull, @Nullable, and @Language for documenting code contracts and guiding IDE inspections. It is a small Java annotation library used to express nullability, localization, formatting, and other static-analysis hints without adding runtime framework behavior.</details> |
+./COVERAGE.md:| [`dev.langchain4j:langchain4j`](https://github.com/langchain4j/langchain4j) | 1.9.0<br>– 1.14.0 | 100% (0/0 calls) | <details><summary>Show</summary> LangChain4j is an open-source Java library that simplifies integrating large language models into Java applications through a unified API. It provides abstractions and integrations for building AI features such as chat, retrieval-augmented generation, tool calling, and agents.</details> |
+./COVERAGE.md:| [`jakarta.enterprise:jakarta.enterprise.lang-model`](https://github.com/jakartaee/cdi) | 4.0.0<br>– 5.0.0.Alpha5 | 100% (0/0 calls) | <details><summary>Show</summary> Jakarta Enterprise Language Model provides the reflection-free Java language model used by CDI build compatible extensions. It exposes APIs for representing classes, methods, fields, constructors, annotations, and types so CDI tooling can analyze application code at build time.</details> |
+./COVERAGE.md:| [`javax.el:el-api`](https://github.com/javaee/uel-ri) | 1.0 | 100.0% (10/10 calls) | <details><summary>Show</summary> The Java Unified Expression Language API defines interfaces and base classes for parsing and evaluating value and method expressions used by JSP 2.1 and JSF 1.2. It provides pluggable contexts, resolvers, function mapping, and variable mapping so web frameworks and applications can access and manipulate model data through EL expressions.</details> |
+./COVERAGE.md:| `javax.servlet.jsp:jsp-api` | 2.1 | 100.0% (4/4 calls) | <details><summary>Show</summary> This artifact provides the JavaServer Pages 2.1 API contracts, including core JSP, tag extension, and expression language interfaces used by JSP containers and applications. It defines standard types that JSP engines and custom tag libraries implement at compile time and runtime.</details> |
+./COVERAGE.md:| [`org.antlr:antlr-runtime`](https://github.com/antlr/antlr3) | 3.5.2<br>– 3.5.3 | 100% (0/0 calls) | <details><summary>Show</summary> ANTLR 3 Runtime provides the Java runtime support needed by lexers, parsers, and tree parsers generated by ANTLR 3. It includes token streams, recognizer base classes, error handling, and tree APIs used to execute grammars generated from language descriptions.</details> |
+./COVERAGE.md:| [`org.antlr:antlr4-runtime`](https://github.com/antlr/antlr4) | 4.10<br>– 4.13.2 | 100% (0/0 calls) | <details><summary>Show</summary> ANTLR 4 Runtime is the Java runtime library that supplies the core classes needed to execute parsers and lexers generated by ANTLR 4. It provides token streams, parse tree support, error handling, and other infrastructure used by generated language recognizers.</details> |
+./COVERAGE.md:| [`org.apache-extras.beanshell:bsh`](https://github.com/beanshell/beanshell) | 2.0b6 | 100.0% (53/53 calls) | <details><summary>Show</summary> BeanShell is an embeddable Java source interpreter and scripting language that executes standard Java syntax dynamically. It adds scripting conveniences such as loose typing, commands, method closures, and interactive or embedded execution for Java applications.</details> |
+./COVERAGE.md:| [`org.apache.commons:commons-lang3`](https://github.com/apache/commons-lang) | 3.11<br>– 3.18.0 | 100% (0/0 calls) | <details><summary>Show</summary> Apache Commons Lang provides reusable Java utility classes that extend core `java.lang` functionality with helpers for strings, numbers, objects, reflection, concurrency, and more. It helps Java applications avoid reimplementing common low-level programming tasks by packaging widely used language-level utilities.</details> |
+./COVERAGE.md:| [`org.apache.thrift:libthrift`](https://github.com/apache/thrift) | 0.13.0<br>– 0.17.0 | 100.0% (9/9 calls) | <details><summary>Show</summary> Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.</details> |
+./COVERAGE.md:| [`org.apache.tomcat.embed:tomcat-embed-el`](https://github.com/apache/tomcat) | 9.0.83<br>– 9.0.117 | 100% (0/0 calls) | <details><summary>Show</summary> Tomcat Embed EL provides Apache Tomcat's embeddable implementation of the Java Unified Expression Language used by Tomcat 9. It parses and evaluates EL expressions for JSP and servlet-based applications running with embedded Tomcat.</details> |
+./COVERAGE.md:| [`org.jboss.logmanager:jboss-logmanager`](https://github.com/jboss-logging/jboss-logmanager) | 1.2.0.GA<br>– 1.4.0.Final | 100% (0/0 calls) | <details><summary>Show</summary> JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.</details> |
+./COVERAGE.md:| [`org.jetbrains.kotlin:kotlin-stdlib-common`](https://github.com/JetBrains/kotlin) | 1.5.31<br>– 2.4.0-Beta2 | 100% (0/0 calls) | <details><summary>Show</summary> Kotlin Standard Library Common provides the platform-independent portion of Kotlin's standard library for multiplatform projects. It supplies common APIs and core language support that are shared across Kotlin/JVM, Kotlin/JS, and Kotlin/Native.</details> |
+./COVERAGE.md:| [`org.jetbrains:annotations-java5`](https://github.com/JetBrains/java-annotations) | 23.0.0<br>– 24.1.0 | 100% (0/0 calls) | <details><summary>Show</summary> JetBrains Java Annotations is a set of annotations for code inspection support and code documentation. It provides annotations for nullability, contracts, API status, language injection, and related metadata used by IDEs and static analysis tools.</details> |
+./COVERAGE.md:| [`org.slf4j:log4j-over-slf4j`](https://github.com/qos-ch/slf4j) | 1.7.25<br>– 2.1.0-alpha1 | 100% (0/0 calls) | <details><summary>Show</summary> log4j-over-slf4j provides replacement classes for the Log4j version 1 API that route logging calls to SLF4J. It lets applications and dependencies written against Log4j use the SLF4J binding selected by the application without keeping a Log4j version 1 runtime implementation on the classpath.</details> |
+./COVERAGE.md:| [`org.w3c.css:sac`](https://www.w3.org/Style/CSS/SAC/) | 1.3 | 100.0% (2/2 calls) | <details><summary>Show</summary> SAC is a standard Java interface for CSS parsers, defining events, selectors, lexical units, and parser callbacks for CSS and CSS-derived languages. The org.w3c.css:sac artifact provides the version 1.3 API classes that parser implementations and applications can use to exchange CSS parsing data.</details> |
+./gradlew:# See the License for the specific language governing permissions and
+./gradlew:        set -- "$@" "$arg"      # push replacement arg
+./tests/tck-build-logic/src/main/resources/scaffold/build.gradle.groovy.template:        languageVersion = JavaLanguageVersion.of(21)
+./tests/tck-build-logic/src/main/resources/scaffold/build.gradle.scala3.template:        languageVersion = JavaLanguageVersion.of(21)
+./tests/tck-build-logic/src/main/resources/scaffold/build.gradle.scala2.template:        languageVersion = JavaLanguageVersion.of(21)
+./skills/review-fixes-java-run-fail/SKILL.md:- Dynamic-access coverage drops without a credible explanation and replacement coverage.
+./docs/FUNCTIONAL_SPEC.md:**2. `<groupId>/<artifactId>/index.json`** — one per supported artifact, schema [metadata-library-index-schema-v2.0.1.json](../metadata/schemas/metadata-library-index-schema-v2.0.1.json). It is a JSON **array** of entries; each entry's required fields are `metadata-version`, `tested-versions`, and `allowed-packages`, with optional `default-for` (Java regex), `latest: true`, `override: true`, `requires: ["<group>:<artifact>", …]`, `test-version`, `skipped-versions`, `language`, and the four URL fields. Plugin-relevant fields are the first six.
+./docs/FUNCTIONAL_SPEC.md:The schema follows semver, and **minor- and patch-version bumps** (e.g., `v2.0.1` → `v2.0.2` or `v2.0.x` → `v2.1.0`) are guaranteed to be backward-compatible with native-build-tools. Minor bumps add new optional fields used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`); patch bumps refine validation of those same auxiliary fields. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. Only a **major-version bump** can break the contract, which NFR-4 forbids — schema changes are additive only.
+./docs/CI.md:- [.github/workflows/sync-docker-images.yml](../.github/workflows/sync-docker-images.yml): automatically synchronizes Docker image tags across the repository when Dependabot updates `allowed-docker-images`. Commits replacements directly into the Dependabot PR, making it merge-ready.
+./gradlew.bat:@rem See the License for the specific language governing permissions and
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java: * and optional language-specific metadata in metadata index files.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                    && !shouldBackfillMissingLanguage(target.entry, coordinateFilter)) {
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                If the library is not language-specific, leave the "language" field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - Set the "language" field only when the library is language-specific.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - language: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                currentLanguageValue(target.entry),
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:    private static String currentLanguageValue(MetadataVersionsIndexEntry entry) {
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:        if (entry.language() == null) {
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:        return "{\"name\": \"%s\", \"version\": \"%s\"}".formatted(entry.language().name(), entry.language().version());
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:    private static boolean shouldBackfillMissingLanguage(MetadataVersionsIndexEntry entry, String coordinateFilter) {
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:        return hasText(coordinateFilter) && entry.language() == null;
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java: * repository URLs, a short description, and language-specific metadata.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:                If the library is not language-specific, leave the "language" field absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:import org.graalvm.internal.tck.model.LibraryLanguage;
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                    "not-for-native-image": true,
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                .hasMessageContaining("not-for-native-image");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                new LibraryLanguage("kotlin", "2.0"),
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                .containsEntry("language", Map.of("name", "kotlin", "version", "2.0"));
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                new LibraryLanguage("groovy", "4.0"),
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                .contains("JavaLanguageVersion.of(21)")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                .containsEntry("language", Map.of("name", "groovy", "version", "4.0"));
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                new LibraryLanguage("scala", "3"),
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                .contains("JavaLanguageVersion.of(21)")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                new LibraryLanguage("scala", "2"),
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:                .contains("JavaLanguageVersion.of(21)")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("Also determine whether this is a language-specific library.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("If the library is not language-specific, leave the \"language\" field absent.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("Set missing \"language\" only when the library is language-specific; otherwise leave the field absent.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("- language: <missing>")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:    void runWithLimitSkipsEntriesMissingOnlyLanguage() throws IOException, InterruptedException {
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:    void runWithCoordinatesBackfillsEntriesMissingOnlyLanguage() throws IOException, InterruptedException {
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("- language: <missing>");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:                .contains("- language: <missing>");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:                .contains("Also determine whether this is a language-specific library.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:                .contains("If the library is not language-specific, leave the \"language\" field absent.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:                    "not-for-native-image": true,
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:        LibraryStatsModels.VersionStats replacement = new LibraryStatsModels.VersionStats(
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:                List.of(replacement),
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:        assertThat(merged.versions()).containsExactly(replacement);
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/stats/LibraryStatsSupportTests.java:        LibraryStatsModels.VersionStats replacement = new LibraryStatsModels.VersionStats(
+
+exec
+/usr/bin/bash -lc "rg 'documentation-url|source-code-url|test-code-url|repository-url' -S . | head -n 80" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:                null, // repository-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:                null, // test-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:                null, // documentation-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:        @JsonProperty("documentation-url")
+./skills/review-library-bulk-update/SKILL.md:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:   - For pre-release promotions, verify the `source-code-url`, `test-code-url`, and `documentation-url` values were rendered from the old version to the promoted `metadata-version` or otherwise corrected to an exact-version URL. Do not accept stale URLs that still point at the old pre-release.
+./skills/review-library-bulk-update/SKILL.md:- `repository-url` is the canonical repository root URL.
+./skills/review-library-bulk-update/SKILL.md:- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+./skills/review-library-bulk-update/SKILL.md:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:        @JsonProperty("documentation-url")
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:            "source-code-url",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:            "test-code-url",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:            "documentation-url"
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - repository-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - test-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                - documentation-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                    - Set "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                    - Set "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:                    - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+
+exec
+/usr/bin/bash -lc 'find metadata/net.sourceforge.htmlunit -maxdepth 2 -type f -name index.json -print' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+exec
+/usr/bin/bash -lc "sed -n '1,200p' metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.14.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+    "description" : "HtmlUnit CSS Parser is a Java library that parses CSS for the HtmlUnit browser automation project. It provides CSS syntax parsing components used to read and process stylesheets in Java applications.",
+    "tested-versions" : [
+      "1.14.0"
+    ],
+    "allowed-packages" : [
+      "com.gargoylesoftware.css"
+    ]
+  }
+]
+
+ succeeded in 0ms:
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json
+
+exec
+/usr/bin/bash -lc "rg 'HtmlUnit' metadata COVERAGE.md -n" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+COVERAGE.md:313:| [`net.sourceforge.htmlunit:htmlunit-cssparser`](https://github.com/HtmlUnit/htmlunit-cssparser) | 1.14.0 | 100.0% (12/12 calls) | <details><summary>Show</summary> HtmlUnit CSS Parser is a Java library that parses CSS for the HtmlUnit browser automation project. It provides CSS syntax parsing components used to read and process stylesheets in Java applications.</details> |
+COVERAGE.md:314:| [`net.sourceforge.htmlunit:neko-htmlunit`](https://github.com/HtmlUnit/htmlunit-neko) | 2.70.0 | 100.0% (6/6 calls) | <details><summary>Show</summary> NekoHtmlUnit is HtmlUnit's adaptation of NekoHTML, a tolerant HTML parser for Java. It preserves NekoHTML-style parsing while exposing HTML element classes in a way HtmlUnit can override and integrate into its browser simulation stack.</details> |
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:9:    "description" : "HtmlUnit CSS Parser is a Java library that parses CSS for the HtmlUnit browser automation project. It provides CSS syntax parsing components used to read and process stylesheets in Java applications.",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:9:    "description" : "NekoHtmlUnit is HtmlUnit's adaptation of NekoHTML, a tolerant HTML parser for Java. It preserves NekoHTML-style parsing while exposing HTML element classes in a way HtmlUnit can override and integrate into its browser simulation stack.",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:9:    "description" : "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like document structures. It is a maintained fork of Apache Xalan's XPath functionality with nonessential Xalan components removed and unit tests and Maven-based build support added.",
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/HtmlUnit/htmlunit/tree/2.70.0/src/test' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 03:14:13 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ed05411694d031f9a849087adcd4753e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Aih%2BOir9xMid8xkfNHm9%2BZ2fcax2jut%2FKg7RUK77TuxsiLE2L8pByPYp%2FE%2BKab%2BP7KXSnJFJ1xFIdwcy7dwCyIDTSI8CvRgyGI5lC32Z%2FYbnNG7zGXB%2FJNZjNkjKQWS7ggGd8MVn0gPoWMNfLZLuGeFU2rQmUxIFXv%2B520kTtNJtJ9WUX8%2By1uTDRqfKrH%2Fo0gb8krUo9qY1p3gp2bQ9KwZgY0Vop9pDIrtiYw35MRJEiua%2FOl108IQOrpnjFP8zQq9hUNqFBaM1Mn9XpbmxUA%3D%3D--gtSqbOSZetOJ47x0--kX%2Fi5jJAV6PbcsF%2Fd%2BjwNg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.296477644.1778210078; expires=Sat, 08 May 2027 03:14:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 03:14:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 512C:30469A:B416DEB:8E2BED8:69FD551E
+
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/htmlunit-2.70.0.jar | rg '\\.class"'$'"' | head -n 10" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+com/gargoylesoftware/htmlunit/AbstractPage.class
+com/gargoylesoftware/htmlunit/activex/javascript/msxml/MSXMLActiveXObjectFactory.class
+com/gargoylesoftware/htmlunit/activex/javascript/msxml/MSXMLConfiguration.class
+com/gargoylesoftware/htmlunit/activex/javascript/msxml/MSXMLJavaScriptEnvironment.class
+com/gargoylesoftware/htmlunit/activex/javascript/msxml/MSXMLScriptable.class
+com/gargoylesoftware/htmlunit/activex/javascript/msxml/package-info.class
+com/gargoylesoftware/htmlunit/activex/javascript/msxml/XMLDOMAttribute.class
+com/gargoylesoftware/htmlunit/activex/javascript/msxml/XMLDOMCDATASection.class
+com/gargoylesoftware/htmlunit/activex/javascript/msxml/XMLDOMCharacterData.class
+com/gargoylesoftware/htmlunit/activex/javascript/msxml/XMLDOMComment.class
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-tests.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 230ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 03:14:38 GMT
+content-type: application/java-archive
+content-length: 10036624
+cf-ray: 9f854b9f6eba8628-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "d108b7202b193b1bf3c676d9995d9c01"
+last-modified: Sun, 22 Jan 2023 18:04:54 GMT
+x-checksum-md5: d108b7202b193b1bf3c676d9995d9c01
+x-checksum-sha1: 9e4237fb0a0a839408e972b8cc3710e830f9dedb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 245ms:
+HTTP/2 404 
+date: Fri, 08 May 2026 03:14:38 GMT
+content-type: text/html
+cf-ray: 9f854b9f1b5a0215-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I’m going to patch the discovered metadata file now with the Maven Central source/javadoc artifacts, the canonical GitHub repository, and the tagged upstream test tree. Since the artifact is a normal JVM JAR with `.class` files, I’m leaving the native-image exclusion fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+index f9798abfc165de4485e78dfc53ab2963f59ee019..82b965b6fe14952b2cc0ef857fe5250013dd4741
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-javadoc.jar",
++  "description" : "HtmlUnit is a headless browser for Java that simulates web browser behavior for testing and automation without a graphical UI. It parses HTML, executes JavaScript, handles CSS, forms, cookies, and HTTP interactions so JVM tests and tools can inspect and drive web pages programmatically."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+index f9798abfc165de4485e78dfc53ab2963f59ee019..82b965b6fe14952b2cc0ef857fe5250013dd4741
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-javadoc.jar",
++  "description" : "HtmlUnit is a headless browser for Java that simulates web browser behavior for testing and automation without a graphical UI. It parses HTML, executes JavaScript, handles CSS, forms, cookies, and HTTP interactions so JVM tests and tools can inspect and drive web pages programmatically."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+{
+  "coordinates": "net.sourceforge.htmlunit:htmlunit:2.70.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-sources.jar",
+  "repository-url": "https://github.com/HtmlUnit/htmlunit",
+  "test-code-url": "https://github.com/HtmlUnit/htmlunit/tree/$version$/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-javadoc.jar",
+  "description": "HtmlUnit is a headless browser for Java that simulates web browser behavior for testing and automation without a graphical UI. It parses HTML, executes JavaScript, handles CSS, forms, cookies, and HTTP interactions so JVM tests and tools can inspect and drive web pages programmatically."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+index f9798abfc165de4485e78dfc53ab2963f59ee019..82b965b6fe14952b2cc0ef857fe5250013dd4741
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-javadoc.jar",
++  "description" : "HtmlUnit is a headless browser for Java that simulates web browser behavior for testing and automation without a graphical UI. It parses HTML, executes JavaScript, handles CSS, forms, cookies, and HTTP interactions so JVM tests and tools can inspect and drive web pages programmatically."
+ }
+
+codex
+The JSON parses cleanly. I’m checking the actual file contents once more because `build/` output is likely ignored by Git, so `git diff` does not show this generated metadata file.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+{
+  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-sources.jar",
+  "repository-url" : "https://github.com/HtmlUnit/htmlunit",
+  "test-code-url" : "https://github.com/HtmlUnit/htmlunit/tree/$version$/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-javadoc.jar",
+  "description" : "HtmlUnit is a headless browser for Java that simulates web browser behavior for testing and automation without a graphical UI. It parses HTML, executes JavaScript, handles CSS, forms, cookies, and HTTP interactions so JVM tests and tools can inspect and drive web pages programmatically."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+index f9798abfc165de4485e78dfc53ab2963f59ee019..82b965b6fe14952b2cc0ef857fe5250013dd4741
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-javadoc.jar",
++  "description" : "HtmlUnit is a headless browser for Java that simulates web browser behavior for testing and automation without a graphical UI. It parses HTML, executes JavaScript, handles CSS, forms, cookies, and HTTP interactions so JVM tests and tools can inspect and drive web pages programmatically."
+ }
+
+ succeeded in 170ms:
+!! build/
+
+web search: 
+web search: https://github.com/HtmlUnit/htmlunit/tree/2.70.0/src/test
+web search: 
+web search: repo.maven.apache.org maven2 net.sourceforge.htmlunit htmlunit 2.70.0 htmlunit-2.70.0.pom
+web search: 
+web search: https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/
+web search: 
+web search: 
+codex
+Updated [net.sourceforge.htmlunit-htmlunit-2.70.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json:1).
+
+I used Maven Central for `source-code-url` and `documentation-url` because `htmlunit-2.70.0-sources.jar` and `htmlunit-2.70.0-javadoc.jar` are published there, and used the GitHub `2.70.0` tag for `src/test` because no `tests.jar` is present in the Maven listing. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. This is a normal JVM JAR artifact, and local inspection confirmed it contains `.class` files.
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+index f9798abfc165de4485e78dfc53ab2963f59ee019..82b965b6fe14952b2cc0ef857fe5250013dd4741
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit:2.70.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-sources.jar",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-javadoc.jar",
++  "description" : "HtmlUnit is a headless browser for Java that simulates web browser behavior for testing and automation without a graphical UI. It parses HTML, executes JavaScript, handles CSS, forms, cookies, and HTTP interactions so JVM tests and tools can inspect and drive web pages programmatically."
+ }
+
+tokens used
+105,127
+Updated [net.sourceforge.htmlunit-htmlunit-2.70.0.json](/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-2.70.0.json:1).
+
+I used Maven Central for `source-code-url` and `documentation-url` because `htmlunit-2.70.0-sources.jar` and `htmlunit-2.70.0-javadoc.jar` are published there, and used the GitHub `2.70.0` tag for `src/test` because no `tests.jar` is present in the Maven listing. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. This is a normal JVM JAR artifact, and local inspection confirmed it contains `.class` files.
+Ran agent for net.sourceforge.htmlunit:htmlunit:2.70.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/build/agent-artifact-discovery-logs/net.sourceforge.htmlunit-htmlunit-2.70.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 34s
+9 actionable tasks: 9 executed

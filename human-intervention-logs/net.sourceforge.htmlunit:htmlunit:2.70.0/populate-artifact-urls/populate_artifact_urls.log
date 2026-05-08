@@ -1,0 +1,465 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0595-7129-7fd3-8792-f0e040297bd3
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sourceforge.htmlunit:htmlunit:2.70.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.70.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/metadata/net.sourceforge.htmlunit/htmlunit/index.json
+- Entry selector: "metadata-version" = "2.70.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-sources.jar
+- repository-url: https://github.com/HtmlUnit/htmlunit
+- test-code-url: https://github.com/HtmlUnit/htmlunit/tree/$version$/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-javadoc.jar
+- description: HtmlUnit is a headless browser for Java that simulates web browser behavior for testing and automation without a graphical UI. It parses HTML, executes JavaScript, handles CSS, forms, cookies, and HTTP interactions so JVM tests and tools can inspect and drive web pages programmatically.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.70.0
+- Entry metadata-version: 2.70.0
+- Entry test-version: 2.70.0
+- Entry tested-versions: [2.70.0]
+codex
+I’ll verify the Maven artifacts and the GitHub tag before touching the JSON, then I’ll only patch fields that are actually missing or version-stale under your rules.
+web search: 
+web search: Maven Central net.sourceforge.htmlunit htmlunit 2.70.0 sources javadoc
+codex
+The public search results show Maven Central has the `2.70.0` directory with source and javadoc artifacts, and the canonical repository is `HtmlUnit/htmlunit`. I’m checking the exact rendered URLs now and then I’ll compare them against the local entry.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|\"source-code-url\"|\"repository-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"language\"|\"tested-versions\"|\"test-version\"' metadata/net.sourceforge.htmlunit/htmlunit/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+4:    "metadata-version" : "2.70.0",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit",
+7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit/tree/$version$/src/test",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-javadoc.jar",
+9:    "description" : "HtmlUnit is a headless browser for Java that simulates web browser behavior for testing and automation without a graphical UI. It parses HTML, executes JavaScript, handles CSS, forms, cookies, and HTTP interactions so JVM tests and tools can inspect and drive web pages programmatically.",
+10:    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-sources.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 03:15:56 GMT
+content-type: application/java-archive
+content-length: 2062734
+cf-ray: 9f854d84c929bc5d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 481428
+etag: "a69f14c6eaaaae6c72940bc8900328f2"
+last-modified: Sun, 22 Jan 2023 18:04:53 GMT
+x-checksum-md5: a69f14c6eaaaae6c72940bc8900328f2
+x-checksum-sha1: fc4edf1d8ec66b9d29c242a4e3ea3fe7b631ab89
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-javadoc.jar' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 03:15:56 GMT
+content-type: application/java-archive
+content-length: 10036624
+cf-ray: 9f854d84cff7be8b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 658594
+etag: "d108b7202b193b1bf3c676d9995d9c01"
+last-modified: Sun, 22 Jan 2023 18:04:54 GMT
+x-checksum-md5: d108b7202b193b1bf3c676d9995d9c01
+x-checksum-sha1: 9e4237fb0a0a839408e972b8cc3710e830f9dedb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/HtmlUnit/htmlunit/tree/2.70.0/src/test' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/HtmlUnit/htmlunit' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 495ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 03:15:56 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"00572f96c6ac1a9574867dd2693f78f3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=8T0TTBmx305lP2USKibAPEXVj2753kUc3TTzZ8pTKl%2FVZk6TrmP1%2FzRIC4TyRGsM2zobPeW0CDimErtEEwWDGNpKH%2B9ORZFuhINSXEgVDQ28xb2SAgbEK9ZsDPUAUuGUGar7%2BklUX3zECiHqOWzNLaWV8WUGljMoWzH1gipLPOAyEfEAvpI0xG0TccS5gF8Lb01bK7wxnUHIDTGcRtHMN8QnbdBRW7W%2B7QwOWKiboiAteDOWAL6EnXiiTYyTq%2FAwywCW1NDSZiapOw4UOLzJGA%3D%3D--XWka9Upa5VxALN2w--0EB3CXZCC%2FGIPXzMWtmmrA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1999743974.1778210156; expires=Sat, 08 May 2027 03:15:56 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 03:15:56 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5116:3F14FF:B24A842:8C9EC03:69FD556C
+
+
+ succeeded in 565ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 03:15:56 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b9db921369bd2806fffd8b611f483388"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=1itTySH3VaO60OtvElJJvPGATXpJUxgO%2BmecaUqn3nN3ViRcdo4jtUWxYrXl0ImEA6s4pnrhkDAL63W3V55Y28QEiZJQGNmeDiVSXBOfOAZTAli7tNSPsptYqE81btC2nWwssncJYBHKX9Ok6Sg9bGQ%2BdKoJYrtLVNJvIT%2FmxcnAKgr%2Bzi9NdNUFI8CdlLi8LCIVMjWoJAdQyy36vkW81D46uvfqryr16l9ujyd89QNznIwlXQqDqKUxttl52h%2BfFceoU2veoPENNzfxVLYfJg%3D%3D--oogDf3ON1O8lwjeB--%2B7flOG5kVfKwAcNwGy2Kjw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1838596073.1778210156; expires=Sat, 08 May 2027 03:15:56 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 08 May 2027 03:15:56 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5121:EEDAC:B4DF829:8EC54D1:69FD556C
+
+
+web search: 
+web search: 
+web search: 
+web search: net.sourceforge.htmlunit htmlunit 2.70.0 maven central sources javadoc
+codex
+All rendered URLs returned HTTP 200. I’m doing one final local validation of the JSON entry and checking whether Maven Central publishes a test-sources artifact before deciding whether any field needs to change.
+exec
+/usr/bin/bash -lc "jq '.' metadata/net.sourceforge.htmlunit/htmlunit/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "metadata-version": "2.70.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-sources.jar",
+    "repository-url": "https://github.com/HtmlUnit/htmlunit",
+    "test-code-url": "https://github.com/HtmlUnit/htmlunit/tree/$version$/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/$version$/htmlunit-$version$-javadoc.jar",
+    "description": "HtmlUnit is a headless browser for Java that simulates web browser behavior for testing and automation without a graphical UI. It parses HTML, executes JavaScript, handles CSS, forms, cookies, and HTTP interactions so JVM tests and tools can inspect and drive web pages programmatically.",
+    "tested-versions": [
+      "2.70.0"
+    ],
+    "allowed-packages": [
+      "com.gargoylesoftware.htmlunit",
+      "netscape"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsS https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0.pom | rg -n '<url>|<connection>|<developerConnection>|<tag>|<name>|<description>'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+9:    <name>HtmlUnit</name>
+11:        <name>Gargoyle Software Inc.</name>
+12:        <url>http://www.GargoyleSoftware.com/</url>
+15:    <description>
+18:    <url>http://htmlunit.sourceforge.net</url>
+232:                    <tag>${project.name}-${project.version}</tag>
+269:                    <name>withoutLibsHuge</name>
+298:                    <name>onlyLibs</name>
+329:                    <name>onlyjquery3</name>
+357:                    <name>onlyHugeCloses</name>
+385:                    <name>onlyHugeAC</name>
+415:                    <name>onlyHugeDG</name>
+444:                    <name>onlyHugeHL</name>
+473:                    <name>onlyHugeMO</name>
+502:                    <name>onlyHugePR</name>
+530:                    <name>onlyHugeS</name>
+558:                    <name>onlyHugeS2</name>
+586:                    <name>onlyHugeTZ</name>
+664:        <url>https://github.com/HtmlUnit/htmlunit/issues/</url>
+669:            <name>Apache License, Version 2.0</name>
+670:            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+675:        <connection>scm:git:https://github.com/HtmlUnit/htmlunit</connection>
+676:        <developerConnection>scm:git:https://github.com/HtmlUnit/htmlunit</developerConnection>
+677:        <url>https://github.com/HtmlUnit/htmlunit</url>
+681:        <url>https://jenkins.wetator.org/view/HtmlUnit/</url>
+685:            <name>HtmlUnit Users</name>
+697:            <name>HtmlUnit Developers</name>
+711:            <name>Mike Bowler</name>
+715:            <url>http://www.sphericalimprovement.com/blogs/mbowler/</url>
+719:            <name>David K. Taylor</name>
+723:            <name>Brad Clarke</name>
+726:            <url>http://www.bradclarke.com/</url>
+730:            <name>Marc Guillemot</name>
+733:            <url>http://mguillem.wordpress.com/</url>
+737:            <name>Chris Erskine</name>
+743:            <name>Daniel Gredler</name>
+746:            <url>http://daniel.gredler.net/</url>
+750:            <name>Ahmed Ashour</name>
+753:            <url>http://asashour.blogspot.com/</url>
+757:            <name>Sudhan Moghe</name>
+763:            <name>Ronald Brill</name>
+766:            <url>http://www.wetator.org/</url>
+772:            <name>Noboru Sinohara</name>
+775:            <name>Mike J. Bresnahan</name>
+779:            <name>Dominique Broeglin</name>
+782:            <name>Alex Nikiforoff</name>
+785:            <name>Barnaby Court</name>
+788:            <name>Andreas Hangler</name>
+791:            <name>Jun Chen</name>
+795:            <name>Christian Sell</name>
+799:            <name>Darrell DeBoer</name>
+802:            <name>David D. Kilzer</name>
+805:            <name>Ben Curren</name>
+809:            <name>Mike Williams</name>
+812:            <name>Mike Gallaher</name>
+815:            <name>Dierk Koenig</name>
+818:            <name>Mike Bresnahan</name>
+821:            <name>Sergey Gorelkin</name>
+824:            <name>Chris Eldredge</name>
+827:            <name>Hans Donner</name>
+830:            <name>Michael Ottati</name>
+833:            <name>George Murnock</name>
+836:            <name>Kent Tong</name>
+839:            <name>Alfred Nathaniel</name>
+842:            <name>Bruce Faulkner</name>
+845:            <name>Ray Suliteanu</name>
+848:            <name>Denis N. Antonioli</name>
+851:            <name>Stefan Anzinger</name>
+854:            <name>Lothar Märkle</name>
+857:            <name>Ian Lovejoy</name>
+860:            <name>Paul King</name>
+863:            <name>Vikram Shitole</name>
+866:            <name>Mark van Leeuwen</name>
+869:            <name>Brad Murray</name>
+872:            <name>Julien Henry</name>
+875:            <name>Andre Soereng</name>
+878:            <name>Karel Kolman</name>
+881:            <name>Bruce Chapman</name>
+884:            <name>Kristian Muntau</name>
+887:            <name>Sam Hough</name>
+890:            <name>Deryk Sinotte</name>
+893:            <name>Martin Tamme</name>
+896:            <name>Philip Graf</name>
+899:            <name>Rodney Gitzel</name>
+902:            <name>Matt Ryall</name>
+905:            <name>Rob Di Marco</name>
+908:            <name>Gareth Davis</name>
+911:            <name>David Bylsma</name>
+914:            <name>Dmitri Zoubkov</name>
+917:            <name>Stuart Begg</name>
+920:            <name>Rene Schwietzke</name>
+923:            <name>Ethan Glasser-Camp</name>
+926:            <name>Marco Cova</name>
+929:            <name>Mike Dirolf</name>
+932:            <name>Mirko Friedenhagen</name>
+935:            <name>Richard Eggert</name>
+938:            <name>Tomasz Kalkosinski</name>
+941:            <name>Peter Faller</name>
+944:            <name>Benoit Heinrich</name>
+947:            <name>Amit Manjhi</name>
+950:            <name>Nicolas Belisle</name>
+953:            <name>Amit Khanna</name>
+956:            <name>Nikolai Avteniev</name>
+959:            <name>Kostadin Chikov</name>
+962:            <name>Adam Doupe</name>
+965:            <name>Daniel Wagner-Hall</name>
+968:            <name>James Phillpotts</name>
+971:            <name>Benson Margulies</name>
+974:            <name>Pieter Herroelen</name>
+977:            <name>David Gileadi</name>
+980:            <name>Martin Huber</name>
+983:            <name>Frank Danek</name>
+986:            <name>Andrea Martino</name>
+989:            <name>John J Murdoch</name>
+992:            <name>Guy Burton</name>
+995:            <name>Chuck Dumont</name>
+998:            <name>Sebastian Cato</name>
+1001:            <name>Carsten Steul</name>
+1004:            <name>Jake Cobb</name>
+1007:            <name>David Ostrovsky</name>
+1010:            <name>Matthias Brandt</name>
+1013:            <name>Jacob Childress</name>
+1016:            <name>Joerg Werner</name>
+1019:            <name>Adam Afeltowicz</name>
+1022:            <name>Madis P&#x00e4;rn</name>
+1025:            <name>Michael Rimov</name>
+1028:            <name>Rob Kodey</name>
+1031:            <name>Leszek Hoppe</name>
+1034:            <name>Natasha Lazarova</name>
+1037:            <name>Anton Demydenko</name>
+1040:            <name>Colin Alworth</name>
+1043:            <name>Ween Jiann</name>
+1046:            <name>Atsushi Nakagawa</name>
+1049:            <name>Hartmut Arlt</name>
+1052:            <name>Le Stephane</name>
+1055:            <name>Michael Anstis</name>
+1058:            <name>Alex Gorbatovsky</name>
+1061:            <name>Ronny Shapiro</name>
+1064:            <name>Rural Hunter</name>
+1067:            <name>Thorsten Wendelmuth</name>
+1070:            <name>Markus Heiden</name>
+1073:            <name>Dennis Duysak</name>
+1076:            <name>Raik Bieniek</name>
+1079:            <name>Uberto Barbini</name>
+1082:            <name>cdalexndr</name>
+1085:            <name>Sergio Moreno</name>
+1089:            <name>Antoni Reus</name>
+1092:            <name>Harald Albers</name>
+1095:            <name>Michael Lueck</name>
+1098:            <name>Ashley Frieze</name>
+1101:            <name>Bharatwaaj Shankaranarayanan</name>
+1104:            <name>Lai Quang Duong</name>
+1434:            <name>HtmlUnit WebSite - Sourceforge</name>
+1435:            <url>scp://shell.sourceforge.net/home/project-web/htmlunit/htdocs/</url>
+1439:            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+1443:            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+1456:            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+
+exec
+/usr/bin/bash -lc "curl -fsS https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/ | rg 'htmlunit-2\\.70\\.0-(sources|javadoc|tests|test-sources)\\.jar|href'" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-test-sources.jar || true' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 211ms:
+<a href="../">../</a>
+<a href="htmlunit-2.70.0-javadoc.jar" title="htmlunit-2.70.0-javadoc.jar">htmlunit-2.70.0-javadoc.jar</a>                       2023-01-22 18:04  10036624      
+<a href="htmlunit-2.70.0-javadoc.jar.asc" title="htmlunit-2.70.0-javadoc.jar.asc">htmlunit-2.70.0-javadoc.jar.asc</a>                   2023-01-22 18:04       499      
+<a href="htmlunit-2.70.0-javadoc.jar.md5" title="htmlunit-2.70.0-javadoc.jar.md5">htmlunit-2.70.0-javadoc.jar.md5</a>                   2023-01-22 18:04        32      
+<a href="htmlunit-2.70.0-javadoc.jar.sha1" title="htmlunit-2.70.0-javadoc.jar.sha1">htmlunit-2.70.0-javadoc.jar.sha1</a>                  2023-01-22 18:04        40      
+<a href="htmlunit-2.70.0-sources.jar" title="htmlunit-2.70.0-sources.jar">htmlunit-2.70.0-sources.jar</a>                       2023-01-22 18:04   2062734      
+<a href="htmlunit-2.70.0-sources.jar.asc" title="htmlunit-2.70.0-sources.jar.asc">htmlunit-2.70.0-sources.jar.asc</a>                   2023-01-22 18:04       499      
+<a href="htmlunit-2.70.0-sources.jar.md5" title="htmlunit-2.70.0-sources.jar.md5">htmlunit-2.70.0-sources.jar.md5</a>                   2023-01-22 18:04        32      
+<a href="htmlunit-2.70.0-sources.jar.sha1" title="htmlunit-2.70.0-sources.jar.sha1">htmlunit-2.70.0-sources.jar.sha1</a>                  2023-01-22 18:04        40      
+<a href="htmlunit-2.70.0.jar" title="htmlunit-2.70.0.jar">htmlunit-2.70.0.jar</a>                               2023-01-22 18:04   2170327      
+<a href="htmlunit-2.70.0.jar.asc" title="htmlunit-2.70.0.jar.asc">htmlunit-2.70.0.jar.asc</a>                           2023-01-22 18:04       499      
+<a href="htmlunit-2.70.0.jar.md5" title="htmlunit-2.70.0.jar.md5">htmlunit-2.70.0.jar.md5</a>                           2023-01-22 18:04        32      
+<a href="htmlunit-2.70.0.jar.sha1" title="htmlunit-2.70.0.jar.sha1">htmlunit-2.70.0.jar.sha1</a>                          2023-01-22 18:04        40      
+<a href="htmlunit-2.70.0.pom" title="htmlunit-2.70.0.pom">htmlunit-2.70.0.pom</a>                               2023-01-22 18:04     58369      
+<a href="htmlunit-2.70.0.pom.asc" title="htmlunit-2.70.0.pom.asc">htmlunit-2.70.0.pom.asc</a>                           2023-01-22 18:04       499      
+<a href="htmlunit-2.70.0.pom.md5" title="htmlunit-2.70.0.pom.md5">htmlunit-2.70.0.pom.md5</a>                           2023-01-22 18:04        32      
+<a href="htmlunit-2.70.0.pom.sha1" title="htmlunit-2.70.0.pom.sha1">htmlunit-2.70.0.pom.sha1</a>                          2023-01-22 18:04        40      
+
+ succeeded in 210ms:
+HTTP/2 404 
+date: Fri, 08 May 2026 03:16:10 GMT
+content-type: text/html
+cf-ray: 9f854dd94d0c03b1-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/htmlunit-2.70.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: HtmlUnit GitHub repository
+codex
+The entry already contains the verified source, repository, test, documentation, and two-sentence description values. Since HtmlUnit is a Java library and not Kotlin, Groovy, or Scala-specific under the allowed `language` schema, I’m leaving `language` absent.
+exec
+/usr/bin/bash -lc 'git status --short metadata/net.sourceforge.htmlunit/htmlunit/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+?? metadata/net.sourceforge.htmlunit/htmlunit/index.json
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/net.sourceforge.htmlunit/htmlunit/index.json' in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "jq -e 'map(select(.\"metadata-version\" == \"2.70.0\")) | length == 1' metadata/net.sourceforge.htmlunit/htmlunit/index.json" in /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2
+ succeeded in 0ms:
+true
+
+web search: 
+web search: https://github.com/HtmlUnit/htmlunit/tree/2.70.0/src/test
+web search: 
+web search: repo.maven.apache.org net/sourceforge/htmlunit/htmlunit/2.70.0 htmlunit-2.70.0-sources.jar htmlunit-2.70.0-javadoc.jar
+web search: 
+web search: https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/
+web search: 
+web search: 'GUI-Less' in https://github.com/HtmlUnit/htmlunit
+codex
+Verified the rendered `2.70.0` source and javadoc artifacts on Maven Central, plus the `2.70.0/src/test` tree and canonical GitHub repository. The local entry already contained the correct values, so I made no content changes. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/))
+
+`language` remains absent because HtmlUnit is not Kotlin, Groovy, or Scala-specific.
+
+Validation performed:
+- `jq` JSON/select check passed.
+- Rendered source, documentation, repository, and test URLs returned HTTP 200.
+- Maven `test-sources` artifact was not present, so the GitHub test suite URL remains the right choice.
+tokens used
+62,102
+Verified the rendered `2.70.0` source and javadoc artifacts on Maven Central, plus the `2.70.0/src/test` tree and canonical GitHub repository. The local entry already contained the correct values, so I made no content changes. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.70.0/))
+
+`language` remains absent because HtmlUnit is not Kotlin, Groovy, or Scala-specific.
+
+Validation performed:
+- `jq` JSON/select check passed.
+- Rendered source, documentation, repository, and test URLs returned HTTP 200.
+- Maven `test-sources` artifact was not present, so the GitHub test suite URL remains the right choice.
+Ran agent for net.sourceforge.htmlunit:htmlunit:2.70.0 (exit 0). Log: /home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/build/agent-url-discovery-logs/net.sourceforge.htmlunit-htmlunit-2.70.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge9/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3884-13593bc2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 10s
+9 actionable tasks: 1 executed, 8 up-to-date
