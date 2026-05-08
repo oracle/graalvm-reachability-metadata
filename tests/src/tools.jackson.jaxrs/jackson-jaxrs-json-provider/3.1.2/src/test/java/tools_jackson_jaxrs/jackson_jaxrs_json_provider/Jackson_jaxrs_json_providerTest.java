@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlElement;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.jaxrs.base.ProviderBase;
 import tools.jackson.jaxrs.cfg.JaxRSFeature;
 import tools.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import tools.jackson.jaxrs.json.JacksonJsonProvider;
@@ -112,6 +113,28 @@ public class Jackson_jaxrs_json_providerTest {
         assertThat(json).contains(System.lineSeparator()).contains("  \"indented\" : true");
         assertThat(provider.version()).isEqualTo(PackageVersion.VERSION);
         assertThat(new PackageVersion().version()).isEqualTo(provider.version());
+    }
+
+    @Test
+    void noSniffFeatureAddsSecurityHeaderWhenWritingResponses() throws Exception {
+        JacksonJsonProvider defaultProvider = new JacksonJsonProvider();
+        MultivaluedHashMap<String, Object> defaultHeaders = new MultivaluedHashMap<>();
+        ByteArrayOutputStream defaultOutput = new ByteArrayOutputStream();
+
+        defaultProvider.writeTo(Map.of("safe", true), Map.class, Map.class, NO_ANNOTATIONS,
+                MediaType.APPLICATION_JSON_TYPE, defaultHeaders, defaultOutput);
+
+        assertThat(defaultHeaders).doesNotContainKey(ProviderBase.HEADER_CONTENT_TYPE_OPTIONS);
+
+        JacksonJsonProvider securityHeaderProvider = new JacksonJsonProvider();
+        securityHeaderProvider.enable(JaxRSFeature.ADD_NO_SNIFF_HEADER);
+        MultivaluedHashMap<String, Object> headers = new MultivaluedHashMap<>();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        securityHeaderProvider.writeTo(Map.of("safe", true), Map.class, Map.class, NO_ANNOTATIONS,
+                MediaType.APPLICATION_JSON_TYPE, headers, output);
+
+        assertThat(headers.get(ProviderBase.HEADER_CONTENT_TYPE_OPTIONS)).containsExactly("nosniff");
     }
 
     @Test
