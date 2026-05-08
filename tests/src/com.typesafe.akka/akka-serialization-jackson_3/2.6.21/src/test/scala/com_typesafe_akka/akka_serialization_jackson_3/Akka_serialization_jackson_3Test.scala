@@ -202,6 +202,10 @@ object Akka_serialization_jackson_3Test {
           "$MigratingMessageClassName" = "$RenameOldNameMigrationClassName"
         }
       }
+      akka.actor.deployment."/IO-DNS/inet-address" {
+        router = from-code
+        nr-of-instances = 1
+      }
       """)
     .withFallback(ConfigFactory.load())
 }
