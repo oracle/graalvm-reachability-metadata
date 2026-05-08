@@ -312,7 +312,8 @@ public class PlatformDependent0Test {
             constantPool = new CpInfo[constantPoolCount];
 
             int offset = 10;
-            for (int index = 1; index < constantPoolCount; index++) {
+            int index = 1;
+            while (index < constantPoolCount) {
                 int tag = originalClassBytes[offset] & 0xFF;
                 CpInfo cpInfo = new CpInfo(tag);
                 constantPool[index] = cpInfo;
@@ -357,6 +358,7 @@ public class PlatformDependent0Test {
                     default:
                         throw new IOException("Unsupported constant-pool tag: " + tag);
                 }
+                index++;
             }
             constantPoolEnd = offset;
         }
