@@ -24,14 +24,24 @@ import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.metadata.DefaultMetadata;
 import org.eclipse.aether.metadata.Metadata;
+import javax.inject.Named;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.spi.artifact.transformer.ArtifactTransformer;
+import org.eclipse.sisu.space.AnnotationVisitor;
+import org.eclipse.sisu.space.ClassSpace;
+import org.eclipse.sisu.space.ClassVisitor;
+import org.eclipse.sisu.space.IndexedClassFinder;
+import org.eclipse.sisu.space.SpaceScanner;
+import org.eclipse.sisu.space.SpaceVisitor;
+import org.eclipse.sisu.space.URLClassSpace;
 import org.junit.jupiter.api.Test;
 
 public class BootstrapArtifactTransformerTest {
     private static final String SISU_NAMED_INDEX = "META-INF/sisu/javax.inject.Named";
     private static final String BOOTSTRAP_ARTIFACT_TRANSFORMER =
             "io.quarkus.bootstrap.resolver.maven.BootstrapArtifactTransformer";
+    private static final String ARTIFACT_TRANSFORMER_INTERNAL_NAME =
+            "org/eclipse/aether/spi/artifact/transformer/ArtifactTransformer";
 
     @Test
     void transformerIsAvailableAsMavenResolverArtifactTransformer() {
@@ -101,5 +111,67 @@ public class BootstrapArtifactTransformerTest {
         }
 
         assertThat(indexedComponents).contains(BOOTSTRAP_ARTIFACT_TRANSFORMER);
+    }
+
+    @Test
+    void sisuScannerRecognizesTransformerAsNamedArtifactTransformer() {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URLClassSpace classSpace = new URLClassSpace(classLoader);
+        List<String> discoveredTransformers = new ArrayList<>();
+        String namedDescriptor = SpaceScanner.jvmDescriptor(Named.class);
+        ClassVisitor classVisitor = new ClassVisitor() {
+            private String className;
+            private boolean artifactTransformer;
+            private boolean namedComponent;
+
+            @Override
+            public void enterClass(int modifiers, String name, String extendsName, String[] interfaceNames) {
+                className = name;
+                artifactTransformer = hasArtifactTransformerInterface(interfaceNames);
+                namedComponent = false;
+            }
+
+            @Override
+            public AnnotationVisitor visitAnnotation(String descriptor) {
+                if (namedDescriptor.equals(descriptor)) {
+                    namedComponent = true;
+                }
+                return null;
+            }
+
+            @Override
+            public void leaveClass() {
+                if (artifactTransformer && namedComponent) {
+                    discoveredTransformers.add(className.replace('/', '.'));
+                }
+            }
+        };
+        SpaceVisitor spaceVisitor = new SpaceVisitor() {
+            @Override
+            public void enterSpace(ClassSpace space) {
+            }
+
+            @Override
+            public ClassVisitor visitClass(URL location) {
+                return classVisitor;
+            }
+
+            @Override
+            public void leaveSpace() {
+            }
+        };
+
+        new SpaceScanner(classSpace, new IndexedClassFinder(SISU_NAMED_INDEX, true)).accept(spaceVisitor);
+
+        assertThat(discoveredTransformers).contains(BOOTSTRAP_ARTIFACT_TRANSFORMER);
+    }
+
+    private static boolean hasArtifactTransformerInterface(String[] interfaceNames) {
+        for (String interfaceName : interfaceNames) {
+            if (ARTIFACT_TRANSFORMER_INTERNAL_NAME.equals(interfaceName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
