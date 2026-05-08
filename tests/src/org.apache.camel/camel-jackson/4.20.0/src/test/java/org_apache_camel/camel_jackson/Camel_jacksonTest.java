@@ -8,15 +8,24 @@ package org_apache_camel.camel_jackson;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.jackson.JacksonConstants;
@@ -137,6 +146,42 @@ public class Camel_jacksonTest {
                 assertThat(json).contains("\n");
                 assertThat(json).contains("\"priority\" : 4");
                 assertThat(json).doesNotContain("code");
+            } finally {
+                dataFormat.stop();
+            }
+        }
+    }
+
+    @Test
+    void jacksonDataFormatRegistersModulesFromRegistryReferences() throws Exception {
+        SimpleModule module = new SimpleModule("status-code-module");
+        module.addSerializer(StatusCode.class, new StatusCodeSerializer());
+        module.addDeserializer(StatusCode.class, new StatusCodeDeserializer());
+        SimpleRegistry registry = new SimpleRegistry();
+        registry.bind("statusModule", module);
+
+        try (CamelContext camelContext = new DefaultCamelContext(registry)) {
+            JacksonDataFormat dataFormat = new JacksonDataFormat(StatusChange.class);
+            dataFormat.setModuleRefs("statusModule");
+            dataFormat.setCamelContext(camelContext);
+            dataFormat.start();
+            try {
+                Exchange exchange = new DefaultExchange(camelContext);
+                StatusChange statusChange = new StatusChange();
+                statusChange.setTicketId("T-4");
+                statusChange.setStatus(new StatusCode("open"));
+
+                String json = marshalToString(dataFormat, exchange, statusChange);
+
+                assertThat(json).contains("\"ticketId\":\"T-4\"");
+                assertThat(json).contains("\"status\":\"OPEN\"");
+
+                Object unmarshalled = dataFormat.unmarshal(exchange, "{\"ticketId\":\"T-5\",\"status\":\"CLOSED\"}");
+
+                assertThat(unmarshalled).isInstanceOf(StatusChange.class);
+                StatusChange change = (StatusChange) unmarshalled;
+                assertThat(change.getTicketId()).isEqualTo("T-5");
+                assertThat(change.getStatus().getCode()).isEqualTo("closed");
             } finally {
                 dataFormat.stop();
             }
@@ -392,6 +437,57 @@ public class Camel_jacksonTest {
 
         public void setPriority(int priority) {
             this.priority = priority;
+        }
+    }
+
+    public static class StatusChange {
+        private String ticketId;
+        private StatusCode status;
+
+        public StatusChange() {
+        }
+
+        public String getTicketId() {
+            return ticketId;
+        }
+
+        public void setTicketId(String ticketId) {
+            this.ticketId = ticketId;
+        }
+
+        public StatusCode getStatus() {
+            return status;
+        }
+
+        public void setStatus(StatusCode status) {
+            this.status = status;
+        }
+    }
+
+    public static class StatusCode {
+        private final String code;
+
+        StatusCode(String code) {
+            this.code = code;
+        }
+
+        public String getCode() {
+            return code;
+        }
+    }
+
+    public static class StatusCodeSerializer extends JsonSerializer<StatusCode> {
+        @Override
+        public void serialize(
+                StatusCode value, JsonGenerator jsonGenerator, SerializerProvider serializers) throws IOException {
+            jsonGenerator.writeString(value.getCode().toUpperCase(Locale.ROOT));
+        }
+    }
+
+    public static class StatusCodeDeserializer extends JsonDeserializer<StatusCode> {
+        @Override
+        public StatusCode deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
+            return new StatusCode(jsonParser.getValueAsString().toLowerCase(Locale.ROOT));
         }
     }
 }
