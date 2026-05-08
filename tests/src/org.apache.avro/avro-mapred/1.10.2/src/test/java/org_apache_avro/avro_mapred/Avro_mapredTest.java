@@ -9,6 +9,7 @@ package org_apache_avro.avro_mapred;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,10 @@ import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileStream;
+import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.hadoop.file.SortedKeyValueFile;
@@ -31,6 +34,7 @@ import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.mapred.AvroWrapper;
 import org.apache.avro.mapred.Pair;
+import org.apache.avro.mapreduce.AvroKeyValueRecordReader;
 import org.apache.avro.mapreduce.AvroKeyValueRecordWriter;
 import org.apache.avro.reflect.ReflectData;
 import org.apache.avro.util.Utf8;
@@ -45,9 +49,23 @@ import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.RawComparator;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapreduce.Counter;
+import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.JobID;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.OutputFormat;
+import org.apache.hadoop.mapreduce.Partitioner;
+import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.TaskAttemptID;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.security.Credentials;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -326,6 +344,36 @@ public class Avro_mapredTest {
     }
 
     @Test
+    void mapreduceKeyValueRecordReaderReadsAvroKeyValueContainerFiles() throws IOException, InterruptedException {
+        Schema keyValueSchema = AvroKeyValue.getSchema(STRING_SCHEMA, INT_SCHEMA);
+        java.nio.file.Path avroFile = tempDir.resolve("mapreduce-key-value-input.avro");
+        try (DataFileWriter<GenericRecord> writer = new DataFileWriter<>(new GenericDatumWriter<>(keyValueSchema))) {
+            writer.create(keyValueSchema, avroFile.toFile());
+            writer.append(keyValueRecord(keyValueSchema, "first", 10));
+            writer.append(keyValueRecord(keyValueSchema, "second", 20));
+        }
+
+        Configuration conf = hadoopConfiguration();
+        Path hadoopPath = new Path(avroFile.toUri());
+        long fileLength = hadoopPath.getFileSystem(conf).getFileStatus(hadoopPath).getLen();
+        InputSplit split = new FileSplit(hadoopPath, 0, fileLength, new String[0]);
+        TaskAttemptContext context = new SimpleTaskAttemptContext(conf);
+        RecordReader<AvroKey<CharSequence>, AvroValue<Integer>> reader = new AvroKeyValueRecordReader<>(
+                STRING_SCHEMA,
+                INT_SCHEMA);
+        try {
+            reader.initialize(split, context);
+            assertNextMapreduceKeyValueEntry(reader, "first", 10);
+            assertNextMapreduceKeyValueEntry(reader, "second", 20);
+            assertThat(reader.nextKeyValue()).isFalse();
+            assertThat(reader.getCurrentKey().datum()).isNull();
+            assertThat(reader.getCurrentValue().datum()).isNull();
+        } finally {
+            reader.close();
+        }
+    }
+
+    @Test
     void charSequenceComparatorOrdersDifferentCharSequenceImplementations() {
         AvroCharSequenceComparator<CharSequence> comparator = new AvroCharSequenceComparator<>();
 
@@ -357,5 +405,250 @@ public class Avro_mapredTest {
         AvroKeyValue<CharSequence, Integer> keyValue = new AvroKeyValue<>(reader.next());
         assertThat(keyValue.getKey()).hasToString(expectedKey);
         assertThat(keyValue.getValue()).isEqualTo(expectedValue);
+    }
+
+    private static GenericRecord keyValueRecord(Schema keyValueSchema, String key, int value) {
+        GenericRecord record = new GenericData.Record(keyValueSchema);
+        record.put(AvroKeyValue.KEY_FIELD, key);
+        record.put(AvroKeyValue.VALUE_FIELD, value);
+        return record;
+    }
+
+    private static void assertNextMapreduceKeyValueEntry(
+            RecordReader<AvroKey<CharSequence>, AvroValue<Integer>> reader,
+            String expectedKey,
+            int expectedValue) throws IOException, InterruptedException {
+        assertThat(reader.nextKeyValue()).isTrue();
+        assertThat(reader.getCurrentKey().datum()).hasToString(expectedKey);
+        assertThat(reader.getCurrentValue().datum()).isEqualTo(expectedValue);
+    }
+
+    private static final class SimpleTaskAttemptContext implements TaskAttemptContext {
+        private final Configuration configuration;
+        private String status = "";
+
+        private SimpleTaskAttemptContext(Configuration configuration) {
+            this.configuration = configuration;
+        }
+
+        @Override
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
+        @Override
+        public Credentials getCredentials() {
+            return new Credentials();
+        }
+
+        @Override
+        public JobID getJobID() {
+            return null;
+        }
+
+        @Override
+        public int getNumReduceTasks() {
+            return 0;
+        }
+
+        @Override
+        public Path getWorkingDirectory() {
+            return new Path(".");
+        }
+
+        @Override
+        public Class<?> getOutputKeyClass() {
+            return Object.class;
+        }
+
+        @Override
+        public Class<?> getOutputValueClass() {
+            return Object.class;
+        }
+
+        @Override
+        public Class<?> getMapOutputKeyClass() {
+            return Object.class;
+        }
+
+        @Override
+        public Class<?> getMapOutputValueClass() {
+            return Object.class;
+        }
+
+        @Override
+        public String getJobName() {
+            return "avro-mapred-test";
+        }
+
+        @Override
+        public Class<? extends InputFormat<?, ?>> getInputFormatClass() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Mapper<?, ?, ?, ?>> getMapperClass() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Reducer<?, ?, ?, ?>> getCombinerClass() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Reducer<?, ?, ?, ?>> getReducerClass() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends OutputFormat<?, ?>> getOutputFormatClass() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Partitioner<?, ?>> getPartitionerClass() {
+            return null;
+        }
+
+        @Override
+        public RawComparator<?> getSortComparator() {
+            return null;
+        }
+
+        @Override
+        public String getJar() {
+            return null;
+        }
+
+        @Override
+        public RawComparator<?> getCombinerKeyGroupingComparator() {
+            return null;
+        }
+
+        @Override
+        public RawComparator<?> getGroupingComparator() {
+            return null;
+        }
+
+        @Override
+        public boolean getJobSetupCleanupNeeded() {
+            return false;
+        }
+
+        @Override
+        public boolean getTaskCleanupNeeded() {
+            return false;
+        }
+
+        @Override
+        public boolean getProfileEnabled() {
+            return false;
+        }
+
+        @Override
+        public String getProfileParams() {
+            return "";
+        }
+
+        @Override
+        public Configuration.IntegerRanges getProfileTaskRange(boolean isMap) {
+            return new Configuration.IntegerRanges();
+        }
+
+        @Override
+        public String getUser() {
+            return "test";
+        }
+
+        @Override
+        public boolean getSymlink() {
+            return false;
+        }
+
+        @Override
+        public Path[] getArchiveClassPaths() {
+            return new Path[0];
+        }
+
+        @Override
+        public URI[] getCacheArchives() {
+            return new URI[0];
+        }
+
+        @Override
+        public URI[] getCacheFiles() {
+            return new URI[0];
+        }
+
+        @Override
+        public Path[] getLocalCacheArchives() {
+            return new Path[0];
+        }
+
+        @Override
+        public Path[] getLocalCacheFiles() {
+            return new Path[0];
+        }
+
+        @Override
+        public Path[] getFileClassPaths() {
+            return new Path[0];
+        }
+
+        @Override
+        public String[] getArchiveTimestamps() {
+            return new String[0];
+        }
+
+        @Override
+        public String[] getFileTimestamps() {
+            return new String[0];
+        }
+
+        @Override
+        public int getMaxMapAttempts() {
+            return 1;
+        }
+
+        @Override
+        public int getMaxReduceAttempts() {
+            return 1;
+        }
+
+        @Override
+        public TaskAttemptID getTaskAttemptID() {
+            return null;
+        }
+
+        @Override
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        @Override
+        public String getStatus() {
+            return status;
+        }
+
+        @Override
+        public float getProgress() {
+            return 0.0F;
+        }
+
+        @Override
+        public Counter getCounter(Enum<?> counterName) {
+            return null;
+        }
+
+        @Override
+        public Counter getCounter(String groupName, String counterName) {
+            return null;
+        }
+
+        @Override
+        public void progress() {
+            // No progress reporter is needed for this local reader test.
+        }
     }
 }
