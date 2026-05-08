@@ -6,11 +6,265 @@
  */
 package org_apache_camel.camel_core_engine;
 
-import org.junit.jupiter.api.Test;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-class Camel_core_engineTest {
+import org.apache.camel.Component;
+import org.apache.camel.Consumer;
+import org.apache.camel.Endpoint;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.apache.camel.Producer;
+import org.apache.camel.ProducerTemplate;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.impl.DefaultDumpRoutesStrategy;
+import org.apache.camel.support.DefaultComponent;
+import org.apache.camel.support.DefaultConsumer;
+import org.apache.camel.support.DefaultEndpoint;
+import org.apache.camel.support.DefaultProducer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Camel_core_engineTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void routesMessagesThroughDefaultCamelContextWithCustomComponent() throws Exception {
+        DefaultCamelContext context = new DefaultCamelContext();
+        try {
+            context.addComponent("memory", new InMemoryComponent());
+            context.addRoutes(new RouteBuilder() {
+                @Override
+                public void configure() {
+                    from("memory:input")
+                            .routeId("uppercase-route")
+                            .process(exchange -> {
+                                String body = exchange.getMessage().getBody(String.class);
+                                String tenant = exchange.getMessage().getHeader("tenant", String.class);
+                                exchange.setProperty("originalBody", body);
+                                exchange.getMessage().setHeader("processed", true);
+                                exchange.getMessage().setBody(tenant + ":" + body.toUpperCase(Locale.ROOT));
+                            })
+                            .to("memory:result");
+                }
+            });
+
+            context.start();
+
+            ProducerTemplate template = context.createProducerTemplate();
+            try {
+                template.start();
+                Object reply = template.requestBodyAndHeader("memory:input", "camel", "tenant", "eu");
+
+                assertThat(reply).isEqualTo("eu:CAMEL");
+                assertThat(context.getRouteDefinition("uppercase-route")).isNotNull();
+                assertThat(context.getRoute("uppercase-route")).isNotNull();
+
+                InMemoryEndpoint result = (InMemoryEndpoint) context.getEndpoint("memory:result");
+                assertThat(result.receivedMessages())
+                        .singleElement()
+                        .satisfies(message -> {
+                            assertThat(message.body()).isEqualTo("eu:CAMEL");
+                            assertThat(message.headers()).containsEntry("processed", true);
+                        });
+            } finally {
+                template.stop();
+            }
+        } finally {
+            context.close();
+        }
+    }
+
+    @Test
+    void routeTemplatesMaterializeRunnableRoutesBeforeStartup() throws Exception {
+        DefaultCamelContext context = new DefaultCamelContext();
+        try {
+            context.addComponent("memory", new InMemoryComponent());
+            context.addRoutes(new RouteBuilder() {
+                @Override
+                public void configure() {
+                    routeTemplate("templatedProcessor")
+                            .templateParameter("inputName")
+                            .from("memory:{{inputName}}")
+                            .routeId("{{inputName}}-route")
+                            .process(exchange -> {
+                                String body = exchange.getMessage().getBody(String.class);
+                                exchange.getMessage().setBody("template:" + body);
+                            });
+                }
+            });
+
+            String routeId = context.addRouteFromTemplate(
+                    "generated-orders-route", "templatedProcessor", Map.of("inputName", "orders"));
+            context.start();
+
+            ProducerTemplate template = context.createProducerTemplate();
+            try {
+                template.start();
+                assertThat(routeId).isNotBlank();
+                assertThat(context.getRouteTemplateDefinition("templatedProcessor")).isNotNull();
+                assertThat(context.getRouteDefinition(routeId)).isNotNull();
+                assertThat(template.requestBody("memory:orders", "payload")).isEqualTo("template:payload");
+            } finally {
+                template.stop();
+            }
+        } finally {
+            context.close();
+        }
+    }
+
+    @Test
+    void dumpRoutesStrategyWritesYamlModelForConfiguredRoutes(@TempDir Path tempDir) throws Exception {
+        DefaultCamelContext context = new DefaultCamelContext();
+        try {
+            context.addComponent("memory", new InMemoryComponent());
+            context.addRoutes(new RouteBuilder() {
+                @Override
+                public void configure() {
+                    routeTemplate("dumpTemplate")
+                            .templateParameter("name")
+                            .from("memory:{{name}}")
+                            .routeId("dump-template-{{name}}");
+
+                    from("memory:dumpInput")
+                            .routeId("dump-route")
+                            .process(exchange -> exchange.getMessage().setHeader("dumped", true));
+                }
+            });
+
+            Path output = tempDir.resolve("camel-routes.yaml");
+            DefaultDumpRoutesStrategy strategy = new DefaultDumpRoutesStrategy();
+            strategy.setCamelContext(context);
+            strategy.setInclude("routes,route-templates");
+            strategy.setLog(false);
+            strategy.setResolvePlaceholders(false);
+            strategy.setOutput(output.toString());
+            strategy.dumpRoutes("yaml");
+
+            assertThat(Files.exists(output)).isTrue();
+            String yaml = Files.readString(output, StandardCharsets.UTF_8);
+            assertThat(yaml)
+                    .contains("routeTemplates")
+                    .contains("dump-route")
+                    .contains("memory:dumpInput")
+                    .contains("process");
+        } finally {
+            context.close();
+        }
+    }
+
+    @Test
+    void propertiesComponentAndCoreTypeConvertersAreAvailable() throws Exception {
+        DefaultCamelContext context = new DefaultCamelContext();
+        try {
+            Properties properties = new Properties();
+            properties.setProperty("engine.name", "core-engine");
+            context.getPropertiesComponent().setInitialProperties(properties);
+            context.start();
+
+            assertThat(context.getPropertiesComponent().parseUri("camel-{{engine.name}}"))
+                    .isEqualTo("camel-core-engine");
+            assertThat(context.getTypeConverter().mandatoryConvertTo(Integer.class, "4190")).isEqualTo(4190);
+            assertThat(context.getTypeConverter().mandatoryConvertTo(Boolean.class, "true")).isTrue();
+            assertThat(context.getTypeConverter().mandatoryConvertTo(String.class, new StringBuilder("converted")))
+                    .isEqualTo("converted");
+        } finally {
+            context.close();
+        }
+    }
+
+    private static final class InMemoryComponent extends DefaultComponent {
+        private final Map<String, InMemoryEndpoint> endpoints = new ConcurrentHashMap<>();
+
+        @Override
+        protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) {
+            return endpoints.computeIfAbsent(remaining, key -> new InMemoryEndpoint(uri, this));
+        }
+    }
+
+    private static final class InMemoryEndpoint extends DefaultEndpoint {
+        private final List<RecordedMessage> receivedMessages = new CopyOnWriteArrayList<>();
+        private volatile InMemoryConsumer consumer;
+
+        private InMemoryEndpoint(String endpointUri, Component component) {
+            super(endpointUri, component);
+        }
+
+        @Override
+        public Producer createProducer() {
+            return new InMemoryProducer(this);
+        }
+
+        @Override
+        public Consumer createConsumer(Processor processor) {
+            return new InMemoryConsumer(this, processor);
+        }
+
+        @Override
+        public boolean isSingleton() {
+            return true;
+        }
+
+        private List<RecordedMessage> receivedMessages() {
+            return new ArrayList<>(receivedMessages);
+        }
+
+        private void record(Exchange exchange) {
+            receivedMessages.add(new RecordedMessage(
+                    exchange.getMessage().getBody(), new LinkedHashMap<>(exchange.getMessage().getHeaders())));
+        }
+    }
+
+    private static final class InMemoryProducer extends DefaultProducer {
+        private final InMemoryEndpoint endpoint;
+
+        private InMemoryProducer(InMemoryEndpoint endpoint) {
+            super(endpoint);
+            this.endpoint = endpoint;
+        }
+
+        @Override
+        public void process(Exchange exchange) throws Exception {
+            InMemoryConsumer activeConsumer = endpoint.consumer;
+            if (activeConsumer == null) {
+                endpoint.record(exchange);
+                return;
+            }
+            activeConsumer.getProcessor().process(exchange);
+        }
+    }
+
+    private static final class InMemoryConsumer extends DefaultConsumer {
+        private final InMemoryEndpoint endpoint;
+
+        private InMemoryConsumer(InMemoryEndpoint endpoint, Processor processor) {
+            super(endpoint, processor);
+            this.endpoint = endpoint;
+        }
+
+        @Override
+        protected void doStart() throws Exception {
+            super.doStart();
+            endpoint.consumer = this;
+        }
+
+        @Override
+        protected void doStop() throws Exception {
+            endpoint.consumer = null;
+            super.doStop();
+        }
+    }
+
+    private record RecordedMessage(Object body, Map<String, Object> headers) {
     }
 }
