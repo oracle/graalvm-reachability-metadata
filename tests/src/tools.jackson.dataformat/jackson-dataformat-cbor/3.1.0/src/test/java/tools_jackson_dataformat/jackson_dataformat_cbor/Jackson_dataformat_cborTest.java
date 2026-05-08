@@ -262,6 +262,32 @@ public class Jackson_dataformat_cborTest {
     }
 
     @Test
+    void unsignedIntegerWritersPreserveCborUnsignedRanges() throws Exception {
+        CBORFactory factory = new CBORFactory();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try (CBORGenerator generator = (CBORGenerator) factory.createGenerator(output)) {
+            generator.writeStartArray();
+            generator.writeNumberUnsigned(-1);
+            generator.writeNumberUnsigned(-1L);
+            generator.writeEndArray();
+        }
+
+        try (JsonParser parser = factory.createParser(output.toByteArray())) {
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_ARRAY);
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_NUMBER_INT);
+            assertThat(parser.getLongValue()).isEqualTo(4_294_967_295L);
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_NUMBER_INT);
+            assertThat(parser.getBigIntegerValue()).isEqualTo(new BigInteger("18446744073709551615"));
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_ARRAY);
+            assertThat(parser.nextToken()).isNull();
+        }
+    }
+
+    @Test
     void cborTagsArePreservedForTaggedScalarValues() throws Exception {
         CBORFactory factory = new CBORFactory();
         String uuid = "f81d4fae-7dec-11d0-a765-00a0c91e6bf6";
