@@ -122,6 +122,18 @@ public class Selenium_safari_driverTest {
     }
 
     @Test
+    void safariOptionsEqualityAndHashCodeIncludeTechnologyPreviewSetting() {
+        SafariOptions standard = new SafariOptions();
+        SafariOptions equivalentStandard = new SafariOptions().setUseTechnologyPreview(false);
+        SafariOptions technologyPreview = new SafariOptions().setUseTechnologyPreview(true);
+
+        assertThat(equivalentStandard).isEqualTo(standard);
+        assertThat(equivalentStandard).hasSameHashCodeAs(standard);
+        assertThat(technologyPreview).isNotEqualTo(standard);
+        assertThat(technologyPreview.hashCode()).isNotEqualTo(standard.hashCode());
+    }
+
+    @Test
     void safariDriverInfoDescribesStandardSafariSupport() {
         SafariDriverInfo info = new SafariDriverInfo();
 
