@@ -25,6 +25,7 @@ import com.datastax.oss.driver.api.core.type.TupleType;
 import com.datastax.oss.driver.api.core.type.VectorType;
 import com.datastax.oss.driver.api.core.type.codec.TypeCodec;
 import com.datastax.oss.driver.api.core.type.codec.TypeCodecs;
+import com.datastax.oss.driver.api.core.uuid.Uuids;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -32,6 +33,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SplittableRandom;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -188,6 +190,36 @@ public class Java_driver_coreTest {
 
         assertThat(vectorType.getDimensions()).isEqualTo(3);
         assertThat(vectorType.getElementType()).isEqualTo(DataTypes.FLOAT);
+    }
+
+    @Test
+    void uuidUtilitiesCreateDeterministicNameBasedRandomAndTimeBasedValues() {
+        UUID dnsName = Uuids.nameBased(Uuids.NAMESPACE_DNS, "inventory.example");
+        UUID dnsNameFromBytes = Uuids.nameBased(
+                Uuids.NAMESPACE_DNS, "inventory.example".getBytes(StandardCharsets.UTF_8));
+        UUID urlName = Uuids.nameBased(Uuids.NAMESPACE_URL, "https://inventory.example/products", 5);
+        SplittableRandom firstRandom = new SplittableRandom(1234L);
+        SplittableRandom secondRandom = new SplittableRandom(1234L);
+        UUID random = Uuids.random(firstRandom);
+        long timestamp = 1_704_067_200_123L;
+        UUID startOfTimestamp = Uuids.startOf(timestamp);
+        UUID endOfTimestamp = Uuids.endOf(timestamp);
+        UUID timeBased = Uuids.timeBased();
+
+        assertThat(dnsName).isEqualTo(dnsNameFromBytes);
+        assertThat(dnsName.version()).isEqualTo(3);
+        assertThat(urlName.version()).isEqualTo(5);
+        assertThat(urlName.variant()).isEqualTo(2);
+        assertThat(random).isEqualTo(Uuids.random(secondRandom));
+        assertThat(random.version()).isEqualTo(4);
+        assertThat(random.variant()).isEqualTo(2);
+        assertThat(Uuids.unixTimestamp(startOfTimestamp)).isEqualTo(timestamp);
+        assertThat(Uuids.unixTimestamp(endOfTimestamp)).isEqualTo(timestamp);
+        assertThat(startOfTimestamp.version()).isEqualTo(1);
+        assertThat(endOfTimestamp.version()).isEqualTo(1);
+        assertThat(startOfTimestamp).isNotEqualTo(endOfTimestamp);
+        assertThat(Uuids.unixTimestamp(timeBased)).isGreaterThan(0L);
+        assertThat(timeBased.version()).isEqualTo(1);
     }
 
     @Test
