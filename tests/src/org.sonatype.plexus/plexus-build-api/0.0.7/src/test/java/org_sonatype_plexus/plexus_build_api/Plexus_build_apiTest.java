@@ -19,6 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
@@ -140,6 +144,41 @@ public class Plexus_build_apiTest {
         assertThatThrownBy(() -> context.addMessage(file, 1, 1, "unknown", 99, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("severity=99");
+    }
+
+    @Test
+    void threadBuildContextKeepsContextsIsolatedPerThreadAndFallsBackToDefault() throws Exception {
+        ThreadBuildContext.setThreadBuildContext(null);
+        BuildContext defaultContext = ThreadBuildContext.getContext();
+
+        assertThat(defaultContext).isInstanceOf(DefaultBuildContext.class);
+        assertThat(defaultContext.hasDelta("unconfigured-thread.txt")).isTrue();
+
+        RecordingBuildContext mainThreadContext = new RecordingBuildContext();
+        ThreadBuildContext.setThreadBuildContext(mainThreadContext);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+            Future<?> result = executor.submit(() -> {
+                try {
+                    BuildContext workerDefaultContext = ThreadBuildContext.getContext();
+                    assertThat(workerDefaultContext).isInstanceOf(DefaultBuildContext.class);
+                    assertThat(workerDefaultContext).isNotSameAs(mainThreadContext);
+
+                    RecordingBuildContext workerThreadContext = new RecordingBuildContext();
+                    ThreadBuildContext.setThreadBuildContext(workerThreadContext);
+
+                    assertThat(ThreadBuildContext.getContext()).isSameAs(workerThreadContext);
+                } finally {
+                    ThreadBuildContext.setThreadBuildContext(null);
+                }
+            });
+            result.get(10, TimeUnit.SECONDS);
+        } finally {
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
+        }
+
+        assertThat(ThreadBuildContext.getContext()).isSameAs(mainThreadContext);
     }
 
     @Test
