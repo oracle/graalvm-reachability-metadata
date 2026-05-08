@@ -99,7 +99,7 @@ public class ReflectionNavigatorTest {
 
         @Override
         public Type[] getActualTypeArguments() {
-            return new Type[] { argument };
+            return new Type[] {argument};
         }
 
         @Override
