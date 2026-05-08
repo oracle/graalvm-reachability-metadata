@@ -134,7 +134,7 @@ public class Smallrye_config_commonTest {
         assertThat(StringUtil.isAsciiLetterOrDigit('A')).isTrue();
         assertThat(StringUtil.isAsciiLetterOrDigit('9')).isTrue();
         assertThat(StringUtil.isAsciiLetterOrDigit('_')).isFalse();
-        assertThat(StringUtil.isAsciiLetterOrDigit('é')).isFalse();
+        assertThat(StringUtil.isAsciiLetterOrDigit('\u00e9')).isFalse();
 
         assertThat(StringUtil.replaceNonAlphanumericByUnderscores("server.host[0]"))
                 .isEqualTo("server_host_0_");
