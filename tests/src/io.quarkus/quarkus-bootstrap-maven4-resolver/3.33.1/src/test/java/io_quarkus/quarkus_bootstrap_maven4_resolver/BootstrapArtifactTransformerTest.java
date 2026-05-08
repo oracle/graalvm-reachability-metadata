@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import javax.inject.Named;
 import org.eclipse.aether.RequestTrace;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -24,9 +25,9 @@ import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.metadata.DefaultMetadata;
 import org.eclipse.aether.metadata.Metadata;
-import javax.inject.Named;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.spi.artifact.transformer.ArtifactTransformer;
+import org.eclipse.sisu.Priority;
 import org.eclipse.sisu.space.AnnotationVisitor;
 import org.eclipse.sisu.space.ClassSpace;
 import org.eclipse.sisu.space.ClassVisitor;
@@ -111,6 +112,68 @@ public class BootstrapArtifactTransformerTest {
         }
 
         assertThat(indexedComponents).contains(BOOTSTRAP_ARTIFACT_TRANSFORMER);
+    }
+
+    @Test
+    void sisuScannerReadsTransformerPriority() {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URLClassSpace classSpace = new URLClassSpace(classLoader);
+        List<Integer> priorities = new ArrayList<>();
+        String priorityDescriptor = SpaceScanner.jvmDescriptor(Priority.class);
+        ClassVisitor classVisitor = new ClassVisitor() {
+            private String className;
+
+            @Override
+            public void enterClass(int modifiers, String name, String extendsName, String[] interfaceNames) {
+                className = name;
+            }
+
+            @Override
+            public AnnotationVisitor visitAnnotation(String descriptor) {
+                if (priorityDescriptor.equals(descriptor)
+                        && BOOTSTRAP_ARTIFACT_TRANSFORMER.equals(className.replace('/', '.'))) {
+                    return new AnnotationVisitor() {
+                        @Override
+                        public void enterAnnotation() {
+                        }
+
+                        @Override
+                        public void visitElement(String name, Object value) {
+                            if ("value".equals(name)) {
+                                priorities.add((Integer) value);
+                            }
+                        }
+
+                        @Override
+                        public void leaveAnnotation() {
+                        }
+                    };
+                }
+                return null;
+            }
+
+            @Override
+            public void leaveClass() {
+            }
+        };
+        SpaceVisitor spaceVisitor = new SpaceVisitor() {
+            @Override
+            public void enterSpace(ClassSpace space) {
+            }
+
+            @Override
+            public ClassVisitor visitClass(URL location) {
+                return classVisitor;
+            }
+
+            @Override
+            public void leaveSpace() {
+            }
+        };
+
+        new SpaceScanner(classSpace, new IndexedClassFinder(SISU_NAMED_INDEX, true)).accept(spaceVisitor);
+
+        assertThat(priorities).containsExactly(100);
     }
 
     @Test
