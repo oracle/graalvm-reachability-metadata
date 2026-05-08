@@ -120,6 +120,30 @@ public class Camel_jacksonTest {
     }
 
     @Test
+    void jacksonDataFormatAppliesSerializationInclusionAndPrettyPrintOptions() throws Exception {
+        try (CamelContext camelContext = new DefaultCamelContext()) {
+            JacksonDataFormat dataFormat = new JacksonDataFormat(Event.class);
+            dataFormat.setInclude("NON_NULL");
+            dataFormat.setPrettyPrint(true);
+            dataFormat.setCamelContext(camelContext);
+            dataFormat.start();
+            try {
+                Exchange exchange = new DefaultExchange(camelContext);
+                Event event = new Event();
+                event.setPriority(4);
+
+                String json = marshalToString(dataFormat, exchange, event);
+
+                assertThat(json).contains("\n");
+                assertThat(json).contains("\"priority\" : 4");
+                assertThat(json).doesNotContain("code");
+            } finally {
+                dataFormat.stop();
+            }
+        }
+    }
+
+    @Test
     void registeredObjectMapperIsAutoDiscoveredForDataFormat() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper()
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
