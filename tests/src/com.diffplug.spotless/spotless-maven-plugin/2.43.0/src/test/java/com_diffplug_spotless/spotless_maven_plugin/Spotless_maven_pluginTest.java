@@ -146,6 +146,29 @@ public class Spotless_maven_pluginTest {
     }
 
     @Test
+    void toggleOffOnRegexProtectsCapturedMatchesFromGenericSteps() throws Exception {
+        FormatterStepConfig stepConfig = new FormatterStepConfig(
+                StandardCharsets.UTF_8,
+                null,
+                Optional.empty(),
+                (withTransitives, mavenCoordinates) -> Set.of(),
+                null,
+                Optional.empty());
+        File sentinel = Formatter.NO_FILE_SENTINEL;
+        ToggleOffOn toggle = new ToggleOffOn();
+        toggle.regex = "(?s)<raw>(.*?)</raw>";
+        PipeStepPair pair = toggle.createPair();
+        FormatterStep trimTrailingWhitespace = new TrimTrailingWhitespace().newFormatterStep(stepConfig);
+        String input = "formatted   \n<raw>left alone   \nsecond raw\t</raw>\nformatted too   ";
+
+        String protectedInput = pair.in().format(input, sentinel);
+        String formatted = trimTrailingWhitespace.format(protectedInput, sentinel);
+        String restored = pair.out().format(formatted, sentinel);
+
+        assertThat(restored).isEqualTo("formatted\n<raw>left alone   \nsecond raw\t</raw>\nformatted too");
+    }
+
+    @Test
     void invalidGenericStepConfigurationsFailFast() {
         FormatterStepConfig stepConfig = new FormatterStepConfig(
                 StandardCharsets.UTF_8,
