@@ -91,6 +91,23 @@ class Play_functional_3Test {
   }
 
   @Test
+  def tildeProductSupportsConstructionCopyAndPatternMatching(): Unit = {
+    val pair: Int ~ String = new ~(7, "seven")
+    val copied: Int ~ String = pair.copy(_2 = "VII")
+    val description: String = pair match {
+      case ~(number, word) => s"$number is $word"
+    }
+
+    assertThat(pair._1).isEqualTo(7)
+    assertThat(pair._2).isEqualTo("seven")
+    assertThat(pair).isEqualTo(new ~(7, "seven"))
+    assertThat(copied).isNotEqualTo(pair)
+    assertThat(copied._2).isEqualTo("VII")
+    assertThat(description).isEqualTo("7 is seven")
+    assertThat(pair.productArity).isEqualTo(2)
+  }
+
+  @Test
   def monoidAndReducerCombineValuesInOrder(): Unit = {
     val increment: Int => Int = _ + 1
     val triple: Int => Int = _ * 3
