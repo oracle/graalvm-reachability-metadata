@@ -8,7 +8,7 @@ package software_amazon_awssdk.dynamodb;
 
 import org.junit.jupiter.api.Test;
 
-class DynamodbTest {
+public class DynamodbTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
