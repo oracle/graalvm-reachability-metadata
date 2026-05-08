@@ -6,6 +6,9 @@
  */
 package net_sf_proguard.proguard_gradle;
 
+import java.io.File;
+import java.util.Map;
+
 import org.gradle.api.tasks.TaskInstantiationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -25,5 +28,44 @@ public class Proguard_gradleTest {
                         .hasMessageContaining(ProGuardTask.class.getName())
                         .hasMessageContaining("instantiated directly")
                         .hasMessageContaining("DSL"));
+    }
+
+    @Test
+    @Timeout(60)
+    void proGuardTaskPublishesJarAndConfigurationDslMethods() {
+        final JarConfiguration inputJars = ProGuardTask::injars;
+        final FilteredJarConfiguration filteredInputJars = ProGuardTask::injars;
+        final JarConfiguration outputJars = ProGuardTask::outjars;
+        final FilteredJarConfiguration filteredOutputJars = ProGuardTask::outjars;
+        final JarConfiguration libraryJars = ProGuardTask::libraryjars;
+        final FilteredJarConfiguration filteredLibraryJars = ProGuardTask::libraryjars;
+        final JarConfiguration configuration = ProGuardTask::configuration;
+        final File jarFile = new File("build/libs/application.jar");
+        final Map<?, ?> filters = Map.of("filter", "!META-INF/MANIFEST.MF");
+
+        assertThatThrownBy(() -> inputJars.configure(null, jarFile))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> filteredInputJars.configure(null, filters, jarFile))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> outputJars.configure(null, jarFile))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> filteredOutputJars.configure(null, filters, jarFile))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> libraryJars.configure(null, jarFile))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> filteredLibraryJars.configure(null, filters, jarFile))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> configuration.configure(null, new File("proguard-rules.pro")))
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @FunctionalInterface
+    private interface JarConfiguration {
+        void configure(ProGuardTask task, Object file) throws Exception;
+    }
+
+    @FunctionalInterface
+    private interface FilteredJarConfiguration {
+        void configure(ProGuardTask task, Map<?, ?> filters, Object file) throws Exception;
     }
 }
