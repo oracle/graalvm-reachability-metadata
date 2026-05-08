@@ -105,6 +105,30 @@ public class Maven_supportTest {
     }
 
     @Test
+    void resolvesDefaultHtmlEntitiesWhenReadingMavenModelInNonStrictMode() throws Exception {
+        String xml = """
+                <project>
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>org.example</groupId>
+                  <artifactId>entity-demo</artifactId>
+                  <version>1.0.0</version>
+                  <description>Copyright &copy; Maven contributors &mdash; ready</description>
+                </project>
+                """;
+
+        MavenStaxReader entityAwareReader = new MavenStaxReader();
+        Model withDefaultEntities = entityAwareReader.read(new StringReader(xml), false, null);
+        assertThat(withDefaultEntities.getDescription())
+                .isEqualTo("Copyright © Maven contributors — ready");
+
+        MavenStaxReader literalEntityReader = new MavenStaxReader();
+        literalEntityReader.setAddDefaultEntities(false);
+        Model withoutDefaultEntities = literalEntityReader.read(new StringReader(xml), false, null);
+        assertThat(withoutDefaultEntities.getDescription())
+                .isEqualTo("Copyright &copy; Maven contributors &mdash; ready");
+    }
+
+    @Test
     void writesAndReadsMavenModelRoundTripAndRejectsWrongNamespace() throws Exception {
         Dependency dependency = Dependency.newBuilder()
                 .groupId("org.apache.maven")
