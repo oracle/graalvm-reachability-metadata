@@ -57,8 +57,8 @@ public class BytecodeCreatorTest {
         byte[] generatedClass = generatedClasses.classBytes.get(className);
         assertNotNull(generatedClass);
         assertTrue(generatedClass.length >= 4);
-        assertArrayEquals(new byte[] { (byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe },
-                new byte[] { generatedClass[0], generatedClass[1], generatedClass[2], generatedClass[3] });
+        assertArrayEquals(new byte[] {(byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe },
+                new byte[] {generatedClass[0], generatedClass[1], generatedClass[2], generatedClass[3] });
     }
 
     private static final class GeneratedClasses implements ClassOutput {
