@@ -237,6 +237,58 @@ public class Camel_core_engineTest {
         }
     }
 
+    @Test
+    void onExceptionHandlerRecoversFailedExchange() throws Exception {
+        DefaultCamelContext context = new DefaultCamelContext();
+        try {
+            context.addComponent("memory", new InMemoryComponent());
+            context.addRoutes(new RouteBuilder() {
+                @Override
+                public void configure() {
+                    onException(IllegalArgumentException.class)
+                            .handled(true)
+                            .process(exchange -> {
+                                Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
+                                exchange.getMessage().setHeader("failureHandled", true);
+                                exchange.getMessage().setBody("recovered:" + exception.getMessage());
+                            })
+                            .to("memory:errors");
+
+                    from("memory:validation")
+                            .routeId("validation-route")
+                            .process(exchange -> {
+                                String body = exchange.getMessage().getBody(String.class);
+                                throw new IllegalArgumentException("invalid " + body);
+                            })
+                            .to("memory:accepted");
+                }
+            });
+
+            context.start();
+
+            ProducerTemplate template = context.createProducerTemplate();
+            try {
+                template.start();
+                assertThat(template.requestBody("memory:validation", "payload")).isEqualTo("recovered:invalid payload");
+
+                InMemoryEndpoint errors = (InMemoryEndpoint) context.getEndpoint("memory:errors");
+                assertThat(errors.receivedMessages())
+                        .singleElement()
+                        .satisfies(message -> {
+                            assertThat(message.body()).isEqualTo("recovered:invalid payload");
+                            assertThat(message.headers()).containsEntry("failureHandled", true);
+                        });
+
+                InMemoryEndpoint accepted = (InMemoryEndpoint) context.getEndpoint("memory:accepted");
+                assertThat(accepted.receivedMessages()).isEmpty();
+            } finally {
+                template.stop();
+            }
+        } finally {
+            context.close();
+        }
+    }
+
     private static final class InMemoryComponent extends DefaultComponent {
         private final Map<String, InMemoryEndpoint> endpoints = new ConcurrentHashMap<>();
 
