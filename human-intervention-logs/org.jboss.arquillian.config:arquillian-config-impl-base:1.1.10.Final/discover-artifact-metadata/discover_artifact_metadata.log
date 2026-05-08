@@ -1,0 +1,2603 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e06f8-ddd3-7cb0-9cc3-f96fe9e5ed72
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1.10.Final" when "$version$" is replaced with "1.1.10.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+- Set "coordinates" to "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.10.Final".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven Central and the upstream repo, then patch the JSON directly with version-template URLs where the target exists.
+web search: 
+web search: org.jboss.arquillian.config arquillian-config-impl-base 1.1.10.Final Maven
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files | rg 'org\\.jboss\\.arquillian\\.config-arquillian-config-impl-base-1\\.1\\.10\\.Final\\.json|pom\\.xml|build.gradle'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+tests/tck-test-support/build.gradle
+tests/tck-build-logic/build.gradle
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.groovy.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.scala3.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.scala2.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.kotlin.template
+tests/src/com.aayushatharva.brotli4j/brotli4j/1.18.0/build.gradle
+tests/src/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/build.gradle
+tests/src/log4j/log4j/1.2.17/build.gradle
+tests/src/com.thoughtworks.paranamer/paranamer/2.8.1/build.gradle
+tests/src/com.thoughtworks.paranamer/paranamer/2.3/build.gradle
+tests/src/com.google.truth/truth/1.1.3/build.gradle
+tests/src/com.github.ajalt.mordant/mordant-core-jvm/3.0.2/build.gradle
+tests/src/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/3.0.2/build.gradle
+tests/src/org.glassfish.hk2/hk2-utils/2.5.0-b05/build.gradle
+tests/src/com.aayushatharva.brotli4j/service/1.18.0/build.gradle
+tests/src/biz.aQute.bnd/biz.aQute.bnd.util/6.4.1/build.gradle
+tests/src/biz.aQute.bnd/biz.aQute.bnd.annotation/6.4.1/build.gradle
+tests/src/io.github.oshai/kotlin-logging-jvm/8.0.01/build.gradle
+tests/src/com.fasterxml.jackson.core/jackson-databind/2.15.2/build.gradle
+tests/src/org.wildfly.openssl/wildfly-openssl-java/2.1.1.Final/build.gradle
+tests/src/org.wildfly.openssl/wildfly-openssl-java/1.0.7.Final/build.gradle
+tests/src/org.wildfly.openssl/wildfly-openssl-java/2.0.0.Alpha1/build.gradle
+tests/src/io.prometheus/simpleclient_caffeine/0.16.0/build.gradle
+tests/src/io.prometheus/simpleclient/0.16.0/build.gradle
+tests/src/io.prometheus/simpleclient_tracer_otel_agent/0.16.0/build.gradle
+build.gradle
+tests/src/io.prometheus/simpleclient_tracer_common/0.16.0/build.gradle
+tests/src/org.springframework/spring-instrument/5.3.31/build.gradle
+tests/src/org.springframework/spring-aspects/5.3.31/build.gradle
+tests/src/io.prometheus/simpleclient_tracer_otel/0.16.0/build.gradle
+tests/src/org.springframework/spring-jcl/5.3.15/build.gradle
+tests/src/net.postgis/postgis-geometry/2.5.0/build.gradle
+tests/src/net.postgis/postgis-jdbc/2.5.0/build.gradle
+tests/src/jakarta.authentication/jakarta.authentication-api/3.0.0/build.gradle
+tests/src/com.comcast/ip4s-core_3/3.5.0/build.gradle
+tests/src/org.apache.thrift/libthrift/0.13.0/build.gradle
+tests/src/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.14.3/build.gradle
+tests/src/org.apache.thrift/libthrift/0.17.0/build.gradle
+tests/src/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/build.gradle
+tests/src/org.junit.jupiter/junit-jupiter-engine/5.8.2/build.gradle
+tests/src/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.18.1/build.gradle
+tests/src/org.junit.jupiter/junit-jupiter-params/5.9.2/build.gradle
+tests/src/com.rabbitmq/amqp-client/5.12.0/build.gradle
+tests/src/com.typesafe.slick/slick_2.13/3.6.1/build.gradle
+tests/src/io.getquill/quill-engine_3/4.8.4/build.gradle
+tests/src/com.typesafe.slick/slick-hikaricp_2.13/3.6.1/build.gradle
+tests/src/io.getquill/quill-engine_2.13/4.8.5/build.gradle
+tests/src/org.awaitility/awaitility/4.2.1/build.gradle
+tests/src/io.getquill/quill-util_3/4.8.4/build.gradle
+tests/src/org.awaitility/awaitility/4.2.0/build.gradle
+tests/src/com.github.ben-manes.caffeine/caffeine/2.9.3/build.gradle
+tests/src/org.scalatest/scalatest-wordspec_2.13/3.2.19/build.gradle
+tests/src/com.github.ben-manes.caffeine/caffeine/3.1.2/build.gradle
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/build.gradle
+tests/src/jakarta.json/jakarta.json-api/2.1.0/build.gradle
+tests/src/org.scalatest/scalatest-mustmatchers_2.13/3.2.19/build.gradle
+tests/src/org.playframework.twirl/twirl-api_3/2.0.1/build.gradle
+tests/src/org.scalatest/scalatest-shouldmatchers_2.13/3.2.19/build.gradle
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/build.gradle
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/build.gradle
+tests/src/org.glassfish.hk2/hk2-utils/2.5.0/build.gradle
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/build.gradle
+tests/src/org.apache.directory.api/api-i18n/1.0.0/build.gradle
+tests/src/org.apache.yetus/audience-annotations/0.12.0/build.gradle
+tests/src/org.apache.directory.api/api-i18n/2.0.0/build.gradle
+tests/src/org.apache.directory.api/api-util/1.0.0/build.gradle
+tests/src/org.apache.yetus/audience-annotations/0.14.0/build.gradle
+tests/src/org.eclipse.jetty.websocket/websocket-client/9.4.40.v20210413/build.gradle
+tests/src/org.eclipse.jetty.websocket/websocket-api/9.4.40.v20210413/build.gradle
+tests/src/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/build.gradle
+tests/src/org.openjfx/javafx-base/11.0.2/build.gradle
+tests/src/org.scalatest/scalatest-matchers-core_2.13/3.2.19/build.gradle
+tests/src/org.openjfx/javafx-base/13-ea/build.gradle
+tests/src/io.suzaku/boopickle_2.13/1.5.0/build.gradle
+tests/src/org.jboss.shrinkwrap/shrinkwrap-api/1.2.2/build.gradle
+tests/src/com.fasterxml.jackson.core/jackson-annotations/2.1.2/build.gradle
+tests/src/io.suzaku/boopickle_3/1.4.0/build.gradle
+tests/src/com.fasterxml.jackson.core/jackson-annotations/2.3.0/build.gradle
+tests/src/org.jboss.shrinkwrap/shrinkwrap-impl-base/1.2.2/build.gradle
+tests/src/com.google.javascript/closure-compiler-externs/v20150505/build.gradle
+tests/src/com.fasterxml.jackson.core/jackson-core/2.1.3/build.gradle
+tests/src/org.jboss.shrinkwrap/shrinkwrap-spi/1.2.2/build.gradle
+tests/src/net.bytebuddy/byte-buddy-agent/1.10.9/build.gradle
+tests/src/com.squareup.moshi/moshi-adapters/1.15.2/build.gradle
+tests/src/com.fasterxml.jackson.core/jackson-core/2.6.0/build.gradle
+tests/src/jakarta.json.bind/jakarta.json.bind-api/3.0.0/build.gradle
+tests/src/com.squareup.moshi/moshi-kotlin/1.15.2/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-firestore-v1/3.31.6/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-test/2.0.21/build.gradle
+tests/src/javax.validation/validation-api/2.0.0.Final/build.gradle
+tests/src/com.google.api.grpc/grpc-google-common-protos/2.70.0/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/build.gradle
+tests/src/javax.validation/validation-api/1.0.0.GA/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/3.14.1/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/build.gradle
+tests/src/com.google.api.grpc/grpc-google-cloud-spanner-v1/6.116.1/build.gradle
+tests/src/dev.profunktor/redis4cats-core_3/2.0.2/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/2.64.0/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-scripting-jvm/2.3.21/build.gradle
+tests/src/dev.profunktor/redis4cats-core_3/1.7.2/build.gradle
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.2.19/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/6.116.1/build.gradle
+tests/src/org.scalatest/scalatest-compatible/3.2.19/build.gradle
+tests/src/org.scalatest/scalatest-funsuite_2.13/3.2.19/build.gradle
+tests/src/org.scalatest/scalatest-funspec_2.13/3.2.19/build.gradle
+tests/src/org.scalatest/scalatest-freespec_2.13/3.2.19/build.gradle
+tests/src/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/build.gradle
+tests/src/org.eclipse.jetty/jetty-util-ajax/10.0.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/build.gradle
+tests/src/org.eclipse.jetty/jetty-session/12.0.10/build.gradle
+tests/src/org.eclipse.jetty/jetty-io/9.3.19.v20170502/build.gradle
+tests/src/org.eclipse.jetty/jetty-ee/12.0.10/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/2.3.21/build.gradle
+tests/src/org.eclipse.jetty/jetty-alpn-server/11.0.24/build.gradle
+tests/src/javax.validation/validation-api/1.1.0.Final/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.3.72/build.gradle
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-android-extensions-runtime/1.3.72/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-test-junit/1.2.21/build.gradle
+tests/src/org.apache.activemq/activemq-client/5.18.1/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-reflect/1.7.10/build.gradle
+tests/src/org.apache.activemq/activemq-client/6.0.0/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-test-testng/2.3.21/build.gradle
+tests/src/org.apache.activemq/activemq-broker/5.18.1/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-parcelize-runtime/1.7.10/build.gradle
+tests/src/org.apache.activemq/activemq-broker/6.0.0/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/build.gradle
+tests/src/org.apache.activemq/artemis-log-annotation-processor/2.40.0/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.5.31/build.gradle
+tests/src/org.apache.activemq/artemis-log-annotation-processor/2.39.0/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-scripting-common/2.3.21/build.gradle
+tests/src/org.apache.activemq/artemis-log-annotation-processor/2.28.0/build.gradle
+tests/src/org.apache.activemq/activemq-openwire-legacy/5.18.1/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31/build.gradle
+tests/src/com.github.stephenc.jcip/jcip-annotations/1.0-1/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/build.gradle
+tests/src/com.diffplug.durian/durian-swt.os/4.2.2/build.gradle
+tests/src/org.jetbrains.kotlin/kotlin-test-junit5/2.3.21/build.gradle
+tests/src/com.diffplug.durian/durian-collect/1.2.0/build.gradle
+tests/src/org.eclipse.sisu/org.eclipse.sisu.inject/0.3.0.M1/build.gradle
+tests/src/com.diffplug.durian/durian-core/1.2.0/build.gradle
+tests/src/com.fasterxml.jackson.module/jackson-module-scala_2.13/2.11.4/build.gradle
+tests/src/com.github.ghostdogpr/caliban_3/2.10.0/build.gradle
+tests/src/com.fasterxml.jackson.module/jackson-module-parameter-names/2.13.5/build.gradle
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/build.gradle
+tests/src/com.fasterxml.jackson.module/jackson-module-paranamer/2.11.4/build.gradle
+tests/src/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/build.gradle
+tests/src/org.jline/jline-terminal-jni/3.30.7/build.gradle
+tests/src/com.fasterxml.jackson.module/jackson-module-paranamer/2.19.0/build.gradle
+tests/src/org.jline/jline-terminal-jni/3.27.1/build.gradle
+tests/src/org.eclipse.jetty/jetty-util/12.0.9/build.gradle
+tests/src/com.fasterxml.jackson.module/jackson-module-kotlin/2.17.2/build.gradle
+tests/src/org.jline/jline-terminal-jna/3.20.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-client/12.0.0/build.gradle
+tests/src/org.jline/jline-console/3.22.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-client/11.0.12/build.gradle
+tests/src/com.google.j2objc/j2objc-annotations/1.3/build.gradle
+tests/src/org.jline/jline-console/3.21.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-server/12.1.3/build.gradle
+tests/src/org.apache.pulsar/pulsar-client-api/4.2.1/build.gradle
+tests/src/org.eclipse.jetty/jetty-server/11.0.12/build.gradle
+tests/src/org.apache.jackrabbit/jackrabbit-jcr-commons/1.5.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-server/12.0.1/build.gradle
+tests/src/com.google.re2j/re2j/1.1/build.gradle
+tests/src/org.apache.pulsar/bouncy-castle-bc/4.2.1/build.gradle
+tests/src/io.opencensus/opencensus-api/0.31.1/build.gradle
+tests/src/com.github.javaparser/javaparser-core/3.26.2/build.gradle
+tests/src/oro/oro/2.0.8/build.gradle
+tests/src/io.opencensus/opencensus-contrib-grpc-util/0.31.1/build.gradle
+tests/src/com.itextpdf/kernel/8.0.3/build.gradle
+tests/src/org.playframework/play-exceptions/3.0.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-io/9.4.0.M0/build.gradle
+tests/src/org.playframework/play-configuration_3/3.0.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-io/9.4.0.RC0/build.gradle
+tests/src/org.playframework/play-build-link/3.0.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-alpn-client/11.0.12/build.gradle
+tests/src/org.jline/jline-console/3.28.0/build.gradle
+tests/src/org.playframework/play-server_3/3.0.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-alpn-client/12.0.31/build.gradle
+tests/src/org.eclipse.jetty/jetty-security/9.3.19.v20170502/build.gradle
+tests/src/org.jline/jline-reader/3.19.0/build.gradle
+tests/src/org.playframework/play-json_3/3.0.0/build.gradle
+tests/src/org.jline/jline/3.21.0/build.gradle
+tests/src/org.eclipse.jetty/jetty-http/9.3.19.v20170502/build.gradle
+tests/src/org.playframework/play-functional_3/3.0.0/build.gradle
+tests/src/org.jline/jline-native/3.27.1/build.gradle
+tests/src/org.eclipse.jetty/jetty-http/9.4.0.M0/build.gradle
+tests/src/org.eclipse.jetty/jetty-http/9.4.1.v20170120/build.gradle
+tests/src/org.jvnet.staxex/stax-ex/1.8.2/build.gradle
+tests/src/org.datanucleus/javax.jdo/3.2.0-m13/build.gradle
+tests/src/org.jvnet.staxex/stax-ex/2.0.0/build.gradle
+tests/src/io.zipkin.zipkin2/zipkin/2.23.2/build.gradle
+tests/src/org.bouncycastle/bcpkix-jdk15to18/1.77/build.gradle
+tests/src/com.github.mwiede/jsch/2.27.7/build.gradle
+tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/build.gradle
+tests/src/org.jvnet.staxex/stax-ex/1.8/build.gradle
+tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/build.gradle
+tests/src/org.ehcache/ehcache/3.10.8-jakarta/build.gradle
+tests/src/org.jetbrains.exposed/exposed-jdbc/1.0.0/build.gradle
+tests/src/org.jetbrains.exposed/exposed-core/1.0.0/build.gradle
+tests/src/org.jetbrains.exposed/exposed-core/1.1.0/build.gradle
+tests/src/org.jetbrains.exposed/exposed-core/1.0.0-beta-4/build.gradle
+tests/src/org.jetbrains.exposed/exposed-json/1.2.0/build.gradle
+tests/src/org.jetbrains.exposed/exposed-kotlin-datetime/1.2.0/build.gradle
+tests/src/org.apache.httpcomponents.core5/httpcore5/5.2/build.gradle
+tests/src/org.apache.hadoop/hadoop-annotations/2.2.0/build.gradle
+tests/src/org.yaml/snakeyaml/1.32/build.gradle
+tests/src/org.yaml/snakeyaml/2.0/build.gradle
+tests/src/io.vertx/vertx-core/4.4.2/build.gradle
+tests/src/io.vertx/vertx-core/5.0.0/build.gradle
+tests/src/io.lettuce/lettuce-core/6.1.10.RELEASE/build.gradle
+tests/src/com.itextpdf/forms/8.0.3/build.gradle
+tests/src/org.mortbay.jetty/servlet-api/2.5-20081211/build.gradle
+tests/src/com.itextpdf/layout/8.0.3/build.gradle
+tests/src/com.itextpdf/io/8.0.3/build.gradle
+tests/src/com.itextpdf/svg/8.0.3/build.gradle
+tests/src/com.android.databinding/baseLibrary/1.0-rc5/build.gradle
+tests/src/com.querydsl/querydsl-core/5.0.0/build.gradle
+tests/src/com.android.databinding/baseLibrary/2.3.0/build.gradle
+tests/src/org.w3c.css/sac/1.3/build.gradle
+tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/1.1.1/build.gradle
+tests/src/com.twitter/hpack/1.0.2/build.gradle
+tests/src/com.github.jnr/jnr-x86asm/1.0.2/build.gradle
+tests/src/com.github.jnr/jnr-a64asm/1.0.0/build.gradle
+tests/src/org.eclipse.jgit/org.eclipse.jgit/7.4.0.202509020913-r/build.gradle
+tests/src/org.hibernate.models/hibernate-models/1.0.0/build.gradle
+tests/src/org.eclipse.jgit/org.eclipse.jgit/6.5.0.202303070854-r/build.gradle
+tests/src/org.rnorth.duct-tape/duct-tape/1.0.8/build.gradle
+tests/src/com.querydsl/querydsl-jpa/5.1.0/build.gradle
+tests/src/org.apache.directory.server/apacheds-i18n/2.0.0-M15/build.gradle
+tests/src/org.ccil.cowan.tagsoup/tagsoup/1.2.1/build.gradle
+tests/src/jakarta.persistence/jakarta.persistence-api/4.0.0-M2/build.gradle
+tests/src/org.slf4j/slf4j-ext/1.5.10/build.gradle
+tests/src/com.github.ajalt.clikt/clikt-core-jvm/5.1.0/build.gradle
+tests/src/org.slf4j/slf4j-api/1.7.36/build.gradle
+tests/src/jakarta.persistence/jakarta.persistence-api/3.0.0/build.gradle
+tests/src/com.github.ajalt.clikt/clikt-jvm/5.1.0/build.gradle
+tests/src/org.slf4j/slf4j-api/1.5.3/build.gradle
+tests/src/io.r2dbc/r2dbc-spi/0.9.1.RELEASE/build.gradle
+tests/src/org.slf4j/slf4j-simple/1.8.0-alpha0/build.gradle
+tests/src/io.r2dbc/r2dbc-spi/1.0.0.RELEASE/build.gradle
+tests/src/org.slf4j/slf4j-simple/1.7.25/build.gradle
+tests/src/org.slf4j/slf4j-simple/1.7.32/build.gradle
+tests/src/org.slf4j/slf4j-nop/1.5.3/build.gradle
+tests/src/org.slf4j/slf4j-nop/1.5.6/build.gradle
+tests/src/org.slf4j/jcl-over-slf4j/1.7.0/build.gradle
+tests/src/org.slf4j/jcl-over-slf4j/1.5.6/build.gradle
+tests/src/org.slf4j/slf4j-jdk14/1.5.6/build.gradle
+tests/src/org.slf4j/slf4j-jdk14/1.6.0/build.gradle
+tests/src/org.slf4j/jul-to-slf4j/1.7.30/build.gradle
+tests/src/org.slf4j/log4j-over-slf4j/1.7.25/build.gradle
+tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/6.116.1/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-spanner-v1/6.116.1/build.gradle
+tests/src/com.typesafe.play/play_2.13/2.9.10/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-monitoring-v3/3.52.0/build.gradle
+tests/src/com.typesafe.play/play-exceptions/2.9.7/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/0.186.1/build.gradle
+tests/src/com.typesafe.play/play-ws_2.13/2.9.10/build.gradle
+tests/src/com.google.api.grpc/proto-google-common-protos/2.41.0/build.gradle
+tests/src/com.typesafe.play/twirl-api_2.13/1.6.10/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/0.186.1/build.gradle
+tests/src/com.typesafe.play/play-configuration_3/2.9.7/build.gradle
+tests/src/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/6.116.1/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/6.116.1/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-logging-v2/0.111.5/build.gradle
+tests/src/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/6.116.1/build.gradle
+tests/src/com.google.api.grpc/proto-google-iam-v1/1.40.1/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/3.14.1/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-secretmanager-v1/2.64.0/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/6.116.1/build.gradle
+tests/src/org.eclipse.collections/eclipse-collections-api/11.1.0/build.gradle
+tests/src/jakarta.persistence/jakarta.persistence-api/4.0.0-M1/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/3.14.1/build.gradle
+tests/src/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta2/2.64.0/build.gradle
+tests/src/jakarta.persistence/jakarta.persistence-api/3.2.0/build.gradle
+tests/src/ru.vyarus/generics-resolver/3.0.3/build.gradle
+tests/src/io.dropwizard.metrics/metrics-jmx/4.2.0/build.gradle
+tests/src/junit/junit/4.13.2/build.gradle
+tests/src/io.dropwizard.metrics/metrics-json/4.2.0/build.gradle
+tests/src/dev.zio/zio_3/2.1.6/build.gradle
+tests/src/io.dropwizard.metrics/metrics-jvm/4.2.0/build.gradle
+tests/src/org.codehaus.jackson/jackson-core-asl/1.8.3/build.gradle
+tests/src/dev.zio/zio-test_3/2.1.25/build.gradle
+tests/src/io.dropwizard.metrics/metrics-core/4.1.12.1/build.gradle
+tests/src/dev.zio/zio-config_3/4.0.4/build.gradle
+tests/src/org.codehaus.jackson/jackson-mapper-asl/1.8.3/build.gradle
+tests/src/io.dropwizard.metrics/metrics-graphite/4.2.0/build.gradle
+tests/src/dev.zio/zio-stacktracer_3/2.1.15/build.gradle
+tests/src/dev.zio/zio-stacktracer_3/2.1.19/build.gradle
+tests/src/org.mockito/mockito-junit-jupiter/4.5.1/build.gradle
+tests/src/ch.qos.logback.contrib/logback-jackson/0.1.5/build.gradle
+tests/src/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/3.0.1/build.gradle
+tests/src/org.mockito/mockito-core/4.8.1/build.gradle
+tests/src/ch.qos.logback.contrib/logback-json-classic/0.1.5/build.gradle
+tests/src/dev.zio/zio-internal-macros_2.13/2.0.22/build.gradle
+tests/src/dev.zio/zio-http_3/3.3.3/build.gradle
+tests/src/com.spotify/completable-futures/0.3.6/build.gradle
+tests/src/dev.zio/zio-logging_2.13/2.4.0/build.gradle
+tests/src/ch.qos.logback.contrib/logback-json-core/0.1.5/build.gradle
+tests/src/com.google.android/annotations/4.1.1.4/build.gradle
+tests/src/org.apache.xbean/xbean-reflect/3.4/build.gradle
+tests/src/org.codehaus.mojo/animal-sniffer-annotations/1.17/build.gradle
+tests/src/com.ning/compress-lzf/1.0.3/build.gradle
+tests/src/org.codehaus.mojo/animal-sniffer-annotations/1.23/build.gradle
+tests/src/org.apache.xbean/xbean-asm9-shaded/4.22/build.gradle
+tests/src/javax.el/javax.el-api/3.0.0/build.gradle
+tests/src/org.apache.xbean/xbean-asm9-shaded/4.20/build.gradle
+tests/src/org.apache.xbean/xbean-asm9-shaded/4.26/build.gradle
+tests/src/javax.el/el-api/1.0/build.gradle
+tests/src/org.apache.xbean/xbean-asm7-shaded/4.15/build.gradle
+tests/src/com.ongres.stringprep/stringprep/1.1/build.gradle
+tests/src/com.ongres.stringprep/saslprep/1.1/build.gradle
+tests/src/org.threeten/threetenbp/1.7.0/build.gradle
+tests/src/dev.zio/zio-internal-macros_3/2.1.15/build.gradle
+tests/src/dev.zio/zio-internal-macros_3/2.1.19/build.gradle
+tests/src/org.threeten/threeten-extra/1.5.0/build.gradle
+tests/src/dev.zio/zio-query_3/0.7.7/build.gradle
+tests/src/jdom/jdom/1.0/build.gradle
+tests/src/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/build.gradle
+tests/src/dev.zio/zio-schema_3/1.7.0/build.gradle
+tests/src/dev.zio/izumi-reflect_3/3.0.1/build.gradle
+tests/src/com.codahale.metrics/metrics-core/3.0.1/build.gradle
+tests/src/dev.zio/zio-schema-derivation_3/1.7.0/build.gradle
+tests/src/com.typesafe.play/play-build-link/2.9.7/build.gradle
+tests/src/commons-cli/commons-cli/1.5.0/build.gradle
+tests/src/dev.zio/zio-prelude_3/1.0.0-RC39/build.gradle
+tests/src/com.typesafe.play/play-configuration_2.13/2.9.10/build.gradle
+tests/src/org.opengauss/opengauss-jdbc/3.1.0-og/build.gradle
+tests/src/dev.zio/zio-interop-cats_3/23.1.0.13/build.gradle
+tests/src/com.typesafe.play/twirl-api_3/1.6.9/build.gradle
+tests/src/dev.zio/zio-schema-macros_3/1.7.0/build.gradle
+tests/src/io.smallrye.common/smallrye-common-expression/2.2.0/build.gradle
+tests/src/com.typesafe.play/play-functional_2.13/2.10.8/build.gradle
+tests/src/dev.zio/zio-managed_3/2.1.23/build.gradle
+tests/src/io.smallrye.common/smallrye-common-cpu/2.2.0/build.gradle
+tests/src/com.typesafe.play/play-json_3/2.10.6/build.gradle
+tests/src/dev.zio/zio-json_3/0.7.42/build.gradle
+tests/src/io.smallrye.common/smallrye-common-cpu/2.10.0/build.gradle
+tests/src/com.typesafe.play/play-functional_3/2.10.6/build.gradle
+tests/src/dev.zio/zio-prelude-macros_3/1.0.0-RC39/build.gradle
+tests/src/io.smallrye.common/smallrye-common-io/2.16.0/build.gradle
+tests/src/dev.zio/zio-config-typesafe_3/4.0.7/build.gradle
+tests/src/net.javacrumbs.json-unit/json-unit-core/2.40.1/build.gradle
+tests/src/io.smallrye.common/smallrye-common-classloader/2.15.0/build.gradle
+tests/src/io.smallrye.common/smallrye-common-os/2.2.0/build.gradle
+tests/src/com.github.jknack/handlebars/4.4.0/build.gradle
+tests/src/io.smallrye.common/smallrye-common-os/2.15.0/build.gradle
+tests/src/io.smallrye.common/smallrye-common-process/2.16.0/build.gradle
+tests/src/com.github.jknack/handlebars/4.3.1/build.gradle
+tests/src/io.smallrye.common/smallrye-common-process/2.17.0/build.gradle
+tests/src/io.smallrye.common/smallrye-common-constraint/2.2.0/build.gradle
+tests/src/com.github.jknack/handlebars-helpers/4.4.0/build.gradle
+tests/src/io.smallrye.common/smallrye-common-ref/2.2.0/build.gradle
+tests/src/com.github.jknack/handlebars-helpers/4.3.1/build.gradle
+tests/src/io.smallrye.common/smallrye-common-function/2.2.0/build.gradle
+tests/src/velocity/velocity-dep/1.4/build.gradle
+tests/src/io.smallrye.common/smallrye-common-function/2.10.0/build.gradle
+tests/src/io.smallrye.common/smallrye-common-resource/2.14.0/build.gradle
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/build.gradle
+tests/src/io.smallrye.common/smallrye-common-net/2.2.0/build.gradle
+tests/src/com.squareup.okio/okio-jvm/3.0.0/build.gradle
+tests/src/com.softwaremill.sttp.shared/zio_3/1.5.1/build.gradle
+tests/src/com.squareup.okio/okio/1.17.2/build.gradle
+tests/src/org.mockito/mockito-core/5.0.0/build.gradle
+tests/src/org.apache.zookeeper/zookeeper/3.8.1/build.gradle
+tests/src/dev.zio/zio-interop-tracer_3/23.1.0.13/build.gradle
+tests/src/org.apache.zookeeper/zookeeper-jute/3.8.1/build.gradle
+tests/src/org.jboss.arquillian.junit/arquillian-junit-container/1.1.10.Final/build.gradle
+tests/src/org.scalatra/scalatra-common_3/3.0.0-M5-javax/build.gradle
+tests/src/com.sun.istack/istack-commons-runtime/4.0.0/build.gradle
+tests/src/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/build.gradle
+tests/src/com.github.package-url/packageurl-java/1.5.0/build.gradle
+tests/src/org.scalatra/scalatra_3/3.0.0-M5-javax/build.gradle
+tests/src/io.circe/circe-jawn_3/0.14.12/build.gradle
+tests/src/org.log4s/log4s_3/1.10.0/build.gradle
+tests/src/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/build.gradle
+tests/src/io.circe/circe-parser_3/0.14.12/build.gradle
+tests/src/org.antlr/antlr4-runtime/4.10/build.gradle
+tests/src/com.google.guava/failureaccess/1.0.1/build.gradle
+tests/src/io.circe/circe-numbers_3/0.14.10/build.gradle
+tests/src/org.antlr/antlr-runtime/3.5.2/build.gradle
+tests/src/io.circe/circe-numbers_3/0.15.0-M1/build.gradle
+tests/src/com.google.guava/guava-bootstrap/11.0.2/build.gradle
+tests/src/org.antlr/antlr/3.5.2/build.gradle
+tests/src/io.circe/circe-core_3/0.14.10/build.gradle
+tests/src/org.scalacheck/scalacheck_2.13/1.19.0/build.gradle
+tests/src/org.antlr/ST4/4.0.8/build.gradle
+tests/src/io.circe/circe-core_3/0.14.11/build.gradle
+tests/src/com.google.guava/guava/r06/build.gradle
+tests/src/org.scalacheck/scalacheck_2.13/1.18.1/build.gradle
+tests/src/io.swagger/swagger-annotations/1.6.2/build.gradle
+tests/src/org.web3j/core/4.10.0/build.gradle
+tests/src/commons-io/commons-io/2.11.0/build.gradle
+tests/src/org.example/library/0.0.1/library-under-test/build.gradle
+tests/src/com.typesafe.akka/akka-parsing_3/10.6.0-M1/build.gradle
+tests/src/org.apache.camel/camel-util-json/4.20.0/build.gradle
+tests/src/commons-io/commons-io/2.17.0/build.gradle
+tests/src/com.typesafe.akka/akka-parsing_2.13/10.5.3/build.gradle
+tests/src/org.example/library/0.0.1/build.gradle
+tests/src/org.apache.camel/camel-support/4.20.0/build.gradle
+tests/src/com.typesafe.akka/akka-protobuf-v3_3/2.9.0-M2/build.gradle
+tests/src/org.apache.commons/commons-compress/1.21/build.gradle
+tests/src/org.crac/crac/1.5.0/build.gradle
+tests/src/com.sun.istack/istack-commons-runtime/3.0.7/build.gradle
+tests/src/org.apache.commons/commons-compress/1.23.0/build.gradle
+tests/src/org.apache.commons/commons-fileupload2-core/2.0.0-M5/build.gradle
+tests/src/com.google.dagger/dagger/2.59.2/build.gradle
+tests/src/org.apache.commons/commons-fileupload2-core/2.0.0-M2/build.gradle
+tests/src/org.apache.camel/camel-util/4.20.0/build.gradle
+tests/src/org.apache.commons/commons-fileupload2-core/2.0.0-M4/build.gradle
+tests/src/org.apache.commons/commons-fileupload2-core/2.0.0-M3/build.gradle
+tests/src/org.apache.commons/commons-configuration2/2.1.1/build.gradle
+tests/src/org.apache.commons/commons-exec/1.4.0/build.gradle
+tests/src/org.apache.camel/camel-core-processor/4.19.0/build.gradle
+tests/src/org.apache.commons/commons-exec/1.3/build.gradle
+tests/src/org.apache.commons/commons-text/1.9/build.gradle
+tests/src/org.apache.commons/commons-dbcp2/2.12.0/build.gradle
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.20.0/build.gradle
+tests/src/org.apache.commons/commons-fileupload2-javax/2.0.0-M5/build.gradle
+tests/src/org.apache.commons/commons-math/2.1/build.gradle
+tests/src/org.apache.camel/camel-xml-jaxp-util/4.19.0/build.gradle
+tests/src/org.apache.commons/commons-pool2/2.11.1/build.gradle
+tests/src/org.apache.camel/spi-annotations/3.0.0/build.gradle
+tests/src/org.apache.commons/commons-lang3/3.11/build.gradle
+tests/src/org.apache.commons/commons-fileupload2-javax/2.0.0-M2/build.gradle
+tests/src/org.apache.camel/spi-annotations/3.2.0/build.gradle
+tests/src/org.apache.commons/commons-math3/3.1.1/build.gradle
+tests/src/org.apache.commons/commons-fileupload2-javax/2.0.0-M4/build.gradle
+tests/src/org.apache.camel/spi-annotations/2.16.2/build.gradle
+tests/src/org.jctools/jctools-core/2.1.2/build.gradle
+tests/src/org.apache.camel/camel-core-reifier/4.19.0/build.gradle
+tests/src/org.apache.camel/camel-core-model/4.19.0/build.gradle
+tests/src/org.apache.commons/commons-collections4/4.4/build.gradle
+tests/src/org.eclipse.jdt.core.compiler/ecj/4.4.2/build.gradle
+tests/src/org.apache.camel/apt/2.16.2/build.gradle
+tests/src/org.apache.camel/camel-base-engine/4.20.0/build.gradle
+tests/src/com.typesafe.akka/akka-protobuf-v3_2.13/2.6.21/build.gradle
+tests/src/com.typesafe.akka/akka-protobuf-v3_2.13/2.8.8/build.gradle
+tests/src/org.apache.camel/camel-base/4.19.0/build.gradle
+tests/src/com.softwaremill.magnolia1_3/magnolia_3/1.3.16/build.gradle
+tests/src/org.jetbrains/annotations-java5/23.0.0/build.gradle
+tests/src/org.jetbrains/annotations/13.0/build.gradle
+tests/src/org.apache.camel/camel-api/4.20.0/build.gradle
+tests/src/org.apache.camel/camel-management-api/4.20.0/build.gradle
+tests/src/com.softwaremill.sttp.shared/ws_3/1.5.0/build.gradle
+tests/src/com.softwaremill.sttp.shared/core_3/1.5.0/build.gradle
+tests/src/com.softwaremill.sttp.shared/fs2_3/1.5.0/build.gradle
+tests/src/com.github.fd4s/fs2-kafka_3/3.7.0/build.gradle
+tests/src/com.charleskorn.kaml/kaml-jvm/0.104.0/build.gradle
+tests/src/org.jboss.classfilewriter/jboss-classfilewriter/1.2.4.Final/build.gradle
+tests/src/org.apache-extras.beanshell/bsh/2.0b6/build.gradle
+tests/src/org.apache.lucene/lucene-core/5.3.0/build.gradle
+tests/src/org.freemarker/freemarker/2.3.31/build.gradle
+tests/src/javax.persistence/persistence-api/1.0/build.gradle
+tests/src/org.jboss.logmanager/jboss-logmanager/1.3.0.Final/build.gradle
+tests/src/com.google.code.findbugs/findbugs-annotations/3.0.1/build.gradle
+tests/src/org.apache.lucene/lucene-core/5.5.0/build.gradle
+tests/src/com.google.code.findbugs/annotations/3.0.1u2/build.gradle
+tests/src/org.fusesource.jansi/jansi/2.0/build.gradle
+tests/src/org.iq80.leveldb/leveldb-api/0.6/build.gradle
+tests/src/args4j/args4j/2.0.26/build.gradle
+tests/src/org.fusesource.jansi/jansi/1.16/build.gradle
+tests/src/org.fusesource.jansi/jansi/1.13/build.gradle
+tests/src/net.java.dev.jna/jna/5.8.0/build.gradle
+tests/src/org.junit.vintage/junit-vintage-engine/5.9.1/build.gradle
+tests/src/at.yawk.lz4/lz4-java/1.10.4/build.gradle
+tests/src/io.github.java-diff-utils/java-diff-utils/4.12/build.gradle
+tests/src/antlr/antlr/2.7.6/build.gradle
+tests/src/org.apache.ant/ant-antlr/1.10.15/build.gradle
+tests/src/org.apache.ant/ant-launcher/1.8.1/build.gradle
+tests/src/org.typelevel/cats-core_3/2.6.1/build.gradle
+tests/src/org.osgi/org.osgi.framework/1.8.0/build.gradle
+tests/src/org.typelevel/twiddles-core_3/0.7.2/build.gradle
+tests/src/org.osgi/org.osgi.namespace.implementation/1.0.0/build.gradle
+tests/src/org.typelevel/cats-effect_3/2.5.1/build.gradle
+tests/src/org.osgi/core/4.3.0/build.gradle
+tests/src/org.typelevel/cats-effect_3/3.1.1/build.gradle
+tests/src/org.osgi/org.osgi.core/4.3.0/build.gradle
+tests/src/org.typelevel/munit-cats-effect_3/2.2.0/build.gradle
+tests/src/org.osgi/org.osgi.core/4.3.1/build.gradle
+tests/src/org.typelevel/alleycats-core_3/2.13.0/build.gradle
+tests/src/org.typelevel/scalac-compat-annotation_3/0.1.2/build.gradle
+tests/src/org.typelevel/cats-effect-kernel_3/3.3.14/build.gradle
+tests/src/org.typelevel/scalac-compat-annotation_2.13/0.1.4/build.gradle
+tests/src/com.google.code.findbugs/jsr305/3.0.1/build.gradle
+tests/src/org.typelevel/log4cats-slf4j_3/2.7.0/build.gradle
+tests/src/com.google.code.findbugs/jsr305/1.3.9/build.gradle
+tests/src/org.typelevel/log4cats-core_3/2.7.0/build.gradle
+tests/src/javax.transaction/transaction-api/1.1/build.gradle
+tests/src/org.typelevel/cats-parse_3/1.0.0/build.gradle
+tests/src/javax.transaction/jta/1.1/build.gradle
+tests/src/org.typelevel/paiges-core_2.13/0.4.3/build.gradle
+tests/src/jakarta.interceptor/jakarta.interceptor-api/2.0.0/build.gradle
+tests/src/org.typelevel/vault_3/3.6.0/build.gradle
+tests/src/jakarta.interceptor/jakarta.interceptor-api/1.2.3/build.gradle
+tests/src/org.typelevel/otel4s-core-common_3/0.4.0/build.gradle
+tests/src/org.parboiled/parboiled_2.13/2.5.1/build.gradle
+tests/src/org.typelevel/case-insensitive_3/1.4.2/build.gradle
+tests/src/org.typelevel/otel4s-core-trace_3/0.4.0/build.gradle
+tests/src/org.parboiled/parboiled_3/2.5.1/build.gradle
+tests/src/javax.portlet/portlet-api/2.0/build.gradle
+tests/src/org.typelevel/jawn-parser_3/1.2.0/build.gradle
+tests/src/org.apache.parquet/parquet-format-structures/1.12.2/build.gradle
+tests/src/org.typelevel/cats-mtl_3/1.3.1/build.gradle
+tests/src/org.apache.parquet/parquet-format-structures/1.12.3/build.gradle
+tests/src/org.lz4/lz4-java/1.8.0/build.gradle
+tests/src/org.typelevel/keypool_3/0.4.10/build.gradle
+tests/src/org.scala-lang/scalap/2.13.13/build.gradle
+tests/src/io.github.resilience4j/resilience4j-ratelimiter/2.3.0/build.gradle
+tests/src/javax.persistence/javax.persistence-api/2.2/build.gradle
+tests/src/org.scala-lang/scala3-interfaces/3.3.1/build.gradle
+tests/src/io.github.resilience4j/resilience4j-bulkhead/2.3.0/build.gradle
+tests/src/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/build.gradle
+tests/src/com.github.albfernandez/juniversalchardet/2.4.0/build.gradle
+tests/src/io.github.resilience4j/resilience4j-reactor/2.3.0/build.gradle
+tests/src/io.github.resilience4j/resilience4j-circuitbreaker/2.3.0/build.gradle
+tests/src/commons-codec/commons-codec/1.10/build.gradle
+tests/src/org.apache.tomcat.embed/tomcat-embed-websocket/9.0.83/build.gradle
+tests/src/io.github.resilience4j/resilience4j-micrometer/2.3.0/build.gradle
+tests/src/org.eclipse.parsson/parsson/1.1.6/build.gradle
+tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/build.gradle
+tests/src/io.github.resilience4j/resilience4j-core/2.3.0/build.gradle
+tests/src/portlet-api/portlet-api/1.0/build.gradle
+tests/src/com.univocity/univocity-parsers/2.9.1/build.gradle
+tests/src/dom4j/dom4j/1.6.1/build.gradle
+tests/src/org.apiguardian/apiguardian-api/1.1.2/build.gradle
+tests/src/org.osgi/org.osgi.annotation.versioning/1.1.2/build.gradle
+tests/src/com.typesafe.netty/netty-reactive-streams/2.0.4/build.gradle
+tests/src/io.github.resilience4j/resilience4j-retry/2.3.0/build.gradle
+tests/src/com.google.errorprone/error_prone_annotations/2.0.18/build.gradle
+tests/src/org.json4s/json4s-native-core_3/4.0.7/build.gradle
+tests/src/com.google.errorprone/error_prone_annotations/2.6.0/build.gradle
+tests/src/org.json4s/json4s-ast_3/4.0.7/build.gradle
+tests/src/com.google.errorprone/error_prone_annotations/2.3.0/build.gradle
+tests/src/org.json4s/json4s-core_3/4.0.7/build.gradle
+tests/src/com.google.errorprone/error_prone_annotations/2.4.0/build.gradle
+tests/src/org.json4s/json4s-scalap_3/4.0.7/build.gradle
+tests/src/org.springframework.security/spring-security-crypto/6.0.0/build.gradle
+tests/src/org.json4s/json4s-jackson_3/4.0.7/build.gradle
+tests/src/org.springframework.security/spring-security-crypto/5.7.3/build.gradle
+tests/src/org.springframework.security/spring-security-crypto/6.4.0/build.gradle
+tests/src/org.json4s/json4s-native_3/4.0.7/build.gradle
+tests/src/org.tpolecat/doobie-free_3/0.13.4/build.gradle
+tests/src/org.json4s/json4s-jackson-core_3/4.0.7/build.gradle
+tests/src/org.jboss.weld/weld-spi/1.1.Final/build.gradle
+tests/src/org.tpolecat/doobie-free_3/1.0.0-M3/build.gradle
+tests/src/org.codehaus.jsr166-mirror/jsr166y/1.7.0/build.gradle
+tests/src/org.jboss.weld/weld-spi/1.2.0.Beta1/build.gradle
+tests/src/org.tpolecat/doobie-free_3/1.0.0-RC3/build.gradle
+tests/src/org.jboss.weld/weld-spi/2.0.Final/build.gradle
+tests/src/org.apache.lucene/lucene-core/5.1.0/build.gradle
+tests/src/org.tpolecat/typename_3/1.0.0/build.gradle
+tests/src/org.jboss.weld/weld-spi/2.1.Final/build.gradle
+tests/src/org.tpolecat/sourcepos_3/1.1.0/build.gradle
+tests/src/org.jboss.weld/weld-spi/2.2.SP2/build.gradle
+tests/src/org.apache.lucene/lucene-core/5.0.0/build.gradle
+tests/src/org.tpolecat/skunk-core_3/1.1.0-M3/build.gradle
+tests/src/org.jboss.weld/weld-api/1.1.Final/build.gradle
+tests/src/org.apache.httpcomponents/httpclient/4.5.5/build.gradle
+tests/src/org.jboss.weld/weld-api/1.1.0-01-glassfish/build.gradle
+tests/src/org.apache.httpcomponents/httpclient/4.5.14/build.gradle
+tests/src/org.jboss.weld/weld-api/4.0.Final/build.gradle
+tests/src/org.jboss.weld/weld-api/1.2.0.Beta1/build.gradle
+tests/src/org.apache.httpcomponents/httpcore/4.4.10/build.gradle
+tests/src/org.jboss.weld/weld-api/2.0.Final/build.gradle
+tests/src/org.apache.httpcomponents/httpcore/4.0.1/build.gradle
+tests/src/org.apache.httpcomponents/httpcore/4.4.15/build.gradle
+tests/src/io.quarkus.gizmo/gizmo2/2.0.0.Beta10/build.gradle
+tests/src/org.apache.httpcomponents/httpcore/4.4.16/build.gradle
+tests/src/co.fs2/fs2-reactive-streams_3/3.13.0/build.gradle
+tests/src/org.apache.httpcomponents/httpcore/4.4.14/build.gradle
+tests/src/co.fs2/fs2-core_3/2.5.6/build.gradle
+tests/src/org.apache.httpcomponents/httpcore/4.4.13/build.gradle
+tests/src/co.fs2/fs2-core_3/3.0-130-1713a29/build.gradle
+tests/src/org.apache.httpcomponents/httpcore/4.4.12/build.gradle
+tests/src/co.fs2/fs2-io_3/3.9.4/build.gradle
+tests/src/org.apache.lucene/lucene-core/4.10.4/build.gradle
+tests/src/org.eclipse.paho/org.eclipse.paho.mqttv5.client/1.2.5/build.gradle
+tests/src/org.eclipse.paho/org.eclipse.paho.client.mqttv3/1.2.5/build.gradle
+tests/src/org.osgi/org.osgi.util.function/1.1.0/build.gradle
+tests/src/org.osgi/org.osgi.resource/1.0.0/build.gradle
+tests/src/org.http4s/http4s-dsl_3/0.23.34/build.gradle
+tests/src/org.http4s/http4s-core_3/1.0.0-M44/build.gradle
+tests/src/org.osgi/org.osgi.namespace.service/1.0.0/build.gradle
+tests/src/org.osgi/org.osgi.dto/1.0.0/build.gradle
+tests/src/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/build.gradle
+tests/src/javax.activation/javax.activation-api/1.2.0/build.gradle
+tests/src/org.jboss.logmanager/jboss-logmanager/1.2.0.GA/build.gradle
+tests/src/org.jboss.slf4j/slf4j-jboss-logmanager/1.1.0.Final/build.gradle
+tests/src/com.googlecode.javaewah/JavaEWAH/1.1.13/build.gradle
+tests/src/jakarta.el/jakarta.el-api/3.0.2/build.gradle
+tests/src/org.http4s/http4s-ember-server_3/1.0.0-M44/build.gradle
+tests/src/org.http4s/http4s-server_3/0.23.30/build.gradle
+tests/src/org.http4s/http4s-ember-core_3/1.0.0-M44/build.gradle
+tests/src/org.http4s/http4s-circe_3/0.23.34/build.gradle
+tests/src/org.iq80.snappy/snappy/0.5/build.gradle
+tests/src/org.iq80.snappy/snappy/0.4/build.gradle
+tests/src/redis.clients/jedis/5.0.1/build.gradle
+tests/src/redis.clients/jedis/3.0.0/build.gradle
+tests/src/redis.clients/jedis/4.4.0/build.gradle
+tests/src/redis.clients/jedis/2.9.0/build.gradle
+tests/src/redis.clients/jedis/3.6.0/build.gradle
+tests/src/redis.clients/jedis/4.0.0/build.gradle
+tests/src/org.apache.httpcomponents/httpcore/4.4.9/build.gradle
+tests/src/redis.clients/jedis/5.0.0/build.gradle
+tests/src/org.apache.httpcomponents/httpcore/4.4.11/build.gradle
+tests/src/com.sun.xml.bind.external/relaxng-datatype/4.0.6/build.gradle
+tests/src/com.sun.xml.bind.external/rngom/4.0.6/build.gradle
+tests/src/org.abego.treelayout/org.abego.treelayout.core/1.0.1/build.gradle
+tests/src/com.graphql-java/java-dataloader/2021-07-17T01-39-28-682c652/build.gradle
+tests/src/org.osgi/org.osgi.util.promise/1.2.0/build.gradle
+tests/src/com.graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/build.gradle
+tests/src/org.osgi/org.osgi.service.serviceloader/1.0.0/build.gradle
+tests/src/com.graphql-java/java-dataloader/2021-06-27T00-42-24-11a7348/build.gradle
+tests/src/com.graphql-java/java-dataloader/2021-06-25T00-59-41-0eec4c8/build.gradle
+tests/src/org.osgi/org.osgi.namespace.extender/1.0.1/build.gradle
+tests/src/org.osgi/org.osgi.compendium/5.0.0/build.gradle
+tests/src/com.graphql-java/java-dataloader/3.2.0/build.gradle
+tests/src/org.osgi/org.osgi.util.tracker/1.5.4/build.gradle
+tests/src/com.graphql-java/java-dataloader/5.0.0/build.gradle
+tests/src/org.osgi/osgi_R4_core/1.0/build.gradle
+tests/src/org.osgi/osgi.annotation/7.0.0/build.gradle
+tests/src/com.graphql-java/graphql-java/19.7/build.gradle
+tests/src/org.osgi/org.osgi.service.repository/1.1.0/build.gradle
+tests/src/org.osgi/osgi.annotation/8.1.0/build.gradle
+tests/src/com.graphql-java/graphql-java/19.2/build.gradle
+tests/src/org.osgi/org.osgi.annotation.bundle/2.0.0/build.gradle
+tests/src/com.zaxxer/SparseBitSet/1.2/build.gradle
+tests/src/org.osgi/osgi.core/7.0.0/build.gradle
+tests/src/com.graphql-java/graphql-java/2018-06-27T00-18-28-1e12da9/build.gradle
+tests/src/com.zaxxer/HikariCP/5.0.1/build.gradle
+tests/src/org.osgi/osgi.core/8.0.0/build.gradle
+tests/src/org.osgi/osgi.core/6.0.0/build.gradle
+tests/src/com.zaxxer/HikariCP/4.0.3/build.gradle
+tests/src/javax.activation/activation/1.1/build.gradle
+tests/src/io.reactivex.rxjava3/rxjava/3.1.5/build.gradle
+tests/src/com.zaxxer/HikariCP/6.0.0/build.gradle
+tests/src/org.apache.arrow/arrow-memory-core/7.0.0/build.gradle
+tests/src/io.opentelemetry/opentelemetry-api-logs/1.26.0-alpha/build.gradle
+tests/src/io.opentelemetry/opentelemetry-api-logs/1.19.0-alpha/build.gradle
+tests/src/org.apache.arrow/arrow-memory-core/13.0.0/build.gradle
+tests/src/io.opentelemetry/opentelemetry-api-logs/1.23.0-alpha/build.gradle
+tests/src/com.zaxxer/HikariCP-java7/2.4.13/build.gradle
+tests/src/org.apache.arrow/arrow-format/7.0.0/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-common/1.19.0/build.gradle
+tests/src/org.apache.arrow/arrow-format/15.0.0/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk/1.19.0/build.gradle
+tests/src/org.sonatype.plexus/plexus-build-api/0.0.7/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-metrics/1.59.0/build.gradle
+tests/src/com.monovore/decline_3/2.6.2/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-metrics/1.56.0/build.gradle
+tests/src/org.apache.openejb/javaee-api/5.0-2/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-metrics/1.19.0/build.gradle
+tests/src/com.monovore/decline-effect_3/2.6.2/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-trace/1.55.0/build.gradle
+tests/src/com.graphql-java/graphql-java-extended-scalars/19.0/build.gradle
+tests/src/com.chuusai/shapeless_2.13/2.3.13/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-trace/1.19.0/build.gradle
+tests/src/com.graphql-java/graphql-java-extended-scalars/2018-10-05T23-44-12-5312ccd/build.gradle
+tests/src/io.opentelemetry/opentelemetry-api-incubator/1.56.0-alpha/build.gradle
+tests/src/com.graphql-java/graphql-java-extended-scalars/2019-08-31T02-34-04-3decba9/build.gradle
+tests/src/io.opentelemetry/opentelemetry-exporter-jaeger/1.19.0/build.gradle
+tests/src/org.javamoney.moneta/moneta-core/1.3/build.gradle
+tests/src/io.opentelemetry/opentelemetry-api-events/1.25.0-alpha/build.gradle
+tests/src/com.graphql-java/graphql-java-extended-scalars/21.0/build.gradle
+tests/src/io.opentelemetry/opentelemetry-semconv/1.25.0-alpha/build.gradle
+tests/src/io.opentelemetry/opentelemetry-api-events/1.32.0-alpha/build.gradle
+tests/src/com.graphql-java/graphql-java-extended-validation/19.1/build.gradle
+tests/src/org.javamoney.moneta/moneta-core/1.4/build.gradle
+tests/src/io.opentelemetry/opentelemetry-semconv/1.19.0-alpha/build.gradle
+tests/src/io.opentelemetry/opentelemetry-semconv/1.23.0-alpha/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.25.0/build.gradle
+tests/src/org.hamcrest/hamcrest-library/1.3/build.gradle
+tests/src/io.opentelemetry/opentelemetry-semconv/1.21.0-alpha/build.gradle
+tests/src/dev.failsafe/failsafe/3.3.1/build.gradle
+tests/src/io.opentelemetry/opentelemetry-exporter-otlp/1.19.0/build.gradle
+tests/src/io.opentelemetry/opentelemetry-semconv/1.27.0-alpha/build.gradle
+tests/src/org.hamcrest/hamcrest-core/1.3/build.gradle
+tests/src/io.opentelemetry/opentelemetry-exporter-logging/1.19.0/build.gradle
+tests/src/nekohtml/xercesMinimal/1.9.6.2/build.gradle
+tests/src/io.opentelemetry/opentelemetry-exporter-zipkin/1.19.0/build.gradle
+tests/src/org.hamcrest/hamcrest/2.2/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-logs/1.26.0-alpha/build.gradle
+tests/src/io.kotest/kotest-extensions-jvm/6.1.11/build.gradle
+tests/src/com.github.virtuald/curvesapi/1.06/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/1.9.0/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-logs/1.19.0-alpha/build.gradle
+tests/src/io.kotest/kotest-common-jvm/6.1.11/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-datetime-jvm/0.7.1/build.gradle
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-logs/1.23.0-alpha/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/0.8.2/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-logs/1.20.0-alpha/build.gradle
+tests/src/org.apache.kerby/kerby-util/1.0.1/build.gradle
+tests/src/io.kotest/kotest-runner-junit-platform-jvm/6.1.11/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-coroutines-slf4j/1.10.2/build.gradle
+tests/src/org.apache.kerby/kerby-pkix/1.0.1/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/1.11.0/build.gradle
+tests/src/io.arrow-kt/arrow-autoclose-jvm/2.2.2/build.gradle
+tests/src/io.kotest/kotest-assertions-shared-jvm/6.1.11/build.gradle
+tests/src/org.apache.kerby/kerby-asn1/1.0.1/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-coroutines-test-jvm/1.10.2/build.gradle
+tests/src/io.arrow-kt/arrow-atomic-jvm/2.2.2/build.gradle
+tests/src/org.apache.kerby/kerby-config/1.0.1/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-coroutines-reactor/1.10.2/build.gradle
+tests/src/io.kotest/kotest-property-jvm/6.1.11/build.gradle
+tests/src/io.arrow-kt/arrow-exception-utils-jvm/2.2.2/build.gradle
+tests/src/org.apache.kerby/kerb-core/1.0.1/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-coroutines-rx2/1.10.2/build.gradle
+tests/src/org.aspectj/aspectjweaver/1.9.7/build.gradle
+tests/src/org.apache.kerby/kerby-xdr/2.0.2/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-json-io-jvm/1.8.1/build.gradle
+tests/src/io.arrow-kt/arrow-resilience-jvm/2.2.2/build.gradle
+tests/src/com.beachape/enumeratum-circe_3/1.9.7/build.gradle
+tests/src/org.apache.kerby/kerby-xdr/1.0.1/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-metadata-jvm/0.9.0/build.gradle
+tests/src/io.arrow-kt/arrow-annotations-jvm/2.2.2/build.gradle
+tests/src/com.beachape/enumeratum_3/1.9.0/build.gradle
+tests/src/javax.cache/cache-api/1.1.0/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-hocon/1.11.0/build.gradle
+tests/src/io.arrow-kt/arrow-core-jvm/2.2.2/build.gradle
+tests/src/org.aspectj/aspectjrt/1.9.6/build.gradle
+tests/src/com.mchange/mchange-commons-java/0.2.15/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/1.8.1/build.gradle
+tests/src/javax.cache/cache-api/1.1.1/build.gradle
+tests/src/io.arrow-kt/arrow-fx-coroutines-jvm/2.2.2/build.gradle
+tests/src/org.jetbrains.kotlinx/atomicfu-jvm/0.19.0/build.gradle
+tests/src/org.jvnet/animal-sniffer-annotation/1.0/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/0.4.0/build.gradle
+tests/src/io.scalaland/chimney_3/2.0.0-M1/build.gradle
+tests/src/org.attoparser/attoparser/2.0.5.RELEASE/build.gradle
+tests/src/com.github.luben/zstd-jni/1.5.2-5/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-coroutines-guava/1.10.2/build.gradle
+tests/src/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/2.33.3/build.gradle
+tests/src/org.apache.bookkeeper/bookkeeper-common-allocator/4.17.3/build.gradle
+tests/src/com.github.luben/zstd-jni/1.5.5-1/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/1.11.0/build.gradle
+tests/src/org.apache.velocity/velocity-engine-core/2.3/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.9.0/build.gradle
+tests/src/net.sf.py4j/py4j/0.10.9.3/build.gradle
+tests/src/findbugs/annotations/1.0.0/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/1.9.0/build.gradle
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/build.gradle
+tests/src/org.brotli/dec/0.1.2/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-io-core-jvm/0.8.2/build.gradle
+tests/src/jakarta.jms/jakarta.jms-api/3.0.0/build.gradle
+tests/src/org.rocksdb/rocksdbjni/7.1.2/build.gradle
+tests/src/org.jboss.logging/jboss-logging-processor/2.0.2.Final/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-cli-jvm/0.3.6/build.gradle
+tests/src/io.reactivex.rxjava2/rxjava/2.2.8/build.gradle
+tests/src/org.rocksdb/rocksdbjni/7.9.2/build.gradle
+tests/src/org.jboss.logging/jboss-logging-processor/2.1.0.Final/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-coroutines-reactive/1.10.2/build.gradle
+tests/src/org.rocksdb/rocksdbjni/10.4.2/build.gradle
+tests/src/javax.xml.bind/jaxb-api/2.3.1/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-html-jvm/0.12.0/build.gradle
+tests/src/org.jboss.logging/jboss-logging/3.5.0.Final/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-coroutines-rx3/1.10.2/build.gradle
+tests/src/org.scala-js/scalajs-javalib-intf/1.16.0/build.gradle
+tests/src/org.jetbrains.kotlinx/kotlinx-coroutines-jdk8/1.6.4/build.gradle
+tests/src/org.jboss.logging/jboss-logging-annotations/2.0.2.Final/build.gradle
+tests/src/com.typesafe.scala-logging/scala-logging_3/3.9.5/build.gradle
+tests/src/io.opentelemetry.semconv/opentelemetry-semconv/1.25.0-alpha/build.gradle
+tests/src/com.microsoft.sqlserver/mssql-jdbc/12.2.0.jre11/build.gradle
+tests/src/org.jboss.logging/commons-logging-jboss-logging/2.0.0.Final/build.gradle
+tests/src/io.ous/jtoml/2.0.0/build.gradle
+tests/src/commons-logging/commons-logging-api/1.1/build.gradle
+tests/src/io.opentelemetry.semconv/opentelemetry-semconv/1.23.1-alpha/build.gradle
+tests/src/com.typesafe/ssl-config-core_3/0.6.1/build.gradle
+tests/src/jakarta.servlet/jakarta.servlet-api/4.0.4/build.gradle
+tests/src/com.softwaremill.sttp.model/core_3/1.7.12/build.gradle
+tests/src/commons-logging/commons-logging/1.2/build.gradle
+tests/src/com.typesafe/ssl-config-core_2.13/0.5.0/build.gradle
+tests/src/jakarta.servlet/jakarta.servlet-api/5.0.0/build.gradle
+tests/src/io.nats/jnats/2.16.11/build.gradle
+tests/src/joda-time/joda-time/2.9.9/build.gradle
+tests/src/io.perfmark/perfmark-api/0.25.0/build.gradle
+tests/src/org.liquibase/liquibase-core/4.25.0/build.gradle
+tests/src/com.typesafe/ssl-config-core_2.13/0.4.3/build.gradle
+tests/src/ch.qos.logback/logback-core/1.2.12/build.gradle
+tests/src/org.sangria-graphql/sangria-ast_3/4.2.9/build.gradle
+tests/src/org.sangria-graphql/sangria-parser_3/4.2.9/build.gradle
+tests/src/org.liquibase/liquibase-core/5.0.1/build.gradle
+tests/src/com.typesafe/config/1.4.2/build.gradle
+tests/src/org.sangria-graphql/sangria-streaming-api_3/1.0.3/build.gradle
+tests/src/org.joda/joda-convert/2.2.4/build.gradle
+tests/src/org.sangria-graphql/sangria-derivation_3/4.2.9/build.gradle
+tests/src/ch.qos.logback/logback-core/1.1.3/build.gradle
+tests/src/org.sangria-graphql/macro-visit_3/0.2.0/build.gradle
+tests/src/org.sangria-graphql/sangria-marshalling-api_3/1.0.8/build.gradle
+tests/src/com.github.ajalt.colormath/colormath-jvm/3.6.0/build.gradle
+tests/src/org.liquibase/liquibase-core/4.17.0/build.gradle
+tests/src/org.sangria-graphql/sangria-core_3/4.2.9/build.gradle
+tests/src/ch.qos.logback/logback-core/1.5.30/build.gradle
+tests/src/net.jcip/jcip-annotations/1.0/build.gradle
+tests/src/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/1.0.1.Final/build.gradle
+tests/src/org.testcontainers/testcontainers/1.17.6/build.gradle
+tests/src/ch.qos.logback/logback-core/1.5.26/build.gradle
+tests/src/org.testcontainers/testcontainers/1.19.8/build.gradle
+tests/src/org.testcontainers/junit-jupiter/1.18.3/build.gradle
+tests/src/io.projectreactor/reactor-core/3.5.1/build.gradle
+tests/src/org.glassfish.jaxb/xsom/4.0.6/build.gradle
+tests/src/org.glassfish.jaxb/jaxb-core/3.0.0-M5/build.gradle
+tests/src/org.glassfish.jaxb/txw2/2.3.1/build.gradle
+tests/src/com.google.api/gax/2.54.1/build.gradle
+tests/src/org.apache.httpcomponents/httpmime/4.1/build.gradle
+tests/src/org.apache.httpcomponents/httpmime/4.3/build.gradle
+tests/src/org.glassfish.jaxb/jaxb-runtime/3.0.2/build.gradle
+tests/src/com.google.api/gax-httpjson/2.67.0/build.gradle
+tests/src/com.barchart.udt/barchart-udt-bundle/2.3.0/build.gradle
+tests/src/software.amazon.awssdk/http-client-spi/2.34.0/build.gradle
+tests/src/com.google.api/gax-grpc/2.67.0/build.gradle
+tests/src/org.jboss.resteasy/resteasy-client/6.2.12.Final/build.gradle
+tests/src/software.amazon.awssdk/profiles/2.34.0/build.gradle
+tests/src/com.google.api/api-common/2.37.1/build.gradle
+tests/src/samples/docker/image-pull/build.gradle
+tests/src/io.dropwizard.metrics5/metrics-core/5.0.1/build.gradle
+tests/src/io.dropwizard.metrics5/metrics-core/5.0.0/build.gradle
+tests/src/com.beust/jcommander/1.78/build.gradle
+tests/src/com.beust/jcommander/1.75/build.gradle
+tests/src/com.beust/jcommander/1.72/build.gradle
+tests/src/software.amazon.awssdk/metrics-spi/2.34.0/build.gradle
+tests/src/org.fusesource.hawtjni/hawtjni-runtime/1.9/build.gradle
+tests/src/javax.enterprise/cdi-api/1.0/build.gradle
+tests/src/org.apache.tika/tika-core/3.3.0/build.gradle
+tests/src/com.google.code.gson/gson/2.2.4/build.gradle
+tests/src/com.github.takayahilton/sql-formatter_2.13/1.2.1/build.gradle
+tests/src/org.jboss.interceptor/jboss-interceptor-spi/2.0.0.Final/build.gradle
+tests/src/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/1.0.0.Final/build.gradle
+tests/src/software.amazon.awssdk/apache-client/2.34.0/build.gradle
+tests/src/org.codehaus.plexus/plexus-container-default/1.0-alpha-8/build.gradle
+tests/src/org.jboss.interceptor/jboss-interceptor-api/1.1/build.gradle
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-routed/2.0.0/build.gradle
+tests/src/org.codehaus.plexus/plexus-container-default/1.0-alpha-7/build.gradle
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-pooled/2.0.0/build.gradle
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/2.0.0/build.gradle
+tests/src/org.codehaus.plexus/plexus-cipher/2.0/build.gradle
+tests/src/org.neo4j.bolt/neo4j-bolt-connection/2.0.0/build.gradle
+tests/src/org.codehaus.plexus/plexus-resources/1.2.0/build.gradle
+tests/src/jakarta.websocket/jakarta.websocket-client-api/2.1.0/build.gradle
+tests/src/jakarta.websocket/jakarta.websocket-api/2.1.0/build.gradle
+tests/src/org.codehaus.plexus/plexus-xml/3.0.0/build.gradle
+tests/src/org.codehaus.plexus/plexus-xml/4.0.0/build.gradle
+tests/src/app.cash.turbine/turbine-jvm/1.2.1/build.gradle
+tests/src/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/2.13.5/build.gradle
+tests/src/org.codehaus.plexus/plexus-component-annotations/1.5.4/build.gradle
+tests/src/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/2.13.1/build.gradle
+tests/src/org.codehaus.plexus/plexus-utils/1.5.7/build.gradle
+tests/src/org.junit.platform/junit-platform-suite-api/1.13.4/build.gradle
+tests/src/org.junit.platform/junit-platform-launcher/1.9.2/build.gradle
+tests/src/org.codehaus.plexus/plexus-utils/1.0.4/build.gradle
+tests/src/ch.qos.logback/logback-classic/1.4.1/build.gradle
+tests/src/org.junit.platform/junit-platform-engine/1.8.2/build.gradle
+tests/src/org.junit.platform/junit-platform-engine/1.10.4/build.gradle
+tests/src/ch.qos.logback/logback-classic/1.2.11/build.gradle
+tests/src/xpp3/xpp3/1.1.4c/build.gradle
+tests/src/io.opentelemetry/opentelemetry-api/1.19.0/build.gradle
+tests/src/software.amazon.awssdk/sdk-core/2.34.0/build.gradle
+tests/src/org.codehaus.plexus/plexus-interpolation/1.0/build.gradle
+tests/src/io.opentelemetry/opentelemetry-extension-incubator/1.35.0-alpha/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.25.0-alpha/build.gradle
+tests/src/io.opentelemetry/opentelemetry-common/1.56.0/build.gradle
+tests/src/io.opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.28.0/build.gradle
+tests/src/software.amazon.awssdk/s3/2.30.0/build.gradle
+tests/src/xml-apis/xml-apis/1.0.b2/build.gradle
+tests/src/io.opentelemetry/opentelemetry-exporter-common/1.19.0/build.gradle
+tests/src/io.opentelemetry/opentelemetry-context/1.19.0/build.gradle
+tests/src/commons-net/commons-net/3.1/build.gradle
+tests/src/jline/jline/3.0.0.M1/build.gradle
+tests/src/jline/jline/2.14.6/build.gradle
+tests/src/org.quartz-scheduler/quartz/2.3.2/build.gradle
+tests/src/com.esotericsoftware/minlog/1.3.0/build.gradle
+tests/src/io.smallrye.beanbag/smallrye-beanbag-sisu/1.6.1/build.gradle
+tests/src/ch.qos.cal10n/cal10n-api/0.7.2/build.gradle
+tests/src/io.smallrye.beanbag/smallrye-beanbag/1.6.1/build.gradle
+tests/src/org.glassfish.hk2.external/javax.inject/2.5.0-b05/build.gradle
+tests/src/com.google.jsinterop/jsinterop-annotations/1.0.0/build.gradle
+tests/src/org.glassfish.hk2.external/jakarta.inject/2.6.1/build.gradle
+tests/src/org.json/json/20220320/build.gradle
+tests/src/com.ecwid.consul/consul-api/1.4.5/build.gradle
+tests/src/org.jboss.narayana.jta/jta/7.3.1.Final/build.gradle
+tests/src/org.junit.platform/junit-platform-commons/1.8.2/build.gradle
+tests/src/org.junit.platform/junit-platform-reporting/1.9.2/build.gradle
+tests/src/dev.equo.ide/solstice/1.7.5/build.gradle
+tests/src/io.projectreactor.netty/reactor-netty-http/1.0.39/build.gradle
+tests/src/org.hibernate.common/hibernate-commons-annotations/5.1.2.Final/build.gradle
+tests/src/io.projectreactor.netty/reactor-netty-core/1.0.39/build.gradle
+tests/src/com.sun.mail/jakarta.mail/2.0.1/build.gradle
+tests/src/org.snakeyaml/snakeyaml-engine/3.0.1/build.gradle
+tests/src/software.amazon.awssdk/aws-query-protocol/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/annotations/2.34.0/build.gradle
+tests/src/com.geirsson/metaconfig-typesafe-config_2.13/0.12.0/build.gradle
+tests/src/com.geirsson/metaconfig-pprint_2.13/0.12.0/build.gradle
+tests/src/software.amazon.awssdk/aws-json-protocol/2.34.0/build.gradle
+tests/src/com.geirsson/metaconfig-core_2.13/0.12.0/build.gradle
+tests/src/software.amazon.awssdk/http-auth/2.34.0/build.gradle
+tests/src/com.tunnelvisionlabs/antlr4-annotations/4.5/build.gradle
+tests/src/software.amazon.awssdk/dynamodb/2.34.0/build.gradle
+tests/src/com.google.auth/google-auth-library-credentials/1.10.0/build.gradle
+tests/src/software.amazon.awssdk/auth/2.34.0/build.gradle
+tests/src/org.clojure/google-closure-library-third-party/0.0-20150505-021ed5b3/build.gradle
+tests/src/software.amazon.awssdk/checksums-spi/2.34.0/build.gradle
+tests/src/org.clojure/google-closure-library-third-party/0.0-20250515-f04e4c0e/build.gradle
+tests/src/software.amazon.awssdk/kms/2.34.0/build.gradle
+tests/src/org.postgresql/postgresql/42.3.4/build.gradle
+tests/src/software.amazon.awssdk/lambda/2.34.0/build.gradle
+tests/src/org.postgresql/postgresql/42.7.3/build.gradle
+tests/src/software.amazon.awssdk/http-auth-aws/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/secretsmanager/2.34.0/build.gradle
+tests/src/javax.servlet/servlet-api/2.4.public_draft/build.gradle
+tests/src/org.skyscreamer/jsonassert/1.5.1/build.gradle
+tests/src/javax.servlet/servlet-api/2.3/build.gradle
+tests/src/org.apache.maven.surefire/surefire-logger-api/2.22.2/build.gradle
+tests/src/javax.servlet/servlet-api/2.4/build.gradle
+tests/src/javax.servlet/javax.servlet-api/3.1.0/build.gradle
+tests/src/com.android.tools/annotations/24.5.0/build.gradle
+tests/src/org.eclipse.aether/aether-util/1.0.2.v20150114/build.gradle
+tests/src/org.eclipse.aether/aether-api/1.0.2.v20150114/build.gradle
+tests/src/org.eclipse.aether/aether-spi/1.0.2.v20150114/build.gradle
+tests/src/org.eclipse.aether/aether-impl/1.0.2.v20150114/build.gradle
+tests/src/com.github.spotbugs/spotbugs-annotations/4.8.6/build.gradle
+tests/src/org.codehaus.woodstox/stax2-api/4.2.2/build.gradle
+tests/src/org.jooq/jooq/3.18.2/build.gradle
+tests/src/org.apache.maven.surefire/surefire-api/2.22.2/build.gradle
+tests/src/org.jooq/jooq/3.17.7/build.gradle
+tests/src/org.hdrhistogram/HdrHistogram/2.1.12/build.gradle
+tests/src/com.fasterxml.jackson.jr/jackson-jr-objects/2.21.0/build.gradle
+tests/src/com.github.pureconfig/pureconfig-generic-base_3/0.17.10/build.gradle
+tests/src/com.fasterxml.jackson.jr/jackson-jr-objects/2.17.0/build.gradle
+tests/src/com.github.pureconfig/pureconfig-core_3/0.17.9/build.gradle
+tests/src/com.fasterxml.jackson.jr/jackson-jr-objects/2.13.4/build.gradle
+tests/src/com.github.pureconfig/pureconfig-generic-scala3_3/0.17.10/build.gradle
+tests/src/org.immutables/value/2.8.2/build.gradle
+tests/src/org.eclipse.jetty.alpn/alpn-api/1.1.3.v20160715/build.gradle
+tests/src/org.apache.kafka/kafka-clients/3.5.1/build.gradle
+tests/src/org.immutables/value/2.8.6/build.gradle
+tests/src/org.apache.kafka/kafka-streams/3.5.1/build.gradle
+tests/src/org.apache.kafka/kafka-streams/3.6.0/build.gradle
+tests/src/org.eclipse.jetty.http2/http2-hpack/11.0.24/build.gradle
+tests/src/com.ibm.async/asyncutil/0.1.0/build.gradle
+tests/src/org.jboss.narayana.jta/jta/5.12.4.Final/build.gradle
+tests/src/org.roaringbitmap/shims/0.9.0/build.gradle
+tests/src/io.micrometer/micrometer-observation/1.14.4/build.gradle
+tests/src/io.micrometer/micrometer-observation/1.16.4/build.gradle
+tests/src/io.micrometer/micrometer-commons/1.14.4/build.gradle
+tests/src/io.micrometer/micrometer-commons/1.16.0/build.gradle
+tests/src/software.amazon.awssdk/checksums/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/http-auth-aws-eventstream/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/utils-lite/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/endpoints-spi/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/s3/2.25.3/build.gradle
+tests/src/software.amazon.awssdk/retries/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/aws-core/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/sns/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/utils/2.34.0/build.gradle
+tests/src/io.jsonwebtoken/jjwt-gson/0.12.0/build.gradle
+tests/src/io.jsonwebtoken/jjwt-gson/0.11.5/build.gradle
+tests/src/io.jsonwebtoken/jjwt-jackson/0.12.0/build.gradle
+tests/src/io.jsonwebtoken/jjwt-jackson/0.11.5/build.gradle
+tests/src/io.jsonwebtoken/jjwt-orgjson/0.12.0/build.gradle
+tests/src/io.jsonwebtoken/jjwt-orgjson/0.11.5/build.gradle
+tests/src/io.jsonwebtoken/jjwt-api/0.11.5/build.gradle
+tests/src/backport-util-concurrent/backport-util-concurrent/3.1/build.gradle
+tests/src/io.jsonwebtoken/jjwt-api/0.12.3/build.gradle
+tests/src/io.jsonwebtoken/jjwt-impl/0.12.0/build.gradle
+tests/src/org.dom4j/dom4j/2.1.1/build.gradle
+tests/src/io.jsonwebtoken/jjwt-impl/0.11.5/build.gradle
+tests/src/org.latencyutils/LatencyUtils/2.0.3/build.gradle
+tests/src/org.scodec/scodec-bits_3/1.1.27/build.gradle
+tests/src/commons-fileupload/commons-fileupload/1.6.0/build.gradle
+tests/src/org.apache.curator/curator-client/2.6.0/build.gradle
+tests/src/org.fusesource.hawtbuf/hawtbuf/1.11/build.gradle
+tests/src/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base/2.0.0/build.gradle
+tests/src/info.picocli/picocli/4.7.6/build.gradle
+tests/src/jakarta.validation/jakarta.validation-api/3.0.0/build.gradle
+tests/src/com.hazelcast/hazelcast/5.5.0/build.gradle
+tests/src/com.github.ghik/silencer-lib_2.13.16/1.7.19/build.gradle
+tests/src/com.github.ghik/silencer-lib_2.13.5/1.7.3/build.gradle
+tests/src/com.hazelcast/hazelcast/5.2.1/build.gradle
+tests/src/com.github.ghik/silencer-lib_2.13/1.4.1/build.gradle
+tests/src/com.github.docker-java/docker-java-transport/3.2.13/build.gradle
+tests/src/org.eclipse.microprofile.openapi/microprofile-openapi-api/4.1.1/build.gradle
+tests/src/com.mysql/mysql-connector-j/8.0.31/build.gradle
+tests/src/plexus/plexus-utils/1.0-alpha-1/build.gradle
+tests/src/org.xmlunit/xmlunit-placeholders/2.10.2/build.gradle
+tests/src/software.amazon.eventstream/eventstream/1.0.1/build.gradle
+tests/src/org.xmlunit/xmlunit-core/2.9.1/build.gradle
+tests/src/plexus/plexus-utils/1.0.2/build.gradle
+tests/src/aopalliance/aopalliance/1.0/build.gradle
+tests/src/com.mysema.commons/mysema-commons-lang/0.2.4/build.gradle
+tests/src/xmlpull/xmlpull/1.1.3.1/build.gradle
+tests/src/javax.annotation/jsr250-api/1.0/build.gradle
+tests/src/org.scalameta/scalafmt-sysops_2.13/3.8.1/build.gradle
+tests/src/javax.annotation/javax.annotation-api/1.2/build.gradle
+tests/src/org.scalameta/junit-interface/0.7.29/build.gradle
+tests/src/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/build.gradle
+tests/src/org.scalameta/scalafmt-core_2.13/3.8.1/build.gradle
+tests/src/org.jboss.arquillian.test/arquillian-test-api/1.1.10.Final/build.gradle
+tests/src/org.scalameta/munit_3/0.7.29/build.gradle
+tests/src/org.apache.santuario/xmlsec/4.0.4/build.gradle
+tests/src/org.scalameta/munit-diff_3/1.2.4/build.gradle
+tests/src/javax.jcr/jcr/1.0/build.gradle
+tests/src/org.sonatype.aether/aether-util/1.7/build.gradle
+tests/src/org.scalameta/scalameta_2.13/4.9.3/build.gradle
+tests/src/org.sonatype.aether/aether-util/1.8/build.gradle
+tests/src/org.scalameta/scalafmt-config_2.13/3.8.1/build.gradle
+tests/src/org.sonatype.aether/aether-util/1.12/build.gradle
+tests/src/org.scalameta/mdoc-parser_2.13/2.5.2/build.gradle
+tests/src/org.sonatype.aether/aether-api/1.9/build.gradle
+tests/src/org.sonatype.aether/aether-api/1.7/build.gradle
+tests/src/com.google.auto.service/auto-service/1.0.1/build.gradle
+tests/src/org.sonatype.aether/aether-api/1.8/build.gradle
+tests/src/com.google.auto.service/auto-service-annotations/1.0.1/build.gradle
+tests/src/org.sonatype.aether/aether-api/1.13.1/build.gradle
+tests/src/org.sonatype.aether/aether-spi/1.7/build.gradle
+tests/src/org.scala-sbt/util-interface/1.3.0/build.gradle
+tests/src/org.sonatype.aether/aether-spi/1.8/build.gradle
+tests/src/org.scala-sbt/test-interface/1.0/build.gradle
+tests/src/org.mariadb.jdbc/mariadb-java-client/3.0.6/build.gradle
+tests/src/org.mariadb.jdbc/mariadb-java-client/3.5.2/build.gradle
+tests/src/org.scala-sbt/compiler-interface/1.4.0/build.gradle
+tests/src/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/build.gradle
+tests/src/org.scala-sbt/compiler-interface/1.5.0/build.gradle
+tests/src/org.glassfish/javax.ejb/3.1/build.gradle
+tests/src/org.scala-sbt/compiler-interface/2.0.0-alpha1/build.gradle
+tests/src/org.glassfish/javax.ejb/10.0-b28/build.gradle
+tests/src/org.glassfish/javax.servlet/3.1/build.gradle
+tests/src/org.scala-sbt/compiler-interface/1.3.5/build.gradle
+tests/src/org.glassfish/javax.annotation/3.1/build.gradle
+tests/src/org.scala-sbt/compiler-interface/1.10.0/build.gradle
+tests/src/org.glassfish/javax.annotation/10.0-b28/build.gradle
+tests/src/org.glassfish/javax.transaction/3.1/build.gradle
+tests/src/jakarta.xml.bind/jakarta.xml.bind-api/3.0.0/build.gradle
+tests/src/jakarta.xml.bind/jakarta.xml.bind-api/4.0.0/build.gradle
+tests/src/com.clickhouse/clickhouse-jdbc/0.9.0/build.gradle
+tests/src/com.clickhouse/org.apache.commons.compress/1.9.2/build.gradle
+tests/src/com.clickhouse/org.roaringbitmap/1.9.2/build.gradle
+tests/src/com.clickhouse/clickhouse-client/0.9.0/build.gradle
+tests/src/com.clickhouse/jdbc-v2/0.9.0/build.gradle
+tests/src/com.clickhouse/clickhouse-data/0.9.0/build.gradle
+tests/src/com.akuleshov7/ktoml-core-jvm/0.7.1/build.gradle
+tests/src/com.thesamet.scalapb/scalapb-runtime_2.13/0.11.15/build.gradle
+tests/src/com.thesamet.scalapb/lenses_2.13/0.11.15/build.gradle
+tests/src/com.github.scopt/scopt_3/4.1.0/build.gradle
+tests/src/org.jboss/jandex/2.4.2.Final/build.gradle
+tests/src/com.squareup.okhttp3/okhttp/3.8.0/build.gradle
+tests/src/xalan/xalan/2.7.0/build.gradle
+tests/src/org.scoverage/scalac-scoverage-runtime_2.13/1.4.1/build.gradle
+tests/src/com.squareup.okhttp3/okhttp/3.6.0/build.gradle
+tests/src/javax.money/money-api/1.0.3/build.gradle
+tests/src/com.h2database/h2/2.1.210/build.gradle
+tests/src/io.netty/netty-pkitesting/4.2.1.Final/build.gradle
+tests/src/io.netty/netty-codec-stomp/4.1.74.Final/build.gradle
+tests/src/org.jsoup/jsoup/1.15.1/build.gradle
+tests/src/io.netty/netty-codec-mqtt/4.1.74.Final/build.gradle
+tests/src/io.netty/netty-codec/4.1.42.Final/build.gradle
+tests/src/org.jsoup/jsoup/1.13.1/build.gradle
+tests/src/io.netty/netty-all/4.0.23.Final/build.gradle
+tests/src/org.apache.pdfbox/fontbox/3.0.7/build.gradle
+tests/src/org.apache.pdfbox/pdfbox-io/3.0.7/build.gradle
+tests/src/io.netty/netty-transport-native-epoll/4.1.42.Final/build.gradle
+tests/src/org.apache.pdfbox/pdfbox/3.0.7/build.gradle
+tests/src/io.netty/netty-codec-smtp/4.1.74.Final/build.gradle
+tests/src/io.netty/netty-tcnative-classes/2.0.48.Final/build.gradle
+tests/src/org.ow2.asm/asm-debug-all/5.0.1/build.gradle
+tests/src/io.netty/netty-codec-haproxy/4.1.74.Final/build.gradle
+tests/src/org.ow2.asm/asm-commons/9.2/build.gradle
+tests/src/io.netty/netty-codec-dns/4.1.74.Final/build.gradle
+tests/src/io.netty/netty-handler-proxy/4.1.60.Final/build.gradle
+tests/src/org.ow2.asm/asm-tree/9.7.1/build.gradle
+tests/src/io.netty/netty-codec-socks/4.1.60.Final/build.gradle
+tests/src/com.squareup.okhttp3/okhttp/3.7.0/build.gradle
+tests/src/org.ow2.asm/asm-analysis/9.7.1/build.gradle
+tests/src/io.netty/netty-codec-xml/4.1.74.Final/build.gradle
+tests/src/org.ow2.asm/asm/9.4/build.gradle
+tests/src/io.netty/netty-codec-memcache/4.1.74.Final/build.gradle
+tests/src/org.ow2.asm/asm/6.2/build.gradle
+tests/src/io.netty/netty-resolver-dns-classes-macos/4.1.74.Final/build.gradle
+tests/src/io.netty/netty-transport-classes-epoll/4.1.99.Final/build.gradle
+tests/src/com.softwaremill.sttp.client4/core_3/4.0.3/build.gradle
+tests/src/org.ow2.asm/asm-util/9.7.1/build.gradle
+tests/src/io.netty/netty-transport-classes-kqueue/4.1.74.Final/build.gradle
+tests/src/com.softwaremill.sttp.client4/circe_3/4.0.23/build.gradle
+tests/src/org.apache.tomcat/tomcat-jdbc/10.1.14/build.gradle
+tests/src/io.netty/netty-transport-native-unix-common/4.1.57.Final/build.gradle
+tests/src/jakarta.inject/jakarta.inject-api/2.0.0/build.gradle
+tests/src/io.netty/netty-transport-native-unix-common/4.1.42.Final/build.gradle
+tests/src/org.apache.tomcat/tomcat-jdbc/10.1.7/build.gradle
+tests/src/io.netty/netty-transport-udt/4.1.74.Final/build.gradle
+tests/src/avalon-framework/avalon-framework/4.1.3/build.gradle
+tests/src/io.netty/netty-common/4.1.80.Final/build.gradle
+tests/src/tools.jackson.dataformat/jackson-dataformat-cbor/3.1.0/build.gradle
+tests/src/org.apache.tomcat/tomcat-juli/11.0.0/build.gradle
+tests/src/io.netty/netty-common/4.1.79.Final/build.gradle
+tests/src/com.diffplug.spotless/spotless-lib-extra/2.45.0/build.gradle
+tests/src/org.apache.tomcat/tomcat-juli/10.1.7/build.gradle
+tests/src/org.mongodb/mongo-java-driver/3.9.0/build.gradle
+tests/src/io.netty/netty-common/4.1.115.Final/build.gradle
+tests/src/org.mongodb/mongo-java-driver/3.4.0/build.gradle
+tests/src/io.netty/netty-transport-sctp/4.1.74.Final/build.gradle
+tests/src/org.apache.tomcat/tomcat-annotations-api/10.0.20/build.gradle
+tests/src/io.netty/netty-transport/4.1.80.Final/build.gradle
+tests/src/org.apache.tomcat/tomcat-annotations-api/11.0.0/build.gradle
+tests/src/io.netty/netty-transport/4.1.115.Final/build.gradle
+tests/src/org.apache.tomcat/annotations-api/6.0.53/build.gradle
+tests/src/io.netty/netty-transport-classes-io_uring/4.2.1.Final/build.gradle
+tests/src/com.intellij/annotations/12.0/build.gradle
+tests/src/io.netty/netty-resolver/5.0.0.Alpha2/build.gradle
+tests/src/jakarta.annotation/jakarta.annotation-api/1.3.3/build.gradle
+tests/src/io.netty/netty-resolver/4.1.79.Final/build.gradle
+tests/src/jakarta.annotation/jakarta.annotation-api/2.0.0/build.gradle
+tests/src/io.netty/netty-transport-native-kqueue/4.1.60.Final/build.gradle
+tests/src/jakarta.annotation/jakarta.annotation-api/3.0.0/build.gradle
+tests/src/com.atomikos/transactions-api/6.0.0/build.gradle
+tests/src/com.atomikos/transactions/6.0.0/build.gradle
+tests/src/org.reactivestreams/reactive-streams/1.0.3/build.gradle
+tests/src/org.opentest4j/opentest4j/1.2.0/build.gradle
+tests/src/org.glassfish.web/javax.el/2.2.4/build.gradle
+tests/src/io.github.x-stream/mxparser/1.2.2/build.gradle
+tests/src/io.grpc/grpc-context/1.57.0/build.gradle
+tests/src/io.grpc/grpc-context/1.27.2/build.gradle
+tests/src/io.grpc/grpc-xds/1.71.0/build.gradle
+tests/src/io.grpc/grpc-xds/1.68.0/build.gradle
+tests/src/io.grpc/grpc-services/1.68.0/build.gradle
+tests/src/io.grpc/grpc-googleapis/1.80.0/build.gradle
+tests/src/io.grpc/grpc-auth/1.79.0/build.gradle
+tests/src/io.grpc/grpc-auth/1.70.0/build.gradle
+tests/src/io.grpc/grpc-protobuf/1.70.0/build.gradle
+tests/src/io.grpc/grpc-opentelemetry/1.80.0/build.gradle
+tests/src/io.grpc/grpc-stub/1.70.0/build.gradle
+tests/src/io.grpc/grpc-grpclb/1.68.0/build.gradle
+tests/src/io.grpc/grpc-api/1.27.2/build.gradle
+tests/src/io.grpc/grpc-netty/1.51.0/build.gradle
+tests/src/io.grpc/grpc-netty-shaded/1.68.0/build.gradle
+tests/src/io.grpc/grpc-rls/1.80.0/build.gradle
+tests/src/io.grpc/grpc-core/1.69.0/build.gradle
+tests/src/org.mongodb/bson/4.11.1/build.gradle
+tests/src/io.grpc/grpc-alts/1.68.0/build.gradle
+tests/src/com.googlecode.concurrent-trees/concurrent-trees/2.6.1/build.gradle
+tests/src/io.grpc/grpc-inprocess/1.68.0/build.gradle
+tests/src/org.hibernate.reactive/hibernate-reactive-core/2.0.0.Final/build.gradle
+tests/src/com.shapesecurity/salvation2/3.0.1/build.gradle
+tests/src/org.apache.maven/maven-api-di/4.0.0-rc-5/build.gradle
+tests/src/io.undertow/undertow-parser-generator/2.2.19.Final/build.gradle
+tests/src/org.apache.maven/maven-plugin-api/2.0/build.gradle
+tests/src/org.apache.maven/maven-api-meta/4.0.0-alpha-5/build.gradle
+tests/src/org.apache.maven/maven-monitor/2.0.6/build.gradle
+tests/src/org.apache.maven/maven-model/2.0.10/build.gradle
+tests/src/org.apache.maven/maven-model/2.0.6/build.gradle
+tests/src/org.apache.maven/maven-artifact/2.0.6/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-transport-apache/2.0.13/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-transport-http/1.9.25/build.gradle
+tests/src/javax.interceptor/javax.interceptor-api/1.2/build.gradle
+tests/src/org.mariadb/r2dbc-mariadb/1.1.3/build.gradle
+tests/src/org.jboss.jdeparser/jdeparser/2.0.2.Final/build.gradle
+tests/src/com.baomidou/mybatis-plus/3.5.3/build.gradle
+tests/src/com.google.protobuf/protobuf-java-util/3.22.0/build.gradle
+tests/src/io.javaslang/javaslang/2.0.6/build.gradle
+tests/src/io.undertow/undertow-parser-generator/2.4.0.RC1/build.gradle
+tests/src/eu.timepit/refined_3/0.11.3/build.gradle
+tests/src/io.javaslang/javaslang-match/2.0.6/build.gradle
+tests/src/org.xerial/sqlite-jdbc/3.36.0.3/build.gradle
+tests/src/io.undertow/undertow-core/2.2.19.Final/build.gradle
+tests/src/com.google.protobuf/protobuf-java-util/3.21.12/build.gradle
+tests/src/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/3.1.0.RELEASE/build.gradle
+tests/src/io.undertow/undertow-core/2.3.0.Final/build.gradle
+tests/src/org.hibernate.validator/hibernate-validator/7.0.4.Final/build.gradle
+tests/src/net.i2p.crypto/eddsa/0.3.0/build.gradle
+tests/src/com.google.protobuf/protobuf-java/2.5.0/build.gradle
+tests/src/net.sf.proguard/proguard-base/5.2.1/build.gradle
+tests/src/org.apache.james/apache-mime4j-storage/0.8.13/build.gradle
+tests/src/org.cache2k/cache2k-core/2.6.1.Final/build.gradle
+tests/src/io.ktor/ktor-network-jvm/3.2.0/build.gradle
+tests/src/org.apache.james/apache-mime4j-core/0.8.13/build.gradle
+tests/src/org.glassfish.jersey.bundles.repackaged/jersey-guava/2.23.2/build.gradle
+tests/src/com.sun.xml.dtd-parser/dtd-parser/1.5.1/build.gradle
+tests/src/io.ktor/ktor-server-status-pages-jvm/3.4.3/build.gradle
+tests/src/org.apache.james/apache-mime4j-dom/0.8.13/build.gradle
+tests/src/commons-lang/commons-lang/2.0/build.gradle
+tests/src/io.ktor/ktor-client-okhttp-jvm/3.4.3/build.gradle
+tests/src/logkit/logkit/1.0.1/build.gradle
+tests/src/com.google.cloud/grpc-gcp/1.10.0/build.gradle
+tests/src/dev.langchain4j/langchain4j/1.9.0/build.gradle
+tests/src/com.google.cloud.opentelemetry/detector-resources-support/0.33.0/build.gradle
+tests/src/io.ktor/ktor-client-java-jvm/3.4.3/build.gradle
+tests/src/com.google.cloud/google-cloud-bigquery/2.51.0/build.gradle
+tests/src/com.google.cloud/google-cloud-bigquery/2.50.1/build.gradle
+tests/src/io.ktor/ktor-network-tls-jvm/3.2.0/build.gradle
+tests/src/com.google.cloud.opentelemetry/shared-resourcemapping/0.33.0/build.gradle
+tests/src/com.google.cloud/google-cloud-core-grpc/2.69.0/build.gradle
+tests/src/io.ktor/ktor-sse-jvm/3.2.0/build.gradle
+tests/src/org.unbescape/unbescape/1.1.6.RELEASE/build.gradle
+tests/src/com.google.cloud/proto-google-cloud-firestore-bundle-v1/3.31.6/build.gradle
+tests/src/io.ktor/ktor-events-jvm/3.2.0/build.gradle
+tests/src/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/2.1.0/build.gradle
+tests/src/com.google.cloud/google-cloud-logging/3.22.5/build.gradle
+tests/src/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api-incubator/2.1.0-alpha/build.gradle
+tests/src/io.ktor/ktor-client-apache5-jvm/3.4.3/build.gradle
+tests/src/com.google.cloud/google-cloud-core/2.44.1/build.gradle
+tests/src/com.github.sbt/junit-interface/0.13.3/build.gradle
+tests/src/io.ktor/ktor-server-content-negotiation-jvm/3.2.0/build.gradle
+tests/src/com.google.cloud/google-cloud-core/2.69.0/build.gradle
+tests/src/berkeleydb/je/3.2.76/build.gradle
+tests/src/io.ktor/ktor-server-auth-jwt-jvm/3.4.3/build.gradle
+tests/src/com.google.cloud/google-cloud-pubsub/1.140.1/build.gradle
+tests/src/com.google.cloud/google-cloud-monitoring/3.65.0/build.gradle
+tests/src/io.ktor/ktor-server-cio-jvm/3.4.3/build.gradle
+tests/src/org.checkerframework/checker-qual/3.5.0/build.gradle
+tests/src/com.google.cloud/google-cloud-firestore/3.31.6/build.gradle
+tests/src/org.checkerframework/checker-qual/3.12.0/build.gradle
+tests/src/io.ktor/ktor-server-auth-jvm/3.4.3/build.gradle
+tests/src/org.aesh/aesh/2.8.2/build.gradle
+tests/src/org.checkerframework/checker-compat-qual/2.5.5/build.gradle
+tests/src/io.ktor/ktor-client-logging-jvm/3.4.3/build.gradle
+tests/src/com.google.flatbuffers/flatbuffers-java/1.12.0/build.gradle
+tests/src/org.aesh/readline/3.0/build.gradle
+tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/build.gradle
+tests/src/org.aesh/readline/2.6/build.gradle
+tests/src/io.ktor/ktor-io-jvm/3.2.0/build.gradle
+tests/src/org.aesh/readline/3.1/build.gradle
+tests/src/io.ktor/ktor-utils-jvm/3.2.0/build.gradle
+tests/src/com.googlecode.juniversalchardet/juniversalchardet/1.0.3/build.gradle
+tests/src/io.ktor/ktor-websockets-jvm/3.2.0/build.gradle
+tests/src/io.netty.incubator/netty-incubator-codec-classes-quic/0.0.34.Final/build.gradle
+tests/src/com.github.curious-odd-man/rgxgen/2.0/build.gradle
+tests/src/io.netty.incubator/netty-incubator-codec-classes-quic/0.0.63.Final/build.gradle
+tests/src/io.ktor/ktor-client-content-negotiation-jvm/3.4.3/build.gradle
+tests/src/net.sf.jopt-simple/jopt-simple/5.0.4/build.gradle
+tests/src/io.netty.incubator/netty-incubator-transport-classes-io_uring/0.0.26.Final/build.gradle
+tests/src/io.ktor/ktor-http-cio-jvm/3.2.0/build.gradle
+tests/src/com.android.tools.build/builder-model/1.5.0/build.gradle
+tests/src/io.smallrye.classfile/jdk-classfile-backport/26/build.gradle
+tests/src/io.ktor/ktor-serialization-kotlinx-jvm/3.2.0/build.gradle
+tests/src/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/1.6.0/build.gradle
+tests/src/io.mockk/mockk-dsl-jvm/1.14.9/build.gradle
+tests/src/io.ktor/ktor-serialization-kotlinx-json-jvm/3.2.0/build.gradle
+tests/src/io.mockk/mockk-agent-api-jvm/1.14.9/build.gradle
+tests/src/io.mockk/mockk-agent-jvm/1.14.9/build.gradle
+tests/src/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/1.1/build.gradle
+tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/build.gradle
+tests/src/io.mockk/mockk-core-jvm/1.14.9/build.gradle
+tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/build.gradle
+tests/src/io.github.pdvrieze.xmlutil/core-jvmcommon/0.91.3/build.gradle
+tests/src/org.seleniumhq.selenium/selenium-os/4.13.0/build.gradle
+tests/src/io.github.pdvrieze.xmlutil/serialization-jvm/0.91.3/build.gradle
+tests/src/io.ktor/ktor-test-dispatcher-jvm/3.4.3/build.gradle
+tests/src/commons-daemon/commons-daemon/1.0.13/build.gradle
+tests/src/org.seleniumhq.selenium/selenium-devtools-v85/4.9.0/build.gradle
+tests/src/io.ktor/ktor-network-tls-certificates-jvm/3.4.3/build.gradle
+tests/src/jakarta.annotation/jakarta.annotation-api/2.1.0/build.gradle
+tests/src/org.jboss.spec.javax.transaction/jboss-transaction-api_1.2_spec/1.1.1.Final/build.gradle
+tests/src/org.seleniumhq.selenium/selenium-chromium-driver/4.9.0/build.gradle
+tests/src/io.ktor/ktor-websocket-serialization-jvm/3.2.0/build.gradle
+tests/src/org.seleniumhq.selenium/selenium-manager/4.9.0/build.gradle
+tests/src/com.google.auto.value/auto-value-annotations/1.9/build.gradle
+tests/src/net.minidev/accessors-smart/1.2/build.gradle
+tests/src/io.ktor/ktor-server-test-host-jvm/3.4.3/build.gradle
+tests/src/com.google.auto.value/auto-value-annotations/1.10/build.gradle
+tests/src/org.seleniumhq.selenium/selenium-json/4.9.0/build.gradle
+tests/src/io.ktor/ktor-server-sessions-jvm/3.4.3/build.gradle
+tests/src/com.fasterxml/classmate/1.5.1/build.gradle
+tests/src/com.softwaremill.sttp.tapir/tapir-http4s-server_3/1.11.25/build.gradle
+tests/src/org.seleniumhq.selenium/selenium-http/4.9.0/build.gradle
+tests/src/com.softwaremill.sttp.tapir/tapir-cats_3/1.11.25/build.gradle
+tests/src/org.seleniumhq.selenium/selenium-api/3.141.59/build.gradle
+tests/src/com.softwaremill.sttp.tapir/tapir-server_3/1.11.25/build.gradle
+tests/src/com.fasterxml/aalto-xml/1.0.0/build.gradle
+tests/src/org.seleniumhq.selenium/selenium-api/4.0.0/build.gradle
+tests/src/com.softwaremill.sttp.tapir/tapir-zio_3/1.13.18/build.gradle
+tests/src/org.seleniumhq.selenium/selenium-api/4.9.0/build.gradle
+tests/src/mysql/mysql-connector-java/8.0.29/build.gradle
+tests/src/org.eclipse.angus/jakarta.mail/1.0.0/build.gradle
+tests/src/org.seleniumhq.selenium/selenium-api/4.1.2/build.gradle
+tests/src/io.smallrye.config/smallrye-config-common/3.16.0/build.gradle
+tests/src/org.scala-lang.modules/scala-java8-compat_3/1.0.0/build.gradle
+tests/src/org.thymeleaf/thymeleaf/3.1.0.RELEASE/build.gradle
+tests/src/org.thymeleaf/thymeleaf/3.1.0.M2/build.gradle
+tests/src/com.squareup/javawriter/2.5.0/build.gradle
+tests/src/org.scala-lang.modules/scala-parallel-collections_2.13/1.0.3/build.gradle
+tests/src/org.thymeleaf/thymeleaf/3.1.4.RELEASE/build.gradle
+tests/src/com.sun.xml.fastinfoset/FastInfoset/1.2.15/build.gradle
+tests/src/org.scala-lang.modules/scala-parser-combinators_2.13/1.1.2/build.gradle
+tests/src/org.jboss.netty/netty/3.2.2.Final/build.gradle
+tests/src/org.thymeleaf/thymeleaf-spring6/3.1.0.RELEASE/build.gradle
+tests/src/org.scala-lang.modules/scala-collection-compat_3/2.4.4/build.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-api/1.1.10.Final/build.gradle
+tests/src/tools.jackson.core/jackson-databind/3.0.0/build.gradle
+tests/src/org.scala-lang.modules/scala-parallel-collections_3/1.0.4/build.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/build.gradle
+tests/src/tools.jackson.core/jackson-core/3.0.0/build.gradle
+tests/src/commons-lang/commons-lang/1.0/build.gradle
+tests/src/io.github.dmlloyd/jdk-classfile-backport/25.1/build.gradle
+tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/build.gradle
+tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/build.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/build.gradle
+tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/build.gradle
+tests/src/com.thoughtworks.proxytoys/proxytoys/1.0/build.gradle
+tests/src/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-transport-http/2.0.0-alpha-1/build.gradle
+tests/src/org.eclipse.jdt/ecj/3.26.0/build.gradle
+tests/src/software.amazon.awssdk/identity-spi/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/retries-spi/2.34.0/build.gradle
+tests/src/org.apache.pekko/pekko-parsing_3/1.3.0/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-transport-file/2.0.13/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-util/1.9.25/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-util/2.0.0/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-named-locks/1.9.25/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-named-locks/2.0.0/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-api/1.9.25/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-api/2.0.0/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-impl/1.9.25/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-spi/1.9.25/build.gradle
+tests/src/io.zipkin.reporter2/zipkin-reporter/2.16.3/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-spi/2.0.0/build.gradle
+tests/src/io.zipkin.reporter2/zipkin-reporter/3.0.0/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-connector-basic/2.0.8/build.gradle
+tests/src/io.zipkin.reporter2/zipkin-reporter/3.4.0/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-connector-basic/1.9.25/build.gradle
+tests/src/org.apache.maven.resolver/maven-resolver-connector-basic/2.0.0/build.gradle
+tests/src/org.apache.pekko/pekko-protobuf-v3_2.13/1.1.5/build.gradle
+tests/src/software.amazon.awssdk/protocol-core/2.34.0/build.gradle
+tests/src/javax.inject/javax.inject/1/build.gradle
+tests/src/org.jspecify/jspecify/1.0.0/build.gradle
+tests/src/org.apache.pekko/pekko-protobuf-v3_2.13/1.6.0/build.gradle
+tests/src/org.apache.ivy/ivy/2.5.0/build.gradle
+tests/src/werken-xpath/werken-xpath/0.9.4/build.gradle
+tests/src/org.asynchttpclient/async-http-client/3.0.0/build.gradle
+tests/src/org.tukaani/xz/1.8/build.gradle
+tests/src/org.asynchttpclient/async-http-client/2.12.3/build.gradle
+tests/src/org.asynchttpclient/async-http-client-netty-utils/2.12.3/build.gradle
+tests/src/org.objenesis/objenesis/3.2/build.gradle
+tests/src/javax.servlet.jsp/jsp-api/2.1/build.gradle
+tests/src/org.atteo.classindex/classindex/3.13/build.gradle
+tests/src/org.hibernate/hibernate-jpamodelgen/5.6.14.Final/build.gradle
+tests/src/com.google.cloud.tools/jib-build-plan/0.4.0/build.gradle
+tests/src/org.scala-lang.modules/scala-xml_2.13/2.0.0/build.gradle
+tests/src/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/5.0.2/build.gradle
+tests/src/com.auth0/jwks-rsa/0.23.0/build.gradle
+tests/src/javax.ws.rs/jsr311-api/1.1.1/build.gradle
+tests/src/org.scala-lang.modules/scala-xml_2.13/1.2.0/build.gradle
+tests/src/software.amazon.awssdk/regions/2.34.0/build.gradle
+tests/src/software.amazon.awssdk/http-auth-spi/2.34.0/build.gradle
+tests/src/org.scala-lang.modules/scala-collection-compat_2.13/2.11.0/build.gradle
+tests/src/software.amazon.awssdk/ssm/2.34.0/build.gradle
+tests/src/org.scala-lang.modules/scala-parser-combinators_3/2.3.0/build.gradle
+tests/src/com.android.tools.build/builder-model/2.0.0/build.gradle
+tests/src/com.auth0/java-jwt/4.5.1/build.gradle
+tests/src/org.hibernate/hibernate-core/6.0.0.Final/build.gradle
+tests/src/com.android.tools.build/builder-model/2.1.2/build.gradle
+tests/src/com.sun.activation/jakarta.activation/2.0.0/build.gradle
+tests/src/com.android.tools.build/builder-model/2.1.0/build.gradle
+tests/src/io.ktor/ktor-serialization-kotlinx-protobuf-jvm/3.4.3/build.gradle
+tests/src/org.hibernate/hibernate-core/5.6.14.Final/build.gradle
+tests/src/jakarta.enterprise/jakarta.enterprise.lang-model/5.0.0.Alpha1/build.gradle
+tests/src/jakarta.enterprise/jakarta.enterprise.lang-model/4.0.0/build.gradle
+tests/src/io.ktor/ktor-server-websockets-jvm/3.4.3/build.gradle
+tests/src/app.cash.sqldelight/coroutines-extensions-jvm/2.3.2/build.gradle
+tests/src/jakarta.enterprise/jakarta.enterprise.cdi-api/2.0.1/build.gradle
+tests/src/app.cash.sqldelight/async-extensions-jvm/2.3.2/build.gradle
+tests/src/org.hibernate/hibernate-spatial/6.5.0.Final/build.gradle
+tests/src/app.cash.sqldelight/runtime-jvm/2.3.2/build.gradle
+tests/src/app.cash.sqldelight/sqlite-driver/2.3.2/build.gradle
+tests/src/org.flywaydb/flyway-core/11.14.1/build.gradle
+tests/src/tools.jackson.module/jackson-module-kotlin/3.1.0/build.gradle
+tests/src/app.cash.sqldelight/jdbc-driver/2.3.2/build.gradle
+tests/src/com.android.tools.jack/jack-api/0.9.0/build.gradle
+tests/src/org.flywaydb/flyway-core/10.20.0/build.gradle
+tests/src/org.hibernate.orm/hibernate-jcache/7.2.1.Final/build.gradle
+tests/src/net.razorvine/serpent/1.23/build.gradle
+tests/src/org.apache.pekko/pekko-protobuf-v3_3/1.0.1/build.gradle
+tests/src/org.hibernate.orm/hibernate-core/6.6.0.Final/build.gradle
+tests/src/org.flywaydb/flyway-core/9.0.1/build.gradle
+tests/src/net.razorvine/serpent/1.30/build.gradle
+tests/src/org.flywaydb/flyway-core/10.15.0/build.gradle
+tests/src/org.hibernate.orm/hibernate-core/7.0.0.Final/build.gradle
+tests/src/net.razorvine/pyrolite/5.0/build.gradle
+tests/src/org.flywaydb/flyway-core/10.20.1/build.gradle
+tests/src/net.razorvine/pyrolite/4.30/build.gradle
+tests/src/org.hibernate.orm/hibernate-core/6.2.0.Final/build.gradle
+tests/src/org.flywaydb/flyway-core/10.10.0/build.gradle
+tests/src/net.razorvine/pickle/1.2/build.gradle
+tests/src/org.hibernate.orm/hibernate-core/7.1.0.Final/build.gradle
+tests/src/org.flywaydb/flyway-sqlserver/10.10.0/build.gradle
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/build.gradle
+tests/src/io.swagger.core.v3/swagger-annotations/2.2.22/build.gradle
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/build.gradle
+tests/src/io.quarkus/quarkus-development-mode-spi/3.33.1/build.gradle
+tests/src/io.quarkus/quarkus-classloader-commons/3.33.1/build.gradle
+tests/src/com.ongres.scram/client/2.1/build.gradle
+tests/src/org.flywaydb/flyway-database-postgresql/10.10.0/build.gradle
+tests/src/org.hibernate.orm/hibernate-core/6.5.0.Final/build.gradle
+tests/src/io.quarkus/quarkus-junit-common/3.33.1/build.gradle
+tests/src/com.ongres.scram/common/2.1/build.gradle
+tests/src/io.quarkus/quarkus-ide-launcher/3.33.1/build.gradle
+tests/src/net.sf.kxml/kxml2/2.3.0/build.gradle
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/build.gradle
+tests/src/com.jamesmurty.utils/java-xmlbuilder/1.1/build.gradle
+tests/src/com.github.java-json-tools/json-patch/1.13/build.gradle
+tests/src/io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/build.gradle
+tests/src/com.jamesmurty.utils/java-xmlbuilder/0.4/build.gradle
+tests/src/com.github.java-json-tools/btf/1.3/build.gradle
+tests/src/com.lihaoyi/geny_3/1.0.0/build.gradle
+tests/src/io.quarkus/quarkus-value-registry/3.33.1/build.gradle
+tests/src/com.jamesmurty.utils/java-xmlbuilder/0.6/build.gradle
+tests/src/com.github.java-json-tools/msg-simple/1.2/build.gradle
+tests/src/com.datastax.oss/native-protocol/1.5.1/build.gradle
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.34.0/build.gradle
+tests/src/com.github.java-json-tools/jackson-coreutils/2.0/build.gradle
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.33.1/build.gradle
+tests/src/com.datastax.oss/java-driver-shaded-guava/25.1-jre-graal-sub-1/build.gradle
+tests/src/io.quarkus/quarkus-builder/3.33.1/build.gradle
+tests/src/com.datastax.oss/java-driver-core/4.17.0/build.gradle
+tests/src/jakarta.ws.rs/jakarta.ws.rs-api/2.1.6/build.gradle
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/build.gradle
+tests/src/jakarta.ws.rs/jakarta.ws.rs-api/3.0.0/build.gradle
+tests/src/io.quarkus/quarkus-hibernate-validator-spi/3.33.1/build.gradle
+tests/src/io.quarkus/quarkus-fs-util/1.3.0/build.gradle
+tests/src/com.lihaoyi/fansi_3/0.3.0/build.gradle
+tests/src/com.lihaoyi/upack_3/4.1.0-test-publish/build.gradle
+tests/src/com.lihaoyi/fastparse_3/3.1.1/build.gradle
+tests/src/com.lihaoyi/upickle-implicits_3/4.1.0-test-publish/build.gradle
+tests/src/com.lihaoyi/scalatags_3/0.13.1/build.gradle
+tests/src/com.lihaoyi/requests_3/0.9.0/build.gradle
+tests/src/com.lihaoyi/os-zip/0.11.5/build.gradle
+tests/src/io.quarkus/quarkus-class-change-agent/3.33.1/build.gradle
+tests/src/com.lihaoyi/ujson_3/4.4.0/build.gradle
+tests/src/com.lihaoyi/ujson_3/4.1.0-test-publish/build.gradle
+tests/src/com.lihaoyi/unroll-annotation_3/0.1.12/build.gradle
+tests/src/com.lihaoyi/sourcecode_3/0.2.7/build.gradle
+tests/src/com.lihaoyi/upickle_3/4.4.0/build.gradle
+tests/src/com.lihaoyi/upickle_3/4.1.0-test-publish/build.gradle
+tests/src/com.lihaoyi/pprint_3/0.9.0/build.gradle
+tests/src/com.lihaoyi/sourcecode_2.13/0.3.0/build.gradle
+tests/src/com.lihaoyi/fansi_2.13/0.4.0/build.gradle
+tests/src/com.lihaoyi/upickle-core_3/4.1.0-test-publish/build.gradle
+tests/src/com.lihaoyi/os-lib_3/0.11.5/build.gradle
+tests/src/org.rxtx/rxtx/2.1.7/build.gradle
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 404ms:
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.jboss.arquillian.config arquillian-config-impl-base 1.1.10.Final
+codex
+Maven Central shows this artifact as a normal Java/JVM jar, so I’m checking the published POM and side artifacts next. That determines whether the source and test URLs should be Maven artifacts or GitHub tag paths.
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final/arquillian-config-impl-base-1.1.10.Final.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-build</artifactId>
+        <version>1.1.10.Final</version>
+        <relativePath>../../build/pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <groupId>org.jboss.arquillian.config</groupId>
+    <artifactId>arquillian-config-impl-base</artifactId>
+    <name>Arquillian Config Implementation Base</name>
+    <description>Implementation for the Config module.</description>
+
+
+    <!-- Properties -->
+    <properties>
+
+        <!-- Versioning -->
+
+    </properties>
+
+    <!-- Dependencies -->
+    <dependencies>
+
+        <!-- org.jboss.arquillian -->
+        <dependency>
+            <groupId>org.jboss.arquillian.config</groupId>
+            <artifactId>arquillian-config-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+            <artifactId>shrinkwrap-descriptors-spi</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-impl-base</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-impl-base</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="arquillian-config-impl-base-1.1.10.Final-javadoc.jar" title="arquillian-config-impl-base-1.1.10.Final-javadoc.jar">arquillian-config-impl-base-1.1.10.Final-java...</a>  2015-10-19 12:54    257977      
+<a href="arquillian-config-impl-base-1.1.10.Final-javadoc.jar.md5" title="arquillian-config-impl-base-1.1.10.Final-javadoc.jar.md5">arquillian-config-impl-base-1.1.10.Final-java...</a>  2015-10-19 12:54        32      
+<a href="arquillian-config-impl-base-1.1.10.Final-javadoc.jar.sha1" title="arquillian-config-impl-base-1.1.10.Final-javadoc.jar.sha1">arquillian-config-impl-base-1.1.10.Final-java...</a>  2015-10-19 12:54        40      
+<a href="arquillian-config-impl-base-1.1.10.Final-sources.jar" title="arquillian-config-impl-base-1.1.10.Final-sources.jar">arquillian-config-impl-base-1.1.10.Final-sour...</a>  2015-10-19 12:54     26326      
+<a href="arquillian-config-impl-base-1.1.10.Final-sources.jar.md5" title="arquillian-config-impl-base-1.1.10.Final-sources.jar.md5">arquillian-config-impl-base-1.1.10.Final-sour...</a>  2015-10-19 12:54        32      
+<a href="arquillian-config-impl-base-1.1.10.Final-sources.jar.sha1" title="arquillian-config-impl-base-1.1.10.Final-sources.jar.sha1">arquillian-config-impl-base-1.1.10.Final-sour...</a>  2015-10-19 12:54        40      
+<a href="arquillian-config-impl-base-1.1.10.Final-test-sources.jar" title="arquillian-config-impl-base-1.1.10.Final-test-sources.jar">arquillian-config-impl-base-1.1.10.Final-test...</a>  2015-10-19 12:54     17397      
+<a href="arquillian-config-impl-base-1.1.10.Final-test-sources.jar.md5" title="arquillian-config-impl-base-1.1.10.Final-test-sources.jar.md5">arquillian-config-impl-base-1.1.10.Final-test...</a>  2015-10-19 12:54        32      
+<a href="arquillian-config-impl-base-1.1.10.Final-test-sources.jar.sha1" title="arquillian-config-impl-base-1.1.10.Final-test-sources.jar.sha1">arquillian-config-impl-base-1.1.10.Final-test...</a>  2015-10-19 12:54        40      
+<a href="arquillian-config-impl-base-1.1.10.Final-tests.jar" title="arquillian-config-impl-base-1.1.10.Final-tests.jar">arquillian-config-impl-base-1.1.10.Final-test...</a>  2015-10-19 12:54     52989      
+<a href="arquillian-config-impl-base-1.1.10.Final-tests.jar.md5" title="arquillian-config-impl-base-1.1.10.Final-tests.jar.md5">arquillian-config-impl-base-1.1.10.Final-test...</a>  2015-10-19 12:54        32      
+<a href="arquillian-config-impl-base-1.1.10.Final-tests.jar.sha1" title="arquillian-config-impl-base-1.1.10.Final-tests.jar.sha1">arquillian-config-impl-base-1.1.10.Final-test...</a>  2015-10-19 12:54        40      
+<a href="arquillian-config-impl-base-1.1.10.Final.jar" title="arquillian-config-impl-base-1.1.10.Final.jar">arquillian-config-impl-base-1.1.10.Final.jar</a>      2015-10-19 12:54     41394      
+<a href="arquillian-config-impl-base-1.1.10.Final.jar.md5" title="arquillian-config-impl-base-1.1.10.Final.jar.md5">arquillian-config-impl-base-1.1.10.Final.jar....</a>  2015-10-19 12:54        32      
+<a href="arquillian-config-impl-base-1.1.10.Final.jar.sha1" title="arquillian-config-impl-base-1.1.10.Final.jar.sha1">arquillian-config-impl-base-1.1.10.Final.jar....</a>  2015-10-19 12:54        40      
+<a href="arquillian-config-impl-base-1.1.10.Final.pom" title="arquillian-config-impl-base-1.1.10.Final.pom">arquillian-config-impl-base-1.1.10.Final.pom</a>      2015-10-19 12:54      2549      
+<a href="arquillian-config-impl-base-1.1.10.Final.pom.md5" title="arquillian-config-impl-base-1.1.10.Final.pom.md5">arquillian-config-impl-base-1.1.10.Final.pom....</a>  2015-10-19 12:54        32      
+<a href="arquillian-config-impl-base-1.1.10.Final.pom.sha1" title="arquillian-config-impl-base-1.1.10.Final.pom.sha1">arquillian-config-impl-base-1.1.10.Final.pom....</a>  2015-10-19 12:54        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/arquillian-build/1.1.10.Final/arquillian-build-1.1.10.Final.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:ts=2:sw=2:expandtab: -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-parent</artifactId>
+        <version>1.1.10.Final</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>arquillian-build</artifactId>
+    <name>Arquillian Build</name>
+    <description>Arquillian Build Configuration</description>
+    <packaging>pom</packaging>
+
+    <!-- Properties -->
+    <properties>
+
+        <!-- Arquillian Core common Deps, Test related -->
+        <version.javax.inject_javax.inject>1</version.javax.inject_javax.inject>
+        <version.junit_junit>4.12</version.junit_junit>
+        <version.mockito_all>1.8.3</version.mockito_all>
+        <version.testng_testng>5.14.6</version.testng_testng>
+    </properties>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${version.javax.inject_javax.inject}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.shrinkwrap_shrinkwrap}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+                <artifactId>shrinkwrap-descriptors-bom</artifactId>
+                <version>${version.shrinkwrap_descriptors}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit_junit}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${version.testng_testng}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${version.mockito_all}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>signature-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>java15</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final/arquillian-config-impl-base-1.1.10.Final-sources.jar -o /tmp/arquillian-config-impl-base-1.1.10.Final-sources.jar && jar tf /tmp/arquillian-config-impl-base-1.1.10.Final-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final/arquillian-config-impl-base-1.1.10.Final-test-sources.jar -o /tmp/arquillian-config-impl-base-1.1.10.Final-test-sources.jar && jar tf /tmp/arquillian-config-impl-base-1.1.10.Final-test-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 215ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/config/
+org/jboss/arquillian/config/impl/
+org/jboss/arquillian/config/impl/extension/
+org/jboss/arquillian/config/descriptor/
+org/jboss/arquillian/config/descriptor/impl/
+org/jboss/arquillian/config/impl/extension/FileUtils.java
+org/jboss/arquillian/config/impl/extension/PropertiesParser.java
+org/jboss/arquillian/config/impl/extension/SysPropertyActions.java
+org/jboss/arquillian/config/impl/extension/ConfigurationSysPropResolver.java
+org/jboss/arquillian/config/impl/extension/ConfigExtension.java
+org/jboss/arquillian/config/impl/extension/ConfigurationRegistrar.java
+org/jboss/arquillian/config/impl/extension/StringPropertyReplacer.java
+org/jboss/arquillian/config/descriptor/impl/GroupDefImpl.java
+org/jboss/arquillian/config/descriptor/impl/GroupContainerDefImpl.java
+org/jboss/arquillian/config/descriptor/impl/ArquillianDescriptorImpl.java
+org/jboss/arquillian/config/descriptor/impl/ExtensionDefImpl.java
+org/jboss/arquillian/config/descriptor/impl/ContainerDefImpl.java
+org/jboss/arquillian/config/descriptor/impl/EngineDefImpl.java
+org/jboss/arquillian/config/descriptor/impl/DefaultProtocolDefImpl.java
+org/jboss/arquillian/config/descriptor/impl/ProtocolDefImpl.java
+META-INF/services/
+META-INF/services/org.jboss.arquillian.core.spi.LoadableExtension
+META-INF/services/org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor
+META-INF/INDEX.LIST
+
+ succeeded in 514ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/config/
+org/jboss/arquillian/config/impl/
+org/jboss/arquillian/config/impl/extension/
+org/jboss/arquillian/config/descriptor/
+org/jboss/arquillian/config/descriptor/impl/
+org/jboss/arquillian/config/impl/extension/ArquillianDescriptorPropertiesTestCase.java
+org/jboss/arquillian/config/impl/extension/ConfigurationRegistrarTestCase.java
+org/jboss/arquillian/config/impl/extension/SyspropReplacementInArqXmlTestCase.java
+org/jboss/arquillian/config/impl/extension/PropertiesParserTestCase.java
+org/jboss/arquillian/config/descriptor/impl/ArquillianDescriptorTestCase.java
+org/jboss/arquillian/config/descriptor/impl/AssertXPath.java
+registrar_tests/
+registrar_tests/override_named_arquillian.properties
+registrar_tests/named_arquillian.properties
+registrar_tests/named_arquillian.xml
+arquillian_sysprop.xml
+META-INF/INDEX.LIST
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/arquillian-parent/1.1.10.Final/arquillian-parent-1.1.10.Final.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>14</version>
+        <relativePath />
+    </parent>
+
+    <!-- Model Information -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Information -->
+    <groupId>org.jboss.arquillian</groupId>
+    <artifactId>arquillian-parent</artifactId>
+    <version>1.1.10.Final</version>
+    <packaging>pom</packaging>
+    <name>Arquillian Aggregator</name>
+    <url>http://arquillian.org</url>
+    <description>Arquillian Aggregator</description>
+
+    <properties>
+
+        <!-- jboss-parent override -->
+        <maven.compiler.argument.target>1.5</maven.compiler.argument.target>
+        <maven.compiler.argument.source>1.5</maven.compiler.argument.source>
+
+
+        <!-- External Deps -->
+        <version.shrinkwrap_shrinkwrap>1.2.2</version.shrinkwrap_shrinkwrap>
+        <version.shrinkwrap_descriptors>2.0.0-alpha-8</version.shrinkwrap_descriptors>
+
+    </properties>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://jira.jboss.com/jira/browse/ARQ</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://git@github.com:arquillian/arquillian-core.git</connection>
+        <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-core.git</developerConnection>
+        <url>git://github.com/arquillian/arquillian-core.git</url>
+      <tag>1.1.10.Final</tag>
+  </scm>
+
+    <modules>
+        <module>build</module>
+        <module>core</module>
+        <module>config</module>
+        <module>test</module>
+        <module>container</module>
+
+        <module>junit</module>
+        <module>testng</module>
+
+        <module>testenrichers</module>
+        <module>protocols</module>
+
+        <module>bom</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <printSummary>true</printSummary>
+                    <includes>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*TestSuite.java</include>
+                    </includes>
+                    <useFile>true</useFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <configuration>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <pushChanges>false</pushChanges>
+                            <localCheckout>true</localCheckout>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <doclet>org.jboss.apiviz.APIviz</doclet>
+                            <docletArtifact>
+                                <groupId>org.jboss.apiviz</groupId>
+                                <artifactId>apiviz</artifactId>
+                                <version>1.3.2.GA</version>
+                            </docletArtifact>
+                            <useStandardDocletOptions>true</useStandardDocletOptions>
+                            <charset>UTF-8</charset>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
+                            <breakiterator>true</breakiterator>
+                            <version>true</version>
+                            <author>true</author>
+                            <keywords>true</keywords>
+                            <additionalparam>-sourceclasspath
+                                ${project.build.outputDirectory}</additionalparam>
+                            <stylesheetfile>${project.parent.parent.basedir}/javadoc/stylesheet.css</stylesheetfile>
+                            <javadocDirectory>${project.parent.parent.basedir}/javadoc</javadocDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final/arquillian-config-impl-base-1.1.10.Final.jar -o /tmp/arquillian-config-impl-base-1.1.10.Final.jar && jar tf /tmp/arquillian-config-impl-base-1.1.10.Final.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final/arquillian-config-impl-base-1.1.10.Final-javadoc.jar -o /tmp/arquillian-config-impl-base-1.1.10.Final-javadoc.jar && jar tf /tmp/arquillian-config-impl-base-1.1.10.Final-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 213ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/config/
+org/jboss/arquillian/config/impl/
+org/jboss/arquillian/config/impl/extension/
+org/jboss/arquillian/config/descriptor/
+org/jboss/arquillian/config/descriptor/impl/
+META-INF/services/
+org/jboss/arquillian/config/impl/extension/PropertiesParser$DefaultProtocol.class
+org/jboss/arquillian/config/impl/extension/SysPropertyActions$SysProps$2.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser$GroupContainer.class
+org/jboss/arquillian/config/impl/extension/SysPropertyActions$SysProps.class
+org/jboss/arquillian/config/impl/extension/FileUtils$FileName.class
+org/jboss/arquillian/config/impl/extension/StringPropertyReplacer.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser.class
+org/jboss/arquillian/config/impl/extension/ConfigExtension.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser$Extension.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser$GroupContainerConfiguration.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser$ContainerProtocol.class
+org/jboss/arquillian/config/impl/extension/FileUtils.class
+org/jboss/arquillian/config/impl/extension/SysPropertyActions$SysProps$1.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser$Handler.class
+org/jboss/arquillian/config/impl/extension/SysPropertyActions$SysProps$2$1.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser$Container.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser$GroupContainerProtocol.class
+org/jboss/arquillian/config/impl/extension/ConfigurationSysPropResolver.class
+org/jboss/arquillian/config/impl/extension/ConfigurationRegistrar.class
+org/jboss/arquillian/config/impl/extension/SysPropertyActions.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser$Group.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser$EngineProperty.class
+org/jboss/arquillian/config/impl/extension/PropertiesParser$ContainerConfiguration.class
+org/jboss/arquillian/config/descriptor/impl/ContainerDefImpl.class
+org/jboss/arquillian/config/descriptor/impl/GroupDefImpl.class
+org/jboss/arquillian/config/descriptor/impl/ProtocolDefImpl.class
+org/jboss/arquillian/config/descriptor/impl/DefaultProtocolDefImpl.class
+org/jboss/arquillian/config/descriptor/impl/ArquillianDescriptorImpl.class
+org/jboss/arquillian/config/descriptor/impl/EngineDefImpl.class
+org/jboss/arquillian/config/descriptor/impl/GroupContainerDefImpl.class
+org/jboss/arquillian/config/descriptor/impl/ExtensionDefImpl.class
+META-INF/services/org.jboss.arquillian.core.spi.LoadableExtension
+META-INF/services/org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor
+META-INF/maven/
+META-INF/maven/org.jboss.arquillian.config/
+META-INF/maven/org.jboss.arquillian.config/arquillian-config-impl-base/
+META-INF/maven/org.jboss.arquillian.config/arquillian-config-impl-base/pom.xml
+META-INF/maven/org.jboss.arquillian.config/arquillian-config-impl-base/pom.properties
+META-INF/INDEX.LIST
+
+ succeeded in 560ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/arquillian/
+org/jboss/arquillian/config/
+org/jboss/arquillian/config/impl/
+org/jboss/arquillian/config/impl/extension/
+org/jboss/arquillian/config/impl/extension/class-use/
+org/jboss/arquillian/config/descriptor/
+org/jboss/arquillian/config/descriptor/impl/
+org/jboss/arquillian/config/descriptor/impl/class-use/
+allclasses-noframe.html
+deprecated-list.html
+help-doc.html
+overview-tree.html
+allclasses-frame.html
+package-list
+stylesheet.css
+org/jboss/arquillian/config/impl/extension/StringPropertyReplacer.png
+org/jboss/arquillian/config/impl/extension/ConfigurationRegistrar.html
+org/jboss/arquillian/config/impl/extension/package-summary.png
+org/jboss/arquillian/config/impl/extension/PropertiesParser.png
+org/jboss/arquillian/config/impl/extension/package-frame.html
+org/jboss/arquillian/config/impl/extension/package-summary.html
+org/jboss/arquillian/config/impl/extension/ConfigExtension.html
+org/jboss/arquillian/config/impl/extension/package-use.html
+org/jboss/arquillian/config/impl/extension/package-tree.html
+org/jboss/arquillian/config/impl/extension/ConfigExtension.png
+org/jboss/arquillian/config/impl/extension/class-use/ConfigurationRegistrar.html
+org/jboss/arquillian/config/impl/extension/class-use/ConfigExtension.html
+org/jboss/arquillian/config/impl/extension/class-use/PropertiesParser.html
+org/jboss/arquillian/config/impl/extension/class-use/StringPropertyReplacer.html
+org/jboss/arquillian/config/impl/extension/PropertiesParser.html
+org/jboss/arquillian/config/impl/extension/StringPropertyReplacer.html
+org/jboss/arquillian/config/impl/extension/ConfigurationRegistrar.png
+org/jboss/arquillian/config/descriptor/impl/ArquillianDescriptorImpl.html
+org/jboss/arquillian/config/descriptor/impl/GroupDefImpl.png
+org/jboss/arquillian/config/descriptor/impl/ContainerDefImpl.png
+org/jboss/arquillian/config/descriptor/impl/ContainerDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/package-summary.png
+org/jboss/arquillian/config/descriptor/impl/ProtocolDefImpl.png
+org/jboss/arquillian/config/descriptor/impl/package-frame.html
+org/jboss/arquillian/config/descriptor/impl/EngineDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/package-summary.html
+org/jboss/arquillian/config/descriptor/impl/DefaultProtocolDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/ExtensionDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/package-use.html
+org/jboss/arquillian/config/descriptor/impl/GroupContainerDefImpl.png
+org/jboss/arquillian/config/descriptor/impl/package-tree.html
+org/jboss/arquillian/config/descriptor/impl/ExtensionDefImpl.png
+org/jboss/arquillian/config/descriptor/impl/class-use/ArquillianDescriptorImpl.html
+org/jboss/arquillian/config/descriptor/impl/class-use/ContainerDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/class-use/EngineDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/class-use/DefaultProtocolDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/class-use/ExtensionDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/class-use/GroupDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/class-use/GroupContainerDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/class-use/ProtocolDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/GroupDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/ArquillianDescriptorImpl.png
+org/jboss/arquillian/config/descriptor/impl/GroupContainerDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/ProtocolDefImpl.html
+org/jboss/arquillian/config/descriptor/impl/EngineDefImpl.png
+org/jboss/arquillian/config/descriptor/impl/DefaultProtocolDefImpl.png
+index.html
+overview-summary.png
+index-all.html
+overview-summary.html
+script.js
+constant-values.html
+overview-frame.html
+META-INF/INDEX.LIST
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-security/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-security/$version$/jetty-security-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/log4j/log4j/index.json:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/org.example/library/index.json:    "source-code-url": "N/A",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg 'repo1\\.maven\\.org|search\\.maven\\.org|sources\\.jar|test-sources\\.jar|javadoc\\.jar' build/discovered-artifact-metadata metadata tests -g '*.json' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+metadata/io.getquill/quill-engine_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+metadata/io.getquill/quill-util_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-sources.jar",
+metadata/io.getquill/quill-util_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-sources.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg 'arquillian' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json:  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final"
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.container.test.api.Testable"
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:      "org.jboss.arquillian.container.test.api",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:      "org.jboss.arquillian.container.test.api",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/1.1.10.Final/reachability-metadata.json:        "typeReached": "org.jboss.arquillian.junit.container.JUnitDeploymentAppender"
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:      "org.jboss.arquillian.junit.container"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.SecurityActions"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:      "type" : "org.jboss.arquillian.junit.InSequence"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.SecurityActions$3"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.SecurityActions$4"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.junit.Arquillian"
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:      "org.jboss.arquillian.junit"
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/1.1.11.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.container.test.api.Testable"
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-tests.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:      "org.jboss.arquillian.core.api"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/reachability-metadata.json:      "type" : "org.jboss.arquillian.core.impl.context.ApplicationContextImpl",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.3.0.Final/reachability-metadata.json:      "type" : "org.jboss.arquillian.core.impl.context.ApplicationContextImpl",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.core.impl.SecurityActions"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/reachability-metadata.json:      "type" : "org.jboss.arquillian.core.impl.context.ApplicationContextImpl",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.core.impl.loadable.SecurityActions"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/1.1.10.Final/reachability-metadata.json:      "type" : "org.jboss.arquillian.core.impl.context.ApplicationContextImpl",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-sources.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-tests.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:      "org.jboss.arquillian.core.impl"
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-sources.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-tests.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:      "org.jboss.arquillian.core.impl"
+metadata/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.core.spi.SecurityActions"
+metadata/org.jboss.arquillian.core/arquillian-core-spi/1.1.10.Final/reachability-metadata.json:      "type" : "org.jboss.arquillian.core.impl.ManagerImpl",
+metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-sources.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json:      "org.jboss.arquillian.core.spi"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.test.spi.ExceptionProxy"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.test.spi.ExceptionProxy"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.test.spi.ExceptionProxy"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.test.spi.ExceptionProxy"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.test.spi.ExceptionProxy"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.test.spi.ExceptionProxy"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.test.spi.ExceptionProxy"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.test.spi.ExceptionProxy"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.test.spi.ExceptionProxy"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:        "typeReached" : "org.jboss.arquillian.test.spi.ExceptionProxy"
+metadata/org.jboss.arquillian.test/arquillian-test-spi/1.1.10.Final/reachability-metadata.json:      "type" : "org.jboss.arquillian.test.spi.ExceptionProxy",
+
+exec
+/usr/bin/bash -lc "find metadata/org.jboss.arquillian.config -maxdepth 3 -type f -name index.json -print -exec sed -n '1,160p' {} \\;" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ exited 1 in 0ms:
+find: ‘metadata/org.jboss.arquillian.config’: No such file or directory
+
+exec
+/usr/bin/bash -lc "sed -n '1,180p' metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.3.0.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-sources.jar",
+    "repository-url" : "https://github.com/arquillian/arquillian-core",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-javadoc.jar",
+    "description" : "Arquillian Core Implementation Base provides the base runtime implementation for Arquillian Core. It implements the manager, event, injection, context, threading, and extension-loading services used by Arquillian components.",
+    "tested-versions" : [
+      "1.3.0.Final",
+      "1.4.0.Final",
+      "1.4.1.Final",
+      "1.5.0.Final",
+      "1.6.0.Final",
+      "1.7.0.Final",
+      "1.7.1.Final",
+      "1.7.2.Final",
+      "1.8.0.Final",
+      "1.8.1.Final",
+      "1.9.0.Final",
+      "1.9.1.Final",
+      "1.9.2.Final",
+      "1.9.3.Final",
+      "1.9.4.Final",
+      "1.9.5.Final",
+      "1.10.0.Final",
+      "1.10.1.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.arquillian.core.impl"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.10.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-sources.jar",
+    "repository-url" : "https://github.com/arquillian/arquillian-core",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-javadoc.jar",
+    "description" : "Arquillian Core Implementation Base provides the base runtime implementation for Arquillian Core. It implements the manager, event, injection, context, threading, and extension-loading services used by Arquillian components.",
+    "tested-versions" : [
+      "1.1.10.Final",
+      "1.1.11.Final",
+      "1.1.12.Final",
+      "1.1.13.Final",
+      "1.1.14.Final",
+      "1.1.15.Final",
+      "1.2.0.Final",
+      "1.2.1.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.arquillian.core.impl"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final/arquillian-config-impl-base-1.1.10.Final-test-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final/arquillian-config-impl-base-1.1.10.Final-tests.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 358ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 09:44:37 GMT
+content-type: application/java-archive
+content-length: 52989
+cf-ray: 9f8786e069f0bc5d-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "a59496faa3f32a5a9b7563d214e4b0cd"
+last-modified: Mon, 19 Oct 2015 12:54:46 GMT
+x-checksum-md5: a59496faa3f32a5a9b7563d214e4b0cd
+x-checksum-sha1: 99e33de689e957b288a781c98753f9717754fbaa
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final/arquillian-config-impl-base-1.1.10.Final.pom
+web search: 
+web search: 
+web search: 
+web search: central.sonatype.com org.jboss.arquillian.config arquillian-config-impl-base 1.1.10.Final POM source github
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.arquillian.config/arquillian-config-impl-base
+web search: 
+web search: 
+web search: 
+web search: central.sonatype.com/artifact/org.jboss.arquillian.config/arquillian-config-impl-base/1.1.10.Final
+codex
+The published Central directory includes the main jar, sources jar, tests jar, test-sources jar, and javadocs. I’m using the Maven-hosted sources/tests/javadocs since they exist for `1.1.10.Final`, and keeping Native Image applicability fields absent because the main jar contains JVM `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+index cfbd173ac20a3d7916487719b14f49acce7abeb1..1252ae787fc0e8fdf78a3e20079a5a4b8640b5c5
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-javadoc.jar",
++  "description" : "Arquillian Config Implementation Base provides the base implementation of Arquillian's configuration module. It parses and registers Arquillian descriptors, system-property substitutions, and extension or container settings used by Arquillian test runtimes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+index cfbd173ac20a3d7916487719b14f49acce7abeb1..1252ae787fc0e8fdf78a3e20079a5a4b8640b5c5
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-javadoc.jar",
++  "description" : "Arquillian Config Implementation Base provides the base implementation of Arquillian's configuration module. It parses and registers Arquillian descriptors, system-property substitutions, and extension or container settings used by Arquillian test runtimes."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+{
+  "coordinates": "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final",
+  "repository-url": "https://github.com/arquillian/arquillian-core",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-sources.jar",
+  "test-code-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-javadoc.jar",
+  "description": "Arquillian Config Implementation Base provides the base implementation of Arquillian's configuration module. It parses and registers Arquillian descriptors, system-property substitutions, and extension or container settings used by Arquillian test runtimes."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'for suffix in sources tests javadoc; do curl -I -fsSL "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final/arquillian-config-impl-base-1.1.10.Final-${suffix}.jar" | sed -n '"'1,5p'; done" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+index cfbd173ac20a3d7916487719b14f49acce7abeb1..1252ae787fc0e8fdf78a3e20079a5a4b8640b5c5
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-javadoc.jar",
++  "description" : "Arquillian Config Implementation Base provides the base implementation of Arquillian's configuration module. It parses and registers Arquillian descriptors, system-property substitutions, and extension or container settings used by Arquillian test runtimes."
+ }
+
+ succeeded in 214ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 09:45:13 GMT
+content-type: application/java-archive
+content-length: 52989
+cf-ray: 9f8787c518a20395-ZRH
+HTTP/2 200 
+date: Fri, 08 May 2026 09:45:13 GMT
+content-type: application/java-archive
+content-length: 257977
+cf-ray: 9f8787c57d2ebe6d-ZRH
+
+codex
+The JSON parses cleanly, and the three Maven URLs return HTTP 200 after substituting `1.1.10.Final`. The file is under `build/`, so Git may ignore it, but the direct file content is updated.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final",
+  "repository-url" : "https://github.com/arquillian/arquillian-core",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-sources.jar",
+  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-tests.jar",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-javadoc.jar",
+  "description" : "Arquillian Config Implementation Base provides the base implementation of Arquillian's configuration module. It parses and registers Arquillian descriptors, system-property substitutions, and extension or container settings used by Arquillian test runtimes."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+index cfbd173ac20a3d7916487719b14f49acce7abeb1..1252ae787fc0e8fdf78a3e20079a5a4b8640b5c5
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-javadoc.jar",
++  "description" : "Arquillian Config Implementation Base provides the base implementation of Arquillian's configuration module. It parses and registers Arquillian descriptors, system-property substitutions, and extension or container settings used by Arquillian test runtimes."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2 org/jboss/arquillian/config/arquillian-config-impl-base/1.1.10.Final
+codex
+Updated [the discovered metadata JSON](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json).
+
+I verified it as a Maven Java artifact included in the Arquillian `1.1.10.Final` set, with the published description “Implementation for the Config module.” ([libraries.io](https://libraries.io/maven/org.jboss.arquillian.config%3Aarquillian-config-impl-base?utm_source=openai))
+
+Validation done:
+- JSON parses with `jq`.
+- Maven `sources`, `tests`, and `javadoc` URLs return HTTP 200 for `1.1.10.Final`.
+- No `language` field added.
+- No `not-for-native-image` fields added because the artifact is a JVM jar with class files.
+diff --git a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+index cfbd173ac20a3d7916487719b14f49acce7abeb1..1252ae787fc0e8fdf78a3e20079a5a4b8640b5c5
+--- a/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final"
++  "coordinates" : "org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final",
++  "repository-url" : "https://github.com/arquillian/arquillian-core",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/config/arquillian-config-impl-base/$version$/arquillian-config-impl-base-$version$-javadoc.jar",
++  "description" : "Arquillian Config Implementation Base provides the base implementation of Arquillian's configuration module. It parses and registers Arquillian descriptors, system-property substitutions, and extension or container settings used by Arquillian test runtimes."
+ }
+
+tokens used
+115,419
+Updated [the discovered metadata JSON](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318/build/discovered-artifact-metadata/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.json).
+
+I verified it as a Maven Java artifact included in the Arquillian `1.1.10.Final` set, with the published description “Implementation for the Config module.” ([libraries.io](https://libraries.io/maven/org.jboss.arquillian.config%3Aarquillian-config-impl-base?utm_source=openai))
+
+Validation done:
+- JSON parses with `jq`.
+- Maven `sources`, `tests`, and `javadoc` URLs return HTTP 200 for `1.1.10.Final`.
+- No `language` field added.
+- No `not-for-native-image` fields added because the artifact is a JVM jar with class files.
+Ran agent for org.jboss.arquillian.config:arquillian-config-impl-base:1.1.10.Final (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318/build/agent-artifact-discovery-logs/org.jboss.arquillian.config-arquillian-config-impl-base-1.1.10.Final.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3782-d16fc318/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 26s
+9 actionable tasks: 9 executed
