@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
 import java.security.CodeSource;
+import java.util.Base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -135,6 +136,14 @@ public class Cleaner0Test {
     }
 
     private static final class NettyIsolatedClassLoader extends URLClassLoader {
+        private static final byte[] LEGACY_CLEANER_CLASS_BYTES = Base64.getMimeDecoder().decode("""
+                yv66vgAAADQADgoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQAD
+                KClWBwAIAQAQc3VuL21pc2MvQ2xlYW5lcgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUB
+                AAVjbGVhbgEAClNvdXJjZUZpbGUBAAxDbGVhbmVyLmphdmEAIQAHAAIAAAAAAAIAAQAFAAYA
+                AQAJAAAAHQABAAEAAAAFKrcAAbEAAAABAAoAAAAGAAEAAAACAAEACwAGAAEACQAAABkAAAAB
+                AAAAAbEAAAABAAoAAAAGAAEAAAACAAEADAAAAAIADQ==
+                """);
+
         private NettyIsolatedClassLoader(URL libraryLocation) {
             super(new URL[] {libraryLocation}, Cleaner0Test.class.getClassLoader());
         }
@@ -143,6 +152,9 @@ public class Cleaner0Test {
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
             synchronized (getClassLoadingLock(name)) {
                 Class<?> loadedClass = findLoadedClass(name);
+                if (loadedClass == null && name.equals("sun.misc.Cleaner")) {
+                    loadedClass = defineClass(name, LEGACY_CLEANER_CLASS_BYTES, 0, LEGACY_CLEANER_CLASS_BYTES.length);
+                }
                 if (loadedClass == null && name.startsWith("io.netty.")) {
                     try {
                         loadedClass = findClass(name);
