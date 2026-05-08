@@ -11,6 +11,14 @@ import org.openqa.selenium.devtools.CdpInfo;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.v85.V85CdpInfo;
+import org.openqa.selenium.devtools.v85.browser.Browser;
+import org.openqa.selenium.devtools.v85.browser.model.Bounds;
+import org.openqa.selenium.devtools.v85.browser.model.BrowserContextID;
+import org.openqa.selenium.devtools.v85.browser.model.PermissionDescriptor;
+import org.openqa.selenium.devtools.v85.browser.model.PermissionSetting;
+import org.openqa.selenium.devtools.v85.browser.model.PermissionType;
+import org.openqa.selenium.devtools.v85.browser.model.WindowID;
+import org.openqa.selenium.devtools.v85.browser.model.WindowState;
 import org.openqa.selenium.devtools.v85.dom.DOM;
 import org.openqa.selenium.devtools.v85.dom.model.Node;
 import org.openqa.selenium.devtools.v85.emulation.Emulation;
@@ -185,6 +193,103 @@ public class Selenium_devtools_v85Test {
                 .contains("90")
                 .contains("\"width\"")
                 .contains("800");
+    }
+
+    @Test
+    void browserDomainConfiguresPermissionsAndWindowBounds() {
+        BrowserContextID contextId = new BrowserContextID("context-1");
+        PermissionDescriptor clipboardRead = new PermissionDescriptor(
+                "clipboard-read",
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(true));
+        Command<Void> permission = Browser.setPermission(
+                clipboardRead,
+                PermissionSetting.GRANTED,
+                Optional.of("https://example.test"),
+                Optional.of(contextId));
+
+        assertThat(permission.getMethod()).isEqualTo("Browser.setPermission");
+        assertThat(permission.getParams())
+                .containsEntry("permission", clipboardRead)
+                .containsEntry("setting", PermissionSetting.GRANTED)
+                .containsEntry("origin", "https://example.test")
+                .containsEntry("browserContextId", contextId);
+        assertThat(json.toJson(permission.getParams()))
+                .contains("\"name\"")
+                .contains("\"clipboard-read\"")
+                .contains("\"allowWithoutSanitization\"")
+                .contains("true")
+                .contains("\"setting\"")
+                .contains("\"granted\"")
+                .contains("\"browserContextId\"")
+                .contains("\"context-1\"");
+
+        Command<Void> grantPermissions = Browser.grantPermissions(
+                List.of(PermissionType.GEOLOCATION, PermissionType.NOTIFICATIONS),
+                Optional.of("https://example.test"),
+                Optional.empty());
+        assertThat(grantPermissions.getMethod()).isEqualTo("Browser.grantPermissions");
+        assertThat(grantPermissions.getParams())
+                .containsEntry("permissions", List.of(PermissionType.GEOLOCATION, PermissionType.NOTIFICATIONS))
+                .containsEntry("origin", "https://example.test")
+                .doesNotContainKey("browserContextId");
+        assertThat(json.toJson(grantPermissions.getParams()))
+                .contains("\"geolocation\"")
+                .contains("\"notifications\"");
+
+        WindowID windowId = new WindowID(11);
+        Bounds bounds = new Bounds(
+                Optional.of(10),
+                Optional.of(20),
+                Optional.of(1200),
+                Optional.of(800),
+                Optional.of(WindowState.MAXIMIZED));
+        Command<Void> setBounds = Browser.setWindowBounds(windowId, bounds);
+        assertThat(setBounds.getMethod()).isEqualTo("Browser.setWindowBounds");
+        assertThat(setBounds.getParams()).containsEntry("windowId", windowId).containsEntry("bounds", bounds);
+        assertThat(json.toJson(setBounds.getParams()))
+                .contains("\"windowId\"")
+                .contains("11")
+                .contains("\"windowState\"")
+                .contains("\"maximized\"");
+
+        Browser.GetWindowForTargetResponse window = json.toType("""
+                {
+                  "windowId": 11,
+                  "bounds": {
+                    "left": 10,
+                    "top": 20,
+                    "width": 1200,
+                    "height": 800,
+                    "windowState": "maximized"
+                  }
+                }
+                """, Browser.GetWindowForTargetResponse.class);
+
+        assertThat(window.getWindowId()).hasToString("11");
+        assertThat(window.getBounds().getLeft()).contains(10);
+        assertThat(window.getBounds().getTop()).contains(20);
+        assertThat(window.getBounds().getWidth()).contains(1200);
+        assertThat(window.getBounds().getHeight()).contains(800);
+        assertThat(window.getBounds().getWindowState()).contains(WindowState.MAXIMIZED);
+
+        Browser.GetVersionResponse version = json.toType("""
+                {
+                  "protocolVersion": "1.3",
+                  "product": "Chrome/85.0",
+                  "revision": "revision-id",
+                  "userAgent": "Mozilla/5.0",
+                  "jsVersion": "8.5"
+                }
+                """, Browser.GetVersionResponse.class);
+
+        assertThat(version.getProtocolVersion()).isEqualTo("1.3");
+        assertThat(version.getProduct()).isEqualTo("Chrome/85.0");
+        assertThat(version.getRevision()).isEqualTo("revision-id");
+        assertThat(version.getUserAgent()).isEqualTo("Mozilla/5.0");
+        assertThat(version.getJsVersion()).isEqualTo("8.5");
     }
 
     @Test
