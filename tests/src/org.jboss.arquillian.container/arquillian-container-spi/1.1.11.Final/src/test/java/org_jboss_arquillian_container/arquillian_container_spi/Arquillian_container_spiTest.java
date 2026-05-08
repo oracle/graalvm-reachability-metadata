@@ -909,6 +909,11 @@ public class Arquillian_container_spiTest {
         }
 
         @Override
+        public RecordingArchive filter(Filter<ArchivePath> filter) {
+            return unsupported();
+        }
+
+        @Override
         public RecordingArchive add(Archive<?> archive, ArchivePath path, Class<? extends StreamExporter> exporter)
                 throws IllegalArgumentException {
             return unsupported();
@@ -979,6 +984,11 @@ public class Arquillian_container_spiTest {
 
         @Override
         public Archive<RecordingArchive> shallowCopy() {
+            return unsupported();
+        }
+
+        @Override
+        public Archive<RecordingArchive> shallowCopy(Filter<ArchivePath> filter) {
             return unsupported();
         }
 
