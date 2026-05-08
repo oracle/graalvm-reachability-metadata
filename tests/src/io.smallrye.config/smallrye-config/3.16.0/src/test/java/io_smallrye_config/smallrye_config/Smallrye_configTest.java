@@ -12,17 +12,22 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.TreeSet;
 
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.Converter;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.ConfigSourceContext;
+import io.smallrye.config.ConfigSourceFactory;
 import io.smallrye.config.ConfigValidationException;
 import io.smallrye.config.ConfigValue;
 import io.smallrye.config.FallbackConfigSourceInterceptor;
@@ -161,6 +166,26 @@ public class Smallrye_configTest {
     }
 
     @Test
+    void createsConfigSourcesFromFactoryUsingPreviouslyInitializedContext() {
+        Map<String, String> properties = new LinkedHashMap<>();
+        properties.put("factory.region", "eu-central");
+        properties.put("factory.service", "payments");
+
+        SmallRyeConfig config = new SmallRyeConfigBuilder()
+                .withSources(new PropertiesConfigSource(properties, "factory-bootstrap-source", 100))
+                .withSources(new DerivedEndpointConfigSourceFactory())
+                .addDefaultInterceptors()
+                .build();
+
+        assertThat(config.getValue("generated.endpoint", String.class))
+                .isEqualTo("https://payments.eu-central.example.test");
+        assertThat(config.getValue("generated.bootstrap-names", String.class))
+                .contains("factory.region", "factory.service");
+        assertThat(config.getConfigValue("generated.endpoint").getConfigSourceName())
+                .contains("derived-factory-source");
+    }
+
+    @Test
     void appliesRelocationAndFallbackInterceptorsWithoutChangingSourcePrecedence() {
         Map<String, String> lowPriority = Map.of(
                 "legacy.timeout", "15",
@@ -191,6 +216,25 @@ public class Smallrye_configTest {
         return new SmallRyeConfigBuilder()
                 .withSources(new PropertiesConfigSource(properties, "in-memory-test-source", 100))
                 .addDefaultInterceptors();
+    }
+
+    public static final class DerivedEndpointConfigSourceFactory implements ConfigSourceFactory {
+        @Override
+        public Iterable<ConfigSource> getConfigSources(ConfigSourceContext context) {
+            String region = context.getValue("factory.region").getValue();
+            String service = context.getValue("factory.service").getValue();
+
+            TreeSet<String> bootstrapNames = new TreeSet<>();
+            Iterator<String> names = context.iterateNames();
+            while (names.hasNext()) {
+                bootstrapNames.add(names.next());
+            }
+
+            Map<String, String> generated = new LinkedHashMap<>();
+            generated.put("generated.endpoint", "https://" + service + "." + region + ".example.test");
+            generated.put("generated.bootstrap-names", String.join(",", bootstrapNames));
+            return List.of(new PropertiesConfigSource(generated, "derived-factory-source", 200));
+        }
     }
 
     public static final class ReverseSecretKeysHandler implements SecretKeysHandler {
