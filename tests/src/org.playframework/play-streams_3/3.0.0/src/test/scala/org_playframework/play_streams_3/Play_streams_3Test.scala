@@ -12,13 +12,14 @@ import org.apache.pekko.stream.scaladsl.{Flow, GraphDSL, Sink, Source}
 import org.apache.pekko.util.ByteString
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.reactivestreams.{Processor, Subscription}
 import play.api.libs.streams.{Accumulator, ActorFlow, GzipFlow, PekkoStreams, Probes}
 import play.libs.streams.{Accumulator as JavaAccumulator}
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.{CompletionStage, Executor, TimeUnit}
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicLong}
 import java.util.function.Function
 import java.util.zip.GZIPInputStream
 import scala.concurrent.duration.*
@@ -215,6 +216,45 @@ class Play_streams_3Test {
     val publisher = Source(List("left", "right")).runWith(Sink.asPublisher[String](fanout = false))
     val probedPublisher = Probes.publisherProbe[String]("publisher-probe", publisher, value => s"publisher=$value")
     assertEquals(List("left", "right"), await(Source.fromPublisher(probedPublisher).runWith(Sink.seq)).toList)
+  }
+
+  @Test
+  def probesWrapProcessorsAndSubscriptionsWithoutChangingSignals(): Unit = withActorSystem { (_, materializer) =>
+    given Materializer = materializer
+
+    val processor: Processor[String, String] = Flow[String].map(_.reverse).toProcessor.run()
+    val probedProcessor: Processor[String, String] = Probes.processorProbe[String, String](
+      "processor-probe",
+      processor,
+      value => s"input=$value",
+      value => s"output=$value"
+    )
+
+    val processorResult: Seq[String] = await(
+      Source(List("abc", "def"))
+        .via(Flow.fromProcessor(() => probedProcessor))
+        .runWith(Sink.seq)
+    )
+    assertEquals(List("cba", "fed"), processorResult.toList)
+
+    val requested: AtomicLong = new AtomicLong()
+    val cancelled: AtomicBoolean = new AtomicBoolean(false)
+    val subscription: Subscription = new Subscription {
+      override def request(elements: Long): Unit = requested.addAndGet(elements)
+
+      override def cancel(): Unit = cancelled.set(true)
+    }
+
+    val probedSubscription: Subscription = Probes.subscriptionProbe(
+      "subscription-probe",
+      subscription,
+      System.nanoTime()
+    )
+    probedSubscription.request(3L)
+    probedSubscription.cancel()
+
+    assertEquals(3L, requested.get())
+    assertTrue(cancelled.get())
   }
 
   private def withActorSystem(testCode: (ActorSystem, Materializer) => Unit): Unit = {
