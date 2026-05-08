@@ -24,7 +24,9 @@ import org.apache.arrow.vector.IntVector;
 import org.apache.arrow.vector.ValueVector;
 import org.apache.arrow.vector.VarBinaryVector;
 import org.apache.arrow.vector.VarCharVector;
+import org.apache.arrow.vector.VectorLoader;
 import org.apache.arrow.vector.VectorSchemaRoot;
+import org.apache.arrow.vector.VectorUnloader;
 import org.apache.arrow.vector.compare.Range;
 import org.apache.arrow.vector.compare.RangeEqualsVisitor;
 import org.apache.arrow.vector.complex.FixedSizeListVector;
@@ -36,6 +38,7 @@ import org.apache.arrow.vector.complex.reader.FieldReader;
 import org.apache.arrow.vector.dictionary.Dictionary;
 import org.apache.arrow.vector.dictionary.DictionaryEncoder;
 import org.apache.arrow.vector.holders.NullableIntHolder;
+import org.apache.arrow.vector.ipc.message.ArrowRecordBatch;
 import org.apache.arrow.vector.types.FloatingPointPrecision;
 import org.apache.arrow.vector.types.pojo.ArrowType;
 import org.apache.arrow.vector.types.pojo.DictionaryEncoding;
@@ -223,6 +226,47 @@ public class Arrow_vectorTest {
             assertThat(root.getSchema().getFields())
                     .extracting(Field::getName)
                     .containsExactly("id", "score", "tags", "person");
+        }
+    }
+
+    @Test
+    void vectorLoaderAndUnloaderRoundTripRecordBatchesBetweenSchemaRoots() {
+        try (BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE)) {
+            IntVector ids = new IntVector("id", allocator);
+            VarCharVector labels = new VarCharVector("label", allocator);
+
+            ids.allocateNew(4);
+            labels.allocateNew();
+            ids.setSafe(0, 11);
+            labels.setSafe(0, new Text("first"));
+            ids.setNull(1);
+            labels.setSafe(1, new Text("missing-id"));
+            ids.setSafe(2, 33);
+            labels.setNull(2);
+            ids.setSafe(3, 44);
+            labels.setSafe(3, new Text("last"));
+            ids.setValueCount(4);
+            labels.setValueCount(4);
+
+            try (VectorSchemaRoot sourceRoot = VectorSchemaRoot.of(ids, labels)) {
+                sourceRoot.setRowCount(4);
+                VectorUnloader unloader = new VectorUnloader(sourceRoot);
+
+                try (ArrowRecordBatch recordBatch = unloader.getRecordBatch();
+                        VectorSchemaRoot targetRoot = VectorSchemaRoot.create(sourceRoot.getSchema(), allocator)) {
+                    VectorLoader loader = new VectorLoader(targetRoot);
+                    loader.load(recordBatch);
+
+                    assertThat(targetRoot.getRowCount()).isEqualTo(4);
+                    assertThat(targetRoot.getSchema()).isEqualTo(sourceRoot.getSchema());
+                    assertThat(targetRoot.getVector("id").getObject(0)).isEqualTo(11);
+                    assertThat(targetRoot.getVector("id").getObject(1)).isNull();
+                    assertThat(targetRoot.getVector("id").getObject(3)).isEqualTo(44);
+                    assertThat(targetRoot.getVector("label").getObject(0).toString()).isEqualTo("first");
+                    assertThat(targetRoot.getVector("label").getObject(2)).isNull();
+                    assertThat(targetRoot.getVector("label").getObject(3).toString()).isEqualTo("last");
+                }
+            }
         }
     }
 
