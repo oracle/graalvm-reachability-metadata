@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
@@ -50,6 +51,8 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluatio
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 public class Maven_plugin_testing_harnessTest {
     @TempDir
@@ -418,6 +421,39 @@ public class Maven_plugin_testing_harnessTest {
 
         TestResources.rm(base, "source/delete-me.txt");
         assertThat(tempDir.resolve("source/delete-me.txt")).doesNotExist();
+    }
+
+    @Test
+    void testResourcesRuleCreatesIsolatedWorkingCopyForTestProject() throws IOException {
+        Path projectsDir = Files.createDirectories(tempDir.resolve("projects"));
+        Path workDir = Files.createDirectories(tempDir.resolve("work"));
+        Path projectDir = Files.createDirectories(projectsDir.resolve("sample-project"));
+        Files.createDirectories(projectDir.resolve("src"));
+        Files.writeString(projectDir.resolve("pom.xml"), "<project/>", StandardCharsets.UTF_8);
+        Files.writeString(projectDir.resolve("src/config.txt"), "copied", StandardCharsets.UTF_8);
+
+        Path staleWorkingCopy = workDir.resolve(
+                "Maven_plugin_testing_harnessTest_copies_project_configuration_sample-project");
+        Files.createDirectories(staleWorkingCopy);
+        Files.writeString(staleWorkingCopy.resolve("stale.txt"), "stale", StandardCharsets.UTF_8);
+
+        TestResources resources = new TestResources(projectsDir.toString(), workDir.toString());
+        AtomicReference<File> basedir = new AtomicReference<>();
+        Statement statement = resources.apply(new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                basedir.set(resources.getBasedir("sample-project"));
+            }
+        }, Description.createTestDescription(
+                Maven_plugin_testing_harnessTest.class, "copies/project\\configuration"));
+
+        assertThatCode(statement::evaluate).doesNotThrowAnyException();
+
+        assertThat(basedir.get()).isDirectory();
+        assertThat(basedir.get()).isEqualTo(staleWorkingCopy.toFile().getCanonicalFile());
+        assertThat(new File(basedir.get(), "pom.xml")).hasContent("<project/>");
+        assertThat(new File(basedir.get(), "src/config.txt")).hasContent("copied");
+        assertThat(new File(basedir.get(), "stale.txt")).doesNotExist();
     }
 
     @Test
