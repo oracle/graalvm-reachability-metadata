@@ -159,6 +159,42 @@ public class Maven_api_toolchainTest {
     }
 
     @Test
+    void persistedToolchainsWithBuilderUpdatesModelMetadataAndAddsLocations() {
+        ToolchainModel jdk = ToolchainModel.newBuilder()
+                .type("jdk")
+                .provides(Map.of("version", "21"))
+                .build();
+        InputLocation originalLocation = new InputLocation(2, 1, new InputSource("original-toolchains.xml"));
+        InputLocation addedLocation = new InputLocation(5, 3, new InputSource("updated-toolchains.xml"));
+        InputLocation importedFrom = new InputLocation(1, 1, new InputSource("imported-toolchains.xml"));
+        PersistedToolchains original = PersistedToolchains.newBuilder()
+                .namespaceUri(TOOLCHAINS_NAMESPACE)
+                .modelEncoding("UTF-8")
+                .toolchains(List.of(jdk))
+                .location("original", originalLocation)
+                .build();
+
+        PersistedToolchains updated = PersistedToolchains.newBuilder(original, true)
+                .namespaceUri("https://maven.apache.org/TOOLCHAINS/custom")
+                .modelEncoding("UTF-16")
+                .location("added", addedLocation)
+                .importedFrom(importedFrom)
+                .build();
+
+        assertThat(original.getNamespaceUri()).isEqualTo(TOOLCHAINS_NAMESPACE);
+        assertThat(original.getModelEncoding()).isEqualTo("UTF-8");
+        assertThat(original.getLocation("original")).isSameAs(originalLocation);
+        assertThat(original.getLocation("added")).isNull();
+        assertThat(original.getImportedFrom()).isNull();
+        assertThat(updated.getNamespaceUri()).isEqualTo("https://maven.apache.org/TOOLCHAINS/custom");
+        assertThat(updated.getModelEncoding()).isEqualTo("UTF-16");
+        assertThat(updated.getToolchains()).containsExactly(jdk);
+        assertThat(updated.getLocation("original")).isSameAs(originalLocation);
+        assertThat(updated.getLocation("added")).isSameAs(addedLocation);
+        assertThat(updated.getImportedFrom()).isSameAs(importedFrom);
+    }
+
+    @Test
     void trackableBaseStoresLocationsAndImportedSource() {
         InputLocation typeLocation = new InputLocation(8, 2, new InputSource("toolchains.xml"));
         InputLocation importedFrom = new InputLocation(1, 1, new InputSource("import.xml"));
