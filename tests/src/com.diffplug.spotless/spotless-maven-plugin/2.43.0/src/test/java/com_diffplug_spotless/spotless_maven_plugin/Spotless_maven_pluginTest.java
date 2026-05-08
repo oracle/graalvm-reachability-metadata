@@ -26,6 +26,7 @@ import com.diffplug.spotless.LineEnding;
 import com.diffplug.spotless.Provisioner;
 import com.diffplug.spotless.generic.PipeStepPair;
 import com.diffplug.spotless.maven.ArtifactResolutionException;
+import com.diffplug.spotless.maven.FileLocator;
 import com.diffplug.spotless.maven.FormatterConfig;
 import com.diffplug.spotless.maven.FormatterStepConfig;
 import com.diffplug.spotless.maven.FormatterStepFactory;
@@ -166,6 +167,29 @@ public class Spotless_maven_pluginTest {
         String restored = pair.out().format(formatted, sentinel);
 
         assertThat(restored).isEqualTo("formatted\n<raw>left alone   \nsecond raw\t</raw>\nformatted too");
+    }
+
+    @Test
+    void formatterFactoryMergesGlobalStepsWithFormatSpecificOverrides() throws Exception {
+        TrimTrailingWhitespace globalTrimTrailingWhitespace = new TrimTrailingWhitespace();
+        EndWithNewline globalEndWithNewline = new EndWithNewline();
+        FormatterConfig formatterConfig = new FormatterConfig(
+                temporaryDirectory.toFile(),
+                StandardCharsets.UTF_8.name(),
+                LineEnding.UNIX,
+                Optional.empty(),
+                (withTransitives, mavenCoordinates) -> Set.of(),
+                new FileLocator(null, temporaryDirectory.toFile(), temporaryDirectory.resolve("target").toFile()),
+                List.of(globalTrimTrailingWhitespace, globalEndWithNewline),
+                Optional.empty());
+        Format format = new Format();
+        format.addTrimTrailingWhitespace(new TrimTrailingWhitespace());
+
+        try (Formatter formatter = format.newFormatter(
+                () -> List.of(temporaryDirectory.resolve("source.txt").toFile()), formatterConfig)) {
+            assertThat(formatter.getSteps()).hasSize(2);
+            assertThat(formatter.compute("alpha   \nbeta   ", Formatter.NO_FILE_SENTINEL)).isEqualTo("alpha\nbeta\n");
+        }
     }
 
     @Test
