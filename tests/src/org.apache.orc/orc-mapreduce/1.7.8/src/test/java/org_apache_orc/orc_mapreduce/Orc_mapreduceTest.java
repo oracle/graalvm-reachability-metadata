@@ -10,6 +10,9 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configuration.IntegerRanges;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.ql.io.sarg.PredicateLeaf;
+import org.apache.hadoop.hive.ql.io.sarg.SearchArgument;
+import org.apache.hadoop.hive.ql.io.sarg.SearchArgumentFactory;
 import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.DoubleWritable;
@@ -200,6 +203,29 @@ public class Orc_mapreduceTest {
         assertThat(org.apache.orc.mapred.OrcOutputFormat.buildOptions(conf)).isNotNull();
         assertThat(new org.apache.orc.mapreduce.OrcInputFormat<OrcStruct>()).isNotNull();
         assertThat(new org.apache.orc.mapreduce.OrcOutputFormat<OrcStruct>()).isNotNull();
+    }
+
+    @Test
+    void inputFormatsStoreSearchArgumentsForPredicatePushdown() {
+        SearchArgument searchArgument = SearchArgumentFactory.newBuilder()
+                .startAnd()
+                .equals("id", PredicateLeaf.Type.LONG, 7L)
+                .lessThan("label", PredicateLeaf.Type.STRING, "m")
+                .end()
+                .build();
+
+        Configuration mapredConf = new Configuration(false);
+        org.apache.orc.mapred.OrcInputFormat.setSearchArgument(mapredConf, searchArgument, new String[] {"id", "label"});
+
+        assertThat(OrcConf.KRYO_SARG.getString(mapredConf)).isNotBlank();
+        assertThat(OrcConf.SARG_COLUMNS.getString(mapredConf)).isEqualTo("id,label");
+
+        Configuration mapreduceConf = new Configuration(false);
+        org.apache.orc.mapreduce.OrcInputFormat.setSearchArgument(
+                mapreduceConf, searchArgument, new String[] {"id", "label"});
+
+        assertThat(OrcConf.KRYO_SARG.getString(mapreduceConf)).isNotBlank();
+        assertThat(OrcConf.SARG_COLUMNS.getString(mapreduceConf)).isEqualTo("id,label");
     }
 
     private static TypeDescription complexSchema() {
