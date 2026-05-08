@@ -541,9 +541,9 @@ public class Auto_commonTest {
             TypeElement documentedType = elements.getTypeElement("java.lang.annotation.Documented");
             VariableElement field = ElementFilter.fieldsIn(subject.getEnclosedElements()).get(0);
 
-            assertThat(MoreElements.isAnnotationPresent(subject, "test.Sample")).isTrue();
-            assertThat(MoreElements.isAnnotationPresent(subject, markerType)).isTrue();
-            assertThat(MoreElements.isAnnotationPresent(field, Deprecated.class)).isTrue();
+            assertThat(MoreElements.getAnnotationMirror(subject, "test.Sample").isPresent()).isTrue();
+            assertThat(MoreElements.getAnnotationMirror(subject, markerType).isPresent()).isTrue();
+            assertThat(MoreElements.getAnnotationMirror(field, Deprecated.class).isPresent()).isTrue();
 
             com.google.common.base.Optional<AnnotationMirror> sampleMirrorOptional =
                     MoreElements.getAnnotationMirror(subject, "test.Sample");
