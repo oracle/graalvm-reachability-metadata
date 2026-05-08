@@ -10,8 +10,18 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+repositories {
+    maven {
+        url = uri('https://repo.gradle.org/gradle/libs-releases-local/')
+    }
+}
+
 dependencies {
     testImplementation "net.sf.proguard:proguard-gradle:$libraryVersion"
+    testImplementation 'org.gradle:gradle-core:2.2.1'
+    testImplementation 'org.gradle:gradle-base-services:2.2.1'
+    testImplementation 'org.gradle:gradle-base-services-groovy:2.2.1'
+    testImplementation 'org.codehaus.groovy:groovy-all:2.3.6'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
