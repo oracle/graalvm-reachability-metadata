@@ -138,6 +138,25 @@ class Pekko_slf4j_3Test {
     }
   }
 
+  @Test
+  def slf4jLoggerExposesMdcAttributeNamesAndUtcTimestampFormatter(): Unit = {
+    withActorSystem("PekkoSlf4jMdcMetadataTest", baseConfig) { system =>
+      val metadata: Slf4jMdcMetadata = Patterns
+        .ask(system.actorOf(Props(classOf[Slf4jMdcMetadataActor]), "mdc-metadata-probe"), GetSlf4jMdcMetadata, Duration.ofSeconds(3))
+        .toCompletableFuture
+        .get(3, TimeUnit.SECONDS)
+        .asInstanceOf[Slf4jMdcMetadata]
+
+      assertThat(metadata.threadAttributeName).isEqualTo("sourceThread")
+      assertThat(metadata.actorSystemAttributeName).isEqualTo("sourceActorSystem")
+      assertThat(metadata.pekkoSourceAttributeName).isEqualTo("pekkoSource")
+      assertThat(metadata.pekkoTimestampAttributeName).isEqualTo("pekkoTimestamp")
+      assertThat(metadata.pekkoAddressAttributeName).isEqualTo("pekkoAddress")
+      assertThat(metadata.pekkoUidAttributeName).isEqualTo("pekkoUid")
+      assertThat(metadata.epochTimestamp).matches("\\d{2}:\\d{2}:\\d{2}\\.\\d{3}UTC")
+    }
+  }
+
   private def withActorSystem[T](name: String, config: Config)(body: ActorSystem => T): T = {
     val system: ActorSystem = ActorSystem(name, config)
     try {
@@ -166,4 +185,29 @@ class Pekko_slf4j_3Test {
 
 private final class LoggingProbe extends SLF4JLogging {
   def logger: org.slf4j.Logger = log
+}
+
+private case object GetSlf4jMdcMetadata
+
+private final case class Slf4jMdcMetadata(
+    threadAttributeName: String,
+    actorSystemAttributeName: String,
+    pekkoSourceAttributeName: String,
+    pekkoTimestampAttributeName: String,
+    pekkoAddressAttributeName: String,
+    pekkoUidAttributeName: String,
+    epochTimestamp: String)
+
+final class Slf4jMdcMetadataActor extends Slf4jLogger {
+  override def receive: Receive = {
+    case GetSlf4jMdcMetadata =>
+      sender() ! Slf4jMdcMetadata(
+        mdcThreadAttributeName,
+        mdcActorSystemAttributeName,
+        mdcPekkoSourceAttributeName,
+        mdcPekkoTimestamp,
+        mdcPekkoAddressAttributeName,
+        mdcPekkoUidAttributeName,
+        formatTimestamp(0L))
+  }
 }
