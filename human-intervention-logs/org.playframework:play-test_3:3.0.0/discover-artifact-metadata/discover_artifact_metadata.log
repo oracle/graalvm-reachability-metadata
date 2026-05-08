@@ -1,0 +1,1561 @@
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1317280
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1319917
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+Note: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e08f2-39fa-74f3-b94f-07791a0fe172
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.playframework:play-test_3:3.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0.0" when "$version$" is replaced with "3.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+- Set "coordinates" to "org.playframework:play-test_3:3.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream Play Framework repository, then patch the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json && sed -n '1,200p' build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+-rw-rw-r-- 1 vjovanov vjovanov 60 May  8 20:55 build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+{
+  "coordinates" : "org.playframework:play-test_3:3.0.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'play-test_3|org.playframework' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json:2:  "coordinates" : "org.playframework:play-test_3:3.0.0"
+metadata/org.playframework.twirl/twirl-api_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-sources.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-configuration_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-configuration_3/$version$/play-configuration_3-$version$-sources.jar",
+metadata/org.playframework/play-configuration_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.playframework/play-server_3/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/playframework/play-server_3/$version$/play-server_3-$version$-sources.jar",
+metadata/org.playframework/play-server_3/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/playframework/play-server_3/$version$/play-server_3-$version$-javadoc.jar",
+metadata/org.playframework/play-json_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-json_3/$version$/play-json_3-$version$-sources.jar",
+metadata/org.playframework/play-json_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-json_3/$version$/play-json_3-$version$-javadoc.jar",
+metadata/org.playframework/play-functional_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-functional_3/$version$/play-functional_3-$version$-sources.jar",
+metadata/org.playframework/play-functional_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-functional_3/$version$/play-functional_3-$version$-javadoc.jar",
+
+web search: 
+web search: Maven org.playframework play-test_3 3.0.0 sources jar javadoc jar tests jar
+web search: 
+web search: https://index.scala-lang.org/playframework/playframework/artifacts/play-test/3.0.0
+codex
+The artifact is published as `play-test_3`, and Scaladex reports its full Scala version as 3.3.1, so this should carry a Scala 3 language marker. I’m checking Maven Central now for source, javadoc, and any published test artifacts before falling back to GitHub paths.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/playframework/play-test_3/3.0.0/play-test_3-3.0.0.pom' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.playframework</groupId>
+    <artifactId>play-test_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Play-Test</description>
+    <url>https://github.com/playframework/playframework</url>
+    <version>3.0.0</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Play-Test</name>
+    <organization>
+        <name>The Play Framework Project</name>
+        <url>https://playframework.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/playframework/playframework</url>
+        <connection>scm:git:https://github.com/playframework/playframework.git</connection>
+        <developerConnection>scm:git:git@github.com:playframework/playframework.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>playframework</id>
+            <name>The Play Framework Contributors</name>
+            <url>https://github.com/playframework</url>
+            <email>contact@playframework.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.playframework.com/documentation/3.0.0/api/scala/index.html</info.apiURL>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.playframework</groupId>
+            <artifactId>play-guice_3</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.playframework</groupId>
+            <artifactId>play-server_3</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.playframework</groupId>
+            <artifactId>play-pekko-http-server_3</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sbt</groupId>
+            <artifactId>junit-interface</artifactId>
+            <version>0.13.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>32.1.3-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>io.fluentlenium</groupId>
+            <artifactId>fluentlenium-core</artifactId>
+            <version>6.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.netty</groupId>
+                    <artifactId>netty</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>htmlunit-driver</artifactId>
+            <version>4.13.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-support</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-api</artifactId>
+            <version>4.14.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-support</artifactId>
+            <version>4.14.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-firefox-driver</artifactId>
+            <version>4.14.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-core_3</artifactId>
+            <version>4.20.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-junit_3</artifactId>
+            <version>4.20.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.224</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/playframework/play-test_3/3.0.0/' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/playframework/play-test_3/3.0.0/play-test_3-3.0.0-tests.jar || true' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 260ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/playframework/play-test_3/3.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/playframework/play-test_3/3.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="play-test_3-3.0.0-javadoc.jar" title="play-test_3-3.0.0-javadoc.jar">play-test_3-3.0.0-javadoc.jar</a>                     2023-10-25 13:37   2893754      
+<a href="play-test_3-3.0.0-javadoc.jar.asc" title="play-test_3-3.0.0-javadoc.jar.asc">play-test_3-3.0.0-javadoc.jar.asc</a>                 2023-10-25 13:37       833      
+<a href="play-test_3-3.0.0-javadoc.jar.asc.md5" title="play-test_3-3.0.0-javadoc.jar.asc.md5">play-test_3-3.0.0-javadoc.jar.asc.md5</a>             2023-10-25 13:37        32      
+<a href="play-test_3-3.0.0-javadoc.jar.asc.sha1" title="play-test_3-3.0.0-javadoc.jar.asc.sha1">play-test_3-3.0.0-javadoc.jar.asc.sha1</a>            2023-10-25 13:37        40      
+<a href="play-test_3-3.0.0-javadoc.jar.md5" title="play-test_3-3.0.0-javadoc.jar.md5">play-test_3-3.0.0-javadoc.jar.md5</a>                 2023-10-25 13:37        32      
+<a href="play-test_3-3.0.0-javadoc.jar.sha1" title="play-test_3-3.0.0-javadoc.jar.sha1">play-test_3-3.0.0-javadoc.jar.sha1</a>                2023-10-25 13:37        40      
+<a href="play-test_3-3.0.0-sources.jar" title="play-test_3-3.0.0-sources.jar">play-test_3-3.0.0-sources.jar</a>                     2023-10-25 13:37     28141      
+<a href="play-test_3-3.0.0-sources.jar.asc" title="play-test_3-3.0.0-sources.jar.asc">play-test_3-3.0.0-sources.jar.asc</a>                 2023-10-25 13:37       833      
+<a href="play-test_3-3.0.0-sources.jar.asc.md5" title="play-test_3-3.0.0-sources.jar.asc.md5">play-test_3-3.0.0-sources.jar.asc.md5</a>             2023-10-25 13:37        32      
+<a href="play-test_3-3.0.0-sources.jar.asc.sha1" title="play-test_3-3.0.0-sources.jar.asc.sha1">play-test_3-3.0.0-sources.jar.asc.sha1</a>            2023-10-25 13:37        40      
+<a href="play-test_3-3.0.0-sources.jar.md5" title="play-test_3-3.0.0-sources.jar.md5">play-test_3-3.0.0-sources.jar.md5</a>                 2023-10-25 13:37        32      
+<a href="play-test_3-3.0.0-sources.jar.sha1" title="play-test_3-3.0.0-sources.jar.sha1">play-test_3-3.0.0-sources.jar.sha1</a>                2023-10-25 13:37        40      
+<a href="play-test_3-3.0.0.jar" title="play-test_3-3.0.0.jar">play-test_3-3.0.0.jar</a>                             2023-10-25 13:37    252946      
+<a href="play-test_3-3.0.0.jar.asc" title="play-test_3-3.0.0.jar.asc">play-test_3-3.0.0.jar.asc</a>                         2023-10-25 13:37       833      
+<a href="play-test_3-3.0.0.jar.asc.md5" title="play-test_3-3.0.0.jar.asc.md5">play-test_3-3.0.0.jar.asc.md5</a>                     2023-10-25 13:37        32      
+<a href="play-test_3-3.0.0.jar.asc.sha1" title="play-test_3-3.0.0.jar.asc.sha1">play-test_3-3.0.0.jar.asc.sha1</a>                    2023-10-25 13:37        40      
+<a href="play-test_3-3.0.0.jar.md5" title="play-test_3-3.0.0.jar.md5">play-test_3-3.0.0.jar.md5</a>                         2023-10-25 13:37        32      
+<a href="play-test_3-3.0.0.jar.sha1" title="play-test_3-3.0.0.jar.sha1">play-test_3-3.0.0.jar.sha1</a>                        2023-10-25 13:37        40      
+<a href="play-test_3-3.0.0.pom" title="play-test_3-3.0.0.pom">play-test_3-3.0.0.pom</a>                             2023-10-25 13:37      5876      
+<a href="play-test_3-3.0.0.pom.asc" title="play-test_3-3.0.0.pom.asc">play-test_3-3.0.0.pom.asc</a>                         2023-10-25 13:37       833      
+<a href="play-test_3-3.0.0.pom.asc.md5" title="play-test_3-3.0.0.pom.asc.md5">play-test_3-3.0.0.pom.asc.md5</a>                     2023-10-25 13:37        32      
+<a href="play-test_3-3.0.0.pom.asc.sha1" title="play-test_3-3.0.0.pom.asc.sha1">play-test_3-3.0.0.pom.asc.sha1</a>                    2023-10-25 13:37        40      
+<a href="play-test_3-3.0.0.pom.md5" title="play-test_3-3.0.0.pom.md5">play-test_3-3.0.0.pom.md5</a>                         2023-10-25 13:37        32      
+<a href="play-test_3-3.0.0.pom.sha1" title="play-test_3-3.0.0.pom.sha1">play-test_3-3.0.0.pom.sha1</a>                        2023-10-25 13:37        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 237ms:
+curl: (22) The requested HTTP/2 404 
+date: Fri, 08 May 2026 18:56:10 GMT
+content-type: text/html
+cf-ray: 9f8aaed30c3a0395-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/playframework/play-test_3/3.0.0/play-test_3-3.0.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents?ref=3.0.0' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/playframework/playframework.git '3.0.0' 'v3.0.0' 'play-3.0.0' | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/playframework/playframework/3.0.0/project/BuildSettings.scala | sed -n '1,180p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 192ms:
+[
+  {
+    "name": ".git-blame-ignore-revs",
+    "path": ".git-blame-ignore-revs",
+    "sha": "eb76780e49c474d4a0bf364810d8ebad98f4df71",
+    "size": 999,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.git-blame-ignore-revs?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/.git-blame-ignore-revs",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/eb76780e49c474d4a0bf364810d8ebad98f4df71",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/.git-blame-ignore-revs",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.git-blame-ignore-revs?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/eb76780e49c474d4a0bf364810d8ebad98f4df71",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/.git-blame-ignore-revs"
+    }
+  },
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "19f26f484aea941e02999fd42aac4c954c08d562",
+    "size": 66,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.gitattributes?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/.gitattributes",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/19f26f484aea941e02999fd42aac4c954c08d562",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.gitattributes?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/19f26f484aea941e02999fd42aac4c954c08d562",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "488d96f25218cafffb830ed1a9c324e04f64f716",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.github?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/.github",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/488d96f25218cafffb830ed1a9c324e04f64f716",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.github?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/488d96f25218cafffb830ed1a9c324e04f64f716",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "30bf8de43cf2c93d33e8d1d674b568099d204aab",
+    "size": 260,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.gitignore?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/.gitignore",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/30bf8de43cf2c93d33e8d1d674b568099d204aab",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.gitignore?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/30bf8de43cf2c93d33e8d1d674b568099d204aab",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/.gitignore"
+    }
+  },
+  {
+    "name": ".sbtopts",
+    "path": ".sbtopts",
+    "sha": "0230d251d3caf6dc337129a31899e5c9c7df0cc2",
+    "size": 101,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.sbtopts?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/.sbtopts",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/0230d251d3caf6dc337129a31899e5c9c7df0cc2",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/.sbtopts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.sbtopts?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/0230d251d3caf6dc337129a31899e5c9c7df0cc2",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/.sbtopts"
+    }
+  },
+  {
+    "name": ".scalafmt.conf",
+    "path": ".scalafmt.conf",
+    "sha": "fef60e3fa1a853c39370b0739f452be0c647d3e4",
+    "size": 2361,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/.scalafmt.conf?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/.scalafmt.conf",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/fef60e3fa1a853c39370b0739f452be0c647d3e4",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/.scalafmt.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/.scalafmt.conf?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/fef60e3fa1a853c39370b0739f452be0c647d3e4",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/.scalafmt.conf"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "8dada3edaf50dbc082c9a125058f25def75e625a",
+    "size": 11357,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/LICENSE?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/LICENSE",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/8dada3edaf50dbc082c9a125058f25def75e625a",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/LICENSE?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/8dada3edaf50dbc082c9a125058f25def75e625a",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "b91768bfe2550d5c382add0887670c0a68ee4cdb",
+    "size": 6650,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/README.md?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/README.md",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/b91768bfe2550d5c382add0887670c0a68ee4cdb",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/README.md?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/b91768bfe2550d5c382add0887670c0a68ee4cdb",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/README.md"
+    }
+  },
+  {
+    "name": "build.sbt",
+    "path": "build.sbt",
+    "sha": "9f58d2eca4efe412b888ea8952ff39cb69dc8c6e",
+    "size": 19598,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/build.sbt?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/build.sbt",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/9f58d2eca4efe412b888ea8952ff39cb69dc8c6e",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/build.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/build.sbt?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/9f58d2eca4efe412b888ea8952ff39cb69dc8c6e",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/build.sbt"
+    }
+  },
+  {
+    "name": "cache",
+    "path": "cache",
+    "sha": "4a8837de9fc03ee31fed97a9965a5de075bba92d",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/cache?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/cache",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/4a8837de9fc03ee31fed97a9965a5de075bba92d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/cache?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/4a8837de9fc03ee31fed97a9965a5de075bba92d",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/cache"
+    }
+  },
+  {
+    "name": "cluster",
+    "path": "cluster",
+    "sha": "59ab9db5251918195542cd2fc7373b13b5bb9351",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/cluster?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/cluster",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/59ab9db5251918195542cd2fc7373b13b5bb9351",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/cluster?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/59ab9db5251918195542cd2fc7373b13b5bb9351",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/cluster"
+    }
+  },
+  {
+    "name": "common.sbt",
+    "path": "common.sbt",
+    "sha": "94c6ebd8e56097bf2ba31c8f022fad6e900e5c71",
+    "size": 1493,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/common.sbt?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/blob/3.0.0/common.sbt",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/blobs/94c6ebd8e56097bf2ba31c8f022fad6e900e5c71",
+    "download_url": "https://raw.githubusercontent.com/playframework/playframework/3.0.0/common.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/common.sbt?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/blobs/94c6ebd8e56097bf2ba31c8f022fad6e900e5c71",
+      "html": "https://github.com/playframework/playframework/blob/3.0.0/common.sbt"
+    }
+  },
+  {
+    "name": "core",
+    "path": "core",
+    "sha": "056fd796c1a8bea8ff823f4f078bc339a9175c0b",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/core?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/056fd796c1a8bea8ff823f4f078bc339a9175c0b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/core?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/056fd796c1a8bea8ff823f4f078bc339a9175c0b",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/core"
+    }
+  },
+  {
+    "name": "dev-mode",
+    "path": "dev-mode",
+    "sha": "06bf0d57edc7013bb8326ce28819e0775cedc959",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/dev-mode?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/dev-mode",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/06bf0d57edc7013bb8326ce28819e0775cedc959",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/dev-mode?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/06bf0d57edc7013bb8326ce28819e0775cedc959",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/dev-mode"
+    }
+  },
+  {
+    "name": "documentation",
+    "path": "documentation",
+    "sha": "28aefd29c82b825bbf06178e9f102391775ff9f8",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/documentation?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/documentation",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/28aefd29c82b825bbf06178e9f102391775ff9f8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/documentation?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/28aefd29c82b825bbf06178e9f102391775ff9f8",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/documentation"
+    }
+  },
+  {
+    "name": "persistence",
+    "path": "persistence",
+    "sha": "dff530e44a9a44c46d28f34d45f20c77b092c4af",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/persistence?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/persistence",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/dff530e44a9a44c46d28f34d45f20c77b092c4af",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/persistence?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/dff530e44a9a44c46d28f34d45f20c77b092c4af",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/persistence"
+    }
+  },
+  {
+    "name": "project",
+    "path": "project",
+    "sha": "d11ce0da9d85008cbd575ef1386054b22b4c0c65",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/project?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/project",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/d11ce0da9d85008cbd575ef1386054b22b4c0c65",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/project?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/d11ce0da9d85008cbd575ef1386054b22b4c0c65",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/project"
+    }
+  },
+  {
+    "name": "testkit",
+    "path": "testkit",
+    "sha": "18abf55d83a7615f0dab5e9c89438fb98610fd73",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/testkit?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/18abf55d83a7615f0dab5e9c89438fb98610fd73",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/testkit?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/18abf55d83a7615f0dab5e9c89438fb98610fd73",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/testkit"
+    }
+  },
+  {
+    "name": "transport",
+    "path": "transport",
+    "sha": "27b5c946e438571a8d2953a6777f3ef8a20d40cd",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/transport?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/transport",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/27b5c946e438571a8d2953a6777f3ef8a20d40cd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/transport?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/27b5c946e438571a8d2953a6777f3ef8a20d40cd",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/transport"
+    }
+  },
+  {
+    "name": "web",
+    "path": "web",
+    "sha": "5fda341f305e7cde65c3c1b6f76490cd71b8c0df",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/web?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/web",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/5fda341f305e7cde65c3c1b6f76490cd71b8c0df",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/web?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/5fda341f305e7cde65c3c1b6f76490cd71b8c0df",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/web"
+    }
+  }
+]
+
+ succeeded in 179ms:
+/*
+ * Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+import java.util.regex.Pattern
+
+import scala.sys.process.stringToProcess
+import scala.util.control.NonFatal
+
+import sbt._
+import sbt.Keys._
+import sbt.ScriptedPlugin.autoImport._
+
+import com.typesafe.tools.mima.core._
+import com.typesafe.tools.mima.core.ProblemFilters
+import com.typesafe.tools.mima.plugin.MimaKeys._
+import com.typesafe.tools.mima.plugin.MimaPlugin
+import de.heikoseeberger.sbtheader.AutomateHeaderPlugin
+import de.heikoseeberger.sbtheader.CommentBlockCreator
+import de.heikoseeberger.sbtheader.CommentStyle
+import de.heikoseeberger.sbtheader.FileType
+import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
+import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.HeaderPattern.commentBetween
+import de.heikoseeberger.sbtheader.LineCommentCreator
+import xerial.sbt.Sonatype.autoImport.sonatypeProfileName
+import Omnidoc.autoImport.omnidocPathPrefix
+import Omnidoc.autoImport.omnidocSnapshotBranch
+import PlayBuildBase.autoImport.PlayLibrary
+import PlayBuildBase.autoImport.PlaySbtLibrary
+import PlayBuildBase.autoImport.PlaySbtPlugin
+
+object BuildSettings {
+  val snapshotBranch: String = {
+    try {
+      val branch = "git rev-parse --abbrev-ref HEAD".!!.trim
+      if (branch == "HEAD") {
+        // not on a branch, get the hash
+        "git rev-parse HEAD".!!.trim
+      } else branch
+    } catch {
+      case NonFatal(_) => "unknown"
+    }
+  }
+
+  /** File header settings. */
+  private def fileUriRegexFilter(pattern: String): FileFilter = new FileFilter {
+    val compiledPattern = Pattern.compile(pattern)
+    override def accept(pathname: File): Boolean = {
+      val uriString = pathname.toURI.toString
+      compiledPattern.matcher(uriString).matches()
+    }
+  }
+
+  val fileHeaderSettings = Seq(
+    (Compile / headerSources / excludeFilter) := HiddenFileFilter ||
+      fileUriRegexFilter(".*/cookie/encoding/.*") || fileUriRegexFilter(".*/inject/SourceProvider.java$") ||
+      fileUriRegexFilter(".*/libs/reflect/.*"),
+    headerLicense := Some(
+      HeaderLicense.Custom(
+        """Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com>""".stripMargin
+      )
+    ),
+    headerMappings ++= Map(
+      FileType.xml                 -> CommentStyle.xmlStyleBlockComment,
+      FileType.conf                -> CommentStyle.hashLineComment,
+      FileType("sbt")              -> HeaderCommentStyle.cppStyleLineComment,
+      FileType("routes")           -> HeaderCommentStyle.hashLineComment,
+      FileType("", None, "routes") -> HeaderCommentStyle.hashLineComment,
+      FileType("default")          -> HeaderCommentStyle.hashLineComment,
+      FileType("properties")       -> HeaderCommentStyle.hashLineComment,
+      FileType("js")               -> HeaderCommentStyle.cStyleBlockComment,
+      FileType("less")             -> HeaderCommentStyle.cStyleBlockComment,
+      FileType("md")               -> CommentStyle(new LineCommentCreator("<!---", "-->"), commentBetween("<!---", "*", "-->")),
+      FileType("html") -> CommentStyle(
+        new CommentBlockCreator("<!--", "  ~", "  -->"),
+        commentBetween("<!--", "*", " -->")
+      ),
+    ),
+  )
+
+  private val VersionPattern = """^(\d+).(\d+).(\d+)(-.*)?""".r
+
+  def evictionSettings: Seq[Setting[_]] = Seq(
+    // This avoids a lot of dependency resolution warnings to be showed.
+    (update / evictionWarningOptions) := EvictionWarningOptions.default
+      .withWarnTransitiveEvictions(false)
+      .withWarnDirectEvictions(false)
+  )
+
+  val DocsApplication    = config("docs").hide
+  val SourcesApplication = config("sources").hide
+
+  /** These settings are used by all projects. */
+  def playCommonSettings: Seq[Setting[_]] = Def.settings(
+    sonatypeProfileName := "org.playframework",
+    fileHeaderSettings,
+    ivyLoggingLevel := UpdateLogging.DownloadOnly,
+    resolvers ++= Resolver.sonatypeOssRepos("releases"), // sync ScriptedTools.scala
+    resolvers ++= Seq(
+      Resolver.typesafeRepo("releases"),
+      Resolver.typesafeIvyRepo("releases"),
+      Resolver.sbtPluginRepo("releases"), // weird sbt-pgp/play docs/vegemite issue
+    ),
+    evictionSettings,
+    ivyConfigurations ++= Seq(DocsApplication, SourcesApplication),
+    javacOptions ++= Seq("-encoding", "UTF-8", "-Xlint:unchecked", "-Xlint:deprecation"),
+    scalacOptions ++= Seq("-release:11"),
+    (Compile / doc / scalacOptions) := {
+      // disable the new scaladoc feature for scala 2.12+ (https://github.com/scala/scala-dev/issues/249 and https://github.com/scala/bug/issues/11340)
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, v)) if v >= 12 => Seq("-no-java-comments")
+        case _                       => Seq() // Not available/needed in Scala 3 according to https://github.com/lampepfl/dotty/issues/11907
+      }
+    },
+    (Test / fork)                 := true,
+    (Test / parallelExecution)    := false,
+    (Test / test / testListeners) := Nil,
+    (Test / javaOptions) ++= Seq("-XX:MaxMetaspaceSize=384m", "-Xmx512m", "-Xms128m"),
+    testOptions ++= Seq(
+      Tests.Argument(TestFrameworks.Specs2, "showtimes"),
+      Tests.Argument(TestFrameworks.JUnit, "-v")
+    ),
+    version ~= { v =>
+      v +
+        sys.props.get("pekko.version").map("-pekko-" + _).getOrElse("") +
+        sys.props.get("pekko.http.version").map("-pekko-http-" + _).getOrElse("")
+    },
+    apiURL := {
+      val v = version.value
+      if (isSnapshot.value) {
+        v match {
+          case VersionPattern(epoch, major, _, _) =>
+            Some(url(raw"https://www.playframework.com/documentation/$epoch.$major.x/api/scala/index.html"))
+          case _ => Some(url("https://www.playframework.com/documentation/latest/api/scala/index.html"))
+        }
+      } else {
+        Some(url(raw"https://www.playframework.com/documentation/$v/api/scala/index.html"))
+      }
+    },
+    autoAPIMappings := true,
+    apiMappings ++= {
+      val scalaInstance = Keys.scalaInstance.value
+      scalaInstance.libraryJars.map { libraryJar =>
+        libraryJar -> url(
+          raw"""http://scala-lang.org/files/archive/api/${scalaInstance.actualVersion}/index.html"""
+        )
+      }.toMap
+    },
+    apiMappings ++= {
+      // Maps JDK 1.8 jar into apidoc.
+      val rtJar = sys.props
+        .get("sun.boot.class.path")
+        .flatMap(cp =>
+          cp.split(java.io.File.pathSeparator).collectFirst {
+            case str if str.endsWith(java.io.File.separator + "rt.jar") => str
+          }
+        )
+      rtJar match {
+        case None        => Map.empty
+        case Some(rtJar) => Map(file(rtJar) -> url(Docs.javaApiUrl))
+      }
+    },
+    apiMappings ++= {
+      // Finds appropriate scala apidoc from dependencies when autoAPIMappings are insufficient.
+      // See the following:
+      //
+      // http://stackoverflow.com/questions/19786841/can-i-use-sbts-apimappings-setting-for-managed-dependencies/20919304#20919304
+      // http://www.scala-sbt.org/release/docs/Howto-Scaladoc.html#Enable+manual+linking+to+the+external+Scaladoc+of+managed+dependencies
+      // https://github.com/ThoughtWorksInc/sbt-api-mappings/blob/master/src/main/scala/com/thoughtworks/sbtApiMappings/ApiMappings.scala#L34
+
+      val ScalaLibraryRegex = """^.*[/\\]scala-library-([\d\.]+)\.jar$""".r
+      val JavaxInjectRegex  = """^.*[/\\]java.inject-([\d\.]+)\.jar$""".r
+
+      val IvyRegex = """^.*[/\\]([\.\-_\w]+)[/\\]([\.\-_\w]+)[/\\](?:jars|bundles)[/\\]([\.\-_\w]+)\.jar$""".r
+
+      (for {
+        jar <- (Compile / doc / dependencyClasspath).value.toSet ++ (Test / doc / dependencyClasspath).value
+        fullyFile = jar.data
+        urlOption = fullyFile.getCanonicalPath match {
+          case ScalaLibraryRegex(v) =>
+
+ succeeded in 308ms:
+73a9439e52269998c2420b099c104c924e8da62d	refs/tags/3.0.0
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/playframework/playframework/3.0.0/build.sbt | rg -n "play-test|Play-Test|testkit|playTest|play.*test" -C 4' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/testkit?ref=3.0.0' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/playframework/playframework/contents/core?ref=3.0.0 | rg '\"name\"|\"html_url\"|\"type\"' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 166ms:
+177-  .dependsOn(PlayJavaJdbcProject % "compile->compile;test->test")
+178-  .dependsOn(PlayJdbcEvolutionsProject % "test")
+179-  .dependsOn(PlaySpecs2Project % "test")
+180-
+181:lazy val PlayTestProject = PlayCrossBuiltProject("Play-Test", "testkit/play-test")
+182-  .settings(
+183-    libraryDependencies ++= testDependencies ++ Seq(h2database % "test"),
+184-    (Test / parallelExecution) := false
+185-  )
+186-  .dependsOn(
+187-    PlayGuiceProject,
+188-    PlayServerProject,
+189:    // We still need a server provider when running Play-Test tests.
+190-    // Since Pekko HTTP is the default, we should use it here.
+191-    PlayPekkoHttpServerProject % "test"
+192-  )
+193-
+194:lazy val PlaySpecs2Project = PlayCrossBuiltProject("Play-Specs2", "testkit/play-specs2")
+195-  .settings(
+196-    libraryDependencies ++= specs2Deps :+ (if (ScalaArtifacts.isScala3(scalaVersion.value)) { mockitoAll }
+197-                                           else { specs2Mock }),
+198-    (Test / parallelExecution) := false
+--
+314-    PlayAhcWsProject           % "test",
+315-    PlayPekkoHttpServerProject % "test" // Because we need a server provider when running the tests
+316-  )
+317-
+318:lazy val PlayIntegrationTestProject = PlayCrossBuiltProject("Play-Integration-Test", "core/play-integration-test")
+319-// This project is just for testing Play, not really a public artifact
+320-  .settings(disablePublishing)
+321-  .settings(
+322-    libraryDependencies += okHttp % Test,
+
+ succeeded in 165ms:
+[
+  {
+    "name": "play-specs2",
+    "path": "testkit/play-specs2",
+    "sha": "f0d898e3c32477cc673501b921a7dc0d788554e8",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-specs2?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-specs2",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/f0d898e3c32477cc673501b921a7dc0d788554e8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-specs2?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/f0d898e3c32477cc673501b921a7dc0d788554e8",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-specs2"
+    }
+  },
+  {
+    "name": "play-test",
+    "path": "testkit/play-test",
+    "sha": "18d0b495997ef94983b1854b412d287170db8fca",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/18d0b495997ef94983b1854b412d287170db8fca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/18d0b495997ef94983b1854b412d287170db8fca",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test"
+    }
+  }
+]
+
+ succeeded in 174ms:
+    "name": "play-configuration",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-configuration",
+    "type": "dir",
+    "name": "play-exceptions",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-exceptions",
+    "type": "dir",
+    "name": "play-guice",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-guice",
+    "type": "dir",
+    "name": "play-integration-test",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-integration-test",
+    "type": "dir",
+    "name": "play-java",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-java",
+    "type": "dir",
+    "name": "play-logback",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-logback",
+    "type": "dir",
+    "name": "play-microbenchmark",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-microbenchmark",
+    "type": "dir",
+    "name": "play-streams",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play-streams",
+    "type": "dir",
+    "name": "play",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/core/play",
+    "type": "dir",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src?ref=3.0.0' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/test?ref=3.0.0' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/playframework/play-test_3/3.0.0/play-test_3-3.0.0-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/playframework/play-test_3/3.0.0/play-test_3-3.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 178ms:
+[
+  {
+    "name": "main",
+    "path": "testkit/play-test/src/main",
+    "sha": "fc5f198b0bfe8c7fbb4ef3e66bd48dae5f1f1a5d",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/main?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/main",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/fc5f198b0bfe8c7fbb4ef3e66bd48dae5f1f1a5d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/main?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/fc5f198b0bfe8c7fbb4ef3e66bd48dae5f1f1a5d",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "testkit/play-test/src/test",
+    "sha": "8fb9c63b141fc48f2d9eeda153950e7cf8f65754",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/test?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/test",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/8fb9c63b141fc48f2d9eeda153950e7cf8f65754",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/test?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/8fb9c63b141fc48f2d9eeda153950e7cf8f65754",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/test"
+    }
+  }
+]
+
+ succeeded in 178ms:
+[
+  {
+    "name": "java",
+    "path": "testkit/play-test/src/test/java",
+    "sha": "ce3cbfb1a674604c91568c66aca1b85ddb6a451b",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/test/java?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/test/java",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/ce3cbfb1a674604c91568c66aca1b85ddb6a451b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/test/java?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/ce3cbfb1a674604c91568c66aca1b85ddb6a451b",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "testkit/play-test/src/test/resources",
+    "sha": "13ef0af3ec1f6f1b84860193732410eeb8d56804",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/test/resources?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/test/resources",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/13ef0af3ec1f6f1b84860193732410eeb8d56804",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/test/resources?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/13ef0af3ec1f6f1b84860193732410eeb8d56804",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/test/resources"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "testkit/play-test/src/test/scala",
+    "sha": "7d50be6c79101d14c71e5772dd433fd81464a8fc",
+    "size": 0,
+    "url": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/test/scala?ref=3.0.0",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/test/scala",
+    "git_url": "https://api.github.com/repos/playframework/playframework/git/trees/7d50be6c79101d14c71e5772dd433fd81464a8fc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/test/scala?ref=3.0.0",
+      "git": "https://api.github.com/repos/playframework/playframework/git/trees/7d50be6c79101d14c71e5772dd433fd81464a8fc",
+      "html": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/test/scala"
+    }
+  }
+]
+
+ succeeded in 761ms:
+HTTP/2 200 
+date: Fri, 08 May 2026 18:56:28 GMT
+content-type: application/java-archive
+content-length: 28141
+cf-ray: 9f8aaf42298abbff-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "bf8d232653950063930bc57e4c43b094"
+last-modified: Wed, 25 Oct 2023 13:37:15 GMT
+x-checksum-md5: bf8d232653950063930bc57e4c43b094
+x-checksum-sha1: 5e06e7ae1d864fcc0c2ce127298be4a015aed9ac
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 08 May 2026 18:56:29 GMT
+content-type: application/java-archive
+content-length: 2893754
+cf-ray: 9f8aaf449d9d9a60-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "e429c5906efc0e5eeb0e0be52c331198"
+last-modified: Wed, 25 Oct 2023 13:37:15 GMT
+x-checksum-md5: e429c5906efc0e5eeb0e0be52c331198
+x-checksum-sha1: 0fe41e6036e2408ebd0011b1c889190d3de774e8
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/org/playframework/play-test_3/3.0.0/play-test_3-3.0.0-sources.jar -o "$tmp/src.jar"; jar tf "$tmp/src.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 0ms:
+mktemp: failed to create directory via template ‘/tmp/tmp.XXXXXXXXXX’: No space left on device
+curl: (23) Failure writing output to destination
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1328417
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+java.nio.file.NoSuchFileException: /src.jar
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+	at java.base/sun.nio.fs.UnixFileAttributeViews$Basic.readAttributes(UnixFileAttributeViews.java:57)
+	at java.base/sun.nio.fs.UnixFileSystemProvider.readAttributes(UnixFileSystemProvider.java:161)
+	at java.base/sun.nio.fs.LinuxFileSystemProvider.readAttributes(LinuxFileSystemProvider.java:99)
+	at java.base/java.nio.file.Files.readAttributes(Files.java:1702)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1493)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.playframework.com/documentation/3.0.0/ScalaTestingWithScalaTest | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 0ms:
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>
+  Scala Testing With Scala Test  - 3.0.0
+</title>
+        <meta name="description" content="Play Framework - The High Velocity Web Framework For Java and Scala">
+        <meta name="viewport" content="width=device-width,maximum-scale=1"/>
+        <link rel="stylesheet" href="/assets/lib/prettify/ecd4a5d6c0cbee10b168f6aa000c64ea-prettify.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css?family=PT+Serif:700italic" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700,300" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css">
+        <link rel="stylesheet" href="/assets/css/5f02d0f339152beb79a7e88f947b3ae4-main.min.css">
+        <link rel="shortcut icon" href="/favicon.ico"/>
+        <link rel="apple-touch-icon apple-touch-icon-precomposed" href="/apple-touch-icon.png">
+
+        <meta name="globalsign-domain-verification" content="wISFsU3SjLaCmI4hF3fuBebFOs4shuuBnKV7fGALYz" />
+        <meta name="google-site-verification" content="9oxXjOc4jWfnf21Iep-0dc2sDawa14s-Gpwho_yb5AU" />
+
+        
+            
+                <meta name="docsearch:version" content="3.0.0" />
+            
+            <meta name="docsearch:tags" content="en" />
+        
+
+        <!--[if lt IE 9]>
+        <script src="/assets/lib/html5shiv/40bd440d29b3a9371b0c63fec41ee64f-html5shiv.min.js"></script>
+        <![endif]-->
+        <script src="/assets/lib/jquery/641dd14370106e992d352166f5a07e99-jquery.min.js"></script>
+        <script src="/assets/javascripts/dfa43b662e4de5b1b8fdc65418127def-main.js"></script>
+        
+<script  type="application/ld+json">
+            {
+                "@context" : "http://schema.org",
+                "@type" : "WebSite",
+                "name" : "Play Framework",
+                "alternateName" : "The High Velocity Web Framework for Java and Scala",
+                "url" : "https://playframework.com"
+            }
+        </script>
+
+    </head>
+    <body class="documentation">
+        <header id="navigation">
+            <div class="wrapper">
+                <a href="/" id="logo">Play Framework</a>
+                <nav id="sections">
+                    <a href="/getting-started">Try Play</a>
+                    <a href="/documentation">Documentation</a>
+                    <a href="/get-involved">Get Involved</a>
+                </nav>
+                <nav id="social">
+                    <a href="//opencollective.com/playframework"><span>Open Collective</span></a>
+                    <a href="//github.com/playframework/playframework/discussions"><span>Discuss Play Forum</span></a>
+                    <a href="//discord.gg/g5s2vtZ4Fa"><span>Play Discord Server</span></a>
+                    <a href="//twitter.com/playframework"><span>Twitter</span></a>
+                    <a href="//github.com/playframework/playframework"><span>GitHub</span></a>
+                    <a href="//stackoverflow.com/questions/tagged/playframework"><span>Stackoverflow</span></a>
+                </nav>
+            </div>
+        </header>
+
+        <div id="getLogo">
+            <div class="pan">
+                <q>Is that what you're looking for?</q>
+                <figure>
+                    <img src="/assets/images/logos/9382fa0d736c5e7f01d0b7c2726a924d-play_full_color.svg">
+                     <figcaption>
+                        <a href="/assets/images/logos/9382fa0d736c5e7f01d0b7c2726a924d-play_full_color.svg">(svg)</a>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/playframework/playframework/3.0.0/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 167ms:
+<!--- Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com> -->
+
+# Play Framework - The High Velocity Web Framework
+
+[![Twitter Follow](https://img.shields.io/twitter/follow/playframework?label=follow&style=flat&logo=twitter&color=brightgreen)](https://twitter.com/playframework)
+[![Discord](https://img.shields.io/discord/931647755942776882?logo=discord&logoColor=white)](https://discord.gg/g5s2vtZ4Fa)
+[![GitHub Discussions](https://img.shields.io/github/discussions/playframework/playframework?&logo=github&color=brightgreen)](https://github.com/playframework/playframework/discussions)
+[![StackOverflow](https://img.shields.io/static/v1?label=stackoverflow&logo=stackoverflow&logoColor=fe7a16&color=brightgreen&message=playframework)](https://stackoverflow.com/tags/playframework)
+[![YouTube](https://img.shields.io/youtube/channel/views/UCRp6QDm5SDjbIuisUpxV9cg?label=watch&logo=youtube&style=flat&color=brightgreen&logoColor=ff0000)](https://www.youtube.com/channel/UCRp6QDm5SDjbIuisUpxV9cg)
+[![Twitch Status](https://img.shields.io/twitch/status/playframework?logo=twitch&logoColor=white&color=brightgreen&label=live%20stream)](https://www.twitch.tv/playframework)
+[![OpenCollective](https://img.shields.io/opencollective/all/playframework?label=financial%20contributors&logo=open-collective)](https://opencollective.com/playframework)
+
+[![Build Status](https://github.com/playframework/playframework/actions/workflows/build-test.yml/badge.svg)](https://github.com/playframework/playframework/actions/workflows/build-test.yml)
+[![Maven](https://img.shields.io/maven-central/v/org.playframework/play_2.13.svg?logo=apache-maven)](https://mvnrepository.com/artifact/org.playframework/play_2.13)
+[![Repository size](https://img.shields.io/github/repo-size/playframework/playframework.svg?logo=git)](https://github.com/playframework/playframework)
+[![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
+[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://api.mergify.com/v1/badges/playframework/playframework&style=flat)](https://mergify.com)
+
+The Play Framework combines productivity and performance making it easy to build scalable web applications with Java and Scala.  Play is developer friendly with a "just hit refresh" workflow and built-in testing support.  With Play, applications scale predictably due to a stateless and non-blocking architecture.  By being RESTful by default, including assets compilers, JSON & WebSocket support, Play is a perfect fit for modern web & mobile applications.
+
+## Learn More
+
+- [www.playframework.com](https://www.playframework.com)
+- [Download](https://www.playframework.com/download)
+- [Install](https://www.playframework.com/documentation/latest/Installing)
+- [Create a new application](https://www.playframework.com/documentation/latest/NewApplication)
+- [Play for Scala developers](https://www.playframework.com/documentation/latest/ScalaHome)
+- [Play for Java developers](https://www.playframework.com/documentation/latest/JavaHome)
+- [Build from source](https://www.playframework.com/documentation/latest/BuildingFromSource)
+- [Search or create issues](https://github.com/playframework/playframework/issues)
+- [Get help](https://stackoverflow.com/questions/tagged/playframework)
+- [Contribute](https://www.playframework.com/contributing)
+
+## Sponsors & Backers
+
+If you find Play useful for work, please consider asking your company to support this Open Source project by <a href="https://www.playframework.com/sponsors">becoming a sponsor</a>.<br/>
+You can also individually sponsor the project by <a href="https://www.playframework.com/sponsors">becoming a backer</a>.
+
+<div align="center">
+  <a href="https://opencollective.com/playframework" target="_blank">
+    <img src="https://opencollective.com/playframework/donate/button@2x.png?color=blue" width="250" />
+  </a>
+</div>
+
+### Thank you to our premium sponsors!
+
+<div align="center">
+  <a href="https://informaticon.com/"><img src="https://www.playframework.com/assets/images/home/sponsors/49a3d5258c8e8b1daf5481eb9e00b898-informaticon-logo-black.png" width="250"></a>
+  <a href="https://cedarlakeventures.com/"><img src="https://www.playframework.com/assets/images/home/sponsors/bec2b526c9ce52c051f9089a10044867-cedar-lake-ventures.png" width="250"></a>
+  <a href="https://nulab.com/"><img src="https://www.playframework.com/assets/images/home/sponsors/6152e584aa8625eedca1c4accf8f8b63-nulab_logo_color.png" width="250"></a>
+  <a href="https://pronto.net/"><img src="https://www.playframework.com/assets/images/home/sponsors/c77b1d664f10a1c9cb19b97c6d8bd204-pronto-software.png" width="250"></a>
+  <a href="https://sprypoint.com/"><img src="https://www.playframework.com/assets/images/home/sponsors/3fdf14f6369cf9d69f4a2a29ce26c2f8-sprypoint-logo-lrg-transparent.png" width="250"></a>
+  <a href="https://theguardian.com/"><img src="https://www.playframework.com/assets/images/home/sponsors/b15eb0f249dbc45089872e268d8ea5ad-the_guardian.png" width="250"></a>
+</div>
+
+### Thank you to all our backers!
+
+<a href="https://opencollective.com/playframework#section-contributors"><img src="https://opencollective.com/playframework/organizations.svg?width=890&button=false&avatarHeight=46"></a>
+<a href="https://opencollective.com/playframework#section-contributors"><img src="https://opencollective.com/playframework/individuals.svg?width=890&button=false&avatarHeight=46"></a>
+
+## License
+
+Copyright (C) from 2022 The Play Framework Contributors <https://github.com/playframework>, 2011-2021 Lightbend Inc. <https://www.lightbend.com>
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this project except in compliance with the License. You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+codex
+Maven Central has the published sources and javadoc jars, but no `tests.jar`; the upstream tag has `testkit/play-test/src/test`, so I’ll use Maven for source/docs and the tagged GitHub test directory for tests.
+exec
+/usr/bin/bash -lc "mkdir -p build/tmp-metadata-check && curl -fsSL https://repo.maven.apache.org/maven2/org/playframework/play-test_3/3.0.0/play-test_3-3.0.0-sources.jar -o build/tmp-metadata-check/play-test-src.jar && jar tf build/tmp-metadata-check/play-test-src.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 0ms:
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1329312
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+META-INF/MANIFEST.MF
+play/
+play/api/
+play/api/test/
+play/test/
+play/api/test/ApplicationFactory.scala
+play/api/test/Fakes.scala
+play/api/test/Helpers.scala
+play/api/test/NoMaterializer.scala
+play/api/test/RunningServer.scala
+play/api/test/Selenium.scala
+play/api/test/ServerEndpointRecipe.scala
+play/api/test/TestServer.scala
+play/api/test/TestServerFactory.scala
+play/api/test/package.scala
+play/test/Helpers.java
+play/test/TestBrowser.java
+play/test/TestServer.java
+play/test/WithApplication.java
+play/test/WithBrowser.java
+play/test/WithServer.java
+play/test/package-info.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://www.playframework.com/documentation/3.0.0/api/scala/play/api/test/index.html | sed -n '1,90p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 0ms:
+<!DOCTYPE html ><html><head><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/><title></title><meta content="" name="description"/><meta content="" name="keywords"/><meta http-equiv="content-type" content="text/html; charset=UTF-8"/><link href="../../../lib/index.css" media="screen" type="text/css" rel="stylesheet"/><link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet"/><link href="../../../lib/print.css" media="print" type="text/css" rel="stylesheet"/><link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css"/><script type="text/javascript" src="../../../lib/jquery.min.js"></script><script type="text/javascript" src="../../../lib/index.js"></script><script type="text/javascript" src="../../../index.js"></script><script type="text/javascript" src="../../../lib/scheduler.js"></script><script type="text/javascript" src="../../../lib/template.js"></script><script type="text/javascript">/* this variable can be used by the JS to determine the path to the root document */
+var toRoot = '../../../';</script></head><body><div id="search"><span id="doc-title"><span id="doc-version"></span></span> <span class="close-results"><span class="left">&lt;</span> Back</span><div id="textfilter"><span class="input"><input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/"/><i class="clear material-icons"></i><i id="search-icon" class="material-icons"></i></span></div></div><div id="search-results"><div id="search-progress"><div id="progress-fill"></div></div><div id="results-content"><div id="entity-results"></div><div id="member-results"></div></div></div><div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;"><div id="content-container" style="-webkit-overflow-scrolling: touch;"><div id="subpackage-spacer"><div id="packages"><h1>Packages</h1><ul><li class="indented0 " name="_root_.root" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="_root_" class="anchorToMember"></a><a id="root:_root_" class="anchorToMember"></a> <span class="permalink"><a href="../../../index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../../../index.html" title=""><span class="name">root</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../../../index.html" name="_root_" id="_root_" class="extype">root</a></dd></dl></div></li><li class="indented1 " name="_root_.play" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="play" class="anchorToMember"></a><a id="play:play" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../../index.html" title="Play framework."><span class="name">play</span></a></span><p class="shortcomment cmt">Play framework.</p><div class="fullcomment"><div class="comment cmt"><p>Play framework.</p><h4> Play </h4><p><a href="https://www.playframework.com" target="_blank">http://www.playframework.com</a>
+</p></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../../../index.html" name="_root_" id="_root_" class="extype">root</a></dd></dl></div></li><li class="indented2 " name="play.api" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="api" class="anchorToMember"></a><a id="api:api" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../index.html" title="Contains the public API for Scala developers."><span class="name">api</span></a></span><p class="shortcomment cmt">Contains the public API for Scala developers.</p><div class="fullcomment"><div class="comment cmt"><p>Contains the public API for Scala developers.</p><h6> Read configuration </h6><pre><span class="kw">val</span> poolSize = configuration.getInt(<span class="lit">"engine.pool.size"</span>)</pre><h6> Use the logger </h6><pre>Logger.info(<span class="lit">"Hello!"</span>)</pre><h6> Define a Plugin </h6><pre><span class="kw">class</span> MyPlugin(app: Application) <span class="kw">extends</span> Plugin</pre><h6> Create adhoc applications (for testing) </h6><pre><span class="kw">val</span> application = Application(<span class="kw">new</span> File(<span class="lit">"."</span>), <span class="kw">this</span>.getClass.getClassloader, <span class="std">None</span>, Play.Mode.DEV)</pre></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../../index.html" name="play" id="play" class="extype">play</a></dd></dl></div></li><li class="indented3 " name="play.api.cache" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="cache" class="anchorToMember"></a><a id="cache:cache" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/cache/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../cache/index.html" title="Contains the Cache access API."><span class="name">cache</span></a></span><p class="shortcomment cmt">Contains the Cache access API.</p><div class="fullcomment"><div class="comment cmt"><p>Contains the Cache access API.
+</p></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.cluster" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="cluster" class="anchorToMember"></a><a id="cluster:cluster" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/cluster/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../cluster/index.html" title=""><span class="name">cluster</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.controllers" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="controllers" class="anchorToMember"></a><a id="controllers:controllers" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/controllers/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../controllers/index.html" title=""><span class="name">controllers</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.data" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="data" class="anchorToMember"></a><a id="data:data" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/data/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../data/index.html" title="Contains data manipulation helpers (typically HTTP form handling)"><span class="name">data</span></a></span><p class="shortcomment cmt">Contains data manipulation helpers (typically HTTP form handling)</p><div class="fullcomment"><div class="comment cmt"><p>Contains data manipulation helpers (typically HTTP form handling)</p><pre><span class="kw">import</span> play.api.data._
+<span class="kw">import</span> play.api.data.Forms._
+
+<span class="kw">val</span> taskForm = Form(
+  tuple(
+    <span class="lit">"name"</span> -&gt; text(minLength = <span class="num">3</span>),
+    <span class="lit">"dueDate"</span> -&gt; date(<span class="lit">"yyyy-MM-dd"</span>),
+    <span class="lit">"done"</span> -&gt; boolean
+  )
+)</pre></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.db" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="db" class="anchorToMember"></a><a id="db:db" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/db/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../db/index.html" title="Contains the JDBC database access API."><span class="name">db</span></a></span><p class="shortcomment cmt">Contains the JDBC database access API.</p><div class="fullcomment"><div class="comment cmt"><p>Contains the JDBC database access API.</p><p>Example, retrieving a connection from the 'customers' datasource:</p><pre><span class="kw">val</span> conn = db.getConnection(<span class="lit">"customers"</span>)</pre></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.http" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="http" class="anchorToMember"></a><a id="http:http" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/http/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../http/index.html" title="Contains standard HTTP constants."><span class="name">http</span></a></span><p class="shortcomment cmt">Contains standard HTTP constants.</p><div class="fullcomment"><div class="comment cmt"><p>Contains standard HTTP constants.
+For example:</p><pre><span class="kw">val</span> text = ContentTypes.TEXT
+<span class="kw">val</span> ok = Status.OK
+<span class="kw">val</span> accept = HeaderNames.ACCEPT</pre></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.i18n" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="i18n" class="anchorToMember"></a><a id="i18n:i18n" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/i18n/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../i18n/index.html" title="Contains the internationalisation API."><span class="name">i18n</span></a></span><p class="shortcomment cmt">Contains the internationalisation API.</p><div class="fullcomment"><div class="comment cmt"><p>Contains the internationalisation API.</p><p>For example, translating a message:</p><pre><span class="kw">val</span> msgString = Messages(<span class="lit">"items.found"</span>, items.size)</pre></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.inject" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="inject" class="anchorToMember"></a><a id="inject:inject" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/inject/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../inject/index.html" title="Play's runtime dependency injection abstraction."><span class="name">inject</span></a></span><p class="shortcomment cmt">Play's runtime dependency injection abstraction.</p><div class="fullcomment"><div class="comment cmt"><p>Play's runtime dependency injection abstraction.</p><p>Play's runtime dependency injection support is built on JSR-330, which provides a specification for declaring how
+dependencies get wired to components.  JSR-330 however does not address how components are provided to or located
+by a DI container.  Play's API seeks to address this in a DI container agnostic way.</p><p>The reason for providing this abstraction is so that Play, the modules it provides, and third party modules can all
+express their bindings in a way that is not specific to any one DI container.</p><p>Components are bound in the DI container.  Each binding is identified by a <a href="../inject/BindingKey.html" name="play.api.inject.BindingKey" id="play.api.inject.BindingKey" class="extype">BindingKey</a>, which is
+typically an interface that the component implements, and may be optionally qualified by a JSR-330 qualifier
+annotation. A binding key is bound to a <a href="../inject/BindingTarget.html" name="play.api.inject.BindingTarget" id="play.api.inject.BindingTarget" class="extype">BindingTarget</a>, which describes how the implementation
+of the interface that the binding key represents is constructed or provided.  Bindings may also be scoped using
+JSR-330 scope annotations.</p><p>Bindings are provided by instances of <a href="../inject/Module.html" name="play.api.inject.Module" id="play.api.inject.Module" class="extype">Module</a>.</p><p>Out of the box, Play provides an implementation of this abstraction using Guice.
+</p></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd><dt>See also</dt><dd><span class="cmt"><p>The <a href="../inject/Module.html" name="play.api.inject.Module" id="play.api.inject.Module" class="extype">Module</a> class for information on how to provide bindings.</p></span></dd></dl></div></li><li class="indented3 " name="play.api.internal" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="internal" class="anchorToMember"></a><a id="internal:internal" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/internal/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../internal/index.html" title=""><span class="name">internal</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.libs" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="libs" class="anchorToMember"></a><a id="libs:libs" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/libs/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../libs/index.html" title="Contains various APIs that are useful while developing web applications."><span class="name">libs</span></a></span><p class="shortcomment cmt">Contains various APIs that are useful while developing web applications.</p><div class="fullcomment"><div class="comment cmt"><p>Contains various APIs that are useful while developing web applications.
+</p></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.mvc" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="mvc" class="anchorToMember"></a><a id="mvc:mvc" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/mvc/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../mvc/index.html" title="Contains the Controller/Action/Result API to handle HTTP requests."><span class="name">mvc</span></a></span><p class="shortcomment cmt">Contains the Controller/Action/Result API to handle HTTP requests.</p><div class="fullcomment"><div class="comment cmt"><p>Contains the Controller/Action/Result API to handle HTTP requests.</p><p>For example, a typical controller:</p><pre><span class="kw">class</span> HomeController @Inject() (<span class="kw">val</span> controllerComponents: ControllerComponents) <span class="kw">extends</span> BaseController {
+
+  <span class="kw">def</span> index = Action {
+    Ok(<span class="lit">"It works!"</span>)
+  }
+
+}</pre></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.routing" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="routing" class="anchorToMember"></a><a id="routing:routing" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/routing/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../routing/index.html" title=""><span class="name">routing</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 " name="play.api.templates" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="templates" class="anchorToMember"></a><a id="templates:templates" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/templates/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../templates/index.html" title=""><span class="name">templates</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="indented3 current" name="play.api.test" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="test" class="anchorToMember"></a><a id="test:test" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><span class="name">test</span></span><p class="shortcomment cmt">Contains test helpers.</p><div class="fullcomment"><div class="comment cmt"><p>Contains test helpers.
+</p></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="play.api" id="play.api" class="extype">api</a></dd></dl></div></li><li class="current-entities indented3"><span class="separator"></span> <a href="ApplicationFactories.html" title="Mixin with helpers for creating ApplicationFactory objects." class="trait"></a><a href="ApplicationFactories.html" title="Mixin with helpers for creating ApplicationFactory objects.">ApplicationFactories</a></li><li class="current-entities indented3"><a href="ApplicationFactory$.html" title="" class="object"></a> <a href="ApplicationFactory.html" title="Creates an Application." class="trait"></a><a href="ApplicationFactory.html" title="Creates an Application.">ApplicationFactory</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="AroundHelper.html" title="" class="class"></a><a href="AroundHelper.html" title="">AroundHelper</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="CSRFTokenHelper$.html" title="Exposes methods to make using requests with CSRF tokens easier." class="object"></a><a href="CSRFTokenHelper$.html" title="Exposes methods to make using requests with CSRF tokens easier.">CSRFTokenHelper</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="DefaultAwaitTimeout.html" title="" class="trait"></a><a href="DefaultAwaitTimeout.html" title="">DefaultAwaitTimeout</a></li><li class="current-entities indented3"><a href="DefaultTestServerFactory$.html" title="" class="object"></a> <a href="DefaultTestServerFactory.html" title="Creates a server for an application with a random HTTP port bound." class="class"></a><a href="DefaultTestServerFactory.html" title="Creates a server for an application with a random HTTP port bound.">DefaultTestServerFactory</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="EssentialActionCaller.html" title="" class="trait"></a><a href="EssentialActionCaller.html" title="">EssentialActionCaller</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="FakeHeaders.html" title="Fake HTTP headers implementation." class="class"></a><a href="FakeHeaders.html" title="Fake HTTP headers implementation.">FakeHeaders</a></li><li class="current-entities indented3"><a href="FakeRequest$.html" title="Object with helper methods for building FakeRequest values." class="object"></a> <a href="FakeRequest.html" title="A Request with a few extra methods that are useful for testing." class="class"></a><a href="FakeRequest.html" title="A Request with a few extra methods that are useful for testing.">FakeRequest</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="FakeRequestFactory.html" title="Helper methods for building FakeRequest values." class="class"></a><a href="FakeRequestFactory.html" title="Helper methods for building FakeRequest values.">FakeRequestFactory</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="ForServer.html" title="Replacement for WithServer, adding server endpoint info." class="trait"></a><a href="ForServer.html" title="Replacement for WithServer, adding server endpoint info.">ForServer</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="FutureAwaits.html" title="" class="trait"></a><a href="FutureAwaits.html" title="">FutureAwaits</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="Helpers$.html" title="" class="object"></a><a href="Helpers$.html" title="">Helpers</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="HttpServerEndpointRecipe.html" title="Provides a recipe for making an HTTP ServerEndpoint." class="class"></a><a href="HttpServerEndpointRecipe.html" title="Provides a recipe for making an HTTP ServerEndpoint.">HttpServerEndpointRecipe</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="HttpsServerEndpointRecipe.html" title="Provides a recipe for making an HTTPS ServerEndpoint." class="class"></a><a href="HttpsServerEndpointRecipe.html" title="Provides a recipe for making an HTTPS ServerEndpoint.">HttpsServerEndpointRecipe</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="Injecting.html" title="A trait declared on a class that contains an def app: Application, and can provide instances of a class." class="trait"></a><a href="Injecting.html" title="A trait declared on a class that contains an def app: Application, and can provide instances of a class.">Injecting</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="NoTemporaryFileCreator$.html" title="A temporary file creator with no implementation." class="object"></a><a href="NoTemporaryFileCreator$.html" title="A temporary file creator with no implementation.">NoTemporaryFileCreator</a></li><li class="current-entities indented3"><a href="PlayRunners$.html" title="" class="object"></a> <a href="PlayRunners.html" title="Helper functions to run tests." class="trait"></a><a href="PlayRunners.html" title="Helper functions to run tests.">PlayRunners</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="PlaySpecification.html" title="Play specs2 specification." class="trait"></a><a href="PlaySpecification.html" title="Play specs2 specification.">PlaySpecification</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="ResultExtractors.html" title="" class="trait"></a><a href="ResultExtractors.html" title="">ResultExtractors</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="RouteInvokers.html" title="" class="trait"></a><a href="RouteInvokers.html" title="">RouteInvokers</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="RunningServer.html" title="Contains information about a running TestServer." class="class"></a><a href="RunningServer.html" title="Contains information about a running TestServer.">RunningServer</a></li><li class="current-entities indented3"><a href="ServerEndpointRecipe$.html" title="" class="object"></a> <a href="ServerEndpointRecipe.html" title="A recipe for making a ServerEndpoint." class="trait"></a><a href="ServerEndpointRecipe.html" title="A recipe for making a ServerEndpoint.">ServerEndpointRecipe</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="StubBodyParserFactory.html" title="" class="trait"></a><a href="StubBodyParserFactory.html" title="">StubBodyParserFactory</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="StubControllerComponentsFactory.html" title="" class="trait"></a><a href="StubControllerComponentsFactory.html" title="">StubControllerComponentsFactory</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="StubMessagesFactory.html" title="" class="trait"></a><a href="StubMessagesFactory.html" title="">StubMessagesFactory</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="StubPlayBodyParsersFactory.html" title="" class="trait"></a><a href="StubPlayBodyParsersFactory.html" title="">StubPlayBodyParsersFactory</a></li><li class="current-entities indented3"><a href="TestBrowser$.html" title="Helper utilities to build TestBrowsers" class="object"></a> <a href="TestBrowser.html" title="A test browser (Using Selenium WebDriver) with the FluentLenium API (https://github.com/Fluentlenium/FluentLenium)." class="class"></a><a href="TestBrowser.html" title="A test browser (Using Selenium WebDriver) with the FluentLenium API (https://github.com/Fluentlenium/FluentLenium).">TestBrowser</a></li><li class="current-entities indented3"><a href="TestServer$.html" title="" class="object"></a> <a href="TestServer.html" title="A test web server." class="class"></a><a href="TestServer.html" title="A test web server.">TestServer</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="TestServerFactory.html" title="Creates a server for an application." class="trait"></a><a href="TestServerFactory.html" title="Creates a server for an application.">TestServerFactory</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="WebDriverFactory$.html" title="" class="object"></a><a href="WebDriverFactory$.html" title="">WebDriverFactory</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="WithApplication.html" title="Used to run specs within the context of a running application." class="class"></a><a href="WithApplication.html" title="Used to run specs within the context of a running application.">WithApplication</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="WithApplicationLoader.html" title="Used to run specs within the context of a running application loaded by the given ApplicationLoader." class="class"></a><a href="WithApplicationLoader.html" title="Used to run specs within the context of a running application loaded by the given ApplicationLoader.">WithApplicationLoader</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="WithBrowser.html" title="Used to run specs within the context of a running server, and using a web browser" class="class"></a><a href="WithBrowser.html" title="Used to run specs within the context of a running server, and using a web browser">WithBrowser</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="WithServer.html" title="Used to run specs within the context of a running server." class="class"></a><a href="WithServer.html" title="Used to run specs within the context of a running server.">WithServer</a></li><li class="current-entities indented3"><span class="separator"></span> <a href="Writeables.html" title="" class="trait"></a><a href="Writeables.html" title="">Writeables</a></li><li class="current-entities indented3"><a href="WsTestClient$.html" title="" class="object"></a> <a href="WsTestClient.html" title="A standalone test client that is useful for running standalone integration tests." class="trait"></a><a href="WsTestClient.html" title="A standalone test client that is useful for running standalone integration tests.">WsTestClient</a></li></ul></div></div><div id="content"><body class="package value"><div id="definition"><div class="big-circle package">p</div><p id="owner"><a href="../../index.html" name="play" id="play" class="extype">play</a>.<a href="../index.html" name="play.api" id="play.api" class="extype">api</a></p><h1>test<span class="permalink"><a href="../../../play/api/test/index.html" title="Permalink"><i class="material-icons"></i></a></span></h1></div><h4 id="signature" class="signature"><span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><span class="name">test</span></span></h4><div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains test helpers.
+</p></div><dl class="attributes block"><dt>Source</dt><dd><a href="http://_SOURCE;org.playframework-play-test_2.13-3.0.0/play/api/test/package_" target="_blank">package.scala</a></dd></dl><div class="toggleContainer"><div class="toggle block"><span>Linear Supertypes</span><div class="superTypes hiddenContent"><span name="scala.AnyRef" class="extype">AnyRef</span>, <span name="scala.Any" class="extype">Any</span></div></div></div></div><div id="mbrsel"><div class="toggle"></div><div id="memberfilter"><i class="material-icons arrow"></i><span class="input"><input placeholder="Filter all members" id="mbrsel-input" type="text" accesskey="/"/></span><i class="clear material-icons"></i></div><div id="filterby"><div id="order"><span class="filtertype">Ordering</span><ol><li class="alpha in"><span>Alphabetic</span></li><li class="inherit out"><span>By Inheritance</span></li></ol></div><div class="ancestors"><span class="filtertype">Inherited<br/></span><ol id="linearization"><li class="in" name="play.api.test"><span>test</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li></ol></div><div class="ancestors"><span class="filtertype"></span><ol><li class="hideall out"><span>Hide All</span></li><li class="showall in"><span>Show All</span></li></ol></div><div id="visbl"><span class="filtertype">Visibility</span><ol><li class="public in"><span>Public</span></li><li class="protected out"><span>Protected</span></li></ol></div></div></div><div id="template"><div id="allMembers"><div id="types" class="types members"><h3>Type Members</h3><ol><li class="indented0 " name="play.api.test.ApplicationFactories" group="Ungrouped" fullComment="yes" data-isabs="true" visbl="pub"><a id="ApplicationFactoriesextendsAnyRef" class="anchorToMember"></a><a id="ApplicationFactories:ApplicationFactories" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/ApplicationFactories.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="ApplicationFactories.html" title="Mixin with helpers for creating ApplicationFactory objects."><span class="name">ApplicationFactories</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span><p class="shortcomment cmt">Mixin with helpers for creating <a href="ApplicationFactory.html" name="play.api.test.ApplicationFactory" id="play.api.test.ApplicationFactory" class="extype">ApplicationFactory</a> objects.</p><div class="fullcomment"><div class="comment cmt"><p>Mixin with helpers for creating <a href="ApplicationFactory.html" name="play.api.test.ApplicationFactory" id="play.api.test.ApplicationFactory" class="extype">ApplicationFactory</a> objects.
+</p></div><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.ApplicationFactory" group="Ungrouped" fullComment="yes" data-isabs="true" visbl="pub"><a id="ApplicationFactoryextendsAnyRef" class="anchorToMember"></a><a id="ApplicationFactory:ApplicationFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/ApplicationFactory.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="ApplicationFactory.html" title="Creates an Application."><span class="name">ApplicationFactory</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span><p class="shortcomment cmt">Creates an <a href="../Application.html" name="play.api.Application" id="play.api.Application" class="extype">Application</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Creates an <a href="../Application.html" name="play.api.Application" id="play.api.Application" class="extype">Application</a>. Usually created by a helper in <a href="ApplicationFactories.html" name="play.api.test.ApplicationFactories" id="play.api.test.ApplicationFactories" class="extype">ApplicationFactories</a>.
+</p></div><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.AroundHelper" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="AroundHelperextendsAround" class="anchorToMember"></a><a id="AroundHelper:AroundHelper" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/AroundHelper.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier">abstract </span> <span class="kind">class</span></span> <span class="symbol"><a href="AroundHelper.html" title=""><span class="name">AroundHelper</span></a><span class="result"> extends <span name="org.specs2.mutable.Around" class="extype">Around</span></span></span></li><li class="indented0 " name="play.api.test.DefaultAwaitTimeout" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="DefaultAwaitTimeoutextendsAnyRef" class="anchorToMember"></a><a id="DefaultAwaitTimeout:DefaultAwaitTimeout" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/DefaultAwaitTimeout.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="DefaultAwaitTimeout.html" title=""><span class="name">DefaultAwaitTimeout</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span></li><li class="indented0 " name="play.api.test.DefaultTestServerFactory" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="DefaultTestServerFactoryextendsTestServerFactory" class="anchorToMember"></a><a id="DefaultTestServerFactory:DefaultTestServerFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/DefaultTestServerFactory.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">class</span></span> <span class="symbol"><a href="DefaultTestServerFactory.html" title="Creates a server for an application with a random HTTP port bound."><span class="name">DefaultTestServerFactory</span></a><span class="result"> extends <a href="TestServerFactory.html" name="play.api.test.TestServerFactory" id="play.api.test.TestServerFactory" class="extype">TestServerFactory</a></span></span><p class="shortcomment cmt">Creates a server for an application with a random HTTP port bound.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a server for an application with a random HTTP port bound. To change the HTTP port you can pass a
+<code>testserver.port</code> system property. The HTTPS port by default is not bound, but can be enabled by passing
+the <code>testserver.httpsport</code> system property. If it gets bound it will be using a self-signed certificate.</p><p>Most logic in this class is in a protected method so that users can
+extend the class and override its logic.
+</p></div><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.EssentialActionCaller" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="EssentialActionCallerextendsAnyRef" class="anchorToMember"></a><a id="EssentialActionCaller:EssentialActionCaller" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/EssentialActionCaller.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="EssentialActionCaller.html" title=""><span class="name">EssentialActionCaller</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span></li><li class="indented0 " name="play.api.test.FakeHeaders" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="FakeHeadersextendsHeaderswithProductwithSerializable" class="anchorToMember"></a><a id="FakeHeaders:FakeHeaders" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/FakeHeaders.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">case class</span></span> <span class="symbol"><a href="FakeHeaders.html" title="Fake HTTP headers implementation."><span class="name">FakeHeaders</span></a><span class="params">(<span name="data">data: <span name="scala.Seq" class="extype">Seq</span>[(<span name="scala.Predef.String" class="extype">String</span>, <span name="scala.Predef.String" class="extype">String</span>)] = <span class="symbol">Seq.empty</span></span>)</span><span class="result"> extends <a href="../mvc/Headers.html" name="play.api.mvc.Headers" id="play.api.mvc.Headers" class="extype">Headers</a> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span></span><p class="shortcomment cmt">Fake HTTP headers implementation.</p><div class="fullcomment"><div class="comment cmt"><p>Fake HTTP headers implementation.
+</p></div><dl class="paramcmts block"><dt class="param">data</dt><dd class="cmt"><p>Headers data.</p></dd></dl></div></li><li class="indented0 " name="play.api.test.FakeRequest" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="FakeRequest[+A]extendsRequest[A]" class="anchorToMember"></a><a id="FakeRequest[+A]:FakeRequest[A]" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/FakeRequest.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">class</span></span> <span class="symbol"><a href="FakeRequest.html" title="A Request with a few extra methods that are useful for testing."><span class="name">FakeRequest</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="result"> extends <a href="../mvc/Request.html" name="play.api.mvc.Request" id="play.api.mvc.Request" class="extype">Request</a>[<span name="play.api.test.FakeRequest.A" class="extype">A</span>]</span></span><p class="shortcomment cmt">A <code>Request</code> with a few extra methods that are useful for testing.</p><div class="fullcomment"><div class="comment cmt"><p>A <code>Request</code> with a few extra methods that are useful for testing.
+</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the body content type.</p></dd></dl></div></li><li class="indented0 " name="play.api.test.FakeRequestFactory" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="FakeRequestFactoryextendsAnyRef" class="anchorToMember"></a><a id="FakeRequestFactory:FakeRequestFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/FakeRequestFactory.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">class</span></span> <span class="symbol"><a href="FakeRequestFactory.html" title="Helper methods for building FakeRequest values."><span class="name">FakeRequestFactory</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span><p class="shortcomment cmt">Helper methods for building <a href="FakeRequest.html" name="play.api.test.FakeRequest" id="play.api.test.FakeRequest" class="extype">FakeRequest</a> values.</p></li><li class="indented0 " name="play.api.test.ForServer" group="Ungrouped" fullComment="yes" data-isabs="true" visbl="pub"><a id="ForServerextendsForEach[play.api.test.RunningServer]withScope" class="anchorToMember"></a><a id="ForServer:ForServer" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/ForServer.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="ForServer.html" title="Replacement for WithServer, adding server endpoint info."><span class="name">ForServer</span></a><span class="result"> extends <span name="org.specs2.specification.ForEach" class="extype">ForEach</span>[<a href="RunningServer.html" name="play.api.test.RunningServer" id="play.api.test.RunningServer" class="extype">RunningServer</a>] with <span name="org.specs2.specification.Scope" class="extype">Scope</span></span></span><p class="shortcomment cmt">Replacement for <a href="WithServer.html" name="play.api.test.WithServer" id="play.api.test.WithServer" class="extype">WithServer</a>, adding server endpoint info.</p><div class="fullcomment"><div class="comment cmt"><p>Replacement for <a href="WithServer.html" name="play.api.test.WithServer" id="play.api.test.WithServer" class="extype">WithServer</a>, adding server endpoint info.</p></div><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.FutureAwaits" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="FutureAwaitsextendsAnyRef" class="anchorToMember"></a><a id="FutureAwaits:FutureAwaits" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/FutureAwaits.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="FutureAwaits.html" title=""><span class="name">FutureAwaits</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span></li><li class="indented0 " name="play.api.test.HasApp" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="HasApp=AnyRef{defapp:play.api.Application}" class="anchorToMember"></a><a id="HasApp:HasApp" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/index.html#HasApp=AnyRef{defapp:play.api.Application}" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">type</span></span> <span class="symbol"><span class="name">HasApp</span><span class="result alias"> = <span name="scala.AnyRef" class="extype">AnyRef</span> { def app: play.api.Application }</span></span><p class="shortcomment cmt">A structural type indicating there is an application.</p></li><li class="indented0 " name="play.api.test.HttpServerEndpointRecipe" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="HttpServerEndpointRecipeextendsServerEndpointRecipe" class="anchorToMember"></a><a id="HttpServerEndpointRecipe:HttpServerEndpointRecipe" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/HttpServerEndpointRecipe.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier">final </span> <span class="kind">class</span></span> <span class="symbol"><a href="HttpServerEndpointRecipe.html" title="Provides a recipe for making an HTTP ServerEndpoint."><span class="name">HttpServerEndpointRecipe</span></a><span class="result"> extends <a href="ServerEndpointRecipe.html" name="play.api.test.ServerEndpointRecipe" id="play.api.test.ServerEndpointRecipe" class="extype">ServerEndpointRecipe</a></span></span><p class="shortcomment cmt">Provides a recipe for making an HTTP <span name="ServerEndpoint" class="extype">ServerEndpoint</span>.</p><div class="fullcomment"><div class="comment cmt"><p>Provides a recipe for making an HTTP <span name="ServerEndpoint" class="extype">ServerEndpoint</span>.</p></div><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.HttpsServerEndpointRecipe" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="HttpsServerEndpointRecipeextendsServerEndpointRecipe" class="anchorToMember"></a><a id="HttpsServerEndpointRecipe:HttpsServerEndpointRecipe" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/HttpsServerEndpointRecipe.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier">final </span> <span class="kind">class</span></span> <span class="symbol"><a href="HttpsServerEndpointRecipe.html" title="Provides a recipe for making an HTTPS ServerEndpoint."><span class="name">HttpsServerEndpointRecipe</span></a><span class="result"> extends <a href="ServerEndpointRecipe.html" name="play.api.test.ServerEndpointRecipe" id="play.api.test.ServerEndpointRecipe" class="extype">ServerEndpointRecipe</a></span></span><p class="shortcomment cmt">Provides a recipe for making an HTTPS <span name="ServerEndpoint" class="extype">ServerEndpoint</span>.</p><div class="fullcomment"><div class="comment cmt"><p>Provides a recipe for making an HTTPS <span name="ServerEndpoint" class="extype">ServerEndpoint</span>.</p></div><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.Injecting" group="Ungrouped" fullComment="yes" data-isabs="true" visbl="pub"><a id="InjectingextendsAnyRef" class="anchorToMember"></a><a id="Injecting:Injecting" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/Injecting.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="Injecting.html" title="A trait declared on a class that contains an def app: Application, and can provide instances of a class."><span class="name">Injecting</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span><p class="shortcomment cmt">A trait declared on a class that contains an <code>def app: Application</code>, and can provide
+instances of a class.</p><div class="fullcomment"><div class="comment cmt"><p>A trait declared on a class that contains an <code>def app: Application</code>, and can provide
+instances of a class.  Useful in integration tests.
+</p></div></div></li><li class="indented0 " name="play.api.test.PlayRunners" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="PlayRunnersextendsHttpVerbs" class="anchorToMember"></a><a id="PlayRunners:PlayRunners" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/PlayRunners.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="PlayRunners.html" title="Helper functions to run tests."><span class="name">PlayRunners</span></a><span class="result"> extends <a href="../http/HttpVerbs.html" name="play.api.http.HttpVerbs" id="play.api.http.HttpVerbs" class="extype">HttpVerbs</a></span></span><p class="shortcomment cmt">Helper functions to run tests.</p></li><li class="indented0 " name="play.api.test.PlaySpecification" group="Ungrouped" fullComment="yes" data-isabs="true" visbl="pub"><a id="PlaySpecificationextendsSpecificationLikewithPlayRunnerswithHeaderNameswithStatuswithHttpProtocolwithDefaultAwaitTimeoutwithResultExtractorswithWriteableswithRouteInvokerswithFutureAwaitswithHttpVerbs" class="anchorToMember"></a><a id="PlaySpecification:PlaySpecification" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/PlaySpecification.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="PlaySpecification.html" title="Play specs2 specification."><span class="name">PlaySpecification</span></a><span class="result"> extends <span name="org.specs2.mutable.SpecificationLike" class="extype">SpecificationLike</span> with <a href="PlayRunners.html" name="play.api.test.PlayRunners" id="play.api.test.PlayRunners" class="extype">PlayRunners</a> with <a href="../http/HeaderNames.html" name="play.api.http.HeaderNames" id="play.api.http.HeaderNames" class="extype">HeaderNames</a> with <a href="../http/Status.html" name="play.api.http.Status" id="play.api.http.Status" class="extype">Status</a> with <a href="../http/HttpProtocol.html" name="play.api.http.HttpProtocol" id="play.api.http.HttpProtocol" class="extype">HttpProtocol</a> with <a href="DefaultAwaitTimeout.html" name="play.api.test.DefaultAwaitTimeout" id="play.api.test.DefaultAwaitTimeout" class="extype">DefaultAwaitTimeout</a> with <a href="ResultExtractors.html" name="play.api.test.ResultExtractors" id="play.api.test.ResultExtractors" class="extype">ResultExtractors</a> with <a href="Writeables.html" name="play.api.test.Writeables" id="play.api.test.Writeables" class="extype">Writeables</a> with <a href="RouteInvokers.html" name="play.api.test.RouteInvokers" id="play.api.test.RouteInvokers" class="extype">RouteInvokers</a> with <a href="FutureAwaits.html" name="play.api.test.FutureAwaits" id="play.api.test.FutureAwaits" class="extype">FutureAwaits</a> with <a href="../http/HttpVerbs.html" name="play.api.http.HttpVerbs" id="play.api.http.HttpVerbs" class="extype">HttpVerbs</a></span></span><p class="shortcomment cmt">Play specs2 specification.</p><div class="fullcomment"><div class="comment cmt"><p>Play specs2 specification.</p><p>This trait excludes some of the mixins provided in the default specs2 specification that clash with Play helpers
+methods.  It also mixes in the Play test helpers and types for convenience.
+</p></div></div></li><li class="indented0 " name="play.api.test.Port" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="Port=Int" class="anchorToMember"></a><a id="Port:Port" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/index.html#Port=Int" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">type</span></span> <span class="symbol"><span class="name">Port</span><span class="result alias"> = <span name="scala.Int" class="extype">Int</span></span></span><p class="shortcomment cmt">Provided as an implicit by WithServer and WithBrowser.</p></li><li class="indented0 " name="play.api.test.ResultExtractors" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="ResultExtractorsextendsAnyRef" class="anchorToMember"></a><a id="ResultExtractors:ResultExtractors" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/ResultExtractors.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="ResultExtractors.html" title=""><span class="name">ResultExtractors</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span></li><li class="indented0 " name="play.api.test.RouteInvokers" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="RouteInvokersextendsEssentialActionCaller" class="anchorToMember"></a><a id="RouteInvokers:RouteInvokers" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/RouteInvokers.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="RouteInvokers.html" title=""><span class="name">RouteInvokers</span></a><span class="result"> extends <a href="EssentialActionCaller.html" name="play.api.test.EssentialActionCaller" id="play.api.test.EssentialActionCaller" class="extype">EssentialActionCaller</a></span></span></li><li class="indented0 " name="play.api.test.RunningServer" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="RunningServerextendsProductwithSerializable" class="anchorToMember"></a><a id="RunningServer:RunningServer" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/RunningServer.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier">final </span> <span class="kind">case class</span></span> <span class="symbol"><a href="RunningServer.html" title="Contains information about a running TestServer."><span class="name">RunningServer</span></a><span class="params">(<span name="app">app: <a href="../Application.html" name="play.api.Application" id="play.api.Application" class="extype">Application</a></span>, <span name="endpoints">endpoints: <a href="../../core/server/ServerEndpoints.html" name="play.core.server.ServerEndpoints" id="play.core.server.ServerEndpoints" class="extype">ServerEndpoints</a></span>, <span name="stopServer">stopServer: <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/AutoCloseable.html#java.lang.AutoCloseable" name="java.lang.AutoCloseable" id="java.lang.AutoCloseable" class="extype">AutoCloseable</a></span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span></span><p class="shortcomment cmt">Contains information about a running TestServer.</p><div class="fullcomment"><div class="comment cmt"><p>Contains information about a running TestServer. This object can be
+used by tests to find out about the running server, e.g. port information.</p><p>We use a separate class to avoid including mutable state, such as methods
+for closing the server.
+</p></div><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.ServerEndpointRecipe" group="Ungrouped" fullComment="yes" data-isabs="true" visbl="pub"><a id="ServerEndpointRecipeextendsAnyRef" class="anchorToMember"></a><a id="ServerEndpointRecipe:ServerEndpointRecipe" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/ServerEndpointRecipe.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier">sealed </span> <span class="kind">trait</span></span> <span class="symbol"><a href="ServerEndpointRecipe.html" title="A recipe for making a ServerEndpoint."><span class="name">ServerEndpointRecipe</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span><p class="shortcomment cmt">A recipe for making a <span name="ServerEndpoint" class="extype">ServerEndpoint</span>.</p><div class="fullcomment"><div class="comment cmt"><p>A recipe for making a <span name="ServerEndpoint" class="extype">ServerEndpoint</span>. Recipes are often used
+when describing which tests to run. The recipe can be used to start
+servers with the correct <span name="ServerEndpoint" class="extype">ServerEndpoint</span>s.
+</p></div><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd><dt>See also</dt><dd><span class="cmt"><p><span name="ServerEndpointRecipe.withEndpoint()" class="extype">ServerEndpointRecipe.withEndpoint()</span></p></span></dd></dl></div></li><li class="indented0 " name="play.api.test.StubBodyParserFactory" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="StubBodyParserFactoryextendsAnyRef" class="anchorToMember"></a><a id="StubBodyParserFactory:StubBodyParserFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/StubBodyParserFactory.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="StubBodyParserFactory.html" title=""><span class="name">StubBodyParserFactory</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span></li><li class="indented0 " name="play.api.test.StubControllerComponentsFactory" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="StubControllerComponentsFactoryextendsStubPlayBodyParsersFactorywithStubBodyParserFactorywithStubMessagesFactory" class="anchorToMember"></a><a id="StubControllerComponentsFactory:StubControllerComponentsFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/StubControllerComponentsFactory.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="StubControllerComponentsFactory.html" title=""><span class="name">StubControllerComponentsFactory</span></a><span class="result"> extends <a href="StubPlayBodyParsersFactory.html" name="play.api.test.StubPlayBodyParsersFactory" id="play.api.test.StubPlayBodyParsersFactory" class="extype">StubPlayBodyParsersFactory</a> with <a href="StubBodyParserFactory.html" name="play.api.test.StubBodyParserFactory" id="play.api.test.StubBodyParserFactory" class="extype">StubBodyParserFactory</a> with <a href="StubMessagesFactory.html" name="play.api.test.StubMessagesFactory" id="play.api.test.StubMessagesFactory" class="extype">StubMessagesFactory</a></span></span></li><li class="indented0 " name="play.api.test.StubMessagesFactory" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="StubMessagesFactoryextendsAnyRef" class="anchorToMember"></a><a id="StubMessagesFactory:StubMessagesFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/StubMessagesFactory.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="StubMessagesFactory.html" title=""><span class="name">StubMessagesFactory</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span></li><li class="indented0 " name="play.api.test.StubPlayBodyParsersFactory" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="StubPlayBodyParsersFactoryextendsAnyRef" class="anchorToMember"></a><a id="StubPlayBodyParsersFactory:StubPlayBodyParsersFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/StubPlayBodyParsersFactory.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="StubPlayBodyParsersFactory.html" title=""><span class="name">StubPlayBodyParsersFactory</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span></li><li class="indented0 " name="play.api.test.TestBrowser" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="TestBrowserextendsFluentAdapterwithProductwithSerializable" class="anchorToMember"></a><a id="TestBrowser:TestBrowser" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/TestBrowser.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">case class</span></span> <span class="symbol"><a href="TestBrowser.html" title="A test browser (Using Selenium WebDriver) with the FluentLenium API (https://github.com/Fluentlenium/FluentLenium)."><span class="name">TestBrowser</span></a><span class="params">(<span name="webDriver">webDriver: <span name="org.openqa.selenium.WebDriver" class="extype">WebDriver</span></span>, <span name="baseUrl">baseUrl: <span name="scala.Option" class="extype">Option</span>[<span name="scala.Predef.String" class="extype">String</span>]</span>)</span><span class="result"> extends <span name="io.fluentlenium.adapter.FluentAdapter" class="extype">FluentAdapter</span> with <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span></span><p class="shortcomment cmt">A test browser (Using Selenium WebDriver) with the FluentLenium API (https://github.com/Fluentlenium/FluentLenium).</p><div class="fullcomment"><div class="comment cmt"><p>A test browser (Using Selenium WebDriver) with the FluentLenium API (https://github.com/Fluentlenium/FluentLenium).
+</p></div><dl class="paramcmts block"><dt class="param">webDriver</dt><dd class="cmt"><p>The WebDriver instance to use.</p></dd></dl></div></li><li class="indented0 " name="play.api.test.TestServer" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="TestServerextendsProductwithSerializable" class="anchorToMember"></a><a id="TestServer:TestServer" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/TestServer.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">case class</span></span> <span class="symbol"><a href="TestServer.html" title="A test web server."><span class="name">TestServer</span></a><span class="params">(<span name="config">config: <a href="../../core/server/ServerConfig.html" name="play.core.server.ServerConfig" id="play.core.server.ServerConfig" class="extype">ServerConfig</a></span>, <span name="application">application: <a href="../Application.html" name="play.api.Application" id="play.api.Application" class="extype">Application</a></span>, <span name="serverProvider">serverProvider: <span name="scala.Option" class="extype">Option</span>[<a href="../../core/server/ServerProvider.html" name="play.core.server.ServerProvider" id="play.core.server.ServerProvider" class="extype">ServerProvider</a>]</span>)</span><span class="result"> extends <span name="scala.Product" class="extype">Product</span> with <span name="scala.Serializable" class="extype">Serializable</span></span></span><p class="shortcomment cmt">A test web server.</p><div class="fullcomment"><div class="comment cmt"><p>A test web server.
+</p></div><dl class="paramcmts block"><dt class="param">config</dt><dd class="cmt"><p>The server configuration.</p></dd><dt class="param">application</dt><dd class="cmt"><p>The Application to load in this server.</p></dd><dt class="param">serverProvider</dt><dd class="cmt"><p>The type of server to use. If not provided, uses Play's default provider.</p></dd></dl></div></li><li class="indented0 " name="play.api.test.TestServerFactory" group="Ungrouped" fullComment="yes" data-isabs="true" visbl="pub"><a id="TestServerFactoryextendsAnyRef" class="anchorToMember"></a><a id="TestServerFactory:TestServerFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/TestServerFactory.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="TestServerFactory.html" title="Creates a server for an application."><span class="name">TestServerFactory</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span><p class="shortcomment cmt">Creates a server for an application.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a server for an application.</p></div><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.WithApplication" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="WithApplicationextendsAroundHelperwithScope" class="anchorToMember"></a><a id="WithApplication:WithApplication" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/WithApplication.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier">abstract </span> <span class="kind">class</span></span> <span class="symbol"><a href="WithApplication.html" title="Used to run specs within the context of a running application."><span class="name">WithApplication</span></a><span class="result"> extends <a href="AroundHelper.html" name="play.api.test.AroundHelper" id="play.api.test.AroundHelper" class="extype">AroundHelper</a> with <span name="org.specs2.specification.Scope" class="extype">Scope</span></span></span><p class="shortcomment cmt">Used to run specs within the context of a running application.</p></li><li class="indented0 " name="play.api.test.WithApplicationLoader" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="WithApplicationLoaderextendsAroundHelperwithScope" class="anchorToMember"></a><a id="WithApplicationLoader:WithApplicationLoader" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/WithApplicationLoader.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier">abstract </span> <span class="kind">class</span></span> <span class="symbol"><a href="WithApplicationLoader.html" title="Used to run specs within the context of a running application loaded by the given ApplicationLoader."><span class="name">WithApplicationLoader</span></a><span class="result"> extends <a href="AroundHelper.html" name="play.api.test.AroundHelper" id="play.api.test.AroundHelper" class="extype">AroundHelper</a> with <span name="org.specs2.specification.Scope" class="extype">Scope</span></span></span><p class="shortcomment cmt">Used to run specs within the context of a running application loaded by the given <code>ApplicationLoader</code>.</p></li><li class="indented0 " name="play.api.test.WithBrowser" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="WithBrowser[WEBDRIVER&lt;:org.openqa.selenium.WebDriver]extendsAroundHelperwithScope" class="anchorToMember"></a><a id="WithBrowser[WEBDRIVER&lt;:WebDriver]:WithBrowser[WEBDRIVER]" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/WithBrowser.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier">abstract </span> <span class="kind">class</span></span> <span class="symbol"><a href="WithBrowser.html" title="Used to run specs within the context of a running server, and using a web browser"><span class="name">WithBrowser</span></a><span class="tparams">[<span name="WEBDRIVER">WEBDRIVER &lt;: <span name="org.openqa.selenium.WebDriver" class="extype">WebDriver</span></span>]</span><span class="result"> extends <a href="AroundHelper.html" name="play.api.test.AroundHelper" id="play.api.test.AroundHelper" class="extype">AroundHelper</a> with <span name="org.specs2.specification.Scope" class="extype">Scope</span></span></span><p class="shortcomment cmt">Used to run specs within the context of a running server, and using a web browser
+</p></li><li class="indented0 " name="play.api.test.WithServer" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="WithServerextendsAroundHelperwithScope" class="anchorToMember"></a><a id="WithServer:WithServer" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/WithServer.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier">abstract </span> <span class="kind">class</span></span> <span class="symbol"><a href="WithServer.html" title="Used to run specs within the context of a running server."><span class="name">WithServer</span></a><span class="result"> extends <a href="AroundHelper.html" name="play.api.test.AroundHelper" id="play.api.test.AroundHelper" class="extype">AroundHelper</a> with <span name="org.specs2.specification.Scope" class="extype">Scope</span></span></span><p class="shortcomment cmt">Used to run specs within the context of a running server.</p></li><li class="indented0 " name="play.api.test.Writeables" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="WriteablesextendsAnyRef" class="anchorToMember"></a><a id="Writeables:Writeables" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/Writeables.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="Writeables.html" title=""><span class="name">Writeables</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span></li><li class="indented0 " name="play.api.test.WsTestClient" group="Ungrouped" fullComment="no" data-isabs="true" visbl="pub"><a id="WsTestClientextendsAnyRef" class="anchorToMember"></a><a id="WsTestClient:WsTestClient" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/WsTestClient.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">trait</span></span> <span class="symbol"><a href="WsTestClient.html" title="A standalone test client that is useful for running standalone integration tests."><span class="name">WsTestClient</span></a><span class="result"> extends <span name="scala.AnyRef" class="extype">AnyRef</span></span></span><p class="shortcomment cmt">A standalone test client that is useful for running standalone integration tests.</p></li></ol></div><div class="values members"><h3>Value Members</h3><ol><li class="indented0 " name="play.api.test.ApplicationFactory" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="ApplicationFactory" class="anchorToMember"></a><a id="ApplicationFactory:ApplicationFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/ApplicationFactory$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="ApplicationFactory$.html" title=""><span class="name">ApplicationFactory</span></a><span class="result"> extends <a href="ApplicationFactories.html" name="play.api.test.ApplicationFactories" id="play.api.test.ApplicationFactories" class="extype">ApplicationFactories</a></span></span><div class="fullcomment"><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.CSRFTokenHelper" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="CSRFTokenHelper" class="anchorToMember"></a><a id="CSRFTokenHelper:CSRFTokenHelper" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/CSRFTokenHelper$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="CSRFTokenHelper$.html" title="Exposes methods to make using requests with CSRF tokens easier."><span class="name">CSRFTokenHelper</span></a></span><p class="shortcomment cmt">Exposes methods to make using requests with CSRF tokens easier.</p></li><li class="indented0 " name="play.api.test.DefaultTestServerFactory" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="DefaultTestServerFactory" class="anchorToMember"></a><a id="DefaultTestServerFactory:DefaultTestServerFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/DefaultTestServerFactory$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="DefaultTestServerFactory$.html" title=""><span class="name">DefaultTestServerFactory</span></a><span class="result"> extends <a href="DefaultTestServerFactory.html" name="play.api.test.DefaultTestServerFactory" id="play.api.test.DefaultTestServerFactory" class="extype">DefaultTestServerFactory</a></span></span><div class="fullcomment"><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.FakeRequest" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="FakeRequest" class="anchorToMember"></a><a id="FakeRequest:FakeRequest" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/FakeRequest$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="FakeRequest$.html" title="Object with helper methods for building FakeRequest values."><span class="name">FakeRequest</span></a><span class="result"> extends <a href="FakeRequestFactory.html" name="play.api.test.FakeRequestFactory" id="play.api.test.FakeRequestFactory" class="extype">FakeRequestFactory</a></span></span><p class="shortcomment cmt">Object with helper methods for building <a href="FakeRequest.html" name="play.api.test.FakeRequest" id="play.api.test.FakeRequest" class="extype">FakeRequest</a> values.</p><div class="fullcomment"><div class="comment cmt"><p>Object with helper methods for building <a href="FakeRequest.html" name="play.api.test.FakeRequest" id="play.api.test.FakeRequest" class="extype">FakeRequest</a> values. This object uses a
+<a href="../mvc/request/DefaultRequestFactory.html" name="play.api.mvc.request.DefaultRequestFactory" id="play.api.mvc.request.DefaultRequestFactory" class="extype">play.api.mvc.request.DefaultRequestFactory</a> with default configuration to build
+the requests.
+</p></div></div></li><li class="indented0 " name="play.api.test.Helpers" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="Helpers" class="anchorToMember"></a><a id="Helpers:Helpers" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/Helpers$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="Helpers$.html" title=""><span class="name">Helpers</span></a><span class="result"> extends <a href="PlayRunners.html" name="play.api.test.PlayRunners" id="play.api.test.PlayRunners" class="extype">PlayRunners</a> with <a href="../http/HeaderNames.html" name="play.api.http.HeaderNames" id="play.api.http.HeaderNames" class="extype">HeaderNames</a> with <a href="../http/Status.html" name="play.api.http.Status" id="play.api.http.Status" class="extype">Status</a> with <a href="../http/MimeTypes.html" name="play.api.http.MimeTypes" id="play.api.http.MimeTypes" class="extype">MimeTypes</a> with <a href="../http/HttpProtocol.html" name="play.api.http.HttpProtocol" id="play.api.http.HttpProtocol" class="extype">HttpProtocol</a> with <a href="DefaultAwaitTimeout.html" name="play.api.test.DefaultAwaitTimeout" id="play.api.test.DefaultAwaitTimeout" class="extype">DefaultAwaitTimeout</a> with <a href="ResultExtractors.html" name="play.api.test.ResultExtractors" id="play.api.test.ResultExtractors" class="extype">ResultExtractors</a> with <a href="Writeables.html" name="play.api.test.Writeables" id="play.api.test.Writeables" class="extype">Writeables</a> with <a href="EssentialActionCaller.html" name="play.api.test.EssentialActionCaller" id="play.api.test.EssentialActionCaller" class="extype">EssentialActionCaller</a> with <a href="RouteInvokers.html" name="play.api.test.RouteInvokers" id="play.api.test.RouteInvokers" class="extype">RouteInvokers</a> with <a href="FutureAwaits.html" name="play.api.test.FutureAwaits" id="play.api.test.FutureAwaits" class="extype">FutureAwaits</a> with <a href="StubControllerComponentsFactory.html" name="play.api.test.StubControllerComponentsFactory" id="play.api.test.StubControllerComponentsFactory" class="extype">StubControllerComponentsFactory</a></span></span></li><li class="indented0 " name="play.api.test.NoTemporaryFileCreator" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="NoTemporaryFileCreator" class="anchorToMember"></a><a id="NoTemporaryFileCreator:NoTemporaryFileCreator" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/NoTemporaryFileCreator$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="NoTemporaryFileCreator$.html" title="A temporary file creator with no implementation."><span class="name">NoTemporaryFileCreator</span></a><span class="result"> extends <a href="../libs/Files$$TemporaryFileCreator.html" name="play.api.libs.Files.TemporaryFileCreator" id="play.api.libs.Files.TemporaryFileCreator" class="extype">TemporaryFileCreator</a></span></span><p class="shortcomment cmt">A temporary file creator with no implementation.</p></li><li class="indented0 " name="play.api.test.PlayRunners" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="PlayRunners" class="anchorToMember"></a><a id="PlayRunners:PlayRunners" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/PlayRunners$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="PlayRunners$.html" title=""><span class="name">PlayRunners</span></a></span></li><li class="indented0 " name="play.api.test.ServerEndpointRecipe" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="ServerEndpointRecipe" class="anchorToMember"></a><a id="ServerEndpointRecipe:ServerEndpointRecipe" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/ServerEndpointRecipe$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="ServerEndpointRecipe$.html" title=""><span class="name">ServerEndpointRecipe</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Annotations</dt><dd><span class="name">@ApiMayChange</span><span class="args">()</span> </dd></dl></div></li><li class="indented0 " name="play.api.test.TestBrowser" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="TestBrowser" class="anchorToMember"></a><a id="TestBrowser:TestBrowser" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/TestBrowser$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="TestBrowser$.html" title="Helper utilities to build TestBrowsers"><span class="name">TestBrowser</span></a><span class="result"> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html#java.io.Serializable" name="java.io.Serializable" id="java.io.Serializable" class="extype">Serializable</a></span></span><p class="shortcomment cmt">Helper utilities to build TestBrowsers
+</p></li><li class="indented0 " name="play.api.test.TestServer" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="TestServer" class="anchorToMember"></a><a id="TestServer:TestServer" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/TestServer$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="TestServer$.html" title=""><span class="name">TestServer</span></a><span class="result"> extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Serializable.html#java.io.Serializable" name="java.io.Serializable" id="java.io.Serializable" class="extype">Serializable</a></span></span></li><li class="indented0 " name="play.api.test.WebDriverFactory" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="WebDriverFactory" class="anchorToMember"></a><a id="WebDriverFactory:WebDriverFactory" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/WebDriverFactory$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="WebDriverFactory$.html" title=""><span class="name">WebDriverFactory</span></a></span></li><li class="indented0 " name="play.api.test.WsTestClient" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="WsTestClient" class="anchorToMember"></a><a id="WsTestClient:WsTestClient" class="anchorToMember"></a> <span class="permalink"><a href="../../../play/api/test/WsTestClient$.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">object</span></span> <span class="symbol"><a href="WsTestClient$.html" title=""><span class="name">WsTestClient</span></a><span class="result"> extends <a href="WsTestClient.html" name="play.api.test.WsTestClient" id="play.api.test.WsTestClient" class="extype">WsTestClient</a></span></span></li></ol></div></div><div id="inheritedMembers"><div name="scala.AnyRef" class="parent"><h3>Inherited from <span name="scala.AnyRef" class="extype">AnyRef</span></h3></div><div name="scala.Any" class="parent"><h3>Inherited from <span name="scala.Any" class="extype">Any</span></h3></div></div><div id="groupedMembers"><div name="Ungrouped" class="group"><h3>Ungrouped</h3></div></div></div><div id="tooltip"></div><div id="footer"></div></body></div></div></div></body></html>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/playframework/playframework/contents/testkit/play-test/src/main?ref=3.0.0 | rg '\"name\"|\"html_url\"|\"type\"' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 160ms:
+    "name": "java",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/main/java",
+    "type": "dir",
+    "name": "scala",
+    "html_url": "https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/main/scala",
+    "type": "dir",
+
+codex
+I’m going to patch the discovered metadata with the Maven Central source and javadoc artifacts, the tagged upstream test directory, and a Scala 3 language marker. The main jar contains JVM classes, so I’m leaving the Native Image exclusion fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json b/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+index 6a19e2e36c0fbb9515e70e63a7a1b50b7cd4834b..c22c55da0508efab47652fe4776d13375eb142cb
+--- a/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
++++ b/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.playframework:play-test_3:3.0.0"
++  "coordinates" : "org.playframework:play-test_3:3.0.0",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/testkit/play-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-javadoc.jar",
++  "description" : "Play Test provides testing utilities for Play Framework applications, including helpers for fake requests, running applications and servers, and browser-based tests. The artifact packages Scala and Java test APIs used to exercise controllers, routes, and application behavior in JVM-based Play projects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json b/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+index 6a19e2e36c0fbb9515e70e63a7a1b50b7cd4834b..c22c55da0508efab47652fe4776d13375eb142cb
+--- a/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
++++ b/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.playframework:play-test_3:3.0.0"
++  "coordinates" : "org.playframework:play-test_3:3.0.0",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/testkit/play-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-javadoc.jar",
++  "description" : "Play Test provides testing utilities for Play Framework applications, including helpers for fake requests, running applications and servers, and browser-based tests. The artifact packages Scala and Java test APIs used to exercise controllers, routes, and application behavior in JVM-based Play projects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 0ms:
+{
+  "coordinates": "org.playframework:play-test_3:3.0.0",
+  "repository-url": "https://github.com/playframework/playframework",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/playframework/playframework/tree/$version$/testkit/play-test/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-javadoc.jar",
+  "description": "Play Test provides testing utilities for Play Framework applications, including helpers for fake requests, running applications and servers, and browser-based tests. The artifact packages Scala and Java test APIs used to exercise controllers, routes, and application behavior in JVM-based Play projects.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'rm -rf build/tmp-metadata-check && git diff -- build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/test >/dev/null && echo test-url-ok; curl -I -fsSL https://repo.maven.apache.org/maven2/org/playframework/play-test_3/3.0.0/play-test_3-3.0.0-sources.jar >/dev/null && echo source-url-ok; curl -I -fsSL https://repo.maven.apache.org/maven2/org/playframework/play-test_3/3.0.0/play-test_3-3.0.0-javadoc.jar >/dev/null && echo docs-url-ok' in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+diff --git a/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json b/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+index 6a19e2e36c0fbb9515e70e63a7a1b50b7cd4834b..c22c55da0508efab47652fe4776d13375eb142cb
+--- a/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
++++ b/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.playframework:play-test_3:3.0.0"
++  "coordinates" : "org.playframework:play-test_3:3.0.0",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/testkit/play-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-javadoc.jar",
++  "description" : "Play Test provides testing utilities for Play Framework applications, including helpers for fake requests, running applications and servers, and browser-based tests. The artifact packages Scala and Java test APIs used to exercise controllers, routes, and application behavior in JVM-based Play projects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 671ms:
+test-url-ok
+source-url-ok
+docs-url-ok
+
+web search: 
+web search: https://github.com/playframework/playframework/tree/3.0.0/testkit/play-test/src/test
+web search: 
+web search: repo.maven.apache.org maven2 org playframework play-test_3 3.0.0 play-test_3-3.0.0-sources.jar javadoc jar pom
+web search: 
+web search: site:mvnrepository.com/artifact/org.playframework/play-test_3/3.0.0 org.playframework play-test_3 3.0.0
+web search: 
+web search: "Central Repository: org/playframework/play-test_3/3.0.0"
+web search: 
+web search: https://repo1.maven.org/maven2/org/playframework/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "nl -ba build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json | sed -n '1,40p'" in /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.playframework:play-test_3:3.0.0",
+     3	  "repository-url" : "https://github.com/playframework/playframework",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/testkit/play-test/src/test",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-javadoc.jar",
+     7	  "description" : "Play Test provides testing utilities for Play Framework applications, including helpers for fake requests, running applications and servers, and browser-based tests. The artifact packages Scala and Java test APIs used to exercise controllers, routes, and application behavior in JVM-based Play projects.",
+     8	  "language" : {
+     9	    "name" : "scala",
+    10	    "version" : "3"
+    11	  }
+    12	}
+
+diff --git a/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json b/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+index 6a19e2e36c0fbb9515e70e63a7a1b50b7cd4834b..c22c55da0508efab47652fe4776d13375eb142cb
+--- a/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
++++ b/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.playframework:play-test_3:3.0.0"
++  "coordinates" : "org.playframework:play-test_3:3.0.0",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/testkit/play-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-javadoc.jar",
++  "description" : "Play Test provides testing utilities for Play Framework applications, including helpers for fake requests, running applications and servers, and browser-based tests. The artifact packages Scala and Java test APIs used to exercise controllers, routes, and application behavior in JVM-based Play projects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: Scaladex org.playframework play-test_3 3.0.0 Scala 3.3.1
+codex
+Updated [org.playframework-play-test_3-3.0.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json:1).
+
+Set repository, Maven source/javadoc URLs, tagged GitHub test URL, two-sentence description, and `language` as Scala 3. I left `not-for-native-image` absent because this is a JVM jar, not a non-JVM platform artifact. Play’s upstream repo and docs identify it as a Java/Scala Play Framework module, and the API docs describe the `play.test` package as test helpers. ([github.com](https://github.com/playframework/playframework?utm_source=openai))
+
+Validation: JSON parses with `jq`, and the source, docs, and test URLs resolve with `3.0.0` substituted.
+diff --git a/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json b/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+index 6a19e2e36c0fbb9515e70e63a7a1b50b7cd4834b..c22c55da0508efab47652fe4776d13375eb142cb
+--- a/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
++++ b/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.playframework:play-test_3:3.0.0"
++  "coordinates" : "org.playframework:play-test_3:3.0.0",
++  "repository-url" : "https://github.com/playframework/playframework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/testkit/play-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-test_3/$version$/play-test_3-$version$-javadoc.jar",
++  "description" : "Play Test provides testing utilities for Play Framework applications, including helpers for fake requests, running applications and servers, and browser-based tests. The artifact packages Scala and Java test APIs used to exercise controllers, routes, and application behavior in JVM-based Play projects.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+79,065
+Updated [org.playframework-play-test_3-3.0.0.json](/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/build/discovered-artifact-metadata/org.playframework-play-test_3-3.0.0.json:1).
+
+Set repository, Maven source/javadoc URLs, tagged GitHub test URL, two-sentence description, and `language` as Scala 3. I left `not-for-native-image` absent because this is a JVM jar, not a non-JVM platform artifact. Play’s upstream repo and docs identify it as a Java/Scala Play Framework module, and the API docs describe the `play.test` package as test helpers. ([github.com](https://github.com/playframework/playframework?utm_source=openai))
+
+Validation: JSON parses with `jq`, and the source, docs, and test URLs resolve with `3.0.0` substituted.
+Ran agent for org.playframework:play-test_3:3.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/build/agent-artifact-discovery-logs/org.playframework-play-test_3-3.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 12s
+9 actionable tasks: 9 executed

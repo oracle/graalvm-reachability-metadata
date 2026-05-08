@@ -1,0 +1,233 @@
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1428825
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.playframework:play-test_3:3.0.0
+Command: `/home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/gradlew nativeTest`
+Executing test...
+-------
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1428981
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileScala NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :compileTestJava NO-SOURCE
+> Task :tck-test-support:jar UP-TO-DATE
+
+OpenJDK 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1429284
+> Task :compileTestScala
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+OpenJDK 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1429613
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+
+> Task :test
+
+WithApplicationLifecycleTest > withApplicationStartsConfiguredApplicationAndExposesInjectedComponents() FAILED
+    com.google.inject.ProvisionException: Unable to provision, see the following errors:
+
+    1) [Guice/ErrorInCustomProvider]: Configuration error: Configuration error[
+    The application secret is too short and does not have the recommended amount of entropy for algorithm HS256 defined at play.http.session.jwt.signatureAlgorithm.
+    Current application secret bits: 224, minimal required bits for algorithm HS256: 256.
+    To set the application secret, please read https://playframework.com/documentation/latest/ApplicationSecret
+    ]
+      while locating HttpConfiguration$HttpConfigurationProvider
+      at HttpConfiguration$CookiesConfigurationProvider.<init>(HttpConfiguration.scala:331)
+          \_ for 1st parameter conf
+      at HttpConfiguration$CookiesConfigurationProvider.class(HttpConfiguration.scala:331)
+      while locating HttpConfiguration$CookiesConfigurationProvider
+      at DefaultCookieHeaderEncoding.<init>(Cookie.scala:384)
+          \_ for 1st parameter config
+      while locating DefaultCookieHeaderEncoding
+      at DefaultRequestFactory.<init>(RequestFactory.scala:93)
+          \_ for 1st parameter cookieHeaderEncoding
+      while locating DefaultRequestFactory
+      at DefaultApplication.<init>(Application.scala:177)
+          \_ for 5th parameter requestFactory
+      at DefaultApplication.class(Application.scala:177)
+      while locating DefaultApplication
+      at play.DefaultApplication.<init>(DefaultApplication.java:34)
+          \_ for 1st parameter
+      at play.DefaultApplication.class(DefaultApplication.java:34)
+      while locating play.DefaultApplication
+      while locating play.Application
+
+    Learn more:
+      https://github.com/google/guice/wiki/ERROR_IN_CUSTOM_PROVIDER
+
+    1 error
+
+    ======================
+    Full classname legend:
+    ======================
+    DefaultApplication:                             "play.api.DefaultApplication"
+    DefaultCookieHeaderEncoding:                    "play.api.mvc.DefaultCookieHeaderEncoding"
+    DefaultRequestFactory:                          "play.api.mvc.request.DefaultRequestFactory"
+    HttpConfiguration$CookiesConfigurationProvider: "play.api.http.HttpConfiguration$CookiesConfigurationProvider"
+    HttpConfiguration$HttpConfigurationProvider:    "play.api.http.HttpConfiguration$HttpConfigurationProvider"
+    ========================
+    End of classname legend:
+    ========================
+        at app//com.google.inject.internal.InternalProvisionException.toProvisionException(InternalProvisionException.java:251)
+        at app//com.google.inject.internal.InjectorImpl$1.get(InjectorImpl.java:1151)
+        at app//com.google.inject.internal.InjectorImpl.getInstance(InjectorImpl.java:1186)
+        at app//play.api.inject.guice.GuiceInjector.instanceOf(GuiceInjectorBuilder.scala:434)
+        at app//play.api.inject.ContextClassLoaderInjector.instanceOf$$anonfun$3(Injector.scala:119)
+        at app//play.api.inject.ContextClassLoaderInjector.withContext(Injector.scala:127)
+        at app//play.api.inject.ContextClassLoaderInjector.instanceOf(Injector.scala:119)
+        at app//play.inject.DelegateInjector.instanceOf(DelegateInjector.java:22)
+        at app//play.inject.guice.GuiceApplicationBuilder.build(GuiceApplicationBuilder.java:116)
+        at app//play.test.Helpers.fakeApplication(Helpers.java:217)
+        at app//org_playframework.play_test_3.ConfiguredWithApplication.provideApplication(WithApplicationLifecycleTest.scala:47)
+        at app//play.test.WithApplication.startPlay(WithApplication.java:47)
+        at app//org_playframework.play_test_3.WithApplicationLifecycleTest.withApplicationStartsConfiguredApplicationAndExposesInjectedComponents(WithApplicationLifecycleTest.scala:29)
+
+        Caused by:
+        Configuration error: Configuration error[
+        The application secret is too short and does not have the recommended amount of entropy for algorithm HS256 defined at play.http.session.jwt.signatureAlgorithm.
+        Current application secret bits: 224, minimal required bits for algorithm HS256: 256.
+        To set the application secret, please read https://playframework.com/documentation/latest/ApplicationSecret
+        ]
+            at app//play.api.Configuration$.configError$$anonfun$1(Configuration.scala:165)
+            at app//scala.Option.map(Option.scala:242)
+            at app//play.api.Configuration$.configError(Configuration.scala:166)
+            at app//play.api.Configuration.reportError(Configuration.scala:410)
+            at app//play.api.http.JWTConfigurationParser$.getSignatureAlgorithm(HttpConfiguration.scala:408)
+            at app//play.api.http.JWTConfigurationParser$.apply(HttpConfiguration.scala:385)
+            at app//play.api.http.HttpConfiguration$.fromConfiguration(HttpConfiguration.scala:254)
+            at app//play.api.http.HttpConfiguration$HttpConfigurationProvider.get$lzyINIT1(HttpConfiguration.scala:322)
+            at app//play.api.http.HttpConfiguration$HttpConfigurationProvider.get(HttpConfiguration.scala:322)
+            at app//play.api.http.HttpConfiguration$HttpConfigurationProvider.get(HttpConfiguration.scala:322)
+            at app//com.google.inject.internal.ProviderInternalFactory.provision(ProviderInternalFactory.java:86)
+            at app//com.google.inject.internal.BoundProviderFactory.provision(BoundProviderFactory.java:72)
+            at app//com.google.inject.internal.ProviderInternalFactory.circularGet(ProviderInternalFactory.java:60)
+            at app//com.google.inject.internal.BoundProviderFactory.get(BoundProviderFactory.java:59)
+            at app//com.google.inject.internal.SingleParameterInjector.inject(SingleParameterInjector.java:40)
+            at app//com.google.inject.internal.SingleParameterInjector.getAll(SingleParameterInjector.java:60)
+            at app//com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:113)
+            at app//com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:91)
+            at app//com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:300)
+            at app//com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+            at app//com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:169)
+            at app//com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:45)
+            at app//com.google.inject.internal.BoundProviderFactory.get(BoundProviderFactory.java:58)
+            at app//com.google.inject.internal.SingleParameterInjector.inject(SingleParameterInjector.java:40)
+            at app//com.google.inject.internal.SingleParameterInjector.getAll(SingleParameterInjector.java:60)
+            at app//com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:113)
+            at app//com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:91)
+            at app//com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:300)
+            at app//com.google.inject.internal.FactoryProxy.get(FactoryProxy.java:60)
+            at app//com.google.inject.internal.SingleParameterInjector.inject(SingleParameterInjector.java:40)
+            at app//com.google.inject.internal.SingleParameterInjector.getAll(SingleParameterInjector.java:60)
+            at app//com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:113)
+            at app//com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:91)
+            at app//com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:300)
+            at app//com.google.inject.internal.FactoryProxy.get(FactoryProxy.java:60)
+            at app//com.google.inject.internal.SingleParameterInjector.inject(SingleParameterInjector.java:40)
+            at app//com.google.inject.internal.SingleParameterInjector.getAll(SingleParameterInjector.java:60)
+            at app//com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:113)
+            at app//com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:91)
+            at app//com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:300)
+            at app//com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+            at app//com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:169)
+            at app//com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:45)
+            at app//com.google.inject.internal.FactoryProxy.get(FactoryProxy.java:60)
+            at app//com.google.inject.internal.SingleParameterInjector.inject(SingleParameterInjector.java:40)
+            at app//com.google.inject.internal.SingleParameterInjector.getAll(SingleParameterInjector.java:60)
+            at app//com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:113)
+            at app//com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:91)
+            at app//com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:300)
+            at app//com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+            at app//com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:169)
+            at app//com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:45)
+            at app//com.google.inject.internal.FactoryProxy.get(FactoryProxy.java:60)
+            at app//com.google.inject.internal.InjectorImpl$1.get(InjectorImpl.java:1148)
+            ... 11 more
+
+
+2 tests completed, 1 failed> Task :test FAILED
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/tests/src/org.playframework/play-test_3/3.0.0/build/reports/problems/problems-report.html
+
+
+FAILURE: Build failed with an exception.
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+* What went wrong:
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+Execution failed for task ':test'.
+
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/tests/src/org.playframework/play-test_3/3.0.0/build/reports/tests/test/index.html
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+14 actionable tasks: 3 executed, 11 up-to-date
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 18s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3622-f60cf9a8/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.playframework:play-test_3:3.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 19s
+9 actionable tasks: 1 executed, 8 up-to-date
