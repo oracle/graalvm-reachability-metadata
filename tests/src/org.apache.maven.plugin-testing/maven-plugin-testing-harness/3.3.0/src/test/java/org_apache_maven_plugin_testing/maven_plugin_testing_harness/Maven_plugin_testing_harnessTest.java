@@ -37,6 +37,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.plugin.testing.ArtifactStubFactory;
 import org.apache.maven.plugin.testing.ConfigurationException;
 import org.apache.maven.plugin.testing.MojoParameters;
+import org.apache.maven.plugin.testing.MojoRule;
 import org.apache.maven.plugin.testing.ResolverExpressionEvaluatorStub;
 import org.apache.maven.plugin.testing.SilentLog;
 import org.apache.maven.plugin.testing.resources.TestResources;
@@ -48,6 +49,7 @@ import org.apache.maven.plugin.testing.stubs.StubArtifactRepository;
 import org.apache.maven.plugin.testing.stubs.StubArtifactResolver;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -454,6 +456,48 @@ public class Maven_plugin_testing_harnessTest {
         assertThat(new File(basedir.get(), "pom.xml")).hasContent("<project/>");
         assertThat(new File(basedir.get(), "src/config.txt")).hasContent("copied");
         assertThat(new File(basedir.get(), "stale.txt")).doesNotExist();
+    }
+
+    @Test
+    void mojoRuleExtractsPluginConfigurationFromPomFile() throws Exception {
+        Path pom = Files.writeString(tempDir.resolve("pom.xml"), """
+                <project>
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>com.example</groupId>
+                  <artifactId>plugin-consumer</artifactId>
+                  <version>1.0</version>
+                  <build>
+                    <plugins>
+                      <plugin>
+                        <artifactId>other-plugin</artifactId>
+                        <configuration>
+                          <message>ignored</message>
+                        </configuration>
+                      </plugin>
+                      <plugin>
+                        <groupId>com.example.plugins</groupId>
+                        <artifactId>sample-plugin</artifactId>
+                        <configuration>
+                          <message>Hello from configuration</message>
+                          <nested>
+                            <enabled>true</enabled>
+                          </nested>
+                        </configuration>
+                      </plugin>
+                    </plugins>
+                  </build>
+                </project>
+                """, StandardCharsets.UTF_8);
+
+        MojoRule rule = new MojoRule();
+        PlexusConfiguration configuration = rule.extractPluginConfiguration("sample-plugin", pom.toFile());
+
+        assertThat(configuration.getName()).isEqualTo("configuration");
+        assertThat(configuration.getChild("message").getValue()).isEqualTo("Hello from configuration");
+        assertThat(configuration.getChild("nested").getChild("enabled").getValue()).isEqualTo("true");
+        assertThatThrownBy(() -> rule.extractPluginConfiguration("missing-plugin", pom.toFile()))
+                .isInstanceOf(ConfigurationException.class)
+                .hasMessageContaining("missing-plugin");
     }
 
     @Test
