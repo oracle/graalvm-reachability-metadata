@@ -256,7 +256,7 @@ public class Selenium_chromium_driverTest {
         implementation.setNetworkConditions(newConditions);
 
         assertThat(executeMethod.lastCommand).isEqualTo(AddHasNetworkConditions.SET_NETWORK_CONDITIONS);
-        assertThat(executeMethod.lastParameters).containsOnlyKeys("network_conditions");
+        assertThat(executeMethod.lastParameters).hasSize(1).containsKey("network_conditions");
         assertThat(executeMethod.lastNestedMap("network_conditions"))
             .containsEntry(ChromiumNetworkConditions.OFFLINE, false)
             .containsEntry(ChromiumNetworkConditions.LATENCY, 33L)
