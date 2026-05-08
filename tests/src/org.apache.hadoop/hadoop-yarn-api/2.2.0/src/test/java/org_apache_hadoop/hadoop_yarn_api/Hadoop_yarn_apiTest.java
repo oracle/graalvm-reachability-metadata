@@ -29,6 +29,8 @@ import org.apache.hadoop.yarn.api.protocolrecords.GetClusterMetricsRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetClusterMetricsResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetClusterNodesRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetClusterNodesResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetContainerStatusesRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetContainerStatusesResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetDelegationTokenRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetDelegationTokenResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationRequest;
@@ -58,6 +60,7 @@ import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.apache.hadoop.yarn.api.records.ApplicationResourceUsageReport;
 import org.apache.hadoop.yarn.api.records.ApplicationSubmissionContext;
 import org.apache.hadoop.yarn.api.records.Container;
+import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.ContainerLaunchContext;
 import org.apache.hadoop.yarn.api.records.ContainerState;
@@ -529,6 +532,32 @@ public class Hadoop_yarn_apiTest {
         assertThat(stopContainersRequest.getContainerIds()).containsExactly(containerId);
         assertThat(stopContainersResponse.getSuccessfullyStoppedContainers()).containsExactly(containerId);
         assertThat(stopContainersResponse.getFailedRequests()).containsEntry(containerId, failure);
+    }
+
+    @Test
+    void createsContainerStatusLookupProtocolRecords() {
+        ApplicationId applicationId = ApplicationId.newInstance(6000L, 3);
+        ApplicationAttemptId attemptId = ApplicationAttemptId.newInstance(applicationId, 1);
+        ContainerId completedContainerId = ContainerId.newInstance(attemptId, 1);
+        ContainerId failedContainerId = ContainerId.newInstance(attemptId, 2);
+        ContainerStatus completedStatus = ContainerStatus.newInstance(
+                completedContainerId,
+                ContainerState.COMPLETE,
+                "finished successfully",
+                ContainerExitStatus.SUCCESS);
+        SerializedException failure = SerializedException.newInstance(
+                new IllegalArgumentException("container status unavailable"));
+
+        GetContainerStatusesRequest request = GetContainerStatusesRequest.newInstance(
+                Arrays.asList(completedContainerId, failedContainerId));
+        GetContainerStatusesResponse response = GetContainerStatusesResponse.newInstance(
+                Collections.singletonList(completedStatus),
+                Collections.singletonMap(failedContainerId, failure));
+
+        assertThat(request.getContainerIds()).containsExactly(completedContainerId, failedContainerId);
+        assertThat(response.getContainerStatuses()).containsExactly(completedStatus);
+        assertThat(completedStatus.getExitStatus()).isEqualTo(ContainerExitStatus.SUCCESS);
+        assertThat(response.getFailedRequests()).containsEntry(failedContainerId, failure);
     }
 
     @Test
