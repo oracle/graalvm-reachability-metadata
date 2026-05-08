@@ -6,6 +6,7 @@
  */
 package com_squareup_okhttp3.mockwebserver
 
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.Proxy
 import java.util.concurrent.CountDownLatch
@@ -28,6 +29,7 @@ import okhttp3.mockwebserver.RecordedRequest
 import okhttp3.mockwebserver.SocketPolicy
 import okio.Buffer
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 public class MockwebserverTest {
@@ -293,6 +295,37 @@ public class MockwebserverTest {
             }
         } finally {
             webSocket?.cancel()
+            client.closeResources()
+        }
+    }
+
+    @Test
+    fun socketPolicyCanDisconnectDuringResponseBody(): Unit {
+        val client: OkHttpClient = newClient()
+        try {
+            MockWebServer().use { server: MockWebServer ->
+                server.enqueue(
+                    MockResponse()
+                        .setBody("response-body-".repeat(256))
+                        .apply {
+                            socketPolicy = SocketPolicy.DISCONNECT_DURING_RESPONSE_BODY
+                        },
+                )
+
+                val request: Request = Request.Builder().url(server.url("/unstable-response")).build()
+                client.newCall(request).execute().use { response: Response ->
+                    assertThat(response.code).isEqualTo(HttpURLConnection.HTTP_OK)
+                    assertThrows(IOException::class.java) {
+                        response.body!!.string()
+                    }
+                }
+
+                val recorded: RecordedRequest = server.awaitRequest()
+                assertThat(recorded.method).isEqualTo("GET")
+                assertThat(recorded.path).isEqualTo("/unstable-response")
+                assertThat(server.requestCount).isEqualTo(1)
+            }
+        } finally {
             client.closeResources()
         }
     }
