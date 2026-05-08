@@ -24,8 +24,24 @@ java {
     }
 }
 
+def cleanerPatchClasses = layout.buildDirectory.dir("classes/java/cleanerPatch")
+
+tasks.register("compileCleanerPatch", JavaCompile) {
+    source = fileTree("src/test/java8patch")
+    destinationDirectory = cleanerPatchClasses
+    classpath = files()
+    javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    options.release = 8
+}
+
 tasks.withType(Test).configureEach {
+    dependsOn tasks.named("compileCleanerPatch")
+    jvmArgs "--add-modules=jdk.unsupported"
     jvmArgs "--add-opens=java.base/sun.net.dns=ALL-UNNAMED"
+    jvmArgs "--add-opens=java.base/java.nio=ALL-UNNAMED"
+    jvmArgs "--patch-module=jdk.unsupported=${cleanerPatchClasses.get().asFile.absolutePath}"
 }
 
 graalvmNative {
@@ -40,6 +56,16 @@ graalvmNative {
     binaries {
         all {
             buildArgs.add("--add-opens=java.base/sun.net.dns=ALL-UNNAMED")
+            buildArgs.add("--add-opens=java.base/java.nio=ALL-UNNAMED")
+            buildArgs.add('--initialize-at-build-time=org.apache.pekko.io.DirectByteBufferPool$')
+            buildArgs.add("--initialize-at-build-time=scala.runtime.function.JProcedure1,scala.Function1,java.io.Serializable")
+            buildArgs.add("-J--add-modules=jdk.unsupported")
+            buildArgs.add("-J--add-opens=java.base/java.nio=ALL-UNNAMED")
+            buildArgs.add("-J--patch-module=jdk.unsupported=${cleanerPatchClasses.get().asFile.absolutePath}")
         }
     }
+}
+
+tasks.matching { it.name.startsWith("native") }.configureEach {
+    dependsOn tasks.named("compileCleanerPatch")
 }
