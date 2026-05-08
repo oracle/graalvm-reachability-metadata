@@ -17,6 +17,8 @@ import com.google.api.gax.core.FixedExecutorProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiCallContext;
+import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.AckReplyConsumerWithResponse;
 import com.google.cloud.pubsub.v1.AckResponse;
@@ -30,6 +32,7 @@ import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminSettings;
+import com.google.cloud.pubsub.v1.stub.PublisherStub;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
@@ -43,7 +46,10 @@ import com.google.pubsub.v1.DeadLetterPolicy;
 import com.google.pubsub.v1.DeleteSchemaRevisionRequest;
 import com.google.pubsub.v1.Encoding;
 import com.google.pubsub.v1.ExpirationPolicy;
+import com.google.pubsub.v1.GetTopicRequest;
 import com.google.pubsub.v1.JavaScriptUDF;
+import com.google.pubsub.v1.ListTopicsRequest;
+import com.google.pubsub.v1.ListTopicsResponse;
 import com.google.pubsub.v1.MessageStoragePolicy;
 import com.google.pubsub.v1.MessageTransform;
 import com.google.pubsub.v1.ModifyAckDeadlineRequest;
@@ -75,12 +81,15 @@ import com.google.pubsub.v1.ValidateSchemaRequest;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 
 public class Google_cloud_pubsubTest {
@@ -471,6 +480,40 @@ public class Google_cloud_pubsubTest {
     }
 
     @Test
+    void topicAdminClientUsesStubCallablesForTopicLifecycleOperations() throws Exception {
+        RecordingPublisherStub publisherStub = new RecordingPublisherStub();
+        TopicAdminClient client = TopicAdminClient.create(publisherStub);
+        try {
+            TopicName primaryTopicName = TopicName.of(PROJECT, TOPIC);
+            TopicName secondaryTopicName = TopicName.of(PROJECT, "billing-topic");
+            Topic primaryTopic = Topic.newBuilder()
+                    .setName(primaryTopicName.toString())
+                    .putLabels("feature", "admin-client")
+                    .build();
+            Topic secondaryTopic = Topic.newBuilder()
+                    .setName(secondaryTopicName.toString())
+                    .putLabels("feature", "admin-client")
+                    .build();
+
+            Topic createdTopic = client.createTopic(primaryTopic);
+            client.createTopic(secondaryTopic);
+            Topic fetchedTopic = client.getTopic(primaryTopicName);
+            ListTopicsResponse listedTopics = client.listTopicsCallable().call(ListTopicsRequest.newBuilder()
+                    .setProject(ProjectName.of(PROJECT).toString())
+                    .build());
+
+            assertThat(createdTopic.getName()).isEqualTo(primaryTopicName.toString());
+            assertThat(fetchedTopic.getLabelsMap()).containsEntry("feature", "admin-client");
+            assertThat(listedTopics.getTopicsList())
+                    .extracting(Topic::getName)
+                    .containsExactly(primaryTopicName.toString(), secondaryTopicName.toString());
+        } finally {
+            client.close();
+        }
+        assertThat(publisherStub.isShutdown()).isTrue();
+    }
+
+    @Test
     void messageReceiversAndAckConsumersCanCoordinateUserProcessing() throws Exception {
         PubsubMessage message = PubsubMessage.newBuilder()
                 .setMessageId("message-42")
@@ -521,6 +564,71 @@ public class Google_cloud_pubsubTest {
         }
         for (BackgroundResource resource : resources) {
             resource.awaitTermination(5, TimeUnit.SECONDS);
+        }
+    }
+
+    private static <RequestT, ResponseT> UnaryCallable<RequestT, ResponseT> unaryCallable(
+            Function<RequestT, ResponseT> responseFunction) {
+        return new UnaryCallable<>() {
+            @Override
+            public ApiFuture<ResponseT> futureCall(RequestT request, ApiCallContext context) {
+                return ApiFutures.immediateFuture(responseFunction.apply(request));
+            }
+        };
+    }
+
+    private static final class RecordingPublisherStub extends PublisherStub {
+        private final Map<String, Topic> topics = new LinkedHashMap<>();
+        private boolean shutdown;
+
+        @Override
+        public UnaryCallable<Topic, Topic> createTopicCallable() {
+            return unaryCallable(topic -> {
+                topics.put(topic.getName(), topic);
+                return topic;
+            });
+        }
+
+        @Override
+        public UnaryCallable<GetTopicRequest, Topic> getTopicCallable() {
+            return unaryCallable(request -> topics.get(request.getTopic()));
+        }
+
+        @Override
+        public UnaryCallable<ListTopicsRequest, ListTopicsResponse> listTopicsCallable() {
+            return unaryCallable(request -> ListTopicsResponse.newBuilder()
+                    .addAllTopics(topics.values())
+                    .build());
+        }
+
+        @Override
+        public void close() {
+            shutdown();
+        }
+
+        @Override
+        public void shutdown() {
+            shutdown = true;
+        }
+
+        @Override
+        public boolean isShutdown() {
+            return shutdown;
+        }
+
+        @Override
+        public boolean isTerminated() {
+            return shutdown;
+        }
+
+        @Override
+        public void shutdownNow() {
+            shutdown();
+        }
+
+        @Override
+        public boolean awaitTermination(long duration, TimeUnit unit) {
+            return shutdown;
         }
     }
 
