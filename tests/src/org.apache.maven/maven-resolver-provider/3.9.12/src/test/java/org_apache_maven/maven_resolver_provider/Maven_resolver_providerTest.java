@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,6 +45,7 @@ import org.eclipse.aether.RequestTrace;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectStepData;
+import org.eclipse.aether.deployment.DeployRequest;
 import org.eclipse.aether.graph.DefaultDependencyNode;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
@@ -51,6 +53,7 @@ import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.impl.MetadataGenerator;
 import org.eclipse.aether.impl.MetadataGeneratorFactory;
 import org.eclipse.aether.installation.InstallRequest;
+import org.eclipse.aether.metadata.MergeableMetadata;
 import org.eclipse.aether.metadata.Metadata;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
@@ -264,6 +267,42 @@ public class Maven_resolver_providerTest {
         assertThat(pluginMetadata.getArtifactId()).isEmpty();
         assertThat(pluginMetadata.getType()).isEqualTo("maven-metadata.xml");
         assertThat(pluginMetadata.getNature()).isEqualTo(Metadata.Nature.RELEASE_OR_SNAPSHOT);
+    }
+
+    @Test
+    void remoteSnapshotDeploymentMetadataExpandsSnapshotVersions() throws Exception {
+        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+        session.setConfigProperty("maven.startTime", new Date(0L));
+        session.setConfigProperty("maven.buildNumber", 7);
+        Artifact mainArtifact = new DefaultArtifact("org.example", "demo", "jar", "1.0.0-SNAPSHOT");
+        Artifact sourcesArtifact = new DefaultArtifact("org.example", "demo", "sources", "jar", "1.0.0-SNAPSHOT");
+        String expandedVersion = mainArtifact.getBaseVersion().replace("SNAPSHOT", "19700101.000000-7");
+        MetadataGenerator generator = new SnapshotMetadataGeneratorFactory().newInstance(session, new DeployRequest());
+
+        Metadata metadata = singleMetadata(generator.prepare(List.of(mainArtifact, sourcesArtifact)));
+        assertThat(generator.finish(List.of(mainArtifact, sourcesArtifact))).isEmpty();
+        MergeableMetadata mergeableMetadata = (MergeableMetadata) metadata;
+        Path currentMetadata = temporaryDirectory.resolve("empty-maven-metadata.xml");
+        Path generatedMetadata = temporaryDirectory.resolve("generated/maven-metadata.xml");
+        mergeableMetadata.merge(currentMetadata.toFile(), generatedMetadata.toFile());
+
+        Artifact transformedMainArtifact = generator.transformArtifact(mainArtifact);
+        Artifact transformedSourcesArtifact = generator.transformArtifact(sourcesArtifact);
+        String generatedXml = Files.readString(generatedMetadata, StandardCharsets.UTF_8);
+
+        assertThat(metadata.getGroupId()).isEqualTo("org.example");
+        assertThat(metadata.getArtifactId()).isEqualTo("demo");
+        assertThat(metadata.getVersion()).isEqualTo(mainArtifact.getBaseVersion());
+        assertThat(metadata.getNature()).isEqualTo(Metadata.Nature.SNAPSHOT);
+        assertThat(mergeableMetadata.isMerged()).isTrue();
+        assertThat(transformedMainArtifact.getVersion()).isEqualTo(expandedVersion);
+        assertThat(transformedSourcesArtifact.getVersion()).isEqualTo(expandedVersion);
+        assertThat(generatedXml)
+                .contains("<timestamp>19700101.000000</timestamp>")
+                .contains("<buildNumber>7</buildNumber>")
+                .contains("<extension>jar</extension>")
+                .contains("<classifier>sources</classifier>")
+                .contains("<value>" + expandedVersion + "</value>");
     }
 
     @Test
