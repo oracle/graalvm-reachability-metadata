@@ -36,8 +36,7 @@ public class LocalizedMessageTest {
 
             assertThat(message.getMessage())
                 .isIn("Parameter argument should be final.", "final.parameter");
-        }
-        finally {
+        } finally {
             LocalizedMessage.setLocale(originalLocale);
             LocalizedMessage.clearCache();
         }
