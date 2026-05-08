@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,6 +36,7 @@ import org.jboss.arquillian.container.spi.client.deployment.DeploymentDescriptio
 import org.jboss.arquillian.container.spi.client.deployment.DeploymentScenario;
 import org.jboss.arquillian.container.spi.client.deployment.DeploymentTargetDescription;
 import org.jboss.arquillian.container.spi.client.deployment.TargetDescription;
+import org.jboss.arquillian.container.spi.client.deployment.Validate;
 import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.JMXContext;
@@ -84,6 +87,7 @@ import org.jboss.shrinkwrap.api.formatter.Formatter;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.jboss.shrinkwrap.descriptor.api.DescriptorExportException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class Arquillian_container_spiTest {
     @Test
@@ -464,6 +468,28 @@ public class Arquillian_container_spiTest {
                 "undeploy-descriptor:web.xml",
                 "stop",
                 "kill");
+    }
+
+    @Test
+    void validateUtilityRequiresExistingConfigurationDirectory(@TempDir Path configurationDirectory) throws Exception {
+        String failureMessage = "Configuration directory is required";
+        Path regularFile = Files.createFile(configurationDirectory.resolve("container.conf"));
+        Path missingDirectory = configurationDirectory.resolve("missing");
+
+        Validate.configurationDirectoryExists(configurationDirectory.toString(), failureMessage);
+
+        assertThatThrownBy(() -> Validate.configurationDirectoryExists(null, failureMessage))
+                .isInstanceOf(ConfigurationException.class)
+                .hasMessage(failureMessage);
+        assertThatThrownBy(() -> Validate.configurationDirectoryExists("", failureMessage))
+                .isInstanceOf(ConfigurationException.class)
+                .hasMessage(failureMessage);
+        assertThatThrownBy(() -> Validate.configurationDirectoryExists(regularFile.toString(), failureMessage))
+                .isInstanceOf(ConfigurationException.class)
+                .hasMessage(failureMessage);
+        assertThatThrownBy(() -> Validate.configurationDirectoryExists(missingDirectory.toString(), failureMessage))
+                .isInstanceOf(ConfigurationException.class)
+                .hasMessage(failureMessage);
     }
 
     @Test
