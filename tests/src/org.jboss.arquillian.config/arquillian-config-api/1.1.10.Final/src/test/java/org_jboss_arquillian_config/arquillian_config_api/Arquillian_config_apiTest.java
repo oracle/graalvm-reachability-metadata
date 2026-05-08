@@ -161,6 +161,43 @@ public class Arquillian_config_apiTest {
     }
 
     @Test
+    void descriptorPreservesMultilineAndXmlEscapedPropertyValuesAcrossExportAndImport() {
+        String startupScript = """
+                if (serverName < target) {
+                    log("server & test");
+                }
+                return "ready";
+                """.trim();
+        String protocolPayload = """
+                {
+                  "path": "/service?name=arquillian&mode=test",
+                  "enabled": true
+                }
+                """.trim();
+        ArquillianDescriptor descriptor = newDescriptor("escaped-values.xml");
+
+        descriptor.defaultProtocol("Servlet 3.0")
+                .property("payload", protocolPayload);
+        descriptor.container("scripted")
+                .property("startupScript", startupScript)
+                .protocol("HTTP")
+                .property("requestPayload", protocolPayload);
+        descriptor.extension("script-runner")
+                .property("startupScript", startupScript);
+
+        ArquillianDescriptor imported = Descriptors.importAs(ArquillianDescriptor.class, "escaped-values.xml")
+                .fromString(descriptor.exportAsString());
+
+        assertThat(imported.getDefaultProtocol().getProperties()).containsOnly(entry("payload", protocolPayload));
+        ContainerDef scripted = onlyContainerNamed(imported.getContainers(), "scripted");
+        assertThat(scripted.getContainerProperties()).containsOnly(entry("startupScript", startupScript));
+        assertThat(scripted.getProtocols().get(0).getProtocolProperties())
+                .containsOnly(entry("requestPayload", protocolPayload));
+        assertThat(onlyExtensionNamed(imported.getExtensions(), "script-runner").getExtensionProperties())
+                .containsOnly(entry("startupScript", startupScript));
+    }
+
+    @Test
     void importedDescriptorCanBeModifiedAndReExported() {
         ArquillianDescriptor descriptor = Descriptors.importAs(ArquillianDescriptor.class, "modifiable.xml")
                 .fromString(populatedDescriptor("modifiable.xml").exportAsString());
