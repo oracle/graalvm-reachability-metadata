@@ -92,6 +92,19 @@ public class Snappy_javaTest {
     }
 
     @Test
+    void rawCompressionRoundTripsPrimitiveArraySlices() throws Exception {
+        int[] source = {7, 11, 13, 17, 19};
+        byte[] compressed = new byte[Snappy.maxCompressedLength(3 * Integer.BYTES) + 4];
+
+        int compressedLength = Snappy.rawCompress(source, Integer.BYTES, 3 * Integer.BYTES, compressed, 4);
+        int[] restored = {-1, -1, -1, -1, -1};
+        int restoredLength = Snappy.rawUncompress(compressed, 4, compressedLength, restored, Integer.BYTES);
+
+        assertThat(restoredLength).isEqualTo(3 * Integer.BYTES);
+        assertThat(restored).containsExactly(-1, 11, 13, 17, -1);
+    }
+
+    @Test
     void compressesAndUncompressesDirectByteBuffers() throws Exception {
         ByteBuffer source = ByteBuffer.allocateDirect(SAMPLE_BYTES.length + 20);
         source.position(9);
