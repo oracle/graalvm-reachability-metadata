@@ -16,6 +16,21 @@ import java.util.Optional
 import scala.reflect.ClassTag
 
 class Twirl_api_3Test {
+  private final case class Markdown(body: String) extends play.twirl.api.Appendable[Markdown]
+
+  private object MarkdownFormat extends Format[Markdown] {
+    override def raw(text: String): Markdown = Markdown(Formats.safe(text))
+
+    override def escape(text: String): Markdown = {
+      val safeText: String = Formats.safe(text)
+      Markdown(safeText.replace("\\", "\\\\").replace("*", "\\*").replace("_", "\\_"))
+    }
+
+    override def empty: Markdown = Markdown("")
+
+    override def fill(elements: Seq[Markdown]): Markdown = Markdown(elements.map(_.body).mkString)
+  }
+
   @Test
   def escapesAndRendersBuiltInFormats(): Unit = {
     assertEquals("", Formats.safe(null))
@@ -135,6 +150,20 @@ class Twirl_api_3Test {
     val scriptValue: String = "'quoted'\n/ slash"
     val scriptResult: JavaScript = js"$scriptValue"
     assertEquals("\\'quoted\\'\\n\\/ slash", scriptResult.body)
+  }
+
+  @Test
+  def genericStringInterpolationSupportsCustomFormats(): Unit = {
+    given Format[Markdown] = MarkdownFormat
+
+    val trustedText: Markdown = MarkdownFormat.raw("**trusted**")
+    val renderedText: Markdown =
+      StringContext("Hello ", " and ", "!").interpolate[Markdown](
+        Seq("A_B *C*", trustedText),
+        MarkdownFormat
+      )(summon[ClassTag[Markdown]])
+
+    assertEquals("Hello A\\_B \\*C\\* and **trusted**!", renderedText.body)
   }
 
   @Test
