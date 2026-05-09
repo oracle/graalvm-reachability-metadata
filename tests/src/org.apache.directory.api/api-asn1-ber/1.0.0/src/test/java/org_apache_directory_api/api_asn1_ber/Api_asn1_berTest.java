@@ -216,7 +216,7 @@ public class Api_asn1_berTest {
         assertThat(container.getTransition()).isEqualTo(TestState.END);
         assertThat(container.events).containsExactly("integer=42");
         assertThat(container.getCurrentTLV().getTag()).isEqualTo(UniversalTag.INTEGER.getValue());
-        assertThat(container.getDecodeBytes()).isEqualTo(3);
+        assertThat(container.getDecodedBytes()).isEqualTo(3);
     }
 
     @Test
@@ -234,7 +234,7 @@ public class Api_asn1_berTest {
 
         assertThat(container.getState()).isEqualTo(TLVStateEnum.PDU_DECODED);
         assertThat(container.events).containsExactly("sequence", "boolean=true", "octets=abc");
-        assertThat(container.getDecodeBytes()).isEqualTo(10);
+        assertThat(container.getDecodedBytes()).isEqualTo(10);
     }
 
     @Test
@@ -252,7 +252,7 @@ public class Api_asn1_berTest {
         assertThat(container.events).containsExactly("gathered=6");
         assertThat(container.getCurrentTLV().getValue().getData())
                 .containsExactly(bytes(0x02, 0x01, 0x2A, 0x01, 0x01, 0xFF));
-        assertThat(container.getDecodeBytes()).isEqualTo(8);
+        assertThat(container.getDecodedBytes()).isEqualTo(8);
     }
 
     @Test
@@ -271,7 +271,7 @@ public class Api_asn1_berTest {
         assertThat(container.integerValue).isEqualTo(5);
         assertThat(container.octetString).containsExactly(bytes(0x61, 0x62, 0x63));
         assertThat(container.bitString).containsExactly(bytes(0x00, 0xF0, 0x0F, 0x55, 0xAA));
-        assertThat(container.getDecodeBytes()).isEqualTo(17);
+        assertThat(container.getDecodedBytes()).isEqualTo(17);
     }
 
     @Test
@@ -369,7 +369,7 @@ public class Api_asn1_berTest {
         private byte[] rawPayload;
 
         RecordingContainer(AbstractGrammar<RecordingContainer> grammar) {
-            this.grammar = grammar;
+            setGrammar(grammar);
             setTransition(TestState.START);
         }
     }
