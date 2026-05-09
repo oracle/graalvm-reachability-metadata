@@ -120,7 +120,7 @@ public class Doxia_module_aptTest {
                 "link:https://example.test/path",
                 "text:link text",
                 "link_");
-        assertThat(sink.events).contains("text:, escaped * star, hex A and unicode Ω.");
+        assertThat(sink.events).contains("text:, escaped * star, hex A and unicode \u03A9.");
         assertThat(sink.events).containsSubsequence(
                 "section2",
                 "sectionTitle2",
@@ -344,7 +344,7 @@ public class Doxia_module_aptTest {
         sink.text("Nested");
         sink.sectionTitle2_();
         sink.paragraph();
-        sink.text("reserved * + - < > [ ] { } \\ and Ω");
+        sink.text("reserved * + - < > [ ] { } \\ and \u03A9");
         sink.nonBreakingSpace();
         sink.link("https://example.test/path");
         sink.text("Example");
