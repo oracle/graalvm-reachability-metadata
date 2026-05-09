@@ -6,11 +6,14 @@
  */
 package org_apache_maven_doxia.doxia_sink_api;
 
+import org.apache.maven.doxia.sink.Sink;
 import org.junit.jupiter.api.Test;
 
-class Doxia_sink_apiTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class SinkAnonymous1Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void roleUsesSinkClassName() {
+        assertEquals("org.apache.maven.doxia.sink.Sink", Sink.ROLE);
     }
 }
