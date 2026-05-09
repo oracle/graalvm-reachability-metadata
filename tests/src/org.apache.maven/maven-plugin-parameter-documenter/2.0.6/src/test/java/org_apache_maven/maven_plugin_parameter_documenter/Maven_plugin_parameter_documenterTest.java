@@ -317,7 +317,7 @@ public class Maven_plugin_parameter_documenterTest {
 
         assertThat(reader.getAddDefaultEntities()).isTrue();
         Expression expression = (Expression) documentation.getExpressions().get(0);
-        assertThat(expression.getDescription()).isEqualTo("Copyright © Maven — build tool");
+        assertThat(expression.getDescription()).isEqualTo("Copyright \u00a9 Maven \u2014 build tool");
     }
 
     @Test
