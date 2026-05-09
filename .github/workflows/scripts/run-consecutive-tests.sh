@@ -17,6 +17,12 @@ fi
 TEST_COORDINATES="$1"
 VERSIONS_JSON="$2"
 
+# Keep Gradle caches off constrained workspace/home mounts during this gate.
+if [ -z "${GRADLE_USER_HOME:-}" ]; then
+  TEMP_GRADLE_USER_HOME="$(mktemp -d "${TMPDIR:-/tmp}/run-consecutive-tests-gradle-home.XXXXXX")"
+  export GRADLE_USER_HOME="$TEMP_GRADLE_USER_HOME"
+fi
+
 # Remove surrounding single quotes if present (when called from workflow)
 VERSIONS_JSON="${VERSIONS_JSON#"${VERSIONS_JSON%%[!\']*}"}"
 VERSIONS_JSON="${VERSIONS_JSON%"${VERSIONS_JSON##*[!\']}"}"
@@ -39,6 +45,7 @@ else
   echo "Parsed versions: <none>"
 fi
 echo "Timeout per Gradle invocation: $TIMEOUT"
+echo "GRADLE_USER_HOME: ${GRADLE_USER_HOME}"
 
 run_multiple_attempts() {
   local stage="$1"

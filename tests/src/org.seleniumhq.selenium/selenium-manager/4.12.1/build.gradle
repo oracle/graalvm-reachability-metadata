@@ -1,3 +1,6 @@
+import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
+import org.graalvm.buildtools.gradle.tasks.NativeRunTask
+
 /*
  * Copyright and related rights waived via CC0
  *
@@ -9,6 +12,25 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+File nativeTestCompileOutputDirectory = new File(
+        System.getProperty("java.io.tmpdir"),
+        "graalvm-reachability-metadata-tests/org.seleniumhq.selenium/selenium-manager/${libraryVersion}/nativeTestCompile"
+)
+
+// selenium-manager packages multiple platform binaries, which makes the
+// native test image large enough to exhaust constrained workspace mounts.
+tasks.named("clean") {
+    delete(nativeTestCompileOutputDirectory)
+}
+
+tasks.named("nativeTestCompile", BuildNativeImageTask) {
+    outputDirectory.set(nativeTestCompileOutputDirectory)
+    workingDirectory.set(nativeTestCompileOutputDirectory)
+}
+
+tasks.named("nativeTest", NativeRunTask) {
+    image.set(tasks.named("nativeTestCompile", BuildNativeImageTask).flatMap { it.outputFile })
+}
 
 dependencies {
     testImplementation "org.seleniumhq.selenium:selenium-manager:$libraryVersion"
