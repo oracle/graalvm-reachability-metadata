@@ -189,6 +189,30 @@ public class Jboss_jacc_api_JDK4Test {
     }
 
     @Test
+    void policyContextRegisterHandlerHonorsReplaceFlag() throws Exception {
+        String key = Jboss_jacc_api_JDK4Test.class.getName() + ".replacement." + System.nanoTime();
+        RecordingPolicyContextHandler firstHandler = new RecordingPolicyContextHandler(key);
+        RecordingPolicyContextHandler replacementHandler = new RecordingPolicyContextHandler(key);
+        try {
+            PolicyContext.registerHandler(key, firstHandler, false);
+
+            assertThat(PolicyContext.getHandlerKeys()).contains(key);
+            assertThatThrownBy(() -> PolicyContext.registerHandler(key, replacementHandler, false))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining(key);
+
+            PolicyContext.registerHandler(key, replacementHandler, true);
+            PolicyContext.setHandlerData("replacement-data");
+
+            assertThat(PolicyContext.getContext(key)).isEqualTo("context:replacement-data");
+            assertThat(firstHandler.seenKeys()).isEmpty();
+            assertThat(replacementHandler.seenKeys()).containsExactly(key);
+        } finally {
+            PolicyContext.setHandlerData(null);
+        }
+    }
+
+    @Test
     void policyConfigurationFactoryLoadsConfiguredProviderAndUsesConfigurationLifecycle() throws Exception {
         String previousProvider = System.getProperty(FACTORY_PROVIDER_PROPERTY);
         ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
