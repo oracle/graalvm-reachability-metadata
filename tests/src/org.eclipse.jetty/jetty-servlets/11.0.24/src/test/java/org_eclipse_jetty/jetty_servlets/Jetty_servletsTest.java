@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.CloseableDoSFilter;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.servlets.DoSFilter;
 import org.eclipse.jetty.servlets.EventSource;
@@ -186,6 +188,39 @@ public class Jetty_servletsTest {
             assertThat(DoSFilter.Action.fromDelay(1)).isEqualTo(DoSFilter.Action.DELAY);
         } finally {
             filter.destroy();
+        }
+    }
+
+    @Test
+    void closeableDoSFilterClosesTimedOutRequests() throws Exception {
+        FilterHolder filter = new FilterHolder(new CloseableDoSFilter());
+        filter.setInitParameter("maxRequestMs", "100");
+        filter.setInitParameter("maxRequestsPerSec", "100");
+        filter.setInitParameter("insertHeaders", "false");
+        filter.setAsyncSupported(true);
+
+        try (JettyServer server = JettyServer.start(new SlowServlet(), filter);
+             Socket socket = new Socket()) {
+            URI slowUri = server.uri("/slow");
+            socket.connect(new InetSocketAddress(slowUri.getHost(), slowUri.getPort()), TIMEOUT_MILLIS);
+            socket.setSoTimeout(TIMEOUT_MILLIS);
+
+            String request = "GET /slow HTTP/1.1\r\n"
+                + "Host: 127.0.0.1:" + slowUri.getPort() + "\r\n"
+                + "Connection: close\r\n\r\n";
+            socket.getOutputStream().write(request.getBytes(StandardCharsets.ISO_8859_1));
+            socket.getOutputStream().flush();
+
+            String response;
+            try {
+                ByteArrayOutputStream responseBytes = new ByteArrayOutputStream();
+                socket.getInputStream().transferTo(responseBytes);
+                response = responseBytes.toString(StandardCharsets.ISO_8859_1);
+            } catch (SocketException e) {
+                response = "";
+            }
+
+            assertThat(response).isEmpty();
         }
     }
 
@@ -385,6 +420,19 @@ public class Jetty_servletsTest {
             calls.incrementAndGet();
             response.setContentType("text/plain;charset=UTF-8");
             response.getWriter().write(text);
+        }
+    }
+
+    private static final class SlowServlet extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+            try {
+                Thread.sleep(1_000);
+                response.setContentType("text/plain;charset=UTF-8");
+                response.getWriter().write("slow response");
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
