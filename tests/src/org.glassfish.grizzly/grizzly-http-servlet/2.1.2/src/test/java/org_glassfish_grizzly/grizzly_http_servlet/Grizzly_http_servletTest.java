@@ -190,6 +190,41 @@ public class Grizzly_http_servletTest {
     }
 
     @Test
+    void servletHandlersCreatedFromExistingHandlerShareServletContext() throws Exception {
+        ServletHandler writerHandler = new ServletHandler(new SharedContextWriterServlet());
+        writerHandler.setContextPath("/shared");
+        writerHandler.setServletPath("/write");
+        writerHandler.addContextParameter("scope", "application");
+
+        ServletHandler readerHandler = writerHandler.newServletHandler(new SharedContextReaderServlet());
+        readerHandler.setServletPath("/read");
+
+        Map<String, ServletHandler> handlersByMapping = new LinkedHashMap<>();
+        handlersByMapping.put("/shared/write", writerHandler);
+        handlersByMapping.put("/shared/read", readerHandler);
+
+        ServerHandle server = startServer(handlersByMapping);
+        try {
+            HttpResponse writeResponse = get(server.port(), "/shared/write?name=color&value=blue",
+                    Collections.emptyMap());
+
+            assertThat(writeResponse.status).isEqualTo(HttpURLConnection.HTTP_OK);
+            assertThat(parseBody(writeResponse.body)).containsEntry("stored", "color=blue");
+
+            HttpResponse readResponse = get(server.port(), "/shared/read?name=color", Collections.emptyMap());
+
+            assertThat(readResponse.status).isEqualTo(HttpURLConnection.HTTP_OK);
+            Map<String, String> lines = parseBody(readResponse.body);
+            assertThat(lines).containsEntry("contextPath", "/shared");
+            assertThat(lines).containsEntry("servletPath", "/read");
+            assertThat(lines).containsEntry("contextParameter", "application");
+            assertThat(lines).containsEntry("sharedValue", "blue");
+        } finally {
+            server.close();
+        }
+    }
+
+    @Test
     void cookieWrapperDelegatesToWrappedServletCookie() {
         Cookie servletCookie = new Cookie("theme", "light");
         CookieWrapper wrapper = new CookieWrapper("ignored", "ignored");
@@ -224,6 +259,16 @@ public class Grizzly_http_servletTest {
         HttpServer server = new HttpServer();
         server.addListener(new NetworkListener("test-listener", HOST, port));
         server.getServerConfiguration().addHttpHandler(handler, mapping);
+        server.start();
+        return new ServerHandle(server, port);
+    }
+
+    private static ServerHandle startServer(Map<String, ServletHandler> handlersByMapping) throws IOException {
+        int port = availablePort();
+        HttpServer server = new HttpServer();
+        server.addListener(new NetworkListener("test-listener", HOST, port));
+        handlersByMapping.forEach((mapping, handler) ->
+                server.getServerConfiguration().addHttpHandler(handler, mapping));
         server.start();
         return new ServerHandle(server, port);
     }
@@ -427,6 +472,34 @@ public class Grizzly_http_servletTest {
             response.getWriter().println("alpha=" + request.getParameter("alpha"));
             response.getWriter().println("beta=" + join(request.getParameterValues("beta")));
             response.getWriter().println("contentLength=" + request.getContentLength());
+        }
+    }
+
+    private static final class SharedContextWriterServlet extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+            String name = request.getParameter("name");
+            String value = request.getParameter("value");
+            getServletContext().setAttribute("shared." + name, value);
+
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.setContentType("text/plain");
+            response.getWriter().println("stored=" + name + "=" + value);
+        }
+    }
+
+    private static final class SharedContextReaderServlet extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+            String name = request.getParameter("name");
+            Object sharedValue = getServletContext().getAttribute("shared." + name);
+
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.setContentType("text/plain");
+            response.getWriter().println("contextPath=" + request.getContextPath());
+            response.getWriter().println("servletPath=" + request.getServletPath());
+            response.getWriter().println("contextParameter=" + getServletContext().getInitParameter("scope"));
+            response.getWriter().println("sharedValue=" + sharedValue);
         }
     }
 
