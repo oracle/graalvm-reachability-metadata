@@ -18,6 +18,8 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.security.KerberosInfo;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.Container;
@@ -33,6 +35,10 @@ import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.ResourceRequest;
 import org.apache.hadoop.yarn.api.records.Token;
 import org.apache.hadoop.yarn.api.records.URL;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.apache.hadoop.yarn.server.RMNMSecurityInfoClass;
+import org.apache.hadoop.yarn.server.api.ResourceTrackerPB;
+import org.apache.hadoop.yarn.server.api.SCMUploaderProtocolPB;
 import org.apache.hadoop.yarn.server.api.protocolrecords.NMContainerStatus;
 import org.apache.hadoop.yarn.server.api.protocolrecords.NodeHeartbeatRequest;
 import org.apache.hadoop.yarn.server.api.protocolrecords.NodeHeartbeatResponse;
@@ -272,6 +278,20 @@ public class Hadoop_yarn_server_commonTest {
         assertThat(notifyRequest.getResourceKey()).isEqualTo("resource-checksum");
         assertThat(notifyRequest.getFileName()).isEqualTo("archive.tar.gz");
         assertThat(notifyResponse.getAccepted()).isTrue();
+    }
+
+    @Test
+    void resourceTrackerSecurityInfoPublishesResourceManagerAndNodeManagerPrincipals() {
+        RMNMSecurityInfoClass securityInfo = new RMNMSecurityInfoClass();
+        Configuration configuration = new Configuration(false);
+
+        KerberosInfo kerberosInfo = securityInfo.getKerberosInfo(ResourceTrackerPB.class, configuration);
+
+        assertThat(kerberosInfo).isNotNull();
+        assertThat(kerberosInfo.serverPrincipal()).isEqualTo(YarnConfiguration.RM_PRINCIPAL);
+        assertThat(kerberosInfo.clientPrincipal()).isEqualTo(YarnConfiguration.NM_PRINCIPAL);
+        assertThat(securityInfo.getTokenInfo(ResourceTrackerPB.class, configuration)).isNull();
+        assertThat(securityInfo.getKerberosInfo(SCMUploaderProtocolPB.class, configuration)).isNull();
     }
 
     @Test
