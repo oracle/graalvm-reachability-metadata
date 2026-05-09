@@ -1,0 +1,1478 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0c43-d9f4-7112-b4d3-37f1ea60dc09
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mortbay.jetty:jetty:6.1.26
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "6.1.26" when "$version$" is replaced with "6.1.26".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+- Set "coordinates" to "org.mortbay.jetty:jetty:6.1.26".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "6.1.26".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the Jetty 6 source layout, then update the JSON in place using the repo’s existing URL conventions.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+{
+  "coordinates" : "org.mortbay.jetty:jetty:6.1.26"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.mortbay\\.jetty|jetty-6|mortbay' | head -50" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+
+exec
+/usr/bin/bash -lc "rg '\"coordinates\": \"org\\.mortbay\\.jetty:|\"repository-url\": \"https://github.com/jetty|source-code-url.*maven' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/log4j/log4j/index.json:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/io.getquill/quill-engine_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+metadata/org.springframework/spring-webflux/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-json-provider/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-json-provider/$version$/jackson-jakarta-rs-json-provider-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-sources.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-sources.jar",
+metadata/org.playframework/play-configuration_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-configuration_3/$version$/play-configuration_3-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/org.playframework/play-server_3/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/playframework/play-server_3/$version$/play-server_3-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/oro/oro/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-openwire-legacy/$version$/activemq-openwire-legacy-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+
+web search: 
+web search: org.mortbay.jetty jetty 6.1.26 Maven Central sources jar tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/
+web search: 
+web search: 
+codex
+Maven Central has both the sources and tests classifiers for this exact version, so those will satisfy the “prefer Maven when available” requirement. I’m checking the POM and artifact contents now to confirm repository/documentation and whether the JAR contains JVM classes.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>project</artifactId>
+    <groupId>org.mortbay.jetty</groupId>
+    <version>6.1.26</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.mortbay.jetty</groupId>
+  <artifactId>jetty</artifactId>
+  <name>Jetty Server</name>
+  <description>Jetty server core</description>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-deps</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.mortbay.jetty</groupId>
+                  <artifactId>servlet-api</artifactId>
+                  <version>${servlet-version}</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>../../lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <delete includeemptydirs="true">
+                  <fileset dir="../../lib/" includes="${project.artifactId}-${project.version}.${project.packaging}" />
+                  <fileset dir="../../lib/" includes="servlet-api-${servlet-version}.jar" />
+                  <fileset dir="../../etc/" >
+                    <include name="webdefault.xml"/>
+                    <include name="jetty.xml"/>
+                    <include name="jetty-bio.xml"/>
+                    <include name="jetty-ssl.xml"/>
+                    <include name="keystore"/>
+                    <include name="jetty-stats.xml"/>
+                    <include name="jetty-xinetd.xml"/>
+                    <include name="realm.properties"/>
+                    <include name="jdbcRealm.properties"/>
+                  </fileset>
+                </delete>
+              </tasks>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copyjar</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <copy failonerror="false" file="target/${project.artifactId}-${project.version}.${project.packaging}" tofile="../../lib/${project.artifactId}-${project.version}.${project.packaging}" />
+                <copy failonerror="false" file="src/main/resources/org/mortbay/jetty/webapp/webdefault.xml" tofile="../../etc/webdefault.xml" />
+                <copy failonerror="false" includeEmptyDirs="false" todir="../../etc">
+                  <flattenmapper />
+                  <fileset dir="src/main/config/etc">
+                    <include name="jetty.xml"/>
+                    <include name="jetty-bio.xml"/>
+                    <include name="jetty-xinetd.xml"/>
+                    <include name="jetty-ssl.xml"/>
+                    <include name="keystore"/>
+                    <include name="jetty-stats.xml"/>
+                    <include name="realm.properties"/>
+                    <include name="jdbcRealm.properties"/>
+                  </fileset>
+                </copy>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${maven-bundle-plugin-version}</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <configuration>
+              <instructions>
+                <Bundle-SymbolicName>org.mortbay.jetty.server</Bundle-SymbolicName>
+                <Bundle-RequiredExecutionEnvironment>J2SE-1.4</Bundle-RequiredExecutionEnvironment>
+                <Bundle-DocURL>http://jetty.mortbay.org</Bundle-DocURL>
+                <Import-Package>!org.mortbay.jetty.*,!org.mortbay.xml.*,!org.mortbay.resource.*,!org.mortbay.io.*,!org.mortbay.servlet.jetty.*,javax.servlet.resources;resolution:=optional,javax.servlet.jsp;resolution:=optional,org.apache.jasper.servlet;resolution:=optional,org.mortbay.jetty.handler.management;resolution:=optional,*</Import-Package>
+              </instructions>
+            </configuration>
+           </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!--
+        Required for OSGI
+        -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>artifact-jar</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>test-jar</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <archive>               
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>${servlet-version}</version>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26-sources.jar | jar tf /dev/stdin | head -60' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26.jar | jar tf /dev/stdin | head -40' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26-tests.jar | jar tf /dev/stdin | head -60' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/mortbay/jetty/project/6.1.26/project-6.1.26.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.mortbay.jetty</groupId>
+    <artifactId>jetty-parent</artifactId>
+    <version>10</version>
+  </parent>
+  <groupId>org.mortbay.jetty</groupId>
+  <artifactId>project</artifactId>
+  <packaging>pom</packaging>
+  <name>Jetty Server Project</name>
+  <version>6.1.26</version>
+  <repositories>
+    <repository>
+      <id>codehaus.org</id>
+      <name>Jetty snapshots</name>
+      <layout>default</layout>
+      <url>http://snapshots.repository.codehaus.org</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/jetty/jetty/branches/jetty-6.1</developerConnection>
+    <url>http://fisheye.codehaus.org/viewrep/jetty/</url>
+  </scm>
+  <build>
+    <defaultGoal>install</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>2.0.6</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[1.4,)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <source>1.4</source>
+          <target>1.4</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <tagBase>https://svn.codehaus.org/jetty/jetty/tags</tagBase>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <mode>development</mode>
+              <url>${pom.url}</url>
+	          <implementation-version>${pom.version}</implementation-version>
+	          <package>org.mortbay</package>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+	    <inherited>true</inherited>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-source-plugin</artifactId>
+	    <executions>
+	      <execution>
+	        <id>attach-sources</id>
+	        <goals>
+	          <goal>jar</goal>
+	        </goals>
+	      </execution>
+	    </executions>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+	  <plugins>
+	    <plugin>
+		  <groupId>org.apache.maven</groupId>
+		  <artifactId>maven-surefire-plugin</artifactId>
+		  <version>2.3</version>
+	    </plugin>
+	  </plugins>
+    </pluginManagement>
+  </build>
+  <modules>
+    <module>modules/util</module>
+    <module>modules/util5</module>
+    <module>modules/jetty</module>
+    <module>modules/jsp-2.1</module>
+    <module>modules/jsp-api-2.0</module>
+    <module>modules/jsp-2.0</module>
+    <module>modules/management</module>
+    <module>modules/start</module>
+    <module>modules/maven-plugin</module>
+    <module>modules/jspc-maven-plugin</module>
+    <module>modules/naming</module>
+    <module>modules/plus</module>
+    <module>modules/html</module>
+    <module>modules/annotations</module>
+
+    <module>extras/servlet-tester</module>
+    <module>extras/xbean</module>
+    <module>extras/spring</module>
+    <module>extras/sslengine</module>
+    <module>extras/ajp</module>
+    <module>extras/win32service</module>
+    <!--module>extras/gwt</module-->
+    <module>extras/threadpool</module>
+    <module>extras/client</module>
+    <module>extras/jetty-java5-stats</module>
+
+    <module>examples/test-webapp</module>
+    <module>examples/test-jaas-webapp</module>
+    <module>examples/test-jndi-webapp</module>
+    <module>examples/embedded</module>
+    <!-- <module>examples/spring-ebj3-demo</module> -->
+    <module>examples/tests</module>
+
+
+    <module>contrib/cometd</module>
+    <module>contrib/jetty-ant</module>
+    <module>contrib/jetty-rewrite-handler</module>
+    <module>contrib/jetty-ldap-jaas</module>
+    <module>contrib/start-daemon</module>
+    <!--module>contrib/grizzly</module-->
+    <!--module>contrib/wadi</module-->
+    <module>contrib/terracotta</module>
+    <module>contrib/sweeper</module>
+    <module>extras/setuid</module>
+  </modules>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-tools-api</artifactId>
+        <version>2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl104-over-slf4j</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ant</groupId>
+        <artifactId>ant</artifactId>
+        <version>${ant-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>geronimo-spec</groupId>
+        <artifactId>geronimo-spec-jta</artifactId>
+        <version>${jta-spec-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>${mail-version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.activation</groupId>
+        <artifactId>activation</artifactId>
+        <version>${activation-version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <properties>
+    <test-test>${basedir}</test-test>
+    <servlet-version>2.5-20081211</servlet-version>
+    <jsp21-version>2.1.v20091210</jsp21-version>
+    <activation-version>1.1</activation-version>
+    <ant-version>1.6.5</ant-version>
+    <jta-spec-version>1.0.1B-rc4</jta-spec-version>
+    <junit-version>3.8.2</junit-version>
+    <mail-version>1.4</mail-version>
+    <slf4j-version>1.3.1</slf4j-version>
+    <maven-bundle-plugin-version>1.4.0</maven-bundle-plugin-version>
+    <maven-jar-plugin-version>2.2</maven-jar-plugin-version>
+  </properties>
+  <profiles>
+    <profile>
+      <id>generate-site</id>
+      <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <configuration>
+                <resourceBundles>
+                  <resourceBundle>org.mortbay.jetty:jetty-build-resources:1.0.1</resourceBundle>
+                </resourceBundles>
+              </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+              <configuration>
+                <excludePackageNames>org.apache.*:ebay.*:javax.*:com.sun.*:com.google.*:dojox.*:com.acme.*</excludePackageNames>
+                <aggregate>true</aggregate>
+                <debug>false</debug>
+                <stylesheetfile>${project.build.directory}/maven-shared-archive-resources/org/mortbay/jetty/build/resources/javadoc.css</stylesheetfile>
+                <links>
+                  <link>http://java.sun.com/javaee/5/docs/api</link>
+                  <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                </links>
+                <reportOutputDirectory>${basedir}</reportOutputDirectory>
+                <destDir>javadoc</destDir>
+            </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jxr-plugin</artifactId>
+          <version>2.1</version>
+          <configuration>
+            <aggregate>true</aggregate>
+            <javadocDir>${basedir}/javadoc</javadocDir>
+            <destDir>${basedir}/jxr</destDir>
+          </configuration>
+        </plugin>
+      </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.0</version>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jetty.jar" https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26.jar; jar tf "$tmp/jetty.jar" | head -60; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/tests.jar" https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26-tests.jar; jar tf "$tmp/tests.jar" | head -80; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sources.jar" https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26-sources.jar; jar tf "$tmp/sources.jar" | head -80; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 116ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/mortbay/
+org/mortbay/jetty/
+org/mortbay/jetty/security/
+org/mortbay/jetty/servlet/
+org/mortbay/jetty/handler/
+org/mortbay/resource/
+org/mortbay/resource/two/
+org/mortbay/resource/two/dir/
+org/mortbay/resource/three/
+org/mortbay/resource/three/dir/
+org/mortbay/resource/one/
+org/mortbay/resource/one/dir/
+org/mortbay/xml/
+org/mortbay/io/
+fakeRequests.txt
+org/mortbay/jetty/ResponseTest$1.class
+org/mortbay/jetty/security/ConstraintTest$RequestHandler.class
+org/mortbay/jetty/security/ConstraintTest$TestUserRealm$2.class
+org/mortbay/jetty/security/ConstraintTest.class
+org/mortbay/jetty/security/ConstraintTest$TestUserRealm$1.class
+org/mortbay/jetty/security/ConstraintTest$TestUserRealm.class
+org/mortbay/jetty/RequestTest$1.class
+org/mortbay/jetty/ResponseTest.class
+org/mortbay/jetty/RandomConnector$HelloServlet.class
+org/mortbay/jetty/HttpGeneratorTest$Handler.class
+org/mortbay/jetty/HttpParserTest.class
+org/mortbay/jetty/HttpGeneratorTest$TR.class
+org/mortbay/jetty/RequestTest$4.class
+org/mortbay/jetty/RFC2616Test.class
+org/mortbay/jetty/CheckReverseProxyHeadersTest.class
+org/mortbay/jetty/SocketServerTest.class
+org/mortbay/jetty/BusySelectChannelServerTest$1$1.class
+org/mortbay/jetty/HttpServerTestBase$EchoHandler.class
+org/mortbay/jetty/servlet/DefaultServletTest.class
+org/mortbay/jetty/servlet/DispatcherTest.class
+org/mortbay/jetty/servlet/SessionTestServer$SessionForwardedServlet.class
+org/mortbay/jetty/servlet/PathMapTest.class
+org/mortbay/jetty/servlet/SessionManagerTest$TestListener.class
+org/mortbay/jetty/servlet/DispatcherTest$AssertForwardIncludeServlet.class
+org/mortbay/jetty/servlet/AbstractSessionTest.class
+org/mortbay/jetty/servlet/SessionManagerTest.class
+org/mortbay/jetty/servlet/InvokerTest.class
+org/mortbay/jetty/servlet/InvokerTest$TestServlet.class
+org/mortbay/jetty/servlet/DispatcherTest$AssertIncludeForwardServlet.class
+org/mortbay/jetty/servlet/SessionTestClient.class
+org/mortbay/jetty/servlet/SessionTestServer$SessionActionServlet.class
+org/mortbay/jetty/servlet/SessionManagerTest$TestSessionIdManager.class
+org/mortbay/jetty/servlet/DispatcherTest$AssertForwardServlet.class
+org/mortbay/jetty/servlet/SessionTestServer$ForwardingServlet.class
+org/mortbay/jetty/servlet/SessionTestServer.class
+org/mortbay/jetty/servlet/DispatcherTest$IncludeServlet.class
+org/mortbay/jetty/servlet/DispatcherTest$AssertIncludeServlet.class
+org/mortbay/jetty/servlet/SessionTestServer$SessionDumpServlet.class
+org/mortbay/jetty/servlet/DispatcherTest$ForwardServlet.class
+org/mortbay/jetty/AsyncStressTest$SuspendHandler$2.class
+org/mortbay/jetty/RequestTest$RequestTester.class
+org/mortbay/jetty/EncodedHttpURITest.class
+org/mortbay/jetty/HttpFieldsTest.class
+org/mortbay/jetty/CheckReverseProxyHeadersTest$3.class
+org/mortbay/jetty/AsyncStressTest$SuspendHandler.class
+org/mortbay/jetty/HttpParserTest$1.class
+org/mortbay/jetty/RandomConnector$RandomEndPoint.class
+org/mortbay/jetty/HttpServerTestBase$DataHandler.class
+org/mortbay/jetty/ResourceCacheTest.class
+org/mortbay/jetty/HttpServerTestBase.class
+org/mortbay/jetty/ResponseTest$TestSession.class
+org/mortbay/jetty/RequestTest.class
+org/mortbay/jetty/HttpURITest.class
+org/mortbay/jetty/HttpConnectionTest$1.class
+org/mortbay/jetty/HttpParserTest$Handler.class
+org/mortbay/jetty/ServerTest.class
+org/mortbay/jetty/HttpGeneratorClientTest.class
+org/mortbay/jetty/HttpServerTestBase$1.class
+org/mortbay/jetty/RequestTest$7.class
+org/mortbay/jetty/DumpHandler.class
+org/mortbay/jetty/CheckReverseProxyHeadersTest$1.class
+org/mortbay/jetty/HttpServerTestBase$HelloWorldHandler.class
+
+ succeeded in 154ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/mortbay/
+org/mortbay/jetty/
+org/mortbay/jetty/nio/
+org/mortbay/jetty/security/
+org/mortbay/jetty/deployer/
+org/mortbay/jetty/xbean/
+org/mortbay/jetty/servlet/
+org/mortbay/jetty/webapp/
+org/mortbay/jetty/handler/
+org/mortbay/jetty/bio/
+org/mortbay/resource/
+org/mortbay/servlet/
+org/mortbay/servlet/jetty/
+org/mortbay/xml/
+org/mortbay/io/
+org/mortbay/io/nio/
+org/mortbay/io/bio/
+org/mortbay/jetty/nio/BlockingChannelConnector.java
+org/mortbay/jetty/nio/NIOConnector.java
+org/mortbay/jetty/nio/SelectChannelConnector.java
+org/mortbay/jetty/nio/InheritedChannelConnector.java
+org/mortbay/jetty/nio/AbstractNIOConnector.java
+org/mortbay/jetty/AbstractBuffers.java
+org/mortbay/jetty/AbstractGenerator.java
+org/mortbay/jetty/security/ClientCertAuthenticator.java
+org/mortbay/jetty/security/ConstraintMapping.java
+org/mortbay/jetty/security/UserRealm.java
+org/mortbay/jetty/security/HashSSORealm.java
+org/mortbay/jetty/security/BasicAuthenticator.java
+org/mortbay/jetty/security/DigestAuthenticator.java
+org/mortbay/jetty/security/JDBCUserRealm.java
+org/mortbay/jetty/security/B64Code.java
+org/mortbay/jetty/security/Credential.java
+org/mortbay/jetty/security/Password.java
+org/mortbay/jetty/security/Authenticator.java
+org/mortbay/jetty/security/HTAccessHandler.java
+org/mortbay/jetty/security/SecurityHandler.java
+org/mortbay/jetty/security/SslSocketConnector.java
+org/mortbay/jetty/security/SSORealm.java
+org/mortbay/jetty/security/UnixCrypt.java
+org/mortbay/jetty/security/HashUserRealm.java
+org/mortbay/jetty/security/FormAuthenticator.java
+org/mortbay/jetty/security/PKCS12Import.java
+org/mortbay/jetty/security/ServletSSL.java
+org/mortbay/jetty/security/Constraint.java
+org/mortbay/jetty/InclusiveByteRange.java
+org/mortbay/jetty/deployer/ConfigurationManager.java
+org/mortbay/jetty/deployer/FileConfigurationManager.java
+org/mortbay/jetty/deployer/WebAppDeployer.java
+org/mortbay/jetty/deployer/ContextDeployer.java
+org/mortbay/jetty/Parser.java
+org/mortbay/jetty/HttpTokens.java
+org/mortbay/jetty/Response.java
+org/mortbay/jetty/servlet/ErrorPageErrorHandler.java
+org/mortbay/jetty/servlet/ServletHolder.java
+org/mortbay/jetty/servlet/Context.java
+org/mortbay/jetty/servlet/Holder.java
+org/mortbay/jetty/servlet/ServletMapping.java
+org/mortbay/jetty/servlet/AbstractSessionIdManager.java
+org/mortbay/jetty/servlet/Invoker.java
+org/mortbay/jetty/servlet/HashSessionIdManager.java
+org/mortbay/jetty/servlet/FilterHolder.java
+org/mortbay/jetty/servlet/DefaultServlet.java
+org/mortbay/jetty/servlet/HashSessionManager.java
+org/mortbay/jetty/servlet/SessionHandler.java
+org/mortbay/jetty/servlet/FilterMapping.java
+org/mortbay/jetty/servlet/PathMap.java
+org/mortbay/jetty/servlet/AbstractSessionManager.java
+org/mortbay/jetty/servlet/Dispatcher.java
+org/mortbay/jetty/servlet/ServletHandler.java
+org/mortbay/jetty/HttpFields.java
+org/mortbay/jetty/ResourceCache.java
+org/mortbay/jetty/HttpHeaders.java
+org/mortbay/jetty/HttpURI.java
+org/mortbay/jetty/SessionManager.java
+org/mortbay/jetty/HttpContent.java
+org/mortbay/jetty/HttpOnlyCookie.java
+
+ succeeded in 178ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/mortbay/
+org/mortbay/jetty/
+org/mortbay/jetty/nio/
+org/mortbay/jetty/security/
+org/mortbay/jetty/deployer/
+org/mortbay/jetty/servlet/
+org/mortbay/jetty/webapp/
+org/mortbay/jetty/handler/
+org/mortbay/jetty/bio/
+org/mortbay/resource/
+org/mortbay/servlet/
+org/mortbay/servlet/jetty/
+org/mortbay/xml/
+org/mortbay/io/
+org/mortbay/io/nio/
+org/mortbay/io/bio/
+org/mortbay/jetty/nio/NIOConnector.class
+org/mortbay/jetty/nio/AbstractNIOConnector.class
+org/mortbay/jetty/nio/BlockingChannelConnector.class
+org/mortbay/jetty/nio/SelectChannelConnector$RetryContinuation.class
+org/mortbay/jetty/nio/SelectChannelConnector.class
+org/mortbay/jetty/nio/SelectChannelConnector$1.class
+org/mortbay/jetty/nio/InheritedChannelConnector.class
+org/mortbay/jetty/nio/SelectChannelConnector$ConnectorEndPoint.class
+org/mortbay/jetty/nio/BlockingChannelConnector$Connection.class
+org/mortbay/jetty/MimeTypes.class
+org/mortbay/jetty/ResourceCache$Content.class
+org/mortbay/jetty/security/HashSSORealm.class
+org/mortbay/jetty/security/SecurityHandler.class
+org/mortbay/jetty/security/HashUserRealm$User.class
+org/mortbay/jetty/security/SslSocketConnector.class
+org/mortbay/jetty/security/DigestAuthenticator.class
+org/mortbay/jetty/security/PKCS12Import.class
+org/mortbay/jetty/security/SslSocketConnector$SslConnection$1.class
+org/mortbay/jetty/security/SecurityHandler$2.class
+org/mortbay/jetty/security/SSORealm.class
+org/mortbay/jetty/security/SslSocketConnector$SslConnection.class
+org/mortbay/jetty/security/DigestAuthenticator$Digest.class
+org/mortbay/jetty/security/HashUserRealm.class
+org/mortbay/jetty/security/FormAuthenticator$FormCredential.class
+org/mortbay/jetty/security/HTAccessHandler$HTAccess.class
+org/mortbay/jetty/security/HTAccessHandler.class
+org/mortbay/jetty/security/UnixCrypt.class
+org/mortbay/jetty/security/HashUserRealm$2.class
+org/mortbay/jetty/security/UserRealm.class
+org/mortbay/jetty/security/JDBCUserRealm.class
+org/mortbay/jetty/security/FormAuthenticator$1.class
+org/mortbay/jetty/security/Credential$Crypt.class
+org/mortbay/jetty/security/BasicAuthenticator.class
+org/mortbay/jetty/security/SecurityHandler$NotChecked.class
+org/mortbay/jetty/security/FormAuthenticator.class
+org/mortbay/jetty/security/Password.class
+org/mortbay/jetty/security/ConstraintMapping.class
+org/mortbay/jetty/security/Authenticator.class
+org/mortbay/jetty/security/B64Code.class
+org/mortbay/jetty/security/HashUserRealm$KnownUser.class
+org/mortbay/jetty/security/Constraint.class
+
+exec
+/usr/bin/bash -lc "rg 'documentation-url\" :? \"https://repo(1|\\.maven)' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+metadata/org.slf4j/slf4j-ext/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-javadoc.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.hamcrest/hamcrest-library/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-library/$version$/hamcrest-library-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/$version$/scalajs-javalib-intf-$version$-javadoc.jar",
+metadata/org.hamcrest/hamcrest-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$version$/hamcrest-core-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-javadoc.jar",
+metadata/org.hamcrest/hamcrest/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest/$version$/hamcrest-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-io/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-io/$version$/smallrye-common-io-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-javadoc.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/com.clearspring.analytics/stream/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/clearspring/analytics/stream/$version$/stream-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/$version$/magnolia_3-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-classloader/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/$version$/smallrye-common-classloader-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.framework/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.framework/$version$/org.osgi.framework-$version$-javadoc.jar",
+metadata/com.github.virtuald/curvesapi/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/virtuald/curvesapi/$version$/curvesapi-$version$-javadoc.jar",
+metadata/com.google.code.gson/gson/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.model/core_3/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/model/core_3/$version$/core_3-$version$-javadoc.jar",
+metadata/org.crac/crac/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/crac/crac/$version$/crac-$version$-javadoc.jar",
+metadata/org.slf4j/jul-to-slf4j/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/$version$/jul-to-slf4j-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/$version$/smallrye-common-os-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/$version$/smallrye-common-os-$version$-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-javadoc.jar",
+metadata/org.slf4j/log4j-over-slf4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/log4j-over-slf4j/$version$/log4j-over-slf4j-$version$-javadoc.jar",
+metadata/joda-time/joda-time/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/joda-time/joda-time/$version$/joda-time-$version$-javadoc.jar",
+metadata/com.twitter/hpack/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-javadoc.jar",
+metadata/com.github.takayahilton/sql-formatter_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/takayahilton/sql-formatter_2.13/$version$/sql-formatter_2.13-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/com.itextpdf/io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-process/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-process/$version$/smallrye-common-process-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-process/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-process/$version$/smallrye-common-process-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-javadoc.jar",
+metadata/org.osgi/core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/core/$version$/core-$version$-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-api-logs/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-logs/$version$/opentelemetry-api-logs-$version$-javadoc.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-constraint/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-constraint/$version$/smallrye-common-constraint-$version$-javadoc.jar",
+metadata/com.typesafe.play/play_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play_2.13/$version$/play_2.13-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerb-simplekdc/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-simplekdc/$version$/kerb-simplekdc-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-common/$version$/opentelemetry-sdk-common-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/$version$/org.osgi.core-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/mortbay/jetty/jetty/6.1.26</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/mortbay/jetty/jetty/6.1.26</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jetty-6.1.26-javadoc.jar" title="jetty-6.1.26-javadoc.jar">jetty-6.1.26-javadoc.jar</a>                          2010-11-10 21:40   1241842      
+<a href="jetty-6.1.26-javadoc.jar.asc" title="jetty-6.1.26-javadoc.jar.asc">jetty-6.1.26-javadoc.jar.asc</a>                      2010-11-10 21:40       198      
+<a href="jetty-6.1.26-javadoc.jar.asc.md5" title="jetty-6.1.26-javadoc.jar.asc.md5">jetty-6.1.26-javadoc.jar.asc.md5</a>                  2010-11-10 21:40        32      
+<a href="jetty-6.1.26-javadoc.jar.asc.sha1" title="jetty-6.1.26-javadoc.jar.asc.sha1">jetty-6.1.26-javadoc.jar.asc.sha1</a>                 2010-11-10 21:40        40      
+<a href="jetty-6.1.26-javadoc.jar.md5" title="jetty-6.1.26-javadoc.jar.md5">jetty-6.1.26-javadoc.jar.md5</a>                      2010-11-10 21:40        32      
+<a href="jetty-6.1.26-javadoc.jar.sha1" title="jetty-6.1.26-javadoc.jar.sha1">jetty-6.1.26-javadoc.jar.sha1</a>                     2010-11-10 21:40        40      
+<a href="jetty-6.1.26-sources.jar" title="jetty-6.1.26-sources.jar">jetty-6.1.26-sources.jar</a>                          2010-11-10 21:40    395643      
+<a href="jetty-6.1.26-sources.jar.asc" title="jetty-6.1.26-sources.jar.asc">jetty-6.1.26-sources.jar.asc</a>                      2010-11-10 21:40       198      
+<a href="jetty-6.1.26-sources.jar.asc.md5" title="jetty-6.1.26-sources.jar.asc.md5">jetty-6.1.26-sources.jar.asc.md5</a>                  2010-11-10 21:40        32      
+<a href="jetty-6.1.26-sources.jar.asc.sha1" title="jetty-6.1.26-sources.jar.asc.sha1">jetty-6.1.26-sources.jar.asc.sha1</a>                 2010-11-10 21:40        40      
+<a href="jetty-6.1.26-sources.jar.md5" title="jetty-6.1.26-sources.jar.md5">jetty-6.1.26-sources.jar.md5</a>                      2010-11-10 21:40        32      
+<a href="jetty-6.1.26-sources.jar.sha1" title="jetty-6.1.26-sources.jar.sha1">jetty-6.1.26-sources.jar.sha1</a>                     2010-11-10 21:40        40      
+<a href="jetty-6.1.26-tests.jar" title="jetty-6.1.26-tests.jar">jetty-6.1.26-tests.jar</a>                            2010-11-10 21:40    194768      
+<a href="jetty-6.1.26-tests.jar.asc" title="jetty-6.1.26-tests.jar.asc">jetty-6.1.26-tests.jar.asc</a>                        2010-11-10 21:40       198      
+<a href="jetty-6.1.26-tests.jar.asc.md5" title="jetty-6.1.26-tests.jar.asc.md5">jetty-6.1.26-tests.jar.asc.md5</a>                    2010-11-10 21:40        32      
+<a href="jetty-6.1.26-tests.jar.asc.sha1" title="jetty-6.1.26-tests.jar.asc.sha1">jetty-6.1.26-tests.jar.asc.sha1</a>                   2010-11-10 21:40        40      
+<a href="jetty-6.1.26-tests.jar.md5" title="jetty-6.1.26-tests.jar.md5">jetty-6.1.26-tests.jar.md5</a>                        2010-11-10 21:40        32      
+<a href="jetty-6.1.26-tests.jar.sha1" title="jetty-6.1.26-tests.jar.sha1">jetty-6.1.26-tests.jar.sha1</a>                       2010-11-10 21:40        40      
+<a href="jetty-6.1.26.jar" title="jetty-6.1.26.jar">jetty-6.1.26.jar</a>                                  2010-11-10 21:40    539912      
+<a href="jetty-6.1.26.jar.asc" title="jetty-6.1.26.jar.asc">jetty-6.1.26.jar.asc</a>                              2010-11-10 21:40       198      
+<a href="jetty-6.1.26.jar.asc.md5" title="jetty-6.1.26.jar.asc.md5">jetty-6.1.26.jar.asc.md5</a>                          2010-11-10 21:40        32      
+<a href="jetty-6.1.26.jar.asc.sha1" title="jetty-6.1.26.jar.asc.sha1">jetty-6.1.26.jar.asc.sha1</a>                         2010-11-10 21:40        40      
+<a href="jetty-6.1.26.jar.md5" title="jetty-6.1.26.jar.md5">jetty-6.1.26.jar.md5</a>                              2010-11-10 21:40        32      
+<a href="jetty-6.1.26.jar.sha1" title="jetty-6.1.26.jar.sha1">jetty-6.1.26.jar.sha1</a>                             2010-11-10 21:40        40      
+<a href="jetty-6.1.26.pom" title="jetty-6.1.26.pom">jetty-6.1.26.pom</a>                                  2010-11-10 21:40      6259      
+<a href="jetty-6.1.26.pom.asc" title="jetty-6.1.26.pom.asc">jetty-6.1.26.pom.asc</a>                              2010-11-10 21:40       198      
+<a href="jetty-6.1.26.pom.asc.md5" title="jetty-6.1.26.pom.asc.md5">jetty-6.1.26.pom.asc.md5</a>                          2010-11-10 21:40        32      
+<a href="jetty-6.1.26.pom.asc.sha1" title="jetty-6.1.26.pom.asc.sha1">jetty-6.1.26.pom.asc.sha1</a>                         2010-11-10 21:40        40      
+<a href="jetty-6.1.26.pom.md5" title="jetty-6.1.26.pom.md5">jetty-6.1.26.pom.md5</a>                              2010-11-10 21:40        32      
+<a href="jetty-6.1.26.pom.sha1" title="jetty-6.1.26.pom.sha1">jetty-6.1.26.pom.sha1</a>                             2010-11-10 21:40        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 10:24:35 GMT
+content-type: application/java-archive
+content-length: 1241842
+cf-ray: 9f8ffeceaafcbc4e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 642571
+etag: "3110275ab213abdf20547a14ae5eb4f7"
+last-modified: Wed, 10 Nov 2010 21:41:16 GMT
+x-checksum-md5: 3110275ab213abdf20547a14ae5eb4f7
+x-checksum-sha1: 84d43ff435e7eac0edc6fb9b33aec7077bdead61
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 250ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 09 May 2026 10:24:35 GMT
+content-type: text/html
+cf-ray: 9f8ffecece53039c-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg 'test-code-url\" :? \"https://repo' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+metadata/org.slf4j/slf4j-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/info.picocli/picocli/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/$version$/picocli-$version$-test-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/org.osgi/org.osgi.util.tracker/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.test.cases.tracker/8.0.0/org.osgi.test.cases.tracker-8.0.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/com.github.docker-java/docker-java-transport/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/docker-java/docker-java-transport/$version$/docker-java-transport-$version$-tests.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-test-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/jta/$version$/jta-$version$-tests.jar",
+metadata/org.apache.hadoop/hadoop-mapreduce-client-shuffle/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-mapreduce-client-shuffle/$version$/hadoop-mapreduce-client-shuffle-$version$-test-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.apache.hadoop/hadoop-yarn-registry/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-registry/$version$/hadoop-yarn-registry-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-auth/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-auth/$version$/hadoop-auth-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/io.vertx/vertx-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+metadata/org.web3j/core/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/web3j/core/$version$/core-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/jline/jline/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-tests.jar",
+metadata/jline/jline/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-tests.jar",
+metadata/com.esotericsoftware/minlog/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/$version$/minlog-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/$version$/shrinkwrap-descriptors-parent-$version$-source-release.zip",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-tests.jar",
+metadata/org.apache.orc/orc-core/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-core/$version$/orc-core-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-column/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-column/$version$/parquet-column-$version$-tests.jar",
+metadata/ch.qos.cal10n/cal10n-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/cal10n/cal10n-api/$version$/cal10n-api-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-encoding/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-encoding/$version$/parquet-encoding-$version$-tests.jar",
+metadata/org.apache.camel/camel-api/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-tests.jar",
+metadata/org.apache.camel/camel-management-api/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/io.undertow/undertow-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/$version$/undertow-core-$version$-tests.jar",
+metadata/io.undertow/undertow-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/$version$/undertow-core-$version$-tests.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-tests.jar",
+metadata/com.univocity/univocity-parsers/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/$version$/univocity-parsers-$version$-tests.jar",
+metadata/org.apache.bookkeeper/bookkeeper-common-allocator/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/bookkeeper/bookkeeper-common-allocator/$version$/bookkeeper-common-allocator-$version$-tests.jar",
+metadata/commons-codec/commons-codec/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/$version$/commons-codec-$version$-test-sources.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-tests.jar",
+metadata/com.softwaremill.sttp.client4/core_3/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/client4/core_3/$version$/core_3-$version$-tests-sources.jar",
+metadata/dev.langchain4j/langchain4j/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/$version$/langchain4j-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-tests.jar",
+metadata/org.apache.camel/camel-base/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
+metadata/com.google.api.grpc/proto-google-common-protos/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-common-protos/$version$/proto-google-common-protos-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta1/$version$/proto-google-cloud-bigquerystorage-v1beta1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-instance-v1/$version$/grpc-google-cloud-spanner-admin-instance-v1-$version$-tests.jar",
+metadata/org.codehaus.jsr166-mirror/jsr166y/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/jsr166-mirror/jsr166tck/$version$/jsr166tck-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-database-v1/$version$/proto-google-cloud-spanner-admin-database-v1-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-bigquery/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-tests.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/$version$/jboss-classfilewriter-$version$-source-release.zip",
+metadata/org.eclipse.microprofile.config/microprofile-config-api/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/microprofile/config/microprofile-config-tck/$version$/microprofile-config-tck-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg 'test-code-url\" :? \"https://github.com|test-code-url\" :? \"https://.*tree/.*/test|test-code-url\"' metadata/org.eclipse.jetty metadata/org.mortbay.jetty build/discovered-artifact-metadata -g '*.json' 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+metadata/org.mortbay.jetty/servlet-api/index.json:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/jetty-sslengine/index.json:    "test-code-url": "https://github.com/jetty-project/codehaus-jetty6/tree/jetty-$version$/extras/sslengine/src/test/java/org/mortbay/jetty/security",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-session/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-security/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-security/src/test",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:    "test-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-http/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:    "test-code-url": "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:    "test-code-url": "N/A",
+metadata/org.eclipse.jetty/jetty-ee/index.json:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-ee/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg --files metadata | rg 'mortbay|eclipse.jetty|jetty' | head -120" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+metadata/org.eclipse.jetty.websocket/websocket-client/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json
+metadata/org.eclipse.jetty.websocket/websocket-api/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json
+metadata/org.eclipse.jetty.websocket/websocket-common/9.4.40.v20210413/reachability-metadata.json
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json
+metadata/org.eclipse.jetty.http2/http2-hpack/index.json
+metadata/org.eclipse.jetty.http2/http2-hpack/11.0.24/reachability-metadata.json
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json
+metadata/org.mortbay.jetty/servlet-api/index.json
+metadata/org.mortbay.jetty/jetty-sslengine/6.1.26/reachability-metadata.json
+metadata/org.mortbay.jetty/jetty-sslengine/index.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/10.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+metadata/org.eclipse.jetty/jetty-session/12.0.10/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-session/index.json
+metadata/org.eclipse.jetty/jetty-servlet/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-servlet/index.json
+metadata/org.eclipse.jetty/jetty-io/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/9.4.0.M0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/9.4.0.RC0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-io/index.json
+metadata/org.eclipse.jetty/jetty-alpn-client/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json
+metadata/org.eclipse.jetty/jetty-alpn-client/12.0.31/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-security/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-security/index.json
+metadata/org.eclipse.jetty/jetty-http/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/9.4.0.M0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/9.4.1.v20170120/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-http/index.json
+metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util/index.json
+metadata/org.eclipse.jetty/jetty-client/12.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/index.json
+metadata/org.eclipse.jetty/jetty-client/12.1.5/reachability-metadata.json
+metadata/org.eclipse.jetty.alpn/alpn-api/1.1.3.v20160715/reachability-metadata.json
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json
+metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/index.json
+metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-ee/12.0.10/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-ee/index.json
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json
+metadata/org.eclipse.jetty/jetty-alpn-server/11.0.24/reachability-metadata.json
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/5.0.2/reachability-metadata.json
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/index.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' metadata/org.mortbay.jetty/jetty-sslengine/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "metadata-version": "6.1.26",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-sslengine/$version$/jetty-sslengine-$version$-sources.jar",
+    "repository-url": "https://github.com/jetty-project/codehaus-jetty6",
+    "test-code-url": "https://github.com/jetty-project/codehaus-jetty6/tree/jetty-$version$/extras/sslengine/src/test/java/org/mortbay/jetty/security",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-sslengine/$version$/jetty-sslengine-$version$-javadoc.jar",
+    "description": "Jetty SSLEngine adds SSL/TLS connector support for Jetty 6 using Java's SSLEngine APIs. It provides the nonblocking SSL endpoint and select-channel connector classes used to serve HTTPS traffic in Mort Bay Jetty.",
+    "tested-versions": [
+      "6.1.26"
+    ],
+    "allowed-packages": [
+      "org.mortbay.jetty.security",
+      "org.mortbay.log"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' metadata/org.mortbay.jetty/servlet-api/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.5-20081211",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+    "description" : "Provides the Java Servlet 2.5 API interfaces, classes, and deployment descriptor resources used by servlet containers and Java web applications. It packages the standard javax.servlet and javax.servlet.http contracts so applications can compile against the servlet specification without bundling a container implementation.",
+    "tested-versions" : [
+      "2.5-20081211"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg 'codehaus-jetty6|jetty-6.1.26|org.mortbay.jetty:jetty' -n . --glob '*.json' --glob '*.md' --glob '*.java' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+./stats/org.mortbay.jetty/jetty-sslengine/6.1.26/execution-metrics.json:4:    "library": "org.mortbay.jetty:jetty-sslengine:6.1.26",
+./metadata/org.mortbay.jetty/jetty-sslengine/index.json:6:    "repository-url": "https://github.com/jetty-project/codehaus-jetty6",
+./metadata/org.mortbay.jetty/jetty-sslengine/index.json:7:    "test-code-url": "https://github.com/jetty-project/codehaus-jetty6/tree/jetty-$version$/extras/sslengine/src/test/java/org/mortbay/jetty/security",
+
+codex
+The artifact JAR contains `.class` files, so it is a JVM artifact and should not be marked `not-for-native-image`. I’m going to use Maven Central for sources, tests, and Javadocs, and the existing Jetty 6 GitHub mirror as the repository root.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+diff --git a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+index 6800610ad12e2cf94dde80c61b53036ae61fed95..14feb8a58c75b56c43871771a27f9200b42a29df
+--- a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
++++ b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mortbay.jetty:jetty:6.1.26"
++  "coordinates" : "org.mortbay.jetty:jetty:6.1.26",
++  "repository-url" : "https://github.com/jetty-project/codehaus-jetty6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-javadoc.jar",
++  "description" : "Jetty is an embeddable Java HTTP server and servlet container. This artifact provides the Jetty 6 server core, including connectors, handlers, servlet and web application support, sessions, security, and resource handling for serving Java web applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+index 6800610ad12e2cf94dde80c61b53036ae61fed95..14feb8a58c75b56c43871771a27f9200b42a29df
+--- a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
++++ b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mortbay.jetty:jetty:6.1.26"
++  "coordinates" : "org.mortbay.jetty:jetty:6.1.26",
++  "repository-url" : "https://github.com/jetty-project/codehaus-jetty6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-javadoc.jar",
++  "description" : "Jetty is an embeddable Java HTTP server and servlet container. This artifact provides the Jetty 6 server core, including connectors, handlers, servlet and web application support, sessions, security, and resource handling for serving Java web applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+{
+  "coordinates": "org.mortbay.jetty:jetty:6.1.26",
+  "repository-url": "https://github.com/jetty-project/codehaus-jetty6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-javadoc.jar",
+  "description": "Jetty is an embeddable Java HTTP server and servlet container. This artifact provides the Jetty 6 server core, including connectors, handlers, servlet and web application support, sessions, security, and resource handling for serving Java web applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'for url in https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26-sources.jar https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26-tests.jar https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26-javadoc.jar; do curl -fsSIL "$url" | sed -n '"'1p;/"'^content-length:/Ip'"'; done" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+diff --git a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+index 6800610ad12e2cf94dde80c61b53036ae61fed95..14feb8a58c75b56c43871771a27f9200b42a29df
+--- a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
++++ b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mortbay.jetty:jetty:6.1.26"
++  "coordinates" : "org.mortbay.jetty:jetty:6.1.26",
++  "repository-url" : "https://github.com/jetty-project/codehaus-jetty6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-javadoc.jar",
++  "description" : "Jetty is an embeddable Java HTTP server and servlet container. This artifact provides the Jetty 6 server core, including connectors, handlers, servlet and web application support, sessions, security, and resource handling for serving Java web applications."
+ }
+
+ succeeded in 172ms:
+HTTP/2 200 
+content-length: 194768
+HTTP/2 200 
+content-length: 1241842
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+ succeeded in 0ms:
+{
+  "coordinates" : "org.mortbay.jetty:jetty:6.1.26",
+  "repository-url" : "https://github.com/jetty-project/codehaus-jetty6",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-sources.jar",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-tests.jar",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-javadoc.jar",
+  "description" : "Jetty is an embeddable Java HTTP server and servlet container. This artifact provides the Jetty 6 server core, including connectors, handlers, servlet and web application support, sessions, security, and resource handling for serving Java web applications."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+diff --git a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+index 6800610ad12e2cf94dde80c61b53036ae61fed95..14feb8a58c75b56c43871771a27f9200b42a29df
+--- a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
++++ b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mortbay.jetty:jetty:6.1.26"
++  "coordinates" : "org.mortbay.jetty:jetty:6.1.26",
++  "repository-url" : "https://github.com/jetty-project/codehaus-jetty6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-javadoc.jar",
++  "description" : "Jetty is an embeddable Java HTTP server and servlet container. This artifact provides the Jetty 6 server core, including connectors, handlers, servlet and web application support, sessions, security, and resource handling for serving Java web applications."
+ }
+
+ succeeded in 249ms:
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2 org/mortbay/jetty/jetty/6.1.26 jetty-6.1.26-sources.jar jetty-6.1.26-tests.jar
+web search: 
+web search: site:github.com/jetty-project/codehaus-jetty6 jetty-6.1.26
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/jetty-project/codehaus-jetty6 | sed -n '1p;/"'^location:/Ip'"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/jetty-project/codehaus-jetty6/tree/jetty-6.1.26/modules/jetty/src/main/java | sed -n '1p;/"'^location:/Ip'"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d
+diff --git a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+index 6800610ad12e2cf94dde80c61b53036ae61fed95..14feb8a58c75b56c43871771a27f9200b42a29df
+--- a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
++++ b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mortbay.jetty:jetty:6.1.26"
++  "coordinates" : "org.mortbay.jetty:jetty:6.1.26",
++  "repository-url" : "https://github.com/jetty-project/codehaus-jetty6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-javadoc.jar",
++  "description" : "Jetty is an embeddable Java HTTP server and servlet container. This artifact provides the Jetty 6 server core, including connectors, handlers, servlet and web application support, sessions, security, and resource handling for serving Java web applications."
+ }
+
+ succeeded in 665ms:
+HTTP/2 200 
+
+ succeeded in 752ms:
+HTTP/2 200 
+
+codex
+Updated [org.mortbay.jetty-jetty-6.1.26.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json:1).
+
+I set Maven Central URLs for sources, tests, and Javadocs; used the Jetty 6 repository root; left `language` absent; and did not set `not-for-native-image` because the artifact contains JVM `.class` files. Validated the JSON with `jq` and checked the rendered Maven URLs for `6.1.26` return `200`.
+diff --git a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+index 6800610ad12e2cf94dde80c61b53036ae61fed95..14feb8a58c75b56c43871771a27f9200b42a29df
+--- a/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
++++ b/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mortbay.jetty:jetty:6.1.26"
++  "coordinates" : "org.mortbay.jetty:jetty:6.1.26",
++  "repository-url" : "https://github.com/jetty-project/codehaus-jetty6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty/$version$/jetty-$version$-javadoc.jar",
++  "description" : "Jetty is an embeddable Java HTTP server and servlet container. This artifact provides the Jetty 6 server core, including connectors, handlers, servlet and web application support, sessions, security, and resource handling for serving Java web applications."
+ }
+
+tokens used
+64,852
+Updated [org.mortbay.jetty-jetty-6.1.26.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d/build/discovered-artifact-metadata/org.mortbay.jetty-jetty-6.1.26.json:1).
+
+I set Maven Central URLs for sources, tests, and Javadocs; used the Jetty 6 repository root; left `language` absent; and did not set `not-for-native-image` because the artifact contains JVM `.class` files. Validated the JSON with `jq` and checked the rendered Maven URLs for `6.1.26` return `200`.
+Ran agent for org.mortbay.jetty:jetty:6.1.26 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d/build/agent-artifact-discovery-logs/org.mortbay.jetty-jetty-6.1.26.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2882-d189404d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 11s
+9 actionable tasks: 9 executed
