@@ -1,0 +1,1634 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0b7b-68a4-7e52-930f-173e261ca3b5
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sun.jersey:jersey-server:1.9
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.9" when "$version$" is replaced with "1.9".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+- Set "coordinates" to "com.sun.jersey:jersey-server:1.9".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.9".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact provenance and tag layout before editing the JSON, then I’ll update only the requested metadata file.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json && sed -n '1,200p' build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+-rw-rw-r-- 1 vjovanov vjovanov 57 May  9 08:44 build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+{
+  "coordinates" : "com.sun.jersey:jersey-server:1.9"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"com\\.sun\\.jersey|jersey-server|source-code-url|documentation-url\" metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json:2:  "coordinates" : "com.sun.jersey:jersey-server:1.9"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-sources.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-javadoc.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-sources.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-sources.jar",
+metadata/commons-cli/commons-cli/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-ext/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/$version$/slf4j-ext-$version$-sources.jar",
+metadata/org.slf4j/slf4j-ext/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-sources.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-javadoc.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-javadoc.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:43:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:46:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/$version$/rocksdbjni-$version$-javadoc.jar",
+metadata/org.apache.ant/ant-antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/ant/ant-antlr/$version$/ant-antlr-$version$-sources.jar",
+metadata/org.apache.ant/ant-antlr/index.json:8:    "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/manual/Tasks/antlr.html",
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/$version$/opengauss-jdbc-$version$-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:11:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/org.jboss.resteasy/resteasy-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/$version$/resteasy-client-$version$-sources.jar",
+metadata/org.jboss.resteasy/resteasy-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/$version$/resteasy-client-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:64:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:67:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:85:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.ant/ant-launcher/index.json:5:    "source-code-url" : "https://github.com/apache/ant/tree/rel/$version$/src/main/org/apache/tools/ant/launch",
+metadata/org.apache.ant/ant-launcher/index.json:8:    "documentation-url" : "https://github.com/apache/ant/blob/rel/$version$/docs/manual/running.html",
+metadata/javax.enterprise/cdi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-sources.jar",
+metadata/javax.enterprise/cdi-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/org.jboss.resteasy/resteasy-core-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-core-spi/$version$/resteasy-core-spi-$version$-sources.jar",
+metadata/org.jboss.resteasy/resteasy-core-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-core-spi/$version$/resteasy-core-spi-$version$-javadoc.jar",
+metadata/org.json/json/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/json/json/$version$/json-$version$-sources.jar",
+metadata/org.json/json/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/json/json/$version$/json-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.framework/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.framework/$version$/org.osgi.framework-$version$-sources.jar",
+metadata/org.osgi/org.osgi.framework/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.framework/$version$/org.osgi.framework-$version$-javadoc.jar",
+metadata/com.google.code.gson/gson/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
+metadata/com.google.code.gson/gson/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/oro/oro/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-$version$/docs/index.html",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:39:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:42:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/org.osgi/org.osgi.namespace.implementation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.implementation/$version$/org.osgi.namespace.implementation-$version$-sources.jar",
+
+web search: 
+web search: Maven Central com.sun.jersey jersey-server 1.9 sources javadoc tests
+web search: 
+web search: 
+codex
+The local metadata stub only has coordinates. I found Maven Central metadata for `jersey-server:1.9`; next I’m checking the published POM and artifacts so Maven-hosted source/javadoc are used where available.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    http://glassfish.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-project</artifactId>
+        <version>1.9</version>
+    </parent>
+    <artifactId>jersey-server</artifactId>
+    <packaging>bundle</packaging>
+    <name>jersey-server</name>
+    <dependencies>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.ejb</artifactId>
+            <version>3.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-osgi-bundle</artifactId>
+            <version>1.1.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.6.5</version>
+            <scope>provided</scope>
+        </dependency>
+       <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi_R4_core</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <links>
+                                <link>http://jsr311.java.net/nonav/releases/1.1</link>
+                            </links>
+                            <excludePackageNames>com.sun.jersey.server.impl:com.sun.research.ws.wadl</excludePackageNames>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>cobertura</id>
+            <activation>
+                <property>
+                    <name>cobertura</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                    <version>${project.version}</version>
+                    <classifier>cobertura</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java</directory>
+                <includes>
+                    <include>META-INF/**/*</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>com.sun.tools.xjc.maven2</groupId>
+                <artifactId>maven-jaxb-plugin</artifactId>
+    		        <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generatePackage>com.sun.research.ws.wadl</generatePackage>
+                    <catalog>${basedir}/etc/catalog.xml</catalog>
+                    <schemaDirectory>${basedir}/etc</schemaDirectory>
+                    <includeSchemas>
+                        <includeSchema>wadl.xsd</includeSchema>
+                    </includeSchemas>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9.jar -o /tmp/jersey-server-1.9.jar && jar tf /tmp/jersey-server-1.9.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 224ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sun/jersey/jersey-server/1.9</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sun/jersey/jersey-server/1.9</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jersey-server-1.9-javadoc.jar" title="jersey-server-1.9-javadoc.jar">jersey-server-1.9-javadoc.jar</a>                     2011-09-02 11:17   1079766      
+<a href="jersey-server-1.9-javadoc.jar.asc" title="jersey-server-1.9-javadoc.jar.asc">jersey-server-1.9-javadoc.jar.asc</a>                 2011-09-02 11:17       189      
+<a href="jersey-server-1.9-javadoc.jar.asc.md5" title="jersey-server-1.9-javadoc.jar.asc.md5">jersey-server-1.9-javadoc.jar.asc.md5</a>             2011-09-02 11:17        32      
+<a href="jersey-server-1.9-javadoc.jar.asc.sha1" title="jersey-server-1.9-javadoc.jar.asc.sha1">jersey-server-1.9-javadoc.jar.asc.sha1</a>            2011-09-02 11:17        40      
+<a href="jersey-server-1.9-javadoc.jar.md5" title="jersey-server-1.9-javadoc.jar.md5">jersey-server-1.9-javadoc.jar.md5</a>                 2011-09-02 11:17        32      
+<a href="jersey-server-1.9-javadoc.jar.sha1" title="jersey-server-1.9-javadoc.jar.sha1">jersey-server-1.9-javadoc.jar.sha1</a>                2011-09-02 11:17        40      
+<a href="jersey-server-1.9-sources.jar" title="jersey-server-1.9-sources.jar">jersey-server-1.9-sources.jar</a>                     2011-09-02 11:17    658444      
+<a href="jersey-server-1.9-sources.jar.asc" title="jersey-server-1.9-sources.jar.asc">jersey-server-1.9-sources.jar.asc</a>                 2011-09-02 11:17       189      
+<a href="jersey-server-1.9-sources.jar.asc.md5" title="jersey-server-1.9-sources.jar.asc.md5">jersey-server-1.9-sources.jar.asc.md5</a>             2011-09-02 11:17        32      
+<a href="jersey-server-1.9-sources.jar.asc.sha1" title="jersey-server-1.9-sources.jar.asc.sha1">jersey-server-1.9-sources.jar.asc.sha1</a>            2011-09-02 11:17        40      
+<a href="jersey-server-1.9-sources.jar.md5" title="jersey-server-1.9-sources.jar.md5">jersey-server-1.9-sources.jar.md5</a>                 2011-09-02 11:17        32      
+<a href="jersey-server-1.9-sources.jar.sha1" title="jersey-server-1.9-sources.jar.sha1">jersey-server-1.9-sources.jar.sha1</a>                2011-09-02 11:17        40      
+<a href="jersey-server-1.9.jar" title="jersey-server-1.9.jar">jersey-server-1.9.jar</a>                             2011-09-02 11:17    713089      
+<a href="jersey-server-1.9.jar.asc" title="jersey-server-1.9.jar.asc">jersey-server-1.9.jar.asc</a>                         2011-09-02 11:17       189      
+<a href="jersey-server-1.9.jar.asc.md5" title="jersey-server-1.9.jar.asc.md5">jersey-server-1.9.jar.asc.md5</a>                     2011-09-02 11:17        32      
+<a href="jersey-server-1.9.jar.asc.sha1" title="jersey-server-1.9.jar.asc.sha1">jersey-server-1.9.jar.asc.sha1</a>                    2011-09-02 11:17        40      
+<a href="jersey-server-1.9.jar.md5" title="jersey-server-1.9.jar.md5">jersey-server-1.9.jar.md5</a>                         2011-09-02 11:17        32      
+<a href="jersey-server-1.9.jar.sha1" title="jersey-server-1.9.jar.sha1">jersey-server-1.9.jar.sha1</a>                        2011-09-02 11:17        40      
+<a href="jersey-server-1.9.pom" title="jersey-server-1.9.pom">jersey-server-1.9.pom</a>                             2011-09-02 11:17     11560      
+<a href="jersey-server-1.9.pom.asc" title="jersey-server-1.9.pom.asc">jersey-server-1.9.pom.asc</a>                         2011-09-02 11:17       189      
+<a href="jersey-server-1.9.pom.asc.md5" title="jersey-server-1.9.pom.asc.md5">jersey-server-1.9.pom.asc.md5</a>                     2011-09-02 11:17        32      
+<a href="jersey-server-1.9.pom.asc.sha1" title="jersey-server-1.9.pom.asc.sha1">jersey-server-1.9.pom.asc.sha1</a>                    2011-09-02 11:17        40      
+<a href="jersey-server-1.9.pom.md5" title="jersey-server-1.9.pom.md5">jersey-server-1.9.pom.md5</a>                         2011-09-02 11:17        32      
+<a href="jersey-server-1.9.pom.sha1" title="jersey-server-1.9.pom.sha1">jersey-server-1.9.pom.sha1</a>                        2011-09-02 11:17        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 229ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/jersey-module-version
+META-INF/maven/
+META-INF/maven/com.sun.jersey/
+META-INF/maven/com.sun.jersey/jersey-server/
+META-INF/maven/com.sun.jersey/jersey-server/pom.properties
+META-INF/maven/com.sun.jersey/jersey-server/pom.xml
+META-INF/services/
+META-INF/services/com.sun.jersey.spi.StringReaderProvider
+META-INF/services/com.sun.jersey.spi.container.ContainerProvider
+META-INF/services/com.sun.jersey.spi.container.ContainerRequestFilter
+META-INF/services/com.sun.jersey.spi.container.ResourceMethodCustomInvokerDispatchProvider
+META-INF/services/com.sun.jersey.spi.container.ResourceMethodDispatchProvider
+META-INF/services/com.sun.jersey.spi.container.WebApplicationProvider
+META-INF/services/javax.enterprise.inject.spi.Extension
+META-INF/services/javax.servlet.ServletContainerInitializer
+META-INF/services/javax.ws.rs.ext.MessageBodyWriter
+META-INF/services/javax.ws.rs.ext.RuntimeDelegate
+META-INF/taglib.tld
+com/
+com/sun/
+com/sun/jersey/
+com/sun/jersey/api/
+com/sun/jersey/api/ConflictException.class
+com/sun/jersey/api/JResponse$AJResponseBuilder.class
+com/sun/jersey/api/JResponse$JResponseBuilder.class
+com/sun/jersey/api/JResponse.class
+com/sun/jersey/api/JResponseAsResponse.class
+com/sun/jersey/api/MessageException.class
+com/sun/jersey/api/NotFoundException.class
+com/sun/jersey/api/ParamException$CookieParamException.class
+com/sun/jersey/api/ParamException$FormParamException.class
+com/sun/jersey/api/ParamException$HeaderParamException.class
+com/sun/jersey/api/ParamException$MatrixParamException.class
+com/sun/jersey/api/ParamException$PathParamException.class
+com/sun/jersey/api/ParamException$QueryParamException.class
+com/sun/jersey/api/ParamException$URIParamException.class
+com/sun/jersey/api/ParamException.class
+com/sun/jersey/api/Responses$1.class
+com/sun/jersey/api/Responses.class
+com/sun/jersey/api/container/
+com/sun/jersey/api/container/ContainerException.class
+com/sun/jersey/api/container/ContainerFactory.class
+com/sun/jersey/api/container/MappableContainerException.class
+com/sun/jersey/api/container/filter/
+com/sun/jersey/api/container/filter/CsrfProtectionFilter.class
+com/sun/jersey/api/container/filter/GZIPContentEncodingFilter$Adapter.class
+com/sun/jersey/api/container/filter/GZIPContentEncodingFilter.class
+com/sun/jersey/api/container/filter/LoggingFilter$Adapter.class
+com/sun/jersey/api/container/filter/LoggingFilter.class
+com/sun/jersey/api/container/filter/PostReplaceFilter.class
+com/sun/jersey/api/container/filter/ResourceDebuggingFilterFactory$AbstractRequestFilter.class
+com/sun/jersey/api/container/filter/ResourceDebuggingFilterFactory$ResourceMethodFilter.class
+com/sun/jersey/api/container/filter/ResourceDebuggingFilterFactory$SubResourceLocatorFilter.class
+com/sun/jersey/api/container/filter/ResourceDebuggingFilterFactory$SubResourceMethodFilter.class
+com/sun/jersey/api/container/filter/ResourceDebuggingFilterFactory.class
+com/sun/jersey/api/container/filter/RolesAllowedResourceFilterFactory$Filter.class
+com/sun/jersey/api/container/filter/RolesAllowedResourceFilterFactory.class
+com/sun/jersey/api/container/filter/UriConnegFilter.class
+com/sun/jersey/api/container/httpserver/
+com/sun/jersey/api/container/httpserver/HttpServerFactory.class
+com/sun/jersey/api/core/
+com/sun/jersey/api/core/ApplicationAdapter.class
+com/sun/jersey/api/core/ClassNamesResourceConfig.class
+com/sun/jersey/api/core/ClasspathResourceConfig.class
+com/sun/jersey/api/core/DefaultResourceConfig.class
+com/sun/jersey/api/core/ExtendedUriInfo.class
+com/sun/jersey/api/core/HttpContext.class
+com/sun/jersey/api/core/HttpRequestContext.class
+com/sun/jersey/api/core/HttpResponseContext.class
+com/sun/jersey/api/core/InjectParam.class
+com/sun/jersey/api/core/PackagesResourceConfig.class
+com/sun/jersey/api/core/ParentRef.class
+com/sun/jersey/api/core/ResourceConfig$1.class
+com/sun/jersey/api/core/ResourceConfig$2.class
+com/sun/jersey/api/core/ResourceConfig$TypeParser.class
+com/sun/jersey/api/core/ResourceConfig.class
+com/sun/jersey/api/core/ResourceConfigurator.class
+com/sun/jersey/api/core/ResourceContext.class
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-project/1.9/jersey-project-1.9.pom | rg -n "<url>|<scm>|connection|developerConnection|tag|<description>|<name>" -C 3' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 0ms:
+53-    <artifactId>jersey-project</artifactId>
+54-    <version>1.9</version>
+55-    <packaging>pom</packaging>
+56:    <name>jersey-project</name>
+57:    <description>
+58-        Jersey is the open source (under dual CDDL+GPL license) JAX-RS (JSR 311)
+59-        production quality Reference Implementation for building
+60-        RESTful Web services.
+61-    </description>
+62:    <url>https://jersey.java.net/</url>
+63-    <organization>
+64:        <name>Oracle Corporation</name>
+65:        <url>http://www.oracle.com/</url>
+66-    </organization>
+67-    <issueManagement>
+68-        <system>JIRA</system>
+69:        <url>http://java.net/jira/browse/JERSEY/</url>
+70-    </issueManagement>
+71-    <ciManagement>
+72-        <system>Hudson</system>
+73:        <url>http://hudson.glassfish.org/job/Jersey-trunk-multiplatform/</url>
+74-    </ciManagement>
+75:    <scm>
+76:        <connection>scm:svn:https://svn.java.net/svn/jersey~svn/trunk/jersey/</connection>
+77:        <developerConnection>scm:svn:https://svn.java.net/svn/jersey~svn/trunk/jersey/</developerConnection>
+78:        <tag>HEAD</tag>
+79:        <url>http://java.net/projects/jersey/sources/svn/show/trunk/jersey</url>
+80-    </scm>
+81-    <mailingLists>
+82-        <mailingList>
+83:            <name>Jersey Users List</name>
+84-            <archive>http://java.net/projects/jersey/lists/users/archive</archive>
+85-            <post>users@jersey.java.net</post>
+86-        </mailingList>
+87-        <mailingList>
+88:            <name>Jersey Dev List</name>
+89-            <archive>http://java.net/projects/jersey/lists/dev/archive</archive>
+90-            <post>dev@jersey.java.net</post>
+91-        </mailingList>
+92-    </mailingLists>
+93-    <licenses>
+94-        <license>
+95:            <name>CDDL 1.1</name>
+96:            <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+97-            <distribution>repo</distribution>
+98-        </license>
+99-        <license>
+100:            <name>GPL2 w/ CPE</name>
+101:            <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+102-            <distribution>repo</distribution>
+103-        </license>
+104-    </licenses>
+--
+161-            <id>cobertura</id>
+162-            <activation>
+163-                <property>
+164:                    <name>cobertura</name>
+165-                </property>
+166-            </activation>
+167-            <dependencies>
+--
+376-    <repositories>
+377-        <repository>
+378-            <id>m2.java.net</id>
+379:            <name>Java.net Maven 2 Repository</name>
+380:            <url>http://download.java.net/maven/2</url>
+381-            <layout>default</layout>
+382-        </repository>
+383-        <repository>
+384-            <id>repository.jboss.org</id>
+385:            <name>jboss Maven Repository</name>
+386:            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+387-            <layout>default</layout>
+388-        </repository>
+389-        <repository>
+390-            <id>glassfish-repository</id>
+391:            <name>Repository for Glassfish</name>
+392:            <url>http://maven.glassfish.org/content/groups/glassfish</url>
+393-        </repository>
+394-    </repositories>
+395-
+396-    <pluginRepositories>
+397-        <pluginRepository>
+398-            <id>m2.java.net</id>
+399:            <name>Java.net Maven 2 Repository</name>
+400:            <url>http://download.java.net/maven/2</url>
+401-            <layout>default</layout>
+402-        </pluginRepository>
+403-    </pluginRepositories>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9.pom | rg -n "<url>|<scm>|connection|developerConnection|tag|<description>|<name>|project.scm" -C 3' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 0ms:
+50-    </parent>
+51-    <artifactId>jersey-server</artifactId>
+52-    <packaging>bundle</packaging>
+53:    <name>jersey-server</name>
+54-    <dependencies>
+55-        <dependency>
+56-            <groupId>asm</groupId>
+--
+146-            <id>cobertura</id>
+147-            <activation>
+148-                <property>
+149:                    <name>cobertura</name>
+150-                </property>
+151-            </activation>
+152-            <dependencies>
+
+exec
+/usr/bin/bash -lc "for u in https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9-test-sources.jar https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9-tests.jar; do printf '%s -> ' \""'$u"; curl -fsSIL -o /dev/null -w '"'%{http_code}\\n' \""'$u" || true; done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 521ms:
+404
+curl: (22) The requested URL returned error: 404
+https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9-tests.jar -> curl: (22) The requested URL returned error: 404
+404
+
+web search: 
+web search: Jersey 1.9 source repository tag 1.9 jersey-server
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/jersey.git | rg \"1\\.9|jersey-1|1_9\" | head -50" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jersey/jersey.git | rg \"1\\.9|jersey-1|1_9\" | head -50" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/eclipse-ee4j/jersey.git | rg \"1\\.x|1\\.9|1_\" | head -50" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 283ms:
+ succeeded in 288ms:
+55a9cea9dc7968c2cec4923b9262214077e25220	refs/tags/3.1.9
+f35691f4e4f1e6440ba2d384de798c4efdb2f932	refs/tags/3.1.9^{}
+
+ succeeded in 313ms:
+web search: 
+web search: "com.sun.jersey" "jersey-server" "1.9" "github.com"
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/repositories?q=jersey+1.x+in:name,description&per_page=10' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/repositories?q=java.net+jersey+com.sun.jersey&per_page=10' | sed -n '1,140p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 343ms:
+{
+  "total_count": 1,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 60575830,
+      "node_id": "MDEwOlJlcG9zaXRvcnk2MDU3NTgzMA==",
+      "name": "httpPostJson",
+      "full_name": "mozw/httpPostJson",
+      "private": false,
+      "owner": {
+        "login": "mozw",
+        "id": 16305273,
+        "node_id": "MDQ6VXNlcjE2MzA1Mjcz",
+        "avatar_url": "https://avatars.githubusercontent.com/u/16305273?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/mozw",
+        "html_url": "https://github.com/mozw",
+        "followers_url": "https://api.github.com/users/mozw/followers",
+        "following_url": "https://api.github.com/users/mozw/following{/other_user}",
+        "gists_url": "https://api.github.com/users/mozw/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/mozw/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/mozw/subscriptions",
+        "organizations_url": "https://api.github.com/users/mozw/orgs",
+        "repos_url": "https://api.github.com/users/mozw/repos",
+        "events_url": "https://api.github.com/users/mozw/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/mozw/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/mozw/httpPostJson",
+      "description": "json串Post提交的三种方式：java.net;org.apache.http;com.sun.jersey",
+      "fork": false,
+      "url": "https://api.github.com/repos/mozw/httpPostJson",
+      "forks_url": "https://api.github.com/repos/mozw/httpPostJson/forks",
+      "keys_url": "https://api.github.com/repos/mozw/httpPostJson/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/mozw/httpPostJson/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/mozw/httpPostJson/teams",
+      "hooks_url": "https://api.github.com/repos/mozw/httpPostJson/hooks",
+      "issue_events_url": "https://api.github.com/repos/mozw/httpPostJson/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/mozw/httpPostJson/events",
+      "assignees_url": "https://api.github.com/repos/mozw/httpPostJson/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/mozw/httpPostJson/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/mozw/httpPostJson/tags",
+      "blobs_url": "https://api.github.com/repos/mozw/httpPostJson/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/mozw/httpPostJson/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/mozw/httpPostJson/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/mozw/httpPostJson/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/mozw/httpPostJson/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/mozw/httpPostJson/languages",
+      "stargazers_url": "https://api.github.com/repos/mozw/httpPostJson/stargazers",
+      "contributors_url": "https://api.github.com/repos/mozw/httpPostJson/contributors",
+      "subscribers_url": "https://api.github.com/repos/mozw/httpPostJson/subscribers",
+      "subscription_url": "https://api.github.com/repos/mozw/httpPostJson/subscription",
+      "commits_url": "https://api.github.com/repos/mozw/httpPostJson/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/mozw/httpPostJson/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/mozw/httpPostJson/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/mozw/httpPostJson/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/mozw/httpPostJson/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/mozw/httpPostJson/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/mozw/httpPostJson/merges",
+      "archive_url": "https://api.github.com/repos/mozw/httpPostJson/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/mozw/httpPostJson/downloads",
+      "issues_url": "https://api.github.com/repos/mozw/httpPostJson/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/mozw/httpPostJson/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/mozw/httpPostJson/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/mozw/httpPostJson/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/mozw/httpPostJson/labels{/name}",
+      "releases_url": "https://api.github.com/repos/mozw/httpPostJson/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/mozw/httpPostJson/deployments",
+      "created_at": "2016-06-07T02:31:56Z",
+      "updated_at": "2016-06-07T02:31:56Z",
+      "pushed_at": "2016-06-07T02:31:57Z",
+      "git_url": "git://github.com/mozw/httpPostJson.git",
+      "ssh_url": "git@github.com:mozw/httpPostJson.git",
+      "clone_url": "https://github.com/mozw/httpPostJson.git",
+      "svn_url": "https://github.com/mozw/httpPostJson",
+      "homepage": null,
+      "size": 0,
+      "stargazers_count": 0,
+      "watchers_count": 0,
+      "language": null,
+      "has_issues": true,
+      "has_projects": true,
+      "has_downloads": true,
+      "has_wiki": true,
+      "has_pages": false,
+      "has_discussions": false,
+      "forks_count": 0,
+      "mirror_url": null,
+      "archived": false,
+      "disabled": false,
+      "open_issues_count": 0,
+      "license": null,
+      "allow_forking": true,
+      "is_template": false,
+      "web_commit_signoff_required": false,
+      "has_pull_requests": true,
+      "pull_request_creation_policy": "all",
+      "topics": [
+
+      ],
+      "visibility": "public",
+      "forks": 0,
+      "open_issues": 0,
+      "watchers": 0,
+      "default_branch": "master",
+      "score": 1.0
+    }
+  ]
+}
+
+ succeeded in 668ms:
+{
+  "total_count": 41,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 14029306,
+      "node_id": "MDEwOlJlcG9zaXRvcnkxNDAyOTMwNg==",
+      "name": "jersey-1.x",
+      "full_name": "javaee/jersey-1.x",
+      "private": false,
+      "owner": {
+        "login": "javaee",
+        "id": 23086798,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjIzMDg2Nzk4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/23086798?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/javaee",
+        "html_url": "https://github.com/javaee",
+        "followers_url": "https://api.github.com/users/javaee/followers",
+        "following_url": "https://api.github.com/users/javaee/following{/other_user}",
+        "gists_url": "https://api.github.com/users/javaee/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/javaee/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/javaee/subscriptions",
+        "organizations_url": "https://api.github.com/users/javaee/orgs",
+        "repos_url": "https://api.github.com/users/javaee/repos",
+        "events_url": "https://api.github.com/users/javaee/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/javaee/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/javaee/jersey-1.x",
+      "description": "Jersey 1.x repository migrated to Git (synchronized with the Jersey 1.x Git repository on java.net). ",
+      "fork": false,
+      "url": "https://api.github.com/repos/javaee/jersey-1.x",
+      "forks_url": "https://api.github.com/repos/javaee/jersey-1.x/forks",
+      "keys_url": "https://api.github.com/repos/javaee/jersey-1.x/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/javaee/jersey-1.x/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/javaee/jersey-1.x/teams",
+      "hooks_url": "https://api.github.com/repos/javaee/jersey-1.x/hooks",
+      "issue_events_url": "https://api.github.com/repos/javaee/jersey-1.x/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/javaee/jersey-1.x/events",
+      "assignees_url": "https://api.github.com/repos/javaee/jersey-1.x/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/javaee/jersey-1.x/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/javaee/jersey-1.x/tags",
+      "blobs_url": "https://api.github.com/repos/javaee/jersey-1.x/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/javaee/jersey-1.x/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/javaee/jersey-1.x/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/javaee/jersey-1.x/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/javaee/jersey-1.x/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/javaee/jersey-1.x/languages",
+      "stargazers_url": "https://api.github.com/repos/javaee/jersey-1.x/stargazers",
+      "contributors_url": "https://api.github.com/repos/javaee/jersey-1.x/contributors",
+      "subscribers_url": "https://api.github.com/repos/javaee/jersey-1.x/subscribers",
+      "subscription_url": "https://api.github.com/repos/javaee/jersey-1.x/subscription",
+      "commits_url": "https://api.github.com/repos/javaee/jersey-1.x/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/javaee/jersey-1.x/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/javaee/jersey-1.x/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/javaee/jersey-1.x/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/javaee/jersey-1.x/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/javaee/jersey-1.x/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/javaee/jersey-1.x/merges",
+      "archive_url": "https://api.github.com/repos/javaee/jersey-1.x/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/javaee/jersey-1.x/downloads",
+      "issues_url": "https://api.github.com/repos/javaee/jersey-1.x/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/javaee/jersey-1.x/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/javaee/jersey-1.x/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/javaee/jersey-1.x/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/javaee/jersey-1.x/labels{/name}",
+      "releases_url": "https://api.github.com/repos/javaee/jersey-1.x/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/javaee/jersey-1.x/deployments",
+      "created_at": "2013-10-31T21:54:08Z",
+      "updated_at": "2025-12-05T19:05:38Z",
+      "pushed_at": "2020-10-13T10:39:51Z",
+      "git_url": "git://github.com/javaee/jersey-1.x.git",
+      "ssh_url": "git@github.com:javaee/jersey-1.x.git",
+      "clone_url": "https://github.com/javaee/jersey-1.x.git",
+      "svn_url": "https://github.com/javaee/jersey-1.x",
+      "homepage": null,
+      "size": 34311,
+      "stargazers_count": 27,
+      "watchers_count": 27,
+      "language": "Java",
+      "has_issues": false,
+      "has_projects": false,
+      "has_downloads": true,
+      "has_wiki": true,
+      "has_pages": false,
+      "has_discussions": false,
+      "forks_count": 71,
+      "mirror_url": null,
+      "archived": true,
+      "disabled": false,
+      "open_issues_count": 27,
+      "license": {
+        "key": "other",
+        "name": "Other",
+        "spdx_id": "NOASSERTION",
+        "url": null,
+        "node_id": "MDc6TGljZW5zZTA="
+      },
+      "allow_forking": true,
+      "is_template": false,
+      "web_commit_signoff_required": false,
+      "has_pull_requests": true,
+      "pull_request_creation_policy": "all",
+      "topics": [
+
+      ],
+      "visibility": "public",
+      "forks": 71,
+      "open_issues": 27,
+      "watchers": 27,
+      "default_branch": "master",
+      "score": 1.0
+    },
+    {
+      "id": 4522462,
+      "node_id": "MDEwOlJlcG9zaXRvcnk0NTIyNDYy",
+      "name": "jersey-1.x-old",
+
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/javaee/jersey-1.x.git | head -80' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javaee/jersey-1.x.git | rg \"1\\.9|1_9|1\\.10|1\\.8\" | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 319ms:
+de20b8ebee3cb70b53627d2743414debbe7dc3f6	refs/heads/1.17.x
+ba24a6011f3c3cc5d7abadbdbb5023dd644cab62	refs/heads/1.18.x
+f46a4b734790535175648e809a9d8166579d1313	refs/heads/cdi-extension-fix
+cee3be6f13728105eadf20b1c61cf8f9b795c9c1	refs/heads/dependabot/maven/archetypes/jersey-quickstart-grizzly/src/main/resources/archetype-resources/junit-junit-4.13.1
+fa1e9d6cb8d84ba1bb48fba569274c8bd82e5ad9	refs/heads/dependabot/maven/archetypes/jersey-quickstart-grizzly2/src/main/resources/archetype-resources/junit-junit-4.13.1
+5ee2819811385241ef542d66bd2380420ed49f8a	refs/heads/dependabot/maven/contribs/bill-burke-book/ex11_2/commons-collections-commons-collections-3.2.2
+affe9c5f37ee3c809e024e2ee6c662da8cb7f167	refs/heads/dependabot/maven/contribs/bill-burke-book/ex11_2/xerces-xercesImpl-2.12.0
+a0b8fbe097bdd41e33bfac418173c02c7c7541b4	refs/heads/dependabot/maven/contribs/bill-burke-book/junit-junit-4.13.1
+19b24bd05f326cec334a0cf2bfab1341d416c788	refs/heads/dependabot/maven/contribs/maven-wadl-plugin/xerces-xercesImpl-2.12.0
+dfbf5f99dea1ca42513b1ab96ec4154f16a58047	refs/heads/dependabot/maven/contribs/wadl-resourcedoc-doclet/xerces-xercesImpl-2.12.0
+4887c1bb6b74f0edc13449d7a4e84fef79cf8791	refs/heads/dependabot/maven/glassfish/v3-packages/junit-junit-4.13.1
+d846a33c4c465dc8061bfcbbfeb18112ca2bd4bc	refs/heads/dependabot/maven/glassfish/v3.2-packages/junit-junit-4.13.1
+cf597b3645a0513ebe015b0dc98c7cbe6deee09d	refs/heads/dependabot/maven/junit-junit-4.13.1
+f8b8e64c4beaeab7d0a8c4d0d6a767aa79a4ea40	refs/heads/dependabot/maven/osgi/runtime-delegate-tests/rd-tests/junit-junit-4.13.1
+8b6a511300088adb7e29d90bad7fdfd30b5f49b7	refs/heads/dependabot/maven/samples/helloworld-osgi-webapp/functional-test/junit-junit-4.13.1
+c1aa9b718d71154edafb49f5235531db908385df	refs/heads/dependabot/maven/samples/junit-junit-4.13.1
+f4dcee3bc057fda121d5cb6c2ed878a8dae3cd9b	refs/heads/dependabot/maven/samples/osgi-http-service/functional-test/junit-junit-4.13.1
+97df0c240ff706356f9e77e349ae6c3e72956702	refs/heads/dependabot/maven/tests/junit-junit-4.13.1
+864a01d7be490ab93d2424da3e446ad8eb84b1e8	refs/heads/master
+343f7bdd22d4c9a4b2e51ca8cdcfd713bd76bf5f	refs/heads/master-cdi-extension-fix
+
+ succeeded in 326ms:
+21a3c3b76c9ff28e2c5f57f7a3c0f3fc46893482	refs/tags/1.10
+090341153ddf4c7658f0a5daaee9c958ad26afa9	refs/tags/1.10^{}
+f8bc68f35e284d098236ad26a52bab820304677d	refs/tags/post-1.9
+b409352db466a81e37eb40b46fd9e1aac2a187c7	refs/tags/post-1.9^{}
+
+codex
+There are no `test-sources` or `tests` classifier artifacts for this version on Maven Central, so I’m using Maven Central for sources/javadocs and the archived Jersey 1.x repository for the versioned test suite path.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/javaee/jersey-1.x/contents/jersey-server?ref=post-1.9 | rg '\"name\"|\"html_url\"|\"type\"' -C 0" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/javaee/jersey-1.x/contents/jersey-server/src/test?ref=post-1.9 | rg '\"name\"|\"html_url\"|\"type\"' -C 0" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc "for u in \\
+  https://github.com/javaee/jersey-1.x/tree/post-1.9/jersey-server/src/test/java \\
+  https://github.com/javaee/jersey-1.x/tree/post-1.9/jersey-server/src/test \\
+  https://github.com/javaee/jersey-1.x/tree/post-1.9/jersey-server; do printf '%s -> ' \""'$u"; curl -fsSIL -o /dev/null -w '"'%{http_code}\\n' \""'$u" || true; done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 163ms:
+    "name": "etc",
+    "html_url": "https://github.com/javaee/jersey-1.x/tree/post-1.9/jersey-server/etc",
+    "type": "dir",
+    "name": "pom.xml",
+    "html_url": "https://github.com/javaee/jersey-1.x/blob/post-1.9/jersey-server/pom.xml",
+    "type": "file",
+    "name": "src",
+    "html_url": "https://github.com/javaee/jersey-1.x/tree/post-1.9/jersey-server/src",
+    "type": "dir",
+
+ succeeded in 175ms:
+    "name": "java",
+    "html_url": "https://github.com/javaee/jersey-1.x/tree/post-1.9/jersey-server/src/test/java",
+    "type": "dir",
+
+ succeeded in 1780ms:
+200
+https://github.com/javaee/jersey-1.x/tree/post-1.9/jersey-server/src/test -> 200
+https://github.com/javaee/jersey-1.x/tree/post-1.9/jersey-server -> 200
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9-sources.jar \\
+  https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9.jar; do printf '%s -> ' \""'$u"; curl -fsSIL -o /dev/null -w '"'%{http_code} %{content_type}\\n' \""'$u" || true; done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/javaee/jersey-1.x/post-1.9/jersey-server/pom.xml | rg -n "<parent>|<version>|<artifactId>|<name>" -C 2 | head -60' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/javaee/jersey-1.x/post-1.9/pom.xml | rg -n \"<version>1\\.9</version>|<description>|JAX-RS|RESTful|<url>|<scm>|<tag>\" -C 2" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 161ms:
+55-    <packaging>pom</packaging>
+56-    <name>jersey-project</name>
+57:    <description>
+58:        Jersey is the open source (under dual CDDL+GPL license) JAX-RS (JSR 311)
+59-        production quality Reference Implementation for building
+60:        RESTful Web services.
+61-    </description>
+62:    <url>https://jersey.java.net/</url>
+63-    <organization>
+64-        <name>Oracle Corporation</name>
+65:        <url>http://www.oracle.com/</url>
+66-    </organization>
+67-    <issueManagement>
+68-        <system>JIRA</system>
+69:        <url>http://java.net/jira/browse/JERSEY/</url>
+70-    </issueManagement>
+71-    <ciManagement>
+72-        <system>Hudson</system>
+73:        <url>http://hudson.glassfish.org/job/Jersey-trunk-multiplatform/</url>
+74-    </ciManagement>
+75:    <scm>
+76-        <connection>scm:svn:https://svn.java.net/svn/jersey~svn/trunk/jersey/</connection>
+77-        <developerConnection>scm:svn:https://svn.java.net/svn/jersey~svn/trunk/jersey/</developerConnection>
+78:        <tag>HEAD</tag>
+79:        <url>http://java.net/projects/jersey/sources/svn/show/trunk/jersey</url>
+80-    </scm>
+81-    <mailingLists>
+--
+94-        <license>
+95-            <name>CDDL 1.1</name>
+96:            <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+97-            <distribution>repo</distribution>
+98-        </license>
+99-        <license>
+100-            <name>GPL2 w/ CPE</name>
+101:            <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+102-            <distribution>repo</distribution>
+103-        </license>
+--
+378-            <id>m2.java.net</id>
+379-            <name>Java.net Maven 2 Repository</name>
+380:            <url>http://download.java.net/maven/2</url>
+381-            <layout>default</layout>
+382-        </repository>
+--
+384-            <id>repository.jboss.org</id>
+385-            <name>jboss Maven Repository</name>
+386:            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+387-            <layout>default</layout>
+388-        </repository>
+--
+390-            <id>glassfish-repository</id>
+391-            <name>Repository for Glassfish</name>
+392:            <url>http://maven.glassfish.org/content/groups/glassfish</url>
+393-        </repository>
+394-    </repositories>
+--
+398-            <id>m2.java.net</id>
+399-            <name>Java.net Maven 2 Repository</name>
+400:            <url>http://download.java.net/maven/2</url>
+401-            <layout>default</layout>
+402-        </pluginRepository>
+
+ succeeded in 197ms:
+44-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+45-    <modelVersion>4.0.0</modelVersion>
+46:    <parent>
+47-        <groupId>com.sun.jersey</groupId>
+48:        <artifactId>jersey-project</artifactId>
+49:        <version>1.10-SNAPSHOT</version>
+50-    </parent>
+51:    <artifactId>jersey-server</artifactId>
+52-    <packaging>bundle</packaging>
+53:    <name>jersey-server</name>
+54-    <dependencies>
+55-        <dependency>
+56-            <groupId>asm</groupId>
+57:            <artifactId>asm</artifactId>
+58:            <version>3.1</version>
+59-        </dependency>
+60-        <dependency>
+61-            <groupId>javax.persistence</groupId>
+62:            <artifactId>persistence-api</artifactId>
+63:            <version>1.0</version>
+64-            <scope>provided</scope>
+65-        </dependency>
+66-        <dependency>
+67-            <groupId>javax.mail</groupId>
+68:            <artifactId>mail</artifactId>
+69:            <version>1.4</version>
+70-            <scope>provided</scope>
+71-        </dependency>
+72-        <dependency>
+73-            <groupId>javax.xml.bind</groupId>
+74:            <artifactId>jaxb-api</artifactId>
+75:            <version>2.1</version>
+76-            <scope>provided</scope>
+77-        </dependency>
+78-        <dependency>
+79-            <groupId>javax.servlet</groupId>
+80:            <artifactId>javax.servlet-api</artifactId>
+81:            <version>3.0.1</version>
+82-            <scope>provided</scope>
+83-        </dependency>
+84-        <dependency>
+85-            <groupId>javax.servlet</groupId>
+86:            <artifactId>jsp-api</artifactId>
+87:            <version>2.0</version>
+88-            <scope>provided</scope>
+89-        </dependency>
+90-        <dependency>
+91-            <groupId>org.glassfish</groupId>
+92:            <artifactId>javax.ejb</artifactId>
+93:            <version>3.1</version>
+94-            <scope>provided</scope>
+95-        </dependency>
+96-        <dependency>
+97-            <groupId>org.jboss.weld</groupId>
+98:            <artifactId>weld-osgi-bundle</artifactId>
+99:            <version>1.1.0.Final</version>
+100-            <scope>provided</scope>
+101-        </dependency>
+102-        <dependency>
+103-            <groupId>ant</groupId>
+
+ succeeded in 234ms:
+200 application/java-archive
+https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9.jar -> 200 application/java-archive
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javaee/jersey-1.x-old.git | rg \"1\\.9|1_9|1\\.8|1\\.10\" | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/javaee/jersey-1.x-old.git | head -80' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/javaee/jersey-1.x-old' | rg '\"html_url\"|\"description\"|\"default_branch\"|\"archived\"'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 291ms:
+ succeeded in 250ms:
+    "html_url": "https://github.com/javaee",
+  "html_url": "https://github.com/javaee/jersey-1.x-old",
+  "description": "Read-only mirror of Jersey 1.x svn repository from jersey.java.net",
+  "archived": true,
+  "default_branch": "master",
+    "html_url": "https://github.com/javaee",
+
+ succeeded in 312ms:
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/apache-httpclient4
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/apache-httpclient4@1038
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/apache-httpclient4@1041
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/apache-httpclient4@1048
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/apache-httpclient4@1049
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/apache-httpclient4@4245
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/cdi-improved
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/client-extension
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/client-extension@1038
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/client-extension@1041
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/client-extension@1048
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/client-extension@1049
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/client-extension@2044
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/comet-integration
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/component
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/freemarker
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/functional-tests
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/gdavison-wadl-grammar-generation
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/gfv3-integration
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/github/master
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/hypermedia-action
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/hypermedia-extensions
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jaxrs2-client-api
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jaxrs2-client-api@1038
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jaxrs2-client-api@1041
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jaxrs2-client-api@1048
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jaxrs2-client-api@1049
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jaxrs2-client-api@4831
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-0.9
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.1.4-ea-SNAPSHOT
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.1.4-ea-SNAPSHOT@1038
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.1.4-ea-SNAPSHOT@1041
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.1.4-ea-SNAPSHOT@1048
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.1.4-ea-SNAPSHOT@1049
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.1.4-ea-SNAPSHOT@2794
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.1.4.1-SNAPSHOT
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.1.5.1-SNAPSHOT
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.1.5.2
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.2-SNAPSHOT
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.4-wls
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.4.1-SNAPSHOT
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.9-ea05
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1.9.1
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1042
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1042@1038
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1042@1041
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1042@1048
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1042@1049
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-1042@5698
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-954
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-954@1038
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-954@1041
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-954@1048
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-954@1049
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-954@5657
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-client-aix
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-gf-osgi-resource-locator
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-gf-osgi-resource-locator@1038
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-gf-osgi-resource-locator@1041
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-gf-osgi-resource-locator@1048
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-gf-osgi-resource-locator@1049
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-gf-osgi-resource-locator@3868
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-glassfish-16199-fix
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-glassfish-16199-fix@1038
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-glassfish-16199-fix@1041
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-glassfish-16199-fix@1048
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-glassfish-16199-fix@1049
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-glassfish-16199-fix@5115
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-grizzly2-modularization
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-grizzly2-modularization@1038
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-grizzly2-modularization@1041
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-grizzly2-modularization@1048
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-grizzly2-modularization@1049
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-grizzly2-modularization@5375
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-hk2-playground
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-jackson-integration
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-jackson-integration@1038
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-jackson-integration@1041
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-jackson-integration@1048
+3dc0ce9be7a0f617d5eaf1c686ff8b4202f2a39d	refs/heads/jersey-jackson-integration@1049
+
+exec
+/usr/bin/bash -lc "jar xf /tmp/jersey-server-1.9.jar META-INF/MANIFEST.MF META-INF/maven/com.sun.jersey/jersey-server/pom.properties META-INF/maven/com.sun.jersey/jersey-server/pom.xml && sed -n '1,180p' META-INF/MANIFEST.MF && printf '\\n--- pom.properties ---\\n' && sed -n '1,80p' META-INF/maven/com.sun.jersey/jersey-server/pom.properties && rm -rf META-INF" in /tmp
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-project/1.9/ | rg 'source|test|javadoc|site|zip|tar|jar|pom'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9-sources.jar -o /tmp/jersey-server-1.9-sources.jar && jar tf /tmp/jersey-server-1.9-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 212ms:
+<a href="jersey-project-1.9.pom" title="jersey-project-1.9.pom">jersey-project-1.9.pom</a>                            2011-09-02 11:16     17677      
+<a href="jersey-project-1.9.pom.asc" title="jersey-project-1.9.pom.asc">jersey-project-1.9.pom.asc</a>                        2011-09-02 11:16       189      
+<a href="jersey-project-1.9.pom.asc.md5" title="jersey-project-1.9.pom.asc.md5">jersey-project-1.9.pom.asc.md5</a>                    2011-09-02 11:16        32      
+<a href="jersey-project-1.9.pom.asc.sha1" title="jersey-project-1.9.pom.asc.sha1">jersey-project-1.9.pom.asc.sha1</a>                   2011-09-02 11:16        40      
+<a href="jersey-project-1.9.pom.md5" title="jersey-project-1.9.pom.md5">jersey-project-1.9.pom.md5</a>                        2011-09-02 11:16        32      
+<a href="jersey-project-1.9.pom.sha1" title="jersey-project-1.9.pom.sha1">jersey-project-1.9.pom.sha1</a>                       2011-09-02 11:16        40      
+
+ succeeded in 248ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/sun/
+com/sun/jersey/
+com/sun/jersey/api/
+com/sun/jersey/api/container/
+com/sun/jersey/api/container/filter/
+com/sun/jersey/api/container/httpserver/
+com/sun/jersey/api/core/
+com/sun/jersey/api/model/
+com/sun/jersey/api/wadl/
+com/sun/jersey/api/wadl/config/
+com/sun/jersey/api/view/
+com/sun/jersey/server/
+com/sun/jersey/server/impl/
+com/sun/jersey/server/impl/monitoring/
+com/sun/jersey/server/impl/container/
+com/sun/jersey/server/impl/container/filter/
+com/sun/jersey/server/impl/container/httpserver/
+com/sun/jersey/server/impl/container/servlet/
+com/sun/jersey/server/impl/cdi/
+com/sun/jersey/server/impl/uri/
+com/sun/jersey/server/impl/uri/rules/
+com/sun/jersey/server/impl/uri/rules/automata/
+com/sun/jersey/server/impl/model/
+com/sun/jersey/server/impl/model/parameter/
+com/sun/jersey/server/impl/model/parameter/multivalued/
+com/sun/jersey/server/impl/model/method/
+com/sun/jersey/server/impl/model/method/dispatch/
+com/sun/jersey/server/impl/managedbeans/
+com/sun/jersey/server/impl/wadl/
+com/sun/jersey/server/impl/application/
+com/sun/jersey/server/impl/provider/
+com/sun/jersey/server/impl/template/
+com/sun/jersey/server/impl/component/
+com/sun/jersey/server/impl/modelapi/
+com/sun/jersey/server/impl/modelapi/validation/
+com/sun/jersey/server/impl/modelapi/annotation/
+com/sun/jersey/server/impl/resource/
+com/sun/jersey/server/impl/inject/
+com/sun/jersey/server/impl/ejb/
+com/sun/jersey/server/probes/
+com/sun/jersey/server/wadl/
+com/sun/jersey/server/wadl/generators/
+com/sun/jersey/server/wadl/generators/resourcedoc/
+com/sun/jersey/server/wadl/generators/resourcedoc/model/
+com/sun/jersey/server/wadl/generators/resourcedoc/xhtml/
+com/sun/jersey/server/spi/
+com/sun/jersey/server/spi/component/
+com/sun/jersey/server/osgi/
+com/sun/jersey/spi/
+com/sun/jersey/spi/monitoring/
+com/sun/jersey/spi/container/
+com/sun/jersey/spi/container/servlet/
+com/sun/jersey/spi/uri/
+com/sun/jersey/spi/uri/rules/
+com/sun/jersey/spi/dispatch/
+com/sun/jersey/spi/scanning/
+com/sun/jersey/spi/template/
+com/sun/jersey/spi/resource/
+META-INF/services/
+com/sun/research/
+com/sun/research/ws/
+com/sun/research/ws/wadl/
+com/sun/jersey/api/container/MappableContainerException.java
+com/sun/jersey/api/container/filter/ResourceDebuggingFilterFactory.java
+com/sun/jersey/api/container/filter/UriConnegFilter.java
+com/sun/jersey/api/container/filter/package-info.java
+com/sun/jersey/api/container/filter/RolesAllowedResourceFilterFactory.java
+com/sun/jersey/api/container/filter/CsrfProtectionFilter.java
+com/sun/jersey/api/container/filter/GZIPContentEncodingFilter.java
+com/sun/jersey/api/container/filter/PostReplaceFilter.java
+com/sun/jersey/api/container/filter/LoggingFilter.java
+com/sun/jersey/api/container/ContainerException.java
+com/sun/jersey/api/container/package-info.java
+com/sun/jersey/api/container/httpserver/HttpServerFactory.java
+com/sun/jersey/api/container/httpserver/package-info.java
+com/sun/jersey/api/container/ContainerFactory.java
+com/sun/jersey/api/core/ClassNamesResourceConfig.java
+
+ succeeded in 419ms:
+Manifest-Version: 1.0
+Export-Package: com.sun.jersey.api.container.filter;uses:="com.sun.jer
+ sey.api.model,javax.ws.rs,com.sun.jersey.api.container,com.sun.jersey
+ .core.util,javax.annotation.security,com.sun.jersey.spi.container,com
+ .sun.jersey.api.core,javax.ws.rs.core",com.sun.jersey.spi.scanning;us
+ es:="com.sun.jersey.core.spi.scanning,javax.servlet,javax.ws.rs,org.o
+ bjectweb.asm,com.sun.jersey.core.util,com.sun.jersey.core.reflection,
+ javax.ws.rs.ext",com.sun.jersey.server.impl.wadl;uses:="com.sun.jerse
+ y.api.model,com.sun.research.ws.wadl,javax.ws.rs,com.sun.jersey.core.
+ spi.factory,com.sun.jersey.server.impl.model.method,com.sun.jersey.co
+ re.header,com.sun.jersey.api.wadl.config,com.sun.jersey.server.impl.u
+ ri,com.sun.jersey.server.wadl,com.sun.jersey.api.core,com.sun.jersey.
+ spi.inject,com.sun.jersey.spi.resource,javax.xml.bind,com.sun.jersey.
+ api.uri,javax.ws.rs.core",com.sun.jersey.server.impl.model.parameter.
+ multivalued;uses:="com.sun.jersey.api.model,com.sun.jersey.core.spi.c
+ omponent,javax.ws.rs,com.sun.jersey.impl,com.sun.jersey.api.container
+ ,javax.xml.parsers,com.sun.jersey.core.reflection,javax.ws.rs.ext,org
+ .xml.sax,com.sun.jersey.core.header,javax.xml.transform,javax.xml.bin
+ d.annotation,com.sun.jersey.spi,com.sun.jersey.spi.inject,javax.xml.t
+ ransform.sax,javax.xml.bind,javax.ws.rs.core",com.sun.jersey.server.i
+ mpl.model.parameter;uses:="com.sun.jersey.api.model,com.sun.jersey.co
+ re.spi.component,javax.ws.rs,com.sun.jersey.server.impl.model.paramet
+ er.multivalued,com.sun.jersey.api.representation,com.sun.jersey.core.
+ header,com.sun.jersey.api,com.sun.jersey.api.core,com.sun.jersey.spi.
+ inject,com.sun.jersey.server.impl.inject,javax.ws.rs.core",com.sun.je
+ rsey.server.impl.cdi;uses:="javax.annotation,javax.ws.rs,org.objectwe
+ b.asm,javax.enterprise.util,com.sun.jersey.core.util,javax.enterprise
+ .inject,com.sun.jersey.spi,com.sun.jersey.api.core,com.sun.jersey.spi
+ .container,com.sun.jersey.spi.inject,com.sun.jersey.server.impl,javax
+ .ws.rs.core,javax.naming,com.sun.jersey.api.model,com.sun.jersey.core
+ .spi.component,javax.enterprise.inject.spi,javax.enterprise.event,com
+ .sun.jersey.core.spi.component.ioc,javax.ws.rs.ext,javax.enterprise.c
+ ontext.spi,javax.enterprise.context,com.sun.jersey.server.impl.inject
+ ,javax.inject",com.sun.jersey.server.impl.container.servlet;uses:="ja
+ vax.ws.rs,com.sun.jersey.server.impl.application,javax.servlet,com.su
+ n.jersey.spi.template,com.sun.jersey.spi.container,com.sun.jersey.api
+ .core,javax.servlet.jsp.tagext,com.sun.jersey.spi.inject,com.sun.jers
+ ey.server.impl,javax.persistence,javax.ws.rs.core,com.sun.jersey.spi.
+ container.servlet,com.sun.jersey.api.model,com.sun.jersey.core.spi.co
+ mponent,com.sun.jersey.server.spi.component,com.sun.jersey.api.contai
+ ner,com.sun.jersey.core.spi.component.ioc,com.sun.jersey.core.reflect
+ ion,javax.ws.rs.ext,javax.servlet.jsp,javax.servlet.annotation,com.su
+ n.jersey.api.view,com.sun.jersey.server.impl.inject,javax.servlet.htt
+ p",com.sun.jersey.server.impl.resource;uses:="com.sun.jersey.api.mode
+ l,com.sun.jersey.core.spi.component,javax.ws.rs,com.sun.jersey.server
+ .spi.component,com.sun.jersey.api.container,com.sun.jersey.core.spi.c
+ omponent.ioc,com.sun.jersey.api.core,com.sun.jersey.server.impl.injec
+ t,javax.ws.rs.core",com.sun.jersey.server.impl.modelapi.annotation;us
+ es:="com.sun.jersey.api.model,com.sun.jersey.core.header,javax.ws.rs,
+ com.sun.jersey.impl,com.sun.jersey.core.reflection,javax.ws.rs.core",
+ com.sun.jersey.server.impl.container;uses:="com.sun.jersey.server.imp
+ l.application,com.sun.jersey.api.container,com.sun.jersey.spi.contain
+ er",com.sun.jersey.spi.template;uses:="com.sun.jersey.api.view,com.su
+ n.jersey.api.container,javax.ws.rs.core",com.sun.jersey.server.impl.m
+ odel.method.dispatch;uses:="com.sun.jersey.api.model,javax.ws.rs,com.
+ sun.jersey.core.spi.component,com.sun.jersey.server.impl.model.parame
+ ter.multivalued,com.sun.jersey.core.spi.factory,com.sun.jersey.api.co
+ ntainer,com.sun.jersey.api.representation,com.sun.jersey.spi.dispatch
+ ,com.sun.jersey.api,com.sun.jersey.api.core,com.sun.jersey.spi.contai
+ ner,com.sun.jersey.server.impl.inject,com.sun.jersey.spi.inject,javax
+ .ws.rs.core",com.sun.jersey.spi.container;uses:="javax.ws.rs,com.sun.
+ jersey.impl,com.sun.jersey.server.impl.application,com.sun.jersey.cor
+ e.util,com.sun.jersey.spi.dispatch,com.sun.jersey.core.header,com.sun
+ .jersey.core.header.reader,com.sun.jersey.api.core,com.sun.jersey.spi
+ ,com.sun.jersey.spi.inject,com.sun.jersey.server.impl,javax.ws.rs.cor
+ e,com.sun.jersey.api.model,com.sun.jersey.core.spi.component,com.sun.
+ jersey.core.spi.factory,com.sun.jersey.api.container,com.sun.jersey.c
+ ore.spi.component.ioc,com.sun.jersey.api.representation,com.sun.jerse
+ y.core.reflection,javax.ws.rs.ext,com.sun.jersey.server.impl.model,co
+ m.sun.jersey.spi.monitoring,com.sun.jersey.api,com.sun.jersey.spi.ser
+ vice,com.sun.jersey.server.impl.inject,com.sun.jersey.api.uri",com.su
+ n.jersey.spi.resource;uses:="com.sun.jersey.server.impl.resource,com.
+ sun.jersey.server.spi.component",com.sun.jersey.server.wadl.generator
+ s.resourcedoc;uses:="com.sun.jersey.api.model,com.sun.jersey.server.w
+ adl.generators.resourcedoc.xhtml,com.sun.research.ws.wadl,javax.xml.n
+ amespace,com.sun.jersey.server.wadl.generators.resourcedoc.model,com.
+ sun.jersey.server.wadl,javax.xml.bind,javax.ws.rs.core",com.sun.jerse
+ y.spi.container.servlet;uses:="com.sun.jersey.server.impl.application
+ ,com.sun.jersey.core.util,com.sun.jersey.server.impl.cdi,javax.servle
+ t,com.sun.jersey.core.header,com.sun.jersey.server.impl.container.ser
+ vlet,com.sun.jersey.server.impl.monitoring,com.sun.jersey.api.core,co
+ m.sun.jersey.spi.container,com.sun.jersey.spi.inject,com.sun.jersey.s
+ erver.impl,javax.ws.rs.core,com.sun.jersey.server.impl.managedbeans,j
+ avax.naming,com.sun.jersey.server.spi.component,com.sun.jersey.server
+ .probes,com.sun.jersey.api.container,com.sun.jersey.core.reflection,c
+ om.sun.jersey.api.representation,com.sun.jersey.server.impl.ejb,com.s
+ un.jersey.spi.service,javax.servlet.http,com.sun.jersey.api.uri",com.
+ sun.jersey.server.impl.container.httpserver;uses:="com.sun.jersey.cor
+ e.header,com.sun.net.httpserver,com.sun.jersey.api.core,com.sun.jerse
+ y.api.container,com.sun.jersey.spi.container,com.sun.jersey.core.util
+ ,javax.ws.rs.core",com.sun.jersey.server.impl.managedbeans;uses:="jav
+ ax.naming,javax.annotation,com.sun.jersey.core.spi.component,com.sun.
+ jersey.api.core,com.sun.jersey.api.container,com.sun.jersey.core.spi.
+ component.ioc,com.sun.jersey.server.impl",com.sun.jersey.api.model;us
+ es:="com.sun.jersey.spi.container",com.sun.research.ws.wadl;uses:="ja
+ vax.xml.bind.annotation,javax.xml.bind.annotation.adapters,javax.xml.
+ namespace",com.sun.jersey.api.container;uses:="com.sun.jersey.spi.con
+ tainer,com.sun.jersey.api.core,com.sun.jersey.spi.service,com.sun.jer
+ sey.core.spi.component.ioc",com.sun.jersey.server.probes,com.sun.jers
+ ey.server.impl.modelapi.validation;uses:="com.sun.jersey.api.model,ja
+ vax.ws.rs,com.sun.jersey.impl,com.sun.jersey.api.core,com.sun.jersey.
+ core.reflection,javax.ws.rs.core",com.sun.jersey.api.container.httpse
+ rver;uses:="com.sun.net.httpserver,com.sun.jersey.api.container,com.s
+ un.jersey.api.core,com.sun.jersey.core.spi.component.ioc",com.sun.jer
+ sey.api.wadl.config;uses:="com.sun.jersey.server.wadl,com.sun.jersey.
+ api.core,com.sun.jersey.server.wadl.generators,com.sun.jersey.core.re
+ flection",com.sun.jersey.server.impl.uri;uses:="javax.ws.rs.core,com.
+ sun.jersey.api.uri",com.sun.jersey.spi.monitoring;uses:="javax.ws.rs.
+ ext",com.sun.jersey.api;uses:="com.sun.jersey.core.header,javax.ws.rs
+ ,com.sun.jersey.core.spi.factory,javax.ws.rs.core",com.sun.jersey.ser
+ ver.impl.application;uses:="com.sun.jersey.api.container.filter,javax
+ .ws.rs,com.sun.jersey.server.impl.wadl,com.sun.jersey.server.impl.mod
+ el.parameter.multivalued,com.sun.jersey.server.impl.model.parameter,c
+ om.sun.jersey.core.header,com.sun.jersey.server.impl.resource,com.sun
+ .jersey.spi.template,com.sun.jersey.server.impl.modelapi.annotation,c
+ om.sun.jersey.spi.container,com.sun.jersey.spi.inject,com.sun.jersey.
+ api.model,com.sun.jersey.core.spi.factory,com.sun.jersey.api.containe
+ r,javax.ws.rs.ext,com.sun.jersey.server.impl.modelapi.validation,com.
+ sun.jersey.server.impl.uri,com.sun.jersey.spi.monitoring,com.sun.jers
+ ey.api,com.sun.jersey.spi.service,com.sun.jersey.impl,com.sun.jersey.
+ core.util,com.sun.jersey.server.impl.component,com.sun.jersey.spi.dis
+ patch,com.sun.jersey.server.impl.template,com.sun.jersey.spi.uri.rule
+ s,com.sun.jersey.server.impl.monitoring,com.sun.jersey.api.core,com.s
+ un.jersey.spi,com.sun.jersey.server.impl,javax.ws.rs.core,com.sun.jer
+ sey.server.impl.container.filter,com.sun.jersey.core.spi.component,co
+ m.sun.jersey.server.impl.uri.rules,com.sun.jersey.server.spi.componen
+ t,com.sun.jersey.core.reflection,com.sun.jersey.core.spi.component.io
+ c,com.sun.jersey.server.impl.model,com.sun.jersey.server.impl.inject,
+ com.sun.jersey.api.uri",com.sun.jersey.server.impl.component;uses:="c
+ om.sun.jersey.api.model,com.sun.jersey.core.spi.component,com.sun.jer
+ sey.server.spi.component,com.sun.jersey.api.container,com.sun.jersey.
+ core.spi.component.ioc,com.sun.jersey.core.reflection,com.sun.jersey.
+ server.impl.resource,com.sun.jersey.api.core,com.sun.jersey.server.im
+ pl.inject,com.sun.jersey.spi.inject",com.sun.jersey.spi.dispatch;uses
+ :="com.sun.jersey.api.core",com.sun.jersey.server.impl.provider;uses:
+ ="com.sun.jersey.core.spi.factory,com.sun.jersey.api.core,com.sun.jer
+ sey.api.container,javax.ws.rs.core",com.sun.jersey.server.impl.templa
+ te;uses:="com.sun.jersey.core.spi.component,javax.ws.rs,com.sun.jerse
+ y.server.impl.uri.rules,com.sun.jersey.server.probes,com.sun.jersey.c
+ ore.reflection,javax.ws.rs.ext,com.sun.jersey.server.impl.model.metho
+ d,com.sun.jersey.core.header,com.sun.jersey.spi.uri.rules,com.sun.jer
+ sey.api.view,com.sun.jersey.spi.template,com.sun.jersey.api.core,com.
+ sun.jersey.spi.container,com.sun.jersey.spi.inject,javax.ws.rs.core,c
+ om.sun.jersey.api.uri",com.sun.jersey.server.osgi;uses:="com.sun.jers
+ ey.server.impl.provider,org.osgi.framework,javax.ws.rs.ext",com.sun.j
+ ersey.server.wadl.generators.resourcedoc.model;uses:="javax.xml.bind.
+ annotation,javax.xml.namespace",com.sun.jersey.server.impl.monitoring
+ ;uses:="com.sun.jersey.core.spi.component,com.sun.jersey.spi.monitori
+ ng,com.sun.jersey.spi.service,javax.ws.rs.ext",com.sun.jersey.server.
+ wadl;uses:="com.sun.jersey.api.model,com.sun.research.ws.wadl,javax.w
+ s.rs,com.sun.jersey.server.wadl.generators,javax.xml.namespace,com.su
+ n.jersey.server.impl.modelapi.annotation,javax.xml.bind,com.sun.jerse
+ y.server.impl,javax.ws.rs.core",com.sun.jersey.spi.uri.rules;uses:="c
+ om.sun.jersey.api.model,com.sun.jersey.spi.container,com.sun.jersey.a
+ pi.core,com.sun.jersey.api.uri",com.sun.jersey.api.core;uses:="com.su
+ n.jersey.api.model,com.sun.jersey.spi.scanning,javax.ws.rs,com.sun.je
+ rsey.server.impl.application,com.sun.jersey.api.container,com.sun.jer
+ sey.core.util,com.sun.jersey.api.representation,javax.ws.rs.ext,com.s
+ un.jersey.core.spi.scanning,javax.servlet,com.sun.jersey.core.header,
+ com.sun.jersey.spi.container,com.sun.jersey.api.uri,javax.ws.rs.core"
+ ,com.sun.jersey.api.wadl;uses:="com.sun.jersey.api.model,com.sun.rese
+ arch.ws.wadl,org.apache.tools.ant,com.sun.jersey.server.wadl,com.sun.
+ jersey.server.impl.modelapi.annotation,org.apache.tools.ant.types,com
+ .sun.jersey.api.core,javax.xml.bind",com.sun.jersey.server.impl;uses:
+ ="com.sun.jersey.server.impl.model,javax.naming,com.sun.jersey.core.h
+ eader,com.sun.jersey.spi.container,com.sun.jersey.api.core,javax.ws.r
+ s.core",com.sun.jersey.server.wadl.generators.resourcedoc.xhtml;uses:
+ ="javax.xml.bind.annotation,javax.xml.bind,javax.xml.namespace",com.s
+ un.jersey.server.impl.container.filter;uses:="com.sun.jersey.api.mode
+ l,javax.ws.rs,com.sun.jersey.core.spi.component,com.sun.jersey.server
+ .impl.uri,com.sun.jersey.api.core,com.sun.jersey.spi.container,javax.
+ ws.rs.core",com.sun.jersey.server.impl.uri.rules;uses:="com.sun.jerse
+ y.api.model,javax.ws.rs,com.sun.jersey.api.container,com.sun.jersey.s
+ erver.probes,com.sun.jersey.core.reflection,com.sun.jersey.server.imp
+ l.model.method,com.sun.jersey.spi.dispatch,com.sun.jersey.core.header
+ ,com.sun.jersey.server.impl.uri.rules.automata,com.sun.jersey.server.
+ impl.template,com.sun.jersey.spi.monitoring,com.sun.jersey.spi.uri.ru
+ les,com.sun.jersey.api,com.sun.jersey.spi.container,com.sun.jersey.ap
+ i.core,com.sun.jersey.server.impl.inject,com.sun.jersey.api.uri,javax
+ .ws.rs.core",com.sun.jersey.server.spi.component;uses:="com.sun.jerse
+
+--- pom.properties ---
+#Generated by org.apache.felix.bundleplugin
+#Fri Sep 02 11:17:17 UTC 2011
+version=1.9
+groupId=com.sun.jersey
+artifactId=jersey-server
+
+codex
+The artifact JAR contains JVM `.class` files, so it remains a Native Image metadata target and I won’t add `not-for-native-image`. I’m going to write Maven source/javadoc URLs and the archived `post-$version$` Jersey 1.x test path, which resolves for `1.9`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+diff --git a/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json b/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+index afe6c59507f5f7f6d533ae81db271328d9076b2b..5d13f880e5e8424d24b70c1f9b759daefbfef016
+--- a/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
++++ b/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jersey:jersey-server:1.9"
++  "coordinates" : "com.sun.jersey:jersey-server:1.9",
++  "repository-url" : "https://github.com/javaee/jersey-1.x",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/post-$version$/jersey-server/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-javadoc.jar",
++  "description" : "Jersey Server is the server-side runtime module of Jersey 1.x, the JAX-RS (JSR 311) reference implementation for building RESTful web services. It provides resource configuration, request dispatch, servlet/container integration, filters, WADL support, and server-side extension points for Java REST applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json b/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+index afe6c59507f5f7f6d533ae81db271328d9076b2b..5d13f880e5e8424d24b70c1f9b759daefbfef016
+--- a/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
++++ b/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jersey:jersey-server:1.9"
++  "coordinates" : "com.sun.jersey:jersey-server:1.9",
++  "repository-url" : "https://github.com/javaee/jersey-1.x",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/post-$version$/jersey-server/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-javadoc.jar",
++  "description" : "Jersey Server is the server-side runtime module of Jersey 1.x, the JAX-RS (JSR 311) reference implementation for building RESTful web services. It provides resource configuration, request dispatch, servlet/container integration, filters, WADL support, and server-side extension points for Java REST applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 0ms:
+{
+  "coordinates": "com.sun.jersey:jersey-server:1.9",
+  "repository-url": "https://github.com/javaee/jersey-1.x",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-sources.jar",
+  "test-code-url": "https://github.com/javaee/jersey-1.x/tree/post-$version$/jersey-server/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-javadoc.jar",
+  "description": "Jersey Server is the server-side runtime module of Jersey 1.x, the JAX-RS (JSR 311) reference implementation for building RESTful web services. It provides resource configuration, request dispatch, servlet/container integration, filters, WADL support, and server-side extension points for Java REST applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9-sources.jar \\
+  https://github.com/javaee/jersey-1.x/tree/post-1.9/jersey-server/src/test/java \\
+  https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9-javadoc.jar; do printf '%s -> ' \""'$u"; curl -fsSIL -o /dev/null -w '"'%{http_code}\\n' \""'$u" || true; done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+diff --git a/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json b/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+index afe6c59507f5f7f6d533ae81db271328d9076b2b..5d13f880e5e8424d24b70c1f9b759daefbfef016
+--- a/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
++++ b/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jersey:jersey-server:1.9"
++  "coordinates" : "com.sun.jersey:jersey-server:1.9",
++  "repository-url" : "https://github.com/javaee/jersey-1.x",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/post-$version$/jersey-server/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-javadoc.jar",
++  "description" : "Jersey Server is the server-side runtime module of Jersey 1.x, the JAX-RS (JSR 311) reference implementation for building RESTful web services. It provides resource configuration, request dispatch, servlet/container integration, filters, WADL support, and server-side extension points for Java REST applications."
+ }
+
+ succeeded in 613ms:
+200
+https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9-javadoc.jar -> 200
+
+web search: 
+web search: https://github.com/javaee/jersey-1.x/tree/post-1.9/jersey-server/src/test/java
+web search: 
+web search: repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/1.9/jersey-server-1.9-sources.jar
+web search: 
+web search: "Central Repository: com/sun/jersey/jersey-server/1.9" "javadoc.jar" "sources.jar"
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json && git ls-files --error-unmatch build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json >/dev/null 2>&1; printf 'tracked=%s\\n' \""'$?"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c
+diff --git a/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json b/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+index afe6c59507f5f7f6d533ae81db271328d9076b2b..5d13f880e5e8424d24b70c1f9b759daefbfef016
+--- a/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
++++ b/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jersey:jersey-server:1.9"
++  "coordinates" : "com.sun.jersey:jersey-server:1.9",
++  "repository-url" : "https://github.com/javaee/jersey-1.x",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/post-$version$/jersey-server/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-javadoc.jar",
++  "description" : "Jersey Server is the server-side runtime module of Jersey 1.x, the JAX-RS (JSR 311) reference implementation for building RESTful web services. It provides resource configuration, request dispatch, servlet/container integration, filters, WADL support, and server-side extension points for Java REST applications."
+ }
+
+ succeeded in 400ms:
+tracked=1
+
+codex
+Updated [com.sun.jersey-jersey-server-1.9.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json) with repository, source, test, documentation, and two-sentence description metadata.
+
+I left `language` absent and did not set `not-for-native-image` because this is a JVM JAR with `.class` files. Verified the JSON with `jq` and confirmed the three `$version$ -> 1.9` URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json b/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+index afe6c59507f5f7f6d533ae81db271328d9076b2b..5d13f880e5e8424d24b70c1f9b759daefbfef016
+--- a/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
++++ b/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jersey:jersey-server:1.9"
++  "coordinates" : "com.sun.jersey:jersey-server:1.9",
++  "repository-url" : "https://github.com/javaee/jersey-1.x",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/post-$version$/jersey-server/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-server/$version$/jersey-server-$version$-javadoc.jar",
++  "description" : "Jersey Server is the server-side runtime module of Jersey 1.x, the JAX-RS (JSR 311) reference implementation for building RESTful web services. It provides resource configuration, request dispatch, servlet/container integration, filters, WADL support, and server-side extension points for Java REST applications."
+ }
+
+tokens used
+77,361
+Updated [com.sun.jersey-jersey-server-1.9.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c/build/discovered-artifact-metadata/com.sun.jersey-jersey-server-1.9.json) with repository, source, test, documentation, and two-sentence description metadata.
+
+I left `language` absent and did not set `not-for-native-image` because this is a JVM JAR with `.class` files. Verified the JSON with `jq` and confirmed the three `$version$ -> 1.9` URLs return HTTP 200.
+Ran agent for com.sun.jersey:jersey-server:1.9 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c/build/agent-artifact-discovery-logs/com.sun.jersey-jersey-server-1.9.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2927-97bae92c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 43s
+9 actionable tasks: 9 executed
