@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test
 import org.specs2.control.Operation
 import org.specs2.control.runOperation
 import org.specs2.reflect.Classes
+import org.specs2.time.SimpleTimer
 
 class ClassesTest {
   private val loader: ClassLoader = classOf[ClassesTest].getClassLoader
@@ -42,6 +43,17 @@ class ClassesTest {
   }
 
   @Test
+  def createInstanceEitherUsesSpecs2LibraryClassConstructor(): Unit = {
+    val created: Either[Throwable, SimpleTimer] =
+      runSuccessfully(Classes.createInstanceEither[SimpleTimer](classOf[SimpleTimer].getName, loader))
+
+    created match {
+      case Right(instance) => assertThat(instance).isInstanceOf(classOf[SimpleTimer])
+      case Left(error)     => fail(s"Expected specs2 library instance creation to succeed, but got $error")
+    }
+  }
+
+  @Test
   def createInstanceEitherUsesAvailableConstructor(): Unit = {
     val created: Either[Throwable, ZeroArgumentTarget] =
       runSuccessfully(Classes.createInstanceEither[ZeroArgumentTarget](classOf[ZeroArgumentTarget].getName, loader))
@@ -49,6 +61,48 @@ class ClassesTest {
     created match {
       case Right(instance) => assertThat(instance.message).isEqualTo("created with no arguments")
       case Left(error)     => fail(s"Expected instance creation to succeed, but got $error")
+    }
+  }
+
+  @Test
+  def createInstanceEitherFailsOnlyAfterInspectingLibraryTraitConstructors(): Unit = {
+    val result: Either[?, Either[Throwable, org.specs2.reflect.Classes]] =
+      runOperation(
+        Classes.createInstanceEither[org.specs2.reflect.Classes](
+          classOf[org.specs2.reflect.Classes].getName,
+          loader
+        )
+      )
+
+    assertThat(result.isLeft).isTrue()
+  }
+
+  @Test
+  def createInstanceEitherReturnsSpecs2SingletonModuleInstance(): Unit = {
+    val created: Either[Throwable, AnyRef] =
+      runSuccessfully(Classes.createInstanceEither[AnyRef](Classes.getClass.getName, loader))
+
+    created match {
+      case Right(instance) => assertThat(instance).isSameAs(Classes)
+      case Left(error)     => fail(s"Expected specs2 Classes singleton creation to succeed, but got $error")
+    }
+  }
+
+  @Test
+  def createInstanceEitherUsesProvidedDefaultConstructorParameter(): Unit = {
+    val dependency: ProvidedDependency = new ProvidedDependency("provided through createInstanceEither")
+    val created: Either[Throwable, RequiresProvidedParameter] =
+      runSuccessfully(
+        Classes.createInstanceEither[RequiresProvidedParameter](
+          classOf[RequiresProvidedParameter].getName,
+          loader,
+          List(dependency)
+        )
+      )
+
+    created match {
+      case Right(instance) => assertThat(instance.dependency).isSameAs(dependency)
+      case Left(error)     => fail(s"Expected parameterized instance creation to succeed, but got $error")
     }
   }
 
