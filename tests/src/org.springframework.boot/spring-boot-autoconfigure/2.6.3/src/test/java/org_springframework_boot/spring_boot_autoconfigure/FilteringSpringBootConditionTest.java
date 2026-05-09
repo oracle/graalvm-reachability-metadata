@@ -6,16 +6,28 @@
  */
 package org_springframework_boot.spring_boot_autoconfigure;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.boot.autoconfigure.AutoConfigurationImportFilter;
+import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ConditionContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.SpringFactoriesLoader;
+import org.springframework.core.type.AnnotationMetadata;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,15 +44,26 @@ public class FilteringSpringBootConditionTest {
 
     @Test
     void conditionalOnBeanTypeResolvesWithNullConditionClassLoader() {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
-            context.setResourceLoader(new NullClassLoaderResourceLoader());
-            context.registerBean(String.class, () -> "available");
-            context.register(ConditionalOnBeanConfiguration.class);
-            context.refresh();
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        beanFactory.registerSingleton("availableString", "available");
+        ConditionContext context = new NullClassLoaderConditionContext(beanFactory);
+        SpringBootCondition condition = loadOnBeanCondition();
+        AnnotationMetadata metadata = AnnotationMetadata.introspect(ConditionalOnBeanConfiguration.class);
 
-            assertThat(context.getBean(String.class)).isEqualTo("available");
-            assertThat(context.getBean(Integer.class)).isEqualTo(42);
-        }
+        ConditionOutcome outcome = condition.getMatchOutcome(context, metadata);
+
+        assertThat(outcome.isMatch()).isTrue();
+    }
+
+    private SpringBootCondition loadOnBeanCondition() {
+        List<AutoConfigurationImportFilter> filters = SpringFactoriesLoader.loadFactories(
+                AutoConfigurationImportFilter.class, getClass().getClassLoader());
+        return filters.stream()
+                .filter((filter) -> filter.getClass().getName()
+                        .equals("org.springframework.boot.autoconfigure.condition.OnBeanCondition"))
+                .map(SpringBootCondition.class::cast)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("OnBeanCondition was not available"));
     }
 
     @Configuration(proxyBeanMethods = false)
@@ -61,6 +84,45 @@ public class FilteringSpringBootConditionTest {
         @Bean
         Integer conditionalIntegerBean() {
             return 42;
+        }
+
+    }
+
+    private static final class NullClassLoaderConditionContext implements ConditionContext {
+
+        private final DefaultListableBeanFactory beanFactory;
+
+        private final Environment environment = new StandardEnvironment();
+
+        private final ResourceLoader resourceLoader = new NullClassLoaderResourceLoader();
+
+        private NullClassLoaderConditionContext(DefaultListableBeanFactory beanFactory) {
+            this.beanFactory = beanFactory;
+        }
+
+        @Override
+        public BeanDefinitionRegistry getRegistry() {
+            return this.beanFactory;
+        }
+
+        @Override
+        public DefaultListableBeanFactory getBeanFactory() {
+            return this.beanFactory;
+        }
+
+        @Override
+        public Environment getEnvironment() {
+            return this.environment;
+        }
+
+        @Override
+        public ResourceLoader getResourceLoader() {
+            return this.resourceLoader;
+        }
+
+        @Override
+        public ClassLoader getClassLoader() {
+            return null;
         }
 
     }
