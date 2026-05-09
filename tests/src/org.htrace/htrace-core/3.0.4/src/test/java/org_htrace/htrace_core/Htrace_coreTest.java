@@ -168,6 +168,46 @@ public class Htrace_coreTest {
     }
 
     @Test
+    void traceInfoSamplerCanAcceptOrRejectRemoteTraceContinuation() throws Exception {
+        POJOSpanReceiver receiver = new POJOSpanReceiver();
+        Trace.setProcessId("process-trace-info-sampler");
+        Trace.addReceiver(receiver);
+        TraceInfo rejectedInfo = new TraceInfo(303L, 404L);
+        TraceInfo acceptedInfo = new TraceInfo(505L, 606L);
+        AtomicReference<TraceInfo> observedInfo = new AtomicReference<>();
+        Sampler<TraceInfo> onlyAcceptedTrace = traceInfo -> {
+            observedInfo.set(traceInfo);
+            return traceInfo.traceId == acceptedInfo.traceId;
+        };
+
+        try {
+            try (TraceScope rejected = Trace.startSpan("rejected-remote-trace", onlyAcceptedTrace, rejectedInfo)) {
+                assertThat(observedInfo).hasValue(rejectedInfo);
+                assertThat(rejected.getSpan()).isNull();
+                assertThat(Trace.isTracing()).isFalse();
+            }
+
+            try (TraceScope accepted = Trace.startSpan("accepted-remote-trace", onlyAcceptedTrace, acceptedInfo)) {
+                Span span = accepted.getSpan();
+                assertThat(observedInfo).hasValue(acceptedInfo);
+                assertThat(span).isNotNull();
+                assertThat(span.getTraceId()).isEqualTo(acceptedInfo.traceId);
+                assertThat(span.getParentId()).isEqualTo(acceptedInfo.spanId);
+                assertThat(Trace.currentSpan()).isSameAs(span);
+            }
+
+            assertThat(receiver.getSpans()).hasSize(1);
+            Span continued = singleSpanWithDescription(receiver.getSpans(), "accepted-remote-trace");
+            assertThat(continued.getTraceId()).isEqualTo(acceptedInfo.traceId);
+            assertThat(continued.getParentId()).isEqualTo(acceptedInfo.spanId);
+            assertThat(continued.getProcessId()).isEqualTo("process-trace-info-sampler");
+        } finally {
+            Trace.removeReceiver(receiver);
+            receiver.close();
+        }
+    }
+
+    @Test
     void traceInfoCanStartDetachedSpanAndContinueItLater() throws Exception {
         POJOSpanReceiver receiver = new POJOSpanReceiver();
         Trace.setProcessId("process-detached-scope");
