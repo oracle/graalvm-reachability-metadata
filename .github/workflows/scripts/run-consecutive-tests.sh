@@ -40,6 +40,32 @@ else
 fi
 echo "Timeout per Gradle invocation: $TIMEOUT"
 
+LIST_COORDINATES_OUTPUT="$(./gradlew listCoordinates -Pcoordinates="$TEST_COORDINATES" 2>&1)"
+LIST_COORDINATES_EXIT_CODE=$?
+if [ "$LIST_COORDINATES_EXIT_CODE" -ne 0 ]; then
+  echo "$LIST_COORDINATES_OUTPUT"
+  echo "FAILED[listCoordinates][n/a][./gradlew listCoordinates -Pcoordinates=\"$TEST_COORDINATES\"]"
+  exit "$LIST_COORDINATES_EXIT_CODE"
+fi
+
+RESOLVED_COORDINATES="$(printf '%s\n' "$LIST_COORDINATES_OUTPUT" | sed -n 's/^coordinates=//p' | tail -n 1)"
+if [ -z "$RESOLVED_COORDINATES" ]; then
+  echo "$DELIMITER"
+  echo " Skipping unresolved coordinates"
+  echo "$DELIMITER"
+  echo "No runnable coordinate matches: $TEST_COORDINATES"
+  echo "SKIPPED[unresolved-coordinates][$TEST_COORDINATES]"
+  exit 0
+fi
+
+if [ "${#VERSIONS[@]}" -eq 0 ]; then
+  echo "$DELIMITER"
+  echo " No tested versions to run"
+  echo "$DELIMITER"
+  echo "SKIPPED[empty-version-batch][$TEST_COORDINATES]"
+  exit 0
+fi
+
 run_multiple_attempts() {
   local stage="$1"
   local max_attempts="$2"
