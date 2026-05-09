@@ -1,0 +1,2451 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0d61-c7aa-7bb0-94ef-0437cd6508c9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.rest-assured:xml-path:5.5.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "5.5.0" when "$version$" is replaced with "5.5.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+- Set "coordinates" to "io.rest-assured:xml-path:5.5.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "5.5.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven/GitHub sources first, then update the JSON in place with version-templated URLs.
+web search: 
+web search: io.rest-assured xml-path 5.5.0 Maven Central sources tests repository documentation
+web search: 
+web search: https://repo1.maven.org/maven2/io/rest-assured/xml-path/5.5.0/
+codex
+Maven Central has the `5.5.0` JAR, sources JAR, and Javadoc JAR for `xml-path`, but no test JAR in that directory. I’m checking the POM and nearby metadata patterns now so the final JSON matches this repository’s conventions.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,220p' build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+{
+  "coordinates" : "io.rest-assured:xml-path:5.5.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|not-for-native-image|\"language\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/rest-assured/xml-path/5.5.0/xml-path-5.5.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>rest-assured-parent</artifactId>
+        <groupId>io.rest-assured</groupId>
+        <version>5.5.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>xml-path</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            io.restassured.path.xml.*,
+                            io.restassured.internal.path.xml.*
+                        </Export-Package>
+                        <Import-Package>
+                            groovy.*;version="${groovy.range}",
+                            org.apache.groovy.*;version="${groovy.range}",
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.basepom.maven</groupId>
+                <artifactId>duplicate-finder-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>${groovy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured-common</artifactId>
+            <version>5.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ccil.cowan.tagsoup</groupId>
+            <artifactId>tagsoup</artifactId>
+        </dependency>
+        <!-- Backward compatibility with JAXB (Jakarta EE 8?) -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- Jakarta EE 9 -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/rest-assured/xml-path/5.5.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/rest-assured/xml-path/5.5.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/rest-assured/xml-path/5.5.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="xml-path-5.5.0-javadoc.jar" title="xml-path-5.5.0-javadoc.jar">xml-path-5.5.0-javadoc.jar</a>                        2024-07-05 13:06    189182      
+<a href="xml-path-5.5.0-javadoc.jar.asc" title="xml-path-5.5.0-javadoc.jar.asc">xml-path-5.5.0-javadoc.jar.asc</a>                    2024-07-05 13:06       488      
+<a href="xml-path-5.5.0-javadoc.jar.md5" title="xml-path-5.5.0-javadoc.jar.md5">xml-path-5.5.0-javadoc.jar.md5</a>                    2024-07-05 13:06        32      
+<a href="xml-path-5.5.0-javadoc.jar.sha1" title="xml-path-5.5.0-javadoc.jar.sha1">xml-path-5.5.0-javadoc.jar.sha1</a>                   2024-07-05 13:06        40      
+<a href="xml-path-5.5.0-sources.jar" title="xml-path-5.5.0-sources.jar">xml-path-5.5.0-sources.jar</a>                        2024-07-05 13:06     37795      
+<a href="xml-path-5.5.0-sources.jar.asc" title="xml-path-5.5.0-sources.jar.asc">xml-path-5.5.0-sources.jar.asc</a>                    2024-07-05 13:06       488      
+<a href="xml-path-5.5.0-sources.jar.md5" title="xml-path-5.5.0-sources.jar.md5">xml-path-5.5.0-sources.jar.md5</a>                    2024-07-05 13:06        32      
+<a href="xml-path-5.5.0-sources.jar.sha1" title="xml-path-5.5.0-sources.jar.sha1">xml-path-5.5.0-sources.jar.sha1</a>                   2024-07-05 13:06        40      
+<a href="xml-path-5.5.0.jar" title="xml-path-5.5.0.jar">xml-path-5.5.0.jar</a>                                2024-07-05 13:06     80745      
+<a href="xml-path-5.5.0.jar.asc" title="xml-path-5.5.0.jar.asc">xml-path-5.5.0.jar.asc</a>                            2024-07-05 13:06       488      
+<a href="xml-path-5.5.0.jar.md5" title="xml-path-5.5.0.jar.md5">xml-path-5.5.0.jar.md5</a>                            2024-07-05 13:06        32      
+<a href="xml-path-5.5.0.jar.sha1" title="xml-path-5.5.0.jar.sha1">xml-path-5.5.0.jar.sha1</a>                           2024-07-05 13:06        40      
+<a href="xml-path-5.5.0.pom" title="xml-path-5.5.0.pom">xml-path-5.5.0.pom</a>                                2024-07-05 13:06      4324      
+<a href="xml-path-5.5.0.pom.asc" title="xml-path-5.5.0.pom.asc">xml-path-5.5.0.pom.asc</a>                            2024-07-05 13:06       488      
+<a href="xml-path-5.5.0.pom.md5" title="xml-path-5.5.0.pom.md5">xml-path-5.5.0.pom.md5</a>                            2024-07-05 13:06        32      
+<a href="xml-path-5.5.0.pom.sha1" title="xml-path-5.5.0.pom.sha1">xml-path-5.5.0.pom.sha1</a>                           2024-07-05 13:06        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0
+web search: 
+web search: https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/xml-path
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/rest-assured/rest-assured-parent/5.5.0/rest-assured-parent-5.5.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright 2019 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>5</version>
+    </parent>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>rest-assured-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>5.5.0</version>
+    <url>https://rest-assured.io/</url>
+    <name>REST Assured Parent POM</name>
+    <description>Java DSL for easy testing of REST services</description>
+    <inceptionYear>2010</inceptionYear>
+    <issueManagement>
+        <system>GitHub Issue Tracking</system>
+        <url />
+    </issueManagement>
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Johan Haleby</name>
+            <id>johan.haleby</id>
+            <organization>Jayway</organization>
+            <organizationUrl>https://www.jayway.com</organizationUrl>
+            <email>johan.haleby at gmail.com</email>
+            <timezone>+1</timezone>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <properties>
+        <scm.branch>master</scm.branch>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <groovy.version>4.0.22</groovy.version>
+        <groovy.range>[4.0,5.0)</groovy.range>
+        <gmaven.version>1.5</gmaven.version>
+        <hamcrest.version>2.2</hamcrest.version>
+        <jackson1.version>1.9.11</jackson1.version>
+        <jackson2.version>2.17.1</jackson2.version>
+        <johnzon.version>1.1.11</johnzon.version>
+        <yasson.version>1.0.6</yasson.version>
+        <jakarta.json.version>1.1.6</jakarta.json.version>
+        <maven-javadoc.version>2.9.1</maven-javadoc.version>
+        <surefire.version>2.22.0</surefire.version>
+        <kotlin.version>2.0.0</kotlin.version>
+        <scala.version>3.3.1</scala.version>
+        <assertj-core.version>3.16.1</assertj-core.version>
+        <scribe.version>2.5.3</scribe.version>
+        <sundrio.version>0.103.1</sundrio.version>
+        <guava.version>33.2.1-jre</guava.version>
+        <dokka.version>1.9.20</dokka.version>
+    </properties>
+    <scm>
+        <url>https://github.com/rest-assured/rest-assured/tree/${scm.branch}</url>
+        <connection>scm:git:git://github.com/rest-assured/rest-assured.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/rest-assured/rest-assured.git</developerConnection>
+    </scm>
+    <mailingLists>
+        <mailingList>
+            <name>rest-assured mailing-list</name>
+            <archive>https://groups.google.com/group/rest-assured/topics</archive>
+        </mailingList>
+    </mailingLists>
+    <modules>
+        <module>modules</module>
+        <module>rest-assured</module>
+        <module>rest-assured-all</module>
+        <module>examples</module>
+        <module>json-path</module>
+        <module>rest-assured-common</module>
+        <module>xml-path</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>animal-sniffer-maven-plugin</artifactId>
+                    <version>1.15</version>
+                    <configuration>
+                        <signature>
+                            <groupId>org.codehaus.mojo.signature</groupId>
+                            <artifactId>java16</artifactId>
+                            <version>1.0</version>
+                        </signature>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>check-java-version-compatibility</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>gmaven-plugin</artifactId>
+                    <version>${gmaven.version}</version>
+                    <configuration>
+                        <providerSelection>2.0</providerSelection>
+                        <source />
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.codehaus.gmaven.runtime</groupId>
+                            <artifactId>gmaven-runtime-2.0</artifactId>
+                            <version>${gmaven.version}</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>org.apache.groovy</groupId>
+                                    <artifactId>groovy-all</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.groovy</groupId>
+                            <artifactId>groovy</artifactId>
+                            <version>${groovy.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generateStubs</goal>
+                                <goal>compile</goal>
+                                <goal>generateTestStubs</goal>
+                                <goal>testCompile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.basepom.maven</groupId>
+                    <artifactId>duplicate-finder-maven-plugin</artifactId>
+                    <version>1.3.0</version>
+                    <executions>
+                        <execution>
+                            <id>duplicate-check</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <failBuildInCaseOfDifferentContentConflict>true</failBuildInCaseOfDifferentContentConflict>
+                        <failBuildInCaseOfEqualContentConflict>true</failBuildInCaseOfEqualContentConflict>
+                        <failBuildInCaseOfConflict>true</failBuildInCaseOfConflict>
+                        <ignoredResourcePatterns>
+                            <ignoredResourcePattern>.*\.gitkeep$</ignoredResourcePattern>
+                            <ignoredResourcePattern>log4j\.properties</ignoredResourcePattern>
+                            <!-- Jetty about.html pages -->
+                            <ignoredResourcePattern>.*about\.html$</ignoredResourcePattern>
+                            <!--
+                                Found duplicate (but equal) resources in
+                                [com.github.fge:json-schema-core:1.2.5, com.github.fge:json-schema-validator:2.2.6]
+                            -->
+                            <ignoredResourcePattern>.*draftv[34]/schema$</ignoredResourcePattern>
+                            <!-- Scala lang -->
+                            <ignoredResourcePattern>rootdoc\.txt</ignoredResourcePattern>
+                        </ignoredResourcePatterns>
+                        <ignoredClassPatterns>
+                            <!-- Jigsaw project (Java 9) and later module-info classes. -->
+                            <ignoredClassPattern>.*\.module-info$</ignoredClassPattern>
+                            <ignoredClassPattern>javax\.activation.*</ignoredClassPattern>
+                            <!-- Some classes that are duplicated in the (optional) JAXB / Jakarta EE dependencies. -->
+                            <ignoredClassPattern>com\.sun\.istack.*</ignoredClassPattern>
+                            <ignoredClassPattern>com\.sun\.xml.*</ignoredClassPattern>
+                            <ignoredClassPattern>META-INF\.versions\.9\.com\.sun\.istack\.logging.*</ignoredClassPattern>
+                            <!-- Spring AOP -->
+                            <ignoredClassPattern>org\.aopalliance.*</ignoredClassPattern>
+                            <!-- OSGi -->
+                            <ignoredClassPattern>org\.osgi.*</ignoredClassPattern>
+                            <ignoredClassPattern>org\.ops4j.*</ignoredClassPattern>
+                        </ignoredClassPatterns>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc.version}</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+                    <excludes>
+                        <exclude>**/itest/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>surefire-itest</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/itest/**</include>
+                            </includes>
+                            <argLine>-Xmx1024m</argLine>
+                            <argLine>-Dfile.encoding=UTF-8</argLine>
+                            <argLine>-Duser.language=en</argLine>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.basepom.maven</groupId>
+                <artifactId>duplicate-finder-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven-javadoc.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.sundr</groupId>
+                        <artifactId>sundr-maven-plugin</artifactId>
+                        <version>${sundrio.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>generate-bom</goal>
+                                </goals>
+                                <configuration>
+                                    <boms>
+                                        <bom>
+                                            <artifactId>rest-assured-bom</artifactId>
+                                            <name>REST Assured: BOM</name>
+                                            <description>Centralized dependencyManagement for the Rest Assured Project</description>
+                                            <properties>
+                                                <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
+                                                <sonar.skip>true</sonar.skip>
+                                            </properties>
+                                            <modules>
+                                                <excludes>
+                                                    <exclude>io.rest-assured.examples:*</exclude>
+                                                </excludes>
+                                            </modules>
+                                        </bom>
+                                    </boms>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>dist</id>
+            <!-- Active profile when running release -->
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            <modules>
+                <module>dist</module>
+            </modules>
+        </profile>
+    </profiles>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.ccil.cowan.tagsoup</groupId>
+                <artifactId>tagsoup</artifactId>
+                <version>1.2.1</version>
+            </dependency>
+            <!-- Backward compatibility with JAXB (Jakarta EE 8?) -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>2.3.4</version>
+            </dependency>
+            <!-- Jakarta EE 9 -->
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>3.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.11</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>${jackson1.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>${jackson1.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.johnzon</groupId>
+                <artifactId>johnzon-mapper</artifactId>
+                <version>${johnzon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse</groupId>
+                <artifactId>yasson</artifactId>
+                <version>${yasson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.json</groupId>
+                <artifactId>jakarta.json-api</artifactId>
+                <version>${jakarta.json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.9.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.googlecode.json-simple</groupId>
+                <artifactId>json-simple</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>${hamcrest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-jdk8</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala3-interfaces</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>mockwebserver</artifactId>
+                <version>4.2.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/rest-assured/rest-assured/rest-assured-5.5.0/README.md | sed -n '1,180p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/rest-assured/rest-assured/rest-assured-5.5.0/xml-path/pom.xml' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/rest-assured/rest-assured/contents/xml-path/src/test?ref=rest-assured-5.5.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 155ms:
+[
+  {
+    "name": "java",
+    "path": "xml-path/src/test/java",
+    "sha": "b1c1694cb21d0a079407ac47ad2b2834346b3af2",
+    "size": 0,
+    "url": "https://api.github.com/repos/rest-assured/rest-assured/contents/xml-path/src/test/java?ref=rest-assured-5.5.0",
+    "html_url": "https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/xml-path/src/test/java",
+    "git_url": "https://api.github.com/repos/rest-assured/rest-assured/git/trees/b1c1694cb21d0a079407ac47ad2b2834346b3af2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/rest-assured/rest-assured/contents/xml-path/src/test/java?ref=rest-assured-5.5.0",
+      "git": "https://api.github.com/repos/rest-assured/rest-assured/git/trees/b1c1694cb21d0a079407ac47ad2b2834346b3af2",
+      "html": "https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/xml-path/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "xml-path/src/test/resources",
+    "sha": "40fbf39fcdbda236fdd8c4ef77d522ce5fa92f84",
+    "size": 0,
+    "url": "https://api.github.com/repos/rest-assured/rest-assured/contents/xml-path/src/test/resources?ref=rest-assured-5.5.0",
+    "html_url": "https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/xml-path/src/test/resources",
+    "git_url": "https://api.github.com/repos/rest-assured/rest-assured/git/trees/40fbf39fcdbda236fdd8c4ef77d522ce5fa92f84",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/rest-assured/rest-assured/contents/xml-path/src/test/resources?ref=rest-assured-5.5.0",
+      "git": "https://api.github.com/repos/rest-assured/rest-assured/git/trees/40fbf39fcdbda236fdd8c4ef77d522ce5fa92f84",
+      "html": "https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/xml-path/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 169ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>rest-assured-parent</artifactId>
+        <groupId>io.rest-assured</groupId>
+        <version>5.5.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>xml-path</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            io.restassured.path.xml.*,
+                            io.restassured.internal.path.xml.*
+                        </Export-Package>
+                        <Import-Package>
+                            groovy.*;version="${groovy.range}",
+                            org.apache.groovy.*;version="${groovy.range}",
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.basepom.maven</groupId>
+                <artifactId>duplicate-finder-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>${groovy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured-common</artifactId>
+            <version>5.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ccil.cowan.tagsoup</groupId>
+            <artifactId>tagsoup</artifactId>
+        </dependency>
+        <!-- Backward compatibility with JAXB (Jakarta EE 8?) -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- Jakarta EE 9 -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+ succeeded in 186ms:
+![REST Assured](rest-assured-logo-green.png)
+
+[![Build Status](https://github.com/rest-assured/rest-assured/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/rest-assured/rest-assured/actions/workflows/ci.yml)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.rest-assured/rest-assured/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.rest-assured/rest-assured)
+<!-- [![Javadoc](https://javadoc-badge.appspot.com/io.rest-assured/rest-assured.svg)](http://www.javadoc.io/doc/io.rest-assured/rest-assured) -->
+
+
+Testing and validation of REST services in Java is harder than in dynamic languages 
+such as Ruby and Groovy. REST Assured brings the simplicity of using these 
+languages into the Java domain.
+
+
+## News
+* 2023-12-08: REST Assured 5.4.0 is released with several bug fixes and a [Kotlin Extension Module for Spring WebTest](https://github.com/rest-assured/rest-assured/wiki/Kotlin#kotlin-extension-module-for-spring-webtest). See [change log](https://raw.githubusercontent.com/rest-assured/rest-assured/master/changelog.txt) for more details.
+* 2023-09-08: REST Assured 5.3.2 is released with several bug fixes, better Spring MockMvc Support, better support for newer versions of Spring Security etc. See [change log](https://raw.githubusercontent.com/rest-assured/rest-assured/master/changelog.txt) for more details.
+* 2023-06-16: REST Assured 5.3.1 is released with several bug fixes and dependency upgrades. See [change log](https://raw.githubusercontent.com/rest-assured/rest-assured/master/changelog.txt) for more details.
+
+[Older News](https://github.com/rest-assured/rest-assured/wiki/OldNews)
+
+
+## Examples
+Here's an example of how to make a GET request and validate the JSON or XML response:
+
+```java
+get("/lotto").then().assertThat().body("lotto.lottoId", equalTo(5));
+```
+
+Get and verify all winner ids:
+
+```java
+get("/lotto").then().assertThat().body("lotto.winners.winnerId", hasItems(23, 54));
+```
+
+Using parameters:
+
+```java
+given().
+    param("key1", "value1").
+    param("key2", "value2").
+when().
+    post("/somewhere").
+then().
+    body(containsString("OK"));
+```
+
+Using X-Path (XML only):
+
+```java
+given().
+    params("firstName", "John", "lastName", "Doe").
+when().
+    post("/greetMe").
+then().
+    body(hasXPath("/greeting/firstName[text()='John']")).
+```
+
+Need authentication? REST Assured provides several authentication mechanisms:
+
+```java
+given().auth().basic(username, password).when().get("/secured").then().statusCode(200);
+```
+
+Getting and parsing a response body:
+
+```java
+// Example with JsonPath
+String json = get("/lotto").asString();
+List<String> winnerIds = from(json).get("lotto.winners.winnerId");
+    
+// Example with XmlPath
+String xml = post("/shopping").andReturn().body().asString();
+Node category = from(xml).get("shopping.category[0]");
+```
+
+REST Assured supports any HTTP method but has explicit support for *POST*, *GET*, *PUT*, *DELETE*, *OPTIONS*, *PATCH* and *HEAD* and includes specifying and validating e.g. parameters, headers, cookies and body easily.
+
+
+## Documentation
+
+* [Getting started](https://github.com/rest-assured/rest-assured/wiki/GettingStarted)
+* [Usage Guide](https://github.com/rest-assured/rest-assured/wiki/Usage) (click [here](https://github.com/rest-assured/rest-assured/wiki/Usage_Legacy) for legacy documentation)
+* [Javadoc](http://www.javadoc.io/doc/io.rest-assured/rest-assured/5.4.0)
+* [Rest Assured Javadoc](http://static.javadoc.io/io.rest-assured/rest-assured/5.4.0/io/restassured/RestAssured.html)
+* [Rest AssuredMockMvc Javadoc](http://static.javadoc.io/io.rest-assured/spring-mock-mvc/5.4.0/io/restassured/module/mockmvc/RestAssuredMockMvc.html)
+* [XmlPath Javadoc](http://static.javadoc.io/io.rest-assured/xml-path/5.4.0/io/restassured/path/xml/XmlPath.html)
+* [JsonPath Javadoc](http://static.javadoc.io/io.rest-assured/json-path/5.4.0/io/restassured/path/json/JsonPath.html)
+* [Release Notes](https://github.com/rest-assured/rest-assured/wiki/ReleaseNotes)
+* [FAQ](https://github.com/rest-assured/rest-assured/wiki/FAQ)
+
+## Support and discussion
+Join the mailing list at our [Google group](http://groups.google.com/group/rest-assured). 
+
+## Links
+* [Change log](https://github.com/rest-assured/rest-assured/raw/master/changelog.txt)
+* REST Assured on [openhub](https://www.openhub.net/p/rest-assured)
+* [Mailing list](http://groups.google.com/group/rest-assured) for questions and support
+
+<a href="https://www.buymeacoffee.com/johanhaleby" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/arial-blue.png" alt="Buy Me A Coffee" style="height: 42px !important;width: 180px !important;" height="42px" width="180px"></a>
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' build/discovered-artifact-metadata metadata tests -g '*.json' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language": {
+metadata/io.circe/circe-parser_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:10:    "language": {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:28:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:10:    "language": {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:10:    "language" : {
+metadata/io.circe/circe-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:10:    "language": {
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:10:    "language": {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:10:    "language": {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.play/play_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-ws_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/twirl-api_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-serialization-jackson_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:10:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:10:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:28:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scalap/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/dev.zio/zio_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-test_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-slf4j/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-test-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactor/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx2/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactive/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_2.13/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-metadata-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/org.tpolecat/typename_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx3/index.json:10:    "language" : {
+metadata/dev.zio/zio-logging_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-guava/index.json:10:    "language" : {
+metadata/org.tpolecat/skunk-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/rest-assured/xml-path/5.5.0/xml-path-5.5.0-sources.jar -o /tmp/xml-path-5.5.0-sources.jar && jar tf /tmp/xml-path-5.5.0-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/restassured/
+io/restassured/path/
+io/restassured/path/xml/
+io/restassured/path/xml/mapping/
+io/restassured/path/xml/config/
+io/restassured/path/xml/element/
+io/restassured/path/xml/mapper/
+io/restassured/path/xml/mapper/factory/
+io/restassured/path/xml/exception/
+io/restassured/internal/
+io/restassured/internal/path/
+io/restassured/internal/path/xml/
+io/restassured/path/xml/mapping/XmlPathObjectDeserializer.java
+io/restassured/path/xml/config/XmlParserType.java
+io/restassured/path/xml/config/XmlPathConfig.java
+io/restassured/path/xml/element/Node.java
+io/restassured/path/xml/element/PathElement.java
+io/restassured/path/xml/element/NodeChildren.java
+io/restassured/path/xml/mapper/factory/JakartaEEObjectMapperFactory.java
+io/restassured/path/xml/mapper/factory/JAXBObjectMapperFactory.java
+io/restassured/path/xml/mapper/factory/DefaultJakartaEEObjectMapperFactory.java
+io/restassured/path/xml/mapper/factory/DefaultJAXBObjectMapperFactory.java
+io/restassured/path/xml/XmlPath.java
+io/restassured/path/xml/exception/XmlPathException.java
+io/restassured/internal/path/xml/NodeImpl.java
+io/restassured/internal/path/xml/NodeChildrenImpl.java
+io/restassured/internal/path/xml/mapping/
+io/restassured/internal/path/xml/XmlEntity.java
+io/restassured/internal/path/xml/mapping/XmlObjectDeserializer.java
+io/restassured/internal/path/xml/mapping/XmlPathJaxbObjectDeserializer.java
+io/restassured/internal/path/xml/mapping/XmlPathJakartaEEObjectDeserializer.java
+io/restassured/internal/path/xml/XmlRenderer.java
+io/restassured/internal/path/xml/XmlPrettifier.java
+io/restassured/internal/path/xml/XMLAssertion.java
+io/restassured/internal/path/xml/GroovyNodeSerializer.java
+io/restassured/internal/path/xml/NodeBase.java
+io/restassured/internal/path/xml/mapping/XmlPathJaxbObjectDeserializer.groovy
+io/restassured/internal/path/xml/mapping/XmlObjectDeserializer.groovy
+io/restassured/internal/path/xml/mapping/XmlPathJakartaEEObjectDeserializer.groovy
+io/restassured/internal/path/xml/XMLAssertion.groovy
+io/restassured/internal/path/xml/XmlRenderer.groovy
+io/restassured/internal/path/xml/GroovyNodeSerializer.groovy
+io/restassured/internal/path/xml/NodeBase.groovy
+io/restassured/internal/path/xml/XmlPrettifier.groovy
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/rest-assured/xml-path/5.5.0/xml-path-5.5.0.jar -o /tmp/xml-path-5.5.0.jar && jar tf /tmp/xml-path-5.5.0.jar | sed -n '1,180p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/io.rest-assured/
+META-INF/maven/io.rest-assured/xml-path/
+META-INF/maven/io.rest-assured/xml-path/pom.properties
+META-INF/maven/io.rest-assured/xml-path/pom.xml
+io/
+io/restassured/
+io/restassured/internal/
+io/restassured/internal/path/
+io/restassured/internal/path/xml/
+io/restassured/internal/path/xml/GroovyNodeSerializer.class
+io/restassured/internal/path/xml/NodeBase.class
+io/restassured/internal/path/xml/NodeChildrenImpl$NodeListIterator.class
+io/restassured/internal/path/xml/NodeChildrenImpl.class
+io/restassured/internal/path/xml/NodeImpl$ValueIterator.class
+io/restassured/internal/path/xml/NodeImpl.class
+io/restassured/internal/path/xml/XMLAssertion$_toJavaList_closure1.class
+io/restassured/internal/path/xml/XMLAssertion$_toJavaList_closure2.class
+io/restassured/internal/path/xml/XMLAssertion.class
+io/restassured/internal/path/xml/XmlEntity.class
+io/restassured/internal/path/xml/XmlPrettifier$_prettify_closure1.class
+io/restassured/internal/path/xml/XmlPrettifier$_prettify_closure2.class
+io/restassured/internal/path/xml/XmlPrettifier.class
+io/restassured/internal/path/xml/XmlRenderer$_render_closure1.class
+io/restassured/internal/path/xml/XmlRenderer$_render_closure1_closure2.class
+io/restassured/internal/path/xml/XmlRenderer.class
+io/restassured/internal/path/xml/mapping/
+io/restassured/internal/path/xml/mapping/XmlObjectDeserializer$1.class
+io/restassured/internal/path/xml/mapping/XmlObjectDeserializer.class
+io/restassured/internal/path/xml/mapping/XmlPathJakartaEEObjectDeserializer.class
+io/restassured/internal/path/xml/mapping/XmlPathJaxbObjectDeserializer.class
+io/restassured/path/
+io/restassured/path/xml/
+io/restassured/path/xml/XmlPath$1.class
+io/restassured/path/xml/XmlPath$2.class
+io/restassured/path/xml/XmlPath$3.class
+io/restassured/path/xml/XmlPath$4.class
+io/restassured/path/xml/XmlPath$5.class
+io/restassured/path/xml/XmlPath$6.class
+io/restassured/path/xml/XmlPath$CompatibilityMode.class
+io/restassured/path/xml/XmlPath$LazyXmlParser.class
+io/restassured/path/xml/XmlPath.class
+io/restassured/path/xml/config/
+io/restassured/path/xml/config/XmlParserType.class
+io/restassured/path/xml/config/XmlPathConfig.class
+io/restassured/path/xml/element/
+io/restassured/path/xml/element/Node.class
+io/restassured/path/xml/element/NodeChildren.class
+io/restassured/path/xml/element/PathElement.class
+io/restassured/path/xml/exception/
+io/restassured/path/xml/exception/XmlPathException.class
+io/restassured/path/xml/mapper/
+io/restassured/path/xml/mapper/factory/
+io/restassured/path/xml/mapper/factory/DefaultJAXBObjectMapperFactory.class
+io/restassured/path/xml/mapper/factory/DefaultJakartaEEObjectMapperFactory.class
+io/restassured/path/xml/mapper/factory/JAXBObjectMapperFactory.class
+io/restassured/path/xml/mapper/factory/JakartaEEObjectMapperFactory.class
+io/restassured/path/xml/mapping/
+io/restassured/path/xml/mapping/XmlPathObjectDeserializer.class
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://www.javadoc.io/doc/io.rest-assured/xml-path/5.5.0/io/restassured/path/xml/XmlPath.html | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 131ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 15:36:45 GMT
+content-type: text/html; charset=UTF-8
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=TnMjh5wMfZPeD2Rk1WwZjRgmg7OzwtVpG6f%2BASxAegt0u3MqSFpqhgdLDICC1dVD3pyGmg%2FlNzuhEDUDnpTuwGFOBo8fYhMP4%2FZPyG8wQ0cvNG5juuTVpipcQJP76lPfnxG0Pvby4aORt0cEpg%3D%3D"}]}
+server: cloudflare
+cf-ray: 9f91c8121966bc50-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg -l '\"name\"\\s*:\\s*\"groovy\"' metadata build/discovered-artifact-metadata -g '*.json' | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find metadata/io.rest-assured -maxdepth 3 -type f -name 'index.json' -print -exec sed -n '1,80p' {} \\;" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ exited 1 in 0ms:
+find: ‘metadata/io.rest-assured’: No such file or directory
+
+exec
+/usr/bin/bash -lc "find metadata -path '*rest-assured*' -type f -name 'index.json' -print | head -30" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/rest-assured/rest-assured/git/ref/tags/rest-assured-5.5.0' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 259ms:
+{
+  "ref": "refs/tags/rest-assured-5.5.0",
+  "node_id": "MDM6UmVmMTAxMTUzOTpyZWZzL3RhZ3MvcmVzdC1hc3N1cmVkLTUuNS4w",
+  "url": "https://api.github.com/repos/rest-assured/rest-assured/git/refs/tags/rest-assured-5.5.0",
+  "object": {
+    "sha": "ea6250e3b54f72c6e248c267d74020a767885770",
+    "type": "tag",
+    "url": "https://api.github.com/repos/rest-assured/rest-assured/git/tags/ea6250e3b54f72c6e248c267d74020a767885770"
+  }
+}
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f -name '*.json' | head -20 | xargs -r -n1 sh -c 'echo \""'$1"; sed -n "1,80p" "$1"'"' sh" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+{
+  "coordinates" : "io.rest-assured:xml-path:5.5.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'not-for-native-image|replacement|reason' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+metadata/org.junit.jupiter/junit-jupiter/index.json:3:    "not-for-native-image": true,
+metadata/org.junit.jupiter/junit-jupiter/index.json:4:    "reason": "Artifact JAR contains no application/library JVM class files beyond module-info.class, so there is no library code for native-image metadata."
+metadata/org.scalatest/scalatest_2.13/index.json:3:    "not-for-native-image": true,
+metadata/org.scalatest/scalatest_2.13/index.json:4:    "reason": "The published scalatest_2.13-3.2.19 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the implementation classes are supplied by its class-bearing module dependencies.",
+metadata/org.scalatest/scalatest_2.13/index.json:5:    "replacement": "Use the class-bearing ScalaTest module artifacts such as org.scalatest:scalatest-core_2.13:3.2.19, org.scalatest:scalatest-funsuite_2.13:3.2.19, and org.scalatest:scalatest-matchers-core_2.13:3.2.19 as needed."
+metadata/org.jetbrains.compose.foundation/foundation/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.foundation/foundation/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM desktop variants to org.jetbrains.compose.foundation:foundation-desktop:1.7.3.",
+metadata/org.jetbrains.compose.foundation/foundation/index.json:5:    "replacement": "org.jetbrains.compose.foundation:foundation-desktop:1.7.3"
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup.wire/wire-runtime/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to com.squareup.wire:wire-runtime-jvm:5.3.3.",
+metadata/com.squareup.wire/wire-runtime/index.json:5:    "replacement": "com.squareup.wire:wire-runtime-jvm:5.3.3"
+metadata/org.jboss.weld/weld-build-config/index.json:3:    "not-for-native-image": true,
+metadata/org.jboss.weld/weld-build-config/index.json:4:    "reason": "The published JAR for org.jboss.weld:weld-build-config:1.1.4.Final contains no JVM class files; it only packages Maven metadata, license files, and a Checkstyle XML resource."
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:92:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:4:    "reason": "The published mordant-jvm JAR contains only META-INF/MANIFEST.MF and a Kotlin module file and no JVM class files; implementation classes are provided by its JVM dependencies.",
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:5:    "replacement": "com.github.ajalt.mordant:mordant-core-jvm:3.0.2 plus com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2, com.github.ajalt.mordant:mordant-jvm-ffm-jvm:3.0.2, and com.github.ajalt.mordant:mordant-jvm-graal-ffi-jvm:3.0.2"
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:75:        "reason" : "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse."
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.compose.ui:ui-desktop:1.8.2.",
+metadata/org.jetbrains.compose.ui/ui/index.json:5:    "replacement": "org.jetbrains.compose.ui:ui-desktop:1.8.2"
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:9:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:26:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:41:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+metadata/org.slf4j/log4j-over-slf4j/index.json:9:    "description" : "log4j-over-slf4j provides replacement classes for the Log4j version 1 API that route logging calls to SLF4J. It lets applications and dependencies written against Log4j use the SLF4J binding selected by the application without keeping a Log4j version 1 runtime implementation on the classpath.",
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrency/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-concurrency-jvm:2.1.0.",
+metadata/co.touchlab/stately-concurrency/index.json:5:    "replacement": "co.touchlab:stately-concurrency-jvm:2.1.0"
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-strict-jvm:2.1.0.",
+metadata/co.touchlab/stately-strict/index.json:5:    "replacement": "co.touchlab:stately-strict-jvm:2.1.0"
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-concurrent-collections-jvm:2.1.0.",
+metadata/co.touchlab/stately-concurrent-collections/index.json:5:    "replacement": "co.touchlab:stately-concurrent-collections-jvm:2.1.0"
+metadata/net.jcip/jcip-annotations/index.json:9:    "description" : "JCIP Annotations provides marker annotations from Java Concurrency in Practice to document thread-safety contracts such as @ThreadSafe, @NotThreadSafe, @Immutable, and @GuardedBy. The library contains only annotation types and adds no runtime behavior, helping tools and developers reason about concurrent code.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:33:          "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:34:            "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:131:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:132:                "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:156:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:157:                "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:186:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:187:                "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:243:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:244:                "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:282:              "reason": {
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:283:                "$ref": "#/$defs/reason"
+metadata/schemas/reachability-metadata-schema-v1.2.0.json:344:    "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:103:          "description": "Versions explicitly excluded from support, each with a reason.",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:108:            "required": [ "version", "reason" ],
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:114:              "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:136:        "not-for-native-image",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:137:        "reason"
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:140:        "not-for-native-image": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:145:        "reason": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:150:        "replacement": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:153:          "description": "Optional replacement artifact or guidance for users."
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:243:          { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:249:        "not-for-native-image": true,
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:250:        "reason": "Scala.js artifact; not a JVM library consumed by native-image.",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:251:        "replacement": "Use the JVM artifact if one exists."
+metadata/org.jetbrains.compose.runtime/runtime/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.runtime/runtime/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.compose.runtime:runtime-desktop:1.7.3.",
+metadata/org.jetbrains.compose.runtime/runtime/index.json:5:    "replacement": "org.jetbrains.compose.runtime:runtime-desktop:1.7.3"
+metadata/org.sangria-graphql/sangria_3/index.json:3:    "not-for-native-image": true,
+metadata/org.sangria-graphql/sangria_3/index.json:4:    "reason": "The published sangria_3 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the JVM implementation classes are in sangria-core_3 and sangria-derivation_3.",
+metadata/org.sangria-graphql/sangria_3/index.json:5:    "replacement": "org.sangria-graphql:sangria-core_3:4.2.9 and org.sangria-graphql:sangria-derivation_3:4.2.9"
+metadata/org.jetbrains.kotlinx/atomicfu/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/atomicfu/index.json:4:    "reason": "The published root JAR contains Kotlin metadata and no JVM class files; Gradle module metadata redirects JVM variants to org.jetbrains.kotlinx:atomicfu-jvm:0.19.0.",
+metadata/org.jetbrains.kotlinx/atomicfu/index.json:5:    "replacement": "org.jetbrains.kotlinx:atomicfu-jvm:0.19.0"
+metadata/org.scala-js/scalajs-stubs_2.13/index.json:3:    "not-for-native-image": true,
+metadata/org.scala-js/scalajs-stubs_2.13/index.json:4:    "reason": "Scala.js artifact; it is not a JVM library consumed by native-image."
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; the POM declares org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2 for JVM consumption.",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2"
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; the Gradle module metadata redirects JVM variants to kotlinx-io-bytestring-jvm.",
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url.*repo1.maven|documentation-url.*javadoc|test-code-url.*github.com' metadata build/discovered-artifact-metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:8:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_6_1/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:23:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_5/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:38:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_4_2/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:15:    "test-code-url": "https://github.com/eclipse-jgit/jgit/tree/v$version$/org.eclipse.jgit.test",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:16:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:28:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:30:    "test-code-url": "https://github.com/eclipse-jgit/jgit/tree/v$version$/org.eclipse.jgit.test",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:31:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-sources.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:7:    "test-code-url" : "https://github.com/charleskorn/kaml/tree/$version$/src",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/javax.transaction/transaction-api/index.json:8:    "documentation-url" : "https://download.oracle.com/otndocs/jcp/jta-$version$-javadoc-oth-JSpec/?submit=Download",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:26:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$-rc0/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v$version$/jctools-core/src/test",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/net.sf.proguard/proguard-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/proguard/proguard-base/$version$/proguard-base-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/com.beust/jcommander/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/$version$/jcommander-$version$-sources.jar",
+metadata/com.beust/jcommander/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/$version$/jcommander-$version$-javadoc.jar",
+metadata/org.brotli/dec/index.json:7:    "test-code-url" : "https://github.com/google/brotli/tree/4363f2d74b8af198f78b08e10cd0b3ead48af590/java/org/brotli/dec",
+metadata/org.brotli/dec/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/brotli/dec/$version$/dec-$version$-javadoc.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-gson/$version$/jjwt-gson-$version$-sources.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:7:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/extensions/gson/src/test",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-gson/$version$/jjwt-gson-$version$-sources.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:27:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/extensions/gson/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.cache2k/cache2k-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/cache2k/cache2k-core/$version$/cache2k-core-$version$-sources.jar",
+metadata/org.cache2k/cache2k-core/index.json:7:    "test-code-url" : "https://github.com/cache2k/cache2k/tree/v$version$/cache2k-core/src/test",
+metadata/org.cache2k/cache2k-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/cache2k/cache2k-core/$version$/cache2k-core-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-sources.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-javadoc.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-sources.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-javadoc.jar",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/$version$/slf4j-jboss-logmanager-$version$-sources.jar",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/$version$/slf4j-jboss-logmanager-$version$-javadoc.jar",
+metadata/com.sun.xml.dtd-parser/dtd-parser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-sources.jar",
+metadata/com.sun.xml.dtd-parser/dtd-parser/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/$version$/dtd-parser/src/test",
+metadata/com.sun.xml.dtd-parser/dtd-parser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:7:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:21:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:40:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:116:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-jackson/$version$/jjwt-jackson-$version$-sources.jar",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:8:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/extensions/jackson/src/test",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-jackson/$version$/jjwt-jackson-$version$-sources.jar",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:23:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/extensions/jackson/src/test",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:41:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-jackson/$version$/jjwt-jackson-$version$-sources.jar",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:43:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/extensions/jackson/src/test",
+
+web search: 
+web search: Maven Central io.rest-assured xml-path 5.5.0 sources javadoc
+web search: 
+web search: https://github.com/rest-assured/rest-assured
+web search: 
+web search: https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/xml-path/src/test
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "sed -n '1,140p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+{
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata/schemas/metadata-library-index-schema-v2.0.1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each file either describes Native Image metadata bundles for a range of library versions, or marks the artifact as not applicable to Native Image.",
+  "type": "array",
+  "minItems": 1,
+  "oneOf": [
+    {
+      "items": {
+        "$ref": "#/$defs/metadataIndexEntry"
+      }
+    },
+    {
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/notForNativeImageEntry"
+      }
+    }
+  ],
+  "$defs": {
+    "metadataIndexEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed-packages",
+        "metadata-version",
+        "tested-versions"
+      ],
+      "properties": {
+        "metadata-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Subdirectory name where the metadata files for this entry reside, e.g. '7.1.0.Final'."
+        },
+        "tested-versions": {
+          "type": "array",
+          "description": "Explicitly tested upstream library versions that this metadata is known to support.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "test-version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Overrides 'metadata-version' for use in test directories. This allows one metadata entry to share tests defined for a different version's metadata directory."
+        },
+        "source-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the metadata source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "repository-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the canonical project repository for this entry."
+        },
+        "documentation-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the project documentation for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional two-sentence explanation of what the library does."
+        },
+        "language": {
+          "$ref": "#/$defs/libraryLanguage"
+        },
+        "test-code-url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional URL pointing to the test source code for this entry. Versioned URLs may use '$version$' as a placeholder for this entry's metadata-version."
+        },
+        "latest": {
+          "type": "boolean",
+          "description": "Marks this entry as the latest/default metadata for currently supported versions."
+        },
+        "default-for": {
+          "type": "string",
+          "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
+        },
+        "override": {
+          "type": "boolean",
+          "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
+        },
+        "allowed-packages": {
+          "type": "array",
+          "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "skipped-versions": {
+          "type": "array",
+          "description": "Versions explicitly excluded from support, each with a reason.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [ "version", "reason" ],
+            "properties": {
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "requires": {
+          "type": "array",
+          "description": "List of dependent modules (group:artifact) whose metadata is required at runtime.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/moduleCoordinate"
+          }
+        }
+      }
+    },
+    "notForNativeImageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "not-for-native-image",
+        "reason"
+      ],
+      "properties": {
+        "not-for-native-image": {
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json && sed -n '1,60p' metadata/com.typesafe.slick/slick_2.13/index.json && sed -n '1,70p' metadata/com.github.ajalt.clikt/clikt-jvm/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "1.3.72",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "1.3"
+    },
+    "tested-versions" : [
+      "1.3.72"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "tested-versions" : [
+      "1.7.10",
+      "1.7.20",
+      "1.7.21",
+      "1.7.22",
+      "1.8.0",
+      "1.8.10",
+      "1.8.20",
+      "1.8.21",
+      "1.8.22",
+      "1.9.0",
+      "1.9.10",
+      "1.9.20",
+      "1.9.21",
+      "1.9.22",
+      "1.9.23",
+      "1.9.24",
+      "1.9.25",
+      "2.0.0",
+      "2.0.10",
+      "2.0.20",
+      "2.0.21",
+      "2.1.0",
+      "2.1.10",
+      "2.1.20",
+      "2.1.21",
+      "2.2.0",
+      "2.2.10",
+      "2.2.20",
+      "2.2.21",
+      "2.3.0",
+      "2.3.10",
+      "2.3.20",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.6.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/slick/slick",
+    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+    "description" : "Slick is a Scala database access library that provides strongly typed, composable APIs for working with relational databases. It lets applications express queries in Scala, generate SQL for multiple database engines, and use asynchronous or reactive-streaming database actions.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "3.6.1"
+    ],
+    "allowed-packages" : [
+      "scala.reflect",
+      "slick"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-sources.jar",
+    "repository-url" : "https://github.com/ajalt/clikt",
+    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-javadoc.jar",
+    "description" : "Clikt is a Kotlin multiplatform library for building command-line interfaces with declarative command, option, and argument parsing. The clikt-jvm artifact is the JVM variant of the main Clikt package, adding Mordant-backed terminal help output and testing utilities on top of the core parser.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.3"
+    },
+    "tested-versions" : [
+      "5.1.0"
+    ],
+    "allowed-packages" : [
+      "com.github.ajalt.clikt"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'groovy' metadata -g 'index.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+metadata/io.jsonwebtoken/jjwt-api/index.json:6:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/api/src/test/groovy/io/jsonwebtoken",
+metadata/io.jsonwebtoken/jjwt-api/index.json:21:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/api/src/test/groovy/io/jsonwebtoken",
+
+exec
+/usr/bin/bash -lc "sed -n '140,230p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+        "not-for-native-image": {
+          "type": "boolean",
+          "const": true,
+          "description": "Marks this artifact as intentionally not applicable to GraalVM Native Image metadata."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reason this artifact is not a Native Image metadata target."
+        },
+        "replacement": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional replacement artifact or guidance for users."
+        }
+      }
+    },
+    "moduleCoordinate": {
+      "type": "string",
+      "pattern": "^[^:]+:[^:]+$"
+    },
+    "libraryLanguage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [ "name", "version" ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [ "kotlin", "scala" ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "scala"
+              }
+            },
+            "required": [ "name" ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "enum": [ "2", "3" ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "kotlin"
+              }
+            },
+            "required": [ "name" ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "examples": [
+    [
+      {
+        "metadata-version": "0.0.1",
+        "tested-versions": [ "0.0.1", "0.0.2" ],
+        "default-for": "0\\.0\\..*",
+        "test-version": "0.0.1",
+        "source-code-url": "https://github.com/example/project/tree/main/metadata/org.example/library/$version$",
+        "repository-url": "https://github.com/example/project",
+        "test-code-url": "https://github.com/example/project/tree/main/tests/src/org.example/library/$version$",
+        "documentation-url": "https://github.com/example/project/tree/main/README.md",
+        "description": "Example Library provides the core APIs for the example project. It focuses on simple integration points used by downstream applications.",
+        "language": {
+          "name": "kotlin",
+          "version": "2.0"
+        },
+        "allowed-packages": [ "org.example.library" ]
+      },
+
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact|artifact-metadata|coordinates|language' -S . -g '*.json' -g '*.gradle' -g '*.groovy' -g '*.java' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/resources/contributing/questions.json:3:    "question-key": "coordinates",
+./tests/tck-build-logic/src/main/resources/contributing/questions.json:4:    "question": "What library do you want to support? Maven coordinates (i.e., \"groupId:artifactId:version\"):",
+./tests/tck-build-logic/src/main/resources/contributing/questions.json:5:    "help": "Maven coordinates consist of three parts in the following format \"groupId:artifactId:version\". For more information visit: https://maven.apache.org/repositories/artifacts.html"
+./tests/tck-build-logic/src/main/resources/contributing/questions.json:30:    "help": "Enter the additional dependencies (press enter after each dependency) you want to include use in tests. Provide dependencies in form of Maven coordinates. Maven coordinates consist of three parts in the following format \"groupId:artifactId:version\". For more information visit: https://maven.apache.org/repositories/artifacts.html When you finish adding dependencies, type \"-\" to terminate the inclusion process."
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:32: *  -PtestLibraryCoordinates: Coordinates in the form group:artifact:version
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:39:    private String testLibraryCoordinates;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:43:        Object testCoordsProp = getProject().findProperty("testLibraryCoordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:44:        if ((this.testLibraryCoordinates == null || this.testLibraryCoordinates.isBlank()) && testCoordsProp != null) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:45:            this.testLibraryCoordinates = testCoordsProp.toString();
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:69:    @Option(option = "testLibraryCoordinates", description = "Coordinates in the form of group:artifact:version")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:70:    public void setTestLibraryCoordinates(String testLibraryCoordinates) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:71:        this.testLibraryCoordinates = testLibraryCoordinates;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:75:    public String getTestLibraryCoordinates() {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:76:        return testLibraryCoordinates;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:81:        Path testsDirectory = GeneralUtils.computeTestsDirectory(getLayout(), testLibraryCoordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:84:        Coordinates baseCoords = Coordinates.parse(testLibraryCoordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:86:        Coordinates newCoords = Coordinates.parse(newCoordsString);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java:149:            execSpec.setArgs(List.of("test", "-Pcoordinates=" + coords));
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:39:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:40:    void setCoordinates(String coords) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:41:        Coordinates coordinates = Coordinates.parse(coords);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:42:        String coordinatesTestRoot = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getPath();
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:43:        Path requiredDockerImagesFile = Paths.get(coordinatesTestRoot + "/required-docker-images.txt");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:15:import org.graalvm.internal.tck.Coordinates;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:16:import org.graalvm.internal.tck.model.LibraryLanguage;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:55:     * Resolves the binary JAR for the given coordinates and derives minimal package roots.
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:57:    public static List<String> derivePackageRootsFromJar(Project project, Coordinates coordinates) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:60:                dependencies.create(coordinates.group() + ":" + coordinates.artifact() + ":" + coordinates.version())
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:69:            throw new GradleException("Failed to resolve JAR for " + coordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:76:            project.getLogger().log(LogLevel.WARN, "No packages found in JAR for {}, falling back to group ID", coordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:77:            return List.of(coordinates.group());
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:80:        project.getLogger().log(LogLevel.INFO, "Derived package roots for {}: {}", coordinates, roots);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:188:     * the results into the computed metadata directory for the given coordinates.
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:190:    public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:191:        Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:202:     * and then copies the results into the computed metadata directory for the given coordinates.
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:204:    public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, String gvmTckLv) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:205:        Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:219:    public static void setAllowedPackagesInIndexJson(ProjectLayout layout, Coordinates coordinates, List<String> packages) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:226:                CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", coordinates)
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:235:            if (!matchesGeneratedCoordinate(entry, coordinates)) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:259:    private static boolean matchesGeneratedCoordinate(Map<String, Object> entry, Coordinates coordinates) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:261:        if (coordinates.version().equals(metadataVersion)) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:267:            return versions.contains(coordinates.version());
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:276:    public static void makeVersionLatestInIndexJson(ProjectLayout layout, Coordinates newCoords, String testVersion) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:284:    public static void addVersionToIndexJson(ProjectLayout layout, Coordinates newCoords, String testVersion) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:288:    private static void addVersionToIndexJson(ProjectLayout layout, Coordinates newCoords, String testVersion, boolean markAsLatest) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:319:        LibraryLanguage latestLanguage = null;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:326:                latestLanguage = entry.language();
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:347:                latestLanguage, // language
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:465:                entry.language(),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:488:                entry.language(),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/TestInfraLoggingUtils.java:41:                .append(" -Pcoordinates=")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/TestInfraLoggingUtils.java:78:        lines.add("COORDINATES: " + coordinate);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/TestInfraLoggingUtils.java:90:                "\"$COORDINATES\"",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/GeneralUtils.java:87:    public static Path computeTestsDirectory(ProjectLayout layout, String coordinates) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/GeneralUtils.java:88:        return getPathFromProject(layout, CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", CoordinateUtils.fromString(coordinates)));
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/GeneralUtils.java:91:    public static Path computeMetadataDirectory(ProjectLayout layout, String coordinates) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/GeneralUtils.java:92:        return getPathFromProject(layout, CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", CoordinateUtils.fromString(coordinates)));
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:32:    public static Path discoveryFile(ProjectLayout layout, String coordinates) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:33:        return layout.getBuildDirectory().dir(DISCOVERY_DIR).get().getAsFile().toPath().resolve(sanitizeCoordinate(coordinates) + ".json");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:36:    public static void initializeDiscoveryFile(Path discoveryFile, String coordinates) throws IOException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:42:                coordinates,
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:9:import org.graalvm.internal.tck.Coordinates;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:19:    public static String replace(String template, Coordinates coordinates) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:21:                .replace("$group$", coordinates.group())
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:22:                .replace("$sanitizedGroup$", coordinates.sanitizedGroup())
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:23:                .replace("$artifact$", coordinates.artifact())
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:24:                .replace("$sanitizedArtifact$", coordinates.sanitizedArtifact())
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:25:                .replace("$capitalizedSanitizedArtifact$", coordinates.capitalizedSanitizedArtifact())
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:26:                .replace("$version$", coordinates.version());
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:29:    public static Coordinates fromString(String coordinates) throws IllegalArgumentException {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:30:        String[] coordinatesParts = coordinates.split(":");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:31:        if (coordinatesParts.length != 3) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:32:            throw new IllegalArgumentException("Maven coordinates not provided in the correct format.");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:35:        String group = coordinatesParts[0];
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:36:        String artifact = coordinatesParts[1];
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:37:        String version = coordinatesParts[2];
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:38:        return new Coordinates(group, artifact, version);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:78:     * Given a list of coordinates, returns the k-th batch (1-based) out of n batches,
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:81:    public static List<String> computeBatchedCoordinates(List<String> coordinates, int index, int batches) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java:88:        List<String> sorted = new ArrayList<>(coordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:91:    @Option(option = "coordinates", description = "GAV coordinates of the library")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:92:    void setCoordinates(String c) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:93:        extractInformationFromCoordinates(c);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:97:        // Prefer task option, fallback to -Pcoordinates
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:98:        String coordinates = (String) getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:99:        if (coordinates != null && !getIndexFile().isPresent()) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:100:            extractInformationFromCoordinates(coordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:104:    private void extractInformationFromCoordinates(String c) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:105:        String[] coordinatesParts = c.split(":");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:106:        if (coordinatesParts.length != 3) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:107:            throw new IllegalArgumentException("Maven coordinates should have 3 parts");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:109:        String group = coordinatesParts[0];
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:110:        String artifact = coordinatesParts[1];
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:111:        String version = coordinatesParts[2];
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:112:        Coordinates coordinates = new Coordinates(group, artifact, version);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:114:        getIndexFile().set(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", coordinates)));
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:130:        File coordinatesMetadataIndex = getIndexFile().get().getAsFile();
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:134:        List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(coordinatesMetadataIndex, new TypeReference<>() {});
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:136:            throw new IllegalStateException("Cannot add tested versions to not-for-native-image artifact: " + coordinatesMetadataIndex);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:145:                entries.set(i, handlePreReleases(entry, newVersion, coordinatesMetadataIndex.toPath().getParent(), entries));
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:157:        Files.writeString(coordinatesMetadataIndex.toPath(), json, java.nio.charset.StandardCharsets.UTF_8);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:210:                        entry.language(),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:430:            else if (lines.get(i).startsWith("library.coordinates")) lines.set(i, "library.coordinates = " + group + ":" + artifact + ":" + newVersion);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:615:                        entry.language(),
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:27: * Generates metadata for the given library coordinates and, if packages list is provided, creates a new user-code-filter.json.
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:33:    private String coordinates;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:37:        Object coordsProp = getProject().findProperty("coordinates");
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:38:        if ((this.coordinates == null || this.coordinates.isBlank()) && coordsProp != null) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:39:            this.coordinates = coordsProp.toString();
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:49:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:50:    public void setCoordinates(String coordinates) {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:51:        this.coordinates = coordinates;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:55:    public String getCoordinates() {
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:56:        return coordinates;
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:72:        Path testsDirectory = GeneralUtils.computeTestsDirectory(getLayout(), coordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:74:        Coordinates coordinatesValue = Coordinates.parse(coordinates);
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:75:        List<String> packageList = resolveAllowedPackages(coordinatesValue);
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/LibraryLanguage.java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+/**
+ * Structured language marker for language-specific libraries.
+ */
+public record LibraryLanguage(
+        String name,
+        String version
+) {
+    @JsonIgnore
+    public boolean isScala() {
+        return "scala".equals(name);
+    }
+
+    @JsonIgnore
+    public boolean isScala2() {
+        return isScala() && "2".equals(version);
+    }
+
+    @JsonIgnore
+    public boolean isScala3() {
+        return isScala() && "3".equals(version);
+    }
+
+    @JsonIgnore
+    public boolean isKotlin() {
+        return "kotlin".equals(name);
+    }
+
+    @JsonIgnore
+    public boolean isGroovy() {
+        return "groovy".equals(name);
+    }
+}
+
+exec
+/usr/bin/bash -lc "sed -n '1,180p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.utils;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+import org.gradle.api.file.ProjectLayout;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/**
+ * Utilities for build-local artifact metadata discovery files.
+ */
+public final class ArtifactMetadataDiscoveryUtils {
+    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+    private ArtifactMetadataDiscoveryUtils() {
+    }
+
+    public static Path discoveryFile(ProjectLayout layout, String coordinates) {
+        return layout.getBuildDirectory().dir(DISCOVERY_DIR).get().getAsFile().toPath().resolve(sanitizeCoordinate(coordinates) + ".json");
+    }
+
+    public static void initializeDiscoveryFile(Path discoveryFile, String coordinates) throws IOException {
+        if (Files.exists(discoveryFile)) {
+            return;
+        }
+        Files.createDirectories(discoveryFile.getParent());
+        writeDiscoveryFile(discoveryFile, new DiscoveredArtifactMetadata(
+                coordinates,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        ));
+    }
+
+    public static void writeDiscoveryFile(Path discoveryFile, DiscoveredArtifactMetadata metadata) throws IOException {
+        Files.createDirectories(discoveryFile.getParent());
+        String json = OBJECT_MAPPER.writeValueAsString(metadata);
+        if (!json.endsWith(System.lineSeparator())) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(discoveryFile, json, StandardCharsets.UTF_8);
+    }
+
+    public static DiscoveredArtifactMetadata readDiscoveryFile(Path discoveryFile) throws IOException {
+        return OBJECT_MAPPER.readValue(discoveryFile.toFile(), DiscoveredArtifactMetadata.class);
+    }
+
+    public static String sanitizeCoordinate(String coordinate) {
+        return coordinate.replace(":", "-").replace("/", "-");
+    }
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'LibraryLanguage|language' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck -g '*.java' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:16:import org.graalvm.internal.tck.model.LibraryLanguage;
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:319:        LibraryLanguage latestLanguage = null;
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:326:                latestLanguage = entry.language();
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:347:                latestLanguage, // language
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:465:                entry.language(),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:488:                entry.language(),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:210:                        entry.language(),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:615:                        entry.language(),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/LibraryLanguage.java:12: * Structured language marker for language-specific libraries.
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/LibraryLanguage.java:14:public record LibraryLanguage(
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:37:        @JsonProperty("language")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:38:        LibraryLanguage language,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:26:        @JsonProperty("language")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:27:        LibraryLanguage language,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:16:import org.graalvm.internal.tck.model.LibraryLanguage;
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:105:        LibraryLanguage entryLanguage = resolveEntryLanguage(discoveredMetadata, existingEntries);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:155:    private void writeTestScaffold(Path coordinatesTestRoot, Coordinates coordinates, List<String> packageRoots, LibraryLanguage language) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:156:        ScaffoldFlavor scaffoldFlavor = ScaffoldFlavor.fromLanguage(language);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:187:        // src/test/<language>/
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:206:    private void writeCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:208:        entries.add(createIndexEntry(coordinates, packageRoots, discoveredMetadata, language, true));
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:212:    private void updateCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language) throws IOException {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:221:        MetadataVersionsIndexEntry newEntry = createIndexEntry(coordinates, packageRoots, discoveredMetadata, language, false);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:244:                oldEntry.language(),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:318:    private LibraryLanguage resolveEntryLanguage(DiscoveredArtifactMetadata discoveredMetadata, List<MetadataVersionsIndexEntry> existingEntries) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:319:        if (discoveredMetadata != null && discoveredMetadata.language() != null) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:320:            return discoveredMetadata.language();
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:324:                .filter(entry -> entry.language() != null)
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:326:                .map(MetadataVersionsIndexEntry::language)
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:330:    private MetadataVersionsIndexEntry createIndexEntry(Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language, boolean latest) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:342:                language,
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:381:        static ScaffoldFlavor fromLanguage(LibraryLanguage language) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:382:            if (language == null) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:385:            if (language.isKotlin()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:388:            if (language.isGroovy()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:391:            if (language.isScala2()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:394:            if (language.isScala3()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:397:            if (language.isScala()) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:398:                throw new IllegalStateException("Unsupported Scala version for scaffold generation: " + language.version());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:400:            throw new IllegalStateException("Unsupported language for scaffold generation: " + language.name());
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java && sed -n '360,410p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
+) {}
+        Files.createDirectories(Objects.requireNonNull(path.getParent()));
+        Files.writeString(path, json, StandardCharsets.UTF_8);
+    }
+
+    private enum ScaffoldFlavor {
+        JAVA("/scaffold/build.gradle.template", "/scaffold/Test.java.template", "src/test/java/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.java"),
+        KOTLIN("/scaffold/build.gradle.kotlin.template", "/scaffold/Test.kt.template", "src/test/kotlin/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.kt"),
+        GROOVY("/scaffold/build.gradle.groovy.template", "/scaffold/Test.groovy.template", "src/test/groovy/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.groovy"),
+        SCALA2("/scaffold/build.gradle.scala2.template", "/scaffold/Test.scala.template", "src/test/scala/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.scala"),
+        SCALA3("/scaffold/build.gradle.scala3.template", "/scaffold/Test.scala.template", "src/test/scala/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.scala");
+
+        private final String buildTemplatePath;
+        private final String testTemplatePath;
+        private final String testFileTemplatePath;
+
+        ScaffoldFlavor(String buildTemplatePath, String testTemplatePath, String testFileTemplatePath) {
+            this.buildTemplatePath = buildTemplatePath;
+            this.testTemplatePath = testTemplatePath;
+            this.testFileTemplatePath = testFileTemplatePath;
+        }
+
+        static ScaffoldFlavor fromLanguage(LibraryLanguage language) {
+            if (language == null) {
+                return JAVA;
+            }
+            if (language.isKotlin()) {
+                return KOTLIN;
+            }
+            if (language.isGroovy()) {
+                return GROOVY;
+            }
+            if (language.isScala2()) {
+                return SCALA2;
+            }
+            if (language.isScala3()) {
+                return SCALA3;
+            }
+            if (language.isScala()) {
+                throw new IllegalStateException("Unsupported Scala version for scaffold generation: " + language.version());
+            }
+            throw new IllegalStateException("Unsupported language for scaffold generation: " + language.name());
+        }
+
+        String buildTemplatePath() {
+            return buildTemplatePath;
+        }
+
+        String testTemplatePath() {
+            return testTemplatePath;
+        }
+
+
+codex
+The binary JAR contains JVM `.class` files, so this is a Native Image metadata target and I’m leaving the `not-for-native-image` fields out. The module is Groovy-backed at this version: the POM pins Groovy `4.0.22`, imports Groovy packages, and the sources JAR contains Groovy implementation files, so I’m recording `groovy` `4.0`.
+codex
+I’m updating the discovery JSON now with Maven Central sources/Javadocs, the tagged GitHub test path, the repository root, and the two-sentence description.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+index 902e9e2920be1344124e5c310ca0b6be307eb62e..e93dcda2f8311f3c18023f8245ccaa4306878166
+--- a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:xml-path:5.5.0"
++  "coordinates" : "io.rest-assured:xml-path:5.5.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-sources.jar",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/xml-path/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-javadoc.jar",
++  "description" : "REST Assured XmlPath provides a JVM API for parsing XML documents and querying values with GPath-style expressions. It is used by REST Assured and standalone tests to extract, inspect, and deserialize XML response content.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+index 902e9e2920be1344124e5c310ca0b6be307eb62e..e93dcda2f8311f3c18023f8245ccaa4306878166
+--- a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:xml-path:5.5.0"
++  "coordinates" : "io.rest-assured:xml-path:5.5.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-sources.jar",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/xml-path/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-javadoc.jar",
++  "description" : "REST Assured XmlPath provides a JVM API for parsing XML documents and querying values with GPath-style expressions. It is used by REST Assured and standalone tests to extract, inspect, and deserialize XML response content.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+{
+  "coordinates" : "io.rest-assured:xml-path:5.5.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-sources.jar",
+  "repository-url" : "https://github.com/rest-assured/rest-assured",
+  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/xml-path/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-javadoc.jar",
+  "description" : "REST Assured XmlPath provides a JVM API for parsing XML documents and querying values with GPath-style expressions. It is used by REST Assured and standalone tests to extract, inspect, and deserialize XML response content.",
+  "language" : {
+    "name" : "groovy",
+    "version" : "4.0"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'python -m json.tool build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json >/tmp/io.rest-assured-xml-path-5.5.0.formatted.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/io/rest-assured/xml-path/5.5.0/xml-path-5.5.0-sources.jar \\
+  https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/xml-path/src/test \\
+  https://repo1.maven.org/maven2/io/rest-assured/xml-path/5.5.0/xml-path-5.5.0-javadoc.jar; do \\
+  curl -I -fsSL \""'$url" | sed -n '"'1p'; \\
+done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 107ms:
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+index 902e9e2920be1344124e5c310ca0b6be307eb62e..e93dcda2f8311f3c18023f8245ccaa4306878166
+--- a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:xml-path:5.5.0"
++  "coordinates" : "io.rest-assured:xml-path:5.5.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-sources.jar",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/xml-path/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-javadoc.jar",
++  "description" : "REST Assured XmlPath provides a JVM API for parsing XML documents and querying values with GPath-style expressions. It is used by REST Assured and standalone tests to extract, inspect, and deserialize XML response content.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 619ms:
+HTTP/2 200 
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+index 902e9e2920be1344124e5c310ca0b6be307eb62e..e93dcda2f8311f3c18023f8245ccaa4306878166
+--- a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:xml-path:5.5.0"
++  "coordinates" : "io.rest-assured:xml-path:5.5.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-sources.jar",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/xml-path/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-javadoc.jar",
++  "description" : "REST Assured XmlPath provides a JVM API for parsing XML documents and querying values with GPath-style expressions. It is used by REST Assured and standalone tests to extract, inspect, and deserialize XML response content.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+index 902e9e2920be1344124e5c310ca0b6be307eb62e..e93dcda2f8311f3c18023f8245ccaa4306878166
+--- a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:xml-path:5.5.0"
++  "coordinates" : "io.rest-assured:xml-path:5.5.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-sources.jar",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/xml-path/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-javadoc.jar",
++  "description" : "REST Assured XmlPath provides a JVM API for parsing XML documents and querying values with GPath-style expressions. It is used by REST Assured and standalone tests to extract, inspect, and deserialize XML response content.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+web search: 
+web search: repo1.maven.org io/rest-assured/xml-path/5.5.0 xml-path-5.5.0-sources.jar javadoc jar
+web search: 
+web search: https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/xml-path/src/test
+web search: 
+web search: https://raw.githubusercontent.com/rest-assured/rest-assured/rest-assured-5.5.0/pom.xml
+codex
+Updated [io.rest-assured-xml-path-5.5.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json).
+
+I used Maven Central for the versioned sources and Javadoc URLs, GitHub’s `rest-assured-5.5.0` tag for the test suite URL, and marked the library as Groovy `4.0` based on the 5.5.0 POM’s Groovy version/imports/dependencies. ([repo1.maven.org](https://repo1.maven.org/maven2/io/rest-assured/xml-path/5.5.0/?utm_source=openai))
+
+Validation done: JSON parses cleanly, and the expanded source, test, and documentation URLs all return HTTP 200. The artifact JAR contains JVM class files, so I left `not-for-native-image`, `reason`, and `replacement` absent.
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+index 902e9e2920be1344124e5c310ca0b6be307eb62e..e93dcda2f8311f3c18023f8245ccaa4306878166
+--- a/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:xml-path:5.5.0"
++  "coordinates" : "io.rest-assured:xml-path:5.5.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-sources.jar",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/xml-path/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/rest-assured/xml-path/$version$/xml-path-$version$-javadoc.jar",
++  "description" : "REST Assured XmlPath provides a JVM API for parsing XML documents and querying values with GPath-style expressions. It is used by REST Assured and standalone tests to extract, inspect, and deserialize XML response content.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+tokens used
+111,428
+Updated [io.rest-assured-xml-path-5.5.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7/build/discovered-artifact-metadata/io.rest-assured-xml-path-5.5.0.json).
+
+I used Maven Central for the versioned sources and Javadoc URLs, GitHub’s `rest-assured-5.5.0` tag for the test suite URL, and marked the library as Groovy `4.0` based on the 5.5.0 POM’s Groovy version/imports/dependencies. ([repo1.maven.org](https://repo1.maven.org/maven2/io/rest-assured/xml-path/5.5.0/?utm_source=openai))
+
+Validation done: JSON parses cleanly, and the expanded source, test, and documentation URLs all return HTTP 200. The artifact JAR contains JVM class files, so I left `not-for-native-image`, `reason`, and `replacement` absent.
+Ran agent for io.rest-assured:xml-path:5.5.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7/build/agent-artifact-discovery-logs/io.rest-assured-xml-path-5.5.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2680-eaceaea7/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 28s
+9 actionable tasks: 9 executed
