@@ -177,6 +177,33 @@ public class Hadoop_mapreduce_client_shuffleTest {
     }
 
     @Test
+    void fileRegionUsesZeroCopyTransferWhenAllowed() throws Exception {
+        Path file = writeTempFile("zero-copy-transfer");
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file.toFile(), "r")) {
+            FadvisedFileRegion region = new FadvisedFileRegion(
+                    randomAccessFile,
+                    5,
+                    4,
+                    false,
+                    0,
+                    null,
+                    "zero-copy-region-test",
+                    2,
+                    true);
+            try {
+                long transferred = region.transferTo(Channels.newChannel(output), 0);
+
+                assertThat(transferred).isEqualTo(4);
+                assertThat(new String(output.toByteArray(), StandardCharsets.UTF_8)).isEqualTo("copy");
+            } finally {
+                region.releaseExternalResources();
+            }
+        }
+    }
+
+    @Test
     void shuffleHandlerStartsOnEphemeralPortAndPublishesMetadata() throws Exception {
         Configuration configuration = new Configuration(false);
         configuration.setBoolean(YarnConfiguration.NM_RECOVERY_ENABLED, false);
