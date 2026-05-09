@@ -20,7 +20,7 @@ public class JsonMapperConfiguratorTest {
     public void getDefaultMapperInstantiatesJaxbAnnotationIntrospector() {
         JsonMapperConfigurator configurator = new JsonMapperConfigurator(
                 null,
-                new Annotations[] { Annotations.JAXB });
+                new Annotations[] {Annotations.JAXB});
 
         ObjectMapper mapper = configurator.getDefaultMapper();
 
