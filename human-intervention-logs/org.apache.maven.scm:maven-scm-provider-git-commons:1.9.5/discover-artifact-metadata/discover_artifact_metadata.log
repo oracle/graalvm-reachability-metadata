@@ -1,0 +1,1468 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0e4d-7fe7-7d32-aeac-65b0132bb66f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.9.5" when "$version$" is replaced with "1.9.5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+- Set "coordinates" to "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.9.5".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream Apache SCM before editing the JSON, then I’ll keep the URL templates version-substitutable as requested.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+-rw-rw-r-- 1 vjovanov vjovanov 82 May  9 21:53 build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+{
+  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"maven-scm-provider-git-commons|org.apache.maven.scm\" metadata tests build/discovered-artifact-metadata -g '*.json' -g '*.java' -g '*.xml'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json:2:  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5"
+
+web search: 
+web search: org.apache.maven.scm maven-scm-provider-git-commons 1.9.5 Maven Central sources test-sources
+web search: 
+web search: https://maven.apache.org/scm/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/scm.html
+web search: 
+web search: https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons
+web search: 
+web search: site:maven.apache.org/components/scm-archives/scm-1.9.5 "Maven SCM Git Commons"
+codex
+The Maven Central listing is the key source here because it tells us whether release source or test artifacts were published for 1.9.5. I’m checking that directly now, then I’ll use the Apache archive/GitHub tag for anything Central doesn’t publish.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/1.9.5/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/1.9.5/maven-scm-provider-git-commons-1.9.5.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven.scm</groupId>
+    <artifactId>maven-scm-providers-git</artifactId>
+    <version>1.9.5</version>
+  </parent>
+
+  <artifactId>maven-scm-provider-git-commons</artifactId>
+
+  <name>Maven SCM Git Provider - Common library</name>
+  <description>Common library for SCM Git Provider.</description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+              <goal>xpp3-reader</goal>
+              <goal>xpp3-writer</goal>
+              <goal>xsd</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <version>1.1.0</version>
+          <useJava5>true</useJava5>
+          <models>
+            <model>src/main/mdo/git-settings.mdo</model>
+          </models>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://maven.apache.org/components/scm-archives/scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/apidocs/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+HTTP/2 200 
+server: Apache
+last-modified: Mon, 18 Jun 2018 18:50:17 GMT
+etag: "b38-56eef096b4e32"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Sat, 09 May 2026 19:54:04 GMT
+x-served-by: cache-hel1410034-HEL, cache-fra-eddf8230060-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1778356445.511635,VS0,VE28
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 2872
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://maven.apache.org/components/scm-archives/scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+HTTP/2 200 
+server: Apache
+last-modified: Tue, 18 Feb 2025 15:29:21 GMT
+etag: "3b72-62e6c4e161ba3"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Sat, 09 May 2026 19:54:04 GMT
+x-served-by: cache-hel1410023-HEL, cache-fra-eddf8230055-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1778356445.513722,VS0,VE29
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 15218
+
+
+ succeeded in 263ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/scm/maven-scm-provider-git-commons/1.9.5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/scm/maven-scm-provider-git-commons/1.9.5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-scm-provider-git-commons-1.9.5-javadoc.jar" title="maven-scm-provider-git-commons-1.9.5-javadoc.jar">maven-scm-provider-git-commons-1.9.5-javadoc....</a>  2016-07-01 10:14    166718      
+<a href="maven-scm-provider-git-commons-1.9.5-javadoc.jar.asc" title="maven-scm-provider-git-commons-1.9.5-javadoc.jar.asc">maven-scm-provider-git-commons-1.9.5-javadoc....</a>  2016-07-01 10:14      1575      
+<a href="maven-scm-provider-git-commons-1.9.5-javadoc.jar.md5" title="maven-scm-provider-git-commons-1.9.5-javadoc.jar.md5">maven-scm-provider-git-commons-1.9.5-javadoc....</a>  2016-07-01 10:14        32      
+<a href="maven-scm-provider-git-commons-1.9.5-javadoc.jar.sha1" title="maven-scm-provider-git-commons-1.9.5-javadoc.jar.sha1">maven-scm-provider-git-commons-1.9.5-javadoc....</a>  2016-07-01 10:14        40      
+<a href="maven-scm-provider-git-commons-1.9.5-sources.jar" title="maven-scm-provider-git-commons-1.9.5-sources.jar">maven-scm-provider-git-commons-1.9.5-sources....</a>  2016-07-01 10:14     32091      
+<a href="maven-scm-provider-git-commons-1.9.5-sources.jar.asc" title="maven-scm-provider-git-commons-1.9.5-sources.jar.asc">maven-scm-provider-git-commons-1.9.5-sources....</a>  2016-07-01 10:14      1575      
+<a href="maven-scm-provider-git-commons-1.9.5-sources.jar.md5" title="maven-scm-provider-git-commons-1.9.5-sources.jar.md5">maven-scm-provider-git-commons-1.9.5-sources....</a>  2016-07-01 10:14        32      
+<a href="maven-scm-provider-git-commons-1.9.5-sources.jar.sha1" title="maven-scm-provider-git-commons-1.9.5-sources.jar.sha1">maven-scm-provider-git-commons-1.9.5-sources....</a>  2016-07-01 10:14        40      
+<a href="maven-scm-provider-git-commons-1.9.5.jar" title="maven-scm-provider-git-commons-1.9.5.jar">maven-scm-provider-git-commons-1.9.5.jar</a>          2016-07-01 10:14     34964      
+<a href="maven-scm-provider-git-commons-1.9.5.jar.asc" title="maven-scm-provider-git-commons-1.9.5.jar.asc">maven-scm-provider-git-commons-1.9.5.jar.asc</a>      2016-07-01 10:14      1575      
+<a href="maven-scm-provider-git-commons-1.9.5.jar.md5" title="maven-scm-provider-git-commons-1.9.5.jar.md5">maven-scm-provider-git-commons-1.9.5.jar.md5</a>      2016-07-01 10:14        32      
+<a href="maven-scm-provider-git-commons-1.9.5.jar.sha1" title="maven-scm-provider-git-commons-1.9.5.jar.sha1">maven-scm-provider-git-commons-1.9.5.jar.sha1</a>     2016-07-01 10:14        40      
+<a href="maven-scm-provider-git-commons-1.9.5.pom" title="maven-scm-provider-git-commons-1.9.5.pom">maven-scm-provider-git-commons-1.9.5.pom</a>          2016-07-01 10:14      2121      
+<a href="maven-scm-provider-git-commons-1.9.5.pom.asc" title="maven-scm-provider-git-commons-1.9.5.pom.asc">maven-scm-provider-git-commons-1.9.5.pom.asc</a>      2016-07-01 10:14      1575      
+<a href="maven-scm-provider-git-commons-1.9.5.pom.md5" title="maven-scm-provider-git-commons-1.9.5.pom.md5">maven-scm-provider-git-commons-1.9.5.pom.md5</a>      2016-07-01 10:14        32      
+<a href="maven-scm-provider-git-commons-1.9.5.pom.sha1" title="maven-scm-provider-git-commons-1.9.5.pom.sha1">maven-scm-provider-git-commons-1.9.5.pom.sha1</a>     2016-07-01 10:14        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/maven-scm/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/pom.xml | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven-scm/contents/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test?ref=maven-scm-1.9.5' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 169ms:
+[
+  {
+    "name": "java",
+    "path": "maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test/java",
+    "sha": "2b33336ee4e2cd481314f5185b9f10f5ba2f9856",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven-scm/contents/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test/java?ref=maven-scm-1.9.5",
+    "html_url": "https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test/java",
+    "git_url": "https://api.github.com/repos/apache/maven-scm/git/trees/2b33336ee4e2cd481314f5185b9f10f5ba2f9856",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven-scm/contents/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test/java?ref=maven-scm-1.9.5",
+      "git": "https://api.github.com/repos/apache/maven-scm/git/trees/2b33336ee4e2cd481314f5185b9f10f5ba2f9856",
+      "html": "https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test/resources",
+    "sha": "3d9b3cfd2cca2b7aad7e8eb07f6c61486fb5204b",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven-scm/contents/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test/resources?ref=maven-scm-1.9.5",
+    "html_url": "https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test/resources",
+    "git_url": "https://api.github.com/repos/apache/maven-scm/git/trees/3d9b3cfd2cca2b7aad7e8eb07f6c61486fb5204b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven-scm/contents/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test/resources?ref=maven-scm-1.9.5",
+      "git": "https://api.github.com/repos/apache/maven-scm/git/trees/3d9b3cfd2cca2b7aad7e8eb07f6c61486fb5204b",
+      "html": "https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 182ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven.scm</groupId>
+    <artifactId>maven-scm-providers-git</artifactId>
+    <version>1.9.5</version>
+  </parent>
+
+  <artifactId>maven-scm-provider-git-commons</artifactId>
+
+  <name>Maven SCM Git Provider - Common library</name>
+  <description>Common library for SCM Git Provider.</description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+              <goal>xpp3-reader</goal>
+              <goal>xpp3-writer</goal>
+              <goal>xsd</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <version>1.1.0</version>
+          <useJava5>true</useJava5>
+          <models>
+            <model>src/main/mdo/git-settings.mdo</model>
+          </models>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ succeeded in 465ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 19:54:10 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"fcda85f2b9e27a064d542ab657dfd1b0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=%2F%2FTCqGPOKwFc0hhuqHSODC8hLpBkWKruY%2BsudiS3fJ%2FO%2BkJ0TqG7vsXohINmU8%2BUbVsFBcKd0DafCgxfFjR24GYKufV7pTzvyssFvYoHigUwiGHpQtTuaPVkZIJwVKbP8TM18fb%2F1DA9GQzDWhc7SKd46RZHCtTUkIXSxohVSEmGX57l2b0xt78h%2FvNirOWXwZxdWA8rQvzTjZ7StW%2FCju54CPGqOsiKoSn8sJlEOwUOkul1kguDkNAjENnsdB2jztHnmxuX5u3XxOBE%2BLCnMA%3D%3D--IzGBfAnu2W29VQqy--s98zp2Yq2dXjGyEamXSvhA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2139178307.1778356449; expires=Sun, 09 May 2027 19:54:09 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 19:54:09 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FF:19B89F:D237688:9DAA6AE:69FF90E1
+
+
+ succeeded in 492ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 19:54:10 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"73c1d49ab786e9d9184863cbce9a578c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ozJAmYlXIWxW1h1sO7Tot7%2FOz4z4bjAXyGHhScdei9QoE4RLOZdRXUZIs6%2FzQsUNh2EM6IF7YoH4t8rlC3VSJiOfRxdzaSZdsx6dbhqL47YnWGLz8qZZLmCNxYWE1Ff782oG6OGQVjCBXTAlYSwXT73N26x4vosGI98nw5i21Wu8VKNsVY14on2O00IIP%2F%2FClEcPTUUhJ71YLaqpVGJYQ0GAoRp4tS497bM%2F0dY0OrEG45kFCHJ%2BGZX%2BICocgQVLpq%2BIJXCOE3S%2BbVObollioA%3D%3D--saIilpg2qHGGPuFu--zDnZpRj0oomI%2F0VcqOMFUA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2017407245.1778356449; expires=Sun, 09 May 2027 19:54:09 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 19:54:09 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5115:A44B0:D9D893D:A3E93FE:69FF90E1
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-providers-git/1.9.5/maven-scm-providers-git-1.9.5.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-providers/1.9.5/maven-scm-providers-1.9.5.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm/1.9.5/maven-scm-1.9.5.pom | sed -n '1,320p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>maven-scm</artifactId>
+    <groupId>org.apache.maven.scm</groupId>
+    <version>1.9.5</version>
+  </parent>
+
+  <artifactId>maven-scm-providers</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Maven SCM Providers</name>
+  <description>Parent for all SCM providers supported.</description>
+
+  <modules>
+    <module>maven-scm-provider-accurev</module>
+    <module>maven-scm-provider-bazaar</module>
+    <module>maven-scm-provider-clearcase</module>
+    <module>maven-scm-providers-cvs</module>
+    <module>maven-scm-provider-hg</module>
+    <module>maven-scm-providers-git</module>
+    <module>maven-scm-provider-local</module>
+    <module>maven-scm-provider-perforce</module>
+    <module>maven-scm-providers-standard</module>
+    <module>maven-scm-provider-starteam</module>
+    <module>maven-scm-providers-svn</module>
+    <module>maven-scm-provider-synergy</module>
+    <module>maven-scm-provider-vss</module>
+    <module>maven-scm-provider-tfs</module>
+    <module>maven-scm-provider-integrity</module>
+    <module>maven-scm-provider-jazz</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.scm</groupId>
+      <artifactId>maven-scm-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.scm</groupId>
+      <artifactId>maven-scm-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/*TckTest.java</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>  
+    <profile>
+      <id>tck</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>**/*Test*.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>  
+  </profiles>
+</project>
+
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>maven-scm-providers</artifactId>
+    <groupId>org.apache.maven.scm</groupId>
+    <version>1.9.5</version>
+  </parent>
+
+  <artifactId>maven-scm-providers-git</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Maven SCM Git Provider - Parent</name>
+  <description>SCM Provider implementation for Git (http://git.or.cz/).</description>
+
+  <modules>
+    <module>maven-scm-provider-git-commons</module>
+    <module>maven-scm-provider-gittest</module>
+    <module>maven-scm-provider-gitexe</module>
+    <module>maven-scm-provider-jgit</module>
+  </modules>
+  
+  <profiles>
+    <profile>
+      <id>tck-git</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>nothing</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>  
+  </profiles>  
+</project>
+
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>30</version>
+  </parent>
+
+  <groupId>org.apache.maven.scm</groupId>
+  <artifactId>maven-scm</artifactId>
+  <version>1.9.5</version>
+  <packaging>pom</packaging>
+
+  <name>Maven SCM</name>
+  <description>Maven SCM provides a common API for doing SCM operations.</description>
+  <url>http://maven.apache.org/scm/</url>
+  <inceptionYear>2003</inceptionYear>
+
+  <mailingLists>
+    <mailingList>
+      <name>Maven Developer List</name>
+      <subscribe>dev-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@maven.apache.org</unsubscribe>
+      <post>dev@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-dev</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/dev@maven.apache.org/</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven-Developers-f179.html</otherArchive>
+        <otherArchive>http://maven.dev.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Maven User List</name>
+      <subscribe>users-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@maven.apache.org</unsubscribe>
+      <post>users@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-users</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/users@maven.apache.org/</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven---Users-f178.html</otherArchive>
+        <otherArchive>http://maven.users.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>LEGACY SCM Developer List</name>
+      <subscribe>scm-dev-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>scm-dev-unsubscribe@maven.apache.org</unsubscribe>
+      <post>scm-dev@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-scm-dev</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/scm-dev@maven.apache.org</otherArchive>
+        <otherArchive>http://maven.scm.dev.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>LEGACY SCM User List</name>
+      <subscribe>scm-users-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>scm-users-unsubscribe@maven.apache.org</unsubscribe>
+      <post>scm-users@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-scm-users</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/scm-users@maven.apache.org</otherArchive>
+        <otherArchive>http://maven.scm.users.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>SCM Commits List</name>
+      <subscribe>scm-commits-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>scm-commits-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-scm-commits</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/scm-commits@maven.apache.org</otherArchive>
+        <otherArchive>http://maven.scm.commits.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+
+  <prerequisites>
+    <maven>2.2.1</maven>
+  </prerequisites>
+
+  <modules>
+    <module>maven-scm-api</module>
+    <module>maven-scm-managers</module>
+    <module>maven-scm-test</module>
+    <module>maven-scm-providers</module>
+    <module>maven-scm-client</module>
+    <module>maven-scm-plugin</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/maven-scm.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/maven-scm.git</developerConnection>
+    <url>https://github.com/apache/maven-scm/tree/${project.scm.tag}</url>
+    <tag>maven-scm-1.9.5</tag>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.apache.org/jira/browse/SCM</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>https://builds.apache.org/job/maven-scm/</url>
+  </ciManagement>
+
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scm:svn:https://svn.apache.org/repos/infra/websites/production/maven/components/${maven.site.path}</url>
+    </site>
+  </distributionManagement>
+
+  <properties>
+    <maven.site.path>scm-archives/scm-LATEST</maven.site.path>
+    <checkstyle.violation.ignore>RedundantThrows,NewlineAtEndOfFile,ParameterNumber,MethodLength,FileLength,InnerAssignment,MagicNumber</checkstyle.violation.ignore>
+    <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-manager-plexus</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- providers declaration -->
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-accurev</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-bazaar</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-clearcase</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-cvs-commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-cvsexe</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-cvsjava</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-git-commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-gitexe</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-jgit</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-hg</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-integrity</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-local</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-perforce</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-starteam</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-svn-commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-svnexe</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-synergy</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-vss</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-tfs</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-jazz</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- end providers declaration -->
+
+      <!-- Plexus -->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.0-alpha-9</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.0.15</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.6</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.2</version>
+      </dependency>
+
+      <!-- Test -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.11</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>1.9.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-svntest</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-cvstest</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.scm</groupId>
+        <artifactId>maven-scm-provider-gittest</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+  </dependencies>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven-scm/git/ref/tags/maven-scm-1.9.5' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 221ms:
+{
+  "ref": "refs/tags/maven-scm-1.9.5",
+  "node_id": "MDM6UmVmMjA2MzIwOnJlZnMvdGFncy9tYXZlbi1zY20tMS45LjU=",
+  "url": "https://api.github.com/repos/apache/maven-scm/git/refs/tags/maven-scm-1.9.5",
+  "object": {
+    "sha": "15afaeb8fd37545adde560fb4efae7313bc0df7a",
+    "type": "tag",
+    "url": "https://api.github.com/repos/apache/maven-scm/git/tags/15afaeb8fd37545adde560fb4efae7313bc0df7a"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d) && curl -fsSL -o "$tmp/artifact.jar" https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/1.9.5/maven-scm-provider-git-commons-1.9.5.jar && jar tf "$tmp/artifact.jar" | sed -n '"'1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/scm/
+org/apache/maven/scm/provider/
+org/apache/maven/scm/provider/git/
+org/apache/maven/scm/provider/git/command/
+org/apache/maven/scm/provider/git/command/diff/
+org/apache/maven/scm/provider/git/command/info/
+org/apache/maven/scm/provider/git/command/update/
+org/apache/maven/scm/provider/git/repository/
+org/apache/maven/scm/provider/git/util/
+org/apache/maven/scm/providers/
+org/apache/maven/scm/providers/gitlib/
+org/apache/maven/scm/providers/gitlib/settings/
+org/apache/maven/scm/providers/gitlib/settings/io/
+org/apache/maven/scm/providers/gitlib/settings/io/xpp3/
+META-INF/maven/
+META-INF/maven/org.apache.maven.scm/
+META-INF/maven/org.apache.maven.scm/maven-scm-provider-git-commons/
+META-INF/DEPENDENCIES
+org/apache/maven/scm/provider/git/GitCommandUtils.class
+META-INF/maven/org.apache.maven.scm/maven-scm-provider-git-commons/pom.xml
+META-INF/LICENSE
+org/apache/maven/scm/provider/git/command/update/GitUpdateScmResult.class
+org/apache/maven/scm/providers/gitlib/settings/io/xpp3/GitXpp3Writer.class
+META-INF/NOTICE
+org/apache/maven/scm/provider/git/command/info/GitInfoScmResult.class
+org/apache/maven/scm/providers/gitlib/settings/io/xpp3/GitXpp3Reader.class
+org/apache/maven/scm/provider/git/AbstractGitScmProvider.class
+org/apache/maven/scm/providers/gitlib/settings/Settings.class
+org/apache/maven/scm/provider/git/command/diff/GitDiffConsumer.class
+org/apache/maven/scm/provider/git/AbstractGitScmProvider$ScmUrlParserResult.class
+org/apache/maven/scm/provider/git/GitConfigFileReader.class
+META-INF/maven/org.apache.maven.scm/maven-scm-provider-git-commons/pom.properties
+org/apache/maven/scm/provider/git/AbstractGitScmProvider$1.class
+org/apache/maven/scm/provider/git/repository/GitScmProviderRepository.class
+org/apache/maven/scm/provider/git/command/GitCommand.class
+org/apache/maven/scm/provider/git/command/info/GitInfoItem.class
+org/apache/maven/scm/provider/git/repository/RepositoryUrl.class
+org/apache/maven/scm/provider/git/util/GitUtil.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://maven.apache.org/components/scm-archives/scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+<!DOCTYPE html>
+<!--
+ | Generated by Apache Maven Doxia Site Renderer 1.7.1 at 2016-07-01 
+ | Rendered using Apache Maven Fluido Skin 1.5
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="Date-Revision-yyyymmdd" content="20160701" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>Maven SCM Git Commons &#x2013; About</title>
+    <link rel="stylesheet" href="./css/apache-maven-fluido-1.5.min.css" />
+    <link rel="stylesheet" href="./css/site.css" />
+    <link rel="stylesheet" href="./css/print.css" media="print" />
+
+      
+    <script type="text/javascript" src="./js/apache-maven-fluido-1.5.min.js"></script>
+
+    <!-- Matomo -->
+    <script>
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['disableCookies']);
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+
+        (function() {
+            var u="https://analytics.apache.org/";
+            _paq.push(['setTrackerUrl', u+'/matomo.php']);
+            _paq.push(['setSiteId', '3']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'/matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <!-- End Matomo Code -->
+          </head>
+        <body class="topBarDisabled">
+          
+                
+                    
+    
+        <div class="container-fluid">
+          <div id="banner">
+        <div class="pull-left">
+                                    <a href="https://www.apache.org/" id="bannerLeft">
+                                                                                        <img src="https://maven.apache.org/images/apache-maven-project.png"  alt="Maven SCM Git Provider - Common library"/>
+                </a>
+                      </div>
+        <div class="pull-right">                  <a href="https://maven.apache.org/" id="bannerRight">
+                                                                                        <img src="https://maven.apache.org/images/maven-logo-black-on-white.png" />
+                </a>
+      </div>
+        <div class="clear"><hr/></div>
+      </div>
+
+      <div id="breadcrumbs">
+        <ul class="breadcrumb">
+              
+                              <li class="">
+                    <a href="https://www.apache.org/" class="externalLink" title="Apache">
+        Apache</a>
+                    <span class="divider">/</span>
+      </li>
+            <li class="">
+                    <a href="https://maven.apache.org/index.html" class="externalLink" title="Maven">
+        Maven</a>
+                    <span class="divider">/</span>
+      </li>
+            <li class="">
+                    <a href="../../../index.html" title="Apache Maven SCM">
+        Apache Maven SCM</a>
+                    <span class="divider">/</span>
+      </li>
+            <li class="">
+                    <a href="../../index.html" title="Maven SCM Providers">
+        Maven SCM Providers</a>
+                    <span class="divider">/</span>
+      </li>
+            <li class="">
+                    <a href="../index.html" title="Maven SCM Git Provider">
+        Maven SCM Git Provider</a>
+                    <span class="divider">/</span>
+      </li>
+            <li class="">
+                    <a href="index.html" title="Maven SCM Git Commons">
+        Maven SCM Git Commons</a>
+                    <span class="divider">/</span>
+      </li>
+        <li class="active ">About</li>
+        
+              
+                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2016-07-01</li>
+              <li id="projectVersion" class="pull-right">
+                    Version: 1.9.5
+        </li>
+            
+                            </ul>
+      </div>
+
+            
+      <div class="row-fluid">
+        <div id="leftColumn" class="span2">
+          <div class="well sidebar-nav">
+              
+                <ul class="nav nav-list">
+                    <li class="nav-header">Parent Project</li>
+                              
+      <li>
+  
+                          <a href="../index.html" title="Maven SCM Git Provider - Parent">
+          <span class="none"></span>
+        Maven SCM Git Provider - Parent</a>
+            </li>
+                              <li class="nav-header">Overview</li>
+                              
+      <li class="active">
+  
+            <a href="#"><span class="none"></span>Introduction</a>
+          </li>
+                
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven-scm/contents/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main?ref=maven-scm-1.9.5' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+exec
+/usr/bin/bash -lc "curl -fsSL https://maven.apache.org/components/scm-archives/scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/dependencies.html | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+<!DOCTYPE html>
+<!--
+ | Generated by Apache Maven Doxia Site Renderer 1.7.1 at 2016-07-01 
+ | Rendered using Apache Maven Fluido Skin 1.5
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="Date-Revision-yyyymmdd" content="20160701" />
+    <meta http-equiv="Content-Language" content="en" />
+    <title>Maven SCM Git Commons &#x2013; Project Dependencies</title>
+    <link rel="stylesheet" href="./css/apache-maven-fluido-1.5.min.css" />
+    <link rel="stylesheet" href="./css/site.css" />
+    <link rel="stylesheet" href="./css/print.css" media="print" />
+
+      
+    <script type="text/javascript" src="./js/apache-maven-fluido-1.5.min.js"></script>
+
+    <!-- Matomo -->
+    <script>
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['disableCookies']);
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+
+        (function() {
+            var u="https://analytics.apache.org/";
+            _paq.push(['setTrackerUrl', u+'/matomo.php']);
+            _paq.push(['setSiteId', '3']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'/matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <!-- End Matomo Code -->
+          </head>
+        <body class="topBarDisabled">
+          
+                
+                    
+    
+        <div class="container-fluid">
+          <div id="banner">
+        <div class="pull-left">
+                                    <a href="https://www.apache.org/" id="bannerLeft">
+                                                                                        <img src="https://maven.apache.org/images/apache-maven-project.png"  alt="Maven SCM Git Provider - Common library"/>
+                </a>
+                      </div>
+        <div class="pull-right">                  <a href="https://maven.apache.org/" id="bannerRight">
+                                                                                        <img src="https://maven.apache.org/images/maven-logo-black-on-white.png" />
+                </a>
+      </div>
+        <div class="clear"><hr/></div>
+      </div>
+
+      <div id="breadcrumbs">
+        <ul class="breadcrumb">
+              
+                              <li class="">
+                    <a href="https://www.apache.org/" class="externalLink" title="Apache">
+        Apache</a>
+                    <span class="divider">/</span>
+      </li>
+            <li class="">
+                    <a href="https://maven.apache.org/index.html" class="externalLink" title="Maven">
+        Maven</a>
+                    <span class="divider">/</span>
+      </li>
+            <li class="">
+                    <a href="../../../index.html" title="Apache Maven SCM">
+        Apache Maven SCM</a>
+                    <span class="divider">/</span>
+      </li>
+            <li class="">
+                    <a href="../../index.html" title="Maven SCM Providers">
+        Maven SCM Providers</a>
+                    <span class="divider">/</span>
+      </li>
+            <li class="">
+                    <a href="../index.html" title="Maven SCM Git Provider">
+        Maven SCM Git Provider</a>
+                    <span class="divider">/</span>
+      </li>
+            <li class="">
+                    <a href="index.html" title="Maven SCM Git Commons">
+        Maven SCM Git Commons</a>
+                    <span class="divider">/</span>
+      </li>
+        <li class="active ">Project Dependencies</li>
+        
+              
+                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2016-07-01</li>
+              <li id="projectVersion" class="pull-right">
+                    Version: 1.9.5
+        </li>
+            
+                            </ul>
+      </div>
+
+            
+      <div class="row-fluid">
+        <div id="leftColumn" class="span2">
+          <div class="well sidebar-nav">
+              
+                <ul class="nav nav-list">
+                    <li class="nav-header">Parent Project</li>
+                              
+      <li>
+  
+                          <a href="../index.html" title="Maven SCM Git Provider - Parent">
+          <span class="none"></span>
+        Maven SCM Git Provider - Parent</a>
+            </li>
+                              <li class="nav-header">Overview</li>
+                              
+      <li>
+  
+                          <a href="index.html" title="Introduction">
+          <span class="none"></span>
+        Introduction</a>
+
+ succeeded in 149ms:
+[
+  {
+    "name": "java",
+    "path": "maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main/java",
+    "sha": "8490b3484ee94ef2de1eeb45ed0e56b9c6fca617",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven-scm/contents/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main/java?ref=maven-scm-1.9.5",
+    "html_url": "https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main/java",
+    "git_url": "https://api.github.com/repos/apache/maven-scm/git/trees/8490b3484ee94ef2de1eeb45ed0e56b9c6fca617",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven-scm/contents/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main/java?ref=maven-scm-1.9.5",
+      "git": "https://api.github.com/repos/apache/maven-scm/git/trees/8490b3484ee94ef2de1eeb45ed0e56b9c6fca617",
+      "html": "https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main/java"
+    }
+  },
+  {
+    "name": "mdo",
+    "path": "maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main/mdo",
+    "sha": "1a0be16f672cca9e361183b8fb33bec08c2343c5",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven-scm/contents/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main/mdo?ref=maven-scm-1.9.5",
+    "html_url": "https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main/mdo",
+    "git_url": "https://api.github.com/repos/apache/maven-scm/git/trees/1a0be16f672cca9e361183b8fb33bec08c2343c5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven-scm/contents/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main/mdo?ref=maven-scm-1.9.5",
+      "git": "https://api.github.com/repos/apache/maven-scm/git/trees/1a0be16f672cca9e361183b8fb33bec08c2343c5",
+      "html": "https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/main/mdo"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' -size +200c | head -10 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"' build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+codex
+I found a published Maven Central sources JAR for 1.9.5 but no test-sources artifact in that release directory. The artifact JAR contains Java `.class` files, so I’m leaving the language and `not-for-native-image` fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+index 39645c504710103592396e7e3d415b0234d1721d..2b516964193bd1453245f86002f679daa3dea943
+--- a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5"
++  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5",
++  "repository-url" : "https://github.com/apache/maven-scm",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/$version$/maven-scm-provider-git-commons-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-scm/tree/maven-scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test",
++  "documentation-url" : "https://maven.apache.org/components/scm-archives/scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/",
++  "description" : "Maven SCM Git Provider Commons supplies shared Java support classes and a generated Git settings model used by the Maven SCM Git providers. It parses and writes Git provider configuration and provides common command, repository, and result types reused by the executable Git and JGit providers."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+index 39645c504710103592396e7e3d415b0234d1721d..2b516964193bd1453245f86002f679daa3dea943
+--- a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5"
++  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5",
++  "repository-url" : "https://github.com/apache/maven-scm",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/$version$/maven-scm-provider-git-commons-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-scm/tree/maven-scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test",
++  "documentation-url" : "https://maven.apache.org/components/scm-archives/scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/",
++  "description" : "Maven SCM Git Provider Commons supplies shared Java support classes and a generated Git settings model used by the Maven SCM Git providers. It parses and writes Git provider configuration and provides common command, repository, and result types reused by the executable Git and JGit providers."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5",
+  "repository-url": "https://github.com/apache/maven-scm",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/$version$/maven-scm-provider-git-commons-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/maven-scm/tree/maven-scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test",
+  "documentation-url": "https://maven.apache.org/components/scm-archives/scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/",
+  "description": "Maven SCM Git Provider Commons supplies shared Java support classes and a generated Git settings model used by the Maven SCM Git providers. It parses and writes Git provider configuration and provides common command, repository, and result types reused by the executable Git and JGit providers."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 19:54:10 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"fcda85f2b9e27a064d542ab657dfd1b0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ft7WpRlbfMUxlica1yJHUXgA3%2FmiFnuD%2FqbSIHHawR471XZ0x%2BzLFFBFvAv5i5paAN1myyFaS%2B9MfJZ4ZkEHq2s5Yjw%2B2NVWIbYxH%2B%2FJ9wib0%2BCps0O81kk9Ay2wsgdPziV6ZGREigi%2FeZiA3bBpn3MYL4VOv4qhvMEVLrzYUjfdJF0tayl6z7H%2BA7Uw67cpQI621sXndNbxyLmhivcFsuV0AOxZCzNhzcsndz08O0qCWh0XTOmk%2Bn%2F6tnaGFaXky7Ww14mhOIj491cQwIJdTg%3D%3D--seg%2FL9RLOBTyXKQM--djwz9o0FHZ3SqFdxvBiDSA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.640293508.1778356486; expires=Sun, 09 May 2027 19:54:46 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 19:54:46 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5103:68A63:D698EB5:A15A3A1:69FF9106
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://maven.apache.org/components/scm-archives/scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+HTTP/2 200 
+server: Apache
+last-modified: Tue, 18 Feb 2025 15:29:21 GMT
+etag: "3b72-62e6c4e161ba3"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+date: Sat, 09 May 2026 19:54:46 GMT
+age: 42
+x-served-by: cache-hel1410023-HEL, cache-fra-eddf8230107-FRA
+x-cache: MISS, HIT
+x-cache-hits: 0, 1
+x-timer: S1778356487.557725,VS0,VE2
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 15218
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/1.9.5/maven-scm-provider-git-commons-1.9.5-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+index 39645c504710103592396e7e3d415b0234d1721d..2b516964193bd1453245f86002f679daa3dea943
+--- a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5"
++  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5",
++  "repository-url" : "https://github.com/apache/maven-scm",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/$version$/maven-scm-provider-git-commons-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-scm/tree/maven-scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test",
++  "documentation-url" : "https://maven.apache.org/components/scm-archives/scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/",
++  "description" : "Maven SCM Git Provider Commons supplies shared Java support classes and a generated Git settings model used by the Maven SCM Git providers. It parses and writes Git provider configuration and provides common command, repository, and result types reused by the executable Git and JGit providers."
+ }
+
+ succeeded in 332ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 19:54:46 GMT
+content-type: application/java-archive
+content-length: 32091
+cf-ray: 9f934208dc3775ff-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "c8fb943f00041e93cd2d7777084f2638"
+last-modified: Fri, 01 Jul 2016 10:14:26 GMT
+x-checksum-md5: c8fb943f00041e93cd2d7777084f2638
+x-checksum-sha1: 58a6fa48323a7e40b44740460eff206fa97da036
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+index 39645c504710103592396e7e3d415b0234d1721d..2b516964193bd1453245f86002f679daa3dea943
+--- a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5"
++  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5",
++  "repository-url" : "https://github.com/apache/maven-scm",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/$version$/maven-scm-provider-git-commons-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-scm/tree/maven-scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test",
++  "documentation-url" : "https://maven.apache.org/components/scm-archives/scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/",
++  "description" : "Maven SCM Git Provider Commons supplies shared Java support classes and a generated Git settings model used by the Maven SCM Git providers. It parses and writes Git provider configuration and provides common command, repository, and result types reused by the executable Git and JGit providers."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json && git status --short -- build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+index 39645c504710103592396e7e3d415b0234d1721d..2b516964193bd1453245f86002f679daa3dea943
+--- a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5"
++  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5",
++  "repository-url" : "https://github.com/apache/maven-scm",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/$version$/maven-scm-provider-git-commons-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-scm/tree/maven-scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test",
++  "documentation-url" : "https://maven.apache.org/components/scm-archives/scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/",
++  "description" : "Maven SCM Git Provider Commons supplies shared Java support classes and a generated Git settings model used by the Maven SCM Git providers. It parses and writes Git provider configuration and provides common command, repository, and result types reused by the executable Git and JGit providers."
+ }
+
+ succeeded in 228ms:
+web search: 
+web search: https://github.com/apache/maven-scm/tree/maven-scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test
+web search: 
+web search: repo.maven.apache.org maven-scm-provider-git-commons 1.9.5 sources.jar
+web search: 
+web search: site:maven.apache.org/scm-archives/scm-1.9.5/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/ "Version: 1.9.5" "Maven SCM Git Commons"
+codex
+Updated [org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json).
+
+I used Maven Central for the published sources JAR, GitHub tag `maven-scm-1.9.5` for tests, and the Maven SCM 1.9.5 archive for documentation. Maven Central publishes the JAR and sources but not a test-sources artifact, and the artifact is a JVM JAR with Java class files, so I left `language` and `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/1.9.5/?utm_source=openai))
+
+Validation: `jq` passed, and the substituted source, test, and documentation URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+index 39645c504710103592396e7e3d415b0234d1721d..2b516964193bd1453245f86002f679daa3dea943
+--- a/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5"
++  "coordinates" : "org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5",
++  "repository-url" : "https://github.com/apache/maven-scm",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/$version$/maven-scm-provider-git-commons-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-scm/tree/maven-scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/src/test",
++  "documentation-url" : "https://maven.apache.org/components/scm-archives/scm-$version$/maven-scm-providers/maven-scm-providers-git/maven-scm-provider-git-commons/",
++  "description" : "Maven SCM Git Provider Commons supplies shared Java support classes and a generated Git settings model used by the Maven SCM Git providers. It parses and writes Git provider configuration and provides common command, repository, and result types reused by the executable Git and JGit providers."
+ }
+
+tokens used
+71,076
+Updated [org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15/build/discovered-artifact-metadata/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.json).
+
+I used Maven Central for the published sources JAR, GitHub tag `maven-scm-1.9.5` for tests, and the Maven SCM 1.9.5 archive for documentation. Maven Central publishes the JAR and sources but not a test-sources artifact, and the artifact is a JVM JAR with Java class files, so I left `language` and `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-provider-git-commons/1.9.5/?utm_source=openai))
+
+Validation: `jq` passed, and the substituted source, test, and documentation URLs all returned HTTP 200.
+Ran agent for org.apache.maven.scm:maven-scm-provider-git-commons:1.9.5 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15/build/agent-artifact-discovery-logs/org.apache.maven.scm-maven-scm-provider-git-commons-1.9.5.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2728-90b01e15/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 7s
+9 actionable tasks: 9 executed
