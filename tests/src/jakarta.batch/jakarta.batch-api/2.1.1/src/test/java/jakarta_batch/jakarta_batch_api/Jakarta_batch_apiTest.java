@@ -192,6 +192,55 @@ public class Jakarta_batch_apiTest {
     }
 
     @Test
+    void abstractListenerAndPartitionAdaptersAllowPartialImplementations() throws Exception {
+        PartialJobListener jobListener = new PartialJobListener();
+        jobListener.beforeJob();
+        jobListener.afterJob();
+        assertThat(jobListener.events()).containsExactly("afterJob");
+
+        PartialStepListener stepListener = new PartialStepListener();
+        stepListener.beforeStep();
+        stepListener.afterStep();
+        assertThat(stepListener.events()).containsExactly("beforeStep");
+
+        PartialChunkListener chunkListener = new PartialChunkListener();
+        chunkListener.beforeChunk();
+        chunkListener.onError(new Exception("ignored"));
+        chunkListener.afterChunk();
+        assertThat(chunkListener.events()).containsExactly("afterChunk");
+
+        PartialItemReadListener readListener = new PartialItemReadListener();
+        readListener.beforeRead();
+        readListener.afterRead("record");
+        readListener.onReadError(new Exception("ignored"));
+        assertThat(readListener.events()).containsExactly("afterRead:record");
+
+        PartialItemProcessListener processListener = new PartialItemProcessListener();
+        processListener.beforeProcess("input");
+        processListener.afterProcess("input", "output");
+        processListener.onProcessError("input", new Exception("ignored"));
+        assertThat(processListener.events()).containsExactly("afterProcess:input->output");
+
+        PartialItemWriteListener writeListener = new PartialItemWriteListener();
+        writeListener.beforeWrite(List.of("ignored"));
+        writeListener.afterWrite(List.of("written"));
+        writeListener.onWriteError(List.of("ignored"), new Exception("ignored"));
+        assertThat(writeListener.events()).containsExactly("afterWrite:written");
+
+        PartialPartitionAnalyzer analyzer = new PartialPartitionAnalyzer();
+        analyzer.analyzeCollectorData("ignored");
+        analyzer.analyzeStatus(BatchStatus.STOPPED, "stopped");
+        assertThat(analyzer.events()).containsExactly("status:STOPPED:stopped");
+
+        PartialPartitionReducer reducer = new PartialPartitionReducer();
+        reducer.beginPartitionedStep();
+        reducer.beforePartitionedStepCompletion();
+        reducer.rollbackPartitionedStep();
+        reducer.afterPartitionedStepCompletion(PartitionReducer.PartitionStatus.ROLLBACK);
+        assertThat(reducer.events()).containsExactly("after:ROLLBACK");
+    }
+
+    @Test
     void retryAndSkipListenerInterfacesReceiveFailuresAndItems() throws Exception {
         RecordingRetryAndSkipListener listener = new RecordingRetryAndSkipListener();
 
@@ -804,6 +853,110 @@ public class Jakarta_batch_apiTest {
         public void rollbackPartitionedStep() {
             events.add("rollback");
         }
+
+        @Override
+        public void afterPartitionedStepCompletion(PartitionStatus status) {
+            events.add("after:" + status);
+        }
+
+        private List<String> events() {
+            return events;
+        }
+    }
+
+    private static final class PartialJobListener extends AbstractJobListener {
+        private final List<String> events = new ArrayList<>();
+
+        @Override
+        public void afterJob() {
+            events.add("afterJob");
+        }
+
+        private List<String> events() {
+            return events;
+        }
+    }
+
+    private static final class PartialStepListener extends AbstractStepListener {
+        private final List<String> events = new ArrayList<>();
+
+        @Override
+        public void beforeStep() {
+            events.add("beforeStep");
+        }
+
+        private List<String> events() {
+            return events;
+        }
+    }
+
+    private static final class PartialChunkListener extends AbstractChunkListener {
+        private final List<String> events = new ArrayList<>();
+
+        @Override
+        public void afterChunk() {
+            events.add("afterChunk");
+        }
+
+        private List<String> events() {
+            return events;
+        }
+    }
+
+    private static final class PartialItemReadListener extends AbstractItemReadListener {
+        private final List<String> events = new ArrayList<>();
+
+        @Override
+        public void afterRead(Object item) {
+            events.add("afterRead:" + item);
+        }
+
+        private List<String> events() {
+            return events;
+        }
+    }
+
+    private static final class PartialItemProcessListener extends AbstractItemProcessListener {
+        private final List<String> events = new ArrayList<>();
+
+        @Override
+        public void afterProcess(Object item, Object result) {
+            events.add("afterProcess:" + item + "->" + result);
+        }
+
+        private List<String> events() {
+            return events;
+        }
+    }
+
+    private static final class PartialItemWriteListener extends AbstractItemWriteListener {
+        private final List<String> events = new ArrayList<>();
+
+        @Override
+        public void afterWrite(List<Object> items) {
+            events.add("afterWrite:" + items.get(0));
+        }
+
+        private List<String> events() {
+            return events;
+        }
+    }
+
+    private static final class PartialPartitionAnalyzer extends AbstractPartitionAnalyzer {
+        private final List<String> events = new ArrayList<>();
+
+        @Override
+        public void analyzeStatus(BatchStatus batchStatus, String exitStatus) {
+            events.add("status:" + batchStatus + ":" + exitStatus);
+        }
+
+        private List<String> events() {
+            return events;
+        }
+    }
+
+    private static final class PartialPartitionReducer extends AbstractPartitionReducer {
+        private final List<String> events = new ArrayList<>();
 
         @Override
         public void afterPartitionedStepCompletion(PartitionStatus status) {
