@@ -131,6 +131,22 @@ public class Spring_data_jpaTest {
     }
 
     @Test
+    void nativeSqlQueryMethodsMapScalarResults() {
+        try (AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(JpaTestConfiguration.class)) {
+            JpaSampleUserRepository repository = context.getBean(JpaSampleUserRepository.class);
+
+            repository.saveAll(Arrays.asList(
+                    user("ada", "ada-native@example.org", 36, true, JpaSampleRole.ADMIN),
+                    user("grace", "grace-native@example.org", 17, false, JpaSampleRole.USER),
+                    user("linus", "linus-native@example.org", 54, true, JpaSampleRole.USER)));
+            repository.flush();
+
+            assertThat(repository.findActiveUsernamesWithNativeQuery()).containsExactly("ada", "linus");
+        }
+    }
+
+    @Test
     void domainSortHelpersAndJavaTimeConvertersExposeStablePublicBehavior() {
         JpaSort unsafeSort = JpaSort.unsafe(Sort.Direction.DESC, "LENGTH(username)")
                 .andUnsafe(Sort.Direction.ASC, "LOWER(email)");
@@ -234,6 +250,9 @@ interface JpaSampleUserRepository extends JpaRepository<JpaSampleUser, Long>, Jp
 
     @Query("select u.username from JpaSampleUser u where u.age >= :minimumAge order by u.username")
     List<String> findUsernamesAtLeastAge(@Param("minimumAge") int minimumAge);
+
+    @Query(value = "select username from jpa_sample_users where active = true order by username", nativeQuery = true)
+    List<String> findActiveUsernamesWithNativeQuery();
 
     @EntityGraph(attributePaths = "purchases")
     Optional<JpaSampleUser> findWithPurchasesByUsername(String username);
