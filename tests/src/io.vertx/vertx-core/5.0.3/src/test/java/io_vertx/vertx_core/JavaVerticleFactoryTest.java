@@ -7,9 +7,9 @@
 package io_vertx.vertx_core;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Deployable;
 import io.vertx.core.Promise;
-import io.vertx.core.Verticle;
-import io.vertx.core.impl.JavaVerticleFactory;
+import io.vertx.core.impl.verticle.JavaVerticleFactory;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
@@ -25,10 +25,10 @@ public class JavaVerticleFactoryTest extends AbstractVerticle {
 
     @Test
     void createsVerticleCallableFromJavaClassName() {
-        final Promise<Callable<Verticle>> promise = Promise.promise();
+        final Promise<Callable<? extends Deployable>> promise = Promise.promise();
         final JavaVerticleFactory factory = new JavaVerticleFactory();
 
-        factory.createVerticle("java:" + TEST_VERTICLE_CLASS_NAME, testClassLoader(), promise);
+        factory.createVerticle2("java:" + TEST_VERTICLE_CLASS_NAME, testClassLoader(), promise);
 
         assertSuccessfulCompletion(promise);
         assertNotNull(promise.future().result());
@@ -37,10 +37,10 @@ public class JavaVerticleFactoryTest extends AbstractVerticle {
     @Test
     void createsVerticleCallableFromJavaSourceResource() {
         try {
-            final Promise<Callable<Verticle>> promise = Promise.promise();
+            final Promise<Callable<? extends Deployable>> promise = Promise.promise();
             final JavaVerticleFactory factory = new JavaVerticleFactory();
 
-            factory.createVerticle("java:" + TEST_VERTICLE_SOURCE_RESOURCE, testClassLoader(), promise);
+            factory.createVerticle2("java:" + TEST_VERTICLE_SOURCE_RESOURCE, testClassLoader(), promise);
 
             assertSuccessfulCompletion(promise);
             assertNotNull(promise.future().result());
@@ -55,11 +55,11 @@ public class JavaVerticleFactoryTest extends AbstractVerticle {
         return JavaVerticleFactoryTest.class.getClassLoader();
     }
 
-    private static void assertSuccessfulCompletion(Promise<Callable<Verticle>> promise) {
+    private static void assertSuccessfulCompletion(Promise<Callable<? extends Deployable>> promise) {
         assertTrue(promise.future().succeeded(), () -> failureMessage(promise));
     }
 
-    private static String failureMessage(Promise<Callable<Verticle>> promise) {
+    private static String failureMessage(Promise<Callable<? extends Deployable>> promise) {
         final Throwable cause = promise.future().cause();
         if (cause == null) {
             return "Expected JavaVerticleFactory to complete the promise";
