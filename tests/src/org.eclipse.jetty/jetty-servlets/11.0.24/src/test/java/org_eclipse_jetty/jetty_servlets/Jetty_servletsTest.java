@@ -29,9 +29,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,6 +50,7 @@ import org.eclipse.jetty.servlets.DoSFilter;
 import org.eclipse.jetty.servlets.EventSource;
 import org.eclipse.jetty.servlets.EventSourceServlet;
 import org.eclipse.jetty.servlets.HeaderFilter;
+import org.eclipse.jetty.servlets.IncludeExcludeBasedFilter;
 import org.eclipse.jetty.servlets.QoSFilter;
 import org.junit.jupiter.api.Test;
 
@@ -144,6 +149,23 @@ public class Jetty_servletsTest {
                 "data: hello\r\n",
                 "data: world\r\n",
                 ": completed\r\n");
+        }
+    }
+
+    @Test
+    void includeExcludeBasedFilterMatchesGuessedMimeTypes() throws Exception {
+        FilterHolder mimeFilter = new FilterHolder(new MimeTypeFlaggingFilter());
+        mimeFilter.setInitParameter("includedMimeTypes", "application/json,text/plain");
+        mimeFilter.setInitParameter("excludedMimeTypes", "text/html");
+
+        try (JettyServer server = JettyServer.start(new TextServlet("ok", new AtomicInteger()), mimeFilter)) {
+            Response json = rawRequest(server.uri("/documents/report.json"), "GET", Map.of(), null);
+            assertThat(json.status()).isEqualTo(HttpServletResponse.SC_OK);
+            assertThat(json.header("X-Mime-Eligible")).isEqualTo("true");
+
+            Response html = rawRequest(server.uri("/documents/page.html"), "GET", Map.of(), null);
+            assertThat(html.status()).isEqualTo(HttpServletResponse.SC_OK);
+            assertThat(html.header("X-Mime-Eligible")).isEqualTo("false");
         }
     }
 
@@ -420,6 +442,19 @@ public class Jetty_servletsTest {
             calls.incrementAndGet();
             response.setContentType("text/plain;charset=UTF-8");
             response.getWriter().write(text);
+        }
+    }
+
+    private static final class MimeTypeFlaggingFilter extends IncludeExcludeBasedFilter {
+        @Override
+        public void doFilter(
+            ServletRequest request,
+            ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
+            HttpServletRequest httpRequest = (HttpServletRequest)request;
+            HttpServletResponse httpResponse = (HttpServletResponse)response;
+            httpResponse.setHeader("X-Mime-Eligible", Boolean.toString(shouldFilter(httpRequest, httpResponse)));
+            chain.doFilter(request, response);
         }
     }
 
