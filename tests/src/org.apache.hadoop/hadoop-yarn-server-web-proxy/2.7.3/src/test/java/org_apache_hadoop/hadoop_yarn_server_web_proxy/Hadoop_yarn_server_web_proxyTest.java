@@ -167,6 +167,27 @@ public class Hadoop_yarn_server_web_proxyTest {
     }
 
     @Test
+    void amIpFilterSupportsLegacySingleProxyConfiguration() throws Exception {
+        AmIpFilter filter = new AmIpFilter();
+        filter.init(new SimpleFilterConfig(legacyFilterParameters()));
+        TestHttpServletRequest request = new TestHttpServletRequest()
+                .withRemoteAddr("203.0.113.10")
+                .withRequestUri("/application/ui")
+                .withMethod("GET");
+        RecordingHttpServletResponse response = new RecordingHttpServletResponse();
+        RecordingFilterChain chain = new RecordingFilterChain();
+
+        filter.doFilter(request, response, chain);
+
+        assertThat(chain.called).isFalse();
+        assertThat(response.status).isEqualTo(HttpServletResponse.SC_FOUND);
+        assertThat(response.headers)
+                .containsEntry(ProxyUtils.LOCATION, "http://legacy-proxy.example:8088/proxy/application/ui");
+        assertThat(response.body()).contains("Content has moved", "http://legacy-proxy.example:8088/proxy/application/ui");
+        filter.destroy();
+    }
+
+    @Test
     void amIpFilterWrapsProxyRequestsWithUserPrincipalFromCookie() throws Exception {
         AmIpFilter filter = new AmIpFilter();
         filter.init(new SimpleFilterConfig(filterParameters()));
@@ -248,6 +269,13 @@ public class Hadoop_yarn_server_web_proxyTest {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(AmIpFilter.PROXY_HOSTS, "127.0.0.1");
         parameters.put(AmIpFilter.PROXY_URI_BASES, "http://proxy.example:8088/proxy");
+        return parameters;
+    }
+
+    private static Map<String, String> legacyFilterParameters() {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(AmIpFilter.PROXY_HOST, "127.0.0.1");
+        parameters.put(AmIpFilter.PROXY_URI_BASE, "http://legacy-proxy.example:8088/proxy");
         return parameters;
     }
 
