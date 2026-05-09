@@ -41,7 +41,9 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.Participant;
+import org.apache.curator.framework.recipes.locks.InterProcessLock;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
+import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
 import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreV2;
 import org.apache.curator.framework.recipes.locks.Lease;
 import org.apache.curator.framework.recipes.nodes.PersistentEphemeralNode;
@@ -281,6 +283,43 @@ public class Curator_recipesTest {
                 closeLeaderLatchIfStarted(firstLatch);
                 closeLeaderLatchIfStarted(secondLatch);
             }
+        }
+    }
+
+    @Test
+    void interProcessReadWriteLockCoordinatesSharedReadersAndExclusiveWriters() throws Exception {
+        try (LocalZooKeeperServer server = LocalZooKeeperServer.start();
+                CuratorFramework firstClient = newClient(server);
+                CuratorFramework secondClient = newClient(server)) {
+            InterProcessReadWriteLock firstLocks = new InterProcessReadWriteLock(firstClient, "/locks/read-write");
+            InterProcessReadWriteLock secondLocks = new InterProcessReadWriteLock(secondClient, "/locks/read-write");
+            InterProcessLock firstReadLock = firstLocks.readLock();
+            InterProcessLock secondReadLock = secondLocks.readLock();
+            InterProcessLock firstWriteLock = firstLocks.writeLock();
+            InterProcessLock secondWriteLock = secondLocks.writeLock();
+
+            assertThat(firstReadLock.acquire(5, TimeUnit.SECONDS)).isTrue();
+            try {
+                assertThat(secondReadLock.acquire(5, TimeUnit.SECONDS)).isTrue();
+                try {
+                    assertThat(secondWriteLock.acquire(100, TimeUnit.MILLISECONDS)).isFalse();
+                } finally {
+                    secondReadLock.release();
+                }
+            } finally {
+                firstReadLock.release();
+            }
+
+            assertThat(secondWriteLock.acquire(5, TimeUnit.SECONDS)).isTrue();
+            try {
+                assertThat(firstReadLock.acquire(100, TimeUnit.MILLISECONDS)).isFalse();
+                assertThat(firstWriteLock.acquire(100, TimeUnit.MILLISECONDS)).isFalse();
+            } finally {
+                secondWriteLock.release();
+            }
+
+            assertThat(firstWriteLock.acquire(5, TimeUnit.SECONDS)).isTrue();
+            firstWriteLock.release();
         }
     }
 
