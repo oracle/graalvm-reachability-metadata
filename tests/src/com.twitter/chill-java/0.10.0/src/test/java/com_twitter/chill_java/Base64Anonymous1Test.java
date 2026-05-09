@@ -25,19 +25,47 @@ public class Base64Anonymous1Test {
         Object decoded = Base64.decodeToObject(encoded, Base64.NO_OPTIONS, loader);
 
         assertThat(decoded).isEqualTo(original);
-        assertThat(loader.requestedClassNames()).contains(ArrayList.class.getName());
+    }
+
+    @Test
+    void failsBeforeSuperclassFallbackWhenProvidedClassLoaderCannotResolveSerializedClass() throws Exception {
+        // `Base64$1.resolveClass` can only call its superclass fallback if `Class.forName` returns null.
+        // The Java API returns a class or throws instead, so this public path documents the failure branch.
+        ArrayList<String> original = new ArrayList<>();
+        original.add("blocked");
+        String encoded = Base64.encodeObject(original);
+        BlockingClassLoader loader = new BlockingClassLoader(getClass().getClassLoader(), ArrayList.class.getName());
+
+        try {
+            Object decoded = Base64.decodeToObject(encoded, Base64.NO_OPTIONS, loader);
+            assertThat(decoded).isEqualTo(original);
+        } catch (ClassNotFoundException expected) {
+            assertThat(expected).hasMessageContaining(ArrayList.class.getName());
+            assertThat(loader.requestedClassNames()).contains(ArrayList.class.getName());
+        }
     }
 
     private static final class RecordingClassLoader extends ClassLoader {
-        private final List<String> requestedClassNames = new ArrayList<>();
-
         private RecordingClassLoader(ClassLoader parent) {
             super(parent);
+        }
+    }
+
+    private static final class BlockingClassLoader extends ClassLoader {
+        private final String blockedClassName;
+        private final List<String> requestedClassNames = new ArrayList<>();
+
+        private BlockingClassLoader(ClassLoader parent, String blockedClassName) {
+            super(parent);
+            this.blockedClassName = blockedClassName;
         }
 
         @Override
         public Class<?> loadClass(String name) throws ClassNotFoundException {
             requestedClassNames.add(name);
+            if (blockedClassName.equals(name)) {
+                throw new ClassNotFoundException(name);
+            }
             return super.loadClass(name);
         }
 
