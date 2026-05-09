@@ -225,6 +225,26 @@ public class Maven_scm_provider_git_commonsTest {
     }
 
     @Test
+    void usesDefaultSettingsWhenSettingsFileIsMissingOrMalformed(@TempDir Path temporaryDirectory) throws Exception {
+        Path settingsDirectory = temporaryDirectory.resolve("settings");
+        Files.createDirectories(settingsDirectory);
+        GitUtil.setSettingsDirectory(settingsDirectory.toFile());
+
+        assertThat(GitUtil.getSettingsFile()).isEqualTo(settingsDirectory.resolve("git-settings.xml").toFile());
+        assertDefaultSettings(GitUtil.getSettings());
+
+        Files.writeString(
+                GitUtil.getSettingsFile().toPath(),
+                """
+                <settings>
+                  <gitCommand>custom-git</gitCommand>
+                """,
+                StandardCharsets.UTF_8);
+
+        assertDefaultSettings(GitUtil.readSettings());
+    }
+
+    @Test
     void createsInfoResultsFromItemsAndExistingScmResults() {
         GitInfoItem item = new GitInfoItem();
         item.setPath("src/main/App.java");
@@ -293,6 +313,14 @@ public class Maven_scm_provider_git_commonsTest {
         assertThat(fromCheckout).isInstanceOf(GitScmProviderRepository.class);
         assertThat(((GitScmProviderRepository) fromCheckout).getFetchUrl())
                 .isEqualTo("ssh://git@example.org/team/checkout.git");
+    }
+
+    private static void assertDefaultSettings(Settings settings) {
+        assertThat(settings.getRevParseDateFormat()).isEqualTo("yyyy-MM-dd HH:mm:ss");
+        assertThat(settings.getTraceGitCommand()).isEmpty();
+        assertThat(settings.getGitCommand()).isEqualTo("git");
+        assertThat(settings.isCommitNoVerify()).isFalse();
+        assertThat(settings.getModelEncoding()).isEqualTo("UTF-8");
     }
 
     private static final class MinimalGitScmProvider extends AbstractGitScmProvider {
