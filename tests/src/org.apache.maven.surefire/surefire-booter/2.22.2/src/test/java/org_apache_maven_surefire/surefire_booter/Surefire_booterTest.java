@@ -8,9 +8,9 @@ package org_apache_maven_surefire.surefire_booter;
 
 import org.junit.jupiter.api.Test;
 
-class Surefire_booterTest {
+public class Surefire_booterTest {
     @Test
-    void test() throws Exception {
+    public void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
     }
 }
