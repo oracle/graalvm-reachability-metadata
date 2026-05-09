@@ -19,6 +19,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.http.FilterContainer;
 import org.apache.hadoop.security.KerberosInfo;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
@@ -36,6 +37,7 @@ import org.apache.hadoop.yarn.api.records.ResourceRequest;
 import org.apache.hadoop.yarn.api.records.Token;
 import org.apache.hadoop.yarn.api.records.URL;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.apache.hadoop.yarn.security.client.RMDelegationTokenIdentifier;
 import org.apache.hadoop.yarn.server.RMNMSecurityInfoClass;
 import org.apache.hadoop.yarn.server.api.ResourceTrackerPB;
 import org.apache.hadoop.yarn.server.api.SCMUploaderProtocolPB;
@@ -54,6 +56,8 @@ import org.apache.hadoop.yarn.server.api.records.NodeHealthStatus;
 import org.apache.hadoop.yarn.server.api.records.NodeStatus;
 import org.apache.hadoop.yarn.server.records.Version;
 import org.apache.hadoop.yarn.server.security.MasterKeyData;
+import org.apache.hadoop.yarn.server.security.http.RMAuthenticationFilter;
+import org.apache.hadoop.yarn.server.security.http.RMAuthenticationFilterInitializer;
 import org.apache.hadoop.yarn.server.sharedcache.SharedCacheUtil;
 import org.apache.hadoop.yarn.server.utils.BuilderUtils;
 import org.apache.hadoop.yarn.server.utils.YarnServerBuilderUtils;
@@ -295,6 +299,31 @@ public class Hadoop_yarn_server_commonTest {
     }
 
     @Test
+    void resourceManagerAuthenticationFilterInitializerInstallsFilterWithTokenAndProxySettings() {
+        Configuration configuration = new Configuration(false);
+        configuration.set("hadoop.http.authentication.type", "kerberos");
+        configuration.set("hadoop.http.authentication.kerberos.principal", "HTTP/rm.example.test@EXAMPLE.COM");
+        configuration.set("hadoop.http.authentication.signature.secret", "shared-secret");
+        configuration.set("hadoop.proxyuser.alice.hosts", "host-a.example.test,host-b.example.test");
+        configuration.set("hadoop.proxyuser.alice.groups", "analytics,operators");
+        RecordingFilterContainer container = new RecordingFilterContainer();
+
+        new RMAuthenticationFilterInitializer().initFilter(container, configuration);
+
+        assertThat(container.filterName).isEqualTo("RMAuthenticationFilter");
+        assertThat(container.filterClassName).isEqualTo(RMAuthenticationFilter.class.getName());
+        assertThat(container.globalFilter).isFalse();
+        assertThat(container.filterConfig)
+                .containsEntry("type", "kerberos")
+                .containsEntry("kerberos.principal", "HTTP/rm.example.test@EXAMPLE.COM")
+                .containsEntry("signature.secret", "shared-secret")
+                .containsEntry("cookie.path", "/")
+                .containsEntry("proxyuser.alice.hosts", "host-a.example.test,host-b.example.test")
+                .containsEntry("proxyuser.alice.groups", "analytics,operators")
+                .containsEntry("delegation-token.token-kind", RMDelegationTokenIdentifier.KIND_NAME.toString());
+    }
+
+    @Test
     void versionsCompareCompatibilityAndMasterKeyDataPublishesEncodedSecret() {
         Version version = Version.newInstance(2, 7);
         Version sameMajorNewerMinor = Version.newInstance(2, 9);
@@ -352,5 +381,28 @@ public class Hadoop_yarn_server_commonTest {
         byte[] bytes = new byte[duplicate.remaining()];
         duplicate.get(bytes);
         return bytes;
+    }
+
+    private static final class RecordingFilterContainer implements FilterContainer {
+        private String filterName;
+        private String filterClassName;
+        private Map<String, String> filterConfig;
+        private boolean globalFilter;
+
+        @Override
+        public void addFilter(String name, String classname, Map<String, String> parameters) {
+            filterName = name;
+            filterClassName = classname;
+            filterConfig = new HashMap<String, String>(parameters);
+            globalFilter = false;
+        }
+
+        @Override
+        public void addGlobalFilter(String name, String classname, Map<String, String> parameters) {
+            filterName = name;
+            filterClassName = classname;
+            filterConfig = new HashMap<String, String>(parameters);
+            globalFilter = true;
+        }
     }
 }
