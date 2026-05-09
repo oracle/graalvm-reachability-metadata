@@ -16,6 +16,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('--initialize-at-run-time=com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext')
+            buildArgs.add('--initialize-at-run-time=com.sun.xml.bind.v2.runtime.reflect.opt')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
