@@ -30,7 +30,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Test;
@@ -41,6 +44,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.data.jpa.domain.JpaSort;
@@ -143,6 +147,29 @@ public class Spring_data_jpaTest {
             repository.flush();
 
             assertThat(repository.findActiveUsernamesWithNativeQuery()).containsExactly("ada", "linus");
+        }
+    }
+
+    @Test
+    void persistableEntitiesUseApplicationProvidedNewStateWithAssignedIdentifiers() {
+        try (AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(JpaTestConfiguration.class)) {
+            JpaAssignedIdRecordRepository repository = context.getBean(JpaAssignedIdRecordRepository.class);
+
+            JpaAssignedIdRecord created = repository.saveAndFlush(
+                    new JpaAssignedIdRecord("external-document", "draft"));
+            assertThat(created.getId()).isEqualTo("external-document");
+            assertThat(created.isNew()).isFalse();
+
+            created.setDescription("published");
+            JpaAssignedIdRecord updated = repository.saveAndFlush(created);
+
+            assertThat(updated.isNew()).isFalse();
+            assertThat(repository.count()).isEqualTo(1);
+            assertThat(repository.findById("external-document"))
+                    .get()
+                    .extracting(JpaAssignedIdRecord::getDescription)
+                    .isEqualTo("published");
         }
     }
 
@@ -263,6 +290,9 @@ interface JpaSampleUserRepository extends JpaRepository<JpaSampleUser, Long>, Jp
     int deactivateYoungerThan(@Param("minimumAge") int minimumAge);
 }
 
+interface JpaAssignedIdRecordRepository extends JpaRepository<JpaAssignedIdRecord, String> {
+}
+
 interface UsernameOnly {
 
     String getUsername();
@@ -271,6 +301,51 @@ interface UsernameOnly {
 enum JpaSampleRole {
     ADMIN,
     USER
+}
+
+@Entity(name = "JpaAssignedIdRecord")
+@Table(name = "jpa_assigned_id_records")
+class JpaAssignedIdRecord implements Persistable<String> {
+
+    @Id
+    private String id;
+
+    private String description;
+
+    @Transient
+    private boolean newRecord = true;
+
+    protected JpaAssignedIdRecord() {
+    }
+
+    JpaAssignedIdRecord(String id, String description) {
+        this.id = id;
+        this.description = description;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public boolean isNew() {
+        return newRecord;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @PostLoad
+    @PostPersist
+    void markNotNew() {
+        this.newRecord = false;
+    }
 }
 
 @Entity(name = "JpaSampleUser")
