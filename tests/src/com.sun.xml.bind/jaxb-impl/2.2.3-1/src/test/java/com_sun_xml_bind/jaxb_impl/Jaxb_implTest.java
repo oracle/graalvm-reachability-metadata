@@ -23,6 +23,7 @@ import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -46,6 +47,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
@@ -122,6 +124,42 @@ public class Jaxb_implTest {
         assertThat(copy.properties).containsEntry("host", "localhost");
         assertThat(copy.properties).containsEntry("port", "8080");
         assertThat(copy.properties.keySet()).containsExactly("host", "port");
+    }
+
+    @Test
+    void preservesWildcardDomElements() throws Exception {
+        JAXBContext context = JAXBContext.newInstance(MessageEnvelope.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        String input = """
+                <message>
+                    <body>Hello from JAXB</body>
+                    <priority xmlns="urn:example:message">high</priority>
+                    <tag code="blue">external</tag>
+                </message>
+                """;
+
+        MessageEnvelope copy = (MessageEnvelope) unmarshaller.unmarshal(new StringReader(input));
+
+        assertThat(copy.body).isEqualTo("Hello from JAXB");
+        assertThat(copy.extensions).hasSize(2);
+        assertThat(copy.extensions.get(0).getNamespaceURI()).isEqualTo("urn:example:message");
+        assertThat(copy.extensions.get(0).getLocalName()).isEqualTo("priority");
+        assertThat(copy.extensions.get(0).getTextContent()).isEqualTo("high");
+        assertThat(copy.extensions.get(1).getTagName()).isEqualTo("tag");
+        assertThat(copy.extensions.get(1).getAttribute("code")).isEqualTo("blue");
+
+        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Element marker = document.createElement("marker");
+        marker.setAttribute("source", "dom");
+        marker.setTextContent("preserved");
+        MessageEnvelope envelope = new MessageEnvelope();
+        envelope.body = "Outbound message";
+        envelope.extensions.add(marker);
+
+        String xml = marshal(context, envelope);
+
+        assertThat(xml).contains("<body>Outbound message</body>");
+        assertThat(xml).contains("<marker source=\"dom\">preserved</marker>");
     }
 
     @Test
@@ -375,6 +413,16 @@ public class Jaxb_implTest {
             this.title = title;
             this.durationMinutes = durationMinutes;
         }
+    }
+
+    @XmlRootElement(name = "message")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(propOrder = {"body", "extensions"})
+    public static class MessageEnvelope {
+        public String body;
+
+        @XmlAnyElement
+        public List<Element> extensions = new ArrayList<>();
     }
 
     @XmlRootElement(name = "settings")
