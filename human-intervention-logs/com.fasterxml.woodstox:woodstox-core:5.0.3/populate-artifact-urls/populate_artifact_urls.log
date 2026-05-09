@@ -1,0 +1,441 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0af1-8acb-7af1-ae3c-de83e189c23d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.fasterxml.woodstox:woodstox-core:5.0.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [5.0.3].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a/metadata/com.fasterxml.woodstox/woodstox-core/index.json
+- Entry selector: "metadata-version" = "5.0.3"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/$version$/woodstox-core-$version$-sources.jar
+- repository-url: https://github.com/FasterXML/woodstox
+- test-code-url: https://github.com/FasterXML/woodstox/tree/woodstox-core-$version$/src/test
+- documentation-url: https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/$version$/woodstox-core-$version$-javadoc.jar
+- description: Woodstox is a high-performance Java XML processor that implements StAX (JSR 173), SAX2, and StAX2 APIs. It provides streaming XML parsing, writing, and validation support for JVM applications.
+- language: <missing>
+
+Context:
+- Coordinate version: 5.0.3
+- Entry metadata-version: 5.0.3
+- Entry test-version: 5.0.3
+- Entry tested-versions: [5.0.3]
+codex
+I’ll verify the existing metadata entry and rendered URLs before editing, then only touch fields that are actually missing under your rules. Since the current values are mostly present, the main question is whether `language` should be added.
+exec
+/usr/bin/bash -lc "rg -n 'woodstox-core|FasterXML/woodstox|source-code-url|documentation-url|test-code-url|language' metadata/com.fasterxml.woodstox/woodstox-core/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+ succeeded in 0ms:
+5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/$version$/woodstox-core-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/FasterXML/woodstox",
+7:    "test-code-url" : "https://github.com/FasterXML/woodstox/tree/woodstox-core-$version$/src/test",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/$version$/woodstox-core-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,220p' metadata/com.fasterxml.woodstox/woodstox-core/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.0.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/$version$/woodstox-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/FasterXML/woodstox",
+    "test-code-url" : "https://github.com/FasterXML/woodstox/tree/woodstox-core-$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/$version$/woodstox-core-$version$-javadoc.jar",
+    "description" : "Woodstox is a high-performance Java XML processor that implements StAX (JSR 173), SAX2, and StAX2 APIs. It provides streaming XML parsing, writing, and validation support for JVM applications.",
+    "tested-versions" : [
+      "5.0.3"
+    ],
+    "allowed-packages" : [
+      "com.ctc.wstx"
+    ]
+  }
+]
+
+web search: 
+web search: com.fasterxml.woodstox woodstox-core 5.0.3 maven sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/5.0.3/
+web search: 
+web search: https://raw.githubusercontent.com/FasterXML/woodstox/woodstox-core-5.0.3/pom.xml
+codex
+The entry already has non-blank source, repository, test, docs, and description fields. I’m checking the rendered `5.0.3` URLs and the upstream POM/tag now, then I’ll only edit if that reveals a missing or invalid value that must be replaced.
+exec
+/usr/bin/bash -lc "curl -fsSIL https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/5.0.3/woodstox-core-5.0.3-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 04:14:49 GMT
+content-type: application/java-archive
+content-length: 533811
+cf-ray: 9f8de1292b6dbe5f-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 695132
+etag: "bd08530a0d7a1492e028cc2b87ff1e8b"
+last-modified: Wed, 24 Aug 2016 03:59:14 GMT
+x-checksum-md5: bd08530a0d7a1492e028cc2b87ff1e8b
+x-checksum-sha1: f38482e8b060d9e5354c10103f4c4db53c58db7d
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/5.0.3/woodstox-core-5.0.3-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 04:14:49 GMT
+content-type: application/java-archive
+content-length: 1392658
+cf-ray: 9f8de1296992bb16-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 85970
+etag: "986e55f75bc0a992b52fa1809a3de4e0"
+last-modified: Wed, 24 Aug 2016 03:59:17 GMT
+x-checksum-md5: 986e55f75bc0a992b52fa1809a3de4e0
+x-checksum-sha1: 7f5316fa0b4e68daa353bb2df3c546bfd854d54f
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/5.0.3/ | rg 'tests|test|sources|javadoc'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+ succeeded in 0ms:
+<a href="woodstox-core-5.0.3-javadoc.jar" title="woodstox-core-5.0.3-javadoc.jar">woodstox-core-5.0.3-javadoc.jar</a>                   2016-08-24 03:59   1392658      
+<a href="woodstox-core-5.0.3-javadoc.jar.asc" title="woodstox-core-5.0.3-javadoc.jar.asc">woodstox-core-5.0.3-javadoc.jar.asc</a>               2016-08-24 03:59       473      
+<a href="woodstox-core-5.0.3-javadoc.jar.md5" title="woodstox-core-5.0.3-javadoc.jar.md5">woodstox-core-5.0.3-javadoc.jar.md5</a>               2016-08-24 03:59        32      
+<a href="woodstox-core-5.0.3-javadoc.jar.sha1" title="woodstox-core-5.0.3-javadoc.jar.sha1">woodstox-core-5.0.3-javadoc.jar.sha1</a>              2016-08-24 03:59        40      
+<a href="woodstox-core-5.0.3-sources.jar" title="woodstox-core-5.0.3-sources.jar">woodstox-core-5.0.3-sources.jar</a>                   2016-08-24 03:59    533811      
+<a href="woodstox-core-5.0.3-sources.jar.asc" title="woodstox-core-5.0.3-sources.jar.asc">woodstox-core-5.0.3-sources.jar.asc</a>               2016-08-24 03:59       473      
+<a href="woodstox-core-5.0.3-sources.jar.md5" title="woodstox-core-5.0.3-sources.jar.md5">woodstox-core-5.0.3-sources.jar.md5</a>               2016-08-24 03:59        32      
+<a href="woodstox-core-5.0.3-sources.jar.sha1" title="woodstox-core-5.0.3-sources.jar.sha1">woodstox-core-5.0.3-sources.jar.sha1</a>              2016-08-24 03:59        40      
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/FasterXML/woodstox/tree/woodstox-core-5.0.3/src/test | sed -n '1,16p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+ succeeded in 582ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 04:14:50 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"273d94f9203b8251910a0846bc21bf6a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=5QG%2BtoXOVXZnWbXXmZur9VsHUA89ZQu9Yos%2B02OZHhOuqxYIzzqU4fQw4wyNY80et9jln81SiLFe8iaukO38PJKzJLp%2B5ACwJ0neu3OjEGEbIl15yOSLLJPmBr2mUVQGSBx%2BSh3v5%2Bor5bgLTy64Tp17DsTcVSPP0UEzogJkrVJgl8N3ajzqxAlLvSYqOEwVamNPMhPuQMnMw5dPxjJKq4fK%2Bcnx7g%2FVvieDlMM6NOmJUGh38%2BVO239VxvGIdLTJJsedba%2F9Nuuf9%2BAYQcWMFg%3D%3D--hqLADUqSfhzJljcr--5HdsC2Ep4yk3bc1p8w0ovA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1965851793.1778300089; expires=Sun, 09 May 2027 04:14:49 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/5.0.3/
+web search: 
+web search: https://raw.githubusercontent.com/FasterXML/woodstox/woodstox-core-5.0.3/pom.xml
+codex
+The rendered Maven source and javadoc jars return HTTP 200, and Maven Central does not list a tests artifact for `5.0.3`, so the GitHub tag’s `src/test` remains the right test-suite URL. The POM identifies the canonical GitHub repository and tag, and this is a Java XML processor rather than a Kotlin/Groovy/Scala language-specific artifact.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.fasterxml.woodstox/woodstox-core/index.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/5.0.3/woodstox-core-5.0.3.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+      <groupId>com.fasterxml</groupId>
+      <artifactId>oss-parent</artifactId>
+      <version>24</version>
+    </parent>
+
+    <groupId>com.fasterxml.woodstox</groupId>
+    <artifactId>woodstox-core</artifactId>
+    <version>5.0.3</version>
+    <packaging>bundle</packaging>
+    <name>Woodstox</name>
+    <description>
+        Woodstox is a high-performance XML processor that
+        implements Stax (JSR-173), SAX2 and Stax2 APIs
+    </description>
+    <developers>
+      <developer>
+        <id>cowtowncoder</id>
+        <name>Tatu Saloranta</name>
+        <email>tatu@fasterxml.com</email>
+      </developer>
+    </developers>
+    <organization>
+        <name>FasterXML</name>
+        <url>http://fasterxml.com</url>
+    </organization>
+    <url>https://github.com/FasterXML/woodstox</url>
+    <issueManagement>
+        <url>https://github.com/FasterXML/woodstox/issues</url>
+    </issueManagement>
+    <scm>
+        <connection>scm:git:git@github.com:FasterXML/woodstox.git</connection>
+        <developerConnection>scm:git:git@github.com:FasterXML/woodstox.git</developerConnection>
+        <url>https://github.com/FasterXML/woodstox</url>
+        <tag>woodstox-core-5.0.3</tag>
+    </scm>
+
+    <properties>
+      <version.msv>2013.6.1</version.msv>
+      <!-- Woodstox 5.0 is 1.6+ -->
+      <javac.src.version>1.6</javac.src.version>
+      <javac.target.version>1.6</javac.target.version>
+
+      <!-- Since our groupId is NOT the same as Java package id, need to explicitly define.
+           And due to number of packages, let's just include all.
+        -->
+      <osgi.export>com.ctc.wstx.*;version=${project.version}</osgi.export>
+
+    </properties>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+<!--
+                    <excludes>
+                        <exclude>test/**</exclude>
+                    </excludes>
+-->
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <excludes>
+                        <exclude>failing/*.java</exclude>
+                        <exclude>**/Abstract*.java</exclude>
+                        <exclude>**/Base*.java</exclude>
+                        <exclude>**/*$*.java</exclude>
+                    </excludes>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/Test*.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                  
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- First mandatory (and transitive) dependencies -->
+
+        <dependency>
+            <groupId>javax.xml.stream</groupId>
+            <artifactId>stax-api</artifactId>
+            <version>1.0-2</version>
+	    <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.codehaus.woodstox</groupId>
+          <artifactId>stax2-api</artifactId>
+<!-- 10-Dec-2015, tatu: For Woodstox 5.1, upgrade to 4.0
+  -->
+          <version>3.1.4</version>
+        </dependency>
+
+        <!-- Then optional ones (need for build, possibly
+           for runtime but not always)
+        -->
+
+        <!-- First, MSV, needed for RNG/W3C Schema validation -->
+        <!-- 05-Mar-2009, TSa: This gets messy, as there are
+          multiple alternatives, even at http://repo1.maven1.maven.org/maven2;
+          + main level ones (group ids "xsdlib", "relaxngDatatype")
+          + "msv" ones (3 subgroups)
+          + "com.sun.msv", but only for xsdlib
+
+          and all with varying sets of dependencies; 
+          For now, we'll just use "msv", which does not properly define
+          dependencies...
+
+          Also: make these 'provided', since user needs to include them
+          directly. Not sure what OSGi thinks about that but...
+        -->
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>msv-core</artifactId>
+            <version>${version.msv}</version>
+	    <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>msv-rngconverter</artifactId>
+            <version>${version.msv}</version>
+	    <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>xsdlib</artifactId>
+            <version>${version.msv}</version>
+	    <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Then OSGi, needed if using OSGi discovery -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>1.2.0</version>
+            <optional>true</optional>
+	    <scope>provided</scope>
+        </dependency>
+
+        <!-- Then test jars
+        -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <reporting>
+        <plugins>
+            <!--
+
+exec
+/usr/bin/bash -lc 'python -m json.tool metadata/com.fasterxml.woodstox/woodstox-core/index.json >/dev/null' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/FasterXML/woodstox | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a
+ succeeded in 129ms:
+ succeeded in 759ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 04:15:02 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"19d0641d67c2fe985116de747a118413"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+web search: 
+web search: Maven Central com.fasterxml.woodstox woodstox-core 5.0.3 sources javadoc
+web search: 
+web search: 
+web search: 
+web search: https://raw.githubusercontent.com/FasterXML/woodstox/woodstox-core-5.0.3/pom.xml
+web search: 
+web search: https://github.com/FasterXML/woodstox/tree/woodstox-core-5.0.3/src/test
+web search: 
+web search: https://github.com/FasterXML/woodstox
+codex
+No changes were needed in [index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a/metadata/com.fasterxml.woodstox/woodstox-core/index.json:1). The source, repository, test, documentation, and two-sentence description fields were already non-blank and valid for `5.0.3`; `language` remains absent because Woodstox is a Java XML processor, not a Kotlin/Groovy/Scala-specific library. ([repo1.maven.org](https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/5.0.3/?utm_source=openai))
+
+Selected values:
+- `repository-url`: `https://github.com/FasterXML/woodstox`
+- `source-code-url`: Maven Central sources jar template
+- `test-code-url`: GitHub `woodstox-core-$version$/src/test` template
+- `documentation-url`: Maven Central javadoc jar template
+- `description`: existing two-sentence description
+
+Verified: rendered URLs return successfully, Maven Central lists source and javadoc jars for `5.0.3`, GitHub tag test directory exists, and JSON still parses cleanly.
+tokens used
+49,997
+No changes were needed in [index.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a/metadata/com.fasterxml.woodstox/woodstox-core/index.json:1). The source, repository, test, documentation, and two-sentence description fields were already non-blank and valid for `5.0.3`; `language` remains absent because Woodstox is a Java XML processor, not a Kotlin/Groovy/Scala-specific library. ([repo1.maven.org](https://repo1.maven.org/maven2/com/fasterxml/woodstox/woodstox-core/5.0.3/?utm_source=openai))
+
+Selected values:
+- `repository-url`: `https://github.com/FasterXML/woodstox`
+- `source-code-url`: Maven Central sources jar template
+- `test-code-url`: GitHub `woodstox-core-$version$/src/test` template
+- `documentation-url`: Maven Central javadoc jar template
+- `description`: existing two-sentence description
+
+Verified: rendered URLs return successfully, Maven Central lists source and javadoc jars for `5.0.3`, GitHub tag test directory exists, and JSON still parses cleanly.
+Ran agent for com.fasterxml.woodstox:woodstox-core:5.0.3 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a/build/agent-url-discovery-logs/com.fasterxml.woodstox-woodstox-core-5.0.3.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1310-9d597f0a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 4s
+9 actionable tasks: 1 executed, 8 up-to-date
