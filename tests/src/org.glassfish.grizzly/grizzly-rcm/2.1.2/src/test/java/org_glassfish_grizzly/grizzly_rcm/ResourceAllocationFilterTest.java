@@ -65,6 +65,26 @@ public class ResourceAllocationFilterTest {
     }
 
     @Test
+    void filterRequestAllocatesFullStandardPoolWhenTokenRatioIsOne() {
+        RecordingResourceAllocationFilter filter = new RecordingResourceAllocationFilter(8);
+        String token = "/full-capacity";
+        filter.addPrivilegedToken(token, 1.0);
+
+        try {
+            ExecutorService executor = filter.filterRequest(token);
+
+            assertThat(filter.createdPoolSizes).containsExactly(8);
+            assertThat(filter.createdExecutors).hasSize(1);
+            assertThat(executor).isSameAs(filter.createdExecutors.get(0));
+        } finally {
+            filter.removePrivilegedToken(token);
+            for (RecordingExecutorService executor : filter.createdExecutors) {
+                executor.shutdownNow();
+            }
+        }
+    }
+
+    @Test
     void handleReadStopsWhenHttpRequestLineIsIncomplete() throws IOException {
         ResourceAllocationFilter filter = new ResourceAllocationFilter();
         FilterChainContext context = new FilterChainContext();
@@ -126,6 +146,14 @@ public class ResourceAllocationFilterTest {
             createdPoolSizes.add(poolSize);
             createdExecutors.add(executor);
             return executor;
+        }
+
+        private void addPrivilegedToken(String token, double ratio) {
+            privilegedTokens.put(token, ratio);
+        }
+
+        private void removePrivilegedToken(String token) {
+            privilegedTokens.remove(token);
         }
     }
 
