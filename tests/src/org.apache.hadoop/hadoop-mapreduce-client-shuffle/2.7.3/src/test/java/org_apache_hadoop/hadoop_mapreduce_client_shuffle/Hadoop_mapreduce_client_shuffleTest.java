@@ -91,6 +91,30 @@ public class Hadoop_mapreduce_client_shuffleTest {
     }
 
     @Test
+    void chunkedFileStreamsOnlyRequestedRangeFromOffset() throws Exception {
+        Path file = writeTempFile("0123456789abcdef");
+
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file.toFile(), "r")) {
+            FadvisedChunkedFile chunkedFile = new FadvisedChunkedFile(
+                    randomAccessFile,
+                    4,
+                    5,
+                    16,
+                    false,
+                    0,
+                    null,
+                    "offset-chunked-test");
+            try {
+                assertThat(readChunk(chunkedFile.nextChunk())).isEqualTo("45678");
+                assertThat(chunkedFile.isEndOfInput()).isTrue();
+                assertThat(chunkedFile.nextChunk()).isNull();
+            } finally {
+                chunkedFile.close();
+            }
+        }
+    }
+
+    @Test
     void fileRegionTransfersRequestedRangeWithCustomShuffleBuffer() throws Exception {
         Path file = writeTempFile("abcdefghijklmnopqrstuvwxyz");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
