@@ -11,6 +11,9 @@ import org.apache.kerby.kerberos.kerb.crypto.CheckSumHandler;
 import org.apache.kerby.kerberos.kerb.crypto.CheckSumTypeHandler;
 import org.apache.kerby.kerberos.kerb.crypto.EncTypeHandler;
 import org.apache.kerby.kerberos.kerb.crypto.EncryptionHandler;
+import org.apache.kerby.kerberos.kerb.crypto.dh.DhGroup;
+import org.apache.kerby.kerberos.kerb.crypto.dh.DiffieHellmanClient;
+import org.apache.kerby.kerberos.kerb.crypto.dh.DiffieHellmanServer;
 import org.apache.kerby.kerberos.kerb.crypto.enc.EncryptProvider;
 import org.apache.kerby.kerberos.kerb.crypto.enc.provider.Aes128Provider;
 import org.apache.kerby.kerberos.kerb.crypto.fast.FastUtil;
@@ -29,8 +32,11 @@ import org.apache.kerby.kerberos.kerb.type.base.KeyUsage;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.HexFormat;
+
+import javax.crypto.interfaces.DHPublicKey;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -187,6 +193,38 @@ public class Kerb_cryptoTest {
         assertThat(armorKey.getKeyData()).isNotEqualTo(replyKey.getKeyData());
         assertThat(prfPlus).hasSize(40);
         assertThat(Arrays.copyOf(prfPlus, 16)).isNotEqualTo(Arrays.copyOfRange(prfPlus, 16, 32));
+    }
+
+    @Test
+    void completesDiffieHellmanExchangeAndProtectsServerPayload() throws Exception {
+        DiffieHellmanClient client = new DiffieHellmanClient();
+        DiffieHellmanServer server = new DiffieHellmanServer();
+        byte[] clientNonce = "client nonce".getBytes(StandardCharsets.UTF_8);
+        byte[] serverNonce = "server nonce".getBytes(StandardCharsets.UTF_8);
+
+        DHPublicKey clientPublicKey = client.init(DhGroup.MODP_GROUP2);
+        PublicKey serverPublicKey = server.initAndDoPhase(clientPublicKey.getEncoded());
+        client.doPhase(serverPublicKey.getEncoded());
+
+        EncryptionKey clientKey = client.generateKey(
+                clientNonce,
+                serverNonce,
+                EncryptionType.AES128_CTS_HMAC_SHA1_96);
+        EncryptionKey serverKey = server.generateKey(
+                clientNonce,
+                serverNonce,
+                EncryptionType.AES128_CTS_HMAC_SHA1_96);
+        byte[] encrypted = server.encrypt(MESSAGE, KeyUsage.APP_DATA_ENCRYPT);
+        byte[] decrypted = client.decrypt(encrypted, KeyUsage.APP_DATA_ENCRYPT);
+
+        assertThat(client.getDhParam().getP()).isEqualTo(DhGroup.MODP_GROUP2.getP());
+        assertThat(clientKey.getKeyType()).isEqualTo(EncryptionType.AES128_CTS_HMAC_SHA1_96);
+        assertThat(serverKey.getKeyType()).isEqualTo(EncryptionType.AES128_CTS_HMAC_SHA1_96);
+        assertThat(clientKey.getKeyData()).containsExactly(serverKey.getKeyData());
+        assertThat(clientKey.getKeyData()).hasSize(16);
+        assertThat(encrypted).isNotEmpty();
+        assertThat(encrypted).isNotEqualTo(MESSAGE);
+        assertThat(decrypted).containsExactly(MESSAGE);
     }
 
     @Test
