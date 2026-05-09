@@ -35,6 +35,8 @@ import org.apache.hadoop.metrics2.impl.MetricsCollectorImpl;
 import org.apache.hadoop.metrics2.lib.MetricsRegistry;
 import org.apache.hadoop.security.token.TokenIdentifier;
 import org.apache.hadoop.util.ReflectionUtils;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 import org.apache.hadoop.util.bloom.BloomFilter;
 import org.apache.hadoop.util.bloom.Key;
 import org.apache.hadoop.util.hash.Hash;
@@ -223,6 +225,25 @@ public class Hadoop_client_apiTest {
     }
 
     @Test
+    void toolRunnerAppliesGenericOptionsAndPassesApplicationArguments() throws Exception {
+        Configuration configuration = new Configuration(false);
+        CapturingTool tool = new CapturingTool();
+
+        int exitCode = ToolRunner.run(configuration, tool, new String[] {
+                "-D", "client.queue=analytics",
+                "-Dclient.timeout.ms=2500",
+                "input/events",
+                "output/results"
+        });
+
+        assertThat(exitCode).isZero();
+        assertThat(tool.getQueue()).isEqualTo("analytics");
+        assertThat(tool.getTimeoutMillis()).isEqualTo(2500L);
+        assertThat(tool.getArguments()).containsExactly("input/events", "output/results");
+        assertThat(configuration.get("client.queue")).isEqualTo("analytics");
+    }
+
+    @Test
     void yarnRecordsAndTokenIdentifiersExposeStablePublicState() {
         ApplicationId applicationId = ApplicationId.newInstance(123456789L, 42);
         ApplicationAttemptId attemptId = ApplicationAttemptId.newInstance(applicationId, 3);
@@ -297,6 +318,32 @@ public class Hadoop_client_apiTest {
 
         String getName() {
             return getConf().get("component.name");
+        }
+    }
+
+    public static class CapturingTool extends Configured implements Tool {
+        private List<String> arguments = List.of();
+        private String queue;
+        private long timeoutMillis;
+
+        @Override
+        public int run(String[] args) {
+            arguments = List.of(args);
+            queue = getConf().get("client.queue");
+            timeoutMillis = getConf().getLong("client.timeout.ms", -1L);
+            return 0;
+        }
+
+        List<String> getArguments() {
+            return arguments;
+        }
+
+        String getQueue() {
+            return queue;
+        }
+
+        long getTimeoutMillis() {
+            return timeoutMillis;
         }
     }
 }
