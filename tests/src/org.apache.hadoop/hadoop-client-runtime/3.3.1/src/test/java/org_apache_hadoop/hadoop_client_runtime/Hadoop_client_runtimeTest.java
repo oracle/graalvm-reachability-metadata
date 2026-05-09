@@ -22,6 +22,12 @@ import org.apache.hadoop.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hadoop.shaded.org.apache.commons.codec.binary.Base64;
 import org.apache.hadoop.shaded.org.apache.commons.codec.binary.Hex;
 import org.apache.hadoop.shaded.org.apache.commons.codec.digest.DigestUtils;
+import org.apache.hadoop.shaded.org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.hadoop.shaded.org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.hadoop.shaded.org.apache.commons.math3.linear.LUDecomposition;
+import org.apache.hadoop.shaded.org.apache.commons.math3.linear.RealMatrix;
+import org.apache.hadoop.shaded.org.apache.commons.math3.linear.RealVector;
+import org.apache.hadoop.shaded.org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.hadoop.thirdparty.com.google.common.base.CaseFormat;
 import org.apache.hadoop.thirdparty.com.google.common.base.CharMatcher;
 import org.apache.hadoop.thirdparty.com.google.common.base.Joiner;
@@ -219,6 +225,24 @@ public class Hadoop_client_runtimeTest {
         assertThat(byteCount).isEqualTo(payload.length);
         assertThat(hexDigest).hasSize(64);
         assertThat(ImmutableList.copyOf(Ints.asList(1, 1, 2, 3, 5))).containsExactly(1, 1, 2, 3, 5);
+    }
+
+    @Test
+    void shadedCommonsMathComputesStatisticsAndSolvesLinearSystems() {
+        DescriptiveStatistics movingWindow = new DescriptiveStatistics(3);
+        Arrays.stream(new double[] {4.0, 8.0, 15.0, 16.0, 23.0}).forEach(movingWindow::addValue);
+
+        RealMatrix coefficients = new Array2DRowRealMatrix(new double[][] {{2.0, 1.0}, {1.0, -1.0}}, false);
+        RealVector constants = new ArrayRealVector(new double[] {5.0, 1.0}, false);
+        RealVector solution = new LUDecomposition(coefficients).getSolver().solve(constants);
+        RealVector recomputed = coefficients.operate(solution);
+
+        assertThat(movingWindow.getN()).isEqualTo(3);
+        assertThat(movingWindow.getValues()).containsExactly(15.0, 16.0, 23.0);
+        assertThat(movingWindow.getMean()).isEqualTo(18.0);
+        assertThat(movingWindow.getPercentile(50.0)).isEqualTo(16.0);
+        assertThat(solution.toArray()).containsExactly(2.0, 1.0);
+        assertThat(recomputed.toArray()).containsExactly(5.0, 1.0);
     }
 
     private static StringValue unpack(Any packed) throws InvalidProtocolBufferException {
