@@ -34,6 +34,7 @@ import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.ResourceRequest;
+import org.apache.hadoop.yarn.api.records.ResourceUtilization;
 import org.apache.hadoop.yarn.api.records.Token;
 import org.apache.hadoop.yarn.api.records.URL;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
@@ -78,6 +79,7 @@ public class Hadoop_yarn_server_commonTest {
         Priority priority = Priority.newInstance(3);
         NMContainerStatus containerStatus = NMContainerStatus.newInstance(
                 containerId,
+                0,
                 ContainerState.RUNNING,
                 Resource.newInstance(1024, 1),
                 "healthy container",
@@ -95,7 +97,7 @@ public class Hadoop_yarn_server_commonTest {
 
         assertThat(request.getNodeId()).isEqualTo(nodeId);
         assertThat(request.getHttpPort()).isEqualTo(8042);
-        assertThat(request.getResource().getMemory()).isEqualTo(8192);
+        assertThat(request.getResource().getMemorySize()).isEqualTo(8192L);
         assertThat(request.getResource().getVirtualCores()).isEqualTo(4);
         assertThat(request.getNMVersion()).isEqualTo("test-nm-version");
         assertThat(request.getRunningApplications()).containsExactly(applicationId);
@@ -103,7 +105,7 @@ public class Hadoop_yarn_server_commonTest {
         NMContainerStatus roundTrippedStatus = request.getNMContainerStatuses().get(0);
         assertThat(roundTrippedStatus.getContainerId()).isEqualTo(containerId);
         assertThat(roundTrippedStatus.getContainerState()).isEqualTo(ContainerState.RUNNING);
-        assertThat(roundTrippedStatus.getAllocatedResource().getMemory()).isEqualTo(1024);
+        assertThat(roundTrippedStatus.getAllocatedResource().getMemorySize()).isEqualTo(1024L);
         assertThat(roundTrippedStatus.getDiagnostics()).isEqualTo("healthy container");
         assertThat(roundTrippedStatus.getPriority().getPriority()).isEqualTo(3);
         assertThat(roundTrippedStatus.getCreationTime()).isEqualTo(44L);
@@ -117,22 +119,39 @@ public class Hadoop_yarn_server_commonTest {
                 runningContainer,
                 ContainerState.COMPLETE,
                 "finished",
-                0);
+                0,
+                Resource.newInstance(1024, 1));
         NodeHealthStatus healthStatus = NodeHealthStatus.newInstance(true, "all disks healthy", 99L);
+        ResourceUtilization containersUtilization = ResourceUtilization.newInstance(1024, 2048, 1.0F);
+        ResourceUtilization nodeUtilization = ResourceUtilization.newInstance(2048, 4096, 2.0F);
         NodeStatus nodeStatus = NodeStatus.newInstance(
                 NodeId.newInstance("nm.example.test", 1234),
                 5,
                 Collections.singletonList(containerStatus),
                 Collections.singletonList(applicationId),
-                healthStatus);
+                healthStatus,
+                containersUtilization,
+                nodeUtilization,
+                Collections.<Container>emptyList());
         MasterKey containerTokenKey = masterKey(17, new byte[] {1, 2, 3, 4});
         MasterKey nmTokenKey = masterKey(23, new byte[] {5, 6, 7, 8});
 
-        NodeHeartbeatRequest request = NodeHeartbeatRequest.newInstance(nodeStatus, containerTokenKey, nmTokenKey);
+        NodeHeartbeatRequest request = NodeHeartbeatRequest.newInstance(
+                nodeStatus,
+                containerTokenKey,
+                nmTokenKey,
+                Collections.emptySet());
 
         assertThat(request.getNodeStatus().getResponseId()).isEqualTo(5);
         assertThat(request.getNodeStatus().getContainersStatuses()).hasSize(1);
         assertThat(request.getNodeStatus().getNodeHealthStatus().getHealthReport()).isEqualTo("all disks healthy");
+        assertThat(request.getNodeStatus().getContainersUtilization().getPhysicalMemory()).isEqualTo(1024);
+        assertThat(request.getNodeStatus().getContainersUtilization().getVirtualMemory()).isEqualTo(2048);
+        assertThat(request.getNodeStatus().getContainersUtilization().getCPU()).isEqualTo(1.0F);
+        assertThat(request.getNodeStatus().getNodeUtilization().getPhysicalMemory()).isEqualTo(2048);
+        assertThat(request.getNodeStatus().getNodeUtilization().getVirtualMemory()).isEqualTo(4096);
+        assertThat(request.getNodeStatus().getNodeUtilization().getCPU()).isEqualTo(2.0F);
+        assertThat(request.getNodeStatus().getIncreasedContainers()).isEmpty();
         assertThat(request.getLastKnownContainerTokenMasterKey().getKeyId()).isEqualTo(17);
         assertThat(bytes(request.getLastKnownNMTokenMasterKey().getBytes()))
                 .containsExactly((byte) 5, (byte) 6, (byte) 7, (byte) 8);
@@ -237,7 +256,7 @@ public class Hadoop_yarn_server_commonTest {
                 3);
         assertThat(request.getPriority().getPriority()).isEqualTo(9);
         assertThat(request.getResourceName()).isEqualTo(ResourceRequest.ANY);
-        assertThat(request.getCapability().getMemory()).isEqualTo(2048);
+        assertThat(request.getCapability().getMemorySize()).isEqualTo(2048L);
         assertThat(request.getCapability().getVirtualCores()).isEqualTo(2);
         assertThat(request.getNumContainers()).isEqualTo(3);
 
@@ -259,7 +278,7 @@ public class Hadoop_yarn_server_commonTest {
         assertThat(container.getId()).isEqualTo(containerId);
         assertThat(container.getNodeId()).isEqualTo(nodeId);
         assertThat(container.getNodeHttpAddress()).isEqualTo("worker.example.test:8042");
-        assertThat(container.getResource().getMemory()).isEqualTo(1024);
+        assertThat(container.getResource().getMemorySize()).isEqualTo(1024L);
         assertThat(container.getPriority().getPriority()).isEqualTo(1);
         assertThat(container.getContainerToken().getKind()).isEqualTo("kind");
     }
@@ -366,7 +385,7 @@ public class Hadoop_yarn_server_commonTest {
 
     private static ContainerId containerId(ApplicationId applicationId, int attemptId, long containerSequence) {
         ApplicationAttemptId applicationAttemptId = ApplicationAttemptId.newInstance(applicationId, attemptId);
-        return BuilderUtils.newContainerId(applicationAttemptId, containerSequence);
+        return ContainerId.newContainerId(applicationAttemptId, containerSequence);
     }
 
     private static MasterKey masterKey(int keyId, byte[] keyBytes) {
