@@ -10,9 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -271,27 +269,7 @@ public class Jetty_servletsTest {
         String method,
         Map<String, String> headers,
         String body) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection)uri.toURL().openConnection();
-        connection.setConnectTimeout(TIMEOUT_MILLIS);
-        connection.setReadTimeout(TIMEOUT_MILLIS);
-        connection.setRequestMethod(method);
-        headers.forEach(connection::setRequestProperty);
-        if (body != null) {
-            connection.setDoOutput(true);
-            byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
-            connection.setFixedLengthStreamingMode(bytes.length);
-            try (OutputStream output = connection.getOutputStream()) {
-                output.write(bytes);
-            }
-        }
-
-        try {
-            int status = connection.getResponseCode();
-            String responseBody = readBody(connection);
-            return new Response(status, responseBody, connection.getHeaderFields());
-        } finally {
-            connection.disconnect();
-        }
+        return rawRequest(uri, method, headers, body);
     }
 
     private static Response rawRequest(
@@ -342,20 +320,6 @@ public class Jetty_servletsTest {
             }
         }
         return new Response(status, responseBody, headers);
-    }
-
-    private static String readBody(HttpURLConnection connection) throws IOException {
-        InputStream input = connection.getErrorStream();
-        if (input == null) {
-            input = connection.getInputStream();
-        }
-        if (input == null) {
-            return "";
-        }
-        try (InputStream stream = input; ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            stream.transferTo(output);
-            return output.toString(StandardCharsets.UTF_8);
-        }
     }
 
     private record Response(int status, String body, Map<String, List<String>> headers) {
@@ -451,8 +415,8 @@ public class Jetty_servletsTest {
             ServletRequest request,
             ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
-            HttpServletRequest httpRequest = (HttpServletRequest)request;
-            HttpServletResponse httpResponse = (HttpServletResponse)response;
+            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setHeader("X-Mime-Eligible", Boolean.toString(shouldFilter(httpRequest, httpResponse)));
             chain.doFilter(request, response);
         }
