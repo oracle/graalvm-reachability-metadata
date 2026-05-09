@@ -20,7 +20,7 @@ public class WebAppContextTest {
         RecordingConfiguration.reset();
         WebAppContext context = new WebAppContext();
         context.setClassLoader(WebAppContextTest.class.getClassLoader());
-        context.setConfigurationClasses(new String[] { RecordingConfiguration.class.getName() });
+        context.setConfigurationClasses(new String[] {RecordingConfiguration.class.getName()});
 
         try {
             context.preConfigure();

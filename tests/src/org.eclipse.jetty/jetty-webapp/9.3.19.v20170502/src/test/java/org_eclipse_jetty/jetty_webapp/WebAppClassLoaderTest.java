@@ -101,7 +101,7 @@ public class WebAppClassLoaderTest {
         Path resourceFile = temporaryDirectory.resolve(resourceName);
         Files.createDirectories(resourceFile.getParent());
         Files.writeString(resourceFile, "parent resource");
-        return new URLClassLoader(new URL[] { temporaryDirectory.toUri().toURL() }, null);
+        return new URLClassLoader(new URL[] {temporaryDirectory.toUri().toURL()}, null);
     }
 
     private static final class TestContext implements WebAppClassLoader.Context {
