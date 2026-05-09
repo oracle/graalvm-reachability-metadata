@@ -179,6 +179,21 @@ public class Groovy_macroTest {
     }
 
     @Test
+    void astMatcherSupportsContextPredicates() {
+        Expression rightTenPattern = (Expression) ASTMatcher.withConstraints(macro { _ + _ }) {
+            eventually { TreeContext context ->
+                BinaryExpression binary = (BinaryExpression) context.node
+                binary.rightExpression instanceof ConstantExpression &&
+                        ((ConstantExpression) binary.rightExpression).value == 10
+            }
+        }
+
+        assertThat(ASTMatcher.matches(macro { total + 10 }, rightTenPattern)).isTrue()
+        assertThat(ASTMatcher.matches(macro { total + 11 }, rightTenPattern)).isFalse()
+        assertThat(ASTMatcher.matches(macro { total - 10 }, rightTenPattern)).isFalse()
+    }
+
+    @Test
     void directRuntimeMacroExtensionStubsFailFastWhenNotTransformed() {
         assertThatThrownBy { MacroGroovyMethods.macro(new Object(), { 1 }) }
                 .isInstanceOf(IllegalStateException)
