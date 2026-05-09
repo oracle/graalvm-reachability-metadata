@@ -8,6 +8,7 @@ package org_apache_directory_api.api_ldap_model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,9 @@ import org.apache.directory.api.ldap.model.filter.NotNode;
 import org.apache.directory.api.ldap.model.filter.OrNode;
 import org.apache.directory.api.ldap.model.filter.PresenceNode;
 import org.apache.directory.api.ldap.model.filter.SubstringNode;
+import org.apache.directory.api.ldap.model.ldif.LdifEntry;
+import org.apache.directory.api.ldap.model.ldif.LdifReader;
+import org.apache.directory.api.ldap.model.ldif.LdifUtils;
 import org.apache.directory.api.ldap.model.message.AddRequestImpl;
 import org.apache.directory.api.ldap.model.message.AliasDerefMode;
 import org.apache.directory.api.ldap.model.message.BindRequest;
@@ -227,6 +231,80 @@ public class Api_ldap_modelTest {
         assertThat(rename.getNewSuperior().getName()).isEqualTo("ou=Alumni,dc=example,dc=com");
         assertThat(rename.isMove()).isTrue();
         assertThat(rename.getDeleteOldRdn()).isTrue();
+    }
+
+    @Test
+    void ldifReaderParsesContentAndChangeRecords() throws Exception {
+        String contentLdif = """
+                version: 1
+
+                dn: cn=Jane Doe,ou=People,dc=example,dc=com
+                objectClass: top
+                objectClass: person
+                cn: Jane Doe
+                sn: Doe
+                jpegPhoto:: AQIDBA==
+                """;
+
+        List<LdifEntry> contentEntries = new ArrayList<>();
+        try (LdifReader reader = new LdifReader(new StringReader(contentLdif))) {
+            assertThat(reader.getVersion()).isEqualTo(1);
+            assertThat(reader.containsEntries()).isTrue();
+            for (LdifEntry entry : reader) {
+                contentEntries.add(entry);
+            }
+            assertThat(reader.hasError()).isFalse();
+        }
+
+        assertThat(contentEntries).hasSize(1);
+        LdifEntry contentEntry = contentEntries.get(0);
+        assertThat(contentEntry.isEntry()).isTrue();
+        assertThat(contentEntry.isLdifContent()).isTrue();
+        assertThat(contentEntry.getDn().getName()).isEqualTo("cn=Jane Doe,ou=People,dc=example,dc=com");
+        assertThat(contentEntry.get("objectClass").contains("top", "person")).isTrue();
+        assertThat(contentEntry.get("jpegPhoto").getBytes()).containsExactly((byte) 1, (byte) 2, (byte) 3, (byte) 4);
+
+        String renderedLdif = LdifUtils.convertToLdif(contentEntry.getEntry());
+        assertThat(renderedLdif).contains(
+                "dn: cn=Jane Doe,ou=People,dc=example,dc=com",
+                "objectclass: top",
+                "objectclass: person",
+                "cn: Jane Doe");
+
+        String changeLdif = """
+                version: 1
+
+                dn: cn=Jane Doe,ou=People,dc=example,dc=com
+                changetype: modify
+                replace: mail
+                mail: jane@example.com
+                -
+                add: telephoneNumber
+                telephoneNumber: +1 555 0110
+                -
+                """;
+        List<LdifEntry> changeEntries = new ArrayList<>();
+        try (LdifReader reader = new LdifReader(new StringReader(changeLdif))) {
+            assertThat(reader.getVersion()).isEqualTo(1);
+            for (LdifEntry entry : reader) {
+                changeEntries.add(entry);
+            }
+            assertThat(reader.hasError()).isFalse();
+        }
+
+        assertThat(changeEntries).hasSize(1);
+        LdifEntry changeEntry = changeEntries.get(0);
+        assertThat(changeEntry.isLdifChange()).isTrue();
+        assertThat(changeEntry.isChangeModify()).isTrue();
+        assertThat(changeEntry.getModifications()).hasSize(2);
+        assertThat(changeEntry.getModifications())
+                .extracting(Modification::getOperation)
+                .containsExactly(ModificationOperation.REPLACE_ATTRIBUTE, ModificationOperation.ADD_ATTRIBUTE);
+        assertThat(changeEntry.getModifications())
+                .extracting(modification -> modification.getAttribute().getUpId())
+                .containsExactly("mail", "telephoneNumber");
+        assertThat(changeEntry.getModifications().get(0).getAttribute().contains("jane@example.com")).isTrue();
+        assertThat(changeEntry.getModifications().get(1).getAttribute().contains("+1 555 0110")).isTrue();
     }
 
     @Test
