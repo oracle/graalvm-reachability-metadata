@@ -29,6 +29,7 @@ import org.apache.maven.scm.provider.git.command.GitCommand;
 import org.apache.maven.scm.provider.git.command.diff.GitDiffConsumer;
 import org.apache.maven.scm.provider.git.command.info.GitInfoItem;
 import org.apache.maven.scm.provider.git.command.info.GitInfoScmResult;
+import org.apache.maven.scm.provider.git.command.update.GitUpdateScmResult;
 import org.apache.maven.scm.provider.git.repository.GitScmProviderRepository;
 import org.apache.maven.scm.provider.git.repository.RepositoryUrl;
 import org.apache.maven.scm.provider.git.util.GitUtil;
@@ -247,6 +248,23 @@ public class Maven_scm_provider_git_commonsTest {
         assertThat(failure.getProviderMessage()).isEqualTo("fatal");
         assertThat(failure.getCommandOutput()).isEqualTo("not a repository");
         assertThat(failure.getInfoItems()).isEmpty();
+    }
+
+    @Test
+    void createsUpdateResultsWithRevisionAndUpdatedFiles() {
+        ScmFile modifiedFile = new ScmFile("src/main/App.java", ScmFileStatus.MODIFIED);
+        ScmFile addedFile = new ScmFile("src/test/AppTest.java", ScmFileStatus.ADDED);
+
+        GitUpdateScmResult result = new GitUpdateScmResult("git pull", List.of(modifiedFile, addedFile), 12345);
+
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getCommandLine()).isEqualTo("git pull");
+        assertThat(result.getRevision()).isEqualTo("12345");
+        assertThat(result.getUpdatedFiles()).containsExactly(modifiedFile, addedFile);
+        assertThat(result.getUpdatedFiles()).extracting(ScmFile::getPath)
+                .containsExactly("src/main/App.java", "src/test/AppTest.java");
+        assertThat(result.getUpdatedFiles()).extracting(ScmFile::getStatus)
+                .containsExactly(ScmFileStatus.MODIFIED, ScmFileStatus.ADDED);
     }
 
     @Test
