@@ -62,6 +62,7 @@ import jakarta.resource.spi.XATerminator;
 import jakarta.resource.spi.endpoint.MessageEndpoint;
 import jakarta.resource.spi.endpoint.MessageEndpointFactory;
 import jakarta.resource.spi.security.PasswordCredential;
+import jakarta.resource.spi.work.DistributableWork;
 import jakarta.resource.spi.work.ExecutionContext;
 import jakarta.resource.spi.work.HintsContext;
 import jakarta.resource.spi.work.SecurityContext;
@@ -71,6 +72,8 @@ import jakarta.resource.spi.work.WorkAdapter;
 import jakarta.resource.spi.work.WorkCompletedException;
 import jakarta.resource.spi.work.WorkContext;
 import jakarta.resource.spi.work.WorkContextErrorCodes;
+import jakarta.resource.spi.work.WorkContextLifecycleListener;
+import jakarta.resource.spi.work.WorkContextProvider;
 import jakarta.resource.spi.work.WorkEvent;
 import jakarta.resource.spi.work.WorkException;
 import jakarta.resource.spi.work.WorkListener;
@@ -191,6 +194,35 @@ public class JakartaResourceApiTest {
         assertThat(credential).isEqualTo(sameCredential).hasSameHashCodeAs(sameCredential);
         assertThat(credential).isNotEqualTo(differentCredential).isNotEqualTo("alice");
         assertThat(credential.getManagedConnectionFactory()).isSameAs(managedConnectionFactory);
+    }
+
+    @Test
+    void distributableWorkProvidesContextsAndLifecycleCallbacksDuringScheduling() throws Exception {
+        TransactionContext transactionContext = new TransactionContext();
+        transactionContext.setXid(new SimpleXid(43));
+        HintsContext hintsContext = new HintsContext();
+        hintsContext.setName("remote-import");
+        hintsContext.setDescription("Remote work scheduling hints");
+        hintsContext.setHint(HintsContext.NAME_HINT, "remote-import");
+
+        ContextAwareDistributableWork work = new ContextAwareDistributableWork(
+                List.of(transactionContext, hintsContext));
+        WorkContextAwareWorkManager workManager = new WorkContextAwareWorkManager();
+        RecordingWorkListener listener = new RecordingWorkListener();
+
+        workManager.scheduleWork(work, WorkManager.IMMEDIATE, new ExecutionContext(), listener);
+
+        assertThat(work).isInstanceOf(DistributableWork.class)
+                .isInstanceOf(WorkContextProvider.class)
+                .isInstanceOf(WorkContextLifecycleListener.class);
+        assertThat(work.wasRun()).isTrue();
+        assertThat(work.wasReleased()).isFalse();
+        assertThat(work.getLifecycleEvents()).containsExactly("setup-complete");
+        assertThat(workManager.getInstalledContextNames()).containsExactly("TransactionContext", "remote-import");
+        assertThat(listener.getEventTypes()).containsExactly(
+                WorkEvent.WORK_ACCEPTED,
+                WorkEvent.WORK_STARTED,
+                WorkEvent.WORK_COMPLETED);
     }
 
     @Test
@@ -584,6 +616,172 @@ public class JakartaResourceApiTest {
 
         private List<String> getCompletedWorkNames() {
             return completedWorkNames;
+        }
+    }
+
+    private static final class WorkContextAwareWorkManager implements WorkManager {
+        private final List<String> installedContextNames = new ArrayList<>();
+
+        @Override
+        public void doWork(Work work) throws WorkException {
+            runWork(work, null);
+        }
+
+        @Override
+        public void doWork(Work work, long startTimeout, ExecutionContext execContext, WorkListener workListener)
+                throws WorkException {
+            runWork(work, workListener);
+        }
+
+        @Override
+        public long startWork(Work work) throws WorkException {
+            runWork(work, null);
+            return 0;
+        }
+
+        @Override
+        public long startWork(Work work, long startTimeout, ExecutionContext execContext, WorkListener workListener)
+                throws WorkException {
+            runWork(work, workListener);
+            return 0;
+        }
+
+        @Override
+        public void scheduleWork(Work work) throws WorkException {
+            runWork(work, null);
+        }
+
+        @Override
+        public void scheduleWork(Work work, long startTimeout, ExecutionContext execContext,
+                WorkListener workListener) throws WorkException {
+            runWork(work, workListener);
+        }
+
+        private void runWork(Work work, WorkListener listener) {
+            notify(listener, WorkEvent.WORK_ACCEPTED, work, null);
+            installWorkContexts(work);
+            notify(listener, WorkEvent.WORK_STARTED, work, null);
+            work.run();
+            notify(listener, WorkEvent.WORK_COMPLETED, work, null);
+        }
+
+        private void installWorkContexts(Work work) {
+            if (!(work instanceof WorkContextProvider)) {
+                return;
+            }
+            WorkContextProvider contextProvider = (WorkContextProvider) work;
+            for (WorkContext context : contextProvider.getWorkContexts()) {
+                installedContextNames.add(context.getName());
+            }
+            if (work instanceof WorkContextLifecycleListener) {
+                ((WorkContextLifecycleListener) work).contextSetupComplete();
+            }
+        }
+
+        private void notify(WorkListener listener, int eventType, Work work, WorkException exception) {
+            if (listener == null) {
+                return;
+            }
+            WorkEvent event = new WorkEvent(this, eventType, work, exception, 0);
+            switch (eventType) {
+                case WorkEvent.WORK_ACCEPTED:
+                    listener.workAccepted(event);
+                    break;
+                case WorkEvent.WORK_STARTED:
+                    listener.workStarted(event);
+                    break;
+                case WorkEvent.WORK_COMPLETED:
+                    listener.workCompleted(event);
+                    break;
+                case WorkEvent.WORK_REJECTED:
+                    listener.workRejected(event);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported work event " + eventType);
+            }
+        }
+
+        private List<String> getInstalledContextNames() {
+            return installedContextNames;
+        }
+    }
+
+    private static final class ContextAwareDistributableWork implements DistributableWork, WorkContextProvider,
+            WorkContextLifecycleListener {
+        private static final long serialVersionUID = 1L;
+
+        private final List<WorkContext> workContexts;
+        private final List<String> lifecycleEvents = new ArrayList<>();
+        private boolean run;
+        private boolean released;
+
+        private ContextAwareDistributableWork(List<WorkContext> workContexts) {
+            this.workContexts = workContexts;
+        }
+
+        @Override
+        public void run() {
+            run = true;
+        }
+
+        @Override
+        public void release() {
+            released = true;
+        }
+
+        @Override
+        public List<WorkContext> getWorkContexts() {
+            return workContexts;
+        }
+
+        @Override
+        public void contextSetupComplete() {
+            lifecycleEvents.add("setup-complete");
+        }
+
+        @Override
+        public void contextSetupFailed(String errorCode) {
+            lifecycleEvents.add("setup-failed:" + errorCode);
+        }
+
+        private boolean wasRun() {
+            return run;
+        }
+
+        private boolean wasReleased() {
+            return released;
+        }
+
+        private List<String> getLifecycleEvents() {
+            return lifecycleEvents;
+        }
+    }
+
+    private static final class RecordingWorkListener implements WorkListener {
+        private final List<Integer> eventTypes = new ArrayList<>();
+
+        @Override
+        public void workAccepted(WorkEvent event) {
+            eventTypes.add(event.getType());
+        }
+
+        @Override
+        public void workRejected(WorkEvent event) {
+            eventTypes.add(event.getType());
+        }
+
+        @Override
+        public void workStarted(WorkEvent event) {
+            eventTypes.add(event.getType());
+        }
+
+        @Override
+        public void workCompleted(WorkEvent event) {
+            eventTypes.add(event.getType());
+        }
+
+        private List<Integer> getEventTypes() {
+            return eventTypes;
         }
     }
 
