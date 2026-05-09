@@ -7,6 +7,7 @@
 package org_apache_hadoop.hadoop_client_api;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +27,9 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparator;
+import org.apache.hadoop.io.compress.CompressionInputStream;
+import org.apache.hadoop.io.compress.CompressionOutputStream;
+import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.metrics2.AbstractMetric;
 import org.apache.hadoop.metrics2.MetricType;
 import org.apache.hadoop.metrics2.MetricsRecord;
@@ -79,7 +83,7 @@ public class Hadoop_client_apiTest {
                   </property>
                 </configuration>
                 """;
-        configuration.addResource(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)), "in-memory.xml");
+        configuration.addResource(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)), "in-memory.xml", false);
         configuration.setInt("replication", 3);
         configuration.setLong("block.size", 134_217_728L);
         configuration.setFloat("spill.percent", 0.75f);
@@ -131,6 +135,29 @@ public class Hadoop_client_apiTest {
         assertThat(permission.toShort()).isEqualTo((short) 0640);
         assertThat(permission.toString()).isEqualTo("rw-r-----");
         assertThat(new FsPermission("777").applyUMask(new FsPermission("027")).toString()).isEqualTo("rwxr-x---");
+    }
+
+    @Test
+    void gzipCodecCompressesAndDecompressesStreams() throws Exception {
+        GzipCodec codec = new GzipCodec();
+        codec.setConf(new Configuration(false));
+        byte[] expected = "row-1\nrow-2\nrow-3\n".getBytes(StandardCharsets.UTF_8);
+
+        ByteArrayOutputStream compressed = new ByteArrayOutputStream();
+        try (CompressionOutputStream output = codec.createOutputStream(compressed)) {
+            output.write(expected);
+            output.finish();
+        }
+
+        assertThat(compressed.toByteArray().length).isGreaterThan(0);
+        assertThat(codec.getDefaultExtension()).isEqualTo(".gz");
+
+        byte[] actual;
+        try (CompressionInputStream input = codec.createInputStream(new ByteArrayInputStream(compressed.toByteArray()))) {
+            actual = input.readAllBytes();
+        }
+
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
