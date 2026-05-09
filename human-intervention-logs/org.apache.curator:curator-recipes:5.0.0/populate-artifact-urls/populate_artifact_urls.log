@@ -1,0 +1,1209 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0dc0-0ab5-7e13-9477-c55a540ae748
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.curator:curator-recipes:5.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [5.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5/metadata/org.apache.curator/curator-recipes/index.json
+- Entry selector: "metadata-version" = "5.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 5.0.0
+- Entry metadata-version: 5.0.0
+- Entry test-version: 5.0.0
+- Entry tested-versions: [5.0.0]
+codex
+I’ll verify the artifact URLs against Maven/GitHub first, then patch only the missing fields in the selected metadata entry.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.curator/curator-recipes/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.6.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/curator",
+    "test-code-url" : "https://github.com/apache/curator/tree/apache-curator-$version$/curator-recipes/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-javadoc.jar",
+    "description" : "Apache Curator Recipes provides high-level Java implementations of common Apache ZooKeeper coordination patterns such as locks, elections, barriers, queues, caches, and counters. It builds on Curator Framework to make these distributed-system recipes easier to use safely from JVM applications.",
+    "tested-versions" : [
+      "2.6.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.curator.framework.recipes",
+      "org.apache.curator.utils"
+    ]
+  },
+  {
+    "metadata-version" : "5.0.0",
+    "tested-versions" : [
+      "5.0.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.curator.framework.recipes",
+      "org.apache.curator.utils"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' metadata/org.apache.curator metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 0ms:
+metadata/org.apache.curator/curator-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-client/$version$/curator-client-$version$-sources.jar",
+metadata/org.apache.curator/curator-client/index.json:6:    "repository-url" : "https://github.com/apache/curator",
+metadata/org.apache.curator/curator-client/index.json:7:    "test-code-url" : "https://github.com/apache/curator/tree/apache-curator-$version$/curator-client/src/test",
+metadata/org.apache.curator/curator-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-client/$version$/curator-client-$version$-javadoc.jar",
+metadata/org.apache.curator/curator-recipes/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-sources.jar",
+metadata/org.apache.curator/curator-recipes/index.json:6:    "repository-url" : "https://github.com/apache/curator",
+metadata/org.apache.curator/curator-recipes/index.json:7:    "test-code-url" : "https://github.com/apache/curator/tree/apache-curator-$version$/curator-recipes/src/test",
+metadata/org.apache.curator/curator-recipes/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:6:    "repository-url" : "https://github.com/google/truth",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/com.typesafe.play/play_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play_2.13/$version$/play_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/play_2.13/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/com.typesafe.play/play_2.13/index.json:7:    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play/src/test",
+metadata/com.typesafe.play/play_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play_2.13/$version$/play_2.13-$version$-javadoc.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-sources.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:6:    "repository-url" : "https://github.com/apache/pulsar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:7:    "test-code-url" : "https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test/java/org/apache/pulsar/client/api",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/expression/src/test/java",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/com.typesafe.play/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/com.typesafe.play/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.play/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:34:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/cpu/src/test/java/io/smallrye/common/cpu",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:39:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:40:    "repository-url" : "https://github.com/smallrye/smallrye-common",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:41:    "test-code-url" : "N/A",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:42:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-sources.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:6:    "repository-url" : "https://github.com/apache/pulsar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-ws_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-ws_2.13/$version$/play-ws_2.13-$version$-sources.jar",
+metadata/com.typesafe.play/play-ws_2.13/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/com.typesafe.play/play-ws_2.13/index.json:7:    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-integration-test/src/test/scala/play/it/libs",
+metadata/com.typesafe.play/play-ws_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-ws_2.13/$version$/play-ws_2.13-$version$-javadoc.jar",
+
+web search: 
+web search: Maven Central org.apache.curator curator-recipes 5.0.0 sources javadoc tests
+web search: 
+web search: https://github.com/apache/curator/tree/apache-curator-5.0.0/curator-recipes/src/test
+web search: 
+web search: repo.maven.apache.org/maven2 org/apache/curator/curator-recipes/5.0.0 curator-recipes-5.0.0-sources.jar curator-recipes-5.0.0-javadoc.jar
+codex
+The local file already has the exact Curator templates on the older `2.6.0` entry. I’m checking whether those templates still render for `5.0.0`, and whether Maven Central provides source/javadoc/test artifacts for this version.
+exec
+/usr/bin/bash -lc 'curl -sSfL https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/5.0.0/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+exec
+/usr/bin/bash -lc 'curl -sSI https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/5.0.0/curator-recipes-5.0.0-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+exec
+/usr/bin/bash -lc 'curl -sSI https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/5.0.0/curator-recipes-5.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+exec
+/usr/bin/bash -lc 'curl -sSI https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/5.0.0/curator-recipes-5.0.0-test-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+exec
+/usr/bin/bash -lc 'curl -sSI https://github.com/apache/curator/tree/apache-curator-5.0.0/curator-recipes/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 558ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 17:19:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b20fca17358f43254918a8d6cc66745c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=pq6%2BoJkmZQpcuIY9yc%2BaN4COo%2BQltTtFZzcft1Q5SAUHb%2FCqfK1cA2WZiyJXcvmhKODsdJKt68DReo94tdtT65w10ORseNcf3ZucoMLVo7PCcGOvzv0X5A38oByjw2YENNySVn31gwzOemyD7%2FzhO6RuN1Crkzjt5sBID29K9vM5qyScjVZAg8U%2B0HYsFhNR9GYYmjovKqlDhjIEQpdi5WjwUIDvDmrGHUtZOUsM6IwaBvGK5zeSoqcZfGdOja%2FVu07vgVAuO3HiZ%2BRNGPHE5A%3D%3D--%2Fe00DI4F0kwwlICf--Kf%2BNRvxLX5oAxiKOpsXBlw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.723862664.1778347172; expires=Sun, 09 May 2027 17:19:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 17:19:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5115:A44B0:C1A311B:925138C:69FF6CA4
+
+
+ succeeded in 4929ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 17:19:36 GMT
+content-type: application/java-archive
+content-length: 1058020
+cf-ray: 9f925ebfcf17fcc9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1519541
+etag: "124e19255d082282e9b3a5220431a75f"
+last-modified: Mon, 18 May 2020 04:05:32 GMT
+x-checksum-md5: 124e19255d082282e9b3a5220431a75f
+x-checksum-sha1: 9f8a95bb4a8c045707826719d45c4dd6831edfef
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 5004ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 17:19:36 GMT
+content-type: application/java-archive
+content-length: 195889
+cf-ray: 9f925ebfdd34c126-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 227659
+etag: "bd09a0bc17f472724a303b71b2d28d47"
+last-modified: Mon, 18 May 2020 04:05:29 GMT
+x-checksum-md5: bd09a0bc17f472724a303b71b2d28d47
+x-checksum-sha1: d701899860e08894562f7972e699b771d261c4b8
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 5216ms:
+HTTP/2 404 
+date: Sat, 09 May 2026 17:19:37 GMT
+content-type: text/html
+cf-ray: 9f925ebfdcfe9cec-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/curator/curator-recipes/5.0.0/curator-recipes-5.0.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 5310ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/curator/curator-recipes/5.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/curator/curator-recipes/5.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="curator-recipes-5.0.0-javadoc.jar" title="curator-recipes-5.0.0-javadoc.jar">curator-recipes-5.0.0-javadoc.jar</a>                 2020-05-18 04:05   1058020      
+<a href="curator-recipes-5.0.0-javadoc.jar.asc" title="curator-recipes-5.0.0-javadoc.jar.asc">curator-recipes-5.0.0-javadoc.jar.asc</a>             2020-05-18 04:05       860      
+<a href="curator-recipes-5.0.0-javadoc.jar.md5" title="curator-recipes-5.0.0-javadoc.jar.md5">curator-recipes-5.0.0-javadoc.jar.md5</a>             2020-05-18 04:05        32      
+<a href="curator-recipes-5.0.0-javadoc.jar.sha1" title="curator-recipes-5.0.0-javadoc.jar.sha1">curator-recipes-5.0.0-javadoc.jar.sha1</a>            2020-05-18 04:05        40      
+<a href="curator-recipes-5.0.0-osgi.jar" title="curator-recipes-5.0.0-osgi.jar">curator-recipes-5.0.0-osgi.jar</a>                    2020-05-18 04:05    313575      
+<a href="curator-recipes-5.0.0-osgi.jar.asc" title="curator-recipes-5.0.0-osgi.jar.asc">curator-recipes-5.0.0-osgi.jar.asc</a>                2020-05-18 04:05       860      
+<a href="curator-recipes-5.0.0-osgi.jar.md5" title="curator-recipes-5.0.0-osgi.jar.md5">curator-recipes-5.0.0-osgi.jar.md5</a>                2020-05-18 04:05        32      
+<a href="curator-recipes-5.0.0-osgi.jar.sha1" title="curator-recipes-5.0.0-osgi.jar.sha1">curator-recipes-5.0.0-osgi.jar.sha1</a>               2020-05-18 04:05        40      
+<a href="curator-recipes-5.0.0-sources.jar" title="curator-recipes-5.0.0-sources.jar">curator-recipes-5.0.0-sources.jar</a>                 2020-05-18 04:05    195889      
+<a href="curator-recipes-5.0.0-sources.jar.asc" title="curator-recipes-5.0.0-sources.jar.asc">curator-recipes-5.0.0-sources.jar.asc</a>             2020-05-18 04:05       860      
+<a href="curator-recipes-5.0.0-sources.jar.md5" title="curator-recipes-5.0.0-sources.jar.md5">curator-recipes-5.0.0-sources.jar.md5</a>             2020-05-18 04:05        32      
+<a href="curator-recipes-5.0.0-sources.jar.sha1" title="curator-recipes-5.0.0-sources.jar.sha1">curator-recipes-5.0.0-sources.jar.sha1</a>            2020-05-18 04:05        40      
+<a href="curator-recipes-5.0.0-tests.jar" title="curator-recipes-5.0.0-tests.jar">curator-recipes-5.0.0-tests.jar</a>                   2020-05-18 04:05    445656      
+<a href="curator-recipes-5.0.0-tests.jar.asc" title="curator-recipes-5.0.0-tests.jar.asc">curator-recipes-5.0.0-tests.jar.asc</a>               2020-05-18 04:05       860      
+<a href="curator-recipes-5.0.0-tests.jar.md5" title="curator-recipes-5.0.0-tests.jar.md5">curator-recipes-5.0.0-tests.jar.md5</a>               2020-05-18 04:05        32      
+<a href="curator-recipes-5.0.0-tests.jar.sha1" title="curator-recipes-5.0.0-tests.jar.sha1">curator-recipes-5.0.0-tests.jar.sha1</a>              2020-05-18 04:05        40      
+<a href="curator-recipes-5.0.0.jar" title="curator-recipes-5.0.0.jar">curator-recipes-5.0.0.jar</a>                         2020-05-18 04:05    314873      
+<a href="curator-recipes-5.0.0.jar.asc" title="curator-recipes-5.0.0.jar.asc">curator-recipes-5.0.0.jar.asc</a>                     2020-05-18 04:05       860      
+<a href="curator-recipes-5.0.0.jar.md5" title="curator-recipes-5.0.0.jar.md5">curator-recipes-5.0.0.jar.md5</a>                     2020-05-18 04:05        32      
+<a href="curator-recipes-5.0.0.jar.sha1" title="curator-recipes-5.0.0.jar.sha1">curator-recipes-5.0.0.jar.sha1</a>                    2020-05-18 04:05        40      
+<a href="curator-recipes-5.0.0.pom" title="curator-recipes-5.0.0.pom">curator-recipes-5.0.0.pom</a>                         2020-05-18 04:05      3593      
+<a href="curator-recipes-5.0.0.pom.asc" title="curator-recipes-5.0.0.pom.asc">curator-recipes-5.0.0.pom.asc</a>                     2020-05-18 04:05       860      
+<a href="curator-recipes-5.0.0.pom.md5" title="curator-recipes-5.0.0.pom.md5">curator-recipes-5.0.0.pom.md5</a>                     2020-05-18 04:05        32      
+<a href="curator-recipes-5.0.0.pom.sha1" title="curator-recipes-5.0.0.pom.sha1">curator-recipes-5.0.0.pom.sha1</a>                    2020-05-18 04:05        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+Maven Central has `sources.jar`, `javadoc.jar`, and a `tests.jar` for `curator-recipes:5.0.0`; it does not have a `test-sources.jar`. Since the request prefers Maven when test artifacts exist, I’m using the `tests.jar` for `test-code-url` instead of the GitHub test directory.
+exec
+/usr/bin/bash -lc "rg -n 'tests\\.jar|test-sources\\.jar' metadata | head -50" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 0ms:
+metadata/io.undertow/undertow-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/$version$/undertow-core-$version$-tests.jar",
+metadata/io.undertow/undertow-core/index.json:45:    "test-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/$version$/undertow-core-$version$-tests.jar",
+metadata/com.google.inject.extensions/guice-servlet/index.json:7:    "test-code-url": "https://repo1.maven.org/maven2/com/google/inject/extensions/guice-servlet/$version$/guice-servlet-$version$-tests.jar",
+metadata/ch.qos.logback/logback-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:20:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:35:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:52:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:66:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/$version$/logback-core-$version$-test-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/org.sonatype.plexus/plexus-build-api/index.json:7:    "test-code-url": "https://repo.maven.apache.org/maven2/org/sonatype/plexus/plexus-build-api/$version$/plexus-build-api-$version$-tests.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:24:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/jta/$version$/jta-$version$-tests.jar",
+metadata/dev.langchain4j/langchain4j/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/$version$/langchain4j-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:44:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:72:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:87:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/$version$/logback-classic-$version$-test-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-tests.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-test-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-api/$version$/arquillian-core-api-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-bigquery/index.json:43:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-bigquery/$version$/google-cloud-bigquery-$version$-tests.jar",
+metadata/org.apache.hadoop/hadoop-mapreduce-client-shuffle/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-mapreduce-client-shuffle/$version$/hadoop-mapreduce-client-shuffle-$version$-test-sources.jar",
+metadata/com.google.cloud/google-cloud-core-grpc/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/cloud/google-cloud-core-grpc/$version$/google-cloud-core-grpc-$version$-tests.jar",
+metadata/org.apache.hadoop/hadoop-yarn-registry/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-registry/$version$/hadoop-yarn-registry-$version$-test-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-tests.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-tests.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-impl-base/index.json:38:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-impl-base/$version$/arquillian-core-impl-base-$version$-tests.jar",
+metadata/com.google.cloud/proto-google-cloud-firestore-bundle-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/proto-google-cloud-firestore-bundle-v1/$version$/proto-google-cloud-firestore-bundle-v1-$version$-tests.jar",
+metadata/org.apache.hadoop/hadoop-auth/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-auth/$version$/hadoop-auth-$version$-test-sources.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-tests.jar",
+metadata/org.jboss.arquillian.core/arquillian-core-spi/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/core/arquillian-core-spi/$version$/arquillian-core-spi-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-logging/index.json:7:    "test-code-url": "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-logging/$version$/google-cloud-logging-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-core/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-core/$version$/google-cloud-core-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-core/$version$/google-cloud-core-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.web3j/core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/web3j/core/$version$/core-$version$-tests.jar",
+metadata/org.apache.bookkeeper/bookkeeper-common-allocator/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/bookkeeper/bookkeeper-common-allocator/$version$/bookkeeper-common-allocator-$version$-tests.jar",
+metadata/com.google.cloud/google-cloud-pubsub/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-pubsub/$version$/google-cloud-pubsub-$version$-tests.jar",
+metadata/jline/jline/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-tests.jar",
+metadata/jline/jline/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-tests.jar",
+metadata/io.vertx/vertx-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:56:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:70:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:84:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/com.google.cloud/google-cloud-monitoring/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/cloud/google-cloud-monitoring/$version$/google-cloud-monitoring-$version$-tests.jar",
+
+exec
+/usr/bin/bash -lc "curl -sSfL https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/5.0.0/curator-recipes-5.0.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.curator</groupId>
+        <artifactId>apache-curator</artifactId>
+        <version>5.0.0</version>
+    </parent>
+
+    <artifactId>curator-recipes</artifactId>
+    <version>5.0.0</version>
+    <packaging>bundle</packaging>
+
+    <name>Curator Recipes</name>
+    <description>All of the recipes listed on the ZooKeeper recipes doc (except two phase commit).</description>
+    <inceptionYear>2011</inceptionYear>
+
+    <properties>
+        <osgi.import.package>
+            org.apache.zookeeper.*;version="[3.4,4.0)", *
+        </osgi.import.package>
+        <osgi.export.package>
+            org.apache.curator.framework.recipes*;version="${project.version}";-noimport:=true
+        </osgi.export.package>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -sSI https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/5.0.0/curator-recipes-5.0.0-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+exec
+/usr/bin/bash -lc "curl -sSfL https://raw.githubusercontent.com/apache/curator/apache-curator-5.0.0/curator-recipes/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+exec
+/usr/bin/bash -lc 'curl -sSfL https://api.github.com/repos/apache/curator/git/ref/tags/apache-curator-5.0.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 182ms:
+{
+  "ref": "refs/tags/apache-curator-5.0.0",
+  "node_id": "MDM6UmVmMTczNTkwNTc6cmVmcy90YWdzL2FwYWNoZS1jdXJhdG9yLTUuMC4w",
+  "url": "https://api.github.com/repos/apache/curator/git/refs/tags/apache-curator-5.0.0",
+  "object": {
+    "sha": "b34ea9eeccd07533262a04b4a2b3d3ad7e969929",
+    "type": "tag",
+    "url": "https://api.github.com/repos/apache/curator/git/tags/b34ea9eeccd07533262a04b4a2b3d3ad7e969929"
+  }
+}
+
+ succeeded in 222ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.curator</groupId>
+        <artifactId>apache-curator</artifactId>
+        <version>5.0.0</version>
+    </parent>
+
+    <artifactId>curator-recipes</artifactId>
+    <version>5.0.0</version>
+    <packaging>bundle</packaging>
+
+    <name>Curator Recipes</name>
+    <description>All of the recipes listed on the ZooKeeper recipes doc (except two phase commit).</description>
+    <inceptionYear>2011</inceptionYear>
+
+    <properties>
+        <osgi.import.package>
+            org.apache.zookeeper.*;version="[3.4,4.0)", *
+        </osgi.import.package>
+        <osgi.export.package>
+            org.apache.curator.framework.recipes*;version="${project.version}";-noimport:=true
+        </osgi.export.package>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+ succeeded in 363ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 17:19:44 GMT
+content-type: application/java-archive
+content-length: 445656
+cf-ray: 9f925eea6bf4a625-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "92c5fddb9a6e1de2ca3236d1b54f782e"
+last-modified: Mon, 18 May 2020 04:05:43 GMT
+x-checksum-md5: 92c5fddb9a6e1de2ca3236d1b54f782e
+x-checksum-sha1: 3784581714f979185f0e130a063108829b138877
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -sSfL https://repo.maven.apache.org/maven2/org/apache/curator/apache-curator/5.0.0/apache-curator-5.0.0.pom | rg -n '<url>|<connection>|<developerConnection>|<tag>|github.com|curator.apache.org' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 0ms:
+36-        Curator is a set of Java libraries that make using Apache ZooKeeper much easier.
+37-    </description>
+38:    <url>http://curator.apache.org</url>
+39-    <inceptionYear>2011</inceptionYear>
+40-
+--
+42-        <license>
+43-            <name>The Apache Software License, Version 2.0</name>
+44:            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+45-            <distribution>repo</distribution>
+46-        </license>
+--
+49-    <organization>
+50-        <name>The Apache Software Foundation</name>
+51:        <url>http://www.apache.org/</url>
+52-    </organization>
+53-
+--
+104-
+105-    <scm>
+106:        <url>https://github.com/apache/curator.git</url>
+107:        <connection>scm:git:https://gitbox.apache.org/repos/asf/curator.git</connection>
+108:        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/curator.git
+109-        </developerConnection>
+110:        <tag>apache-curator-5.0.0</tag>
+111-    </scm>
+112-
+113-    <issueManagement>
+114-        <system>JIRA</system>
+115:        <url>http://issues.apache.org/jira/browse/CURATOR</url>
+116-    </issueManagement>
+117-
+118-    <ciManagement>
+119-        <system>Jenkins</system>
+120:        <url>https://builds.apache.org/job/Curator/</url>
+121-        <notifiers>
+122-            <notifier>
+--
+127-                <sendOnWarning>false</sendOnWarning>
+128-                <configuration>
+129:                    <address>dev@curator.apache.org</address>
+130-                </configuration>
+131-            </notifier>
+--
+136-        <site>
+137-            <id>apache.website.svnpub</id>
+138:            <url>scm:svn:https://svn.apache.org/repos/asf/curator/site/trunk</url>
+139-        </site>
+140-    </distributionManagement>
+--
+143-        <mailingList>
+144-            <name>Users</name>
+145:            <subscribe>mailto:user-subscribe@curator.apache.org</subscribe>
+146:            <unsubscribe>mailto:user-unsubscribe@curator.apache.org</unsubscribe>
+147:            <post>mailto:user@curator.apache.org</post>
+148-            <archive>http://mail-archives.apache.org/mod_mbox/curator-user/</archive>
+149-        </mailingList>
+150-        <mailingList>
+151-            <name>Development</name>
+152:            <subscribe>mailto:dev-subscribe@curator.apache.org</subscribe>
+153:            <unsubscribe>mailto:dev-unsubscribe@curator.apache.org</unsubscribe>
+154:            <post>mailto:dev@curator.apache.org</post>
+155-            <archive>http://mail-archives.apache.org/mod_mbox/curator-dev/</archive>
+156-        </mailingList>
+157-        <mailingList>
+158-            <name>Commits</name>
+159:            <subscribe>mailto:commits-subscribe@curator.apache.org</subscribe>
+160:            <unsubscribe>mailto:commits-unsubscribe@curator.apache.org</unsubscribe>
+161:            <post>mailto:commits@curator.apache.org</post>
+162-            <archive>http://mail-archives.apache.org/mod_mbox/curator-commits/</archive>
+163-        </mailingList>
+--
+174-                <role>PMC Chair</role>
+175-            </roles>
+176:            <url>https://people.apache.org/~randgalt</url>
+177-        </developer>
+178-
+--
+186-                <role>PMC Member</role>
+187-            </roles>
+188:            <url>http://www.linkedin.com/pub/jay-zarfoss/34/56/a19</url>
+189-        </developer>
+190-
+--
+209-                <role>PMC Member</role>
+210-            </roles>
+211:            <url>http://iocanel.blogspot.com</url>
+212-        </developer>
+213-
+--
+221-                <role>PMC Member</role>
+222-            </roles>
+223:            <url>https://people.apache.org/~cammckenzie</url>
+224-        </developer>
+225-
+--
+233-                <role>PMC Member</role>
+234-            </roles>
+235:            <url>http://github.com/dragonsinth</url>
+236-        </developer>
+237-
+--
+245-                <role>PMC Member</role>
+246-            </roles>
+247:            <url>http://people.apache.org/~mdrob</url>
+248-        </developer>
+249-
+--
+255-            </roles>
+256-            <timezone>-8</timezone>
+257:            <url>http://www.linkedin.com/pub/patrick-hunt/2/5b2/24a</url>
+258-        </developer>
+259-
+--
+265-            </roles>
+266-            <timezone>-8</timezone>
+267:            <url>http://www.linkedin.com/in/mahadevkonar</url>
+268-        </developer>
+269-
+--
+275-            </roles>
+276-            <timezone>-8</timezone>
+277:            <url>https://people.apache.org/~lresende</url>
+278-        </developer>
+279-
+--
+285-            </roles>
+286-            <timezone>-8</timezone>
+287:            <url>https://people.apache.org/~enis</url>
+288-        </developer>
+289-
+--
+296-            </roles>
+297-            <timezone>-8</timezone>
+298:            <url>https://people.apache.org/~fangmin</url>
+299-        </developer>
+300-
+--
+308-                <role>PMC Member</role>
+309-            </roles>
+310:            <url>https://people.apache.org/~shayshim</url>
+311-        </developer>
+312-    </developers>
+--
+1014-                <repository>
+1015-                    <id>staging-repo</id>
+1016:                    <url>https://repository.apache.org/content/groups/staging/</url>
+1017-                </repository>
+1018-            </repositories>
+
+exec
+/usr/bin/bash -lc "curl -sSfL https://raw.githubusercontent.com/apache/curator/apache-curator-5.0.0/README.md | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+exec
+/usr/bin/bash -lc "curl -sSfL https://raw.githubusercontent.com/apache/curator/apache-curator-5.0.0/curator-recipes/README.md | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 134ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 149ms:
+# Apache Curator
+
+[![Build Status](https://travis-ci.org/apache/curator.svg?branch=master)](https://travis-ci.org/apache/curator)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.curator/apache-curator.svg?logo=Apache+Maven&logoColor=blue)](http://search.maven.org/#search%7Cga%7C1%7Capache-curator)
+[![Curator Website](https://img.shields.io/badge/curator-website-red?logo=Apache&logoColor=red)](https://curator.apache.org)
+[![Stack Overflow](https://img.shields.io/badge/stackoverflow-Curator_Help-orange?logo=Stack+Overflow&logoColor=orange)](https://stackoverflow.com/questions/tagged/apache-curator)
+
+
+## What's is Apache Curator?
+
+Apache Curator is a Java/JVM client library for Apache ZooKeeper[1], a distributed coordination service.
+
+Apache Curator includes a high-level API framework and utilities to make using Apache ZooKeeper much easier and more reliable. It also includes recipes for common use cases and extensions such as service discovery and a Java 8 asynchronous DSL.
+For more details, please visit the project website: http://curator.apache.org/
+
+[1] Apache ZooKeeper https://zookeeper.apache.org/
+
+
+codex
+I’m going to add only the missing fields for the `metadata-version` `5.0.0` entry, leaving the older entry and existing package/test metadata untouched. The library is a Java/JVM library, not Kotlin/Groovy/Scala-specific, so I’ll leave `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5/metadata/org.apache.curator/curator-recipes/index.json
+diff --git a/metadata/org.apache.curator/curator-recipes/index.json b/metadata/org.apache.curator/curator-recipes/index.json
+index 30f758effc4f61ee8d6dee12d1d46d844317952a..7a37b7cb2d3d6e19053e260867b24c61367b08db
+--- a/metadata/org.apache.curator/curator-recipes/index.json
++++ b/metadata/org.apache.curator/curator-recipes/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/curator",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-javadoc.jar",
++    "description" : "Apache Curator Recipes provides high-level Java implementations of common Apache ZooKeeper coordination patterns such as locks, elections, barriers, queues, caches, and counters. It builds on Curator Framework to make these distributed-system recipes easier to use safely from JVM applications.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+diff --git a/metadata/org.apache.curator/curator-recipes/index.json b/metadata/org.apache.curator/curator-recipes/index.json
+index 30f758effc4f61ee8d6dee12d1d46d844317952a..7a37b7cb2d3d6e19053e260867b24c61367b08db
+--- a/metadata/org.apache.curator/curator-recipes/index.json
++++ b/metadata/org.apache.curator/curator-recipes/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/curator",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-javadoc.jar",
++    "description" : "Apache Curator Recipes provides high-level Java implementations of common Apache ZooKeeper coordination patterns such as locks, elections, barriers, queues, caches, and counters. It builds on Curator Framework to make these distributed-system recipes easier to use safely from JVM applications.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+codex
+The JSON patch is in place. I’m validating the file shape now, then I’ll run the repository metadata check for this coordinate if the local Gradle task starts cleanly.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.apache.curator/curator-recipes/index.json >/dev/null' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.curator/curator-recipes/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.curator/curator-recipes/index.json w/metadata/org.apache.curator/curator-recipes/index.json
+index 30f758effc..7a37b7cb2d 100644
+--- i/metadata/org.apache.curator/curator-recipes/index.json
++++ w/metadata/org.apache.curator/curator-recipes/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/curator",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-javadoc.jar",
++    "description" : "Apache Curator Recipes provides high-level Java implementations of common Apache ZooKeeper coordination patterns such as locks, elections, barriers, queues, caches, and counters. It builds on Curator Framework to make these distributed-system recipes easier to use safely from JVM applications.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+diff --git a/metadata/org.apache.curator/curator-recipes/index.json b/metadata/org.apache.curator/curator-recipes/index.json
+index 30f758effc4f61ee8d6dee12d1d46d844317952a..7a37b7cb2d3d6e19053e260867b24c61367b08db
+--- a/metadata/org.apache.curator/curator-recipes/index.json
++++ b/metadata/org.apache.curator/curator-recipes/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/curator",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-javadoc.jar",
++    "description" : "Apache Curator Recipes provides high-level Java implementations of common Apache ZooKeeper coordination patterns such as locks, elections, barriers, queues, caches, and counters. It builds on Curator Framework to make these distributed-system recipes easier to use safely from JVM applications.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.curator:curator-recipes:5.0.0 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+diff --git a/metadata/org.apache.curator/curator-recipes/index.json b/metadata/org.apache.curator/curator-recipes/index.json
+index 30f758effc4f61ee8d6dee12d1d46d844317952a..7a37b7cb2d3d6e19053e260867b24c61367b08db
+--- a/metadata/org.apache.curator/curator-recipes/index.json
++++ b/metadata/org.apache.curator/curator-recipes/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/curator",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-javadoc.jar",
++    "description" : "Apache Curator Recipes provides high-level Java implementations of common Apache ZooKeeper coordination patterns such as locks, elections, barriers, queues, caches, and counters. It builds on Curator Framework to make these distributed-system recipes easier to use safely from JVM applications.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+ exited 1 in 3623ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.apache.curator:curator-recipes:5.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5/metadata/org.apache.curator/curator-recipes/5.0.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.curator:curator-recipes:5.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5/metadata/org.apache.curator/curator-recipes/5.0.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.apache.curator:curator-recipes:5.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5/metadata/org.apache.curator/curator-recipes/5.0.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: https://github.com/apache/curator/tree/apache-curator-5.0.0/curator-recipes/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/5.0.0/curator-recipes-5.0.0-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/curator/curator-recipes/
+web search: 
+web search: 
+web search: 
+web search: curator-recipes-5.0.0-tests.jar
+web search: 
+web search: "apache-curator-5.0.0.pom" "https://github.com/apache/curator.git"
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.apache.curator/curator-recipes/index.json | sed -n '15,35p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5
+ succeeded in 0ms:
+    15	      "org.apache.curator.utils"
+    16	    ]
+    17	  },
+    18	  {
+    19	    "metadata-version" : "5.0.0",
+    20	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-sources.jar",
+    21	    "repository-url" : "https://github.com/apache/curator",
+    22	    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-tests.jar",
+    23	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-javadoc.jar",
+    24	    "description" : "Apache Curator Recipes provides high-level Java implementations of common Apache ZooKeeper coordination patterns such as locks, elections, barriers, queues, caches, and counters. It builds on Curator Framework to make these distributed-system recipes easier to use safely from JVM applications.",
+    25	    "tested-versions" : [
+    26	      "5.0.0"
+    27	    ],
+    28	    "allowed-packages" : [
+    29	      "org.apache.curator.framework.recipes",
+    30	      "org.apache.curator.utils"
+    31	    ]
+    32	  }
+    33	]
+
+diff --git a/metadata/org.apache.curator/curator-recipes/index.json b/metadata/org.apache.curator/curator-recipes/index.json
+index 30f758effc4f61ee8d6dee12d1d46d844317952a..7a37b7cb2d3d6e19053e260867b24c61367b08db
+--- a/metadata/org.apache.curator/curator-recipes/index.json
++++ b/metadata/org.apache.curator/curator-recipes/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/curator",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-javadoc.jar",
++    "description" : "Apache Curator Recipes provides high-level Java implementations of common Apache ZooKeeper coordination patterns such as locks, elections, barriers, queues, caches, and counters. It builds on Curator Framework to make these distributed-system recipes easier to use safely from JVM applications.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5/metadata/org.apache.curator/curator-recipes/index.json:19) for `metadata-version` `5.0.0`.
+
+Filled missing:
+- Maven Central `source-code-url`
+- GitHub repository root
+- Maven Central `test-code-url` using the available `tests.jar`
+- Maven Central `documentation-url` using the `javadoc.jar`
+- two-sentence description
+
+I left `language` absent because this is a Java/JVM library, not Kotlin/Groovy/Scala-specific.
+
+Verification:
+- `jq` JSON validation passed.
+- Rendered Maven URLs for `5.0.0` returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.curator:curator-recipes:5.0.0 --stacktrace` failed because `metadata/org.apache.curator/curator-recipes/5.0.0/reachability-metadata.json` is missing, which is outside the requested field update.
+diff --git a/metadata/org.apache.curator/curator-recipes/index.json b/metadata/org.apache.curator/curator-recipes/index.json
+index 30f758effc4f61ee8d6dee12d1d46d844317952a..7a37b7cb2d3d6e19053e260867b24c61367b08db
+--- a/metadata/org.apache.curator/curator-recipes/index.json
++++ b/metadata/org.apache.curator/curator-recipes/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/curator",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-recipes/$version$/curator-recipes-$version$-javadoc.jar",
++    "description" : "Apache Curator Recipes provides high-level Java implementations of common Apache ZooKeeper coordination patterns such as locks, elections, barriers, queues, caches, and counters. It builds on Curator Framework to make these distributed-system recipes easier to use safely from JVM applications.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+tokens used
+78,682
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5/metadata/org.apache.curator/curator-recipes/index.json:19) for `metadata-version` `5.0.0`.
+
+Filled missing:
+- Maven Central `source-code-url`
+- GitHub repository root
+- Maven Central `test-code-url` using the available `tests.jar`
+- Maven Central `documentation-url` using the `javadoc.jar`
+- two-sentence description
+
+I left `language` absent because this is a Java/JVM library, not Kotlin/Groovy/Scala-specific.
+
+Verification:
+- `jq` JSON validation passed.
+- Rendered Maven URLs for `5.0.0` returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.curator:curator-recipes:5.0.0 --stacktrace` failed because `metadata/org.apache.curator/curator-recipes/5.0.0/reachability-metadata.json` is missing, which is outside the requested field update.
+Ran agent for org.apache.curator:curator-recipes:5.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5/build/agent-url-discovery-logs/org.apache.curator-curator-recipes-5.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6695-b043b1b5/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 36s
+9 actionable tasks: 1 executed, 8 up-to-date
