@@ -144,6 +144,31 @@ public class ProgressbarTest {
     }
 
     @Test
+    void rendersStyleWithConfiguredAnsiColorCode() {
+        CapturingProgressBarConsumer consumer = new CapturingProgressBarConsumer(RENDER_WIDTH);
+        ProgressBarStyle style = ProgressBarStyle.builder()
+                .leftBracket("[")
+                .rightBracket("]")
+                .colorCode((byte) 36)
+                .build();
+
+        ProgressBar progressBar = newBuilder("colored", 2)
+                .setStyle(style)
+                .setConsumer(consumer)
+                .build();
+        try {
+            progressBar.stepTo(1).refresh();
+
+            assertThat(consumer.lastRendered())
+                    .contains("\u001b[36m[")
+                    .contains("]\u001b[0m")
+                    .contains("50%");
+        } finally {
+            progressBar.close();
+        }
+    }
+
+    @Test
     void customRendererReceivesProgressStateAndConsumerReceivesRenderedOutput() {
         CapturingProgressBarConsumer consumer = new CapturingProgressBarConsumer(RENDER_WIDTH);
         List<String> observedStates = new ArrayList<>();
