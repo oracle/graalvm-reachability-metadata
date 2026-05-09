@@ -64,6 +64,7 @@ import org.apache.directory.api.ldap.model.message.controls.PersistentSearchImpl
 import org.apache.directory.api.ldap.model.message.controls.SortKey;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.name.Rdn;
+import org.apache.directory.api.ldap.model.url.LdapUrl;
 import org.junit.jupiter.api.Test;
 
 public class Api_ldap_modelTest {
@@ -305,6 +306,45 @@ public class Api_ldap_modelTest {
                 .containsExactly("mail", "telephoneNumber");
         assertThat(changeEntry.getModifications().get(0).getAttribute().contains("jane@example.com")).isTrue();
         assertThat(changeEntry.getModifications().get(1).getAttribute().contains("+1 555 0110")).isTrue();
+    }
+
+    @Test
+    void ldapUrlsParseDecodeAndRenderSearchLocations() throws Exception {
+        LdapUrl parsedUrl = new LdapUrl(
+                "ldaps://ldap.example.com:1636/ou=People,dc=example,dc=com?cn,sn,mail?sub?"
+                        + "(|(cn=John%20Doe)(mail=john@example.com))?!x-priority=high%2cmedium,x-empty");
+
+        assertThat(parsedUrl.getScheme()).isEqualTo(LdapUrl.LDAPS_SCHEME);
+        assertThat(parsedUrl.getHost()).isEqualTo("ldap.example.com");
+        assertThat(parsedUrl.getPort()).isEqualTo(1636);
+        assertThat(parsedUrl.getDn()).isEqualTo(new Dn("ou=People,dc=example,dc=com"));
+        assertThat(parsedUrl.getAttributes()).containsExactly("cn", "sn", "mail");
+        assertThat(parsedUrl.getScope()).isEqualTo(SearchScope.SUBTREE);
+        assertThat(parsedUrl.getFilter()).isEqualTo("(|(cn=John Doe)(mail=john@example.com))");
+        assertThat(parsedUrl.getExtensions()).hasSize(2);
+        assertThat(parsedUrl.getExtension("X-PRIORITY").isCritical()).isTrue();
+        assertThat(parsedUrl.getExtensionValue("x-priority")).isEqualTo("high,medium");
+        assertThat(parsedUrl.getExtension("x-empty").getValue()).isNull();
+        assertThat(parsedUrl.getBytesCopy()).containsExactly(
+                parsedUrl.getString().getBytes(StandardCharsets.UTF_8));
+        assertThat(parsedUrl.toString()).isEqualTo(
+                "ldaps://ldap.example.com:1636/ou=People,dc=example,dc=com?cn,sn,mail?sub?"
+                        + "(%7C(cn=John%20Doe)(mail=john@example.com))?!x-priority=high%2cmedium,x-empty");
+
+        LdapUrl builtUrl = new LdapUrl();
+        builtUrl.setScheme(LdapUrl.LDAP_SCHEME);
+        builtUrl.setHost("directory.example.org");
+        builtUrl.setPort(389);
+        builtUrl.setDn(new Dn("cn=Jane Smith,ou=People,dc=example,dc=com"));
+        builtUrl.setAttributes(Arrays.asList("cn", "mail"));
+        builtUrl.setScope(SearchScope.ONELEVEL);
+        builtUrl.setFilter("(mail=jane.smith@example.com)");
+        builtUrl.getExtensions().add(new LdapUrl.Extension(false, "x-note", "primary,secondary"));
+
+        assertThat(builtUrl.toString()).isEqualTo(
+                "ldap://directory.example.org:389/cn=Jane%20Smith,ou=People,dc=example,dc=com?cn,mail?one?"
+                        + "(mail=jane.smith@example.com)?x-note=primary%2csecondary");
+        assertThat(new LdapUrl(builtUrl.toString())).isEqualTo(builtUrl);
     }
 
     @Test
