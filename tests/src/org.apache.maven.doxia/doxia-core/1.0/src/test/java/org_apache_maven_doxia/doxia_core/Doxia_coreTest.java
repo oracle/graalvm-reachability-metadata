@@ -8,7 +8,7 @@ package org_apache_maven_doxia.doxia_core;
 
 import org.junit.jupiter.api.Test;
 
-class Doxia_coreTest {
+public class Doxia_coreTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
