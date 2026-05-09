@@ -40,6 +40,19 @@ else
 fi
 echo "Timeout per Gradle invocation: $TIMEOUT"
 
+if ! MATCHING_COORDINATES=$(./gradlew -q --console=plain listCoordinates -Pcoordinates="$TEST_COORDINATES"); then
+  echo "$MATCHING_COORDINATES"
+  exit 1
+fi
+
+if ! printf '%s\n' "$MATCHING_COORDINATES" | grep -Fqx "$TEST_COORDINATES"; then
+  echo "$DELIMITER"
+  echo " Skipping run-consecutive-tests"
+  echo "$DELIMITER"
+  echo "Coordinate '$TEST_COORDINATES' does not resolve to an executable test target in this checkout."
+  exit 0
+fi
+
 run_multiple_attempts() {
   local stage="$1"
   local max_attempts="$2"
