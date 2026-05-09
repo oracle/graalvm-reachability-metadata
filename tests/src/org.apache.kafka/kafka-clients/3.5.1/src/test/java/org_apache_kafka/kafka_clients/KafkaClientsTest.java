@@ -65,6 +65,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,23 +84,26 @@ class KafkaClientsTest {
 
     private static final Logger logger = LoggerFactory.getLogger("KafkaClientsTest");
 
-    private static final String KAFKA_SERVER = "localhost:9092";
+    private static final String LOCALHOST = "localhost";
 
     private EmbeddedZookeeper zookeeper;
 
     private KafkaServer kafkaServer;
 
+    private String kafkaServerAddress;
+
     @BeforeAll
-    void beforeAll() {
+    void beforeAll() throws IOException {
         zookeeper = new EmbeddedZookeeper();
         logger.info("Embedded zookeeper started");
         Properties brokerProperties = new Properties();
+        kafkaServerAddress = LOCALHOST + ":" + findAvailablePort();
         brokerProperties.setProperty("zookeeper.connect", "localhost:" + zookeeper.port());
         brokerProperties.setProperty("log.dirs", TestUtils.tempDir().getPath());
-        brokerProperties.setProperty("listeners", "PLAINTEXT://" + KAFKA_SERVER);
+        brokerProperties.setProperty("listeners", "PLAINTEXT://" + kafkaServerAddress);
         brokerProperties.setProperty("offsets.topic.replication.factor", "1");
         kafkaServer = TestUtils.createServer(new KafkaConfig(brokerProperties), Time.SYSTEM);
-        logger.info("Embedded kafka server started");
+        logger.info("Embedded kafka server started on {}", kafkaServerAddress);
     }
 
     @AfterAll
@@ -116,7 +121,7 @@ class KafkaClientsTest {
     @Test
     void testProduceAndConsume() throws Exception {
         Properties properties = new Properties();
-        properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://" + KAFKA_SERVER);
+        properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         try (Admin admin = Admin.create(properties)) {
             NewTopic newTopic = new NewTopic("test_topic", 1, (short) 1);
             CreateTopicsResult result = admin.createTopics(Collections.singleton(newTopic));
@@ -124,7 +129,7 @@ class KafkaClientsTest {
         }
 
         Map<String, Object> producerProperties = new HashMap<>();
-        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         producerProperties.put(ProducerConfig.LINGER_MS_CONFIG, 50);
         producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -136,7 +141,7 @@ class KafkaClientsTest {
         List<String> receivedMessages = new ArrayList<>();
 
         Map<String, Object> consumerProperties = new HashMap<>();
-        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, "consumer");
         consumerProperties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
@@ -174,7 +179,7 @@ class KafkaClientsTest {
             VoidSerializer.class})
     void testSerializers(Class valueSerializer) {
         Map<String, Object> producerProperties = new HashMap<>();
-        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer);
         try (KafkaProducer producer = new KafkaProducer<>(producerProperties)) {
@@ -198,7 +203,7 @@ class KafkaClientsTest {
             VoidDeserializer.class})
     void testDeserializers(Class valueDeserializer) {
         Map<String, Object> consumerProperties = new HashMap<>();
-        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializer);
         try (KafkaConsumer consumer = new KafkaConsumer<>(consumerProperties)) {
@@ -222,7 +227,7 @@ class KafkaClientsTest {
             Serdes.VoidSerde.class})
     void testListSerializers(Class serdeInnerClass) {
         Map<String, Object> producerProperties = new HashMap<>();
-        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ListSerializer.class);
         producerProperties.put(CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_INNER_CLASS, serdeInnerClass);
@@ -234,7 +239,7 @@ class KafkaClientsTest {
     @Test
     void testListDeserializers() {
         Map<String, Object> consumerProperties = new HashMap<>();
-        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ListDeserializer.class);
         consumerProperties.put(CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_TYPE_CLASS, ArrayList.class);
@@ -247,7 +252,7 @@ class KafkaClientsTest {
     @Test
     void testRoundRobinPartitioner() {
         Map<String, Object> producerProperties = new HashMap<>();
-        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         producerProperties.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, RoundRobinPartitioner.class);
@@ -264,7 +269,7 @@ class KafkaClientsTest {
             StickyAssignor.class})
     void testPartitionAssignmentStrategy(Class assignor) {
         Map<String, Object> consumerProperties = new HashMap<>();
-        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProperties.put(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, Arrays.asList(assignor));
@@ -276,7 +281,7 @@ class KafkaClientsTest {
     @Test
     void testSaslPlain() {
         Map<String, Object> consumerProperties = new HashMap<>();
-        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProperties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
@@ -295,7 +300,7 @@ class KafkaClientsTest {
     @Test
     void testSaslScramSHA512() {
         Map<String, Object> consumerProperties = new HashMap<>();
-        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerAddress);
         consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProperties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
@@ -308,6 +313,13 @@ class KafkaClientsTest {
             // Attempt to perform an operation requiring authentication
             assertThatThrownBy(() -> consumer.partitionsFor("non-existent-topic"))
                     .isNotInstanceOf(UnsupportedOperationException.class);
+        }
+    }
+
+    private static int findAvailablePort() throws IOException {
+        try (ServerSocket serverSocket = new ServerSocket(0)) {
+            serverSocket.setReuseAddress(true);
+            return serverSocket.getLocalPort();
         }
     }
 
