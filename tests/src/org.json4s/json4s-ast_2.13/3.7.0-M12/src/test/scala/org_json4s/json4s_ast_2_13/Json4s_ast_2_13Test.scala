@@ -9,7 +9,7 @@ package org_json4s.json4s_ast_2_13
 import org.json4s.Diff
 import org.json4s.JsonAST
 import org.json4s.JsonAST._
-import org.json4s.JsonAST.JValue._
+import org.json4s.JValue._
 import org.junit.jupiter.api.Assertions._
 import org.junit.jupiter.api.Test
 
