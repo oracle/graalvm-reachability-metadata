@@ -1,0 +1,933 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0e6f-7181-75b0-9a05-ab0bcf415557
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-autoconfigure:2.6.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.6.3" when "$version$" is replaced with "2.6.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+- Set "coordinates" to "org.springframework.boot:spring-boot-autoconfigure:2.6.3".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.6.3".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the existing metadata file and inspect authoritative sources for the Spring Boot 2.6.3 artifact, preferring Maven-hosted source/test artifacts where they exist.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json && sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+-rw-rw-r-- 1 vjovanov vjovanov 81 May  9 22:30 build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+{
+  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"spring-boot-autoconfigure\" metadata tests build/discovered-artifact-metadata -g '*.json' -g '*.java' -g '*.xml' -g '*.gradle'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json:2:  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3"
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/library-and-framework-list.json:2200:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2288:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2354:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2485:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2501:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2517:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2552:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2570:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+
+codex
+The target file only has coordinates right now. I’m checking nearby generated metadata patterns next so the URL shapes match what this repo expects.
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"' build/discovered-artifact-metadata metadata/org.springframework.boot -g '*.json'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:9:    "description" : "Spring Boot Configuration Processor is a compile-time Java annotation processor that generates configuration metadata from Spring Boot configuration property classes. The generated metadata helps IDEs and other tools provide contextual documentation, validation hints, and property completion for Spring Boot application configuration.",
+
+exec
+/usr/bin/bash -lc 'find metadata/org.springframework.boot -maxdepth 2 -type f -name index.json -print | sort' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json
+metadata/org.springframework.boot/spring-boot-starter/index.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.springframework.boot/spring-boot-configuration-processor/index.json && sed -n '1,80p' metadata/org.springframework.boot/spring-boot-starter/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.7.18",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-boot",
+    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+    "description" : "Spring Boot Configuration Processor is a compile-time Java annotation processor that generates configuration metadata from Spring Boot configuration property classes. The generated metadata helps IDEs and other tools provide contextual documentation, validation hints, and property completion for Spring Boot application configuration.",
+    "tested-versions" : [
+      "2.7.18",
+      "3.0.0",
+      "3.0.1",
+      "3.0.2",
+      "3.0.3",
+      "3.0.4",
+      "3.0.5",
+      "3.0.6",
+      "3.0.7",
+      "3.0.8",
+      "3.0.9",
+      "3.0.10",
+      "3.0.11",
+      "3.0.12",
+      "3.0.13",
+      "3.1.0",
+      "3.1.1",
+      "3.1.2",
+      "3.1.3",
+      "3.1.4",
+      "3.1.5",
+      "3.1.6",
+      "3.1.7",
+      "3.1.8",
+      "3.1.9",
+      "3.1.10",
+      "3.1.11",
+      "3.1.12",
+      "3.2.0",
+      "3.2.1",
+      "3.2.2",
+      "3.2.3",
+      "3.2.4",
+      "3.2.5",
+      "3.2.6",
+      "3.2.7",
+      "3.2.8",
+      "3.2.9",
+      "3.2.10",
+      "3.2.11",
+      "3.2.12",
+      "3.3.0",
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "3.3.4",
+      "3.3.5",
+      "3.3.6",
+      "3.3.7",
+      "3.3.8",
+      "3.3.9",
+      "3.3.10",
+      "3.3.11",
+      "3.3.12",
+      "3.3.13"
+    ],
+    "allowed-packages" : [
+      "org.springframework.boot.configurationprocessor"
+    ]
+  }
+]
+[
+  {
+    "not-for-native-image": true,
+    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+  }
+]
+
+codex
+For this artifact, Maven Central is the right first source for published source and Javadoc jars. I’m verifying whether a published test artifact exists before falling back to the tagged GitHub test tree.
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-boot/v2.6.3/spring-boot-project/spring-boot-autoconfigure/build.gradle | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/2.6.3/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/spring-projects/spring-boot/tree/v2.6.3/spring-boot-project/spring-boot-autoconfigure/src/test | sed -n '1,40p' && curl -I -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/2.6.3/spring-boot-autoconfigure-2.6.3-sources.jar | sed -n '1,20p' && curl -I -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/2.6.3/spring-boot-autoconfigure-2.6.3-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 169ms:
+plugins {
+	id "java-library"
+	id "org.jetbrains.kotlin.jvm"
+	id "org.springframework.boot.auto-configuration"
+	id "org.springframework.boot.conventions"
+	id "org.springframework.boot.deployed"
+	id "org.springframework.boot.optional-dependencies"
+}
+
+description = "Spring Boot AutoConfigure"
+
+dependencies {
+	api(project(":spring-boot-project:spring-boot"))
+
+	optional("com.atomikos:transactions-jdbc")
+	optional("com.atomikos:transactions-jta")
+	optional("com.fasterxml.jackson.core:jackson-databind")
+	optional("com.fasterxml.jackson.dataformat:jackson-dataformat-cbor")
+	optional("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
+	optional("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+	optional("com.fasterxml.jackson.module:jackson-module-parameter-names")
+	optional("com.google.code.gson:gson")
+	optional("com.hazelcast:hazelcast")
+	optional("com.hazelcast:hazelcast-spring")
+	optional("com.h2database:h2")
+	optional("com.nimbusds:oauth2-oidc-sdk")
+	optional("com.oracle.database.jdbc:ojdbc8")
+	optional("com.oracle.database.jdbc:ucp")
+	optional("com.samskivert:jmustache")
+	optional("com.sun.mail:jakarta.mail")
+	optional("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
+	optional("io.lettuce:lettuce-core")
+	optional("io.projectreactor.netty:reactor-netty-http")
+	optional("io.r2dbc:r2dbc-spi")
+	optional("io.r2dbc:r2dbc-pool")
+	optional("io.rsocket:rsocket-core")
+	optional("io.rsocket:rsocket-transport-netty")
+	optional("io.undertow:undertow-servlet") {
+		exclude group: "org.jboss.spec.javax.annotation", module: "jboss-annotations-api_1.3_spec"
+		exclude group: "org.jboss.spec.javax.servlet", module: "jboss-servlet-api_4.0_spec"
+	}
+	optional("io.undertow:undertow-websockets-jsr") {
+		exclude group: "org.jboss.spec.javax.annotation", module: "jboss-annotations-api_1.3_spec"
+		exclude group: "org.jboss.spec.javax.servlet", module: "jboss-servlet-api_4.0_spec"
+		exclude group: "org.jboss.spec.javax.websocket", module: "jboss-websocket-api_1.1_spec"
+	}
+	optional("jakarta.jms:jakarta.jms-api")
+	optional("jakarta.mail:jakarta.mail-api")
+	optional("jakarta.json.bind:jakarta.json.bind-api")
+	optional("jakarta.persistence:jakarta.persistence-api")
+	optional("jakarta.transaction:jakarta.transaction-api")
+	optional("jakarta.validation:jakarta.validation-api")
+	optional("jakarta.ws.rs:jakarta.ws.rs-api")
+	optional("javax.cache:cache-api")
+	optional("javax.money:money-api")
+	optional("net.sf.ehcache:ehcache")
+	optional("org.apache.activemq:activemq-broker") {
+		exclude group: "org.apache.geronimo.specs", module: "geronimo-j2ee-management_1.1_spec"
+		exclude group: "org.apache.geronimo.specs", module: "geronimo-jms_1.1_spec"
+	}
+	optional("org.apache.activemq:artemis-jms-client") {
+		exclude group: "commons-logging", module: "commons-logging"
+		exclude group: "org.apache.geronimo.specs", module: "geronimo-jms_2.0_spec"
+		exclude group: "org.apache.geronimo.specs", module: "geronimo-json_1.0_spec"
+	}
+	optional("org.apache.activemq:artemis-jms-server") {
+		exclude group: "commons-logging", module: "commons-logging"
+		exclude group: "org.apache.geronimo.specs", module: "geronimo-jms_2.0_spec"
+		exclude group: "org.apache.geronimo.specs", module: "geronimo-json_1.0_spec"
+		exclude group: "org.apache.geronimo.specs", module: "geronimo-jta_1.1_spec"
+	}
+	optional("org.apache.commons:commons-dbcp2") {
+		exclude group: "commons-logging", module: "commons-logging"
+	}
+	optional("org.apache.httpcomponents.client5:httpclient5")
+	optional("org.apache.kafka:kafka-streams")
+	optional("org.apache.solr:solr-solrj") {
+		exclude group: "org.slf4j", module: "jcl-over-slf4j"
+	}
+	optional("org.apache.tomcat.embed:tomcat-embed-core")
+	optional("org.apache.tomcat.embed:tomcat-embed-el")
+	optional("org.apache.tomcat.embed:tomcat-embed-websocket")
+	optional("org.apache.tomcat:tomcat-jdbc")
+	optional("org.apiguardian:apiguardian-api")
+	optional("org.codehaus.groovy:groovy-templates")
+	optional("com.github.ben-manes.caffeine:caffeine")
+	optional("com.github.mxab.thymeleaf.extras:thymeleaf-extras-data-attribute")
+	optional("com.sendgrid:sendgrid-java") {
+		exclude group: "commons-logging", module: "commons-logging"
+	}
+	optional("com.unboundid:unboundid-ldapsdk")
+	optional("com.zaxxer:HikariCP")
+	optional("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
+	optional("org.aspectj:aspectjweaver")
+	optional("org.eclipse.jetty:jetty-webapp") {
+		exclude group: "javax.servlet", module: "javax.servlet-api"
+	}
+	optional("org.eclipse.jetty:jetty-reactive-httpclient")
+	optional("org.eclipse.jetty.websocket:javax-websocket-server-impl") {	
+		exclude group: "javax.annotation", module: "javax.annotation-api"
+		exclude group: "javax.servlet", module: "javax.servlet-api"
+		exclude group: "javax.websocket", module: "javax.websocket-api"
+		exclude group: "javax.websocket", module: "javax.websocket-client-api"
+		exclude group: "org.eclipse.jetty", module: "jetty-jndi"
+	}
+	optional("org.ehcache:ehcache")
+	optional("org.elasticsearch.client:elasticsearch-rest-client") {
+		exclude group: "commons-logging", module: "commons-logging"
+	}
+	optional("org.elasticsearch.client:elasticsearch-rest-client-sniffer") {
+		exclude group: "commons-logging", module: "commons-logging"
+	}
+	optional("org.elasticsearch.client:elasticsearch-rest-high-level-client") {
+		exclude group: "commons-logging", module: "commons-logging"
+	}
+	optional("org.flywaydb:flyway-core")
+	optional("org.freemarker:freemarker")
+	optional("org.glassfish.jersey.core:jersey-server")
+	optional("org.glassfish.jersey.containers:jersey-container-servlet-core")
+	optional("org.glassfish.jersey.containers:jersey-container-servlet")
+	optional("org.glassfish.jersey.ext:jersey-spring5")
+	optional("org.glassfish.jersey.media:jersey-media-json-jackson")
+	optional("org.hibernate:hibernate-core") {
+		exclude group: "javax.activation", module: "javax.activation-api"
+		exclude group: "javax.persistence", module: "javax.persistence-api"
+		exclude group: "javax.xml.bind", module: "jaxb-api"
+		exclude group: "org.jboss.spec.javax.transaction", module: "jboss-transaction-api_1.2_spec"
+	}
+	optional("org.hibernate:hibernate-jcache") {
+		exclude group: "javax.activation", module: "javax.activation-api"
+		exclude group: "javax.persistence", module: "javax.persistence-api"
+		exclude group: "javax.xml.bind", module: "jaxb-api"
+		exclude group: "org.jboss.spec.javax.transaction", module: "jboss-transaction-api_1.2_spec"
+	}
+	optional("org.hibernate.validator:hibernate-validator")
+	optional("org.infinispan:infinispan-component-annotations")
+	optional("org.infinispan:infinispan-jcache") {
+		exclude group: "org.jboss.spec.javax.transaction", module: "jboss-transaction-api_1.2_spec"
+	}
+	optional("org.infinispan:infinispan-spring5-embedded") {
+		exclude group: "org.jboss.spec.javax.transaction", module: "jboss-transaction-api_1.2_spec"
+	}
+	optional("org.influxdb:influxdb-java")
+	optional("org.jooq:jooq") {
+		exclude group: "javax.xml.bind", module: "jaxb-api"
+	}
+	optional("org.liquibase:liquibase-core") {
+		exclude group: "javax.xml.bind", module: "jaxb-api"
+	}
+	optional("org.messaginghub:pooled-jms") {
+		exclude group: "org.apache.geronimo.specs", module: "geronimo-jms_2.0_spec"
+	}
+	optional("org.mongodb:mongodb-driver-reactivestreams")
+	optional("org.mongodb:mongodb-driver-sync")
+	optional("org.quartz-scheduler:quartz")
+	optional("org.springframework:spring-jdbc")
+	optional("org.springframework.integration:spring-integration-core")
+	optional("org.springframework.integration:spring-integration-jdbc")
+	optional("org.springframework.integration:spring-integration-jmx")
+	optional("org.springframework.integration:spring-integration-rsocket")
+	optional("org.springframework:spring-jms")
+	optional("org.springframework:spring-orm")
+	optional("org.springframework:spring-tx")
+	optional("org.springframework:spring-web")
+	optional("org.springframework:spring-websocket")
+	optional("org.springframework:spring-webflux")
+	optional("org.springframework:spring-webmvc")
+	optional("org.springframework.batch:spring-batch-core")
+	optional("org.springframework.data:spring-data-couchbase")
+	optional("org.springframework.data:spring-data-envers") {
+		exclude group: "javax.activation", module: "javax.activation-api"
+		exclude group: "javax.persistence", module: "javax.persistence-api"
+		exclude group: "javax.xml.bind", module: "jaxb-api"
+		exclude group: "org.jboss.spec.javax.transaction", module: "jboss-transaction-api_1.2_spec"
+	}
+	optional("org.springframework.data:spring-data-jpa")
+	optional("org.springframework.data:spring-data-rest-webmvc")
+	optional("org.springframework.data:spring-data-cassandra") {
+		exclude group: "org.slf4j", module: "jcl-over-slf4j"
+	}
+	optional("org.springframework.data:spring-data-elasticsearch") {
+		exclude group: "org.elasticsearch.client", module: "transport"
+	}
+	optional("org.springframework.data:spring-data-jdbc")
+	optional("org.springframework.data:spring-data-ldap")
+	optional("org.springframework.data:spring-data-mongodb")
+	optional("org.springframework.data:spring-data-neo4j")
+	optional("org.springframework.data:spring-data-r2dbc")
+	optional("org.springframework.data:spring-data-redis")
+	optional("org.springframework.hateoas:spring-hateoas")
+	optional("org.springframework.security:spring-security-acl")
+	optional("org.springframework.security:spring-security-config")
+	optional("org.springframework.security:spring-security-data") {
+		exclude group: "javax.xml.bind", module: "jaxb-api"
+	}
+	optional("org.springframework.security:spring-security-oauth2-client")
+	optional("org.springframework.security:spring-security-oauth2-jose")
+	optional("org.springframework.security:spring-security-oauth2-resource-server")
+	optional("org.springframework.security:spring-security-rsocket")
+	optional("org.springframework.security:spring-security-saml2-service-provider")
+	optional("org.springframework.security:spring-security-web")
+	optional("org.springframework.session:spring-session-core")
+	optional("org.springframework.session:spring-session-data-mongodb")
+	optional("org.springframework.session:spring-session-data-redis")
+	optional("org.springframework.session:spring-session-hazelcast") {
+		exclude group: "javax.annotation", module: "javax.annotation-api"
+	} 
+	optional("org.springframework.session:spring-session-jdbc")
+	optional("org.springframework.amqp:spring-rabbit")
+	optional("org.springframework.amqp:spring-rabbit-stream")
+	optional("org.springframework.kafka:spring-kafka")
+	optional("org.springframework.ws:spring-ws-core")
+	optional("org.thymeleaf:thymeleaf")
+	optional("org.thymeleaf:thymeleaf-spring5")
+	optional("org.thymeleaf.extras:thymeleaf-extras-java8time")
+	optional("org.thymeleaf.extras:thymeleaf-extras-springsecurity5")
+	optional("redis.clients:jedis")
+
+	testImplementation(project(":spring-boot-project:spring-boot-tools:spring-boot-test-support"))
+	testImplementation(project(":spring-boot-project:spring-boot-test"))
+
+ succeeded in 219ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-autoconfigure/2.6.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-autoconfigure/2.6.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-autoconfigure-2.6.3-javadoc.jar" title="spring-boot-autoconfigure-2.6.3-javadoc.jar">spring-boot-autoconfigure-2.6.3-javadoc.jar</a>       2022-01-20 15:09   2428007      
+<a href="spring-boot-autoconfigure-2.6.3-javadoc.jar.asc" title="spring-boot-autoconfigure-2.6.3-javadoc.jar.asc">spring-boot-autoconfigure-2.6.3-javadoc.jar.a...</a>  2022-01-20 15:09       488      
+<a href="spring-boot-autoconfigure-2.6.3-javadoc.jar.md5" title="spring-boot-autoconfigure-2.6.3-javadoc.jar.md5">spring-boot-autoconfigure-2.6.3-javadoc.jar.m...</a>  2022-01-20 15:09        32      
+<a href="spring-boot-autoconfigure-2.6.3-javadoc.jar.sha1" title="spring-boot-autoconfigure-2.6.3-javadoc.jar.sha1">spring-boot-autoconfigure-2.6.3-javadoc.jar.s...</a>  2022-01-20 15:09        40      
+<a href="spring-boot-autoconfigure-2.6.3-sources.jar" title="spring-boot-autoconfigure-2.6.3-sources.jar">spring-boot-autoconfigure-2.6.3-sources.jar</a>       2022-01-20 15:09    972835      
+<a href="spring-boot-autoconfigure-2.6.3-sources.jar.asc" title="spring-boot-autoconfigure-2.6.3-sources.jar.asc">spring-boot-autoconfigure-2.6.3-sources.jar.a...</a>  2022-01-20 15:09       488      
+<a href="spring-boot-autoconfigure-2.6.3-sources.jar.md5" title="spring-boot-autoconfigure-2.6.3-sources.jar.md5">spring-boot-autoconfigure-2.6.3-sources.jar.m...</a>  2022-01-20 15:09        32      
+<a href="spring-boot-autoconfigure-2.6.3-sources.jar.sha1" title="spring-boot-autoconfigure-2.6.3-sources.jar.sha1">spring-boot-autoconfigure-2.6.3-sources.jar.s...</a>  2022-01-20 15:09        40      
+<a href="spring-boot-autoconfigure-2.6.3.jar" title="spring-boot-autoconfigure-2.6.3.jar">spring-boot-autoconfigure-2.6.3.jar</a>               2022-01-20 15:09   1627754      
+<a href="spring-boot-autoconfigure-2.6.3.jar.asc" title="spring-boot-autoconfigure-2.6.3.jar.asc">spring-boot-autoconfigure-2.6.3.jar.asc</a>           2022-01-20 15:09       488      
+<a href="spring-boot-autoconfigure-2.6.3.jar.md5" title="spring-boot-autoconfigure-2.6.3.jar.md5">spring-boot-autoconfigure-2.6.3.jar.md5</a>           2022-01-20 15:09        32      
+<a href="spring-boot-autoconfigure-2.6.3.jar.sha1" title="spring-boot-autoconfigure-2.6.3.jar.sha1">spring-boot-autoconfigure-2.6.3.jar.sha1</a>          2022-01-20 15:09        40      
+<a href="spring-boot-autoconfigure-2.6.3.module" title="spring-boot-autoconfigure-2.6.3.module">spring-boot-autoconfigure-2.6.3.module</a>            2022-01-20 15:09      6359      
+<a href="spring-boot-autoconfigure-2.6.3.module.asc" title="spring-boot-autoconfigure-2.6.3.module.asc">spring-boot-autoconfigure-2.6.3.module.asc</a>        2022-01-20 15:09       488      
+<a href="spring-boot-autoconfigure-2.6.3.module.md5" title="spring-boot-autoconfigure-2.6.3.module.md5">spring-boot-autoconfigure-2.6.3.module.md5</a>        2022-01-20 15:09        32      
+<a href="spring-boot-autoconfigure-2.6.3.module.sha1" title="spring-boot-autoconfigure-2.6.3.module.sha1">spring-boot-autoconfigure-2.6.3.module.sha1</a>       2022-01-20 15:09        40      
+<a href="spring-boot-autoconfigure-2.6.3.pom" title="spring-boot-autoconfigure-2.6.3.pom">spring-boot-autoconfigure-2.6.3.pom</a>               2022-01-20 15:09      2078      
+<a href="spring-boot-autoconfigure-2.6.3.pom.asc" title="spring-boot-autoconfigure-2.6.3.pom.asc">spring-boot-autoconfigure-2.6.3.pom.asc</a>           2022-01-20 15:09       488      
+<a href="spring-boot-autoconfigure-2.6.3.pom.md5" title="spring-boot-autoconfigure-2.6.3.pom.md5">spring-boot-autoconfigure-2.6.3.pom.md5</a>           2022-01-20 15:09        32      
+<a href="spring-boot-autoconfigure-2.6.3.pom.sha1" title="spring-boot-autoconfigure-2.6.3.pom.sha1">spring-boot-autoconfigure-2.6.3.pom.sha1</a>          2022-01-20 15:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 1472ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 20:31:07 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e750bda77b660713a42f8970559f0451"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=rcecQAOOAFigNLq77ZXGxQH0uTCZn0LVoFPthy9ozanLI1155ZcYeMk6351SJtd2Lv%2Bo0lUxT%2F%2FqfVub%2BD1hyRBy6tpcE87LTbdGbF9UhHnOpGpbDLwUF%2BXaxyBWQvaLkz%2FvcaSSkj9N9Vlv3gagSSbt5aPDDY8D%2Bb2mVEivoHvGapWRs0t2Qo4fL9UW05LukNB9DQZoz0ShALZqVaolKXkgl%2BxQYD8pUjcGNQbPJ43qa%2Fsy2ydbnbpGaQcahOSAsuea9ncgWQm8V94aX2%2F3kQ%3D%3D--LhxStMGS4oCX1WNo--ozUmYSFTJI1CadiKEBRZEA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1637769545.1778358666; expires=Sun, 09 May 2027 20:31:06 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 20:31:06 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510F:68A63:DBF4F46:A54CF64:69FF998A
+
+HTTP/2 200 
+date: Sat, 09 May 2026 20:31:07 GMT
+content-type: application/java-archive
+content-length: 972835
+cf-ray: 9f93774838af576e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "0bb1c11f86dccba8fcdaea09a5e74f01"
+last-modified: Thu, 20 Jan 2022 15:09:16 GMT
+x-checksum-md5: 0bb1c11f86dccba8fcdaea09a5e74f01
+x-checksum-sha1: 12e1b12b9c2b5e449cf2cc6ec6cdd5f61ec3c9e7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 09 May 2026 20:31:08 GMT
+content-type: application/java-archive
+content-length: 2428007
+cf-ray: 9f93774ac80b03b5-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "d1a56ac2cd16d801a19bdd5455cbab1e"
+last-modified: Thu, 20 Jan 2022 15:09:16 GMT
+x-checksum-md5: d1a56ac2cd16d801a19bdd5455cbab1e
+x-checksum-sha1: 713163eb29ddb78f4221c13981fee72ead197cd6
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/2.6.3/spring-boot-autoconfigure-2.6.3.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-autoconfigure</artifactId>
+  <version>2.6.3</version>
+  <name>spring-boot-autoconfigure</name>
+  <description>Spring Boot AutoConfigure</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>Pivotal Software, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Pivotal</name>
+      <email>info@pivotal.io</email>
+      <organization>Pivotal Software, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>2.6.3</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/artifact.jar" https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/2.6.3/spring-boot-autoconfigure-2.6.3.jar; jar tf "$tmp/artifact.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-autoconfigure/src/test?ref=v2.6.3 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 206ms:
+[
+  {
+    "name": "java",
+    "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java",
+    "sha": "5614fa80536e47e56eac96419a40c065e61c1f41",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-autoconfigure/src/test/java?ref=v2.6.3",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v2.6.3/spring-boot-project/spring-boot-autoconfigure/src/test/java",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5614fa80536e47e56eac96419a40c065e61c1f41",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-autoconfigure/src/test/java?ref=v2.6.3",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5614fa80536e47e56eac96419a40c065e61c1f41",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v2.6.3/spring-boot-project/spring-boot-autoconfigure/src/test/java"
+    }
+  },
+  {
+    "name": "kotlin",
+    "path": "spring-boot-project/spring-boot-autoconfigure/src/test/kotlin",
+    "sha": "ee4d5893c18fa5eec12f0e12493bd35f5f96a480",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-autoconfigure/src/test/kotlin?ref=v2.6.3",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v2.6.3/spring-boot-project/spring-boot-autoconfigure/src/test/kotlin",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ee4d5893c18fa5eec12f0e12493bd35f5f96a480",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-autoconfigure/src/test/kotlin?ref=v2.6.3",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ee4d5893c18fa5eec12f0e12493bd35f5f96a480",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v2.6.3/spring-boot-project/spring-boot-autoconfigure/src/test/kotlin"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "spring-boot-project/spring-boot-autoconfigure/src/test/resources",
+    "sha": "16afd5e7df0fec28cb20125ae070671f3e4d5924",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-autoconfigure/src/test/resources?ref=v2.6.3",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v2.6.3/spring-boot-project/spring-boot-autoconfigure/src/test/resources",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/16afd5e7df0fec28cb20125ae070671f3e4d5924",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-autoconfigure/src/test/resources?ref=v2.6.3",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/16afd5e7df0fec28cb20125ae070671f3e4d5924",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v2.6.3/spring-boot-project/spring-boot-autoconfigure/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 431ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/spring-autoconfigure-metadata.properties
+META-INF/spring-configuration-metadata.json
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/autoconfigure/
+org/springframework/boot/autoconfigure/SpringBootApplication.class
+org/springframework/boot/autoconfigure/liquibase/
+org/springframework/boot/autoconfigure/liquibase/DataSourceClosingSpringLiquibase.class
+org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseDataSourceCondition$DataSourceBeanCondition.class
+org/springframework/boot/autoconfigure/liquibase/LiquibaseProperties.class
+org/springframework/boot/autoconfigure/liquibase/LiquibaseSchemaManagementProvider.class
+org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseDataSourceCondition$LiquibaseUrlCondition.class
+org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseDataSourceCondition.class
+org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration.class
+org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseConfiguration.class
+org/springframework/boot/autoconfigure/liquibase/LiquibaseDataSource.class
+org/springframework/boot/autoconfigure/couchbase/
+org/springframework/boot/autoconfigure/couchbase/CouchbaseProperties$Timeouts.class
+org/springframework/boot/autoconfigure/couchbase/CouchbaseProperties$Ssl.class
+org/springframework/boot/autoconfigure/couchbase/CouchbaseProperties$Io.class
+org/springframework/boot/autoconfigure/couchbase/CouchbaseAutoConfiguration$1.class
+org/springframework/boot/autoconfigure/couchbase/ClusterEnvironmentBuilderCustomizer.class
+org/springframework/boot/autoconfigure/couchbase/CouchbaseProperties.class
+org/springframework/boot/autoconfigure/couchbase/CouchbaseAutoConfiguration$JacksonClusterEnvironmentBuilderCustomizer.class
+org/springframework/boot/autoconfigure/couchbase/CouchbaseAutoConfiguration.class
+org/springframework/boot/autoconfigure/couchbase/CouchbaseAutoConfiguration$JacksonConfiguration.class
+org/springframework/boot/autoconfigure/couchbase/CouchbaseProperties$Env.class
+org/springframework/boot/autoconfigure/r2dbc/
+org/springframework/boot/autoconfigure/r2dbc/EmbeddedDatabaseConnection.class
+org/springframework/boot/autoconfigure/r2dbc/R2dbcAutoConfiguration.class
+org/springframework/boot/autoconfigure/r2dbc/NoConnectionFactoryBeanFailureAnalyzer.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryConfigurations$PoolConfiguration$PooledConnectionFactoryConfiguration.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryBeanCreationFailureAnalyzer.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryConfigurations$GenericConfiguration.class
+org/springframework/boot/autoconfigure/r2dbc/MultipleConnectionPoolConfigurationsFailureAnalzyer.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryOptionsInitializer$ConnectionFactoryBeanCreationException.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryBuilder.class
+org/springframework/boot/autoconfigure/r2dbc/R2dbcProperties$Pool.class
+org/springframework/boot/autoconfigure/r2dbc/MissingR2dbcPoolDependencyException.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryOptionsInitializer.class
+org/springframework/boot/autoconfigure/r2dbc/R2dbcTransactionManagerAutoConfiguration.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryConfigurations.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryOptionsBuilderCustomizer.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryDependentConfiguration.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryConfigurations$PooledConnectionFactoryCondition.class
+org/springframework/boot/autoconfigure/r2dbc/MissingR2dbcPoolDependencyFailureAnalyzer.class
+org/springframework/boot/autoconfigure/r2dbc/MultipleConnectionPoolConfigurationsException.class
+org/springframework/boot/autoconfigure/r2dbc/ConnectionFactoryConfigurations$PoolConfiguration.class
+org/springframework/boot/autoconfigure/r2dbc/R2dbcProperties.class
+org/springframework/boot/autoconfigure/AutoConfigureBefore.class
+org/springframework/boot/autoconfigure/AutoConfigurationMetadataLoader.class
+org/springframework/boot/autoconfigure/data/
+org/springframework/boot/autoconfigure/data/couchbase/
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseDataConfiguration.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseClientFactoryConfiguration.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseReactiveDataConfiguration.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseRepositoriesAutoConfiguration.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseRepositoriesRegistrar.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseReactiveDataAutoConfiguration.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseReactiveRepositoriesRegistrar$EnableReactiveCouchbaseRepositoriesConfiguration.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseClientFactoryDependentConfiguration.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseDataAutoConfiguration$ValidationConfiguration.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseDataProperties.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseReactiveRepositoriesAutoConfiguration.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseReactiveRepositoriesRegistrar.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseDataAutoConfiguration.class
+org/springframework/boot/autoconfigure/data/couchbase/CouchbaseRepositoriesRegistrar$EnableCouchbaseRepositoriesConfiguration.class
+org/springframework/boot/autoconfigure/data/r2dbc/
+org/springframework/boot/autoconfigure/data/r2dbc/R2dbcRepositoriesAutoConfigureRegistrar$EnableR2dbcRepositoriesConfiguration.class
+org/springframework/boot/autoconfigure/data/r2dbc/R2dbcDataAutoConfiguration.class
+org/springframework/boot/autoconfigure/data/r2dbc/R2dbcRepositoriesAutoConfiguration.class
+org/springframework/boot/autoconfigure/data/r2dbc/R2dbcRepositoriesAutoConfigureRegistrar.class
+org/springframework/boot/autoconfigure/data/ConditionalOnRepositoryType.class
+org/springframework/boot/autoconfigure/data/mongo/
+org/springframework/boot/autoconfigure/data/mongo/MongoClientDependsOnBeanFactoryPostProcessor.class
+
+codex
+The Maven listing includes source and Javadoc jars but no test-sources or test jar, while the GitHub tag exposes the module’s `src/test` tree. The published artifact contains JVM `.class` files, so it remains a Native Image metadata target and does not get `not-for-native-image`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+index 1401953e33c61a8eabdfc8943b16b32d1e60ff12..96e1244d310067af028ff4c75da2ce56697546cf
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3"
++  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-autoconfigure/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+index 1401953e33c61a8eabdfc8943b16b32d1e60ff12..96e1244d310067af028ff4c75da2ce56697546cf
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3"
++  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-autoconfigure/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults."
+ }
+
+codex
+I’ve updated the JSON and am doing a quick validation pass now: syntax, substituted URL availability, and the two-sentence description constraint.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot-autoconfigure:2.6.3",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-autoconfigure/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-javadoc.jar",
+  "description": "Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults."
+}
+
+exec
+/usr/bin/bash -lc "jq -r '.description' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json | awk '{ n=gsub(/\\./,\"&\"); print n \" sentence-ending periods\"; print }'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+2 sentence-ending periods
+Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults.
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/2.6.3/spring-boot-autoconfigure-2.6.3-sources.jar \\
+  https://github.com/spring-projects/spring-boot/tree/v2.6.3/spring-boot-project/spring-boot-autoconfigure/src/test \\
+  https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/2.6.3/spring-boot-autoconfigure-2.6.3-javadoc.jar \\
+  https://github.com/spring-projects/spring-boot; do
+  code="'$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+index 1401953e33c61a8eabdfc8943b16b32d1e60ff12..96e1244d310067af028ff4c75da2ce56697546cf
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3"
++  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-autoconfigure/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults."
+ }
+
+ succeeded in 1344ms:
+200 https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/2.6.3/spring-boot-autoconfigure-2.6.3-sources.jar
+200 https://github.com/spring-projects/spring-boot/tree/v2.6.3/spring-boot-project/spring-boot-autoconfigure/src/test
+200 https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/2.6.3/spring-boot-autoconfigure-2.6.3-javadoc.jar
+200 https://github.com/spring-projects/spring-boot
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+index 1401953e33c61a8eabdfc8943b16b32d1e60ff12..96e1244d310067af028ff4c75da2ce56697546cf
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3"
++  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-autoconfigure/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+index 1401953e33c61a8eabdfc8943b16b32d1e60ff12..96e1244d310067af028ff4c75da2ce56697546cf
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3"
++  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-autoconfigure/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3",
+  "repository-url" : "https://github.com/spring-projects/spring-boot",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-sources.jar",
+  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-autoconfigure/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-javadoc.jar",
+  "description" : "Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults."
+}
+
+exec
+/usr/bin/bash -lc 'git ls-files --stage build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+index 1401953e33c61a8eabdfc8943b16b32d1e60ff12..96e1244d310067af028ff4c75da2ce56697546cf
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3"
++  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-autoconfigure/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults."
+ }
+
+ succeeded in 217ms:
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/src.jar" https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/2.6.3/spring-boot-autoconfigure-2.6.3-sources.jar; jar tf "$tmp/src.jar" | rg '"'\\.(kt|scala|groovy)"'$'"' | head -30; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+index 1401953e33c61a8eabdfc8943b16b32d1e60ff12..96e1244d310067af028ff4c75da2ce56697546cf
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3"
++  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-autoconfigure/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults."
+ }
+
+ succeeded in 307ms:
+codex
+Updated [org.springframework.boot-spring-boot-autoconfigure-2.6.3.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json).
+
+Set repository, Maven source/Javadoc URLs, tagged GitHub test URL, and a two-sentence description. I left `language` absent because this is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the published jar contains JVM class files.
+
+Validated with `jq` and checked the substituted URLs for `2.6.3` all return `200`.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+index 1401953e33c61a8eabdfc8943b16b32d1e60ff12..96e1244d310067af028ff4c75da2ce56697546cf
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3"
++  "coordinates" : "org.springframework.boot:spring-boot-autoconfigure:2.6.3",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-autoconfigure/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-autoconfigure/$version$/spring-boot-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Autoconfigure provides auto-configuration classes, condition annotations, and metadata that configure Spring application contexts from the classpath and application properties. It backs Spring Boot starters by contributing default beans and integrations for common application features while allowing user-defined beans and settings to override those defaults."
+ }
+
+tokens used
+30,430
+Updated [org.springframework.boot-spring-boot-autoconfigure-2.6.3.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-autoconfigure-2.6.3.json).
+
+Set repository, Maven source/Javadoc URLs, tagged GitHub test URL, and a two-sentence description. I left `language` absent because this is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the published jar contains JVM class files.
+
+Validated with `jq` and checked the substituted URLs for `2.6.3` all return `200`.
+Ran agent for org.springframework.boot:spring-boot-autoconfigure:2.6.3 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-autoconfigure-2.6.3.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2179-f972c2cd/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 47s
+9 actionable tasks: 9 executed
