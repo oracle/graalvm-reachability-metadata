@@ -35,6 +35,7 @@ import jakarta.security.enterprise.authentication.mechanism.http.AuthenticationP
 import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
+import jakarta.security.enterprise.credential.AbstractClearableCredential;
 import jakarta.security.enterprise.credential.BasicAuthenticationCredential;
 import jakarta.security.enterprise.credential.CallerOnlyCredential;
 import jakarta.security.enterprise.credential.Credential;
@@ -167,6 +168,21 @@ public class Jakarta_security_enterprise_apiTest {
         assertThat(defaultCredential.isCleared()).isFalse();
         assertThat(callerOnlyCredential.getCaller()).isEqualTo("alice");
         assertThat(rememberMeCredential.getToken()).isEqualTo("remember-token");
+    }
+
+    @Test
+    void abstractClearableCredentialInvokesCustomClearLogicAndMarksCredentialCleared() {
+        RecordingClearableCredential credential = new RecordingClearableCredential("api-token");
+
+        assertThat(credential.getToken()).isEqualTo("api-token");
+        assertThat(credential.isCleared()).isFalse();
+        assertThat(credential.isValid()).isTrue();
+
+        credential.clear();
+
+        assertThat(credential.getToken()).isEmpty();
+        assertThat(credential.isCleared()).isTrue();
+        assertThat(credential.isValid()).isFalse();
     }
 
     @Test
@@ -417,6 +433,28 @@ public class Jakarta_security_enterprise_apiTest {
 
     private static String basicUserInfo(String userInfo) {
         return Base64.getEncoder().encodeToString(userInfo.getBytes(US_ASCII));
+    }
+
+    public static final class RecordingClearableCredential extends AbstractClearableCredential {
+        private String token;
+
+        private RecordingClearableCredential(String token) {
+            this.token = token;
+        }
+
+        private String getToken() {
+            return token;
+        }
+
+        @Override
+        public boolean isValid() {
+            return !isCleared() && !token.isEmpty();
+        }
+
+        @Override
+        protected void clearCredential() {
+            token = "";
+        }
     }
 
     public static final class RecordingRememberMeIdentityStore implements RememberMeIdentityStore {
