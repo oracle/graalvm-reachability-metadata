@@ -228,6 +228,32 @@ public class Doxia_module_xhtmlTest {
     }
 
     @Test
+    void parserClosesNestedSectionsWhenHigherLevelHeadingStarts() throws Exception {
+        String xhtml = """
+                <html>
+                  <body>
+                    <h1>First</h1>
+                    <p>one</p>
+                    <h2>Child</h2>
+                    <p>two</p>
+                    <h1>Second</h1>
+                    <p>three</p>
+                  </body>
+                </html>
+                """;
+        StringWriter writer = new StringWriter();
+        XhtmlParser parser = new XhtmlParser();
+
+        parser.parse(new StringReader(xhtml), new XhtmlSink(writer));
+
+        String html = writer.toString().replaceAll(">\\s+<", "><");
+        assertThat(html).contains(
+                "<div class=\"section\"><h2>First</h2><p>one</p>"
+                        + "<div class=\"section\"><h3>Child</h3><p>two</p></div></div>"
+                        + "<div class=\"section\"><h2>Second</h2><p>three</p></div>");
+    }
+
+    @Test
     void parserReportsMalformedXmlAsParseException() {
         XhtmlParser parser = new XhtmlParser();
 
