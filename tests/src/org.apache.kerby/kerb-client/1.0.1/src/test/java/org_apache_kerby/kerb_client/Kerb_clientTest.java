@@ -26,8 +26,10 @@ import org.apache.kerby.kerberos.kerb.client.preauth.UserResponser;
 import org.apache.kerby.kerberos.kerb.client.preauth.pkinit.PkinitRequestOpts;
 import org.apache.kerby.kerberos.kerb.client.preauth.token.TokenContext;
 import org.apache.kerby.kerberos.kerb.transport.TransportPair;
+import org.apache.kerby.kerberos.kerb.type.base.KrbToken;
 import org.apache.kerby.kerberos.kerb.type.pa.PaData;
 import org.apache.kerby.kerberos.kerb.type.pa.PaDataType;
+import org.apache.kerby.kerberos.provider.token.JwtAuthToken;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -278,6 +280,21 @@ public class Kerb_clientTest {
     }
 
     @Test
+    void tokenClientRejectsMismatchedTokenCredentialTypes() {
+        KrbTokenClient tokenClient = new KrbTokenClient(new KrbConfig());
+        KrbToken identityToken = krbToken(true, false);
+        KrbToken accessToken = krbToken(false, true);
+
+        assertThatThrownBy(() -> tokenClient.requestTgt(accessToken, "armor.cache"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Identity token is expected");
+        assertThatThrownBy(() -> tokenClient.requestSgt(
+                identityToken, "HTTP/service.example.test@EXAMPLE.TEST", "armor.cache"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Access token is expected");
+    }
+
+    @Test
     void pkinitAndTokenRequestContextsExposeUsableDefaults() {
         PkinitRequestOpts pkinitRequestOpts = new PkinitRequestOpts();
         TokenContext tokenContext = new TokenContext();
@@ -288,6 +305,16 @@ public class Kerb_clientTest {
         assertThat(pkinitRequestOpts.dhSize).isPositive();
         assertThat(tokenContext.usingIdToken).isTrue();
         assertThat(tokenContext.token).isNull();
+    }
+
+    private static KrbToken krbToken(boolean identityToken, boolean accessToken) {
+        JwtAuthToken authToken = new JwtAuthToken();
+        authToken.isIdToken(identityToken);
+        authToken.isAcToken(accessToken);
+
+        KrbToken token = new KrbToken();
+        token.setInnerToken(authToken);
+        return token;
     }
 
     private static KrbConfig configuredKrbConfig() {
