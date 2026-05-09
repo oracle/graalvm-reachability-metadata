@@ -41,13 +41,12 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.Participant;
-import org.apache.curator.framework.recipes.locks.ChildReaper;
 import org.apache.curator.framework.recipes.locks.InterProcessLock;
+import org.apache.curator.framework.recipes.locks.InterProcessMultiLock;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
 import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreV2;
 import org.apache.curator.framework.recipes.locks.Lease;
-import org.apache.curator.framework.recipes.locks.Reaper;
 import org.apache.curator.framework.recipes.nodes.PersistentEphemeralNode;
 import org.apache.curator.framework.recipes.queue.SimpleDistributedQueue;
 import org.apache.curator.framework.recipes.shared.SharedCount;
@@ -326,25 +325,34 @@ public class Curator_recipesTest {
     }
 
     @Test
-    void childReaperRemovesEmptyChildrenAndRetainsNonEmptyChildren() throws Exception {
+    void interProcessMultiLockAcquiresAndReleasesAllPathsAtomically() throws Exception {
         try (LocalZooKeeperServer server = LocalZooKeeperServer.start();
-                CuratorFramework client = newClient(server);
-                ChildReaper childReaper = new ChildReaper(
-                        client, "/reaper/root", Reaper.Mode.REAP_UNTIL_GONE, 300)) {
-            client.create().creatingParentsIfNeeded().forPath("/reaper/root/empty", bytes("empty"));
-            client.create().creatingParentsIfNeeded().forPath("/reaper/root/non-empty/child", bytes("child"));
+                CuratorFramework firstClient = newClient(server);
+                CuratorFramework secondClient = newClient(server)) {
+            InterProcessMultiLock multiLock = new InterProcessMultiLock(
+                    firstClient, List.of("/locks/multi/first", "/locks/multi/second"));
+            InterProcessMutex competingFirstLock = new InterProcessMutex(secondClient, "/locks/multi/first");
+            InterProcessMutex competingSecondLock = new InterProcessMutex(secondClient, "/locks/multi/second");
 
-            childReaper.start();
+            assertThat(multiLock.acquire(5, TimeUnit.SECONDS)).isTrue();
+            try {
+                assertThat(multiLock.isAcquiredInThisProcess()).isTrue();
+                assertThat(competingFirstLock.acquire(100, TimeUnit.MILLISECONDS)).isFalse();
+                assertThat(competingSecondLock.acquire(100, TimeUnit.MILLISECONDS)).isFalse();
+            } finally {
+                multiLock.release();
+            }
 
-            awaitUntil(() -> {
-                try {
-                    return client.checkExists().forPath("/reaper/root/empty") == null;
-                } catch (Exception e) {
-                    throw new IllegalStateException(e);
+            assertThat(multiLock.isAcquiredInThisProcess()).isFalse();
+            assertThat(competingFirstLock.acquire(5, TimeUnit.SECONDS)).isTrue();
+            try {
+                assertThat(competingSecondLock.acquire(5, TimeUnit.SECONDS)).isTrue();
+            } finally {
+                if (competingSecondLock.isAcquiredInThisProcess()) {
+                    competingSecondLock.release();
                 }
-            });
-            assertThat(client.checkExists().forPath("/reaper/root/non-empty")).isNotNull();
-            assertThat(string(client.getData().forPath("/reaper/root/non-empty/child"))).isEqualTo("child");
+                competingFirstLock.release();
+            }
         }
     }
 
