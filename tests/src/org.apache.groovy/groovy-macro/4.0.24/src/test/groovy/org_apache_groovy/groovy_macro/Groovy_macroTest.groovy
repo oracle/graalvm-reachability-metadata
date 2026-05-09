@@ -25,8 +25,6 @@ import org.codehaus.groovy.macro.runtime.MacroBuilder
 import org.codehaus.groovy.macro.transform.MacroClass
 import org.junit.jupiter.api.Test
 
-import static org.assertj.core.api.Assertions.assertThat
-import static org.assertj.core.api.Assertions.assertThatThrownBy
 import static org.codehaus.groovy.ast.tools.GeneralUtils.constX
 import static org.codehaus.groovy.ast.tools.GeneralUtils.varX
 
@@ -39,16 +37,16 @@ public class Groovy_macroTest {
             return new MissingType($v { replacementArgument }, 'fixed')
         }
 
-        assertThat(result).isInstanceOf(ReturnStatement)
-        assertThat(result.expression).isInstanceOf(ConstructorCallExpression)
+        assert result instanceof ReturnStatement
+        assert result.expression instanceof ConstructorCallExpression
 
         ConstructorCallExpression constructorCall = (ConstructorCallExpression) result.expression
-        assertThat(constructorCall.type.name).isEqualTo('MissingType')
+        assert constructorCall.type.name == 'MissingType'
 
         TupleExpression arguments = (TupleExpression) constructorCall.arguments
-        assertThat(arguments.expressions).hasSize(2)
-        assertThat(arguments.expressions[0]).isSameAs(replacementArgument)
-        assertThat(((ConstantExpression) arguments.expressions[1]).value).isEqualTo('fixed')
+        assert arguments.expressions.size() == 2
+        assert arguments.expressions[0].is(replacementArgument)
+        assert ((ConstantExpression) arguments.expressions[1]).value == 'fixed'
     }
 
     @Test
@@ -58,7 +56,7 @@ public class Groovy_macroTest {
             println 'beta'
         }
 
-        assertThat(block.statements).hasSize(2)
+        assert block.statements.size() == 2
         assertPrintlnStatement(block.statements[0], 'alpha')
         assertPrintlnStatement(block.statements[1], 'beta')
     }
@@ -70,14 +68,14 @@ public class Groovy_macroTest {
             println 'after'
         }
 
-        assertThat(block.statements).hasSize(2)
+        assert block.statements.size() == 2
         assertPrintlnStatement(block.statements[0], 'before')
-        assertThat(block.statements[1]).isInstanceOf(ReturnStatement)
+        assert block.statements[1] instanceof ReturnStatement
 
         ReturnStatement returnStatement = (ReturnStatement) block.statements[1]
-        assertThat(returnStatement.expression).isInstanceOf(MethodCallExpression)
+        assert returnStatement.expression instanceof MethodCallExpression
         MethodCallExpression call = (MethodCallExpression) returnStatement.expression
-        assertThat(call.methodAsString).isEqualTo('println')
+        assert call.methodAsString == 'println'
     }
 
     @Test
@@ -88,10 +86,10 @@ public class Groovy_macroTest {
                 BinaryExpression
         )
 
-        assertThat(expression.leftExpression).isInstanceOf(VariableExpression)
-        assertThat(((VariableExpression) expression.leftExpression).name).isEqualTo('left')
-        assertThat(expression.rightExpression).isInstanceOf(ConstantExpression)
-        assertThat(((ConstantExpression) expression.rightExpression).value).isEqualTo(7)
+        assert expression.leftExpression instanceof VariableExpression
+        assert ((VariableExpression) expression.leftExpression).name == 'left'
+        assert expression.rightExpression instanceof ConstantExpression
+        assert ((ConstantExpression) expression.rightExpression).value == 7
 
         BlockStatement block = MacroBuilder.INSTANCE.macro(
                 CompilePhase.CONVERSION,
@@ -100,18 +98,18 @@ public class Groovy_macroTest {
                 [],
                 BlockStatement
         )
-        assertThat(block.statements).hasSize(2)
-        assertThat(methodCallFromExpressionStatement(block.statements[0]).methodAsString).isEqualTo('firstCall')
-        assertThat(methodCallFromExpressionStatement(block.statements[1]).methodAsString).isEqualTo('secondCall')
+        assert block.statements.size() == 2
+        assert methodCallFromExpressionStatement(block.statements[0]).methodAsString == 'firstCall'
+        assert methodCallFromExpressionStatement(block.statements[1]).methodAsString == 'secondCall'
 
         ClassNode generatedClass = MacroBuilder.INSTANCE.macro(
                 'class GeneratedMacroType { String name\n int nameSize() { name.size() } }',
                 [],
                 ClassNode
         )
-        assertThat(generatedClass.nameWithoutPackage).isEqualTo('GeneratedMacroType')
-        assertThat(generatedClass.getField('name')).isNotNull()
-        assertThat(generatedClass.getMethods('nameSize')).hasSize(1)
+        assert generatedClass.nameWithoutPackage == 'GeneratedMacroType'
+        assert generatedClass.getField('name') != null
+        assert generatedClass.getMethods('nameSize').size() == 1
     }
 
     @Test
@@ -126,10 +124,10 @@ public class Groovy_macroTest {
             }
         }
 
-        assertThat(classNode).isInstanceOf(ClassNode)
-        assertThat(classNode.nameWithoutPackage).isEqualTo('Book')
-        assertThat(classNode.getField('title')).isNotNull()
-        assertThat(classNode.getMethods('titleLength')).hasSize(1)
+        assert classNode instanceof ClassNode
+        assert classNode.nameWithoutPackage == 'Book'
+        assert classNode.getField('title') != null
+        assert classNode.getMethods('titleLength').size() == 1
     }
 
     @Test
@@ -139,9 +137,9 @@ public class Groovy_macroTest {
         Expression differentMethodPattern = macro { calculator.average(_, _) + _ }
         Expression differentShapePattern = macro { calculator.total(_) + _ }
 
-        assertThat(ASTMatcher.matches(actual, matchingPattern)).isTrue()
-        assertThat(ASTMatcher.matches(actual, differentMethodPattern)).isFalse()
-        assertThat(ASTMatcher.matches(actual, differentShapePattern)).isFalse()
+        assert ASTMatcher.matches(actual, matchingPattern)
+        assert !ASTMatcher.matches(actual, differentMethodPattern)
+        assert !ASTMatcher.matches(actual, differentShapePattern)
     }
 
     @Test
@@ -155,10 +153,9 @@ public class Groovy_macroTest {
 
         List<TreeContext> matches = ASTMatcher.find(block, auditCallPattern)
 
-        assertThat(matches).hasSize(2)
-        assertThat(matches.collect { TreeContext context -> ((MethodCallExpression) context.node).methodAsString })
-                .containsExactly('audit', 'audit')
-        assertThat(matches.every { TreeContext context -> context.parent != null }).isTrue()
+        assert matches.size() == 2
+        assert matches.collect { TreeContext context -> ((MethodCallExpression) context.node).methodAsString } == ['audit', 'audit']
+        assert matches.every { TreeContext context -> context.parent != null }
     }
 
     @Test
@@ -170,11 +167,11 @@ public class Groovy_macroTest {
             anyToken()
         }
 
-        assertThat(ASTMatcher.matches(macro { value + value }, repeatedOperandPattern)).isTrue()
-        assertThat(ASTMatcher.matches(macro { value + other }, repeatedOperandPattern)).isFalse()
-        assertThat(ASTMatcher.matches(macro { left - right }, anyOperatorPattern)).isTrue()
-        assertThat(ASTMatcher.matches(macro { left * right }, anyOperatorPattern)).isTrue()
-        assertThat(ASTMatcher.matches(macro { other - right }, anyOperatorPattern)).isFalse()
+        assert ASTMatcher.matches(macro { value + value }, repeatedOperandPattern)
+        assert !ASTMatcher.matches(macro { value + other }, repeatedOperandPattern)
+        assert ASTMatcher.matches(macro { left - right }, anyOperatorPattern)
+        assert ASTMatcher.matches(macro { left * right }, anyOperatorPattern)
+        assert !ASTMatcher.matches(macro { other - right }, anyOperatorPattern)
     }
 
     @Test
@@ -187,9 +184,9 @@ public class Groovy_macroTest {
             }
         }
 
-        assertThat(ASTMatcher.matches(macro { total + 10 }, rightTenPattern)).isTrue()
-        assertThat(ASTMatcher.matches(macro { total + 11 }, rightTenPattern)).isFalse()
-        assertThat(ASTMatcher.matches(macro { total - 10 }, rightTenPattern)).isFalse()
+        assert ASTMatcher.matches(macro { total + 10 }, rightTenPattern)
+        assert !ASTMatcher.matches(macro { total + 11 }, rightTenPattern)
+        assert !ASTMatcher.matches(macro { total - 10 }, rightTenPattern)
     }
 
     @Test
@@ -207,39 +204,45 @@ public class Groovy_macroTest {
         Expression replacement = constX('replacement')
         context.setReplacement(replacement)
 
-        assertThat(context.getUserdata('call')).containsExactly('record')
-        assertThat(context.getUserdata('scope')).containsExactly('statement')
-        assertThat(context.getUserdata('missing', false)).isNull()
-        assertThat(context.matches { methodAsString == 'record' }).isTrue()
-        assertThat(context.matches { methodAsString == 'ignore' }).isFalse()
-        assertThat(context.replacement).isSameAs(replacement)
-        assertThat(context.toString()).contains('MethodCallExpression')
+        assert context.getUserdata('call') == ['record']
+        assert context.getUserdata('scope') == ['statement']
+        assert context.getUserdata('missing', false) == null
+        assert context.matches { methodAsString == 'record' }
+        assert !context.matches { methodAsString == 'ignore' }
+        assert context.replacement.is(replacement)
+        assert context.toString().contains('MethodCallExpression')
     }
 
     @Test
     void directRuntimeMacroExtensionStubsFailFastWhenNotTransformed() {
-        assertThatThrownBy { MacroGroovyMethods.macro(new Object(), { 1 }) }
-                .isInstanceOf(IllegalStateException)
-                .hasMessageContaining('should never be called at runtime')
+        try {
+            MacroGroovyMethods.macro(new Object(), { 1 })
+            assert false: 'Expected IllegalStateException'
+        } catch (IllegalStateException exception) {
+            assert exception.message.contains('should never be called at runtime')
+        }
 
-        assertThatThrownBy { MacroGroovyMethods.macro(new Object(), true, { 1 }) }
-                .isInstanceOf(IllegalStateException)
-                .hasMessageContaining('should never be called at runtime')
+        try {
+            MacroGroovyMethods.macro(new Object(), true, { 1 })
+            assert false: 'Expected IllegalStateException'
+        } catch (IllegalStateException exception) {
+            assert exception.message.contains('should never be called at runtime')
+        }
     }
 
     private static void assertPrintlnStatement(Object statement, String expectedArgument) {
         MethodCallExpression call = methodCallFromExpressionStatement(statement)
 
-        assertThat(call.methodAsString).isEqualTo('println')
+        assert call.methodAsString == 'println'
         TupleExpression arguments = (TupleExpression) call.arguments
-        assertThat(arguments.expressions).hasSize(1)
-        assertThat(((ConstantExpression) arguments.expressions[0]).value).isEqualTo(expectedArgument)
+        assert arguments.expressions.size() == 1
+        assert ((ConstantExpression) arguments.expressions[0]).value == expectedArgument
     }
 
     private static MethodCallExpression methodCallFromExpressionStatement(Object statement) {
-        assertThat(statement).isInstanceOf(ExpressionStatement)
+        assert statement instanceof ExpressionStatement
         ExpressionStatement expressionStatement = (ExpressionStatement) statement
-        assertThat(expressionStatement.expression).isInstanceOf(MethodCallExpression)
+        assert expressionStatement.expression instanceof MethodCallExpression
         return (MethodCallExpression) expressionStatement.expression
     }
 }

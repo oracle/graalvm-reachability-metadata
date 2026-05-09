@@ -32,4 +32,14 @@ graalvmNative {
             }
         }
     }
+    binaries {
+        test {
+            buildArgs.add('-H:+RuntimeClassLoading')
+            buildArgs.add('-H:Preserve=package=org.codehaus.groovy.runtime')
+        }
+    }
+}
+
+tasks.withType(org.gradle.api.tasks.compile.GroovyCompile).configureEach {
+    groovyOptions.optimizationOptions.indy = false
 }
