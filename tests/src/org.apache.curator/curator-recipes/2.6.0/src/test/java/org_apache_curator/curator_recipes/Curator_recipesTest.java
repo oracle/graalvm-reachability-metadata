@@ -41,11 +41,13 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.Participant;
+import org.apache.curator.framework.recipes.locks.ChildReaper;
 import org.apache.curator.framework.recipes.locks.InterProcessLock;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
 import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreV2;
 import org.apache.curator.framework.recipes.locks.Lease;
+import org.apache.curator.framework.recipes.locks.Reaper;
 import org.apache.curator.framework.recipes.nodes.PersistentEphemeralNode;
 import org.apache.curator.framework.recipes.queue.SimpleDistributedQueue;
 import org.apache.curator.framework.recipes.shared.SharedCount;
@@ -320,6 +322,29 @@ public class Curator_recipesTest {
 
             assertThat(firstWriteLock.acquire(5, TimeUnit.SECONDS)).isTrue();
             firstWriteLock.release();
+        }
+    }
+
+    @Test
+    void childReaperRemovesEmptyChildrenAndRetainsNonEmptyChildren() throws Exception {
+        try (LocalZooKeeperServer server = LocalZooKeeperServer.start();
+                CuratorFramework client = newClient(server);
+                ChildReaper childReaper = new ChildReaper(
+                        client, "/reaper/root", Reaper.Mode.REAP_UNTIL_GONE, 300)) {
+            client.create().creatingParentsIfNeeded().forPath("/reaper/root/empty", bytes("empty"));
+            client.create().creatingParentsIfNeeded().forPath("/reaper/root/non-empty/child", bytes("child"));
+
+            childReaper.start();
+
+            awaitUntil(() -> {
+                try {
+                    return client.checkExists().forPath("/reaper/root/empty") == null;
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            });
+            assertThat(client.checkExists().forPath("/reaper/root/non-empty")).isNotNull();
+            assertThat(string(client.getData().forPath("/reaper/root/non-empty/child"))).isEqualTo("child");
         }
     }
 
