@@ -107,6 +107,16 @@ public class Jakarta_servlet_jsp_jstl_apiTest {
     }
 
     @Test
+    void configFindFallsBackToServletContextInitParameters() {
+        TestPageContext pageContext = new TestPageContext();
+
+        assertThat(pageContext.getServletContext().setInitParameter(Config.FMT_LOCALE, "en-US")).isTrue();
+
+        assertThat(Config.get(pageContext.getServletContext(), Config.FMT_LOCALE)).isNull();
+        assertThat(Config.find(pageContext, Config.FMT_LOCALE)).isEqualTo("en-US");
+    }
+
+    @Test
     void localizationContextAndLocaleSupportResolveAndFormatMessages() {
         TestPageContext pageContext = new TestPageContext();
         ResourceBundle bundle = new MessagesBundle();
