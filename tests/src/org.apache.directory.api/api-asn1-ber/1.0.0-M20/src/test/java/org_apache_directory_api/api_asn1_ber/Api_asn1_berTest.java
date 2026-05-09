@@ -49,7 +49,7 @@ public class Api_asn1_berTest {
         BerValue.encode(buffer, 127);
         BerValue.encode(buffer, -128);
         BerValue.encodeEnumerated(buffer, 3);
-        BerValue.encode(buffer, "héllo");
+        BerValue.encode(buffer, "h\u00E9llo");
         BerValue.encode(buffer, new byte[] {0x01, 0x02, 0x03});
 
         buffer.flip();
