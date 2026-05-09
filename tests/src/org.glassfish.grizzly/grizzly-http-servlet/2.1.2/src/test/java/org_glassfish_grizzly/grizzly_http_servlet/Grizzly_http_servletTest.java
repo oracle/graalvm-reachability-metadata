@@ -18,19 +18,30 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContextAttributeEvent;
+import javax.servlet.ServletContextAttributeListener;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletRequestAttributeEvent;
+import javax.servlet.ServletRequestAttributeListener;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionAttributeListener;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
@@ -141,6 +152,41 @@ public class Grizzly_http_servletTest {
         } finally {
             server.close();
         }
+    }
+
+    @Test
+    void servletHandlerNotifiesServletEventListenersRegisteredByClassName() throws Exception {
+        ServletEventRecorder.reset();
+        ServletHandler handler = new ServletHandler(new ListenerDrivenServlet());
+        handler.setContextPath("/events");
+        handler.setServletPath("/capture");
+        handler.addServletListener(ServletEventRecorder.class.getName());
+
+        ServerHandle server = startServer(handler, "/events/capture");
+        try {
+            assertThat(ServletEventRecorder.events()).containsExactly("contextInitialized:/events");
+
+            HttpResponse response = get(server.port(), "/events/capture", Collections.emptyMap());
+
+            assertThat(response.status).isEqualTo(HttpURLConnection.HTTP_OK);
+            assertThat(response.body).contains("eventsRecorded=");
+            assertThat(ServletEventRecorder.events()).containsSubsequence(
+                    "contextInitialized:/events",
+                    "contextAttributeAdded:context.flag=one",
+                    "contextAttributeReplaced:context.flag=one",
+                    "contextAttributeRemoved:context.flag=two",
+                    "requestAttributeAdded:request.flag=one",
+                    "requestAttributeReplaced:request.flag=one",
+                    "requestAttributeRemoved:request.flag=two",
+                    "sessionAttributeAdded:session.flag=one",
+                    "sessionAttributeReplaced:session.flag=one",
+                    "sessionAttributeRemoved:session.flag=two",
+                    "sessionDestroyed");
+        } finally {
+            server.close();
+        }
+
+        assertThat(ServletEventRecorder.events()).endsWith("contextDestroyed:/events");
     }
 
     @Test
@@ -381,6 +427,110 @@ public class Grizzly_http_servletTest {
             response.getWriter().println("alpha=" + request.getParameter("alpha"));
             response.getWriter().println("beta=" + join(request.getParameterValues("beta")));
             response.getWriter().println("contentLength=" + request.getContentLength());
+        }
+    }
+
+    private static final class ListenerDrivenServlet extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+            getServletContext().setAttribute("context.flag", "one");
+            getServletContext().setAttribute("context.flag", "two");
+            getServletContext().removeAttribute("context.flag");
+
+            request.setAttribute("request.flag", "one");
+            request.setAttribute("request.flag", "two");
+            request.removeAttribute("request.flag");
+
+            HttpSession session = request.getSession(true);
+            session.setAttribute("session.flag", "one");
+            session.setAttribute("session.flag", "two");
+            session.removeAttribute("session.flag");
+            session.invalidate();
+
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.setContentType("text/plain");
+            response.getWriter().println("eventsRecorded=" + ServletEventRecorder.events().size());
+        }
+    }
+
+    public static final class ServletEventRecorder implements ServletContextListener, ServletContextAttributeListener,
+            ServletRequestAttributeListener, HttpSessionListener, HttpSessionAttributeListener {
+        private static final CopyOnWriteArrayList<String> EVENTS = new CopyOnWriteArrayList<>();
+
+        public ServletEventRecorder() {
+        }
+
+        private static void reset() {
+            EVENTS.clear();
+        }
+
+        private static List<String> events() {
+            return List.copyOf(EVENTS);
+        }
+
+        @Override
+        public void contextInitialized(ServletContextEvent event) {
+            EVENTS.add("contextInitialized:" + event.getServletContext().getContextPath());
+        }
+
+        @Override
+        public void contextDestroyed(ServletContextEvent event) {
+            EVENTS.add("contextDestroyed:" + event.getServletContext().getContextPath());
+        }
+
+        @Override
+        public void attributeAdded(ServletContextAttributeEvent event) {
+            EVENTS.add("contextAttributeAdded:" + event.getName() + "=" + event.getValue());
+        }
+
+        @Override
+        public void attributeReplaced(ServletContextAttributeEvent event) {
+            EVENTS.add("contextAttributeReplaced:" + event.getName() + "=" + event.getValue());
+        }
+
+        @Override
+        public void attributeRemoved(ServletContextAttributeEvent event) {
+            EVENTS.add("contextAttributeRemoved:" + event.getName() + "=" + event.getValue());
+        }
+
+        @Override
+        public void attributeAdded(ServletRequestAttributeEvent event) {
+            EVENTS.add("requestAttributeAdded:" + event.getName() + "=" + event.getValue());
+        }
+
+        @Override
+        public void attributeReplaced(ServletRequestAttributeEvent event) {
+            EVENTS.add("requestAttributeReplaced:" + event.getName() + "=" + event.getValue());
+        }
+
+        @Override
+        public void attributeRemoved(ServletRequestAttributeEvent event) {
+            EVENTS.add("requestAttributeRemoved:" + event.getName() + "=" + event.getValue());
+        }
+
+        @Override
+        public void sessionCreated(HttpSessionEvent event) {
+            EVENTS.add("sessionCreated");
+        }
+
+        @Override
+        public void sessionDestroyed(HttpSessionEvent event) {
+            EVENTS.add("sessionDestroyed");
+        }
+
+        @Override
+        public void attributeAdded(HttpSessionBindingEvent event) {
+            EVENTS.add("sessionAttributeAdded:" + event.getName() + "=" + event.getValue());
+        }
+
+        @Override
+        public void attributeReplaced(HttpSessionBindingEvent event) {
+            EVENTS.add("sessionAttributeReplaced:" + event.getName() + "=" + event.getValue());
+        }
+
+        @Override
+        public void attributeRemoved(HttpSessionBindingEvent event) {
+            EVENTS.add("sessionAttributeRemoved:" + event.getName() + "=" + event.getValue());
         }
     }
 }
