@@ -14,7 +14,6 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     testImplementation "org.apache.groovy:groovy-macro:$libraryVersion"
     testImplementation localGroovy()
-    testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
 java {
@@ -35,7 +34,8 @@ graalvmNative {
     binaries {
         test {
             buildArgs.add('-H:+RuntimeClassLoading')
-            buildArgs.add('-H:Preserve=package=org.codehaus.groovy.runtime')
+            buildArgs.add('-H:Preserve=package=org.codehaus.groovy.runtime.callsite')
+            buildArgs.add('-H:Preserve=package=org.codehaus.groovy.runtime.typehandling')
         }
     }
 }

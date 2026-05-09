@@ -24,10 +24,12 @@ import org.codehaus.groovy.macro.methods.MacroGroovyMethods
 import org.codehaus.groovy.macro.runtime.MacroBuilder
 import org.codehaus.groovy.macro.transform.MacroClass
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledInNativeImage
 
 import static org.codehaus.groovy.ast.tools.GeneralUtils.constX
 import static org.codehaus.groovy.ast.tools.GeneralUtils.varX
 
+@DisabledInNativeImage
 public class Groovy_macroTest {
     @Test
     void macroCreatesTypedAstAndAppliesExpressionSubstitutions() {
@@ -219,14 +221,14 @@ public class Groovy_macroTest {
             MacroGroovyMethods.macro(new Object(), { 1 })
             assert false: 'Expected IllegalStateException'
         } catch (IllegalStateException exception) {
-            assert exception.message.contains('should never be called at runtime')
+            assert exception.getMessage().contains('should never be called at runtime')
         }
 
         try {
             MacroGroovyMethods.macro(new Object(), true, { 1 })
             assert false: 'Expected IllegalStateException'
         } catch (IllegalStateException exception) {
-            assert exception.message.contains('should never be called at runtime')
+            assert exception.getMessage().contains('should never be called at runtime')
         }
     }
 
