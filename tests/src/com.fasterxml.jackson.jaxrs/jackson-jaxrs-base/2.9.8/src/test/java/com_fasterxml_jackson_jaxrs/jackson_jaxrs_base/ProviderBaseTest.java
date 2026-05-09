@@ -102,6 +102,33 @@ public class ProviderBaseTest {
     }
 
     @Test
+    public void providerUsesDefaultJsonViewsWhenNoEndpointViewAnnotationIsPresent() throws IOException {
+        TestProvider writerProvider = new TestProvider();
+        assertThat(writerProvider.setDefaultWriteView(PublicView.class)).isSameAs(writerProvider);
+
+        MultivaluedMap<String, Object> responseHeaders = new MultivaluedHashMap<>();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        writerProvider.writeTo(new ScopedMessage("visible", "hidden"), ScopedMessage.class, ScopedMessage.class,
+                NO_ANNOTATIONS, MediaType.APPLICATION_JSON_TYPE, responseHeaders, output);
+
+        String json = output.toString(StandardCharsets.UTF_8.name());
+        assertThat(json).contains("\"visible\":\"visible\"");
+        assertThat(json).doesNotContain("hidden");
+
+        TestProvider readerProvider = new TestProvider();
+        assertThat(readerProvider.setDefaultReadView(PublicView.class)).isSameAs(readerProvider);
+        Object value = readerProvider.readFrom(objectClass(ScopedMessage.class), ScopedMessage.class, NO_ANNOTATIONS,
+                MediaType.APPLICATION_JSON_TYPE, new MultivaluedHashMap<>(),
+                new ByteArrayInputStream("{\"visible\":\"read\",\"hidden\":\"ignored\"}"
+                        .getBytes(StandardCharsets.UTF_8)));
+
+        assertThat(value).isInstanceOf(ScopedMessage.class);
+        ScopedMessage message = (ScopedMessage) value;
+        assertThat(message.visible).isEqualTo("read");
+        assertThat(message.hidden).isNull();
+    }
+
+    @Test
     public void providerUsesReaderAndWriterModifiersOncePerCall() throws IOException {
         TestProvider provider = new TestProvider();
         AtomicBoolean readerModifierCalled = new AtomicBoolean(false);
@@ -384,6 +411,25 @@ public class ProviderBaseTest {
     }
 
     public static class PublicView {
+    }
+
+    public static class InternalView extends PublicView {
+    }
+
+    public static class ScopedMessage {
+        @JsonView(PublicView.class)
+        public String visible;
+
+        @JsonView(InternalView.class)
+        public String hidden;
+
+        public ScopedMessage() {
+        }
+
+        ScopedMessage(String visible, String hidden) {
+            this.visible = visible;
+            this.hidden = hidden;
+        }
     }
 
     private static final class TestMapperConfigurator
