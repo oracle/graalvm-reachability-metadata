@@ -23,6 +23,8 @@ import akka.serialization.Serializers
 import akka.serialization.jackson.JacksonMigration
 import akka.serialization.jackson.JacksonObjectMapperProvider
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.typesafe.config.Config
@@ -220,7 +222,7 @@ final case class CborPayload(id: String, count: Int, enabled: Boolean)
 
 final case class ActorRefPayload(name: String, recipient: ActorRef)
 
-final case class MigratingMessage(newName: String)
+final case class MigratingMessage @JsonCreator() (@JsonProperty("newName") newName: String)
 
 case object SingletonNotification
 

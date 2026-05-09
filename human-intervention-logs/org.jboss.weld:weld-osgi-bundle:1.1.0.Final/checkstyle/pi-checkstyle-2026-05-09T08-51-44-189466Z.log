@@ -1,0 +1,20 @@
+=== Pi checkstyle attempt 1 ===
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Fixed the reported checkstyle violations in the shown files:
+
+- Replaced direct annotation access with a checkstyle-safe receiver variable in `AnnotationImplTest.java`
+- Removed whitespace after array initializer `{` in the affected lines across:
+  - `ObjectImporterTest.java`
+  - `ProxyFactoryTest.java`
+  - `ClassMetaobjectTest.java`
+  - `JavassistLoaderTest.java`
+  - `JavassistToolsWebViewerTest.java`
+  - `MetaobjectTest.java`
+
+Validation run:
+
+```bash
+./gradlew checkstyle -Pcoordinates=org.jboss.weld:weld-osgi-bundle:1.1.0.Final --stacktrace
+```
+
+Result: `BUILD SUCCESSFUL`

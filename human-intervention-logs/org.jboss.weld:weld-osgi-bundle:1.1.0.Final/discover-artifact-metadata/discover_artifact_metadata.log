@@ -1,0 +1,2064 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0b92-5556-7542-b77e-b989d61a3a32
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.weld:weld-osgi-bundle:1.1.0.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1.0.Final" when "$version$" is replaced with "1.1.0.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+- Set "coordinates" to "org.jboss.weld:weld-osgi-bundle:1.1.0.Final".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.0.Final".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/upstream first, then patch the JSON directly with version-templated URLs.
+web search: 
+web search: org.jboss.weld weld-osgi-bundle 1.1.0.Final Maven Central
+codex
+Maven Central identifies this as “Weld runtime packaged as an OSGi bundle,” so I’m checking the actual published files next to see whether source/test artifacts exist there before falling back to upstream tags.
+exec
+/usr/bin/bash -lc "pwd && rg --files | rg 'build/discovered-artifact-metadata/org\\.jboss\\.weld-weld-osgi-bundle-1\\.1\\.0\\.Final\\.json|("'^|/)AGENTS'"\\.md"'$'"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+forge/AGENTS.md
+AGENTS.md
+tests/src/AGENTS.md
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/1.1.0.Final/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/1.1.0.Final/weld-osgi-bundle-1.1.0.Final.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 101ms:
+
+   <!--
+      /* * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER. * *
+      Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved. *
+      * Use is subject to license terms. * * Licensed under the Apache
+      License, Version 2.0 (the "License"); * you may not use this file
+      except in compliance with the License. * You may obtain a copy of
+      the License at * http://www.apache.org/licenses/LICENSE-2.0 *
+      Unless required by applicable law or agreed to in writing,
+      software * distributed under the License is distributed on an "AS
+      IS" BASIS, * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+      express or implied. * See the License for the specific language
+      governing permissions and * limitations under the License. */
+   -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-core-parent</artifactId>
+      <groupId>org.jboss.weld</groupId>
+      <version>1.1.0.Final</version>
+      <relativePath>../../parent/pom.xml</relativePath>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-osgi-bundle</artifactId>
+  <version>1.1.0.Final</version>
+   <name>Weld OSGi Bundle</name>
+   <description>Weld runtime packaged as an OSGi bundle</description>
+
+   <developers>
+      <developer>
+         <id>ss141213</id>
+         <name>Sanjeeb Sahoo</name>
+         <url>http://weblogs.dev.java.net/ss141213</url>
+         <organization>Sun Microsystems, Inc.</organization>
+         <roles>
+            <role>developer</role>
+         </roles>
+      </developer>
+      <developer>
+         <name>Roger Kitain</name>
+         <id>rogerk</id>
+         <organization>Sun Microsystems, Inc.</organization>
+      </developer>
+   </developers>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+
+
+   <properties>
+      <osgi.version>1.0</osgi.version>
+   </properties>
+   <build>
+      <plugins>
+
+         <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <configuration>
+               <instructions>
+                  <_include>-osgi.bundle</_include>
+
+                  <Embed-Dependency>*; scope=compile; inline=true, slf4j-jdk14; inline=true</Embed-Dependency>
+
+                  <_exportcontents>
+                     javax.inject;
+                     javax.decorator;
+                     javax.enterprise.*;
+                     version=${osgi.version},
+                     org.jboss.weld.context;
+                     org.jboss.weld.ejb;
+                     org.jboss.weld.bean;
+                     org.jboss.weld.bean.builtin;
+                     org.jboss.weld.bean.proxy;
+                     org.jboss.weld.*.api.*;
+                     org.jboss.weld.*.spi.*;
+                     org.jboss.weld.conversation;
+                     org.jboss.weld;
+                     org.jboss.weld.bootstrap;
+                     org.jboss.weld.event;
+                     org.jboss.weld.injection;
+                     org.jboss.weld.introspector;
+                     org.jboss.weld.introspector.jlr;
+                     org.jboss.weld.manager;
+                     org.jboss.weld.servlet;
+                     org.jboss.weld.util;
+                     org.jboss.interceptor.*;
+                     version=${osgi.version},
+                     org.jboss.weld.el;
+                     version=${osgi.version},
+                     org.jboss.weld.jsf;
+                     version=${osgi.version}
+                 </_exportcontents>
+
+                  <!-- A note about how slf4j is handled:
+                       We optionally import slf4j APIs (i.e. packages that are part of slf4j-api.jar).
+                       We also bundle them privately along with the jdk14-logging binding. 
+                       This allows us to function even when there is no separate slf4j bundle.
+                       When there is a separate slf4j bundle, because of our optional Import-Package header,
+                       we will get wired to that bundle. Please also note that we don't import impl package,
+                       as it is sufficient to import just the api. In some other environment, user can
+                       deploy slf4j-api bundle and their desired binding bundle. The binding bundle is
+                       a fragement which attaches itself to the api bundle. We will get wired to the 
+                       api bundle and everything will work.
+                       We also bundle all the slf4j extension and cal10n stuff to avoid having dependency
+                       on foreign bundles.
+                  -->
+                  <Import-Package>
+                     org.slf4j; org.slf4j.spi; org.slf4j.helpers; version=${slf4j.version}; resolution:=optional,
+                     ch.qos.cal10n; version=${cal10n.version}; resolution:=optional,
+                     javax.interceptor.*, *;
+                     resolution:=optional
+                 </Import-Package>
+
+                  <Private-Package>
+                     !javax.interceptor.*, org.slf4j.*; -split-package:=merge-first, ch.qos.cal10n.*
+                 </Private-Package>
+
+               </instructions>
+
+               <!--
+                  Maven uses the output directory (target/classes)
+                  rather than the final bundle, when compiling against
+                  projects in the same reactor (ie. the same build).
+                  Since this jar comprises of classes that come from
+                  some other jar and other modules may depend on this
+                  artifact, we need to unpack.
+               -->
+               <unpackBundle>true</unpackBundle>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>osgi-bundle</id>
+                  <goals>
+                     <goal>bundle</goal>
+                  </goals>
+                  <phase>package</phase>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+
+   <dependencies>
+      <dependency>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-api</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-spi</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.javassist</groupId>
+         <artifactId>javassist</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>javax.inject</groupId>
+         <artifactId>javax.inject</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor-spi</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor-core</artifactId>
+      </dependency>
+      
+      <!-- We bundle jdk binding inside this OSGi bundle -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-jdk14</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      
+   </dependencies>
+   
+</project>
+
+ succeeded in 350ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/weld/weld-osgi-bundle/1.1.0.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/weld/weld-osgi-bundle/1.1.0.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="weld-osgi-bundle-1.1.0.Final-javadoc.jar" title="weld-osgi-bundle-1.1.0.Final-javadoc.jar">weld-osgi-bundle-1.1.0.Final-javadoc.jar</a>          2011-01-14 17:13      5390      
+<a href="weld-osgi-bundle-1.1.0.Final-javadoc.jar.asc" title="weld-osgi-bundle-1.1.0.Final-javadoc.jar.asc">weld-osgi-bundle-1.1.0.Final-javadoc.jar.asc</a>      2011-01-14 17:13       195      
+<a href="weld-osgi-bundle-1.1.0.Final-javadoc.jar.asc.md5" title="weld-osgi-bundle-1.1.0.Final-javadoc.jar.asc.md5">weld-osgi-bundle-1.1.0.Final-javadoc.jar.asc....</a>  2011-01-14 17:13        32      
+<a href="weld-osgi-bundle-1.1.0.Final-javadoc.jar.asc.sha1" title="weld-osgi-bundle-1.1.0.Final-javadoc.jar.asc.sha1">weld-osgi-bundle-1.1.0.Final-javadoc.jar.asc....</a>  2011-01-14 17:13        40      
+<a href="weld-osgi-bundle-1.1.0.Final-javadoc.jar.md5" title="weld-osgi-bundle-1.1.0.Final-javadoc.jar.md5">weld-osgi-bundle-1.1.0.Final-javadoc.jar.md5</a>      2011-01-14 17:13        32      
+<a href="weld-osgi-bundle-1.1.0.Final-javadoc.jar.sha1" title="weld-osgi-bundle-1.1.0.Final-javadoc.jar.sha1">weld-osgi-bundle-1.1.0.Final-javadoc.jar.sha1</a>     2011-01-14 17:13        40      
+<a href="weld-osgi-bundle-1.1.0.Final-sources.jar" title="weld-osgi-bundle-1.1.0.Final-sources.jar">weld-osgi-bundle-1.1.0.Final-sources.jar</a>          2011-01-14 17:13      5390      
+<a href="weld-osgi-bundle-1.1.0.Final-sources.jar.asc" title="weld-osgi-bundle-1.1.0.Final-sources.jar.asc">weld-osgi-bundle-1.1.0.Final-sources.jar.asc</a>      2011-01-14 17:13       195      
+<a href="weld-osgi-bundle-1.1.0.Final-sources.jar.asc.md5" title="weld-osgi-bundle-1.1.0.Final-sources.jar.asc.md5">weld-osgi-bundle-1.1.0.Final-sources.jar.asc....</a>  2011-01-14 17:13        32      
+<a href="weld-osgi-bundle-1.1.0.Final-sources.jar.asc.sha1" title="weld-osgi-bundle-1.1.0.Final-sources.jar.asc.sha1">weld-osgi-bundle-1.1.0.Final-sources.jar.asc....</a>  2011-01-14 17:13        40      
+<a href="weld-osgi-bundle-1.1.0.Final-sources.jar.md5" title="weld-osgi-bundle-1.1.0.Final-sources.jar.md5">weld-osgi-bundle-1.1.0.Final-sources.jar.md5</a>      2011-01-14 17:13        32      
+<a href="weld-osgi-bundle-1.1.0.Final-sources.jar.sha1" title="weld-osgi-bundle-1.1.0.Final-sources.jar.sha1">weld-osgi-bundle-1.1.0.Final-sources.jar.sha1</a>     2011-01-14 17:13        40      
+<a href="weld-osgi-bundle-1.1.0.Final.jar" title="weld-osgi-bundle-1.1.0.Final.jar">weld-osgi-bundle-1.1.0.Final.jar</a>                  2011-01-14 17:13   2658873      
+<a href="weld-osgi-bundle-1.1.0.Final.jar.asc" title="weld-osgi-bundle-1.1.0.Final.jar.asc">weld-osgi-bundle-1.1.0.Final.jar.asc</a>              2011-01-14 17:13       195      
+<a href="weld-osgi-bundle-1.1.0.Final.jar.asc.md5" title="weld-osgi-bundle-1.1.0.Final.jar.asc.md5">weld-osgi-bundle-1.1.0.Final.jar.asc.md5</a>          2011-01-14 17:13        32      
+<a href="weld-osgi-bundle-1.1.0.Final.jar.asc.sha1" title="weld-osgi-bundle-1.1.0.Final.jar.asc.sha1">weld-osgi-bundle-1.1.0.Final.jar.asc.sha1</a>         2011-01-14 17:13        40      
+<a href="weld-osgi-bundle-1.1.0.Final.jar.md5" title="weld-osgi-bundle-1.1.0.Final.jar.md5">weld-osgi-bundle-1.1.0.Final.jar.md5</a>              2011-01-14 17:13        32      
+<a href="weld-osgi-bundle-1.1.0.Final.jar.sha1" title="weld-osgi-bundle-1.1.0.Final.jar.sha1">weld-osgi-bundle-1.1.0.Final.jar.sha1</a>             2011-01-14 17:13        40      
+<a href="weld-osgi-bundle-1.1.0.Final.pom" title="weld-osgi-bundle-1.1.0.Final.pom">weld-osgi-bundle-1.1.0.Final.pom</a>                  2011-01-14 17:13      8131      
+<a href="weld-osgi-bundle-1.1.0.Final.pom.asc" title="weld-osgi-bundle-1.1.0.Final.pom.asc">weld-osgi-bundle-1.1.0.Final.pom.asc</a>              2011-01-14 17:13       195      
+<a href="weld-osgi-bundle-1.1.0.Final.pom.asc.md5" title="weld-osgi-bundle-1.1.0.Final.pom.asc.md5">weld-osgi-bundle-1.1.0.Final.pom.asc.md5</a>          2011-01-14 17:13        32      
+<a href="weld-osgi-bundle-1.1.0.Final.pom.asc.sha1" title="weld-osgi-bundle-1.1.0.Final.pom.asc.sha1">weld-osgi-bundle-1.1.0.Final.pom.asc.sha1</a>         2011-01-14 17:13        40      
+<a href="weld-osgi-bundle-1.1.0.Final.pom.md5" title="weld-osgi-bundle-1.1.0.Final.pom.md5">weld-osgi-bundle-1.1.0.Final.pom.md5</a>              2011-01-14 17:13        32      
+<a href="weld-osgi-bundle-1.1.0.Final.pom.sha1" title="weld-osgi-bundle-1.1.0.Final.pom.sha1">weld-osgi-bundle-1.1.0.Final.pom.sha1</a>             2011-01-14 17:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json && sed -n '1,200p' build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 68 May  9 09:09 build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+{
+  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/weld-osgi-sources.jar https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/1.1.0.Final/weld-osgi-bundle-1.1.0.Final-sources.jar && jar tf /tmp/weld-osgi-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/weld-osgi.jar https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/1.1.0.Final/weld-osgi-bundle-1.1.0.Final.jar && jar tf /tmp/weld-osgi.jar | sed -n '1,80p' && printf '\\nclasses count: ' && jar tf /tmp/weld-osgi.jar | rg '\\.class"'$'"' | wc -l" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 381ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/DEPENDENCIES.txt
+META-INF/LICENSE.txt
+
+ succeeded in 845ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/DEPENDENCIES.txt
+META-INF/LICENSE.txt
+META-INF/maven/
+META-INF/maven/com.google.guava/
+META-INF/maven/com.google.guava/guava/
+META-INF/maven/com.google.guava/guava/pom.properties
+META-INF/maven/com.google.guava/guava/pom.xml
+META-INF/maven/javax.enterprise/
+META-INF/maven/javax.enterprise/cdi-api/
+META-INF/maven/javax.enterprise/cdi-api/pom.properties
+META-INF/maven/javax.enterprise/cdi-api/pom.xml
+META-INF/maven/org.javassist/
+META-INF/maven/org.javassist/javassist/
+META-INF/maven/org.javassist/javassist/pom.properties
+META-INF/maven/org.javassist/javassist/pom.xml
+META-INF/maven/org.jboss.interceptor/
+META-INF/maven/org.jboss.interceptor/jboss-interceptor-core/
+META-INF/maven/org.jboss.interceptor/jboss-interceptor-core/pom.properties
+META-INF/maven/org.jboss.interceptor/jboss-interceptor-core/pom.xml
+META-INF/maven/org.jboss.interceptor/jboss-interceptor-spi/
+META-INF/maven/org.jboss.interceptor/jboss-interceptor-spi/pom.properties
+META-INF/maven/org.jboss.interceptor/jboss-interceptor-spi/pom.xml
+META-INF/maven/org.jboss.weld/
+META-INF/maven/org.jboss.weld/weld-api/
+META-INF/maven/org.jboss.weld/weld-api/pom.properties
+META-INF/maven/org.jboss.weld/weld-api/pom.xml
+META-INF/maven/org.jboss.weld/weld-core/
+META-INF/maven/org.jboss.weld/weld-core/pom.properties
+META-INF/maven/org.jboss.weld/weld-core/pom.xml
+META-INF/maven/org.jboss.weld/weld-osgi-bundle/
+META-INF/maven/org.jboss.weld/weld-osgi-bundle/pom.properties
+META-INF/maven/org.jboss.weld/weld-osgi-bundle/pom.xml
+META-INF/maven/org.jboss.weld/weld-spi/
+META-INF/maven/org.jboss.weld/weld-spi/pom.properties
+META-INF/maven/org.jboss.weld/weld-spi/pom.xml
+META-INF/maven/org.slf4j/
+META-INF/maven/org.slf4j/slf4j-jdk14/
+META-INF/maven/org.slf4j/slf4j-jdk14/pom.properties
+META-INF/maven/org.slf4j/slf4j-jdk14/pom.xml
+beans_1_0.xsd
+beans_1_1.xsd
+ch/
+ch/qos/
+ch/qos/cal10n/
+ch/qos/cal10n/BaseName.class
+ch/qos/cal10n/Cal10nConstants.class
+ch/qos/cal10n/IMessageConveyor.class
+ch/qos/cal10n/Locale.class
+ch/qos/cal10n/LocaleData.class
+ch/qos/cal10n/MessageConveyor.class
+ch/qos/cal10n/MessageConveyorException.class
+ch/qos/cal10n/MessageParameterObj.class
+ch/qos/cal10n/util/
+ch/qos/cal10n/util/AnnotationExtractor.class
+ch/qos/cal10n/util/CAL10NResourceBundle.class
+ch/qos/cal10n/util/CAL10NResourceBundleFinder.class
+ch/qos/cal10n/util/MiscUtil.class
+ch/qos/cal10n/util/Parser$1.class
+ch/qos/cal10n/util/Parser.class
+ch/qos/cal10n/util/Token$TokenType.class
+ch/qos/cal10n/util/Token.class
+ch/qos/cal10n/util/TokenStream$1.class
+ch/qos/cal10n/util/TokenStream$State.class
+ch/qos/cal10n/util/TokenStream.class
+ch/qos/cal10n/verifier/
+ch/qos/cal10n/verifier/Cal10nError$1.class
+ch/qos/cal10n/verifier/Cal10nError$ErrorType.class
+ch/qos/cal10n/verifier/Cal10nError.class
+ch/qos/cal10n/verifier/ErrorFactory.class
+ch/qos/cal10n/verifier/IMessageKeyVerifier.class
+ch/qos/cal10n/verifier/MessageKeyVerifier.class
+com/
+com/google/
+com/google/common/
+com/google/common/annotations/
+com/google/common/annotations/Beta.class
+com/google/common/annotations/GwtCompatible.class
+com/google/common/annotations/GwtIncompatible.class
+
+classes count: 1929
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find metadata -path '*org.jboss.weld*' -maxdepth 8 -type f | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+metadata/org.jboss.weld/weld-api/index.json
+metadata/org.jboss.weld/weld-api/2.0.Final/reachability-metadata.json
+metadata/org.jboss.weld/weld-api/1.2.0.Beta1/reachability-metadata.json
+metadata/org.jboss.weld/weld-api/4.0.Final/reachability-metadata.json
+metadata/org.jboss.weld/weld-api/1.1.0-01-glassfish/reachability-metadata.json
+metadata/org.jboss.weld/weld-api/1.1.Final/reachability-metadata.json
+metadata/org.jboss.weld/weld-spi/2.2.SP2/reachability-metadata.json
+metadata/org.jboss.weld/weld-spi/index.json
+metadata/org.jboss.weld/weld-spi/2.1.Final/reachability-metadata.json
+metadata/org.jboss.weld/weld-spi/2.0.Final/reachability-metadata.json
+metadata/org.jboss.weld/weld-spi/1.2.0.Beta1/reachability-metadata.json
+metadata/org.jboss.weld/weld-spi/1.1.Final/reachability-metadata.json
+metadata/org.jboss.weld/weld-build-config/index.json
+
+exec
+/usr/bin/bash -lc "rg -n 'weld-osgi-bundle|Weld OSGi Bundle|org.jboss.weld' . --glob '"'!build/**'"' --glob '"'!**/.git/**'"' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+./COVERAGE.md:498:| [`org.jboss.weld:weld-api`](https://github.com/weld/api) | 1.1.0-01-glassfish<br>– 4.0.Final | 100% (0/0 calls) | <details><summary>Show</summary> Weld API provides Weld-specific extensions to the CDI API for Java applications. It defines context, conversation, servlet, and related dependency injection integration interfaces used by Weld-based runtimes.</details> |
+./COVERAGE.md:499:| `org.jboss.weld:weld-build-config` |  | 100% (0/0 calls) |  |
+./COVERAGE.md:500:| [`org.jboss.weld:weld-spi`](https://github.com/weld/api) | 1.1.Final<br>– 2.1.Final | 100.0% (1/1 calls) | <details><summary>Show</summary> Weld SPI provides the service-provider interfaces used to integrate Weld, the CDI reference implementation, with Java EE containers and runtime services. It defines bootstrap, deployment, resource, transaction, security, validation, EJB, injection, servlet, and serialization contracts for container integration.</details> |
+./metadata/org.jboss.weld/weld-build-config/index.json:4:    "reason": "The published JAR for org.jboss.weld:weld-build-config:1.1.4.Final contains no JVM class files; it only packages Maven metadata, license files, and a Checkstyle XML resource."
+./metadata/org.jboss.weld/weld-spi/1.1.Final/reachability-metadata.json:5:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+./metadata/org.jboss.weld/weld-spi/1.1.Final/reachability-metadata.json:7:      "type": "org.jboss.weld.bootstrap.api.helpers.IsolatedStaticSingletonProvider",
+./metadata/org.jboss.weld/weld-spi/1.2.0.Beta1/reachability-metadata.json:5:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+./metadata/org.jboss.weld/weld-spi/1.2.0.Beta1/reachability-metadata.json:7:      "type": "org.jboss.weld.bootstrap.api.helpers.IsolatedStaticSingletonProvider",
+./metadata/org.jboss.weld/weld-spi/2.0.Final/reachability-metadata.json:5:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+./metadata/org.jboss.weld/weld-spi/2.0.Final/reachability-metadata.json:7:      "type": "org.jboss.weld.bootstrap.api.helpers.IsolatedStaticSingletonProvider",
+./metadata/org.jboss.weld/weld-spi/2.1.Final/reachability-metadata.json:5:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+./metadata/org.jboss.weld/weld-spi/2.1.Final/reachability-metadata.json:7:      "type": "org.jboss.weld.bootstrap.api.helpers.IsolatedStaticSingletonProvider",
+./metadata/org.jboss.weld/weld-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+./metadata/org.jboss.weld/weld-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+./metadata/org.jboss.weld/weld-spi/index.json:49:      "org.jboss.weld"
+./metadata/org.jboss.weld/weld-spi/index.json:54:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+./metadata/org.jboss.weld/weld-spi/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+./metadata/org.jboss.weld/weld-spi/index.json:65:      "org.jboss.weld"
+./metadata/org.jboss.weld/weld-spi/index.json:70:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+./metadata/org.jboss.weld/weld-spi/index.json:73:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+./metadata/org.jboss.weld/weld-spi/index.json:79:      "org.jboss.weld"
+./metadata/org.jboss.weld/weld-spi/index.json:84:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+./metadata/org.jboss.weld/weld-spi/index.json:87:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+./metadata/org.jboss.weld/weld-spi/index.json:93:      "org.jboss.weld"
+./metadata/org.jboss.weld/weld-spi/index.json:98:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+./metadata/org.jboss.weld/weld-spi/index.json:101:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+./metadata/org.jboss.weld/weld-spi/index.json:107:      "org.jboss.weld"
+./metadata/org.jboss.weld/weld-spi/2.2.SP2/reachability-metadata.json:5:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+./metadata/org.jboss.weld/weld-spi/2.2.SP2/reachability-metadata.json:11:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+./metadata/org.jboss.weld/weld-spi/2.2.SP2/reachability-metadata.json:13:      "type": "org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider",
+./metadata/org.jboss.weld/weld-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+./metadata/org.jboss.weld/weld-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-javadoc.jar",
+./metadata/org.jboss.weld/weld-api/index.json:27:      "org.jboss.weld"
+./metadata/org.jboss.weld/weld-api/index.json:32:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+./metadata/org.jboss.weld/weld-api/index.json:35:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-javadoc.jar",
+./metadata/org.jboss.weld/weld-api/index.json:41:      "org.jboss.weld.context"
+./metadata/org.jboss.weld/weld-api/index.json:46:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-sources.jar",
+./metadata/org.jboss.weld/weld-api/index.json:49:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-javadoc.jar",
+./metadata/org.jboss.weld/weld-api/index.json:55:      "org.jboss.weld.context"
+./metadata/org.jboss.weld/weld-api/index.json:64:      "org.jboss.weld.conversation"
+./metadata/org.jboss.weld/weld-api/index.json:69:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+./metadata/org.jboss.weld/weld-api/index.json:72:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-javadoc.jar",
+./metadata/org.jboss.weld/weld-api/index.json:78:      "org.jboss.weld.context"
+./stats/org.jboss.weld/weld-spi/1.1.Final/execution-metrics.json:4:    "library": "org.jboss.weld:weld-spi:1.1.Final",
+./stats/org.jboss.weld/weld-spi/1.1.Final/execution-metrics.json:58:      "test_file": "tests/src/org.jboss.weld/weld-spi/1.1.Final/src/test/java/org_jboss_weld/weld_spi/SingletonProviderTest.java",
+./stats/org.jboss.weld/weld-spi/1.1.Final/execution-metrics.json:59:      "metadata_file": "metadata/org.jboss.weld/weld-spi/1.1.Final/reachability-metadata.json"
+./stats/org.jboss.weld/weld-spi/1.2.0.Beta1/execution-metrics.json:4:    "library": "org.jboss.weld:weld-spi:1.2.0.Beta1",
+./stats/org.jboss.weld/weld-spi/1.2.0.Beta1/execution-metrics.json:7:    "previous_library": "org.jboss.weld:weld-spi:1.1.Final",
+./stats/org.jboss.weld/weld-spi/1.2.0.Beta1/execution-metrics.json:95:      "test_file": "tests/src/org.jboss.weld/weld-spi/1.2.0.Beta1/src/test/java/org_jboss_weld/weld_spi/SingletonProviderTest.java",
+./stats/org.jboss.weld/weld-spi/1.2.0.Beta1/execution-metrics.json:96:      "metadata_file": "metadata/org.jboss.weld/weld-spi/1.2.0.Beta1/reachability-metadata.json"
+./stats/org.jboss.weld/weld-spi/2.0.Final/execution-metrics.json:4:    "library": "org.jboss.weld:weld-spi:2.0.Final",
+./stats/org.jboss.weld/weld-spi/2.0.Final/execution-metrics.json:7:    "previous_library": "org.jboss.weld:weld-spi:1.2.0.Beta1",
+./stats/org.jboss.weld/weld-spi/2.0.Final/execution-metrics.json:95:      "test_file": "tests/src/org.jboss.weld/weld-spi/2.0.Final/src/test/java/org_jboss_weld/weld_spi/SingletonProviderTest.java",
+./stats/org.jboss.weld/weld-spi/2.0.Final/execution-metrics.json:96:      "metadata_file": "metadata/org.jboss.weld/weld-spi/2.0.Final/reachability-metadata.json"
+./stats/org.jboss.weld/weld-spi/2.1.Final/execution-metrics.json:4:    "library": "org.jboss.weld:weld-spi:2.1.Final",
+./stats/org.jboss.weld/weld-spi/2.1.Final/execution-metrics.json:7:    "previous_library": "org.jboss.weld:weld-spi:2.0.Final",
+./stats/org.jboss.weld/weld-spi/2.1.Final/execution-metrics.json:95:      "test_file": "tests/src/org.jboss.weld/weld-spi/2.1.Final/src/test/java/org_jboss_weld/weld_spi/SingletonProviderTest.java",
+./stats/org.jboss.weld/weld-spi/2.1.Final/execution-metrics.json:96:      "metadata_file": "metadata/org.jboss.weld/weld-spi/2.1.Final/reachability-metadata.json"
+./stats/org.jboss.weld/weld-spi/2.2.SP2/execution-metrics.json:4:    "library": "org.jboss.weld:weld-spi:2.2.SP2",
+./stats/org.jboss.weld/weld-spi/2.2.SP2/execution-metrics.json:7:    "previous_library": "org.jboss.weld:weld-spi:2.1.Final",
+./stats/org.jboss.weld/weld-spi/2.2.SP2/execution-metrics.json:95:      "test_file": "tests/src/org.jboss.weld/weld-spi/2.2.SP2/src/test/java/org_jboss_weld/weld_spi/SingletonProviderTest.java",
+./stats/org.jboss.weld/weld-spi/2.2.SP2/execution-metrics.json:96:      "metadata_file": "metadata/org.jboss.weld/weld-spi/2.2.SP2/reachability-metadata.json"
+./stats/org.jboss.weld/weld-api/1.1.Final/execution-metrics.json:4:    "library": "org.jboss.weld:weld-api:1.1.Final",
+./stats/org.jboss.weld/weld-api/1.1.Final/execution-metrics.json:52:      "test_file": "tests/src/org.jboss.weld/weld-api/1.1.Final/src/test/java/org_jboss_weld/weld_api/Weld_apiTest.java",
+./stats/org.jboss.weld/weld-api/1.1.Final/execution-metrics.json:53:      "metadata_file": "metadata/org.jboss.weld/weld-api/1.1.Final/reachability-metadata.json"
+./stats/org.jboss.weld/weld-api/1.1.0-01-glassfish/execution-metrics.json:4:    "library": "org.jboss.weld:weld-api:1.1.0-01-glassfish",
+./stats/org.jboss.weld/weld-api/1.1.0-01-glassfish/execution-metrics.json:7:    "previous_library": "org.jboss.weld:weld-api:1.1.Final",
+./stats/org.jboss.weld/weld-api/1.1.0-01-glassfish/execution-metrics.json:63:      "test_file": "tests/src/org.jboss.weld/weld-api/1.1.0-01-glassfish/src/test/java/org_jboss_weld/weld_api/Weld_apiTest.java",
+./stats/org.jboss.weld/weld-api/1.1.0-01-glassfish/execution-metrics.json:64:      "metadata_file": "metadata/org.jboss.weld/weld-api/1.1.0-01-glassfish/reachability-metadata.json"
+./stats/org.jboss.weld/weld-api/4.0.Final/execution-metrics.json:4:    "library": "org.jboss.weld:weld-api:4.0.Final",
+./stats/org.jboss.weld/weld-api/4.0.Final/execution-metrics.json:7:    "previous_library": "org.jboss.weld:weld-api:2.0.Final",
+./stats/org.jboss.weld/weld-api/4.0.Final/execution-metrics.json:83:      "test_file": "tests/src/org.jboss.weld/weld-api/4.0.Final/src/test/java/org_jboss_weld/weld_api/Weld_apiTest.java",
+./stats/org.jboss.weld/weld-api/4.0.Final/execution-metrics.json:84:      "metadata_file": "metadata/org.jboss.weld/weld-api/4.0.Final/reachability-metadata.json"
+./stats/org.jboss.weld/weld-api/1.2.0.Beta1/execution-metrics.json:4:    "library": "org.jboss.weld:weld-api:1.2.0.Beta1",
+./stats/org.jboss.weld/weld-api/1.2.0.Beta1/execution-metrics.json:7:    "previous_library": "org.jboss.weld:weld-api:1.1.0-01-glassfish",
+./stats/org.jboss.weld/weld-api/1.2.0.Beta1/execution-metrics.json:63:      "test_file": "tests/src/org.jboss.weld/weld-api/1.2.0.Beta1/src/test/java/org_jboss_weld/weld_api/Weld_apiTest.java",
+./stats/org.jboss.weld/weld-api/1.2.0.Beta1/execution-metrics.json:64:      "metadata_file": "metadata/org.jboss.weld/weld-api/1.2.0.Beta1/reachability-metadata.json"
+./stats/org.jboss.weld/weld-api/2.0.Final/execution-metrics.json:4:    "library": "org.jboss.weld:weld-api:2.0.Final",
+./stats/org.jboss.weld/weld-api/2.0.Final/execution-metrics.json:7:    "previous_library": "org.jboss.weld:weld-api:1.2.0.Beta1",
+./stats/org.jboss.weld/weld-api/2.0.Final/execution-metrics.json:83:      "test_file": "tests/src/org.jboss.weld/weld-api/2.0.Final/src/test/java/org_jboss_weld/weld_api/Weld_apiTest.java",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core-parent/1.1.0.Final/weld-core-parent-1.1.0.Final.pom | sed -n '1,240p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core-parent</artifactId>
+   <packaging>pom</packaging>
+
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core-bom</artifactId>
+      <version>1.1.0.Final</version>
+      <relativePath>../bom/pom.xml</relativePath>
+   </parent>
+
+   <name>Weld Core Parent</name>
+
+   <!-- Full metadata -->
+
+   <url>http://www.seamframework.org/Weld</url>
+
+   <description>
+      Parent for Weld, the reference implementation of JSR 299: Contexts and Dependency Injection for Java EE
+   </description>
+
+   <ciManagement>
+      <system>Hudson</system>
+      <url>http://hudson.jboss.org</url>
+   </ciManagement>
+
+   <issueManagement>
+      <system>JIRA</system>
+      <url>http://jira.jboss.org/browse/WELD</url>
+   </issueManagement>
+
+   <organization>
+      <name>Seam Framework</name>
+      <url>http://seamframework.org</url>
+   </organization>
+
+   <inceptionYear>2008</inceptionYear>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      </license>
+   </licenses>
+
+   <developers>
+      <developer>
+         <name>Pete Muir</name>
+         <roles>
+            <role>Project Lead</role>
+         </roles>
+         <email>pete.muir@jboss.org</email>
+         <organization>Red Hat, Inc.</organization>
+         <url>http://in.relation.to/Bloggers/Pete</url>
+      </developer>
+
+      <developer>
+         <name>Shane Bryzak</name>
+         <organization>Red Hat, Inc.</organization>
+      </developer>
+
+      <developer>
+         <name>David Allen</name>
+      </developer>
+
+      <developer>
+         <name>Nicklas Karlsson</name>
+      </developer>
+   </developers>
+
+
+   <properties>
+      <glassfish.el.version>2.1.2-b04</glassfish.el.version>
+      <log4j.version>1.2.14</log4j.version>
+      <!-- Testing deps -->
+      <testng.version>5.10</testng.version>
+      <jboss.test.harness.version>1.1.0-CR9</jboss.test.harness.version>
+      <arquillian.version>1.0.0.Alpha4</arquillian.version>
+      <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
+      <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
+      <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
+      <jboss.spec.ejb.version>1.0.0.CR2</jboss.spec.ejb.version>
+      <apache.httpclient.version>3.1</apache.httpclient.version>
+      <junit.version>4.8.1</junit.version>
+      <htmlunit.version>2.4</htmlunit.version>
+      <contiperf.version>1.06</contiperf.version>
+      <jboss.ejb3.ext-api.version>1.1.1</jboss.ejb3.ext-api.version>
+      <javax.jms.version>1.1</javax.jms.version>
+
+      <jbossas.server.manager.version>1.0.3.GA</jbossas.server.manager.version>
+      <jbossas.client.version>6.0.0.20100721-M4</jbossas.client.version>
+
+      <!-- TODO move to weld-parent -->
+      <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
+      <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
+   </properties>
+
+
+   <!-- Specify Weld non-runtime dependencies (e.g. testing) -->
+
+   <dependencyManagement>
+      <dependencies>
+
+         <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <classifier>jdk15</classifier>
+            <exclusions>
+               <exclusion>
+                  <groupId>junit</groupId>
+                  <artifactId>junit</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-as-50</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-as-60</artifactId>
+            <version>${jboss.test.harness.version}</version>
+            <exclusions>
+               <exclusion>
+                  <groupId>woodstox</groupId>
+                  <artifactId>wstx-asl</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-embedded</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-tomcat</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-junit</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+	
+         <dependency>
+            <groupId>org.jboss.weld.arquillian.container</groupId>
+            <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jbossas-managed-6</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jbossas-remote-6</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-tomcat-embedded-6</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jetty-embedded-6.1</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-glassfish-embedded-3</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-glassfish-remote-3</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <version>${jboss.spec.servlet.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <version>${jboss.spec.ejb.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-server-manager</artifactId>
+            <version>${jbossas.server.manager.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-as-client</artifactId>
+            <version>${jbossas.client.version}</version>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.metadata</groupId>
+            <artifactId>jboss-metadata</artifactId>
+            <version>${jboss.metadata.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-mdr</artifactId>
+            <version>${jboss.mdr.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>javax.jms</groupId>
+
+exec
+/usr/bin/bash -lc 'for u in https://raw.githubusercontent.com/weld/core/1.1.0.Final/pom.xml https://raw.githubusercontent.com/weld/core/weld-core-parent-1.1.0.Final/pom.xml https://raw.githubusercontent.com/weld/core/1.1.0.Final/bom/pom.xml; do echo "$u"; curl -fsI "$u" | head -1 || true; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-parent/1.1.0.Final/weld-parent-1.1.0.Final.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 290ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 656ms:
+HTTP/2 200 
+https://raw.githubusercontent.com/weld/core/weld-core-parent-1.1.0.Final/pom.xml
+HTTP/2 404 
+https://raw.githubusercontent.com/weld/core/1.1.0.Final/bom/pom.xml
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/weld/core/1.1.0.Final/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core-build-aggregator</artifactId>
+   <packaging>pom</packaging>
+   <version>1.1.0.Final</version>
+
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-parent</artifactId>
+      <version>17</version>
+   </parent>
+
+   <name>Weld Build Aggregator</name>
+
+   <prerequisites>
+      <maven>3.0</maven>
+   </prerequisites>
+
+
+   <!-- Minimal metadata -->
+   <description>The build aggregator for Weld, which takes care of calling the modules which make up Weld</description>
+
+   <!-- SCM and distribution management -->
+   <scm>
+      <connection>scm:git:git://github.com/weld/core.git</connection>
+      <developerConnection>scm:git:git://github.com/weld/core.git</developerConnection>
+      <url>scm:git:git://github.com/weld/core.git</url>
+   </scm>
+
+   <profiles>
+      <profile>
+         <id>default</id>
+         <activation>
+            <property>
+               <name>weld.default.build</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <modules>
+            <module>bom</module>
+            <module>parent</module>
+            <module>impl</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>update-jboss-as</id>
+         <modules>
+            <module>jboss-as</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>tests</id>
+         <activation>
+            <property>
+               <name>weld.default.build</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <modules>
+            <module>arquillian/weld-ee-container</module>
+            <module>porting-package</module>
+            <module>tests</module>
+            <module>tests-arquillian</module>
+            <module>inject-tck-runner</module>
+            <module>jboss-tck-runner</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>examples</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
+         <modules>
+            <module>examples</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>docs</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
+         <modules>
+            <module>docs/reference</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>environments</id>
+         <activation>
+            <property>
+               <name>weld.default.build</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <modules>
+            <module>environments/se/core</module>
+            <module>environments/se/build</module>
+            <module>environments/servlet</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>bundles</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
+         <modules>
+            <module>bundles/osgi</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>jboss-public-repository</id>
+         <activation>
+            <property>
+               <name>jboss-public-repository</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <repositories>
+            <repository>
+               <id>jboss-public-repository-group</id>
+               <name>JBoss Public Maven Repository Group</name>
+               <url>http://repository.jboss.org/nexus/content/groups/public</url>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>false</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </repository>
+         </repositories>
+         <pluginRepositories>
+            <pluginRepository>
+               <id>jboss-public-repository-group</id>
+               <name>JBoss Public Maven Repository Group</name>
+               <url>http://repository.jboss.org/nexus/content/groups/public</url>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>false</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </pluginRepository>
+         </pluginRepositories>
+      </profile>
+   </profiles>
+
+   <!-- Minimal build configuration -->
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+               <tagBase>https://svn.jboss.org/repos/weld/core/tags</tagBase>
+               <!-- As we need access to our own artifacts -->
+               <preparationGoals>install</preparationGoals>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+               <skip>true</skip>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core-bom/1.1.0.Final/weld-core-bom-1.1.0.Final.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core-bom</artifactId>
+   <packaging>pom</packaging>
+   <version>1.1.0.Final</version>
+   
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-parent</artifactId>
+      <version>17</version>
+      <relativePath />
+  </parent>
+
+   <name>Weld Core BOM</name>
+
+   <!-- Minimal project metadata, for more see parent/pom.xml -->
+   <description>Weld Core "bill of materials" which can be imported by any project using the Weld implementation of CDI. It provides dependency management for the implementation.</description>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+
+   <developers>
+      <developer>
+         <name>Weld committers</name>
+      </developer>
+   </developers>
+
+   <properties>
+      <weld.api.version>1.1.Final</weld.api.version>
+      <cdi.api.version>1.0-SP4</cdi.api.version>
+      <google.guava.version>r06</google.guava.version>
+      <cdi.tck.version>1.0.4.SP1</cdi.tck.version>
+      <javassist.version>3.14.0-GA</javassist.version>
+      <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
+      <jboss.interceptor.version>2.0.0.CR1</jboss.interceptor.version>
+      <jboss.vfs.version>2.1.3.SP1</jboss.vfs.version>
+      <slf4j.version>1.5.10</slf4j.version>
+      <cal10n.version>0.7.2</cal10n.version>
+      <jsf.api.version>2.0</jsf.api.version>
+   </properties>
+
+   <dependencyManagement>
+      <dependencies>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api-bom</artifactId>
+            <version>${weld.api.version}</version>
+            <scope>import</scope>
+            <type>pom</type>
+         </dependency>	
+
+         <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>${javassist.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>${cdi.api.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-porting-package</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-test</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-core</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-api</artifactId>
+            <version>${cdi.tck.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-impl</artifactId>
+            <version>${cdi.tck.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-impl</artifactId>
+            <version>${cdi.tck.version}</version>
+            <classifier>suite</classifier>
+            <type>xml</type>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.atinject</groupId>
+            <artifactId>inject-tck</artifactId>
+            <version>${atinject.tck.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-spi</artifactId>
+            <version>${jboss.interceptor.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-core</artifactId>
+            <version>${jboss.interceptor.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-vfs</artifactId>
+            <version>${jboss.vfs.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${google.guava.version}</version>
+         </dependency>
+ 
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-ext</artifactId>
+            <version>${slf4j.version}</version>
+         </dependency>
+
+         <dependency>
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-api</artifactId>
+             <version>${slf4j.version}</version>
+         </dependency>
+
+         <dependency>
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-simple</artifactId>
+             <version>${slf4j.version}</version>
+         </dependency>
+  
+         <dependency>
+             <groupId>ch.qos.cal10n</groupId>
+             <artifactId>cal10n-api</artifactId>
+             <version>${cal10n.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>${jsf.api.version}</version>
+         </dependency>
+
+      </dependencies>
+   </dependencyManagement>
+
+   <profiles>
+      <profile>
+         <id>jboss-public-repository</id>
+         <activation>
+            <property>
+               <name>jboss-public-repository</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <repositories>
+            <repository>
+               <id>jboss-public-repository-group</id>
+               <name>JBoss Public Maven Repository Group</name>
+               <url>http://repository.jboss.org/nexus/content/groups/public</url>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </repository>
+         </repositories>
+         <pluginRepositories>
+            <pluginRepository>
+               <id>jboss-public-repository-group</id>
+               <name>JBoss Public Maven Repository Group</name>
+               <url>http://repository.jboss.org/nexus/content/groups/public</url>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>false</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </pluginRepository>
+         </pluginRepositories>
+      </profile>
+
+   </profiles>
+
+
+   <!-- SCM and distribution management -->
+   <scm>
+      <connection>scm:git:git://github.com/weld/core.git</connection>
+      <developerConnection>scm:git:git://github.com/weld/core.git</developerConnection>
+      <url>scm:git:git://github.com/weld/core.git</url>
+   </scm>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/weld/core/git/refs/tags/1.1.0.Final | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 237ms:
+{
+  "ref": "refs/tags/1.1.0.Final",
+  "node_id": "MDM6UmVmODE5OTA3OnJlZnMvdGFncy8xLjEuMC5GaW5hbA==",
+  "url": "https://api.github.com/repos/weld/core/git/refs/tags/1.1.0.Final",
+  "object": {
+    "sha": "a2d7c42c27654a610b6787170feccbc36ca5cd90",
+    "type": "tag",
+    "url": "https://api.github.com/repos/weld/core/git/tags/a2d7c42c27654a610b6787170feccbc36ca5cd90"
+  }
+}
+
+codex
+The published artifact has JVM class files, so it remains a Native Image metadata candidate. Its Maven sources and Javadoc jars exist, while there is no Maven test jar in the artifact directory, so the test suite needs to come from the tagged upstream repository.
+exec
+/usr/bin/bash -lc "unzip -p /tmp/weld-osgi.jar META-INF/MANIFEST.MF | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Export-Package: javax.inject;version="1.0",javax.decorator;uses:="java
+ x.enterprise.inject";version="1.0",javax.enterprise.inject;uses:="jav
+ ax.inject,javax.enterprise.util,javax.enterprise.context";version="1.
+ 0",javax.enterprise.inject.spi;uses:="javax.enterprise.context.spi,ja
+ vax.el,javax.interceptor,javax.enterprise.event";version="1.0",javax.
+ enterprise.context.spi;version="1.0",javax.enterprise.context;uses:="
+ javax.inject";version="1.0",javax.enterprise.util;version="1.0",javax
+ .enterprise.event;uses:="javax.enterprise.util";version="1.0",org.jbo
+ ss.weld.context;uses:="org.jboss.weld,org.jboss.weld.bootstrap.api,or
+ g.jboss.weld.serialization.spi,org.jboss.weld.context.api,javax.enter
+ prise.context.spi,javax.enterprise.context,org.jboss.weld.manager,jav
+ ax.enterprise.inject,org.jboss.weld.serialization.spi.helpers";versio
+ n="1.0",org.jboss.weld.ejb;uses:="org.jboss.weld.bootstrap.api,org.jb
+ oss.weld.util,org.jboss.weld.resources.spi,org.jboss.weld.ejb.spi,org
+ .jboss.weld.ejb.spi.helpers,org.jboss.weld.introspector,org.jboss.wel
+ d.introspector.jlr,org.jboss.weld,org.jboss.weld.manager,org.jboss.we
+ ld.context,javax.enterprise.inject,javax.interceptor";version="1.0",o
+ rg.jboss.weld.bean;uses:="org.jboss.weld,org.jboss.weld.bootstrap.api
+ ,org.jboss.weld.manager,org.jboss.weld.introspector,javax.enterprise.
+ context,org.jboss.weld.bootstrap,org.jboss.weld.util,javax.enterprise
+ .inject,javax.decorator,org.jboss.weld.injection,javax.inject,org.jbo
+ ss.interceptor.util,org.jboss.interceptor.spi.model,org.jboss.weld.be
+ an.proxy,org.jboss.weld.serialization.spi.helpers,org.jboss.weld.intr
+ ospector.jlr,javax.enterprise.inject.spi,org.jboss.weld.context,javax
+ .enterprise.event,org.jboss.weld.serialization.spi,org.jboss.weld.ejb
+ ,org.jboss.interceptor.builder,javax.enterprise.context.spi,org.jboss
+ .interceptor.reader.cache,org.jboss.interceptor.spi.metadata,org.jbos
+ s.interceptor.proxy,javax.interceptor,org.jboss.interceptor.reader,or
+ g.jboss.interceptor.spi.context,org.jboss.interceptor.spi.instance,or
+ g.jboss.interceptor.util.proxy,org.jboss.weld.ejb.spi,org.jboss.weld.
+ ejb.api";version="1.0",org.jboss.weld.bean.builtin;uses:="org.jboss.w
+ eld,org.jboss.weld.bootstrap.api,org.jboss.weld.manager,javax.enterpr
+ ise.context,org.jboss.weld.bootstrap,javax.enterprise.inject,org.jbos
+ s.weld.injection,org.jboss.weld.bean,javax.enterprise.inject.spi,java
+ x.enterprise.context.spi,org.jboss.weld.context,javax.enterprise.util
+ ,org.jboss.weld.event,javax.enterprise.event,org.jboss.weld.bootstrap
+ .spi,org.jboss.weld.util,org.jboss.weld.introspector,javax.inject";ve
+ rsion="1.0",org.jboss.weld.bean.proxy;uses:="javax.enterprise.inject.
+ spi,org.jboss.weld.util,org.jboss.weld.injection,org.jboss.weld.intro
+ spector,org.jboss.weld.introspector.jlr,org.jboss.weld,org.jboss.weld
+ .bootstrap.api,org.jboss.weld.serialization.spi,javax.enterprise.cont
+ ext.spi,org.jboss.weld.manager,org.jboss.weld.context,org.jboss.weld.
+ serialization.spi.helpers,org.jboss.interceptor.util.proxy,javax.inje
+ ct,org.jboss.weld.bean,org.jboss.weld.ejb,org.jboss.weld.ejb.api,org.
+ jboss.interceptor.proxy";version="1.0",org.jboss.weld.servlet.api;use
+ s:="javax.servlet,javax.servlet.http";version="1.0",org.jboss.weld.bo
+ otstrap.api;uses:="org.jboss.weld.bootstrap.spi,javax.enterprise.inje
+ ct.spi,org.jboss.weld.manager.api,org.jboss.weld.ejb.spi,org.jboss.we
+ ld.validation.spi,org.jboss.weld.transaction.spi,org.jboss.weld.injec
+ tion.spi,org.jboss.weld.security.spi,org.jboss.weld.resources.spi,org
+ .jboss.weld.bootstrap.api.helpers";version="1.0",org.jboss.weld.conte
+ xt.api;uses:="javax.enterprise.context.spi";version="1.0",org.jboss.w
+ eld.servlet.api.helpers;uses:="org.jboss.weld.servlet.api,javax.servl
+ et,javax.servlet.http";version="1.0",org.jboss.weld.bootstrap.api.hel
+ pers;uses:="org.jboss.weld.bootstrap.spi,org.jboss.weld.bootstrap.api
+ ,org.jboss.weld.manager.api";version="1.0",org.jboss.weld.ejb.api;ver
+ sion="1.0",org.jboss.weld.manager.api;uses:="org.jboss.weld.bootstrap
+ .api,org.jboss.weld.ejb.spi,javax.enterprise.inject.spi,javax.enterpr
+ ise.inject";version="1.0",org.jboss.weld.ejb.spi.helpers;uses:="org.j
+ boss.weld.ejb.spi,org.jboss.weld.ejb.api";version="1.0",org.jboss.wel
+ d.validation.spi;uses:="org.jboss.weld.bootstrap.api,javax.validation
+ ";version="1.0",org.jboss.weld.serialization.spi;uses:="org.jboss.wel
+ d.bootstrap.api,org.jboss.weld.serialization.spi.helpers,javax.enterp
+ rise.context.spi";version="1.0",org.jboss.weld.transaction.spi;uses:=
+ "org.jboss.weld.bootstrap.api,javax.transaction";version="1.0",org.jb
+ oss.weld.injection.spi.helpers;uses:="javax.annotation,javax.naming,o
+ rg.jboss.weld.bootstrap.api,javax.enterprise.inject.spi,org.jboss.wel
+ d.injection.spi,javax.persistence";version="1.0",org.jboss.weld.seria
+ lization.spi.helpers;uses:="javax.enterprise.context.spi,org.jboss.we
+ ld.context.api";version="1.0",org.jboss.weld.bootstrap.spi;uses:="org
+ .jboss.weld.ejb.spi,org.jboss.weld.bootstrap.api,javax.enterprise.inj
+ ect.spi";version="1.0",org.jboss.weld.injection.spi;uses:="org.jboss.
+ weld.bootstrap.api,javax.enterprise.inject.spi,javax.persistence";ver
+ sion="1.0",org.jboss.weld.resources.spi;uses:="org.jboss.weld.bootstr
+ ap.api";version="1.0",org.jboss.weld.resources.spi.helpers;uses:="org
+ .jboss.weld.resources.spi";version="1.0",org.jboss.weld.bootstrap.spi
+ .helpers;uses:="org.jboss.weld.ejb.spi,org.jboss.weld.bootstrap.spi";
+ version="1.0",org.jboss.weld.ejb.spi;uses:="org.jboss.weld.bootstrap.
+ api,org.jboss.weld.ejb.api,javax.enterprise.inject.spi";version="1.0"
+ ,org.jboss.weld.security.spi;uses:="org.jboss.weld.bootstrap.api";ver
+ sion="1.0",org.jboss.weld;uses:="org.jboss.weld.bootstrap.spi,org.jbo
+ ss.weld.bootstrap.api,org.jboss.weld.bootstrap,org.jboss.weld.manager
+ ";version="1.0",org.jboss.weld.bootstrap;uses:="org.jboss.weld.bootst
+ rap.api,javax.enterprise.inject.spi,org.jboss.weld.manager,org.jboss.
+ weld.event,org.jboss.weld.introspector,org.jboss.weld.ejb,javax.enter
+ prise.inject,org.jboss.weld.util,javax.inject,org.jboss.weld.bean,org
+ .jboss.weld,javax.interceptor,javax.decorator,org.jboss.weld.resource
+ s.spi,org.jboss.weld.bean.builtin,javax.enterprise.event,org.jboss.we
+ ld.injection,org.jboss.weld.bootstrap.spi,org.jboss.weld.transaction.
+ spi,org.jboss.weld.validation.spi,org.jboss.weld.bootstrap.api.helper
+ s,org.jboss.weld.ejb.spi,org.jboss.weld.jsf,javax.enterprise.context.
+ spi,org.jboss.weld.security.spi,org.jboss.interceptor.spi.model,org.j
+ boss.weld.serialization.spi.helpers,javax.enterprise.context,org.jbos
+ s.interceptor.spi.metadata,org.jboss.weld.context,org.jboss.weld.seri
+ alization.spi,org.jboss.weld.manager.api";version="1.0",org.jboss.wel
+ d.event;uses:="org.jboss.weld,org.jboss.weld.manager,org.jboss.weld.c
+ ontext,javax.enterprise.inject,org.jboss.weld.bean.builtin,javax.ente
+ rprise.inject.spi,javax.enterprise.util,javax.enterprise.event,javax.
+ enterprise.context.spi,org.jboss.weld.util,org.jboss.weld.bootstrap.a
+ pi,org.jboss.weld.transaction.spi,org.jboss.weld.introspector,org.jbo
+ ss.weld.bean,javax.enterprise.context,org.jboss.weld.injection,javax.
+ inject,javax.transaction";version="1.0",org.jboss.weld.injection;uses
+ :="javax.enterprise.inject.spi,org.jboss.weld.introspector,org.jboss.
+ weld.manager,javax.enterprise.context.spi,org.jboss.weld.util,org.jbo
+ ss.weld.bootstrap.api,javax.enterprise.inject,org.jboss.weld.bean.pro
+ xy,javax.decorator,javax.inject,org.jboss.interceptor.util.proxy,org.
+ jboss.weld.injection.spi,org.jboss.weld,org.jboss.weld.serialization.
+ spi";version="1.0",org.jboss.weld.introspector;uses:="javax.enterpris
+ e.inject.spi,org.jboss.weld.util,javax.enterprise.context,javax.enter
+ prise.inject,javax.interceptor,javax.inject,javax.enterprise.event";v
+ ersion="1.0",org.jboss.weld.introspector.jlr;uses:="org.jboss.weld.in
+ trospector,javax.enterprise.inject,org.jboss.weld.util,javax.inject,j
+ avax.enterprise.inject.spi";version="1.0",org.jboss.weld.manager;uses
+ :="javax.enterprise.util,javax.enterprise.inject.spi,javax.enterprise
+ .inject,org.jboss.weld.bootstrap.api,org.jboss.interceptor.spi.model,
+ org.jboss.weld.bean.proxy,org.jboss.weld.bootstrap,org.jboss.weld.uti
+ l,org.jboss.weld.injection,org.jboss.weld.ejb.spi,org.jboss.weld.bean
+ .builtin,javax.el,org.jboss.weld,org.jboss.weld.context,org.jboss.wel
+ d.introspector,org.jboss.weld.ejb,org.jboss.weld.serialization.spi,ja
+
+exec
+/usr/bin/bash -lc 'for p in bundles/osgi tests tests-arquillian impl/src/test docs/reference; do u="https://api.github.com/repos/weld/core/contents/$p?ref=1.1.0.Final"; echo "$p"; curl -fsSL "$u" | sed -n '"'1,40p' || true; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+exec
+/usr/bin/bash -lc "for u in \\
+  https://github.com/weld/core/tree/1.1.0.Final/bundles/osgi \\
+  https://github.com/weld/core/tree/1.1.0.Final/tests \\
+  https://github.com/weld/core/tree/1.1.0.Final/tests-arquillian \\
+  https://github.com/weld/core/tree/1.1.0.Final/docs/reference \\
+  https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/1.1.0.Final/weld-osgi-bundle-1.1.0.Final-javadoc.jar; do echo \""'$u"; curl -fsI -L "$u" | sed -n '"'1,5p'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 1157ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "bundles/osgi/pom.xml",
+    "sha": "244127d3f7d14f111836c311577168bec26e76a9",
+    "size": 7925,
+    "url": "https://api.github.com/repos/weld/core/contents/bundles/osgi/pom.xml?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/bundles/osgi/pom.xml",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/244127d3f7d14f111836c311577168bec26e76a9",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/bundles/osgi/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/bundles/osgi/pom.xml?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/244127d3f7d14f111836c311577168bec26e76a9",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/bundles/osgi/pom.xml"
+    }
+  }
+]
+tests
+[
+  {
+    "name": "pom.xml",
+    "path": "tests/pom.xml",
+    "sha": "35f6dd74a66e3617de6cf7fdbd1ca48f1c5f986f",
+    "size": 10435,
+    "url": "https://api.github.com/repos/weld/core/contents/tests/pom.xml?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/tests/pom.xml",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/35f6dd74a66e3617de6cf7fdbd1ca48f1c5f986f",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/tests/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/tests/pom.xml?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/35f6dd74a66e3617de6cf7fdbd1ca48f1c5f986f",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/tests/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "tests/src",
+    "sha": "da6bc6aefea6d8a69a816ad0b3b2bc50ed8fb92b",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/tests/src?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/tests/src",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/da6bc6aefea6d8a69a816ad0b3b2bc50ed8fb92b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/tests/src?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/da6bc6aefea6d8a69a816ad0b3b2bc50ed8fb92b",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/tests/src"
+    }
+  },
+  {
+    "name": "unit-tests.xml",
+    "path": "tests/unit-tests.xml",
+    "sha": "cb88afae8dab72ca3564d66c86d4bf5c2721f6c1",
+    "size": 756,
+    "url": "https://api.github.com/repos/weld/core/contents/tests/unit-tests.xml?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/tests/unit-tests.xml",
+tests-arquillian
+[
+  {
+    "name": "pom.xml",
+    "path": "tests-arquillian/pom.xml",
+    "sha": "9a00570b6e5b30b82f3a08b907064dba14c75e92",
+    "size": 15979,
+    "url": "https://api.github.com/repos/weld/core/contents/tests-arquillian/pom.xml?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/tests-arquillian/pom.xml",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/9a00570b6e5b30b82f3a08b907064dba14c75e92",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/tests-arquillian/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/tests-arquillian/pom.xml?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/9a00570b6e5b30b82f3a08b907064dba14c75e92",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/tests-arquillian/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "tests-arquillian/src",
+    "sha": "7adb8be47aa62ce8b0a4e3b551864461e8f32b81",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/tests-arquillian/src?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/tests-arquillian/src",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/7adb8be47aa62ce8b0a4e3b551864461e8f32b81",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/tests-arquillian/src?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/7adb8be47aa62ce8b0a4e3b551864461e8f32b81",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/tests-arquillian/src"
+    }
+  }
+]
+impl/src/test
+[
+  {
+    "name": "java",
+    "path": "impl/src/test/java",
+    "sha": "62c7863f54d1d1ca9f37248e3d47b63d21b7d5fb",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/impl/src/test/java?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/impl/src/test/java",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/62c7863f54d1d1ca9f37248e3d47b63d21b7d5fb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/impl/src/test/java?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/62c7863f54d1d1ca9f37248e3d47b63d21b7d5fb",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/impl/src/test/java"
+    }
+  }
+]
+docs/reference
+[
+  {
+    "name": ".gitignore",
+    "path": "docs/reference/.gitignore",
+    "sha": "b25c15b81fae06e1c55946ac6270bfdb293870e8",
+    "size": 3,
+    "url": "https://api.github.com/repos/weld/core/contents/docs/reference/.gitignore?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/docs/reference/.gitignore",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/b25c15b81fae06e1c55946ac6270bfdb293870e8",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/docs/reference/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/docs/reference/.gitignore?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/b25c15b81fae06e1c55946ac6270bfdb293870e8",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/docs/reference/.gitignore"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "docs/reference/README.md",
+    "sha": "8ce0283a4b5492530639795f5f76d2b570a7c6fc",
+    "size": 3144,
+    "url": "https://api.github.com/repos/weld/core/contents/docs/reference/README.md?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/docs/reference/README.md",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/8ce0283a4b5492530639795f5f76d2b570a7c6fc",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/docs/reference/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/docs/reference/README.md?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/8ce0283a4b5492530639795f5f76d2b570a7c6fc",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/docs/reference/README.md"
+    }
+  },
+  {
+    "name": "flies.xml",
+    "path": "docs/reference/flies.xml",
+    "sha": "6865b73549ca3493059a2af3b5b1374a9eacc6ec",
+    "size": 702,
+    "url": "https://api.github.com/repos/weld/core/contents/docs/reference/flies.xml?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/docs/reference/flies.xml",
+
+ succeeded in 2789ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 07:10:40 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"f74a62717e70b79c91e0e50293441f1d"
+https://github.com/weld/core/tree/1.1.0.Final/tests
+HTTP/2 200 
+date: Sat, 09 May 2026 07:10:41 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"982aa5fb8959dc111db8daaaf7a422a7"
+https://github.com/weld/core/tree/1.1.0.Final/tests-arquillian
+HTTP/2 200 
+date: Sat, 09 May 2026 07:10:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3926210615b4c47fa1db233f0d3c0f5f"
+https://github.com/weld/core/tree/1.1.0.Final/docs/reference
+HTTP/2 200 
+date: Sat, 09 May 2026 07:10:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8822e074265b7efdbb0cdbb8a80be047"
+https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/1.1.0.Final/weld-osgi-bundle-1.1.0.Final-javadoc.jar
+HTTP/2 200 
+date: Sat, 09 May 2026 07:10:43 GMT
+content-type: application/java-archive
+content-length: 5390
+cf-ray: 9f8ee2cdbb7701db-ZRH
+
+exec
+/usr/bin/bash -lc "sed -n '1,140p' metadata/org.jboss.weld/weld-api/index.json && sed -n '1,130p' metadata/org.jboss.weld/weld-spi/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.Final",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/weld/api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-javadoc.jar",
+    "description" : "Weld API provides Weld-specific extensions to the CDI API for Java applications. It defines context, conversation, servlet, and related dependency injection integration interfaces used by Weld-based runtimes.",
+    "tested-versions" : [
+      "4.0.Final",
+      "4.0.SP1",
+      "5.0.Final",
+      "5.0.SP1",
+      "5.0.SP2",
+      "5.0.SP3",
+      "6.0.Final",
+      "7.0.Alpha1",
+      "7.0.Alpha2",
+      "7.0.Alpha3",
+      "7.0.Alpha4",
+      "7.0.Alpha5",
+      "7.0.Alpha6",
+      "7.0.Alpha7"
+    ],
+    "allowed-packages" : [
+      "org.jboss.weld"
+    ]
+  },
+  {
+    "metadata-version" : "2.0.Final",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/weld/api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-javadoc.jar",
+    "description" : "Weld API provides Weld-specific extensions to the CDI API for Java applications. It defines context, conversation, servlet, and related dependency injection integration interfaces used by Weld-based runtimes.",
+    "tested-versions" : [
+      "2.0.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.weld.context"
+    ]
+  },
+  {
+    "metadata-version" : "1.2.0.Beta1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-sources.jar",
+    "repository-url" : "https://github.com/weld/api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-javadoc.jar",
+    "description" : "Weld API provides Weld-specific extensions to the CDI API for Java EE applications. It defines interfaces for contexts, conversations, servlet integration, and other dependency injection integration points used by Weld-based runtimes.",
+    "tested-versions" : [
+      "1.2.0.Beta1"
+    ],
+    "allowed-packages" : [
+      "org.jboss.weld.context"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.0-01-glassfish",
+    "tested-versions" : [
+      "1.1.0-01-glassfish"
+    ],
+    "allowed-packages" : [
+      "org.jboss.weld.conversation"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.Final",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/weld/api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-javadoc.jar",
+    "description" : "Weld API provides Weld-specific extensions to the CDI API for Java EE applications. It defines interfaces for Weld-managed contexts, conversations, servlet integration, and related dependency injection integration points.",
+    "tested-versions" : [
+      "1.1.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.weld.context"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.2.SP2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+    "repository-url" : "https://github.com/weld/api",
+    "test-code-url" : "https://github.com/weld/api/tree/$version$/weld-spi/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+    "description" : "Weld SPI provides the service-provider interfaces used to integrate Weld, the CDI reference implementation, with Java EE containers and runtime services. It defines bootstrap, deployment, resource, transaction, security, validation, EJB, injection, servlet, and serialization contracts for container integration.",
+    "tested-versions" : [
+      "2.2.SP2",
+      "2.2.SP3",
+      "2.2.SP4",
+      "2.3.Final",
+      "2.3.SP1",
+      "2.3.SP2",
+      "2.4.Final",
+      "2.4.SP1",
+      "2.4.SP2",
+      "2.4.SP2-Beta1",
+      "3.0.Final",
+      "3.0.SP1",
+      "3.0.SP2",
+      "3.0.SP2-Beta1",
+      "3.0.SP2-Beta2",
+      "3.0.SP3",
+      "3.0.SP4",
+      "3.1.Final",
+      "3.1.SP1",
+      "3.1.SP2",
+      "3.1.SP3",
+      "3.1.SP4",
+      "4.0.Final",
+      "4.0.SP1",
+      "5.0.Final",
+      "5.0.SP1",
+      "5.0.SP2",
+      "5.0.SP3",
+      "6.0.Final",
+      "7.0.Alpha1",
+      "7.0.Alpha2",
+      "7.0.Alpha3",
+      "7.0.Alpha4",
+      "7.0.Alpha5",
+      "7.0.Alpha6",
+      "7.0.Alpha7"
+    ],
+    "allowed-packages" : [
+      "org.jboss.weld"
+    ]
+  },
+  {
+    "metadata-version" : "2.1.Final",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+    "repository-url" : "https://github.com/weld/api",
+    "test-code-url" : "https://github.com/weld/api/tree/$version$/weld-spi/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+    "description" : "Weld SPI provides the service-provider interfaces used to integrate Weld, the CDI reference implementation, with Java EE containers and runtime services. It defines bootstrap, deployment, resource, transaction, security, validation, EJB, injection, servlet, and serialization contracts for container integration.",
+    "tested-versions" : [
+      "2.1.Final",
+      "2.2.Final",
+      "2.2.SP1"
+    ],
+    "allowed-packages" : [
+      "org.jboss.weld"
+    ]
+  },
+  {
+    "metadata-version" : "2.0.Final",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+    "repository-url" : "https://github.com/weld/api",
+    "test-code-url" : "https://github.com/weld/api/tree/$version$/weld-spi/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+    "description" : "Weld SPI provides the service-provider interfaces used to integrate Weld, the CDI reference implementation, with Java EE containers and runtime services. It defines bootstrap, deployment, resource, transaction, security, validation, EJB, injection, servlet, and serialization contracts for container integration.",
+    "tested-versions" : [
+      "2.0.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.weld"
+    ]
+  },
+  {
+    "metadata-version" : "1.2.0.Beta1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+    "repository-url" : "https://github.com/weld/api",
+    "test-code-url" : "https://github.com/weld/api/tree/$version$/weld-spi/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+    "description" : "Weld SPI provides the service-provider interfaces used to integrate Weld, the CDI reference implementation, with Java EE containers and runtime services. It defines bootstrap, deployment, resource, transaction, security, validation, EJB, injection, servlet, and serialization contracts for container integration.",
+    "tested-versions" : [
+      "1.2.0.Beta1"
+    ],
+    "allowed-packages" : [
+      "org.jboss.weld"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.Final",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+    "repository-url" : "https://github.com/weld/api",
+    "test-code-url" : "https://github.com/weld/api/tree/$version$/weld-spi/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+    "description" : "Weld SPI provides the service-provider interfaces used to integrate Weld, the CDI reference implementation, with Java EE containers and runtime services. It defines bootstrap, deployment, resource, transaction, security, validation, EJB, injection, servlet, and serialization contracts for container integration.",
+    "tested-versions" : [
+      "1.1.Final"
+    ],
+    "allowed-packages" : [
+      "org.jboss.weld"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"https://github.com/weld/core\"|\"source-code-url\" : \"https://repo.maven.apache.org/maven2/.+-sources.jar\"' metadata build/discovered-artifact-metadata --glob '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+metadata/io.getquill/quill-engine_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+metadata/io.getquill/quill-util_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-sources.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-sources.jar",
+metadata/org.apache.commons/commons-math/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math/$version$/commons-math-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-sources.jar",
+metadata/org.apache.commons/commons-math3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math3/$version$/commons-math3-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/io.circe/circe-parser_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-parser_3/$version$/circe-parser_3-$version$-sources.jar",
+metadata/io.circe/circe-numbers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-sources.jar",
+metadata/io.circe/circe-numbers_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:128:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/$version$/durian-core-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:40:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.jline/jline-reader/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+metadata/org.jline/jline-native/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-native/$version$/jline-native-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/$version$/kotlin-stdlib-jdk8-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit5/$version$/kotlin-test-junit5-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit/$version$/kotlin-test-junit-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-testng/$version$/kotlin-test-testng-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
+metadata/io.swagger/swagger-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/io.circe/circe-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"N/A\"|\"test-code-url\" : \"https://github.com/.*/tree/\\"'$version'"\\"'$/tests'"' metadata build/discovered-artifact-metadata --glob '*.json' | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/com.beust/jcommander/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:25:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:8:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:39:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:115:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/io.getquill/quill-engine_3/index.json:7:    "test-code-url" : "N/A",
+metadata/io.getquill/quill-engine_2.13/index.json:7:    "test-code-url" : "N/A",
+metadata/io.getquill/quill-util_3/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.jnr/jnr-x86asm/index.json:7:    "test-code-url" : "N/A",
+metadata/io.swagger/swagger-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:39:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:49:    "test-code-url" : "N/A",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+metadata/dev.zio/zio-schema-macros_3/index.json:7:    "test-code-url" : "N/A",
+
+codex
+I have enough to edit now: Maven provides the source and Javadoc jars for this exact version; GitHub’s `weld/core` tag has the repository root and project test suite. I’m leaving language and not-for-native-image absent because this is a Java JVM bundle with class files, not a Kotlin/Groovy/Scala or non-JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+diff --git a/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+index e518a2262f9456ae72765bf6bb1171f12f3212fd..65d4bffa3d83f90456012eb3bb3a26e6a853e44f
+--- a/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final"
++  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final",
++  "repository-url" : "https://github.com/weld/core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-sources.jar",
++  "test-code-url" : "https://github.com/weld/core/tree/$version$/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-javadoc.jar",
++  "description" : "Weld OSGi Bundle packages the Weld CDI runtime and related APIs as an OSGi bundle for Java applications. It embeds Weld core dependencies and exports CDI, injection, interceptor, servlet, JSF, and Weld integration packages for use in OSGi environments."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+index e518a2262f9456ae72765bf6bb1171f12f3212fd..65d4bffa3d83f90456012eb3bb3a26e6a853e44f
+--- a/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final"
++  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final",
++  "repository-url" : "https://github.com/weld/core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-sources.jar",
++  "test-code-url" : "https://github.com/weld/core/tree/$version$/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-javadoc.jar",
++  "description" : "Weld OSGi Bundle packages the Weld CDI runtime and related APIs as an OSGi bundle for Java applications. It embeds Weld core dependencies and exports CDI, injection, interceptor, servlet, JSF, and Weld integration packages for use in OSGi environments."
+ }
+
+web search: 
+web search: Maven Repository org.jboss.weld weld-osgi-bundle 1.1.0.Final sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.weld/weld-osgi-bundle/1.1.0.Final
+web search: 
+web search: https://github.com/weld/core/tree/1.1.0.Final/tests
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+{
+  "coordinates": "org.jboss.weld:weld-osgi-bundle:1.1.0.Final",
+  "repository-url": "https://github.com/weld/core",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-sources.jar",
+  "test-code-url": "https://github.com/weld/core/tree/$version$/tests",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-javadoc.jar",
+  "description": "Weld OSGi Bundle packages the Weld CDI runtime and related APIs as an OSGi bundle for Java applications. It embeds Weld core dependencies and exports CDI, injection, interceptor, servlet, JSF, and Weld integration packages for use in OSGi environments."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/1.1.0.Final/weld-osgi-bundle-1.1.0.Final-sources.jar \\
+  https://github.com/weld/core/tree/1.1.0.Final/tests \\
+  https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/1.1.0.Final/weld-osgi-bundle-1.1.0.Final-javadoc.jar; do printf '%s -> ' \""'$u"; curl -fsI -L "$u" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+diff --git a/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+index e518a2262f9456ae72765bf6bb1171f12f3212fd..65d4bffa3d83f90456012eb3bb3a26e6a853e44f
+--- a/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final"
++  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final",
++  "repository-url" : "https://github.com/weld/core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-sources.jar",
++  "test-code-url" : "https://github.com/weld/core/tree/$version$/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-javadoc.jar",
++  "description" : "Weld OSGi Bundle packages the Weld CDI runtime and related APIs as an OSGi bundle for Java applications. It embeds Weld core dependencies and exports CDI, injection, interceptor, servlet, JSF, and Weld integration packages for use in OSGi environments."
+ }
+
+ succeeded in 533ms:
+HTTP/2 200 
+https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/1.1.0.Final/weld-osgi-bundle-1.1.0.Final-javadoc.jar -> HTTP/2 200 
+
+web search: 
+web search: 
+web search: 
+web search: https://github.com/weld/core/tree/1.1.0.Final/tests
+web search: 
+web search: repo.maven.apache.org org/jboss/weld/weld-osgi-bundle/1.1.0.Final weld-osgi-bundle-1.1.0.Final-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.weld/weld-osgi-bundle/1.1.0.Final
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86
+diff --git a/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+index e518a2262f9456ae72765bf6bb1171f12f3212fd..65d4bffa3d83f90456012eb3bb3a26e6a853e44f
+--- a/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final"
++  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final",
++  "repository-url" : "https://github.com/weld/core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-sources.jar",
++  "test-code-url" : "https://github.com/weld/core/tree/$version$/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-javadoc.jar",
++  "description" : "Weld OSGi Bundle packages the Weld CDI runtime and related APIs as an OSGi bundle for Java applications. It embeds Weld core dependencies and exports CDI, injection, interceptor, servlet, JSF, and Weld integration packages for use in OSGi environments."
+ }
+
+ succeeded in 330ms:
+web search: 
+web search: Maven Central org.jboss.weld weld-osgi-bundle 1.1.0.Final
+web search: 
+web search: https://github.com/weld/core/tree/1.1.0.Final/tests
+web search: 
+web search: repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/1.1.0.Final/
+codex
+Updated [org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json).
+
+Set Maven source/Javadoc URLs, GitHub `weld/core` repository and tagged test-suite URL, and a two-sentence description based on the artifact POM and tagged upstream tests. The artifact is a JVM OSGi bundle, so I left `language` and `not-for-native-image` absent. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jboss.weld/weld-osgi-bundle/1.1.0.Final?utm_source=openai))
+
+Validation: JSON parses with `jq`, and the rendered source, test, and documentation URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+index e518a2262f9456ae72765bf6bb1171f12f3212fd..65d4bffa3d83f90456012eb3bb3a26e6a853e44f
+--- a/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final"
++  "coordinates" : "org.jboss.weld:weld-osgi-bundle:1.1.0.Final",
++  "repository-url" : "https://github.com/weld/core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-sources.jar",
++  "test-code-url" : "https://github.com/weld/core/tree/$version$/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-osgi-bundle/$version$/weld-osgi-bundle-$version$-javadoc.jar",
++  "description" : "Weld OSGi Bundle packages the Weld CDI runtime and related APIs as an OSGi bundle for Java applications. It embeds Weld core dependencies and exports CDI, injection, interceptor, servlet, JSF, and Weld integration packages for use in OSGi environments."
+ }
+
+tokens used
+98,867
+Updated [org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86/build/discovered-artifact-metadata/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.json).
+
+Set Maven source/Javadoc URLs, GitHub `weld/core` repository and tagged test-suite URL, and a two-sentence description based on the artifact POM and tagged upstream tests. The artifact is a JVM OSGi bundle, so I left `language` and `not-for-native-image` absent. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jboss.weld/weld-osgi-bundle/1.1.0.Final?utm_source=openai))
+
+Validation: JSON parses with `jq`, and the rendered source, test, and documentation URLs all returned HTTP 200.
+Ran agent for org.jboss.weld:weld-osgi-bundle:1.1.0.Final (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86/build/agent-artifact-discovery-logs/org.jboss.weld-weld-osgi-bundle-1.1.0.Final.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2921-6ff49d86/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 50s
+9 actionable tasks: 9 executed
