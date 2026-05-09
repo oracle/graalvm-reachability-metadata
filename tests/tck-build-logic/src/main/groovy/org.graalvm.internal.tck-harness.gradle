@@ -551,36 +551,49 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
-// gradle generateChangedMetadataTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
-Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChangedMetadataTestMatrix", DefaultTask) { task ->
-    task.setDescription("Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files")
-    task.setGroup(METADATA_GROUP)
-    task.doFirst {
-        if (!project.hasProperty("baseCommit")) {
-            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
-        }
+Closure<Provider<Task>> registerChangedMetadataTestMatrixTask = { String taskName, String description ->
+    tasks.register(taskName, DefaultTask) { task ->
+        task.setDescription(description)
+        task.setGroup(METADATA_GROUP)
+        task.doFirst {
+            if (!project.hasProperty("baseCommit")) {
+                throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+            }
 
-        int versionsPerJob = versionsPerJobFor("generateChangedMetadataTestMatrix")
-        String base = project.property("baseCommit")
-        String head = project.findProperty("newCommit") ?: "HEAD"
-        List<Map<String, Object>> testEntries = changedMetadataTestEntries(base, head, versionsPerJob, diffCoordinates)
-        boolean noneFound = testEntries.isEmpty()
-        List<Map<String, Object>> include = noneFound
-                ? []
-                : expandMatrixEntries(testEntries, "generateChangedMetadataTestMatrix")
-        def matrix = [include: include]
-        if (noneFound) {
-            println "No changed metadata test entries were found!"
-        }
-        println "Changed metadata test entries:"
-        testEntries.each { entry ->
-            println " - ${entry["coordinates"]}: ${(entry["versions"] as List<?>).join(", ")}"
-        }
+            int versionsPerJob = versionsPerJobFor("generateChangedMetadataTestMatrix")
+            String base = project.property("baseCommit")
+            String head = project.findProperty("newCommit") ?: "HEAD"
+            List<Map<String, Object>> testEntries = changedMetadataTestEntries(base, head, versionsPerJob, diffCoordinates)
+            boolean noneFound = testEntries.isEmpty()
+            List<Map<String, Object>> include = noneFound
+                    ? []
+                    : expandMatrixEntries(testEntries, "generateChangedMetadataTestMatrix")
+            def matrix = [include: include]
+            if (noneFound) {
+                println "No changed metadata test entries were found!"
+            }
+            println "Changed metadata test entries:"
+            testEntries.each { entry ->
+                println " - ${entry["coordinates"]}: ${(entry["versions"] as List<?>).join(", ")}"
+            }
 
-        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
-        writeGithubOutput("none-found", noneFound.toString())
+            writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+            writeGithubOutput("none-found", noneFound.toString())
+        }
     }
 }
+
+// gradle generateChangedMetadataTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedMetadataTestMatrix = registerChangedMetadataTestMatrixTask(
+        "generateChangedMetadataTestMatrix",
+        "Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files"
+)
+
+// gradle generateChangedTestedVersionsMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedTestedVersionsMatrix = registerChangedMetadataTestMatrixTask(
+        "generateChangedTestedVersionsMatrix",
+        "Compatibility alias for generateChangedMetadataTestMatrix"
+)
 
 // gradle generateChangedCoordinatesOnlyMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 Provider<Task> generateChangedCoordinatesOnlyMatrix = tasks.register("generateChangedCoordinatesOnlyMatrix", DefaultTask) { task ->
