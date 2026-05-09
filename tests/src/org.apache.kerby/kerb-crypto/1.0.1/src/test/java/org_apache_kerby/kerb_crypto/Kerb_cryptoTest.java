@@ -18,6 +18,7 @@ import org.apache.kerby.kerberos.kerb.crypto.enc.EncryptProvider;
 import org.apache.kerby.kerberos.kerb.crypto.enc.provider.Aes128Provider;
 import org.apache.kerby.kerberos.kerb.crypto.fast.FastUtil;
 import org.apache.kerby.kerberos.kerb.crypto.util.BytesUtil;
+import org.apache.kerby.kerberos.kerb.crypto.util.Cmac;
 import org.apache.kerby.kerberos.kerb.crypto.util.Crc32;
 import org.apache.kerby.kerberos.kerb.crypto.util.Nfold;
 import org.apache.kerby.kerberos.kerb.crypto.util.Nonce;
@@ -248,6 +249,25 @@ public class Kerb_cryptoTest {
         provider.decrypt(key, inPlace);
         assertThat(inPlace).containsExactly(plainBlock);
         assertThat(provider.supportCbcMac()).isFalse();
+    }
+
+    @Test
+    void computesAesCmacUsingStandardTestVectors() throws Exception {
+        EncryptProvider provider = new Aes128Provider();
+        byte[] key = hex("2B7E151628AED2A6ABF7158809CF4F3C");
+        byte[] oneBlockMessage = hex("6BC1BEE22E409F96E93D7E117393172A");
+        byte[] partialFinalBlockMessage = hex(
+                "6BC1BEE22E409F96E93D7E117393172A"
+                        + "AE2D8A571E03AC9C9EB76FAC45AF8E51"
+                        + "30C81C46A35CE411");
+
+        byte[] emptyMac = Cmac.cmac(provider, key, new byte[0]);
+        byte[] oneBlockMac = Cmac.cmac(provider, key, oneBlockMessage);
+        byte[] truncatedMac = Cmac.cmac(provider, key, partialFinalBlockMessage, 12);
+
+        assertThat(emptyMac).containsExactly(hex("BB1D6929E95937287FA37D129B756746"));
+        assertThat(oneBlockMac).containsExactly(hex("070A16B46B4D4144F79BDD9DD04A287C"));
+        assertThat(truncatedMac).containsExactly(hex("DFA66747DE9AE63030CA3261"));
     }
 
     @Test
