@@ -1,0 +1,2935 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0b96-6d96-7b22-892c-838bbb52955e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.weld:weld-core:1.1.0.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.1.0.Final" when "$version$" is replaced with "1.1.0.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+- Set "coordinates" to "org.jboss.weld:weld-core:1.1.0.Final".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.0.Final".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata file and nearby conventions, then verify the artifact’s Maven/source links before editing it.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json && sed -n '1,200p' build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+-rw-rw-r-- 1 vjovanov vjovanov 61 May  9 09:14 build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+{
+  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\": \"org.jboss.weld:weld-core|weld-core|org.jboss.weld' build/discovered-artifact-metadata metadata tests -g '*.json' -g '*.properties' -g '*.xml'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json:2:  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final"
+metadata/org.jboss.weld/weld-build-config/index.json:4:    "reason": "The published JAR for org.jboss.weld:weld-build-config:1.1.4.Final contains no JVM class files; it only packages Maven metadata, license files, and a Checkstyle XML resource."
+metadata/org.jboss.weld/weld-spi/1.1.Final/reachability-metadata.json:5:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+metadata/org.jboss.weld/weld-spi/1.1.Final/reachability-metadata.json:7:      "type": "org.jboss.weld.bootstrap.api.helpers.IsolatedStaticSingletonProvider",
+metadata/org.jboss.weld/weld-spi/1.2.0.Beta1/reachability-metadata.json:5:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+metadata/org.jboss.weld/weld-spi/1.2.0.Beta1/reachability-metadata.json:7:      "type": "org.jboss.weld.bootstrap.api.helpers.IsolatedStaticSingletonProvider",
+metadata/org.jboss.weld/weld-spi/2.0.Final/reachability-metadata.json:5:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+metadata/org.jboss.weld/weld-spi/2.0.Final/reachability-metadata.json:7:      "type": "org.jboss.weld.bootstrap.api.helpers.IsolatedStaticSingletonProvider",
+metadata/org.jboss.weld/weld-spi/2.1.Final/reachability-metadata.json:5:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+metadata/org.jboss.weld/weld-spi/2.1.Final/reachability-metadata.json:7:      "type": "org.jboss.weld.bootstrap.api.helpers.IsolatedStaticSingletonProvider",
+metadata/org.jboss.weld/weld-spi/2.2.SP2/reachability-metadata.json:5:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+metadata/org.jboss.weld/weld-spi/2.2.SP2/reachability-metadata.json:11:        "typeReached": "org.jboss.weld.bootstrap.api.SingletonProvider"
+metadata/org.jboss.weld/weld-spi/2.2.SP2/reachability-metadata.json:13:      "type": "org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider",
+metadata/org.jboss.weld/weld-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+metadata/org.jboss.weld/weld-spi/index.json:49:      "org.jboss.weld"
+metadata/org.jboss.weld/weld-spi/index.json:54:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+metadata/org.jboss.weld/weld-spi/index.json:65:      "org.jboss.weld"
+metadata/org.jboss.weld/weld-spi/index.json:70:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:73:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+metadata/org.jboss.weld/weld-spi/index.json:79:      "org.jboss.weld"
+metadata/org.jboss.weld/weld-spi/index.json:84:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:87:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+metadata/org.jboss.weld/weld-spi/index.json:93:      "org.jboss.weld"
+metadata/org.jboss.weld/weld-spi/index.json:98:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-sources.jar",
+metadata/org.jboss.weld/weld-spi/index.json:101:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-spi/$version$/weld-spi-$version$-javadoc.jar",
+metadata/org.jboss.weld/weld-spi/index.json:107:      "org.jboss.weld"
+metadata/org.jboss.weld/weld-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-javadoc.jar",
+metadata/org.jboss.weld/weld-api/index.json:27:      "org.jboss.weld"
+metadata/org.jboss.weld/weld-api/index.json:32:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:35:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-javadoc.jar",
+metadata/org.jboss.weld/weld-api/index.json:41:      "org.jboss.weld.context"
+metadata/org.jboss.weld/weld-api/index.json:46:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:49:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/1.2.0.Beta1/weld-api-1.2.0.Beta1-javadoc.jar",
+metadata/org.jboss.weld/weld-api/index.json:55:      "org.jboss.weld.context"
+metadata/org.jboss.weld/weld-api/index.json:64:      "org.jboss.weld.conversation"
+metadata/org.jboss.weld/weld-api/index.json:69:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-sources.jar",
+metadata/org.jboss.weld/weld-api/index.json:72:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-api/$version$/weld-api-$version$-javadoc.jar",
+metadata/org.jboss.weld/weld-api/index.json:78:      "org.jboss.weld.context"
+tests/src/org.jboss.weld/weld-spi/1.1.Final/gradle.properties:4:library.coordinates = org.jboss.weld:weld-spi:1.1.Final
+tests/src/org.jboss.weld/weld-spi/1.1.Final/gradle.properties:6:metadata.dir = org.jboss.weld/weld-spi/1.1.Final/
+tests/src/org.jboss.weld/weld-spi/1.1.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.weld.**"
+tests/src/org.jboss.weld/weld-spi/1.2.0.Beta1/gradle.properties:4:library.coordinates = org.jboss.weld:weld-spi:1.2.0.Beta1
+tests/src/org.jboss.weld/weld-spi/1.2.0.Beta1/gradle.properties:6:metadata.dir = org.jboss.weld/weld-spi/1.2.0.Beta1/
+tests/src/org.jboss.weld/weld-spi/1.2.0.Beta1/user-code-filter.json:7:      "includeClasses" : "org.jboss.weld.**"
+tests/src/org.jboss.weld/weld-spi/2.0.Final/gradle.properties:4:library.coordinates = org.jboss.weld:weld-spi:2.0.Final
+tests/src/org.jboss.weld/weld-spi/2.0.Final/gradle.properties:6:metadata.dir = org.jboss.weld/weld-spi/2.0.Final/
+tests/src/org.jboss.weld/weld-spi/2.0.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.weld.**"
+tests/src/org.jboss.weld/weld-spi/2.1.Final/gradle.properties:4:library.coordinates = org.jboss.weld:weld-spi:2.1.Final
+tests/src/org.jboss.weld/weld-spi/2.1.Final/gradle.properties:6:metadata.dir = org.jboss.weld/weld-spi/2.1.Final/
+tests/src/org.jboss.weld/weld-spi/2.1.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.weld.**"
+tests/src/org.jboss.weld/weld-spi/2.2.SP2/user-code-filter.json:7:      "includeClasses" : "org.jboss.weld.**"
+tests/src/org.jboss.weld/weld-spi/2.2.SP2/user-code-filter.json:10:      "includeClasses" : "org_jboss_weld.weld_spi.**"
+tests/src/org.jboss.weld/weld-spi/2.2.SP2/gradle.properties:4:library.coordinates = org.jboss.weld:weld-spi:2.2.SP2
+tests/src/org.jboss.weld/weld-spi/2.2.SP2/gradle.properties:6:metadata.dir = org.jboss.weld/weld-spi/2.2.SP2/
+tests/src/org.jboss.weld/weld-api/1.1.Final/gradle.properties:4:library.coordinates = org.jboss.weld:weld-api:1.1.Final
+tests/src/org.jboss.weld/weld-api/1.1.Final/gradle.properties:6:metadata.dir = org.jboss.weld/weld-api/1.1.Final/
+tests/src/org.jboss.weld/weld-api/1.1.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.weld.context.**"
+tests/src/org.jboss.weld/weld-api/1.1.0-01-glassfish/gradle.properties:4:library.coordinates = org.jboss.weld:weld-api:1.1.0-01-glassfish
+tests/src/org.jboss.weld/weld-api/1.1.0-01-glassfish/gradle.properties:6:metadata.dir = org.jboss.weld/weld-api/1.1.0-01-glassfish/
+tests/src/org.jboss.weld/weld-api/1.1.0-01-glassfish/user-code-filter.json:7:      "includeClasses" : "org.jboss.weld.conversation.**"
+tests/src/org.jboss.weld/weld-api/4.0.Final/gradle.properties:4:library.coordinates = org.jboss.weld:weld-api:4.0.Final
+tests/src/org.jboss.weld/weld-api/4.0.Final/gradle.properties:6:metadata.dir = org.jboss.weld/weld-api/4.0.Final/
+tests/src/org.jboss.weld/weld-api/4.0.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.weld.**"
+tests/src/org.jboss.weld/weld-api/1.2.0.Beta1/gradle.properties:4:library.coordinates = org.jboss.weld:weld-api:1.2.0.Beta1
+tests/src/org.jboss.weld/weld-api/1.2.0.Beta1/gradle.properties:6:metadata.dir = org.jboss.weld/weld-api/1.2.0.Beta1/
+tests/src/org.jboss.weld/weld-api/1.2.0.Beta1/user-code-filter.json:7:      "includeClasses" : "org.jboss.weld.context.**"
+tests/src/org.jboss.weld/weld-api/2.0.Final/gradle.properties:4:library.coordinates = org.jboss.weld:weld-api:2.0.Final
+tests/src/org.jboss.weld/weld-api/2.0.Final/gradle.properties:6:metadata.dir = org.jboss.weld/weld-api/2.0.Final/
+tests/src/org.jboss.weld/weld-api/2.0.Final/user-code-filter.json:7:      "includeClasses" : "org.jboss.weld.context.**"
+
+web search: 
+web search: org.jboss.weld weld-core 1.1.0.Final maven sources javadoc test jar
+web search: 
+web search: https://github.com/weld/core/tree/1.1.0.Final
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/jboss/weld/weld-core/1.1.0.Final weld-core-1.1.0.Final-sources.jar
+codex
+The existing file only has coordinates. I found an exact GitHub tag for `1.1.0.Final` and a versioned Weld reference guide; now I’m checking Maven Central for source/javadoc/test artifacts because those are preferred here when available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/1.1.0.Final/weld-core-1.1.0.Final.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-core-parent</artifactId>
+      <groupId>org.jboss.weld</groupId>
+      <version>1.1.0.Final</version>
+      <relativePath>../parent/pom.xml</relativePath>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core</artifactId>
+   <name>Weld Implementation</name>
+   <description>Weld's implementation of CDI</description>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+
+   <properties>
+      <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+   </properties>
+
+
+   <dependencies>
+
+      <dependency>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-spi</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.spec.javax.ejb</groupId>
+         <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.servlet.jsp</groupId>
+         <artifactId>jsp-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.transaction</groupId>
+         <artifactId>jta</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.annotation</groupId>
+         <artifactId>jsr250-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.validation</groupId>
+         <artifactId>validation-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.persistence</groupId>
+         <artifactId>persistence-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>org.javassist</groupId>
+         <artifactId>javassist</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.el</groupId>
+         <artifactId>el-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.spec.javax.interceptor</groupId>
+         <artifactId>jboss-interceptors-api_1.1_spec</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor-spi</artifactId>
+         <exclusions>
+            <!-- Exclude the old groupId for Javassist -->
+            <exclusion>
+               <groupId>javassist</groupId>
+               <artifactId>javassist</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor-core</artifactId>
+         <exclusions>
+            <!-- Exclude the old groupId for Javassist -->
+            <exclusion>
+               <groupId>javassist</groupId>
+               <artifactId>javassist</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-ext</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>ch.qos.cal10n</groupId>
+         <artifactId>cal10n-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>net.sourceforge.findbugs</groupId>
+         <artifactId>annotations</artifactId>
+         <version>1.3.2</version>
+         <optional>true</optional>
+      </dependency>
+
+      <!-- test dependencies -->
+
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-simple</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <includes>
+                  <include>**/*Test.java</include>
+               </includes>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+   <profiles>
+      <profile>
+         <id>javax.xml.ws</id>
+         <activation>
+            <jdk>1.5</jdk>
+         </activation>
+         <dependencies>
+            <dependency>
+               <groupId>javax.xml.ws</groupId>
+               <artifactId>jaxws-api</artifactId>
+            </dependency>
+         </dependencies>
+      </profile>
+      <profile>
+         <id>cal10n-verify</id>
+         <!-- Only run when requested - the plugin doesn't work with Maven 3 -->
+         <activation>
+            <property>
+               <name>cal10n-verify</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>ch.qos.cal10n.plugins</groupId>
+                  <artifactId>maven-cal10n-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>verify-messages</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                           <enumTypes>
+                              <!-- list every enum type you would like to see checked -->
+                              <enumType>org.jboss.weld.logging.messages.BeanManagerMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.BeanMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.BootstrapMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ContextMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ConversationMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ElMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.EventMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.JsfMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.MetadataMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ReflectionMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ResolutionMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ServletMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.UtilMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.ValidatorMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.VersionMessage</enumType>
+                              <enumType>org.jboss.weld.logging.messages.XmlMessage</enumType>
+                           </enumTypes>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      <profile>
+         <id>findbugs</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>findbugs-maven-plugin</artifactId>
+                  <version>2.3.1</version>
+                  <dependencies>
+                     <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                        <version>${slf4j.version}</version>
+                     </dependency>
+                  </dependencies>
+                  <configuration>
+                     <effort>Max</effort>
+                     <threshold>Low</threshold>
+                     <xmlOutput>true</xmlOutput>
+                     <failOnError>false</failOnError>
+                  </configuration>
+                  <executions>
+                     <execution>
+                        <goals>
+                           <goal>check</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/1.1.0.Final/' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/1.1.0.Final/weld-core-1.1.0.Final-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/1.1.0.Final/weld-core-1.1.0.Final-javadoc.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/1.1.0.Final/weld-core-1.1.0.Final-tests.jar' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 233ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/weld/weld-core/1.1.0.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/weld/weld-core/1.1.0.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="weld-core-1.1.0.Final-javadoc.jar" title="weld-core-1.1.0.Final-javadoc.jar">weld-core-1.1.0.Final-javadoc.jar</a>                 2011-01-14 16:49   2419810      
+<a href="weld-core-1.1.0.Final-javadoc.jar.asc" title="weld-core-1.1.0.Final-javadoc.jar.asc">weld-core-1.1.0.Final-javadoc.jar.asc</a>             2011-01-14 16:49       195      
+<a href="weld-core-1.1.0.Final-javadoc.jar.asc.md5" title="weld-core-1.1.0.Final-javadoc.jar.asc.md5">weld-core-1.1.0.Final-javadoc.jar.asc.md5</a>         2011-01-14 16:49        32      
+<a href="weld-core-1.1.0.Final-javadoc.jar.asc.sha1" title="weld-core-1.1.0.Final-javadoc.jar.asc.sha1">weld-core-1.1.0.Final-javadoc.jar.asc.sha1</a>        2011-01-14 16:49        40      
+<a href="weld-core-1.1.0.Final-javadoc.jar.md5" title="weld-core-1.1.0.Final-javadoc.jar.md5">weld-core-1.1.0.Final-javadoc.jar.md5</a>             2011-01-14 16:49        32      
+<a href="weld-core-1.1.0.Final-javadoc.jar.sha1" title="weld-core-1.1.0.Final-javadoc.jar.sha1">weld-core-1.1.0.Final-javadoc.jar.sha1</a>            2011-01-14 16:49        40      
+<a href="weld-core-1.1.0.Final-sources.jar" title="weld-core-1.1.0.Final-sources.jar">weld-core-1.1.0.Final-sources.jar</a>                 2011-01-14 16:49    563799      
+<a href="weld-core-1.1.0.Final-sources.jar.asc" title="weld-core-1.1.0.Final-sources.jar.asc">weld-core-1.1.0.Final-sources.jar.asc</a>             2011-01-14 16:49       195      
+<a href="weld-core-1.1.0.Final-sources.jar.asc.md5" title="weld-core-1.1.0.Final-sources.jar.asc.md5">weld-core-1.1.0.Final-sources.jar.asc.md5</a>         2011-01-14 16:49        32      
+<a href="weld-core-1.1.0.Final-sources.jar.asc.sha1" title="weld-core-1.1.0.Final-sources.jar.asc.sha1">weld-core-1.1.0.Final-sources.jar.asc.sha1</a>        2011-01-14 16:49        40      
+<a href="weld-core-1.1.0.Final-sources.jar.md5" title="weld-core-1.1.0.Final-sources.jar.md5">weld-core-1.1.0.Final-sources.jar.md5</a>             2011-01-14 16:49        32      
+<a href="weld-core-1.1.0.Final-sources.jar.sha1" title="weld-core-1.1.0.Final-sources.jar.sha1">weld-core-1.1.0.Final-sources.jar.sha1</a>            2011-01-14 16:49        40      
+<a href="weld-core-1.1.0.Final.jar" title="weld-core-1.1.0.Final.jar">weld-core-1.1.0.Final.jar</a>                         2011-01-14 16:49    765285      
+<a href="weld-core-1.1.0.Final.jar.asc" title="weld-core-1.1.0.Final.jar.asc">weld-core-1.1.0.Final.jar.asc</a>                     2011-01-14 16:49       195      
+<a href="weld-core-1.1.0.Final.jar.asc.md5" title="weld-core-1.1.0.Final.jar.asc.md5">weld-core-1.1.0.Final.jar.asc.md5</a>                 2011-01-14 16:49        32      
+<a href="weld-core-1.1.0.Final.jar.asc.sha1" title="weld-core-1.1.0.Final.jar.asc.sha1">weld-core-1.1.0.Final.jar.asc.sha1</a>                2011-01-14 16:49        40      
+<a href="weld-core-1.1.0.Final.jar.md5" title="weld-core-1.1.0.Final.jar.md5">weld-core-1.1.0.Final.jar.md5</a>                     2011-01-14 16:49        32      
+<a href="weld-core-1.1.0.Final.jar.sha1" title="weld-core-1.1.0.Final.jar.sha1">weld-core-1.1.0.Final.jar.sha1</a>                    2011-01-14 16:49        40      
+<a href="weld-core-1.1.0.Final.pom" title="weld-core-1.1.0.Final.pom">weld-core-1.1.0.Final.pom</a>                         2011-01-14 16:49      9866      
+<a href="weld-core-1.1.0.Final.pom.asc" title="weld-core-1.1.0.Final.pom.asc">weld-core-1.1.0.Final.pom.asc</a>                     2011-01-14 16:49       195      
+<a href="weld-core-1.1.0.Final.pom.asc.md5" title="weld-core-1.1.0.Final.pom.asc.md5">weld-core-1.1.0.Final.pom.asc.md5</a>                 2011-01-14 16:49        32      
+<a href="weld-core-1.1.0.Final.pom.asc.sha1" title="weld-core-1.1.0.Final.pom.asc.sha1">weld-core-1.1.0.Final.pom.asc.sha1</a>                2011-01-14 16:49        40      
+<a href="weld-core-1.1.0.Final.pom.md5" title="weld-core-1.1.0.Final.pom.md5">weld-core-1.1.0.Final.pom.md5</a>                     2011-01-14 16:49        32      
+<a href="weld-core-1.1.0.Final.pom.sha1" title="weld-core-1.1.0.Final.pom.sha1">weld-core-1.1.0.Final.pom.sha1</a>                    2011-01-14 16:49        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 1503ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 07:14:48 GMT
+content-type: application/java-archive
+content-length: 563799
+cf-ray: 9f8ee8cc8f95931a-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "186acc19941e787991e6242836296b76"
+last-modified: Fri, 14 Jan 2011 16:49:53 GMT
+x-checksum-md5: 186acc19941e787991e6242836296b76
+x-checksum-sha1: f361235fd3c683b88d723b57d6f20f0dbb37b686
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 09 May 2026 07:14:49 GMT
+content-type: application/java-archive
+content-length: 2419810
+cf-ray: 9f8ee8cf4963273b-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "47b46a1e4a930c2051f5ca60d09fa881"
+last-modified: Fri, 14 Jan 2011 16:50:01 GMT
+x-checksum-md5: 47b46a1e4a930c2051f5ca60d09fa881
+x-checksum-sha1: 8c5e20b37ad9d5be397794f32b831e6bc710db39
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Sat, 09 May 2026 07:14:49 GMT
+content-type: text/html
+cf-ray: 9f8ee8d38a75baad-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jboss/weld/weld-core/1.1.0.Final/weld-core-1.1.0.Final-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: https://github.com/weld/core/tree/1.1.0.Final
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/org/jboss/weld/weld-core/1.1.0.Final/weld-core-1.1.0.Final.pom
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core-parent/1.1.0.Final/weld-core-parent-1.1.0.Final.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core-parent</artifactId>
+   <packaging>pom</packaging>
+
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core-bom</artifactId>
+      <version>1.1.0.Final</version>
+      <relativePath>../bom/pom.xml</relativePath>
+   </parent>
+
+   <name>Weld Core Parent</name>
+
+   <!-- Full metadata -->
+
+   <url>http://www.seamframework.org/Weld</url>
+
+   <description>
+      Parent for Weld, the reference implementation of JSR 299: Contexts and Dependency Injection for Java EE
+   </description>
+
+   <ciManagement>
+      <system>Hudson</system>
+      <url>http://hudson.jboss.org</url>
+   </ciManagement>
+
+   <issueManagement>
+      <system>JIRA</system>
+      <url>http://jira.jboss.org/browse/WELD</url>
+   </issueManagement>
+
+   <organization>
+      <name>Seam Framework</name>
+      <url>http://seamframework.org</url>
+   </organization>
+
+   <inceptionYear>2008</inceptionYear>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      </license>
+   </licenses>
+
+   <developers>
+      <developer>
+         <name>Pete Muir</name>
+         <roles>
+            <role>Project Lead</role>
+         </roles>
+         <email>pete.muir@jboss.org</email>
+         <organization>Red Hat, Inc.</organization>
+         <url>http://in.relation.to/Bloggers/Pete</url>
+      </developer>
+
+      <developer>
+         <name>Shane Bryzak</name>
+         <organization>Red Hat, Inc.</organization>
+      </developer>
+
+      <developer>
+         <name>David Allen</name>
+      </developer>
+
+      <developer>
+         <name>Nicklas Karlsson</name>
+      </developer>
+   </developers>
+
+
+   <properties>
+      <glassfish.el.version>2.1.2-b04</glassfish.el.version>
+      <log4j.version>1.2.14</log4j.version>
+      <!-- Testing deps -->
+      <testng.version>5.10</testng.version>
+      <jboss.test.harness.version>1.1.0-CR9</jboss.test.harness.version>
+      <arquillian.version>1.0.0.Alpha4</arquillian.version>
+      <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
+      <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
+      <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
+      <jboss.spec.ejb.version>1.0.0.CR2</jboss.spec.ejb.version>
+      <apache.httpclient.version>3.1</apache.httpclient.version>
+      <junit.version>4.8.1</junit.version>
+      <htmlunit.version>2.4</htmlunit.version>
+      <contiperf.version>1.06</contiperf.version>
+      <jboss.ejb3.ext-api.version>1.1.1</jboss.ejb3.ext-api.version>
+      <javax.jms.version>1.1</javax.jms.version>
+
+      <jbossas.server.manager.version>1.0.3.GA</jbossas.server.manager.version>
+      <jbossas.client.version>6.0.0.20100721-M4</jbossas.client.version>
+
+      <!-- TODO move to weld-parent -->
+      <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
+      <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
+   </properties>
+
+
+   <!-- Specify Weld non-runtime dependencies (e.g. testing) -->
+
+   <dependencyManagement>
+      <dependencies>
+
+         <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <classifier>jdk15</classifier>
+            <exclusions>
+               <exclusion>
+                  <groupId>junit</groupId>
+                  <artifactId>junit</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-as-50</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-as-60</artifactId>
+            <version>${jboss.test.harness.version}</version>
+            <exclusions>
+               <exclusion>
+                  <groupId>woodstox</groupId>
+                  <artifactId>wstx-asl</artifactId>
+               </exclusion>
+            </exclusions>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-jboss-embedded</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.test-harness</groupId>
+            <artifactId>jboss-test-harness-tomcat</artifactId>
+            <version>${jboss.test.harness.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-junit</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+	
+         <dependency>
+            <groupId>org.jboss.weld.arquillian.container</groupId>
+            <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jbossas-managed-6</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jbossas-remote-6</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-tomcat-embedded-6</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jetty-embedded-6.1</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-glassfish-embedded-3</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-glassfish-remote-3</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <version>${jboss.spec.servlet.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <version>${jboss.spec.ejb.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-server-manager</artifactId>
+            <version>${jbossas.server.manager.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.jbossas</groupId>
+            <artifactId>jboss-as-client</artifactId>
+            <version>${jbossas.client.version}</version>
+            <type>pom</type>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.metadata</groupId>
+            <artifactId>jboss-metadata</artifactId>
+            <version>${jboss.metadata.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-mdr</artifactId>
+            <version>${jboss.mdr.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+            <version>${javax.jms.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.ejb3</groupId>
+            <artifactId>jboss-ejb3-ext-api</artifactId>
+            <version>${jboss.ejb3.ext-api.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${apache.httpclient.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+            <version>${htmlunit.version}</version>
+         </dependency>
+
+         <dependency>
+		    <groupId>org.databene</groupId>
+            <artifactId>contiperf</artifactId>
+            <version>${contiperf.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>el-impl</artifactId>
+            <version>${glassfish.el.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+         </dependency>
+
+         <!-- Workaround for JBoss AS Client pulling in the 1.0.2 version of JAF which isn't available in Maven -->
+         <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1</version>
+         </dependency>
+
+      </dependencies>
+   </dependencyManagement>
+
+   <build>
+      <!-- TODO Move to weld-parent -->
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <groupId>org.codehaus.cargo</groupId>
+               <artifactId>cargo-maven2-plugin</artifactId>
+               <version>${cargo.maven2.plugin.version}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>selenium-maven-plugin</artifactId>
+               <version>${selenium.maven.plugin.version}</version>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://docs.jboss.org/weld/reference/1.1.0.Final/en-US/html/ && curl -fsSI https://docs.jboss.org/weld/reference/1.1.0.Final/en-US/pdf/weld-reference.pdf' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/1.1.0.Final/weld-core-1.1.0.Final.jar -o /tmp/weld-core-1.1.0.Final.jar && jar tf /tmp/weld-core-1.1.0.Final.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 277ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/jboss/
+org/jboss/weld/
+org/jboss/weld/bean/
+org/jboss/weld/bean/builtin/
+org/jboss/weld/bean/builtin/ee/
+org/jboss/weld/bean/interceptor/
+org/jboss/weld/bean/proxy/
+org/jboss/weld/bean/proxy/util/
+org/jboss/weld/bootstrap/
+org/jboss/weld/bootstrap/events/
+org/jboss/weld/context/
+org/jboss/weld/context/beanstore/
+org/jboss/weld/context/beanstore/ejb/
+org/jboss/weld/context/beanstore/http/
+org/jboss/weld/context/bound/
+org/jboss/weld/context/conversation/
+org/jboss/weld/context/ejb/
+org/jboss/weld/context/http/
+org/jboss/weld/context/unbound/
+org/jboss/weld/ejb/
+org/jboss/weld/el/
+org/jboss/weld/event/
+org/jboss/weld/exceptions/
+org/jboss/weld/injection/
+org/jboss/weld/introspector/
+org/jboss/weld/introspector/jlr/
+org/jboss/weld/jsf/
+org/jboss/weld/literal/
+org/jboss/weld/logging/
+org/jboss/weld/logging/messages/
+org/jboss/weld/manager/
+org/jboss/weld/messages/
+org/jboss/weld/metadata/
+org/jboss/weld/metadata/cache/
+org/jboss/weld/persistence/
+org/jboss/weld/resolution/
+org/jboss/weld/resources/
+org/jboss/weld/serialization/
+org/jboss/weld/servlet/
+org/jboss/weld/util/
+org/jboss/weld/util/bytecode/
+org/jboss/weld/util/collections/
+org/jboss/weld/util/dom/
+org/jboss/weld/util/el/
+org/jboss/weld/util/reflection/
+org/jboss/weld/util/reflection/instantiation/
+org/jboss/weld/ws/
+org/jboss/weld/xml/
+META-INF/DEPENDENCIES.txt
+META-INF/LICENSE.txt
+org/jboss/weld/bean/AbstractBean.class
+org/jboss/weld/bean/AbstractClassBean.class
+org/jboss/weld/bean/AbstractProducerBean$1.class
+org/jboss/weld/bean/AbstractProducerBean.class
+org/jboss/weld/bean/AbstractReceiverBean.class
+org/jboss/weld/bean/builtin/AbstractBuiltInBean.class
+org/jboss/weld/bean/builtin/AbstractFacade$AbstractFacadeSerializationProxy.class
+org/jboss/weld/bean/builtin/AbstractFacade.class
+org/jboss/weld/bean/builtin/AbstractFacadeBean.class
+org/jboss/weld/bean/builtin/BeanManagerBean.class
+org/jboss/weld/bean/builtin/CallableMethodHandler.class
+org/jboss/weld/bean/builtin/ContextBean.class
+org/jboss/weld/bean/builtin/ConversationBean.class
+org/jboss/weld/bean/builtin/ee/AbstractEEBean.class
+org/jboss/weld/bean/builtin/ee/AbstractEECallable.class
+org/jboss/weld/bean/builtin/ee/DefaultValidatorBean$ValidatorCallable.class
+org/jboss/weld/bean/builtin/ee/DefaultValidatorBean.class
+org/jboss/weld/bean/builtin/ee/DefaultValidatorFactoryBean$ValidatorFactoryCallable.class
+org/jboss/weld/bean/builtin/ee/DefaultValidatorFactoryBean.class
+org/jboss/weld/bean/builtin/ee/EEResourceProducerField$1.class
+org/jboss/weld/bean/builtin/ee/EEResourceProducerField$EEResourceCallable.class
+org/jboss/weld/bean/builtin/ee/EEResourceProducerField.class
+org/jboss/weld/bean/builtin/ee/PrincipalBean$PrincipalCallable.class
+org/jboss/weld/bean/builtin/ee/PrincipalBean.class
+org/jboss/weld/bean/builtin/ee/UserTransactionBean$UserTransactionCallable.class
+org/jboss/weld/bean/builtin/ee/UserTransactionBean.class
+org/jboss/weld/bean/builtin/EventBean$1.class
+
+ succeeded in 563ms:
+HTTP/2 200 
+last-modified: Mon, 17 Jan 2011 14:41:55 GMT
+etag: "4c3e-49a0bc91358c7"
+accept-ranges: bytes
+content-length: 19518
+cache-control: max-age=1800, public
+expires: Sat, 09 May 2026 07:44:45 GMT
+x-content-type-options: nosniff
+x-frame-options: sameorigin
+x-xss-protection: 1; mode=block
+content-type: text/html; charset=UTF-8
+cache-control: private
+date: Sat, 09 May 2026 07:15:03 GMT
+set-cookie: 07aec87f08df1ec23a2099a4c5a6a0c0=c4abc9e855e68c55b081d0f17002febc; path=/; HttpOnly; Secure; SameSite=None
+x-rh-edge-request-id: 1ac13d5
+x-rh-edge-reference-id: 0.67f90a17.1778310903.1ac13d5
+x-rh-edge-cache-status: Miss from child, Miss from parent
+strict-transport-security: max-age=86400 ; includeSubDomains
+
+HTTP/2 200 
+last-modified: Mon, 17 Jan 2011 14:42:36 GMT
+etag: "155185-49a0bcb7dfbe6"
+accept-ranges: bytes
+content-length: 1397125
+cache-control: max-age=1800, public
+expires: Sat, 09 May 2026 07:44:40 GMT
+x-content-type-options: nosniff
+x-frame-options: sameorigin
+x-xss-protection: 1; mode=block
+content-type: application/pdf
+cache-control: private
+date: Sat, 09 May 2026 07:15:03 GMT
+set-cookie: 07aec87f08df1ec23a2099a4c5a6a0c0=01494fa3f2da1886fa5ad3885108e5aa; path=/; HttpOnly; Secure; SameSite=None
+x-rh-edge-request-id: 1ac13e4
+x-rh-edge-reference-id: 0.67f90a17.1778310903.1ac13e4
+x-rh-edge-cache-status: Miss from child, Miss from parent
+strict-transport-security: max-age=86400 ; includeSubDomains
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-parent/12/weld-parent-12.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-parent</artifactId>
+   <packaging>pom</packaging>
+   <version>12</version>
+
+   <name>Weld Parent</name>
+
+   <!-- Full metadata -->
+
+   <url>http://www.seamframework.org/Weld</url>
+
+   <description>
+      The parent POM for Weld, specifying the build parameters
+   </description>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      </license>
+   </licenses>
+
+   <developers>
+      <developer>
+         <name>Weld committers</name>
+      </developer>
+   </developers>
+
+   <organization>
+      <name>Seam Framework</name>
+      <url>http://seamframework.org</url>
+   </organization>
+
+   <pluginRepositories>
+      <pluginRepository>
+         <id>twdata-m2-repository.googlecode.com</id>
+         <url>http://twdata-m2-repository.googlecode.com/svn</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </pluginRepository>
+      <pluginRepository>
+         <id>download.java.net/glassfish</id>
+         <url>http://download.java.net/maven/glassfish</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </pluginRepository>
+      <pluginRepository>
+         <id>repository.jboss.org</id>
+         <url>http://repository.jboss.org/maven2</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </pluginRepository>
+   </pluginRepositories>
+
+   <repositories>
+      <repository>
+         <id>oss.sonatype.org/jboss-snapshots</id>
+         <name>JBoss (Nexus) Snapshots Repository</name>
+         <url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
+         <releases>
+            <enabled>false</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </repository>
+   </repositories>
+
+   <properties>
+      <!-- Force encoding to UTF-8 (bug on OS X) -->
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+      <weld.docbook.version>1.1.1-Beta3</weld.docbook.version>
+      <seam.docbook.version>1.1.0.GA</seam.docbook.version>
+      <jbossorg.docbook.version>1.1.0</jbossorg.docbook.version>
+      <pdf.name>${project.artifactId}.pdf</pdf.name>
+      <minimum.maven.version>2.0.10</minimum.maven.version>
+   </properties>
+
+   <prerequisites>
+      <maven>${minimum.maven.version}</maven>
+   </prerequisites>
+
+
+   <!-- Configure the build -->
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>attach-sources</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <inherited>true</inherited>
+         </plugin>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+         </plugin>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>buildnumber-maven-plugin</artifactId>
+         </plugin>
+      </plugins>
+      <defaultGoal>package</defaultGoal>
+
+      <!-- Configure all plugins, including versions to use in the build -->
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <groupId>ch.qos.cal10n.plugins</groupId>
+               <artifactId>maven-cal10n-plugin</artifactId>
+               <version>0.7.2</version>
+            </plugin>
+            <plugin>
+               <groupId>org.jboss.maven.plugins</groupId>
+               <artifactId>maven-jdocbook-plugin</artifactId>
+               <version>2.2.3</version>
+               <extensions>true</extensions>
+               <dependencies>
+                  <dependency>
+                     <groupId>org.jboss.weld</groupId>
+                     <artifactId>weld-docbook-xslt</artifactId>
+                     <version>${weld.docbook.version}</version>
+                  </dependency>
+                  <dependency>
+                     <groupId>org.jboss.seam</groupId>
+                     <artifactId>seam-docbook-xslt</artifactId>
+                     <version>${seam.docbook.version}</version>
+                  </dependency>
+                  <dependency>
+                     <groupId>org.jboss.seam</groupId>
+                     <artifactId>seam-jdocbook-style</artifactId>
+                     <version>${seam.docbook.version}</version>
+                     <type>jdocbook-style</type>
+                  </dependency>
+                  <dependency>
+                     <groupId>org.jboss</groupId>
+                     <artifactId>jbossorg-jdocbook-style</artifactId>
+                     <version>${jbossorg.docbook.version}</version>
+                     <type>jdocbook-style</type>
+                  </dependency>
+               </dependencies>
+               <configuration>
+                  <sourceDirectory>${project.basedir}/src/main/docbook</sourceDirectory>
+                  <sourceDocumentName>master.xml</sourceDocumentName>
+                  <masterTranslation>en-US</masterTranslation>
+                  <imageResource>
+                     <directory>${project.basedir}/src/main/docbook/en-US</directory>
+                     <includes>
+                        <include>images/*.png</include>
+                     </includes>
+                  </imageResource>
+                  <formats>
+                     <format>
+                        <formatName>pdf</formatName>
+                        <stylesheetResource>classpath:/xslt/org/jboss/weld/pdf.xsl</stylesheetResource>
+                        <finalName>${pdf.name}</finalName>
+                     </format>
+                     <format>
+                        <formatName>html</formatName>
+                        <stylesheetResource>classpath:/xslt/org/jboss/weld/xhtml.xsl</stylesheetResource>
+                        <finalName>index.html</finalName>
+                     </format>
+                     <format>
+                        <formatName>html_single</formatName>
+                        <stylesheetResource>classpath:/xslt/org/jboss/weld/xhtml-single.xsl</stylesheetResource>
+                        <finalName>index.html</finalName>
+                     </format>
+                  </formats>
+                  <options>
+                     <xincludeSupported>true</xincludeSupported>
+                     <xmlTransformerType>saxon</xmlTransformerType>
+                     <docbookVersion>1.72.0</docbookVersion>
+                     <localeSeparator>-</localeSeparator>
+                  </options>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-antrun-plugin</artifactId>
+               <version>1.3</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-release-plugin</artifactId>
+               <configuration>
+                  <arguments>-Drelease </arguments>
+                  <autoVersionSubmodules>true</autoVersionSubmodules>
+               </configuration>
+               <version>2.0-beta-9</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-surefire-report-plugin</artifactId>
+               <version>2.5</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-surefire-plugin</artifactId>
+               <version>2.5</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-clean-plugin</artifactId>
+               <version>2.4.1</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-deploy-plugin</artifactId>
+               <version>2.5</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-assembly-plugin</artifactId>
+               <version>2.2-beta-5</version>
+               <executions>
+                  <execution>
+                     <id>distribution</id>
+                     <phase>package</phase>
+                     <goals>
+                        <goal>single</goal>
+                     </goals>
+                     <configuration>
+                        <descriptors>
+                           <descriptor>src/main/assembly/assembly.xml</descriptor>
+                        </descriptors>
+                        <finalName>${project.build.finalName}-${project.version}</finalName>
+                     </configuration>
+                  </execution>
+               </executions>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-install-plugin</artifactId>
+               <version>2.3.1</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-site-plugin</artifactId>
+               <version>2.0.1</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-source-plugin</artifactId>
+               <version>2.1.2</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-resources-plugin</artifactId>
+               <version>2.4.3</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-dependency-plugin</artifactId>
+               <version>2.1</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-javadoc-plugin</artifactId>
+               <version>2.7</version>
+               <configuration>
+                  <keywords>true</keywords>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-gpg-plugin</artifactId>
+               <version>1.0-alpha-4</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.felix</groupId>
+               <artifactId>maven-bundle-plugin</artifactId>
+               <version>2.1.0</version>
+            </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>exec-maven-plugin</artifactId>
+               <version>1.1.1</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-enforcer-plugin</artifactId>
+               <version>1.0-beta-1</version>
+               <executions>
+                  <execution>
+                     <id>enforce</id>
+                     <goals>
+                        <goal>enforce</goal>
+                     </goals>
+                     <configuration>
+                        <rules>
+                           <requireMavenVersion>
+                              <version>[${minimum.maven.version},)</version>
+                           </requireMavenVersion>
+                           <requirePluginVersions>
+                              <unCheckedPlugins>
+                                 <unCheckedPlugin>org.apache.maven.plugins:maven-eclipse-plugin</unCheckedPlugin>
+                                 <unCheckedPlugin>org.codehaus.mojo:versions-maven-plugin</unCheckedPlugin>
+                              </unCheckedPlugins>
+                           </requirePluginVersions>
+
+                        </rules>
+
+                     </configuration>
+                  </execution>
+               </executions>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-shade-plugin</artifactId>
+               <version>1.3.3</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-compiler-plugin</artifactId>
+               <version>2.3.1</version>
+               <configuration>
+                  <source>1.5</source>
+                  <target>1.5</target>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <version>2.3.1</version>
+               <configuration>
+                  <archive>
+                     <manifestEntries>
+                        <Implementation-URL>${project.url}</Implementation-URL>
+                        <Implementation-Title>${project.name}</Implementation-Title>
+                        <Implementation-Version>${parsedVersion.osgiVersion}</Implementation-Version>
+                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                        <Specification-Title>${project.name}</Specification-Title>
+                        <Specification-Version>${parsedVersion.osgiVersion}</Specification-Version>
+                        <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                     </manifestEntries>
+                     <manifestSections>
+                        <manifestSection>
+                           <name>Build-Information</name>
+                           <manifestEntries>
+                              <Maven-Version>${maven.version}</Maven-Version>
+                              <Java-Version>${java.version}</Java-Version>
+                              <Java-Vendor>${java.vendor}</Java-Vendor>
+                              <Os-Name>${os.name}</Os-Name>
+                              <Os-Arch>${os.arch}</Os-Arch>
+                              <Os-Version>${os.version}</Os-Version>
+                              <SCM>r${buildNumber}</SCM>
+                              <Build-Time>${timestamp}</Build-Time>
+                           </manifestEntries>
+                        </manifestSection>
+                     </manifestSections>
+                  </archive>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>build-helper-maven-plugin</artifactId>
+               <version>1.5</version>
+               <executions>
+                  <execution>
+                     <phase>validate</phase>
+                     <goals>
+                        <goal>maven-version</goal>
+                        <goal>parse-version</goal>
+                     </goals>
+                  </execution>
+               </executions>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-eclipse-plugin</artifactId>
+               <configuration>
+                  <classpathContainers>
+                     <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+                  </classpathContainers>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>buildnumber-maven-plugin</artifactId>
+               <version>1.0-beta-4</version>
+               <executions>
+                  <execution>
+                     <id>set-build-properties</id>
+                     <goals>
+                        <goal>create</goal>
+                     </goals>
+                     <phase>validate</phase>
+                     <configuration>
+                        <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                        <revisionOnScmFailure>unavailable</revisionOnScmFailure>
+                        <timestampFormat>{0, date, long} {0, time, long}</timestampFormat>
+                     </configuration>
+                  </execution>
+               </executions>
+               <inherited>true</inherited>
+            </plugin>
+            <plugin>
+               <groupId>org.twdata.maven</groupId>
+               <artifactId>maven-cli-plugin</artifactId>
+               <version>1.0.3</version>
+            </plugin>
+            <plugin>
+               <groupId>org.glassfish</groupId>
+               <artifactId>maven-embedded-glassfish-plugin</artifactId>
+               <version>3.0</version>
+               <configuration>
+                  <goalPrefix>glassfish</goalPrefix>
+                  <app>${project.build.directory}/${project.build.finalName}.war</app>
+                  <port>7070</port>
+                  <contextRoot>${project.build.finalName}</contextRoot>
+               </configuration>
+               <executions>
+                  <execution>
+                     <phase>install</phase>
+                     <goals>
+                        <goal>run</goal>
+                     </goals>
+                  </execution>
+               </executions>
+            </plugin>
+            <plugin>
+               <groupId>org.mortbay.jetty</groupId>
+               <artifactId>maven-jetty-plugin</artifactId>
+               <version>6.1.21</version>
+               <configuration>
+                  <!-- Delete this block to have Jetty run default port (8080) -->
+                  <connectors>
+                     <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                        <port>9090</port>
+                     </connector>
+                  </connectors>
+                  <!-- force friendly name instead of artifact name + version -->
+                  <contextPath>${project.build.finalName}</contextPath>
+                  <!--
+                     Where the BeanManager is constructed. This is where
+                     you'll declare datasources.
+                  -->
+                  <jettyEnvXml>${basedir}/src/main/resources/jetty-env.xml</jettyEnvXml>
+                  <!-- This parameter will auto-deploy modified classes. -->
+                  <!--
+                     You can save changes in a file or class and refresh
+                     your browser to view the changes.
+                  -->
+                  <scanIntervalSeconds>3</scanIntervalSeconds>
+               </configuration>
+            </plugin>
+
+            <!-- Embedded Tomcat (package tomcat:run) -->
+            <!-- Standalone Tomcat (package tomcat:deploy) -->
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>tomcat-maven-plugin</artifactId>
+               <version>1.0-beta-1</version>
+               <inherited>true</inherited>
+               <configuration>
+                  <path>/${project.build.finalName}</path>
+                  <!-- Embedded port -->
+                  <port>6060</port>
+                  <!--
+                     The default authentication credentials for remote
+                     deployment are username "admin" with no password To
+                     override credentials, define a server in
+                     settings.xml and activate it using the <server>
+                     element
+                  -->
+                  <url>http://localhost:8080/manager</url>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-war-plugin</artifactId>
+               <version>2.1-beta-1</version>
+               <inherited>true</inherited>
+               <configuration>
+                  <failOnMissingWebXml>false</failOnMissingWebXml>
+                  <warName>${project.build.finalName}</warName>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-ejb-plugin</artifactId>
+               <version>2.2.1</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-ear-plugin</artifactId>
+               <version>2.4.2</version>
+            </plugin>
+            <plugin>
+               <groupId>com.pyx4j</groupId>
+               <artifactId>maven-junction-plugin</artifactId>
+               <version>1.0.3</version>
+            </plugin>
+            <plugin>
+               <groupId>org.sonatype.plugins</groupId>
+               <artifactId>nexus-maven-plugin</artifactId>
+               <version>1.3.2.1</version>
+               <configuration>
+                  <nexusUrl>http://oss.sonatype.org</nexusUrl>
+                  <serverAuthId>oss.sonatype.org/jboss-staging</serverAuthId>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-archetype-plugin</artifactId>
+               <version>2.0-alpha-5</version>
+               <extensions>true</extensions>
+            </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>jboss-maven-plugin</artifactId>
+               <version>1.4</version>
+            </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>emma-maven-plugin</artifactId>
+               <version>1.0-alpha-2</version>
+            </plugin>
+            <plugin>
+               <groupId>org.sonatype.maven.plugin</groupId>
+               <artifactId>emma4it-maven-plugin</artifactId>
+               <version>1.3</version>
+            </plugin>
+            <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>findbugs-maven-plugin</artifactId>
+                  <version>2.3.1</version>
+                  <configuration>
+                     <effort>Max</effort>
+                     <threshold>Low</threshold>
+                     <xmlOutput>true</xmlOutput>
+                     <failOnError>false</failOnError>
+                  </configuration>
+                  <executions>
+                     <execution>
+                        <goals>
+                           <goal>check</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
+
+   <profiles>
+      <profile>
+         <id>release</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <configuration>
+                     <passphrase>${gpg.passphrase}</passphrase>
+                     <useAgent>${gpg.useAgent}</useAgent>
+                  </configuration>
+                  <executions>
+                     <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>sign</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.sonatype.plugins</groupId>
+                  <artifactId>nexus-maven-plugin</artifactId>
+                  <configuration>
+                     <auto>true</auto>
+                     <description>[nexus-maven-plugin] closing
+                        repository after release:perform</description>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>buildnumber-maven-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>validate-scm</id>
+                        <goals>
+                           <goal>create</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                           <doUpdate>true</doUpdate>
+                           <doCheck>true</doCheck>
+                        </configuration>
+                     </execution>
+                  </executions>
+                  <inherited>true</inherited>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      <profile>
+         <id>distribution</id>
+         <activation>
+            <property>
+               <name>dist</name>
+            </property>
+         </activation>
+         <properties>
+            <!-- Skip failing tests when building dist -->
+            <maven.test.failure.ignore>true</maven.test.failure.ignore>
+         </properties>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-javadoc-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                           <goal>jar</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-deploy-plugin</artifactId>
+                  <configuration>
+                     <skip>${maven.deploy.skip}</skip>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      <profile>
+         <id>code-coverage</id>
+         <activation>
+            <property>
+               <name>code-coverage</name>
+            </property>
+         </activation>
+         <build>
+            <pluginManagement>
+               <plugins>
+                  <plugin>
+                     <groupId>org.codehaus.mojo</groupId>
+                     <artifactId>emma-maven-plugin</artifactId>
+                     <executions>
+                        <execution>
+                           <id>instrumentation</id>
+                           <phase>process-classes</phase>
+                           <goals>
+                              <goal>instrument</goal>
+                           </goals>
+                           <configuration>
+                              <verbose>true</verbose>
+                           </configuration>
+                        </execution>
+                        <execution>
+                           <id>instrumentation-clean</id>
+                           <phase>clean</phase>
+                           <goals>
+                              <goal>clean</goal>
+                           </goals>
+                        </execution>
+                     </executions>
+                  </plugin>
+
+                  <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-surefire-plugin</artifactId>
+                     <inherited>true</inherited>
+                     <configuration>
+                        <forkMode>once</forkMode>
+                        <classesDirectory>${project.build.directory}/generated-classes/emma/classes</classesDirectory>
+                     </configuration>
+                  </plugin>
+
+                  <plugin>
+                     <groupId>org.sonatype.maven.plugin</groupId>
+                     <artifactId>emma4it-maven-plugin</artifactId>
+                     <executions>
+                        <execution>
+                           <id>report</id>
+                           <phase>test</phase>
+                           <goals>
+                              <goal>report</goal>
+                           </goals>
+                           <configuration>
+                              <sourceSets>
+                                 <sourceSet>
+                                    <directory>${project.build.sourceDirectory}</directory>
+                                 </sourceSet>
+                              </sourceSets>
+                           </configuration>
+                        </execution>
+                     </executions>
+                  </plugin>
+               </plugins>
+            </pluginManagement>
+         </build>
+      </profile>
+   </profiles>
+
+   <!-- SCM and Distribution Management -->
+
+   <scm>
+      <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/build/tags/weld-parent-12</connection>
+      <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/build/tags/weld-parent-12</developerConnection>
+      <url>http://fisheye.jboss.org/browse/Weld/build/tags/weld-parent-12</url>
+   </scm>
+
+   <distributionManagement>
+      <repository>
+         <id>oss.sonatype.org/jboss-staging</id>
+         <name>Sonatype Nexus Maven Repository</name>
+         <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      </repository>
+      <snapshotRepository>
+         <id>oss.sonatype.org/jboss-snapshots</id>
+         <name>Sonatype Nexus Snapshot Repository</name>
+         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      </snapshotRepository>
+   </distributionManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core-bom/1.1.0.Final/weld-core-bom-1.1.0.Final.pom' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core-bom</artifactId>
+   <packaging>pom</packaging>
+   <version>1.1.0.Final</version>
+   
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-parent</artifactId>
+      <version>17</version>
+      <relativePath />
+  </parent>
+
+   <name>Weld Core BOM</name>
+
+   <!-- Minimal project metadata, for more see parent/pom.xml -->
+   <description>Weld Core "bill of materials" which can be imported by any project using the Weld implementation of CDI. It provides dependency management for the implementation.</description>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+
+   <developers>
+      <developer>
+         <name>Weld committers</name>
+      </developer>
+   </developers>
+
+   <properties>
+      <weld.api.version>1.1.Final</weld.api.version>
+      <cdi.api.version>1.0-SP4</cdi.api.version>
+      <google.guava.version>r06</google.guava.version>
+      <cdi.tck.version>1.0.4.SP1</cdi.tck.version>
+      <javassist.version>3.14.0-GA</javassist.version>
+      <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
+      <jboss.interceptor.version>2.0.0.CR1</jboss.interceptor.version>
+      <jboss.vfs.version>2.1.3.SP1</jboss.vfs.version>
+      <slf4j.version>1.5.10</slf4j.version>
+      <cal10n.version>0.7.2</cal10n.version>
+      <jsf.api.version>2.0</jsf.api.version>
+   </properties>
+
+   <dependencyManagement>
+      <dependencies>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api-bom</artifactId>
+            <version>${weld.api.version}</version>
+            <scope>import</scope>
+            <type>pom</type>
+         </dependency>	
+
+         <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>${javassist.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>${cdi.api.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-porting-package</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-test</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-core</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-api</artifactId>
+            <version>${cdi.tck.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-impl</artifactId>
+            <version>${cdi.tck.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-impl</artifactId>
+            <version>${cdi.tck.version}</version>
+            <classifier>suite</classifier>
+            <type>xml</type>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.atinject</groupId>
+            <artifactId>inject-tck</artifactId>
+            <version>${atinject.tck.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-spi</artifactId>
+            <version>${jboss.interceptor.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-core</artifactId>
+            <version>${jboss.interceptor.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-vfs</artifactId>
+            <version>${jboss.vfs.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${google.guava.version}</version>
+         </dependency>
+ 
+         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-ext</artifactId>
+            <version>${slf4j.version}</version>
+         </dependency>
+
+         <dependency>
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-api</artifactId>
+             <version>${slf4j.version}</version>
+         </dependency>
+
+         <dependency>
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-simple</artifactId>
+             <version>${slf4j.version}</version>
+         </dependency>
+  
+         <dependency>
+             <groupId>ch.qos.cal10n</groupId>
+             <artifactId>cal10n-api</artifactId>
+             <version>${cal10n.version}</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>${jsf.api.version}</version>
+         </dependency>
+
+      </dependencies>
+   </dependencyManagement>
+
+   <profiles>
+      <profile>
+         <id>jboss-public-repository</id>
+         <activation>
+            <property>
+               <name>jboss-public-repository</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <repositories>
+            <repository>
+               <id>jboss-public-repository-group</id>
+               <name>JBoss Public Maven Repository Group</name>
+               <url>http://repository.jboss.org/nexus/content/groups/public</url>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </repository>
+         </repositories>
+         <pluginRepositories>
+            <pluginRepository>
+               <id>jboss-public-repository-group</id>
+               <name>JBoss Public Maven Repository Group</name>
+               <url>http://repository.jboss.org/nexus/content/groups/public</url>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>false</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </pluginRepository>
+         </pluginRepositories>
+      </profile>
+
+   </profiles>
+
+
+   <!-- SCM and distribution management -->
+   <scm>
+      <connection>scm:git:git://github.com/weld/core.git</connection>
+      <developerConnection>scm:git:git://github.com/weld/core.git</developerConnection>
+      <url>scm:git:git://github.com/weld/core.git</url>
+   </scm>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/weld/core/1.1.0.Final/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core-build-aggregator</artifactId>
+   <packaging>pom</packaging>
+   <version>1.1.0.Final</version>
+
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-parent</artifactId>
+      <version>17</version>
+   </parent>
+
+   <name>Weld Build Aggregator</name>
+
+   <prerequisites>
+      <maven>3.0</maven>
+   </prerequisites>
+
+
+   <!-- Minimal metadata -->
+   <description>The build aggregator for Weld, which takes care of calling the modules which make up Weld</description>
+
+   <!-- SCM and distribution management -->
+   <scm>
+      <connection>scm:git:git://github.com/weld/core.git</connection>
+      <developerConnection>scm:git:git://github.com/weld/core.git</developerConnection>
+      <url>scm:git:git://github.com/weld/core.git</url>
+   </scm>
+
+   <profiles>
+      <profile>
+         <id>default</id>
+         <activation>
+            <property>
+               <name>weld.default.build</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <modules>
+            <module>bom</module>
+            <module>parent</module>
+            <module>impl</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>update-jboss-as</id>
+         <modules>
+            <module>jboss-as</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>tests</id>
+         <activation>
+            <property>
+               <name>weld.default.build</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <modules>
+            <module>arquillian/weld-ee-container</module>
+            <module>porting-package</module>
+            <module>tests</module>
+            <module>tests-arquillian</module>
+            <module>inject-tck-runner</module>
+            <module>jboss-tck-runner</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>examples</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
+         <modules>
+            <module>examples</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>docs</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
+         <modules>
+            <module>docs/reference</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>environments</id>
+         <activation>
+            <property>
+               <name>weld.default.build</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <modules>
+            <module>environments/se/core</module>
+            <module>environments/se/build</module>
+            <module>environments/servlet</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>bundles</id>
+         <activation>
+            <property>
+               <name>release</name>
+            </property>
+         </activation>
+         <modules>
+            <module>bundles/osgi</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>jboss-public-repository</id>
+         <activation>
+            <property>
+               <name>jboss-public-repository</name>
+               <value>!false</value>
+            </property>
+         </activation>
+         <repositories>
+            <repository>
+               <id>jboss-public-repository-group</id>
+               <name>JBoss Public Maven Repository Group</name>
+               <url>http://repository.jboss.org/nexus/content/groups/public</url>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>false</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </repository>
+         </repositories>
+         <pluginRepositories>
+            <pluginRepository>
+               <id>jboss-public-repository-group</id>
+               <name>JBoss Public Maven Repository Group</name>
+               <url>http://repository.jboss.org/nexus/content/groups/public</url>
+               <releases>
+                  <enabled>true</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </releases>
+               <snapshots>
+                  <enabled>false</enabled>
+                  <updatePolicy>never</updatePolicy>
+               </snapshots>
+            </pluginRepository>
+         </pluginRepositories>
+      </profile>
+   </profiles>
+
+   <!-- Minimal build configuration -->
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+               <tagBase>https://svn.jboss.org/repos/weld/core/tags</tagBase>
+               <!-- As we need access to our own artifacts -->
+               <preparationGoals>install</preparationGoals>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+               <skip>true</skip>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/weld/core/tree/1.1.0.Final/tests && curl -fsSI https://github.com/weld/core/tree/1.1.0.Final/tests-arquillian && curl -fsSI https://github.com/weld/core/tree/1.1.0.Final/impl/src/test' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/weld/core/contents?ref=1.1.0.Final | sed -n '1,240p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/weld/core/contents/impl?ref=1.1.0.Final | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 225ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "3ac2af76a8c280496f25b196f4bad2ca3e4ccebc",
+    "size": 834,
+    "url": "https://api.github.com/repos/weld/core/contents/.gitignore?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/.gitignore",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/3ac2af76a8c280496f25b196f4bad2ca3e4ccebc",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/.gitignore?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/3ac2af76a8c280496f25b196f4bad2ca3e4ccebc",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/.gitignore"
+    }
+  },
+  {
+    "name": "arquillian",
+    "path": "arquillian",
+    "sha": "df1990819cf659cb1de76ed3ca7d06b9bca654fa",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/arquillian?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/arquillian",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/df1990819cf659cb1de76ed3ca7d06b9bca654fa",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/arquillian?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/df1990819cf659cb1de76ed3ca7d06b9bca654fa",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/arquillian"
+    }
+  },
+  {
+    "name": "bom",
+    "path": "bom",
+    "sha": "a8147287d38495c5b24f19a77bd3327e5352ace7",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/bom?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/bom",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/a8147287d38495c5b24f19a77bd3327e5352ace7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/bom?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/a8147287d38495c5b24f19a77bd3327e5352ace7",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/bom"
+    }
+  },
+  {
+    "name": "bundles",
+    "path": "bundles",
+    "sha": "dbd5a8f1592c934fe386764a48a5505118e7ec4c",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/bundles?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/bundles",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/dbd5a8f1592c934fe386764a48a5505118e7ec4c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/bundles?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/dbd5a8f1592c934fe386764a48a5505118e7ec4c",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/bundles"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "docs",
+    "sha": "b58f485bc40a4a4c3cb03b370de5bb86d4dcf47f",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/docs?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/docs",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/b58f485bc40a4a4c3cb03b370de5bb86d4dcf47f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/docs?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/b58f485bc40a4a4c3cb03b370de5bb86d4dcf47f",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/docs"
+    }
+  },
+  {
+    "name": "eclipse-code-formatter-profile.xml",
+    "path": "eclipse-code-formatter-profile.xml",
+    "sha": "df90e05a94e9c4804613283cc44629864544f9f5",
+    "size": 28744,
+    "url": "https://api.github.com/repos/weld/core/contents/eclipse-code-formatter-profile.xml?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/eclipse-code-formatter-profile.xml",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/df90e05a94e9c4804613283cc44629864544f9f5",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/eclipse-code-formatter-profile.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/eclipse-code-formatter-profile.xml?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/df90e05a94e9c4804613283cc44629864544f9f5",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/eclipse-code-formatter-profile.xml"
+    }
+  },
+  {
+    "name": "environments",
+    "path": "environments",
+    "sha": "1b37dee5db67169660cf74f318903dd99987058e",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/environments?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/environments",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/1b37dee5db67169660cf74f318903dd99987058e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/environments?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/1b37dee5db67169660cf74f318903dd99987058e",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/environments"
+    }
+  },
+  {
+    "name": "examples",
+    "path": "examples",
+    "sha": "9d4c6e4eb55e1fb33ba60d3e2a7349760975bf04",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/examples?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/examples",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/9d4c6e4eb55e1fb33ba60d3e2a7349760975bf04",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/examples?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/9d4c6e4eb55e1fb33ba60d3e2a7349760975bf04",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/examples"
+    }
+  },
+  {
+    "name": "impl",
+    "path": "impl",
+    "sha": "c6065e05d12782bc8c047939a96660af99143a33",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/impl?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/impl",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/c6065e05d12782bc8c047939a96660af99143a33",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/impl?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/c6065e05d12782bc8c047939a96660af99143a33",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/impl"
+    }
+  },
+  {
+    "name": "inject-tck-runner",
+    "path": "inject-tck-runner",
+    "sha": "b0efdbac8d2b7c9e7649683ebe01a1f1cd152010",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/inject-tck-runner?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/inject-tck-runner",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/b0efdbac8d2b7c9e7649683ebe01a1f1cd152010",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/inject-tck-runner?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/b0efdbac8d2b7c9e7649683ebe01a1f1cd152010",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/inject-tck-runner"
+    }
+  },
+  {
+    "name": "jboss-as",
+    "path": "jboss-as",
+    "sha": "259eab3d22a4ae832e5acceeaaf3626878739327",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/jboss-as?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/jboss-as",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/259eab3d22a4ae832e5acceeaaf3626878739327",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/jboss-as?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/259eab3d22a4ae832e5acceeaaf3626878739327",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/jboss-as"
+    }
+  },
+  {
+    "name": "jboss-tck-runner",
+    "path": "jboss-tck-runner",
+    "sha": "1035b4ba2c65d34fa793fcb1bad87edcb6b1f64e",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/jboss-tck-runner?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/jboss-tck-runner",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/1035b4ba2c65d34fa793fcb1bad87edcb6b1f64e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/jboss-tck-runner?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/1035b4ba2c65d34fa793fcb1bad87edcb6b1f64e",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/jboss-tck-runner"
+    }
+  },
+  {
+    "name": "merge.sh",
+    "path": "merge.sh",
+    "sha": "20c5e42506e07ac6eaef976519bf7de0fea116a6",
+    "size": 1318,
+    "url": "https://api.github.com/repos/weld/core/contents/merge.sh?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/merge.sh",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/20c5e42506e07ac6eaef976519bf7de0fea116a6",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/merge.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/merge.sh?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/20c5e42506e07ac6eaef976519bf7de0fea116a6",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/merge.sh"
+    }
+  },
+  {
+    "name": "parent",
+    "path": "parent",
+    "sha": "494f3235e4ee129a8caf6c2644e94c85b821399e",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/parent?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/parent",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/494f3235e4ee129a8caf6c2644e94c85b821399e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/parent?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/494f3235e4ee129a8caf6c2644e94c85b821399e",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/parent"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "01136f6ad6ee084394ad148ecd05e3804c8e43fd",
+    "size": 5631,
+    "url": "https://api.github.com/repos/weld/core/contents/pom.xml?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/pom.xml",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/01136f6ad6ee084394ad148ecd05e3804c8e43fd",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/pom.xml?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/01136f6ad6ee084394ad148ecd05e3804c8e43fd",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/pom.xml"
+    }
+
+ succeeded in 199ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "impl/pom.xml",
+    "sha": "586c7c33ed3b458751b7bb69aecd6b3b6fe050e3",
+    "size": 9583,
+    "url": "https://api.github.com/repos/weld/core/contents/impl/pom.xml?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/impl/pom.xml",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/586c7c33ed3b458751b7bb69aecd6b3b6fe050e3",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/impl/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/impl/pom.xml?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/586c7c33ed3b458751b7bb69aecd6b3b6fe050e3",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/impl/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "impl/src",
+    "sha": "dc02a409a5fc6fffb3b00b259ef5cfbeb1e79773",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/impl/src?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/impl/src",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/dc02a409a5fc6fffb3b00b259ef5cfbeb1e79773",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/impl/src?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/dc02a409a5fc6fffb3b00b259ef5cfbeb1e79773",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/impl/src"
+    }
+  }
+]
+
+ succeeded in 1379ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 07:15:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3f4425705b97c08158a6deabdf028146"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=zDVfOtU2miVSUb6GMiap%2F0VLncRv%2BFit8gMd7e1yf8%2FOKC0831UNMqt%2B%2BipwLc6dBXEgaA4j4c4kkSXp2Jx9s%2FQK%2BkGtYD6dNsMLS4mZQWgpXS5fgYVH3TSZIl5bDUnwHSqcx%2F9DrE%2FE9Ov%2FFEueDsmjsXRj%2B4k3yXfaD6ovsCMZEz%2FR2ef9czDlYI%2F0Y6jd5GlpcPJLWvAthS%2B6naTP3xPHSMlPv1Sxy%2FRQSmWF6hWvGJJUbHBSS5Zla4c23gjNFo8INFNl9TIr11eTsTEvmQ%3D%3D--dXfru9KBCFQp7mi%2B--AuhM5Z9vWR1tKrDLjNhasA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1505888163.1778310917; expires=Sun, 09 May 2027 07:15:17 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 07:15:17 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5107:2957F2:6004944:4AA1A42:69FEDF05
+
+HTTP/2 200 
+date: Sat, 09 May 2026 07:15:18 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8a7ee7d9218c51a1429a3de3cc95c3c3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Cz%2BseHDhytqOM%2FYCsgCWIL0Q%2Bvgz7ItxRr4H4Zw2zrDWW8XmgBkKXPfKNw8PjqpwM2nUWmB4zvQ1uiwvIRPmuehyd1Y1bgSxe09IQGUYVLjHBGSkpU28a1p9jUTxy1BmMnrlF8zqbUxRErb1IM9s44oNKsureB%2FT6TucSDlTD%2BdA6eVtn2dU1HWSaz4TE6KtXk%2BV37fkdle5hDhvQxKouD2MHGtk%2FhDK68onbkV4cppzCao%2BNQaigKNQHdlXnaOg%2Bm0L7EpkGWMA6BJ2NAALbg%3D%3D--hbI17B4L7Kc6Uluf--FlILK1C2J%2BPQO0Xwse36WQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.844520799.1778310917; expires=Sun, 09 May 2027 07:15:17 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 07:15:17 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:A44B0:64001AC:4E18E2F:69FEDF05
+
+HTTP/2 200 
+date: Sat, 09 May 2026 07:15:18 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"46b03881a5044ee865da94b29406d42c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=agwFQhP3dctEvgNkXj06De9jWBH2vRxrZ%2FzYnYLaa%2B9fOMvvyhDNCVyzWFjx4GaKwfloBtLXTdq0ZY0DlFWE8QRLW%2Fynu0HOSDfoGUk6A6UT8NT2o58qHOtQppjHJA1XgYoYsQZSlVkbSOVmzpyLkmKQ9C7TgpnVZRL0Z2m%2FLvxOl7OKUxfKGbXogmEIt6iOACyCag6DSyHoAV8uJ7QM851qmgjTSizkOjlN1LR9JP48afc3LlZkzHFf8O3dXGazobSYEX3BPwM6%2FCadSb45Cw%3D%3D--DI5v%2BSbJ6A2Pnlfo--efLdVUvXkd9Vo6jrp%2Bjmew%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1838088690.1778310918; expires=Sun, 09 May 2027 07:15:18 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 07:15:18 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5129:87A7D:60ADC9A:4B7FA1D:69FEDF06
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/weld/core/contents/tests?ref=1.1.0.Final | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/weld/core/contents/impl/src?ref=1.1.0.Final' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/weld/core/contents/impl/src/test?ref=1.1.0.Final | sed -n '1,220p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 183ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "tests/pom.xml",
+    "sha": "35f6dd74a66e3617de6cf7fdbd1ca48f1c5f986f",
+    "size": 10435,
+    "url": "https://api.github.com/repos/weld/core/contents/tests/pom.xml?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/tests/pom.xml",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/35f6dd74a66e3617de6cf7fdbd1ca48f1c5f986f",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/tests/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/tests/pom.xml?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/35f6dd74a66e3617de6cf7fdbd1ca48f1c5f986f",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/tests/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "tests/src",
+    "sha": "da6bc6aefea6d8a69a816ad0b3b2bc50ed8fb92b",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/tests/src?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/tests/src",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/da6bc6aefea6d8a69a816ad0b3b2bc50ed8fb92b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/tests/src?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/da6bc6aefea6d8a69a816ad0b3b2bc50ed8fb92b",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/tests/src"
+    }
+  },
+  {
+    "name": "unit-tests.xml",
+    "path": "tests/unit-tests.xml",
+    "sha": "cb88afae8dab72ca3564d66c86d4bf5c2721f6c1",
+    "size": 756,
+    "url": "https://api.github.com/repos/weld/core/contents/tests/unit-tests.xml?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/blob/1.1.0.Final/tests/unit-tests.xml",
+    "git_url": "https://api.github.com/repos/weld/core/git/blobs/cb88afae8dab72ca3564d66c86d4bf5c2721f6c1",
+    "download_url": "https://raw.githubusercontent.com/weld/core/1.1.0.Final/tests/unit-tests.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/tests/unit-tests.xml?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/blobs/cb88afae8dab72ca3564d66c86d4bf5c2721f6c1",
+      "html": "https://github.com/weld/core/blob/1.1.0.Final/tests/unit-tests.xml"
+    }
+  }
+]
+
+ succeeded in 203ms:
+[
+  {
+    "name": "main",
+    "path": "impl/src/main",
+    "sha": "1061efb083e843d8e872e381401bcad9feb4a73b",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/impl/src/main?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/impl/src/main",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/1061efb083e843d8e872e381401bcad9feb4a73b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/impl/src/main?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/1061efb083e843d8e872e381401bcad9feb4a73b",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/impl/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "impl/src/test",
+    "sha": "c5ba266be504ea7c5ae6b382c612841b18d04998",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/impl/src/test?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/impl/src/test",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/c5ba266be504ea7c5ae6b382c612841b18d04998",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/impl/src/test?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/c5ba266be504ea7c5ae6b382c612841b18d04998",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/impl/src/test"
+    }
+  }
+]
+
+ succeeded in 206ms:
+[
+  {
+    "name": "java",
+    "path": "impl/src/test/java",
+    "sha": "62c7863f54d1d1ca9f37248e3d47b63d21b7d5fb",
+    "size": 0,
+    "url": "https://api.github.com/repos/weld/core/contents/impl/src/test/java?ref=1.1.0.Final",
+    "html_url": "https://github.com/weld/core/tree/1.1.0.Final/impl/src/test/java",
+    "git_url": "https://api.github.com/repos/weld/core/git/trees/62c7863f54d1d1ca9f37248e3d47b63d21b7d5fb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/weld/core/contents/impl/src/test/java?ref=1.1.0.Final",
+      "git": "https://api.github.com/repos/weld/core/git/trees/62c7863f54d1d1ca9f37248e3d47b63d21b7d5fb",
+      "html": "https://github.com/weld/core/tree/1.1.0.Final/impl/src/test/java"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/weld/core/1.1.0.Final/impl/pom.xml | sed -n '1,140p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 177ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-core-parent</artifactId>
+      <groupId>org.jboss.weld</groupId>
+      <version>1.1.0.Final</version>
+      <relativePath>../parent/pom.xml</relativePath>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core</artifactId>
+   <name>Weld Implementation</name>
+   <description>Weld's implementation of CDI</description>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+
+   <properties>
+      <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+   </properties>
+
+
+   <dependencies>
+
+      <dependency>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-spi</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.spec.javax.ejb</groupId>
+         <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.servlet.jsp</groupId>
+         <artifactId>jsp-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.transaction</groupId>
+         <artifactId>jta</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.annotation</groupId>
+         <artifactId>jsr250-api</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.validation</groupId>
+         <artifactId>validation-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.persistence</groupId>
+         <artifactId>persistence-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>org.javassist</groupId>
+         <artifactId>javassist</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.el</groupId>
+         <artifactId>el-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.spec.javax.interceptor</groupId>
+         <artifactId>jboss-interceptors-api_1.1_spec</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor-spi</artifactId>
+         <exclusions>
+            <!-- Exclude the old groupId for Javassist -->
+            <exclusion>
+               <groupId>javassist</groupId>
+               <artifactId>javassist</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.interceptor</groupId>
+         <artifactId>jboss-interceptor-core</artifactId>
+         <exclusions>
+            <!-- Exclude the old groupId for Javassist -->
+            <exclusion>
+               <groupId>javassist</groupId>
+               <artifactId>javassist</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-ext</artifactId>
+      </dependency>
+
+codex
+Maven Central has source and javadoc JARs for this exact version, but no `-tests.jar`; the published artifact itself is a normal JVM JAR with class files, so I’ll leave the Native Image exclusion fields absent. I’m going to set tests to the tagged upstream test directory.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -5 | xargs -r -n1 sed -n '1,80p'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final"
+}
+
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+diff --git a/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+index 4b93a9f8e4b52fe07ff617c47b18b26894ccef36..4a0e180c886cd31da9190deb8189f1a5c6c6bd33
+--- a/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final"
++  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final",
++  "repository-url" : "https://github.com/weld/core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/$version$/weld-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/weld/core/tree/$version$/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/$version$/weld-core-$version$-javadoc.jar",
++  "description" : "Weld Core is the core implementation of CDI (JSR 299) for Java EE, providing bean discovery, injection, contextual lifecycle management, events, interceptors, decorators, and integration hooks. This artifact contains the runtime implementation classes used by Weld containers and applications to bootstrap and manage CDI services."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+index 4b93a9f8e4b52fe07ff617c47b18b26894ccef36..4a0e180c886cd31da9190deb8189f1a5c6c6bd33
+--- a/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final"
++  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final",
++  "repository-url" : "https://github.com/weld/core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/$version$/weld-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/weld/core/tree/$version$/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/$version$/weld-core-$version$-javadoc.jar",
++  "description" : "Weld Core is the core implementation of CDI (JSR 299) for Java EE, providing bean discovery, injection, contextual lifecycle management, events, interceptors, decorators, and integration hooks. This artifact contains the runtime implementation classes used by Weld containers and applications to bootstrap and manage CDI services."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 0ms:
+{
+  "coordinates": "org.jboss.weld:weld-core:1.1.0.Final",
+  "repository-url": "https://github.com/weld/core",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/$version$/weld-core-$version$-sources.jar",
+  "test-code-url": "https://github.com/weld/core/tree/$version$/tests",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/$version$/weld-core-$version$-javadoc.jar",
+  "description": "Weld Core is the core implementation of CDI (JSR 299) for Java EE, providing bean discovery, injection, contextual lifecycle management, events, interceptors, decorators, and integration hooks. This artifact contains the runtime implementation classes used by Weld containers and applications to bootstrap and manage CDI services."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json' in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/1.1.0.Final/weld-core-1.1.0.Final-sources.jar >/tmp/weld-src.head && curl -fsSI https://github.com/weld/core/tree/1.1.0.Final/tests >/tmp/weld-tests.head && curl -fsSI https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/1.1.0.Final/weld-core-1.1.0.Final-javadoc.jar >/tmp/weld-docs.head && printf 'source ok\\ntests ok\\ndocs ok\\n'" in /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac
+diff --git a/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+index 4b93a9f8e4b52fe07ff617c47b18b26894ccef36..4a0e180c886cd31da9190deb8189f1a5c6c6bd33
+--- a/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final"
++  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final",
++  "repository-url" : "https://github.com/weld/core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/$version$/weld-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/weld/core/tree/$version$/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/$version$/weld-core-$version$-javadoc.jar",
++  "description" : "Weld Core is the core implementation of CDI (JSR 299) for Java EE, providing bean discovery, injection, contextual lifecycle management, events, interceptors, decorators, and integration hooks. This artifact contains the runtime implementation classes used by Weld containers and applications to bootstrap and manage CDI services."
+ }
+
+ succeeded in 197ms:
+source ok
+tests ok
+docs ok
+
+web search: 
+web search: https://github.com/weld/core/tree/1.1.0.Final/tests
+web search: 
+web search: repo.maven.apache.org maven2 org jboss weld weld-core 1.1.0.Final sources javadoc
+web search: 
+web search: https://mvnrepository.com/artifact/org.jboss.weld/weld-core
+web search: 
+web search: https://github.com/weld/core
+codex
+Updated [org.jboss.weld-weld-core-1.1.0.Final.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json).
+
+Set repository, Maven source/javadoc URLs, tagged upstream test URL, and a two-sentence description. I left `language` absent and did not set `not-for-native-image` because the artifact is a JVM JAR with class files. The tagged test directory exists in `weld/core`, and Weld is documented as the CDI/JSR-299 reference implementation. ([github.com](https://github.com/weld/core/tree/1.1.0.Final/tests))
+
+Validated JSON with `jq` and checked that the rendered source, test, and documentation URLs return successfully.
+diff --git a/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json b/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+index 4b93a9f8e4b52fe07ff617c47b18b26894ccef36..4a0e180c886cd31da9190deb8189f1a5c6c6bd33
+--- a/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final"
++  "coordinates" : "org.jboss.weld:weld-core:1.1.0.Final",
++  "repository-url" : "https://github.com/weld/core",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/$version$/weld-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/weld/core/tree/$version$/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/weld/weld-core/$version$/weld-core-$version$-javadoc.jar",
++  "description" : "Weld Core is the core implementation of CDI (JSR 299) for Java EE, providing bean discovery, injection, contextual lifecycle management, events, interceptors, decorators, and integration hooks. This artifact contains the runtime implementation classes used by Weld containers and applications to bootstrap and manage CDI services."
+ }
+
+tokens used
+106,362
+Updated [org.jboss.weld-weld-core-1.1.0.Final.json](/home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac/build/discovered-artifact-metadata/org.jboss.weld-weld-core-1.1.0.Final.json).
+
+Set repository, Maven source/javadoc URLs, tagged upstream test URL, and a two-sentence description. I left `language` absent and did not set `not-for-native-image` because the artifact is a JVM JAR with class files. The tagged test directory exists in `weld/core`, and Weld is documented as the CDI/JSR-299 reference implementation. ([github.com](https://github.com/weld/core/tree/1.1.0.Final/tests))
+
+Validated JSON with `jq` and checked that the rendered source, test, and documentation URLs return successfully.
+Ran agent for org.jboss.weld:weld-core:1.1.0.Final (exit 0). Log: /home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac/build/agent-artifact-discovery-logs/org.jboss.weld-weld-core-1.1.0.Final.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge5/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2915-6bd064ac/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 40s
+9 actionable tasks: 9 executed
