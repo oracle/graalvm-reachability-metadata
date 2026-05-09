@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.enterprise.context.BusyConversationException;
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.Conversation;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NonexistentConversationException;
 import javax.enterprise.context.spi.Context;
@@ -171,6 +172,31 @@ public class Geronimo_jcdi_1_0_specTest {
         assertThat(creationalContext.incompleteInstances).containsExactly(component);
         assertThat(injectionTarget.getInjectionPoints()).isEmpty();
         assertThat(injectionTarget.disposedInstances).containsExactly(component);
+    }
+
+    @Test
+    void conversationTracksTransientAndLongRunningLifecycle() {
+        RecordingConversation conversation = new RecordingConversation();
+
+        assertThat(conversation.isTransient()).isTrue();
+        assertThat(conversation.getId()).isNull();
+
+        conversation.setTimeout(1_500L);
+        conversation.begin("checkout-flow");
+
+        assertThat(conversation.isTransient()).isFalse();
+        assertThat(conversation.getId()).isEqualTo("checkout-flow");
+        assertThat(conversation.getTimeout()).isEqualTo(1_500L);
+
+        conversation.end();
+
+        assertThat(conversation.isTransient()).isTrue();
+        assertThat(conversation.getId()).isNull();
+
+        conversation.begin();
+
+        assertThat(conversation.isTransient()).isFalse();
+        assertThat(conversation.getId()).startsWith("conversation-");
     }
 
     @Test
@@ -342,6 +368,48 @@ public class Geronimo_jcdi_1_0_specTest {
         public void destroy(Service instance, CreationalContext<Service> creationalContext) {
             destroyedInstances.add(instance);
             creationalContext.release();
+        }
+    }
+
+    private static final class RecordingConversation implements Conversation {
+        private String id;
+        private long timeout;
+        private int generatedIds;
+
+        @Override
+        public void begin() {
+            generatedIds++;
+            begin("conversation-" + generatedIds);
+        }
+
+        @Override
+        public void begin(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public void end() {
+            id = null;
+        }
+
+        @Override
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public long getTimeout() {
+            return timeout;
+        }
+
+        @Override
+        public void setTimeout(long milliseconds) {
+            timeout = milliseconds;
+        }
+
+        @Override
+        public boolean isTransient() {
+            return id == null;
         }
     }
 
