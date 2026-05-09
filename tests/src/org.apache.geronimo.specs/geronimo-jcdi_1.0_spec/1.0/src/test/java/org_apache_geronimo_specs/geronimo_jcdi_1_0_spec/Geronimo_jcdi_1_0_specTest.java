@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.context.BusyConversationException;
 import javax.enterprise.context.ContextNotActiveException;
@@ -40,6 +41,8 @@ import javax.enterprise.inject.New;
 import javax.enterprise.inject.ResolutionException;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Qualifier;
@@ -149,6 +152,28 @@ public class Geronimo_jcdi_1_0_specTest {
     }
 
     @Test
+    void injectionTargetCoordinatesManagedBeanLifecycleCallbacks() {
+        Repository repository = new Repository("primary");
+        LifecycleInjectionTarget injectionTarget = new LifecycleInjectionTarget(repository);
+        RecordingCreationalContext<ManagedComponent> creationalContext = new RecordingCreationalContext<>();
+
+        ManagedComponent component = injectionTarget.produce(creationalContext);
+        injectionTarget.inject(component, creationalContext);
+        injectionTarget.postConstruct(component);
+        injectionTarget.preDestroy(component);
+        injectionTarget.dispose(component);
+
+        assertThat(component.name).isEqualTo("managed-component");
+        assertThat(component.repository).isSameAs(repository);
+        assertThat(component.repository.name).isEqualTo("primary");
+        assertThat(component.initialized).isTrue();
+        assertThat(component.destroyed).isTrue();
+        assertThat(creationalContext.incompleteInstances).containsExactly(component);
+        assertThat(injectionTarget.getInjectionPoints()).isEmpty();
+        assertThat(injectionTarget.disposedInstances).containsExactly(component);
+    }
+
+    @Test
     void cdiExceptionsKeepMessagesAndCauses() {
         IllegalStateException cause = new IllegalStateException("root cause");
 
@@ -233,6 +258,66 @@ public class Geronimo_jcdi_1_0_specTest {
 
         private Service(String name) {
             this.name = name;
+        }
+    }
+
+    private static final class Repository {
+        private final String name;
+
+        private Repository(String name) {
+            this.name = name;
+        }
+    }
+
+    private static final class ManagedComponent {
+        private final String name;
+        private Repository repository;
+        private boolean initialized;
+        private boolean destroyed;
+
+        private ManagedComponent(String name) {
+            this.name = name;
+        }
+    }
+
+    private static final class LifecycleInjectionTarget implements InjectionTarget<ManagedComponent> {
+        private final Repository repository;
+        private final List<ManagedComponent> disposedInstances = new ArrayList<>();
+
+        private LifecycleInjectionTarget(Repository repository) {
+            this.repository = repository;
+        }
+
+        @Override
+        public ManagedComponent produce(CreationalContext<ManagedComponent> creationalContext) {
+            ManagedComponent component = new ManagedComponent("managed-component");
+            creationalContext.push(component);
+            return component;
+        }
+
+        @Override
+        public void inject(ManagedComponent instance, CreationalContext<ManagedComponent> creationalContext) {
+            instance.repository = repository;
+        }
+
+        @Override
+        public void postConstruct(ManagedComponent instance) {
+            instance.initialized = true;
+        }
+
+        @Override
+        public void preDestroy(ManagedComponent instance) {
+            instance.destroyed = true;
+        }
+
+        @Override
+        public void dispose(ManagedComponent instance) {
+            disposedInstances.add(instance);
+        }
+
+        @Override
+        public Set<InjectionPoint> getInjectionPoints() {
+            return Collections.emptySet();
         }
     }
 
