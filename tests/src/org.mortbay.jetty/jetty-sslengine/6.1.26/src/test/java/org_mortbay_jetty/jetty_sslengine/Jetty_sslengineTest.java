@@ -17,7 +17,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.HostnameVerifier;
@@ -40,6 +43,14 @@ import org.mortbay.thread.QueuedThreadPool;
 
 public class Jetty_sslengineTest {
     private static final String PASSWORD = "changeit";
+    private static final String[] TLS12_RSA_CIPHER_SUITE_PREFERENCES = {
+        "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+        "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+        "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
+        "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
+        "TLS_RSA_WITH_AES_128_GCM_SHA256",
+        "TLS_RSA_WITH_AES_256_GCM_SHA384"
+    };
     private static final String LOCALHOST_KEYSTORE = """
             /u3+7QAAAAIAAAABAAAAAQAJbG9jYWxob3N0AAABngphnF8AAAT9MIIE+TAMBgorBgEEASoCEQEB
             BIIE5/jr3lYlrYalAVScVFcYD+/mvzjaVyxZ/m6E2KrcEfbgypn7USrh/NyooxRi0jb6v9PfLxw1
@@ -212,12 +223,96 @@ public class Jetty_sslengineTest {
         }
     }
 
+    @Test
+    void excludesConfiguredCipherSuitesDuringHandshake() throws Exception {
+        Path keystore = writeKeystore();
+        String expectedCipherSuite = selectEnabledTls12RsaCipherSuite();
+        String[] excludedCipherSuites = enabledTls12CipherSuitesExcept(expectedCipherSuite);
+
+        SslSelectChannelConnector connector = new SslSelectChannelConnector();
+        connector.setHost("127.0.0.1");
+        connector.setPort(0);
+        connector.setMaxIdleTime(5_000);
+        connector.setKeystore(keystore.toString());
+        connector.setTruststore(keystore.toString());
+        connector.setPassword(PASSWORD);
+        connector.setKeyPassword(PASSWORD);
+        connector.setTrustPassword(PASSWORD);
+        connector.setNeedClientAuth(false);
+        connector.setWantClientAuth(false);
+        connector.setProtocol("TLSv1.2");
+        connector.setExcludeCipherSuites(excludedCipherSuites);
+
+        QueuedThreadPool threadPool = new QueuedThreadPool(8);
+        threadPool.setMinThreads(2);
+        threadPool.setDaemon(true);
+
+        AtomicReference<String> negotiatedCipherSuite = new AtomicReference<>();
+        Server server = new Server();
+        server.setThreadPool(threadPool);
+        server.addConnector(connector);
+        server.setHandler(new AbstractHandler() {
+            @Override
+            public void handle(String target, HttpServletRequest request, HttpServletResponse response, int dispatch)
+                    throws IOException, ServletException {
+                if (dispatch == Handler.REQUEST) {
+                    negotiatedCipherSuite.set((String) request.getAttribute("javax.servlet.request.cipher_suite"));
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType("text/plain");
+                    byte[] body = "cipher-suite-response".getBytes(StandardCharsets.UTF_8);
+                    response.setContentLength(body.length);
+                    try (OutputStream output = response.getOutputStream()) {
+                        output.write(body);
+                    }
+                    ((Request) request).setHandled(true);
+                }
+            }
+        });
+
+        try {
+            server.start();
+            assertThat(connector.getLocalPort()).isPositive();
+
+            String body = get("https://127.0.0.1:" + connector.getLocalPort() + "/cipher-suite-check");
+
+            assertThat(body).isEqualTo("cipher-suite-response");
+            assertThat(negotiatedCipherSuite.get()).isEqualTo(expectedCipherSuite);
+        } finally {
+            if (server.isStarted() || server.isStarting()) {
+                server.stop();
+            }
+            server.destroy();
+        }
+    }
+
     private static Path writeKeystore() throws IOException {
         Path file = Files.createTempFile("jetty-sslengine-test-", ".jks");
         byte[] keystore = Base64.getMimeDecoder().decode(LOCALHOST_KEYSTORE);
         Files.write(file, keystore);
         file.toFile().deleteOnExit();
         return file;
+    }
+
+    private static String selectEnabledTls12RsaCipherSuite() throws Exception {
+        List<String> enabledCipherSuites = Arrays.asList(enabledTls12CipherSuites());
+        for (String cipherSuite : TLS12_RSA_CIPHER_SUITE_PREFERENCES) {
+            if (enabledCipherSuites.contains(cipherSuite)) {
+                return cipherSuite;
+            }
+        }
+        throw new IllegalStateException("No enabled TLS 1.2 RSA cipher suite found: " + enabledCipherSuites);
+    }
+
+    private static String[] enabledTls12CipherSuitesExcept(String retainedCipherSuite) throws Exception {
+        List<String> excludedCipherSuites = new ArrayList<>(Arrays.asList(enabledTls12CipherSuites()));
+        assertThat(excludedCipherSuites.remove(retainedCipherSuite)).isTrue();
+        return excludedCipherSuites.toArray(new String[0]);
+    }
+
+    private static String[] enabledTls12CipherSuites() throws Exception {
+        SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+        sslContext.init(null, null, new SecureRandom());
+        return sslContext.createSSLEngine().getEnabledCipherSuites();
     }
 
     private static String get(String url) throws Exception {
