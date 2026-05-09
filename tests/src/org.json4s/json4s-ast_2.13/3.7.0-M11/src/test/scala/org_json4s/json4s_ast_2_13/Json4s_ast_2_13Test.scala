@@ -181,6 +181,23 @@ class Json4s_ast_2_13Test {
   }
 
   @Test
+  def convertsFieldListsWithJsonDsl(): Unit = {
+    import org.json4s.JsonDSL.WithDouble._
+
+    val fields: List[JField] = List(
+      JField("id", JInt(7)),
+      JField("status", JString("open")),
+      JField("labels", JArray(List(JString("new"), JString("triaged"))))
+    )
+    val fromFields: JObject = fields: JObject
+
+    assertEquals(fields, fromFields.obj)
+    assertEquals(JInt(7), field(fromFields, "id"))
+    assertEquals(JString("open"), field(fromFields, "status"))
+    assertEquals(JArray(List(JString("new"), JString("triaged"))), field(fromFields, "labels"))
+  }
+
+  @Test
   def mapsDiffPartsWithoutRewritingEmptyParts(): Unit = {
     val original: Diff = Diff(JObject(JField("changed", JInt(1))), JNothing, JObject(JField("deleted", JString("old"))))
     val mapped: Diff = original.map {
