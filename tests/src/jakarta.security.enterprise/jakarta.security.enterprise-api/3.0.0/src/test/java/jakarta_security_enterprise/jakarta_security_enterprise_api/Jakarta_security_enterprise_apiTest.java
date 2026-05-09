@@ -47,6 +47,7 @@ import jakarta.security.enterprise.identitystore.IdentityStore;
 import jakarta.security.enterprise.identitystore.IdentityStore.ValidationType;
 import jakarta.security.enterprise.identitystore.IdentityStorePermission;
 import jakarta.security.enterprise.identitystore.PasswordHash;
+import jakarta.security.enterprise.identitystore.RememberMeIdentityStore;
 import jakarta.security.enterprise.identitystore.openid.Claims;
 import jakarta.security.enterprise.identitystore.openid.JwtClaims;
 import jakarta.security.enterprise.identitystore.openid.OpenIdClaims;
@@ -188,6 +189,23 @@ public class Jakarta_security_enterprise_apiTest {
         assertThat(parameters.getCredential()).isNull();
         assertThat(parameters.isNewAuthentication()).isFalse();
         assertThat(parameters.isRememberMe()).isFalse();
+    }
+
+    @Test
+    void rememberMeIdentityStoreGeneratesValidatesAndRemovesLoginTokens() {
+        RecordingRememberMeIdentityStore store = new RecordingRememberMeIdentityStore();
+
+        String token = store.generateLoginToken(new CallerPrincipal("alice"), Set.of("admin", "user"));
+        CredentialValidationResult validResult = store.validate(new RememberMeCredential(token));
+
+        assertThat(token).isNotBlank();
+        assertThat(validResult.getStatus()).isEqualTo(Status.VALID);
+        assertThat(validResult.getCallerPrincipal().getName()).isEqualTo("alice");
+        assertThat(validResult.getCallerGroups()).containsExactlyInAnyOrder("admin", "user");
+
+        store.removeLoginToken(token);
+
+        assertThat(store.validate(new RememberMeCredential(token))).isSameAs(CredentialValidationResult.INVALID_RESULT);
     }
 
     @Test
@@ -399,6 +417,28 @@ public class Jakarta_security_enterprise_apiTest {
 
     private static String basicUserInfo(String userInfo) {
         return Base64.getEncoder().encodeToString(userInfo.getBytes(US_ASCII));
+    }
+
+    public static final class RecordingRememberMeIdentityStore implements RememberMeIdentityStore {
+        private final Map<String, CredentialValidationResult> tokens = new LinkedHashMap<>();
+        private int nextTokenId;
+
+        @Override
+        public CredentialValidationResult validate(RememberMeCredential credential) {
+            return tokens.getOrDefault(credential.getToken(), CredentialValidationResult.INVALID_RESULT);
+        }
+
+        @Override
+        public String generateLoginToken(CallerPrincipal callerPrincipal, Set<String> groups) {
+            String token = "remember-token-" + nextTokenId++;
+            tokens.put(token, new CredentialValidationResult(callerPrincipal, groups));
+            return token;
+        }
+
+        @Override
+        public void removeLoginToken(String token) {
+            tokens.remove(token);
+        }
     }
 
     public static final class DefaultIdentityStore implements IdentityStore {
