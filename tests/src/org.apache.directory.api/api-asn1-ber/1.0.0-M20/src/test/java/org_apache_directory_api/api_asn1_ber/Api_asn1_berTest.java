@@ -17,6 +17,10 @@ import java.util.List;
 
 import org.apache.directory.api.asn1.DecoderException;
 import org.apache.directory.api.asn1.EncoderException;
+import org.apache.directory.api.asn1.actions.AbstractReadBitString;
+import org.apache.directory.api.asn1.actions.AbstractReadInteger;
+import org.apache.directory.api.asn1.actions.AbstractReadOctetString;
+import org.apache.directory.api.asn1.actions.CheckNotNullLength;
 import org.apache.directory.api.asn1.ber.AbstractContainer;
 import org.apache.directory.api.asn1.ber.Asn1Decoder;
 import org.apache.directory.api.asn1.ber.grammar.AbstractGrammar;
@@ -234,6 +238,37 @@ public class Api_asn1_berTest {
     }
 
     @Test
+    void reusableGrammarActionsReadTypedValuesFromDecodedTlv() throws Exception {
+        RecordingContainer container = new RecordingContainer(new ActionHelperGrammar());
+        Asn1Decoder decoder = new Asn1Decoder();
+
+        decoder.decode(ByteBuffer.wrap(new byte[] {
+            0x30, 0x0F,
+            0x02, 0x01, 0x05,
+            0x04, 0x03, 0x61, 0x62, 0x63,
+            0x03, 0x05, 0x00, (byte) 0xF0, 0x0F, 0x55, (byte) 0xAA}), container);
+
+        assertThat(container.getState()).isEqualTo(TLVStateEnum.PDU_DECODED);
+        assertThat(container.getTransition()).isEqualTo(TestState.END);
+        assertThat(container.integerValue).isEqualTo(5);
+        assertThat(container.octetString).containsExactly(bytes(0x61, 0x62, 0x63));
+        assertThat(container.bitString).containsExactly(bytes(0x00, 0xF0, 0x0F, 0x55, 0xAA));
+        assertThat(container.getDecodeBytes()).isEqualTo(17);
+    }
+
+    @Test
+    void reusableGrammarActionsRejectUnexpectedNullLengths() {
+        Asn1Decoder decoder = new Asn1Decoder();
+        RecordingContainer nullSequence = new RecordingContainer(new NonNullSequenceGrammar());
+        RecordingContainer nullInteger = new RecordingContainer(new RequiredIntegerGrammar());
+
+        assertThatExceptionOfType(DecoderException.class)
+                .isThrownBy(() -> decoder.decode(ByteBuffer.wrap(new byte[] {0x30, 0x00}), nullSequence));
+        assertThatExceptionOfType(DecoderException.class)
+                .isThrownBy(() -> decoder.decode(ByteBuffer.wrap(new byte[] {0x02, 0x00}), nullInteger));
+    }
+
+    @Test
     void rejectsMalformedTlvStreamsBeforeActionsRun() throws Exception {
         Asn1Decoder decoder = new Asn1Decoder();
 
@@ -310,6 +345,9 @@ public class Api_asn1_berTest {
 
     private static class RecordingContainer extends AbstractContainer {
         private final List<String> events = new ArrayList<>();
+        private Integer integerValue;
+        private byte[] octetString;
+        private byte[] bitString;
 
         RecordingContainer(AbstractGrammar<RecordingContainer> grammar) {
             this.grammar = grammar;
@@ -348,6 +386,91 @@ public class Api_asn1_berTest {
                     TestState.END,
                     UniversalTag.OCTET_STRING,
                     octetsAction(true));
+        }
+    }
+
+    private static class ActionHelperGrammar extends AbstractGrammar<RecordingContainer> {
+        ActionHelperGrammar() {
+            setName("action-helper-test-grammar");
+            transitions = transitions();
+            transitions[TestState.START.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition<>(
+                    TestState.START,
+                    TestState.SEQUENCE,
+                    UniversalTag.SEQUENCE,
+                    new CheckNotNullLength<>());
+            transitions[TestState.SEQUENCE.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition<>(
+                    TestState.SEQUENCE,
+                    TestState.INTEGER,
+                    UniversalTag.INTEGER,
+                    new RecordingIntegerAction(1, 10));
+            transitions[TestState.INTEGER.ordinal()][UniversalTag.OCTET_STRING.getValue()] = new GrammarTransition<>(
+                    TestState.INTEGER,
+                    TestState.OCTETS,
+                    UniversalTag.OCTET_STRING,
+                    new RecordingOctetStringAction(false));
+            transitions[TestState.OCTETS.ordinal()][UniversalTag.BIT_STRING.getValue()] = new GrammarTransition<>(
+                    TestState.OCTETS,
+                    TestState.END,
+                    UniversalTag.BIT_STRING,
+                    new RecordingBitStringAction());
+        }
+    }
+
+    private static class NonNullSequenceGrammar extends AbstractGrammar<RecordingContainer> {
+        NonNullSequenceGrammar() {
+            setName("non-null-sequence-test-grammar");
+            transitions = transitions();
+            transitions[TestState.START.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition<>(
+                    TestState.START,
+                    TestState.END,
+                    UniversalTag.SEQUENCE,
+                    new CheckNotNullLength<>());
+        }
+    }
+
+    private static class RequiredIntegerGrammar extends AbstractGrammar<RecordingContainer> {
+        RequiredIntegerGrammar() {
+            setName("required-integer-test-grammar");
+            transitions = transitions();
+            transitions[TestState.START.ordinal()][UniversalTag.INTEGER.getValue()] = new GrammarTransition<>(
+                    TestState.START,
+                    TestState.END,
+                    UniversalTag.INTEGER,
+                    new RecordingIntegerAction(1, 10));
+        }
+    }
+
+    private static class RecordingIntegerAction extends AbstractReadInteger<RecordingContainer> {
+        RecordingIntegerAction(int minValue, int maxValue) {
+            super("read test integer", minValue, maxValue);
+        }
+
+        @Override
+        protected void setIntegerValue(int value, RecordingContainer container) {
+            container.integerValue = value;
+        }
+    }
+
+    private static class RecordingOctetStringAction extends AbstractReadOctetString<RecordingContainer> {
+        RecordingOctetStringAction(boolean canBeNull) {
+            super("read test octet string", canBeNull);
+        }
+
+        @Override
+        protected void setOctetString(byte[] value, RecordingContainer container) {
+            container.octetString = value;
+        }
+    }
+
+    private static class RecordingBitStringAction extends AbstractReadBitString<RecordingContainer> {
+        RecordingBitStringAction() {
+            super("read test bit string");
+        }
+
+        @Override
+        protected void setBitString(byte[] value, RecordingContainer container) {
+            container.bitString = value;
+            container.setGrammarEndAllowed(true);
         }
     }
 
