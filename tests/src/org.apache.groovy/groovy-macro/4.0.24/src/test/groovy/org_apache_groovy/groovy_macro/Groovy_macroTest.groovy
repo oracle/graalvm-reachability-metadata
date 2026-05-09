@@ -6,7 +6,6 @@
  */
 package org_apache_groovy.groovy_macro
 
-import org.codehaus.groovy.ast.ASTNode
 import org.codehaus.groovy.ast.ClassNode
 import org.codehaus.groovy.ast.expr.BinaryExpression
 import org.codehaus.groovy.ast.expr.ConstantExpression
@@ -191,6 +190,30 @@ public class Groovy_macroTest {
         assertThat(ASTMatcher.matches(macro { total + 10 }, rightTenPattern)).isTrue()
         assertThat(ASTMatcher.matches(macro { total + 11 }, rightTenPattern)).isFalse()
         assertThat(ASTMatcher.matches(macro { total - 10 }, rightTenPattern)).isFalse()
+    }
+
+    @Test
+    void treeContextStoresUserDataAndEvaluatesPredicatesAgainstItsNode() {
+        BlockStatement block = macro(true) {
+            record('created')
+            ignore()
+        }
+        MethodCallExpression recordCallPattern = macro { record(_) }
+
+        TreeContext context = ASTMatcher.find(block, recordCallPattern).first()
+        TreeContext parent = context.parent
+        parent.putUserdata('scope', 'statement')
+        context.putUserdata('call', 'record')
+        Expression replacement = constX('replacement')
+        context.setReplacement(replacement)
+
+        assertThat(context.getUserdata('call')).containsExactly('record')
+        assertThat(context.getUserdata('scope')).containsExactly('statement')
+        assertThat(context.getUserdata('missing', false)).isNull()
+        assertThat(context.matches { methodAsString == 'record' }).isTrue()
+        assertThat(context.matches { methodAsString == 'ignore' }).isFalse()
+        assertThat(context.replacement).isSameAs(replacement)
+        assertThat(context.toString()).contains('MethodCallExpression')
     }
 
     @Test
