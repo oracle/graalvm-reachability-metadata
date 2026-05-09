@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 public class UnmodifiableJavaCollectionSerializerTest {
     @Test
     void roundTripsUnmodifiableListThroughWrappedCollectionField() {
-        Kryo kryo = new Kryo();
+        Kryo kryo = KryoTestSupport.newKryoWithSpecialInstantiator(ArrayList.class, ArrayList::new);
         UnmodifiableListSerializer serializer = new UnmodifiableListSerializer();
         List<String> mutableItems = new ArrayList<>();
         mutableItems.add("one");

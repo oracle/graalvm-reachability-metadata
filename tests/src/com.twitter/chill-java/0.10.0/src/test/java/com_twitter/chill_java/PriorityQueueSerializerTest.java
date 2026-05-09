@@ -19,7 +19,10 @@ import org.junit.jupiter.api.Test;
 public class PriorityQueueSerializerTest {
     @Test
     void roundTripsPriorityQueueWithComparatorRegisteredByPackageRegistrar() {
-        Kryo kryo = new Kryo();
+        Kryo kryo = KryoTestSupport.newKryoWithSpecialInstantiator(
+                LengthDescendingComparator.class,
+                LengthDescendingComparator::new
+        );
         PackageRegistrar.all().apply(kryo);
         PriorityQueue<String> original = new PriorityQueue<>(new LengthDescendingComparator());
         original.add("a");
