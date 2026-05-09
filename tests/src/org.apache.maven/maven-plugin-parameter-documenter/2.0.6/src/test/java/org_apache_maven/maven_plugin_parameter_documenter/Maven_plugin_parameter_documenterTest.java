@@ -149,6 +149,21 @@ public class Maven_plugin_parameter_documenterTest {
     }
 
     @Test
+    void writerUsesDocumentationModelEncodingInXmlDeclaration() throws Exception {
+        ExpressionDocumentation documentation = new ExpressionDocumentation();
+        documentation.setModelEncoding("UTF-16");
+        documentation.addExpression(expression("${project.url}", "Project website URL"));
+
+        StringWriter output = new StringWriter();
+        new ParamdocXpp3Writer().write(output, documentation);
+
+        assertThat(output.toString())
+                .startsWith("<?xml version=\"1.0\" encoding=\"UTF-16\"?>")
+                .contains("<syntax>${project.url}</syntax>")
+                .contains("<description>Project website URL</description>");
+    }
+
+    @Test
     void readerParsesCompleteStrictDocumentAndTrimsTextValues() throws Exception {
         String xml = """
                 <paramdoc>
