@@ -6,11 +6,13 @@
  */
 package org_codehaus_janino.janino;
 
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.graalvm.internal.tck.NativeImageSupport;
 
 final class JaninoNativeImageSupport {
+    private static final String ABSTRACT_COMPILER_RESOURCE_FINDER = "org.codehaus.janino.AbstractCompiler$1";
     private static final Set<String> GENERATED_CLASS_NAMES =
             Set.of("SC", "GeneratedFastClassBody", "JaninoMainEntry");
 
@@ -82,8 +84,30 @@ final class JaninoNativeImageSupport {
                     || message.contains("URL protocol jrt"))) {
                 return true;
             }
+            if (current instanceof NoSuchElementException && hasAbstractCompilerJrtLookupFailure(current)) {
+                return true;
+            }
             current = current.getCause();
         }
         return false;
+    }
+
+    private static boolean hasAbstractCompilerJrtLookupFailure(Throwable throwable) {
+        boolean sawAbstractCompilerFindResource = false;
+        boolean sawOptionalGet = false;
+
+        for (StackTraceElement stackTraceElement : throwable.getStackTrace()) {
+            if (ABSTRACT_COMPILER_RESOURCE_FINDER.equals(stackTraceElement.getClassName())
+                    && "findResource".equals(stackTraceElement.getMethodName())) {
+                sawAbstractCompilerFindResource = true;
+            }
+            if (("java.util.Optional".equals(stackTraceElement.getClassName())
+                    || "org.codehaus.commons.compiler.java8.java.util.Optional".equals(stackTraceElement.getClassName()))
+                    && "get".equals(stackTraceElement.getMethodName())) {
+                sawOptionalGet = true;
+            }
+        }
+
+        return sawAbstractCompilerFindResource && sawOptionalGet;
     }
 }
