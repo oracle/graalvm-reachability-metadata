@@ -11,7 +11,11 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
     testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+    testImplementation 'org.springframework:spring-web'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'com.google.code.gson:gson'
     testImplementation 'org.flywaydb:flyway-core:8.0.5'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
