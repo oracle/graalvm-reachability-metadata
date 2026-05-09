@@ -9,14 +9,18 @@ package org_apache_hadoop.hadoop_yarn_client;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationResponse;
 import org.apache.hadoop.yarn.api.records.ApplicationAccessType;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
@@ -36,10 +40,13 @@ import org.apache.hadoop.yarn.api.records.Token;
 import org.apache.hadoop.yarn.client.api.AMRMClient;
 import org.apache.hadoop.yarn.client.api.NMClient;
 import org.apache.hadoop.yarn.client.api.NMTokenCache;
+import org.apache.hadoop.yarn.client.api.SharedCacheClient;
 import org.apache.hadoop.yarn.client.api.YarnClientApplication;
 import org.apache.hadoop.yarn.client.api.async.AMRMClientAsync;
 import org.apache.hadoop.yarn.client.api.async.NMClientAsync;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class Hadoop_yarn_clientTest {
     private static final int MEMORY_MB = 128;
@@ -130,6 +137,34 @@ public class Hadoop_yarn_clientTest {
             assertThat(NMTokenCache.getNMToken("node-b:2345")).isSameAs(token);
         } finally {
             singleton.removeToken("node-b:2345");
+        }
+    }
+
+    @Test
+    void sharedCacheClientComputesStableChecksumsForLocalFiles(@TempDir File temporaryDirectory) throws IOException {
+        File firstFile = new File(temporaryDirectory, "first-resource.txt");
+        File secondFile = new File(temporaryDirectory, "second-resource.txt");
+        File differentFile = new File(temporaryDirectory, "different-resource.txt");
+        byte[] resourceBytes = "shared-cache-resource".getBytes(StandardCharsets.UTF_8);
+        Files.write(firstFile.toPath(), resourceBytes);
+        Files.write(secondFile.toPath(), resourceBytes);
+        Files.write(differentFile.toPath(), "different-shared-cache-resource".getBytes(StandardCharsets.UTF_8));
+
+        SharedCacheClient client = SharedCacheClient.createSharedCacheClient();
+        YarnConfiguration configuration = new YarnConfiguration();
+        configuration.setBoolean("fs.file.impl.disable.cache", true);
+        try {
+            client.init(configuration);
+
+            String firstChecksum = client.getFileChecksum(new Path(firstFile.toURI()));
+            String secondChecksum = client.getFileChecksum(new Path(secondFile.toURI()));
+            String differentChecksum = client.getFileChecksum(new Path(differentFile.toURI()));
+
+            assertThat(firstChecksum).isNotBlank();
+            assertThat(secondChecksum).isEqualTo(firstChecksum);
+            assertThat(differentChecksum).isNotEqualTo(firstChecksum);
+        } finally {
+            client.stop();
         }
     }
 
