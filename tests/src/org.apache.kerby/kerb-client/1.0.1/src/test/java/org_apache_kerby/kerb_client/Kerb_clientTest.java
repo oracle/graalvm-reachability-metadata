@@ -32,8 +32,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,6 +60,41 @@ public class Kerb_clientTest {
         assertThat(config.getTgsPrincipal()).isEqualTo("krbtgt/EXAMPLE.TEST@EXAMPLE.TEST");
         assertThat(config.getTicketLifetime()).isEqualTo(1234L);
         assertThat(config.getRenewLifetime()).isEqualTo(5678L);
+    }
+
+    @Test
+    void loadsKrb5ConfFileAndResolvesRealmKdcEntries() throws Exception {
+        Path krb5Conf = temporaryDirectory.resolve("krb5.conf");
+        Files.writeString(krb5Conf, """
+                [libdefaults]
+                    %s = FILE.TEST
+                    %s = config-host.example.test
+                    %s = 10088
+                    %s = 10089
+                [realms]
+                    FILE.TEST = {
+                        kdc = first-kdc.example.test:10088
+                        kdc = second-kdc.example.test:10089
+                    }
+                """.formatted(
+                KrbConfigKey.DEFAULT_REALM.getPropertyKey(),
+                KrbConfigKey.KDC_HOST.getPropertyKey(),
+                KrbConfigKey.KDC_TCP_PORT.getPropertyKey(),
+                KrbConfigKey.KDC_UDP_PORT.getPropertyKey()));
+
+        KrbConfig config = ClientUtil.getConfig(temporaryDirectory.toFile());
+        KrbSetting setting = new KrbSetting(config);
+        List<String> kdcList = ClientUtil.getKDCList(setting);
+
+        assertThat(config.getDefaultRealm()).isEqualTo("FILE.TEST");
+        assertThat(config.getKdcRealm()).isEqualTo("FILE.TEST");
+        assertThat(config.getKdcHost()).isEqualTo("config-host.example.test");
+        assertThat(config.getKdcTcpPort()).isEqualTo(10088);
+        assertThat(config.getKdcUdpPort()).isEqualTo(10089);
+        assertThat(config.getRealmSectionItems("FILE.TEST", "kdc"))
+                .containsExactlyInAnyOrder("first-kdc.example.test:10088", "second-kdc.example.test:10089");
+        assertThat(kdcList)
+                .contains("config-host.example.test", "first-kdc.example.test:10088", "second-kdc.example.test:10089");
     }
 
     @Test
