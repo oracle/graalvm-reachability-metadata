@@ -203,6 +203,65 @@ public class Doxia_module_aptTest {
     }
 
     @Test
+    void parserEmitsEventsForDeepSectionHierarchyAndIgnoresComments() throws Exception {
+        String document = String.join("\n",
+                "~~ Leading comments are ignored before the first block",
+                "Top Section",
+                "",
+                "~~ Comments between sections do not become text events",
+                "* Child Section",
+                "",
+                "** Grandchild Section",
+                "",
+                "*** Great Grandchild Section",
+                "",
+                "**** Leaf Section",
+                "",
+                " Leaf paragraph.",
+                "",
+                "~~ Trailing comments are ignored after content",
+                "");
+        RecordingSink sink = new RecordingSink();
+
+        new AptParser().parse(new StringReader(document), sink);
+
+        assertThat(sink.events).containsSubsequence(
+                "head",
+                "head_",
+                "body",
+                "section1",
+                "sectionTitle1",
+                "text:Top Section",
+                "sectionTitle1_",
+                "section2",
+                "sectionTitle2",
+                "text:Child Section",
+                "sectionTitle2_",
+                "section3",
+                "sectionTitle3",
+                "text:Grandchild Section",
+                "sectionTitle3_",
+                "section4",
+                "sectionTitle4",
+                "text:Great Grandchild Section",
+                "sectionTitle4_",
+                "section5",
+                "sectionTitle5",
+                "text:Leaf Section",
+                "sectionTitle5_",
+                "paragraph",
+                "text:Leaf paragraph.",
+                "paragraph_",
+                "section5_",
+                "section4_",
+                "section3_",
+                "section2_",
+                "section1_",
+                "body_");
+        assertThat(sink.events).allMatch(event -> !event.contains("comment"));
+    }
+
+    @Test
     void parserReportsMarkupErrorsWithSourceLocation() {
         AptParseException exception = assertThrows(AptParseException.class, () -> new AptParser().parse(
                 new StringReader("""
@@ -369,6 +428,36 @@ public class Doxia_module_aptTest {
         }
 
         @Override
+        public void section3() {
+            events.add("section3");
+        }
+
+        @Override
+        public void section3_() {
+            events.add("section3_");
+        }
+
+        @Override
+        public void section4() {
+            events.add("section4");
+        }
+
+        @Override
+        public void section4_() {
+            events.add("section4_");
+        }
+
+        @Override
+        public void section5() {
+            events.add("section5");
+        }
+
+        @Override
+        public void section5_() {
+            events.add("section5_");
+        }
+
+        @Override
         public void sectionTitle1() {
             events.add("sectionTitle1");
         }
@@ -386,6 +475,36 @@ public class Doxia_module_aptTest {
         @Override
         public void sectionTitle2_() {
             events.add("sectionTitle2_");
+        }
+
+        @Override
+        public void sectionTitle3() {
+            events.add("sectionTitle3");
+        }
+
+        @Override
+        public void sectionTitle3_() {
+            events.add("sectionTitle3_");
+        }
+
+        @Override
+        public void sectionTitle4() {
+            events.add("sectionTitle4");
+        }
+
+        @Override
+        public void sectionTitle4_() {
+            events.add("sectionTitle4_");
+        }
+
+        @Override
+        public void sectionTitle5() {
+            events.add("sectionTitle5");
+        }
+
+        @Override
+        public void sectionTitle5_() {
+            events.add("sectionTitle5_");
         }
 
         @Override
