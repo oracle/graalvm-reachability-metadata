@@ -10,6 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cache.Cache;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.cache.transaction.AbstractTransactionSupportingCacheManager;
 import org.springframework.cache.transaction.TransactionAwareCacheDecorator;
 import org.springframework.cache.transaction.TransactionAwareCacheManagerProxy;
 import org.springframework.mail.MailAuthenticationException;
@@ -199,6 +202,36 @@ public class Spring_context_supportTest {
         assertThat(targetManager.getCache("users").get("alice", String.class)).isEqualTo("administrator");
     }
 
+    @Test
+    void abstractTransactionSupportingCacheManagerDecoratesInitialAndDynamicCachesWhenEnabled() {
+        DynamicTransactionSupportingCacheManager manager = new DynamicTransactionSupportingCacheManager();
+        manager.setTransactionAware(true);
+        manager.afterPropertiesSet();
+
+        assertThat(manager.isTransactionAware()).isTrue();
+        assertThat(manager.getCacheNames()).containsExactly("initial");
+        assertThat(manager.getCache("initial")).isInstanceOf(TransactionAwareCacheDecorator.class);
+
+        Cache dynamicCache = manager.getCache("dynamic");
+        assertThat(dynamicCache).isInstanceOf(TransactionAwareCacheDecorator.class);
+        assertThat(manager.getCacheNames()).containsExactlyInAnyOrder("initial", "dynamic");
+
+        completeSynchronizedTransaction(() -> {
+            dynamicCache.put("report", "ready");
+            assertThat(manager.targetCache("dynamic").get("report")).isNull();
+        });
+        assertThat(manager.targetCache("dynamic").get("report", String.class)).isEqualTo("ready");
+
+        DynamicTransactionSupportingCacheManager nonTransactionAwareManager =
+                new DynamicTransactionSupportingCacheManager();
+        nonTransactionAwareManager.setTransactionAware(false);
+        nonTransactionAwareManager.afterPropertiesSet();
+
+        assertThat(nonTransactionAwareManager.isTransactionAware()).isFalse();
+        Cache directCache = nonTransactionAwareManager.getCache("initial");
+        assertThat(directCache).isSameAs(nonTransactionAwareManager.targetCache("initial"));
+    }
+
     private static void completeSynchronizedTransaction(Runnable action) {
         TransactionSynchronizationManager.initSynchronization();
         try {
@@ -218,6 +251,28 @@ public class Spring_context_supportTest {
         message.setSubject(subject);
         message.setText("Body for " + subject);
         return message;
+    }
+
+    private static final class DynamicTransactionSupportingCacheManager extends AbstractTransactionSupportingCacheManager {
+        private final Map<String, ConcurrentMapCache> caches = new LinkedHashMap<>();
+
+        @Override
+        protected Collection<? extends Cache> loadCaches() {
+            return Collections.singletonList(getOrCreateTargetCache("initial"));
+        }
+
+        @Override
+        protected Cache getMissingCache(String name) {
+            return getOrCreateTargetCache(name);
+        }
+
+        private ConcurrentMapCache getOrCreateTargetCache(String name) {
+            return caches.computeIfAbsent(name, ConcurrentMapCache::new);
+        }
+
+        private ConcurrentMapCache targetCache(String name) {
+            return caches.get(name);
+        }
     }
 
     private static final class RecordingMailSender implements MailSender {
