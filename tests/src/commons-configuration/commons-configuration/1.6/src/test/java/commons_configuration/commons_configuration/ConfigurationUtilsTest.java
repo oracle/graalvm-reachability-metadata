@@ -36,11 +36,27 @@ public class ConfigurationUtilsTest {
     @Test
     public void getUrlConvertsAbsoluteFileThroughUriReflection() throws Exception {
         Path file = Files.createTempFile("configuration-utils", ".properties");
+        String originalJavaVersion = useLegacyJavaVersionString();
         try {
             URL url = ConfigurationUtils.getURL(null, file.toString());
 
             assertThat(url).isEqualTo(file.toUri().toURL());
         } finally {
+            restoreJavaVersionString(originalJavaVersion);
+            Files.deleteIfExists(file);
+        }
+    }
+
+    @Test
+    public void locateConvertsAbsoluteFileThroughUriReflection() throws Exception {
+        Path file = Files.createTempFile("configuration-utils-locate", ".properties");
+        String originalJavaVersion = useLegacyJavaVersionString();
+        try {
+            URL url = ConfigurationUtils.locate(null, file.toString());
+
+            assertThat(url).isEqualTo(file.toUri().toURL());
+        } finally {
+            restoreJavaVersionString(originalJavaVersion);
             Files.deleteIfExists(file);
         }
     }
@@ -78,6 +94,21 @@ public class ConfigurationUtilsTest {
             assertThat(properties.getProperty("loaded")).isEqualTo("true");
         } finally {
             currentThread.setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    private static String useLegacyJavaVersionString() {
+        // Commons Lang 2.x only recognizes pre-Java-9 version strings in this compatibility check.
+        String originalJavaVersion = System.getProperty("java.version");
+        System.setProperty("java.version", "1.8.0");
+        return originalJavaVersion;
+    }
+
+    private static void restoreJavaVersionString(String originalJavaVersion) {
+        if (originalJavaVersion == null) {
+            System.clearProperty("java.version");
+        } else {
+            System.setProperty("java.version", originalJavaVersion);
         }
     }
 
