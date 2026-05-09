@@ -9,18 +9,22 @@ package com_fasterxml_jackson_jaxrs.jackson_jaxrs_base;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
+import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper;
+import com.fasterxml.jackson.jaxrs.base.JsonParseExceptionMapper;
 import com.fasterxml.jackson.jaxrs.base.NoContentExceptionSupplier;
 import com.fasterxml.jackson.jaxrs.base.ProviderBase;
 import com.fasterxml.jackson.jaxrs.base.nocontent.JaxRS1NoContentExceptionSupplier;
@@ -44,16 +48,34 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.Variant;
+import javax.ws.rs.ext.RuntimeDelegate;
+import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ProviderBaseTest {
     private static final Annotation[] NO_ANNOTATIONS = new Annotation[0];
@@ -320,6 +342,27 @@ public class ProviderBaseTest {
     }
 
     @Test
+    public void exceptionMappersReturnPlainTextBadRequestResponsesForJacksonFailures() {
+        RuntimeDelegate.setInstance(new TestRuntimeDelegate());
+        ObjectMapper mapper = new ObjectMapper();
+
+        JsonParseException parseException = assertThrows(JsonParseException.class, () -> {
+            try (JsonParser parser = mapper.getFactory().createParser("{\"text\":\"unterminated")) {
+                while (parser.nextToken() != null) {
+                    // Consume tokens until the parser reports the malformed JSON input.
+                }
+            }
+        });
+        Response parseResponse = new JsonParseExceptionMapper().toResponse(parseException);
+        assertBadRequestPlainTextResponse(parseResponse, parseException);
+
+        JsonMappingException mappingException = assertThrows(JsonMappingException.class,
+                () -> mapper.readValue("{\"text\":\"ok\",\"count\":\"not-a-number\"}", Message.class));
+        Response mappingResponse = new JsonMappingExceptionMapper().toResponse(mappingException);
+        assertBadRequestPlainTextResponse(mappingResponse, mappingException);
+    }
+
+    @Test
     public void jaxRsFeatureMasksCollectAllDefaults() {
         int defaults = JaxRSFeature.collectDefaults();
 
@@ -333,6 +376,14 @@ public class ProviderBaseTest {
     @SuppressWarnings("unchecked")
     private static Class<Object> objectClass(Class<?> rawClass) {
         return (Class<Object>) rawClass;
+    }
+
+    private static void assertBadRequestPlainTextResponse(Response response, Exception exception) {
+        assertThat(response.getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+        assertThat(response.getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
+        assertThat(response.getMediaType()).isEqualTo(MediaType.TEXT_PLAIN_TYPE);
+        assertThat(response.hasEntity()).isTrue();
+        assertThat(response.getEntity()).isEqualTo(exception.getMessage());
     }
 
     private static JacksonFeatures jacksonFeaturesAnnotation() {
@@ -429,6 +480,415 @@ public class ProviderBaseTest {
         ScopedMessage(String visible, String hidden) {
             this.visible = visible;
             this.hidden = hidden;
+        }
+    }
+
+    private static final class TestRuntimeDelegate extends RuntimeDelegate {
+        @Override
+        public UriBuilder createUriBuilder() {
+            throw new UnsupportedOperationException("URI building is not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder createResponseBuilder() {
+            return new TestResponseBuilder();
+        }
+
+        @Override
+        public Variant.VariantListBuilder createVariantListBuilder() {
+            throw new UnsupportedOperationException("Variant building is not used by these tests");
+        }
+
+        @Override
+        public <T> T createEndpoint(Application application, Class<T> endpointType) {
+            throw new UnsupportedOperationException("Endpoint creation is not used by these tests");
+        }
+
+        @Override
+        public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
+            throw new UnsupportedOperationException("Header delegates are not used by these tests");
+        }
+
+        @Override
+        public Link.Builder createLinkBuilder() {
+            throw new UnsupportedOperationException("Link building is not used by these tests");
+        }
+    }
+
+    private static final class TestResponseBuilder extends Response.ResponseBuilder {
+        private int status = Response.Status.OK.getStatusCode();
+        private Response.StatusType statusInfo = Response.Status.OK;
+        private Object entity;
+        private MediaType mediaType;
+        private final MultivaluedMap<String, Object> metadata = new MultivaluedHashMap<>();
+
+        @Override
+        public Response build() {
+            return new TestResponse(status, statusInfo, entity, mediaType, metadata);
+        }
+
+        @Override
+        public Response.ResponseBuilder clone() {
+            TestResponseBuilder builder = new TestResponseBuilder();
+            builder.status = status;
+            builder.statusInfo = statusInfo;
+            builder.entity = entity;
+            builder.mediaType = mediaType;
+            builder.metadata.putAll(metadata);
+            return builder;
+        }
+
+        @Override
+        public Response.ResponseBuilder status(int status) {
+            return status(status, defaultReasonPhrase(status));
+        }
+
+        @Override
+        public Response.ResponseBuilder status(int status, String reasonPhrase) {
+            this.status = status;
+            this.statusInfo = new TestStatusType(status, reasonPhrase);
+            return this;
+        }
+
+        @Override
+        public Response.ResponseBuilder entity(Object entity) {
+            this.entity = entity;
+            return this;
+        }
+
+        @Override
+        public Response.ResponseBuilder entity(Object entity, Annotation[] annotations) {
+            return entity(entity);
+        }
+
+        @Override
+        public Response.ResponseBuilder allow(String... methods) {
+            throw new UnsupportedOperationException("Allowed methods are not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder allow(Set<String> methods) {
+            throw new UnsupportedOperationException("Allowed methods are not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder cacheControl(CacheControl cacheControl) {
+            throw new UnsupportedOperationException("Cache control is not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder encoding(String encoding) {
+            throw new UnsupportedOperationException("Encoding is not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder header(String name, Object value) {
+            metadata.add(name, value);
+            return this;
+        }
+
+        @Override
+        public Response.ResponseBuilder replaceAll(MultivaluedMap<String, Object> metadata) {
+            this.metadata.clear();
+            this.metadata.putAll(metadata);
+            return this;
+        }
+
+        @Override
+        public Response.ResponseBuilder language(String language) {
+            throw new UnsupportedOperationException("Language is not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder language(Locale language) {
+            throw new UnsupportedOperationException("Language is not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder type(MediaType mediaType) {
+            this.mediaType = mediaType;
+            metadata.putSingle("Content-Type", mediaType);
+            return this;
+        }
+
+        @Override
+        public Response.ResponseBuilder type(String type) {
+            if (MediaType.TEXT_PLAIN.equals(type)) {
+                return type(MediaType.TEXT_PLAIN_TYPE);
+            }
+            throw new UnsupportedOperationException("Only text/plain response media type is used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder variant(Variant variant) {
+            throw new UnsupportedOperationException("Variants are not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder contentLocation(URI location) {
+            throw new UnsupportedOperationException("Content location is not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder cookie(NewCookie... cookies) {
+            throw new UnsupportedOperationException("Cookies are not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder expires(Date expires) {
+            throw new UnsupportedOperationException("Expiration is not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder lastModified(Date lastModified) {
+            throw new UnsupportedOperationException("Last modified is not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder location(URI location) {
+            throw new UnsupportedOperationException("Location is not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder tag(EntityTag tag) {
+            throw new UnsupportedOperationException("Entity tags are not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder tag(String tag) {
+            throw new UnsupportedOperationException("Entity tags are not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder variants(Variant... variants) {
+            throw new UnsupportedOperationException("Variants are not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder variants(List<Variant> variants) {
+            throw new UnsupportedOperationException("Variants are not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder links(Link... links) {
+            throw new UnsupportedOperationException("Links are not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder link(URI uri, String rel) {
+            throw new UnsupportedOperationException("Links are not used by these tests");
+        }
+
+        @Override
+        public Response.ResponseBuilder link(String uri, String rel) {
+            throw new UnsupportedOperationException("Links are not used by these tests");
+        }
+
+        private static String defaultReasonPhrase(int status) {
+            Response.Status matchingStatus = Response.Status.fromStatusCode(status);
+            if (matchingStatus == null) {
+                return "";
+            }
+            return matchingStatus.getReasonPhrase();
+        }
+    }
+
+    private static final class TestResponse extends Response {
+        private final int status;
+        private final Response.StatusType statusInfo;
+        private final Object entity;
+        private final MediaType mediaType;
+        private final MultivaluedMap<String, Object> metadata;
+
+        private TestResponse(int status, Response.StatusType statusInfo, Object entity, MediaType mediaType,
+                             MultivaluedMap<String, Object> metadata) {
+            this.status = status;
+            this.statusInfo = statusInfo;
+            this.entity = entity;
+            this.mediaType = mediaType;
+            this.metadata = new MultivaluedHashMap<>(metadata);
+        }
+
+        @Override
+        public int getStatus() {
+            return status;
+        }
+
+        @Override
+        public Response.StatusType getStatusInfo() {
+            return statusInfo;
+        }
+
+        @Override
+        public Object getEntity() {
+            return entity;
+        }
+
+        @Override
+        public <T> T readEntity(Class<T> entityType) {
+            return entityType.cast(entity);
+        }
+
+        @Override
+        public <T> T readEntity(GenericType<T> entityType) {
+            throw new UnsupportedOperationException("Generic entity reads are not used by these tests");
+        }
+
+        @Override
+        public <T> T readEntity(Class<T> entityType, Annotation[] annotations) {
+            return readEntity(entityType);
+        }
+
+        @Override
+        public <T> T readEntity(GenericType<T> entityType, Annotation[] annotations) {
+            throw new UnsupportedOperationException("Generic entity reads are not used by these tests");
+        }
+
+        @Override
+        public boolean hasEntity() {
+            return entity != null;
+        }
+
+        @Override
+        public boolean bufferEntity() {
+            return true;
+        }
+
+        @Override
+        public void close() {
+            // This in-memory response does not hold resources.
+        }
+
+        @Override
+        public MediaType getMediaType() {
+            return mediaType;
+        }
+
+        @Override
+        public Locale getLanguage() {
+            return null;
+        }
+
+        @Override
+        public int getLength() {
+            return -1;
+        }
+
+        @Override
+        public Set<String> getAllowedMethods() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Map<String, NewCookie> getCookies() {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        public EntityTag getEntityTag() {
+            return null;
+        }
+
+        @Override
+        public Date getDate() {
+            return null;
+        }
+
+        @Override
+        public Date getLastModified() {
+            return null;
+        }
+
+        @Override
+        public URI getLocation() {
+            return null;
+        }
+
+        @Override
+        public Set<Link> getLinks() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public boolean hasLink(String relation) {
+            return false;
+        }
+
+        @Override
+        public Link getLink(String relation) {
+            return null;
+        }
+
+        @Override
+        public Link.Builder getLinkBuilder(String relation) {
+            return null;
+        }
+
+        @Override
+        public MultivaluedMap<String, Object> getMetadata() {
+            return metadata;
+        }
+
+        @Override
+        public MultivaluedMap<String, String> getStringHeaders() {
+            MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+            for (Map.Entry<String, List<Object>> entry : metadata.entrySet()) {
+                for (Object value : entry.getValue()) {
+                    headers.add(entry.getKey(), String.valueOf(value));
+                }
+            }
+            return headers;
+        }
+
+        @Override
+        public String getHeaderString(String name) {
+            return getStringHeaders().getFirst(name);
+        }
+    }
+
+    private static final class TestStatusType implements Response.StatusType {
+        private final int statusCode;
+        private final String reasonPhrase;
+
+        private TestStatusType(int statusCode, String reasonPhrase) {
+            this.statusCode = statusCode;
+            this.reasonPhrase = reasonPhrase;
+        }
+
+        @Override
+        public int getStatusCode() {
+            return statusCode;
+        }
+
+        @Override
+        public Response.Status.Family getFamily() {
+            return Response.Status.Family.familyOf(statusCode);
+        }
+
+        @Override
+        public String getReasonPhrase() {
+            return reasonPhrase;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof Response.StatusType)) {
+                return false;
+            }
+            Response.StatusType that = (Response.StatusType) other;
+            return statusCode == that.getStatusCode() && getFamily() == that.getFamily()
+                    && reasonPhrase.equals(that.getReasonPhrase());
+        }
+
+        @Override
+        public int hashCode() {
+            int result = statusCode;
+            result = 31 * result + getFamily().hashCode();
+            result = 31 * result + reasonPhrase.hashCode();
+            return result;
         }
     }
 
