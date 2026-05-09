@@ -33,6 +33,8 @@ case class JacksonAccount(name: String, score: Int)
 
 case class JacksonFieldMappedAccount(givenName: String, accountStatus: String, loginCount: Int)
 
+case class JacksonOptionalProfile(name: String, email: Option[String], scores: Option[List[Int]])
+
 sealed trait JacksonNotification
 
 case class JacksonEmailNotification(subject: String, recipient: String) extends JacksonNotification
@@ -257,6 +259,34 @@ class Json4s_jackson_2_13Test {
       """{"given_name":"Grace","status":"locked","loginCount":3}"""
     )
     assertEquals(JacksonFieldMappedAccount("Grace", "locked", 3), restored)
+  }
+
+  @Test
+  def readsAndWritesOptionalCaseClassMembers(): Unit = {
+    implicit val formats: Formats = JacksonSerialization.formats(NoTypeHints)
+
+    val profile: JacksonOptionalProfile = JacksonOptionalProfile(
+      name = "Ada",
+      email = Some("ada@example.com"),
+      scores = Some(List(10, 20))
+    )
+    val jsonText: String = JacksonSerialization.write(profile)
+    val parsed: JValue = parse(jsonText)
+
+    assertEquals(JString("Ada"), parsed \ "name")
+    assertEquals(JString("ada@example.com"), parsed \ "email")
+    assertEquals(JArray(List(JInt(10), JInt(20))), parsed \ "scores")
+    assertEquals(profile, JacksonSerialization.read[JacksonOptionalProfile](jsonText))
+
+    val missingOptionalMembers: JacksonOptionalProfile = JacksonSerialization.read[JacksonOptionalProfile](
+      """{"name":"Grace"}"""
+    )
+    assertEquals(JacksonOptionalProfile("Grace", None, None), missingOptionalMembers)
+
+    val nullOptionalMembers: JacksonOptionalProfile = JacksonSerialization.read[JacksonOptionalProfile](
+      """{"name":"Linus","email":null,"scores":null}"""
+    )
+    assertEquals(JacksonOptionalProfile("Linus", None, None), nullOptionalMembers)
   }
 
   @Test
