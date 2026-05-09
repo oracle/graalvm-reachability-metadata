@@ -8,6 +8,7 @@ package jakarta_resource.jakarta_resource_api;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.security.Principal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.EventObject;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.security.auth.Subject;
@@ -39,18 +41,26 @@ import jakarta.resource.cci.RecordFactory;
 import jakarta.resource.cci.ResourceAdapterMetaData;
 import jakarta.resource.cci.ResourceWarning;
 import jakarta.resource.cci.ResultSetInfo;
+import jakarta.resource.spi.ActivationSpec;
+import jakarta.resource.spi.BootstrapContext;
 import jakarta.resource.spi.ConnectionEvent;
 import jakarta.resource.spi.ConnectionEventListener;
 import jakarta.resource.spi.ConnectionManager;
 import jakarta.resource.spi.ConnectionRequestInfo;
 import jakarta.resource.spi.EISSystemException;
+import jakarta.resource.spi.InvalidPropertyException;
 import jakarta.resource.spi.ManagedConnection;
 import jakarta.resource.spi.ManagedConnectionFactory;
 import jakarta.resource.spi.ManagedConnectionMetaData;
+import jakarta.resource.spi.ResourceAdapter;
 import jakarta.resource.spi.ResourceAdapterInternalException;
 import jakarta.resource.spi.RetryableException;
 import jakarta.resource.spi.RetryableUnavailableException;
+import jakarta.resource.spi.UnavailableException;
 import jakarta.resource.spi.ValidatingManagedConnectionFactory;
+import jakarta.resource.spi.XATerminator;
+import jakarta.resource.spi.endpoint.MessageEndpoint;
+import jakarta.resource.spi.endpoint.MessageEndpointFactory;
 import jakarta.resource.spi.security.PasswordCredential;
 import jakarta.resource.spi.work.ExecutionContext;
 import jakarta.resource.spi.work.HintsContext;
@@ -59,10 +69,14 @@ import jakarta.resource.spi.work.TransactionContext;
 import jakarta.resource.spi.work.Work;
 import jakarta.resource.spi.work.WorkAdapter;
 import jakarta.resource.spi.work.WorkCompletedException;
+import jakarta.resource.spi.work.WorkContext;
 import jakarta.resource.spi.work.WorkContextErrorCodes;
 import jakarta.resource.spi.work.WorkEvent;
 import jakarta.resource.spi.work.WorkException;
+import jakarta.resource.spi.work.WorkListener;
+import jakarta.resource.spi.work.WorkManager;
 import jakarta.resource.spi.work.WorkRejectedException;
+import jakarta.transaction.TransactionSynchronizationRegistry;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -298,6 +312,425 @@ public class JakartaResourceApiTest {
         assertThat(((SimpleManagedConnection) managedConnection).isCleaned()).isTrue();
         managedConnection.destroy();
         assertThat(((SimpleManagedConnection) managedConnection).isDestroyed()).isTrue();
+    }
+
+    @Test
+    void resourceAdapterLifecycleUsesBootstrapWorkManagerActivationSpecsAndXaRecovery() throws Exception {
+        RecordingWorkManager workManager = new RecordingWorkManager();
+        SimpleBootstrapContext bootstrapContext = new SimpleBootstrapContext(workManager);
+        SimpleResourceAdapter resourceAdapter = new SimpleResourceAdapter();
+
+        resourceAdapter.start(bootstrapContext);
+
+        assertThat(resourceAdapter.isStarted()).isTrue();
+        assertThat(resourceAdapter.getBootstrapContext()).isSameAs(bootstrapContext);
+        assertThat(bootstrapContext.getCreatedTimers()).hasSize(1);
+        assertThat(bootstrapContext.isContextSupported(TransactionContext.class)).isTrue();
+        assertThat(workManager.getCompletedWorkNames()).containsExactly("resource-adapter-start");
+
+        SimpleActivationSpec activationSpec = new SimpleActivationSpec("incoming-orders");
+        SimpleMessageEndpointFactory endpointFactory = new SimpleMessageEndpointFactory();
+        resourceAdapter.endpointActivation(endpointFactory, activationSpec);
+
+        assertThat(activationSpec.getResourceAdapter()).isSameAs(resourceAdapter);
+        assertThat(activationSpec.isValidated()).isTrue();
+        assertThat(resourceAdapter.getActiveDestinations()).containsExactly("incoming-orders");
+        assertThat(endpointFactory.getActivationName()).isEqualTo("incoming-orders-activation");
+        assertThat(endpointFactory.getEndpointClass()).isEqualTo(SimpleMessageEndpoint.class);
+        assertThat(endpointFactory.isDeliveryTransacted(null)).isFalse();
+
+        XAResource[] xaResources = resourceAdapter.getXAResources(new ActivationSpec[] {activationSpec});
+        MessageEndpoint endpoint = endpointFactory.createEndpoint(xaResources[0], WorkManager.IMMEDIATE);
+        endpoint.release();
+
+        assertThat(xaResources).containsExactly(activationSpec.getXaResource());
+        assertThat(endpointFactory.getCreatedEndpointCount()).isEqualTo(1);
+        assertThat(((SimpleMessageEndpoint) endpoint).isReleased()).isTrue();
+
+        assertThatThrownBy(() -> resourceAdapter.endpointActivation(endpointFactory, new SimpleActivationSpec("")))
+                .isInstanceOf(InvalidPropertyException.class)
+                .hasMessageContaining("destinationName");
+
+        resourceAdapter.endpointDeactivation(endpointFactory, activationSpec);
+        resourceAdapter.stop();
+
+        assertThat(resourceAdapter.getActiveDestinations()).isEmpty();
+        assertThat(resourceAdapter.isStarted()).isFalse();
+        assertThat(bootstrapContext.getXATerminator().recover(XAResource.TMSTARTRSCAN)).isEmpty();
+    }
+
+    private static final class SimpleResourceAdapter implements ResourceAdapter {
+        private final List<String> activeDestinations = new ArrayList<>();
+        private BootstrapContext bootstrapContext;
+        private Timer timer;
+        private boolean started;
+
+        @Override
+        public void start(BootstrapContext ctx) throws ResourceAdapterInternalException {
+            bootstrapContext = ctx;
+            try {
+                timer = ctx.createTimer();
+                ctx.getWorkManager().scheduleWork(new NamedWork("resource-adapter-start"));
+            } catch (UnavailableException | WorkException e) {
+                throw new ResourceAdapterInternalException(e);
+            }
+            started = true;
+        }
+
+        @Override
+        public void stop() {
+            if (timer != null) {
+                timer.cancel();
+            }
+            activeDestinations.clear();
+            started = false;
+        }
+
+        @Override
+        public void endpointActivation(MessageEndpointFactory endpointFactory, ActivationSpec spec)
+                throws ResourceException {
+            SimpleActivationSpec activationSpec = (SimpleActivationSpec) spec;
+            activationSpec.setResourceAdapter(this);
+            activationSpec.validate();
+            activeDestinations.add(activationSpec.getDestinationName());
+        }
+
+        @Override
+        public void endpointDeactivation(MessageEndpointFactory endpointFactory, ActivationSpec spec) {
+            activeDestinations.remove(((SimpleActivationSpec) spec).getDestinationName());
+        }
+
+        @Override
+        public XAResource[] getXAResources(ActivationSpec[] specs) {
+            XAResource[] resources = new XAResource[specs.length];
+            for (int i = 0; i < specs.length; i++) {
+                resources[i] = ((SimpleActivationSpec) specs[i]).getXaResource();
+            }
+            return resources;
+        }
+
+        private boolean isStarted() {
+            return started;
+        }
+
+        private BootstrapContext getBootstrapContext() {
+            return bootstrapContext;
+        }
+
+        private List<String> getActiveDestinations() {
+            return activeDestinations;
+        }
+    }
+
+    private static final class SimpleActivationSpec implements ActivationSpec {
+        private final String destinationName;
+        private final XAResource xaResource = new SimpleXAResource();
+        private ResourceAdapter resourceAdapter;
+        private boolean validated;
+
+        private SimpleActivationSpec(String destinationName) {
+            this.destinationName = destinationName;
+        }
+
+        @Override
+        public void validate() throws InvalidPropertyException {
+            if (destinationName == null || destinationName.isBlank()) {
+                throw new InvalidPropertyException("destinationName must not be blank");
+            }
+            validated = true;
+        }
+
+        @Override
+        public ResourceAdapter getResourceAdapter() {
+            return resourceAdapter;
+        }
+
+        @Override
+        public void setResourceAdapter(ResourceAdapter ra) {
+            resourceAdapter = ra;
+        }
+
+        private String getDestinationName() {
+            return destinationName;
+        }
+
+        private XAResource getXaResource() {
+            return xaResource;
+        }
+
+        private boolean isValidated() {
+            return validated;
+        }
+    }
+
+    private static final class SimpleBootstrapContext implements BootstrapContext {
+        private final RecordingWorkManager workManager;
+        private final SimpleXATerminator xaTerminator = new SimpleXATerminator();
+        private final List<Timer> createdTimers = new ArrayList<>();
+
+        private SimpleBootstrapContext(RecordingWorkManager workManager) {
+            this.workManager = workManager;
+        }
+
+        @Override
+        public Timer createTimer() {
+            Timer createdTimer = new Timer("jakarta-resource-api-test", true);
+            createdTimers.add(createdTimer);
+            return createdTimer;
+        }
+
+        @Override
+        public WorkManager getWorkManager() {
+            return workManager;
+        }
+
+        @Override
+        public XATerminator getXATerminator() {
+            return xaTerminator;
+        }
+
+        @Override
+        public boolean isContextSupported(Class<? extends WorkContext> workContextClass) {
+            return TransactionContext.class.equals(workContextClass);
+        }
+
+        @Override
+        public TransactionSynchronizationRegistry getTransactionSynchronizationRegistry() {
+            return null;
+        }
+
+        private List<Timer> getCreatedTimers() {
+            return createdTimers;
+        }
+    }
+
+    private static final class RecordingWorkManager implements WorkManager {
+        private final List<String> completedWorkNames = new ArrayList<>();
+
+        @Override
+        public void doWork(Work work) throws WorkException {
+            runWork(work, null);
+        }
+
+        @Override
+        public void doWork(Work work, long startTimeout, ExecutionContext execContext, WorkListener workListener)
+                throws WorkException {
+            runWork(work, workListener);
+        }
+
+        @Override
+        public long startWork(Work work) throws WorkException {
+            runWork(work, null);
+            return 0;
+        }
+
+        @Override
+        public long startWork(Work work, long startTimeout, ExecutionContext execContext, WorkListener workListener)
+                throws WorkException {
+            runWork(work, workListener);
+            return 0;
+        }
+
+        @Override
+        public void scheduleWork(Work work) throws WorkException {
+            runWork(work, null);
+        }
+
+        @Override
+        public void scheduleWork(Work work, long startTimeout, ExecutionContext execContext, WorkListener workListener)
+                throws WorkException {
+            runWork(work, workListener);
+        }
+
+        private void runWork(Work work, WorkListener listener) throws WorkException {
+            notify(listener, WorkEvent.WORK_ACCEPTED, work, null);
+            notify(listener, WorkEvent.WORK_STARTED, work, null);
+            try {
+                work.run();
+                if (work instanceof NamedWork) {
+                    completedWorkNames.add(((NamedWork) work).getName());
+                }
+                notify(listener, WorkEvent.WORK_COMPLETED, work, null);
+            } catch (RuntimeException e) {
+                WorkException workException = new WorkCompletedException("Work failed");
+                workException.initCause(e);
+                notify(listener, WorkEvent.WORK_COMPLETED, work, workException);
+                throw workException;
+            }
+        }
+
+        private void notify(WorkListener listener, int eventType, Work work, WorkException exception) {
+            if (listener == null) {
+                return;
+            }
+            WorkEvent event = new WorkEvent(this, eventType, work, exception, 0);
+            switch (eventType) {
+                case WorkEvent.WORK_ACCEPTED:
+                    listener.workAccepted(event);
+                    break;
+                case WorkEvent.WORK_STARTED:
+                    listener.workStarted(event);
+                    break;
+                case WorkEvent.WORK_COMPLETED:
+                    listener.workCompleted(event);
+                    break;
+                case WorkEvent.WORK_REJECTED:
+                    listener.workRejected(event);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported work event " + eventType);
+            }
+        }
+
+        private List<String> getCompletedWorkNames() {
+            return completedWorkNames;
+        }
+    }
+
+    private static final class NamedWork implements Work {
+        private final String name;
+
+        private NamedWork(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public void run() {
+        }
+
+        @Override
+        public void release() {
+        }
+
+        private String getName() {
+            return name;
+        }
+    }
+
+    private static final class SimpleMessageEndpointFactory implements MessageEndpointFactory {
+        private int createdEndpointCount;
+
+        @Override
+        public MessageEndpoint createEndpoint(XAResource xaResource) {
+            createdEndpointCount++;
+            return new SimpleMessageEndpoint();
+        }
+
+        @Override
+        public MessageEndpoint createEndpoint(XAResource xaResource, long timeout) {
+            return createEndpoint(xaResource);
+        }
+
+        @Override
+        public boolean isDeliveryTransacted(Method method) {
+            return false;
+        }
+
+        @Override
+        public String getActivationName() {
+            return "incoming-orders-activation";
+        }
+
+        @Override
+        public Class<?> getEndpointClass() {
+            return SimpleMessageEndpoint.class;
+        }
+
+        private int getCreatedEndpointCount() {
+            return createdEndpointCount;
+        }
+    }
+
+    private static final class SimpleMessageEndpoint implements MessageEndpoint {
+        private boolean released;
+
+        @Override
+        public void beforeDelivery(Method method) {
+        }
+
+        @Override
+        public void afterDelivery() {
+        }
+
+        @Override
+        public void release() {
+            released = true;
+        }
+
+        private boolean isReleased() {
+            return released;
+        }
+    }
+
+    private static final class SimpleXATerminator implements XATerminator {
+        @Override
+        public void commit(Xid xid, boolean onePhase) {
+        }
+
+        @Override
+        public void forget(Xid xid) {
+        }
+
+        @Override
+        public int prepare(Xid xid) {
+            return XAResource.XA_OK;
+        }
+
+        @Override
+        public Xid[] recover(int flag) {
+            return new Xid[0];
+        }
+
+        @Override
+        public void rollback(Xid xid) {
+        }
+    }
+
+    private static final class SimpleXAResource implements XAResource {
+        @Override
+        public void commit(Xid xid, boolean onePhase) {
+        }
+
+        @Override
+        public void end(Xid xid, int flags) {
+        }
+
+        @Override
+        public void forget(Xid xid) {
+        }
+
+        @Override
+        public int getTransactionTimeout() {
+            return 0;
+        }
+
+        @Override
+        public boolean isSameRM(XAResource xaResource) {
+            return xaResource == this;
+        }
+
+        @Override
+        public int prepare(Xid xid) {
+            return XA_OK;
+        }
+
+        @Override
+        public Xid[] recover(int flag) {
+            return new Xid[0];
+        }
+
+        @Override
+        public void rollback(Xid xid) {
+        }
+
+        @Override
+        public boolean setTransactionTimeout(int seconds) {
+            return true;
+        }
+
+        @Override
+        public void start(Xid xid, int flags) {
+        }
     }
 
     private static final class SimpleXid implements Xid {
