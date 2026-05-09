@@ -8,7 +8,7 @@ package org_apache_directory_server.apacheds_kerberos_codec;
 
 import org.junit.jupiter.api.Test;
 
-class Apacheds_kerberos_codecTest {
+public class Apacheds_kerberos_codecTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
