@@ -228,6 +228,26 @@ public class Doxia_module_xhtmlTest {
     }
 
     @Test
+    void parserConvertsAddressElementIntoAuthorMetadata() throws Exception {
+        String xhtml = """
+                <html>
+                  <head><title>Project Documentation</title><address>Documentation Team</address></head>
+                  <body><p>content</p></body>
+                </html>
+                """;
+        StringWriter writer = new StringWriter();
+        XhtmlParser parser = new XhtmlParser();
+
+        parser.parse(new StringReader(xhtml), new XhtmlSink(writer));
+
+        String html = writer.toString();
+        assertThat(html)
+                .contains("<title>Project Documentation</title>")
+                .contains("<meta name=\"author\" content=\"Documentation Team\" />")
+                .contains("<p>content</p>");
+    }
+
+    @Test
     void parserClosesNestedSectionsWhenHigherLevelHeadingStarts() throws Exception {
         String xhtml = """
                 <html>
