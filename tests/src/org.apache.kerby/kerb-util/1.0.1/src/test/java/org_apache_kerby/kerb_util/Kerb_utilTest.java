@@ -28,8 +28,14 @@ import org.apache.kerby.kerberos.kerb.keytab.KeytabEntry;
 import org.apache.kerby.kerberos.kerb.keytab.KeytabInputStream;
 import org.apache.kerby.kerberos.kerb.keytab.KeytabOutputStream;
 import org.apache.kerby.kerberos.kerb.type.KerberosTime;
+import org.apache.kerby.kerberos.kerb.type.ad.AuthorizationData;
+import org.apache.kerby.kerberos.kerb.type.ad.AuthorizationDataEntry;
+import org.apache.kerby.kerberos.kerb.type.ad.AuthorizationType;
 import org.apache.kerby.kerberos.kerb.type.base.EncryptionKey;
 import org.apache.kerby.kerberos.kerb.type.base.EncryptionType;
+import org.apache.kerby.kerberos.kerb.type.base.HostAddress;
+import org.apache.kerby.kerberos.kerb.type.base.HostAddresses;
+import org.apache.kerby.kerberos.kerb.type.base.HostAddrType;
 import org.apache.kerby.kerberos.kerb.type.base.NameType;
 import org.apache.kerby.kerberos.kerb.type.base.PrincipalName;
 import org.junit.jupiter.api.Test;
@@ -210,6 +216,43 @@ public class Kerb_utilTest {
     }
 
     @Test
+    void credentialCacheInputStreamReadsAddressesAuthorizationDataAndTicketFlags() throws IOException {
+        byte[] ipv4Address = new byte[] {127, 0, 0, 1};
+        byte[] ipv6Address = new byte[] {0x20, 0x01, 0x0d, (byte) 0xb8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+        byte[] authorizationPayload = new byte[] {11, 22, 33, 44};
+        int ticketFlags = 0x40000000;
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+        dataOutputStream.writeInt(2);
+        writeAddress(dataOutputStream, HostAddrType.ADDRTYPE_INET, ipv4Address);
+        writeAddress(dataOutputStream, HostAddrType.ADDRTYPE_INET6, ipv6Address);
+        dataOutputStream.writeInt(1);
+        writeAuthorizationDataEntry(dataOutputStream, AuthorizationType.AD_IF_RELEVANT, authorizationPayload);
+        dataOutputStream.writeInt(ticketFlags);
+        dataOutputStream.flush();
+
+        CredCacheInputStream inputStream = new CredCacheInputStream(
+                new ByteArrayInputStream(outputStream.toByteArray()));
+        HostAddresses addresses = inputStream.readAddr();
+        assertThat(addresses.getElements()).hasSize(2);
+        HostAddress inetAddress = addresses.getElements().get(0);
+        assertThat(inetAddress.getAddrType()).isEqualTo(HostAddrType.ADDRTYPE_INET);
+        assertThat(inetAddress.getAddress()).containsExactly(ipv4Address);
+        HostAddress inet6Address = addresses.getElements().get(1);
+        assertThat(inet6Address.getAddrType()).isEqualTo(HostAddrType.ADDRTYPE_INET6);
+        assertThat(inet6Address.getAddress()).containsExactly(ipv6Address);
+
+        AuthorizationData authorizationData = inputStream.readAuthzData();
+        assertThat(authorizationData.getElements()).hasSize(1);
+        AuthorizationDataEntry authorizationDataEntry = authorizationData.getElements().get(0);
+        assertThat(authorizationDataEntry.getAuthzType()).isEqualTo(AuthorizationType.AD_IF_RELEVANT);
+        assertThat(authorizationDataEntry.getAuthzData()).containsExactly(authorizationPayload);
+        assertThat(inputStream.readTicketFlags().getFlags()).isEqualTo(ticketFlags);
+        assertThat(inputStream.available()).isZero();
+    }
+
+    @Test
     void credentialCacheRejectsNullStreamsAndTruncatedOctets() throws IOException {
         CredentialCache cache = new CredentialCache();
         assertThatThrownBy(() -> cache.load((ByteArrayInputStream) null)).isInstanceOf(IllegalArgumentException.class);
@@ -231,6 +274,20 @@ public class Kerb_utilTest {
 
     private static PrincipalName principal(String principalName, NameType nameType) {
         return new PrincipalName(principalName, nameType);
+    }
+
+    private static void writeAddress(DataOutputStream dataOutputStream, HostAddrType addressType, byte[] address)
+            throws IOException {
+        dataOutputStream.writeShort(addressType.getValue());
+        dataOutputStream.writeInt(address.length);
+        dataOutputStream.write(address);
+    }
+
+    private static void writeAuthorizationDataEntry(DataOutputStream dataOutputStream,
+            AuthorizationType authorizationType, byte[] payload) throws IOException {
+        dataOutputStream.writeShort(authorizationType.getValue());
+        dataOutputStream.writeInt(payload.length);
+        dataOutputStream.write(payload);
     }
 
     private static KeytabEntry keytabEntry(PrincipalName principal, EncryptionType encryptionType, int kvno,
