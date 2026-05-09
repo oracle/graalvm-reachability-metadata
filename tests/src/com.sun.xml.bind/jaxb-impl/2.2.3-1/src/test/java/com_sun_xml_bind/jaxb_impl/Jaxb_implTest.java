@@ -26,10 +26,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementDecl;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
@@ -124,6 +128,34 @@ public class Jaxb_implTest {
         assertThat(copy.properties).containsEntry("host", "localhost");
         assertThat(copy.properties).containsEntry("port", "8080");
         assertThat(copy.properties.keySet()).containsExactly("host", "port");
+    }
+
+    @Test
+    void preservesMixedContentWithElementReferences() throws Exception {
+        JAXBContext context = JAXBContext.newInstance(Article.class, ArticleObjectFactory.class);
+        Article article = new Article();
+        ArticleObjectFactory objectFactory = new ArticleObjectFactory();
+        article.content.add("Read ");
+        article.content.add(objectFactory.createEmphasis("carefully"));
+        article.content.add(" before signing.");
+
+        String xml = marshal(context, article);
+
+        assertThat(xml).contains("<article>");
+        assertThat(xml).contains("Read ");
+        assertThat(xml).contains("<emphasis>carefully</emphasis>");
+        assertThat(xml).contains(" before signing.");
+
+        String input = "<article>Read <emphasis>carefully</emphasis> before signing.</article>";
+        Article copy = (Article) context.createUnmarshaller().unmarshal(new StringReader(input));
+
+        assertThat(copy.content).hasSize(3);
+        assertThat(copy.content.get(0)).isEqualTo("Read ");
+        assertThat(copy.content.get(1)).isInstanceOf(JAXBElement.class);
+        JAXBElement<?> emphasis = (JAXBElement<?>) copy.content.get(1);
+        assertThat(emphasis.getName()).isEqualTo(new QName("emphasis"));
+        assertThat(emphasis.getValue()).isEqualTo("carefully");
+        assertThat(copy.content.get(2)).isEqualTo(" before signing.");
     }
 
     @Test
@@ -412,6 +444,22 @@ public class Jaxb_implTest {
             super(id);
             this.title = title;
             this.durationMinutes = durationMinutes;
+        }
+    }
+
+    @XmlRootElement(name = "article")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Article {
+        @XmlMixed
+        @XmlElementRef(name = "emphasis", type = JAXBElement.class)
+        public List<Object> content = new ArrayList<>();
+    }
+
+    @XmlRegistry
+    public static class ArticleObjectFactory {
+        @XmlElementDecl(name = "emphasis")
+        public JAXBElement<String> createEmphasis(String value) {
+            return new JAXBElement<>(new QName("emphasis"), String.class, value);
         }
     }
 
