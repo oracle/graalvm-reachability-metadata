@@ -22,6 +22,10 @@ import org.apache.hadoop.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hadoop.shaded.org.apache.commons.codec.binary.Base64;
 import org.apache.hadoop.shaded.org.apache.commons.codec.binary.Hex;
 import org.apache.hadoop.shaded.org.apache.commons.codec.digest.DigestUtils;
+import org.apache.hadoop.shaded.org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.hadoop.shaded.org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.hadoop.shaded.org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.hadoop.shaded.org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.hadoop.shaded.org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.hadoop.shaded.org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.hadoop.shaded.org.apache.commons.math3.linear.LUDecomposition;
@@ -225,6 +229,33 @@ public class Hadoop_client_runtimeTest {
         assertThat(byteCount).isEqualTo(payload.length);
         assertThat(hexDigest).hasSize(64);
         assertThat(ImmutableList.copyOf(Ints.asList(1, 1, 2, 3, 5))).containsExactly(1, 1, 2, 3, 5);
+    }
+
+    @Test
+    void shadedCommonsCompressCreatesAndReadsTarArchives() throws IOException {
+        byte[] stdout = "container started\ncontainer stopped\n".getBytes(UTF_8);
+        ByteArrayOutputStream archive = new ByteArrayOutputStream();
+
+        try (TarArchiveOutputStream output = new TarArchiveOutputStream(archive)) {
+            TarArchiveEntry entry = new TarArchiveEntry("logs/application/stdout");
+            entry.setSize(stdout.length);
+            output.putArchiveEntry(entry);
+            output.write(stdout);
+            output.closeArchiveEntry();
+            output.finish();
+        }
+
+        try (TarArchiveInputStream input = new TarArchiveInputStream(new ByteArrayInputStream(archive.toByteArray()))) {
+            ArchiveEntry entry = input.getNextEntry();
+            byte[] restored = ByteStreams.toByteArray(input);
+
+            assertThat(entry).isNotNull();
+            assertThat(entry.getName()).isEqualTo("logs/application/stdout");
+            assertThat(entry.isDirectory()).isFalse();
+            assertThat(entry.getSize()).isEqualTo((long) stdout.length);
+            assertThat(restored).isEqualTo(stdout);
+            assertThat(input.getNextEntry()).isNull();
+        }
     }
 
     @Test
