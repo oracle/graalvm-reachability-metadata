@@ -143,6 +143,29 @@ public class Nimbus_jose_jwtTest {
     }
 
     @Test
+    void jwsVerificationHonorsCriticalHeaderParameterPolicy() throws Exception {
+        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256)
+                .criticalParams(Collections.singleton("tenant-policy"))
+                .customParam("tenant-policy", "required")
+                .keyID("critical-hmac")
+                .build();
+        JWSObject jwsObject = new JWSObject(header, new Payload("policy protected payload"));
+        jwsObject.sign(new MACSigner(HMAC_SECRET));
+
+        String serialized = jwsObject.serialize();
+        JWSObject parsed = JWSObject.parse(serialized);
+        assertEquals(Collections.singleton("tenant-policy"), parsed.getHeader().getCriticalParams());
+        assertEquals("required", parsed.getHeader().getCustomParam("tenant-policy"));
+
+        assertFalse(parsed.verify(new MACVerifier(HMAC_SECRET)));
+
+        MACVerifier policyAwareVerifier = new MACVerifier(HMAC_SECRET);
+        policyAwareVerifier.setIgnoredCriticalHeaderParameters(Collections.singleton("tenant-policy"));
+        assertTrue(parsed.verify(policyAwareVerifier));
+        assertEquals(JWSObject.State.VERIFIED, parsed.getState());
+    }
+
+    @Test
     void signedJoseObjectCanBeNestedAsPayload() throws Exception {
         JWSObject inner = new JWSObject(
                 new JWSHeader.Builder(JWSAlgorithm.HS256).keyID("nested-hmac").build(),
