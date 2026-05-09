@@ -16,7 +16,9 @@ import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.TaskCounter;
 import org.apache.hadoop.mapreduce.v2.api.MRClientProtocolPB;
 import org.apache.hadoop.mapreduce.v2.api.records.JobId;
+import org.apache.hadoop.mapreduce.v2.api.records.Phase;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId;
+import org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptState;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskId;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskType;
 import org.apache.hadoop.mapreduce.v2.app.ClusterInfo;
@@ -27,6 +29,7 @@ import org.apache.hadoop.mapreduce.v2.app.job.event.JobEventType;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptDiagnosticsUpdateEvent;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptEventType;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptKillEvent;
+import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptStatusUpdateEvent.TaskAttemptStatus;
 import org.apache.hadoop.mapreduce.v2.app.launcher.ContainerLauncher;
 import org.apache.hadoop.mapreduce.v2.app.launcher.ContainerLauncherEvent;
 import org.apache.hadoop.mapreduce.v2.app.rm.ContainerAllocator;
@@ -35,6 +38,8 @@ import org.apache.hadoop.mapreduce.v2.app.rm.ContainerRequestEvent;
 import org.apache.hadoop.mapreduce.v2.app.rm.ResourceCalculatorUtils;
 import org.apache.hadoop.mapreduce.v2.app.security.authorize.MRAMPolicyProvider;
 import org.apache.hadoop.mapreduce.v2.app.speculate.DataStatistics;
+import org.apache.hadoop.mapreduce.v2.app.speculate.Speculator;
+import org.apache.hadoop.mapreduce.v2.app.speculate.SpeculatorEvent;
 import org.apache.hadoop.mapreduce.v2.util.MRBuilderUtils;
 import org.apache.hadoop.security.authorize.Service;
 import org.apache.hadoop.security.token.TokenInfo;
@@ -145,6 +150,43 @@ public class Hadoop_mapreduce_client_appTest {
         assertThat(kill.getTaskAttemptID()).isSameAs(attemptId);
         assertThat(kill.getMessage()).isEqualTo("preempted");
         assertThat(kill.getRescheduleAttempt()).isTrue();
+    }
+
+    @Test
+    void speculatorEventsCaptureJobAttemptStatusAndContainerDemandChanges() {
+        JobId jobId = newJobId();
+        TaskAttemptId attemptId = newTaskAttemptId();
+        TaskId taskId = attemptId.getTaskId();
+        long timestamp = 1_714_000_123_000L;
+        TaskAttemptStatus status = new TaskAttemptStatus();
+        status.id = attemptId;
+        status.progress = 0.75f;
+        status.stateString = "shuffle in progress";
+        status.phase = Phase.SHUFFLE;
+        status.taskState = TaskAttemptState.RUNNING;
+
+        SpeculatorEvent jobCreated = new SpeculatorEvent(jobId, timestamp);
+        SpeculatorEvent attemptStarted = new SpeculatorEvent(attemptId, false, timestamp + 1);
+        SpeculatorEvent statusUpdated = new SpeculatorEvent(status, timestamp + 2);
+        SpeculatorEvent containerDemandChanged = new SpeculatorEvent(taskId, -1);
+
+        assertThat(jobCreated.getType()).isEqualTo(Speculator.EventType.JOB_CREATE);
+        assertThat(jobCreated.getJobID()).isSameAs(jobId);
+        assertThat(jobCreated.getTimestamp()).isEqualTo(timestamp);
+        assertThat(attemptStarted.getType()).isEqualTo(Speculator.EventType.ATTEMPT_START);
+        assertThat(attemptStarted.getTaskID()).isEqualTo(taskId);
+        assertThat(attemptStarted.getReportedStatus().id).isSameAs(attemptId);
+        assertThat(attemptStarted.getTimestamp()).isEqualTo(timestamp + 1);
+        assertThat(statusUpdated.getType()).isEqualTo(Speculator.EventType.ATTEMPT_STATUS_UPDATE);
+        assertThat(statusUpdated.getReportedStatus()).isSameAs(status);
+        assertThat(statusUpdated.getReportedStatus().progress).isEqualTo(0.75f);
+        assertThat(statusUpdated.getReportedStatus().stateString).isEqualTo("shuffle in progress");
+        assertThat(statusUpdated.getReportedStatus().phase).isEqualTo(Phase.SHUFFLE);
+        assertThat(statusUpdated.getReportedStatus().taskState).isEqualTo(TaskAttemptState.RUNNING);
+        assertThat(statusUpdated.getTimestamp()).isEqualTo(timestamp + 2);
+        assertThat(containerDemandChanged.getType()).isEqualTo(Speculator.EventType.TASK_CONTAINER_NEED_UPDATE);
+        assertThat(containerDemandChanged.getTaskID()).isSameAs(taskId);
+        assertThat(containerDemandChanged.containersNeededChange()).isEqualTo(-1);
     }
 
     @Test
