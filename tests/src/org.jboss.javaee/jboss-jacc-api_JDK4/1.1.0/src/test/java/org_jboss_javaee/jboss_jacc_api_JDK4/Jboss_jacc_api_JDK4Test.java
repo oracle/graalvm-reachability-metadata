@@ -9,6 +9,7 @@ package org_jboss_javaee.jboss_jacc_api_JDK4;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.lang.reflect.Proxy;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Permissions;
@@ -35,6 +36,7 @@ import javax.security.jacc.PolicyContextHandler;
 import javax.security.jacc.WebResourcePermission;
 import javax.security.jacc.WebRoleRefPermission;
 import javax.security.jacc.WebUserDataPermission;
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.Test;
 
@@ -150,6 +152,33 @@ public class Jboss_jacc_api_JDK4Test {
         assertThat(secureOrders.implies(secureDelete)).isFalse();
         assertThat(unconstrainedTransport.getActions()).isNull();
         assertThat(unconstrainedTransport.implies(secureGet)).isTrue();
+    }
+
+    @Test
+    void webPermissionsCreatedFromServletRequestsUseContextRelativeUrisAndTransport() {
+        HttpServletRequest secureRequest = servletRequest("/shop", "/shop/checkout/confirm", "POST", true);
+        WebResourcePermission resourcePermission = new WebResourcePermission(secureRequest);
+        WebUserDataPermission userDataPermission = new WebUserDataPermission(secureRequest);
+
+        assertThat(resourcePermission.getName()).isEqualTo("/checkout/confirm");
+        assertThat(resourcePermission.getActions()).isEqualTo("POST");
+        assertThat(resourcePermission.implies(new WebResourcePermission("/checkout/confirm", "POST"))).isTrue();
+        assertThat(resourcePermission.implies(new WebResourcePermission("/checkout/confirm", "GET"))).isFalse();
+
+        assertThat(userDataPermission.getName()).isEqualTo("/checkout/confirm");
+        assertThat(userDataPermission.getActions()).isEqualTo("POST:CONFIDENTIAL");
+        assertThat(userDataPermission.implies(new WebUserDataPermission("/checkout/confirm", "POST:CONFIDENTIAL")))
+                .isTrue();
+        assertThat(userDataPermission.implies(new WebUserDataPermission("/checkout/confirm", "POST"))).isFalse();
+
+        WebResourcePermission contextRootResource = new WebResourcePermission(
+                servletRequest("/shop", "/shop/", "GET", false));
+        WebUserDataPermission contextRootUserData = new WebUserDataPermission(
+                servletRequest("/shop", "/shop/", "GET", false));
+        assertThat(contextRootResource.getName()).isEmpty();
+        assertThat(contextRootResource.getActions()).isEqualTo("GET");
+        assertThat(contextRootUserData.getName()).isEmpty();
+        assertThat(contextRootUserData.getActions()).isEqualTo("GET");
     }
 
     @Test
@@ -285,6 +314,33 @@ public class Jboss_jacc_api_JDK4Test {
         Permissions permissions = new Permissions();
         permissions.add(permission);
         return permissions;
+    }
+
+    private static HttpServletRequest servletRequest(
+            String contextPath, String requestURI, String httpMethod, boolean secure) {
+        return (HttpServletRequest) Proxy.newProxyInstance(
+                Jboss_jacc_api_JDK4Test.class.getClassLoader(),
+                new Class<?>[] {HttpServletRequest.class},
+                (proxy, invokedMethod, arguments) -> {
+                    switch (invokedMethod.getName()) {
+                        case "getContextPath":
+                            return contextPath;
+                        case "getRequestURI":
+                            return requestURI;
+                        case "getMethod":
+                            return httpMethod;
+                        case "isSecure":
+                            return secure;
+                        case "toString":
+                            return "HttpServletRequest[" + httpMethod + " " + requestURI + "]";
+                        case "hashCode":
+                            return System.identityHashCode(proxy);
+                        case "equals":
+                            return proxy == arguments[0];
+                        default:
+                            throw new UnsupportedOperationException(invokedMethod.getName());
+                    }
+                });
     }
 
     public static final class RecordingPolicyContextHandler implements PolicyContextHandler {
