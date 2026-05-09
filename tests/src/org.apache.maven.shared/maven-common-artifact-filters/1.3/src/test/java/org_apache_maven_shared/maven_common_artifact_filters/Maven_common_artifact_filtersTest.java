@@ -9,8 +9,10 @@ package org_apache_maven_shared.maven_common_artifact_filters;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -20,6 +22,7 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.ScopeArtifactFilter;
+import org.apache.maven.shared.artifact.filter.StatisticsReportingArtifactFilter;
 import org.apache.maven.shared.artifact.filter.StrictPatternExcludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.StrictPatternIncludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterException;
@@ -30,6 +33,8 @@ import org.apache.maven.shared.artifact.filter.collection.GroupIdFilter;
 import org.apache.maven.shared.artifact.filter.collection.ProjectTransitivityFilter;
 import org.apache.maven.shared.artifact.filter.collection.ScopeFilter;
 import org.apache.maven.shared.artifact.filter.collection.TypeFilter;
+import org.codehaus.plexus.logging.AbstractLogger;
+import org.codehaus.plexus.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 public class Maven_common_artifact_filtersTest {
@@ -74,6 +79,31 @@ public class Maven_common_artifact_filtersTest {
         assertThat(filter.include(allowed)).isTrue();
         assertThat(filter.hasMissedCriteria()).isTrue();
         assertThat(filter.toString()).contains("Excludes filter:", "blocked-*");
+    }
+
+    @Test
+    void statisticsReportingFiltersLogMissedPatternsAndRemovedArtifacts() {
+        Artifact kept = artifact("com.acme", "kept", "1.0", Artifact.SCOPE_COMPILE, "jar", null);
+        Artifact removed = artifact("org.other", "removed", "1.0", Artifact.SCOPE_COMPILE, "jar", null);
+        PatternIncludesArtifactFilter filter = new PatternIncludesArtifactFilter(
+                Arrays.asList("com.acme:kept", "org.unused:missing"));
+        StatisticsReportingArtifactFilter reportingFilter = filter;
+        CapturingLogger logger = new CapturingLogger();
+
+        filter.include(kept);
+        filter.include(removed);
+        reportingFilter.reportFilteredArtifacts(logger);
+        reportingFilter.reportMissedCriteria(logger);
+
+        assertThat(logger.debugMessages).hasSize(1);
+        assertThat(logger.debugMessages.get(0))
+                .contains("The following artifacts were removed by this artifact inclusion filter:", "org.other",
+                        "removed");
+        assertThat(logger.warnMessages).hasSize(1);
+        assertThat(logger.warnMessages.get(0))
+                .contains("The following patterns were never triggered in this artifact inclusion filter:",
+                        "org.unused:missing")
+                .doesNotContain("com.acme:kept");
     }
 
     @Test
@@ -215,5 +245,47 @@ public class Maven_common_artifact_filtersTest {
 
     private static Set<Artifact> artifactSet(Artifact... artifacts) {
         return new LinkedHashSet<>(Arrays.asList(artifacts));
+    }
+
+    private static final class CapturingLogger extends AbstractLogger {
+        private final List<String> debugMessages = new ArrayList<>();
+        private final List<String> infoMessages = new ArrayList<>();
+        private final List<String> warnMessages = new ArrayList<>();
+        private final List<String> errorMessages = new ArrayList<>();
+        private final List<String> fatalMessages = new ArrayList<>();
+
+        private CapturingLogger() {
+            super(LEVEL_DEBUG, "capturing");
+        }
+
+        @Override
+        public void debug(String message, Throwable throwable) {
+            debugMessages.add(message);
+        }
+
+        @Override
+        public void info(String message, Throwable throwable) {
+            infoMessages.add(message);
+        }
+
+        @Override
+        public void warn(String message, Throwable throwable) {
+            warnMessages.add(message);
+        }
+
+        @Override
+        public void error(String message, Throwable throwable) {
+            errorMessages.add(message);
+        }
+
+        @Override
+        public void fatalError(String message, Throwable throwable) {
+            fatalMessages.add(message);
+        }
+
+        @Override
+        public Logger getChildLogger(String name) {
+            return this;
+        }
     }
 }
