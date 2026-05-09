@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -164,6 +165,31 @@ public class ProgressbarTest {
             assertThat(observedStates)
                     .anyMatch(value -> value.equals("render-callback:3:8: ready:" + RENDER_WIDTH));
             assertThat(consumer.lastRendered()).isEqualTo("rendered-3-of-8");
+        } finally {
+            progressBar.close();
+        }
+    }
+
+    @Test
+    void customEtaFunctionControlsRenderedEta() {
+        CapturingProgressBarConsumer consumer = new CapturingProgressBarConsumer(RENDER_WIDTH);
+        List<String> observedStates = new ArrayList<>();
+        ProgressBar progressBar = ProgressBar.builder()
+                .setTaskName("custom-eta")
+                .setInitialMax(4)
+                .setUpdateIntervalMillis(10_000)
+                .continuousUpdate()
+                .setConsumer(consumer)
+                .setEtaFunction(state -> {
+                    observedStates.add(state.getTaskName() + ":" + state.getCurrent() + ":" + state.getMax());
+                    return Optional.of(Duration.ofSeconds(125));
+                })
+                .build();
+        try {
+            progressBar.stepTo(1).refresh();
+
+            assertThat(observedStates).contains("custom-eta:1:4");
+            assertThat(consumer.lastRendered()).contains(" / 0:02:05");
         } finally {
             progressBar.close();
         }
