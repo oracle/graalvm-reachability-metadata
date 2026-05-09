@@ -10,6 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -39,6 +41,22 @@ import org.junit.jupiter.api.io.TempDir;
 public class JspCompilationContextTest {
     @TempDir
     Path scratchDirectory;
+
+    @Test
+    void constructorResolvesClassLiteralThroughGeneratedHelper() throws Exception {
+        clearCachedClassLiteral();
+
+        final TestOptions options = new TestOptions(scratchDirectory.toFile());
+        final JspCompilationContext context = new JspCompilationContext(
+                "/index.jsp",
+                false,
+                options,
+                new MinimalServletContext(scratchDirectory),
+                null,
+                null);
+
+        assertThat(context.getJspFile()).isEqualTo("/index.jsp");
+    }
 
     @Test
     void createCompilerInstantiatesDefaultCompilerImplementation() throws Exception {
@@ -93,6 +111,20 @@ public class JspCompilationContextTest {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
             runtimeParentLoader.close();
         }
+    }
+
+    private static void clearCachedClassLiteral() throws Exception {
+        final String[] fieldNameParts = new String[] {
+                "class$org$apache$jasper$",
+                "JspCompilationContext"
+        };
+        final VarHandle cachedClassLiteral = MethodHandles.privateLookupIn(
+                JspCompilationContext.class,
+                MethodHandles.lookup()).findStaticVarHandle(
+                        JspCompilationContext.class,
+                        fieldNameParts[0] + fieldNameParts[1],
+                        Class.class);
+        cachedClassLiteral.set(null);
     }
 
     private static final class TestOptions implements Options {
