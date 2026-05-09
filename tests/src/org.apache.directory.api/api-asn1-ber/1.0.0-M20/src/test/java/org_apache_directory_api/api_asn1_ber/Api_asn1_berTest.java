@@ -238,6 +238,24 @@ public class Api_asn1_berTest {
     }
 
     @Test
+    void gathersConstructedValueAsRawPayloadWhenRequested() throws Exception {
+        RecordingContainer container = new RecordingContainer(new GatheredSequenceGrammar());
+        container.setGathering(true);
+        Asn1Decoder decoder = new Asn1Decoder();
+
+        decoder.decode(ByteBuffer.wrap(new byte[] {0x30, 0x06, 0x02, 0x01, 0x2A, 0x01, 0x01, (byte) 0xFF}),
+                container);
+
+        assertThat(container.getState()).isEqualTo(TLVStateEnum.PDU_DECODED);
+        assertThat(container.getTransition()).isEqualTo(TestState.END);
+        assertThat(container.rawPayload).containsExactly(bytes(0x02, 0x01, 0x2A, 0x01, 0x01, 0xFF));
+        assertThat(container.events).containsExactly("gathered=6");
+        assertThat(container.getCurrentTLV().getValue().getData())
+                .containsExactly(bytes(0x02, 0x01, 0x2A, 0x01, 0x01, 0xFF));
+        assertThat(container.getDecodeBytes()).isEqualTo(8);
+    }
+
+    @Test
     void reusableGrammarActionsReadTypedValuesFromDecodedTlv() throws Exception {
         RecordingContainer container = new RecordingContainer(new ActionHelperGrammar());
         Asn1Decoder decoder = new Asn1Decoder();
@@ -348,6 +366,7 @@ public class Api_asn1_berTest {
         private Integer integerValue;
         private byte[] octetString;
         private byte[] bitString;
+        private byte[] rawPayload;
 
         RecordingContainer(AbstractGrammar<RecordingContainer> grammar) {
             this.grammar = grammar;
@@ -386,6 +405,22 @@ public class Api_asn1_berTest {
                     TestState.END,
                     UniversalTag.OCTET_STRING,
                     octetsAction(true));
+        }
+    }
+
+    private static class GatheredSequenceGrammar extends AbstractGrammar<RecordingContainer> {
+        GatheredSequenceGrammar() {
+            setName("gathered-sequence-test-grammar");
+            transitions = transitions();
+            transitions[TestState.START.ordinal()][UniversalTag.SEQUENCE.getValue()] = new GrammarTransition<>(
+                    TestState.START,
+                    TestState.END,
+                    UniversalTag.SEQUENCE,
+                    container -> {
+                        container.rawPayload = container.getCurrentTLV().getValue().getData();
+                        container.events.add("gathered=" + container.rawPayload.length);
+                        container.setGrammarEndAllowed(true);
+                    });
         }
     }
 
