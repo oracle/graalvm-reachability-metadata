@@ -71,7 +71,7 @@ public class Hadoop_client_apiTest {
                 <configuration>
                   <property>
                     <name>service.hosts</name>
-                    <value> nn1.example.test, nn2.example.test ,nn3.example.test </value>
+                    <value> nn1.example.test, nn2.example.test,nn3.example.test </value>
                   </property>
                   <property>
                     <name>worker.range</name>
@@ -172,7 +172,7 @@ public class Hadoop_client_apiTest {
         assertThat(greeting.find("hadoop")).isEqualTo(6);
         assertThat(greeting.charAt(0)).isEqualTo('h');
         assertThat(Text.decode(encodedBytes)).isEqualTo("native image");
-        assertThat(Text.utf8Length("éclair")).isGreaterThan("éclair".length());
+        assertThat(Text.utf8Length("\u00E9clair")).isGreaterThan("\u00E9clair".length());
 
         BytesWritable bytes = new BytesWritable("abcdef".getBytes(StandardCharsets.UTF_8));
         bytes.set(bytes.getBytes(), 1, 3);
