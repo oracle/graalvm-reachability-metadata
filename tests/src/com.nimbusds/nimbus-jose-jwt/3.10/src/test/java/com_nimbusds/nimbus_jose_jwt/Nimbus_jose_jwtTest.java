@@ -198,6 +198,30 @@ public class Nimbus_jose_jwtTest {
     }
 
     @Test
+    void encryptedJoseObjectRoundTripsWithAesCbcHmacContentEncryption() throws Exception {
+        JWEHeader header = new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256)
+                .type(new JOSEObjectType("jose"))
+                .contentType("text/plain")
+                .keyID("direct-cbc-key")
+                .build();
+        JWEObject jweObject = new JWEObject(header, new Payload("integrity protected secret"));
+
+        jweObject.encrypt(new DirectEncrypter(HMAC_SECRET));
+        assertEquals(JWEObject.State.ENCRYPTED, jweObject.getState());
+
+        String serialized = jweObject.serialize();
+        JWEObject parsed = JWEObject.parse(serialized);
+        assertEquals(JWEAlgorithm.DIR, parsed.getHeader().getAlgorithm());
+        assertEquals(EncryptionMethod.A128CBC_HS256, parsed.getHeader().getEncryptionMethod());
+        assertEquals("direct-cbc-key", parsed.getHeader().getKeyID());
+        assertEquals("encrypted-jose", JOSEObject.parse(serialized, new JoseKindHandler()));
+
+        parsed.decrypt(new DirectDecrypter(HMAC_SECRET));
+        assertEquals(JWEObject.State.DECRYPTED, parsed.getState());
+        assertEquals("integrity protected secret", parsed.getPayload().toString());
+    }
+
+    @Test
     void rsaSignaturesUseGeneratedKeysAndJwks() throws Exception {
         KeyPair keyPair = generateRsaKeyPair();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
