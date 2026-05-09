@@ -1,0 +1,172 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.apache.hadoop:hadoop-client-api:3.3.1
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 2 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/tests/src/org.apache.hadoop/hadoop-client-api/3.3.1/src/test/java/org_apache_hadoop/hadoop_client_api/Hadoop_client_apiTest.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :compileTestJava
+
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+Hadoop_client_apiTest > metricsRegistrySnapshotsCountersGaugesAndTags() FAILED
+    java.lang.NoClassDefFoundError: org/apache/hadoop/thirdparty/com/google/common/collect/Maps
+        at org.apache.hadoop.metrics2.lib.MetricsRegistry.<init>(MetricsRegistry.java:41)
+        at org_apache_hadoop.hadoop_client_api.Hadoop_client_apiTest.metricsRegistrySnapshotsCountersGaugesAndTags(Hadoop_client_apiTest.java:188)
+
+        Caused by:
+        java.lang.ClassNotFoundException: org.apache.hadoop.thirdparty.com.google.common.collect.Maps
+            at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+            at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+            ... 2 more
+
+Hadoop_client_apiTest > yarnRecordsAndTokenIdentifiersExposeStablePublicState() FAILED
+    java.lang.NoClassDefFoundError: org/apache/hadoop/shaded/com/ctc/wstx/io/InputBootstrapper
+        at org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider.<clinit>(RecordFactoryProvider.java:37)
+        at org.apache.hadoop.yarn.util.Records.<clinit>(Records.java:33)
+        at org.apache.hadoop.yarn.api.records.ApplicationId.newInstance(ApplicationId.java:50)
+        at org_apache_hadoop.hadoop_client_api.Hadoop_client_apiTest.yarnRecordsAndTokenIdentifiersExposeStablePublicState(Hadoop_client_apiTest.java:226)
+
+        Caused by:
+        java.lang.ClassNotFoundException: org.apache.hadoop.shaded.com.ctc.wstx.io.InputBootstrapper
+            at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+            at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+            ... 4 more
+
+Hadoop_client_apiTest > writableValueTypesCompareCopyAndExposeUtf8Content() FAILED
+    java.lang.NoClassDefFoundError: org/apache/hadoop/shaded/com/ctc/wstx/io/InputBootstrapper
+        at org.apache.hadoop.io.WritableComparator.<init>(WritableComparator.java:128)
+        at org.apache.hadoop.io.WritableComparator.<init>(WritableComparator.java:116)
+        at org.apache.hadoop.io.Text$Comparator.<init>(Text.java:360)
+        at org.apache.hadoop.io.Text.<clinit>(Text.java:374)
+        at org_apache_hadoop.hadoop_client_api.Hadoop_client_apiTest.writableValueTypesCompareCopyAndExposeUtf8Content(Hadoop_client_apiTest.java:136)
+
+        Caused by:
+        java.lang.ClassNotFoundException: org.apache.hadoop.shaded.com.ctc.wstx.io.InputBootstrapper
+            at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+            at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+            ... 5 more
+
+Hadoop_client_apiTest > bloomFiltersAndHashImplementDeterministicMembershipChecks() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: 2074985443
+     but was: -900394214
+        at java.base@25.0.3/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.3/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//org_apache_hadoop.hadoop_client_api.Hadoop_client_apiTest.bloomFiltersAndHashImplementDeterministicMembershipChecks(Hadoop_client_apiTest.java:169)
+
+Hadoop_client_apiTest > configurationLoadsXmlResourcesAndParsesTypedValues() FAILED
+    java.lang.NoClassDefFoundError: org/apache/hadoop/shaded/com/ctc/wstx/io/InputBootstrapper
+        at org_apache_hadoop.hadoop_client_api.Hadoop_client_apiTest.configurationLoadsXmlResourcesAndParsesTypedValues(Hadoop_client_apiTest.java:63)
+
+        Caused by:
+        java.lang.ClassNotFoundException: org.apache.hadoop.shaded.com.ctc.wstx.io.InputBootstrapper
+            at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+            at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+            ... 1 more
+
+Hadoop_client_apiTest > storageSizesPathsAndFilePermissionsKeepHadoopSemantics() FAILED
+    java.lang.NoClassDefFoundError: org/apache/hadoop/shaded/org/apache/commons/lang3/StringUtils
+        at org.apache.hadoop.conf.StorageSize.parse(StorageSize.java:51)
+        at org_apache_hadoop.hadoop_client_api.Hadoop_client_apiTest.storageSizesPathsAndFilePermissionsKeepHadoopSemantics(Hadoop_client_apiTest.java:109)
+
+        Caused by:
+        java.lang.ClassNotFoundException: org.apache.hadoop.shaded.org.apache.commons.lang3.StringUtils
+            at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+            at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+            ... 2 more
+
+Hadoop_client_apiTest > reflectionUtilsCreatesConfiguredPublicTypesThroughHadoopFactoryApi() FAILED
+    java.lang.NoClassDefFoundError: org/apache/hadoop/shaded/com/ctc/wstx/io/InputBootstrapper
+        at org_apache_hadoop.hadoop_client_api.Hadoop_client_apiTest.reflectionUtilsCreatesConfiguredPublicTypesThroughHadoopFactoryApi(Hadoop_client_apiTest.java:215)
+
+        Caused by:
+        java.lang.ClassNotFoundException: org.apache.hadoop.shaded.com.ctc.wstx.io.InputBootstrapper
+            at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+            at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+            ... 1 more
+
+7 tests completed, 7 failed
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/tests/src/org.apache.hadoop/hadoop-client-api/3.3.1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/tests/src/org.apache.hadoop/hadoop-client-api/3.3.1/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+BUILD FAILED in 10s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.apache.hadoop:hadoop-client-api:3.3.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 13s
+9 actionable tasks: 1 executed, 8 up-to-date

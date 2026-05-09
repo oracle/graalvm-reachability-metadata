@@ -1,0 +1,17 @@
+=== Pi checkstyle attempt 1 ===
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Fixed the two checkstyle violations in:
+
+`tests/src/org.apache.hadoop/hadoop-client-api/3.3.1/src/test/java/org_apache_hadoop/hadoop_client_api/Hadoop_client_apiTest.java`
+
+Changes:
+- Removed the illegal space before a comma in the XML value.
+- Replaced non-ASCII `é` literals with ASCII Unicode escapes.
+
+Validation passed:
+
+```bash
+./gradlew checkstyle -Pcoordinates=org.apache.hadoop:hadoop-client-api:3.3.1 --stacktrace
+```
+
+Build result: `BUILD SUCCESSFUL`

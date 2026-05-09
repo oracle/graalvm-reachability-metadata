@@ -1,0 +1,3489 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0b20-48c6-7b01-972a-38d1eea2c869
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.hadoop:hadoop-client-api:3.3.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.3.1" when "$version$" is replaced with "3.3.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+- Set "coordinates" to "org.apache.hadoop:hadoop-client-api:3.3.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.3.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll check the existing metadata conventions first, then verify the Hadoop artifact URLs against Maven/project sources before editing the JSON.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'hadoop|org\\.apache\\.hadoop' | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"documentation-url\"|\"test-code-url\"|\"language\"|not-for-native-image' build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json metadata test -g '*.json' -g '*.toml' -g '*.yaml' -g '*.yml' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+rg: test: No such file or directory (os error 2)
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:9:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v$version$/jctools-core/src/test",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:6:    "repository-url" : "https://github.com/eclipse-vertx/vert.x",
+metadata/io.vertx/vertx-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:6:    "repository-url" : "https://github.com/mwiede/jsch",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:6:    "repository-url" : "https://github.com/redis/lettuce",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/io.swagger/swagger-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/io.swagger/swagger-annotations/index.json:6:    "repository-url" : "https://github.com/swagger-api/swagger-core",
+metadata/io.swagger/swagger-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/io.swagger/swagger-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jmx/src/test/java",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:5:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:20:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/shared/zio_3/$version$/zio_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/sttp-shared",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-shared/tree/v$version$/zio/src/test",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/shared/zio_3/$version$/zio_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/core_3/$version$/core_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/sttp-shared",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-shared/tree/v$version$/core/src/test",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/core_3/$version$/core_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:6:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:8:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-2.0.0-M5/src/site/xdoc/index.xml",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:20:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:22:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:34:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:36:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/ws_3/$version$/ws_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/sttp-shared",
+
+codex
+The local metadata already prefers Maven `sources.jar`, `test-sources.jar`, and `javadoc.jar` when those artifacts exist, so I’m going to validate whether Hadoop publishes each classifier for this exact version.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1"
+}
+
+exec
+/usr/bin/bash -lc 'find metadata/org.apache.hadoop -maxdepth 3 -type f -name index.json -print 2>/dev/null | sort | head -50' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+metadata/org.apache.hadoop/hadoop-annotations/index.json
+
+exec
+/usr/bin/bash -lc "rg -n 'hadoop-client-api|hadoop-common|hadoop-client' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json:2:  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1"
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.1/hadoop-client-api-3.3.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Apache Hadoop Client API
+  %%
+  Copyright (C) 2008 - 2021 Apache Software Foundation
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>hadoop-project</artifactId>
+    <groupId>org.apache.hadoop</groupId>
+    <version>3.3.1</version>
+    <relativePath>../../hadoop-project/pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>hadoop-client-api</artifactId>
+  <name>Apache Hadoop Client API</name>
+  <version>3.3.1</version>
+  <description>Apache Hadoop Client</description>
+  <profiles>
+    <profile>
+      <id>shade</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.3</version>
+            <executions>
+              <execution>
+                <id>hadoop-java-sources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                  <goal>test-jar-no-fork</goal>
+                </goals>
+                <configuration>
+                  <skipSource>true</skipSource>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <skipSource>true</skipSource>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.2.1</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <artifactSet>
+                    <includes>
+                      <include>org.apache.hadoop:*</include>
+                    </includes>
+                  </artifactSet>
+                  <filters>
+                    <filter>
+                      <artifact>org.apache.hadoop:hadoop-yarn-common</artifact>
+                      <excludes>
+                        <exclude>org/apache/hadoop/yarn/factories/package-info.class</exclude>
+                        <exclude>org/apache/hadoop/yarn/util/package-info.class</exclude>
+                        <exclude>org/apache/hadoop/yarn/factory/providers/package-info.class</exclude>
+                        <exclude>org/apache/hadoop/yarn/client/api/impl/package-info.class</exclude>
+                        <exclude>org/apache/hadoop/yarn/client/api/package-info.class</exclude>
+                      </excludes>
+                    </filter>
+                  </filters>
+                  <relocations>
+                    <relocation>
+                      <pattern>org/</pattern>
+                      <shadedPattern>org.apache.hadoop.shaded.org.</shadedPattern>
+                      <excludes>
+                        <exclude>org/apache/hadoop/*</exclude>
+                        <exclude>org/apache/hadoop/**/*</exclude>
+                        <exclude>org/apache/htrace/*</exclude>
+                        <exclude>org/apache/htrace/**/*</exclude>
+                        <exclude>org/slf4j/*</exclude>
+                        <exclude>org/slf4j/**/*</exclude>
+                        <exclude>org/apache/commons/logging/*</exclude>
+                        <exclude>org/apache/commons/logging/**/*</exclude>
+                        <exclude>org/apache/log4j/*</exclude>
+                        <exclude>org/apache/log4j/**/*</exclude>
+                        <exclude>**/pom.xml</exclude>
+                        <exclude>org/ietf/jgss/*</exclude>
+                        <exclude>org/omg/**/*</exclude>
+                        <exclude>org/w3c/dom/*</exclude>
+                        <exclude>org/w3c/dom/**/*</exclude>
+                        <exclude>org/xml/sax/*</exclude>
+                        <exclude>org/xml/sax/**/*</exclude>
+                        <exclude>org/bouncycastle/*</exclude>
+                        <exclude>org/bouncycastle/**/*</exclude>
+                      </excludes>
+                    </relocation>
+                    <relocation>
+                      <pattern>com/</pattern>
+                      <shadedPattern>org.apache.hadoop.shaded.com.</shadedPattern>
+                      <excludes>
+                        <exclude>**/pom.xml</exclude>
+                        <exclude>com/sun/tools/*</exclude>
+                        <exclude>com/sun/javadoc/*</exclude>
+                        <exclude>com/sun/security/*</exclude>
+                        <exclude>com/sun/jndi/*</exclude>
+                        <exclude>com/sun/management/*</exclude>
+                        <exclude>com/sun/tools/**/*</exclude>
+                        <exclude>com/sun/javadoc/**/*</exclude>
+                        <exclude>com/sun/security/**/*</exclude>
+                        <exclude>com/sun/jndi/**/*</exclude>
+                        <exclude>com/sun/management/**/*</exclude>
+                      </excludes>
+                    </relocation>
+                    <relocation>
+                      <pattern>io/</pattern>
+                      <shadedPattern>org.apache.hadoop.shaded.io.</shadedPattern>
+                      <excludes>
+                        <exclude>**/pom.xml</exclude>
+                        <exclude>io/compression/*</exclude>
+                        <exclude>io/compression/**/*</exclude>
+                        <exclude>io/mapfile/*</exclude>
+                        <exclude>io/mapfile/**/*</exclude>
+                        <exclude>io/map/index/*</exclude>
+                        <exclude>io/seqfile/*</exclude>
+                        <exclude>io/seqfile/**/*</exclude>
+                        <exclude>io/file/buffer/size</exclude>
+                        <exclude>io/skip/checksum/errors</exclude>
+                        <exclude>io/sort/*</exclude>
+                        <exclude>io/serializations</exclude>
+                      </excludes>
+                    </relocation>
+                    <relocation>
+                      <pattern>javax/el/</pattern>
+                      <shadedPattern>org.apache.hadoop.shaded.javax.el.</shadedPattern>
+                      <excludes>
+                        <exclude>**/pom.xml</exclude>
+                      </excludes>
+                    </relocation>
+                    <relocation>
+                      <pattern>javax/cache/</pattern>
+                      <shadedPattern>org.apache.hadoop.shaded.javax.cache.</shadedPattern>
+                      <excludes>
+                        <exclude>**/pom.xml</exclude>
+                      </excludes>
+                    </relocation>
+                    <relocation>
+                      <pattern>javax/servlet/</pattern>
+                      <shadedPattern>org.apache.hadoop.shaded.javax.servlet.</shadedPattern>
+                      <excludes>
+                        <exclude>**/pom.xml</exclude>
+                      </excludes>
+                    </relocation>
+                    <relocation>
+                      <pattern>javax/ws/</pattern>
+                      <shadedPattern>org.apache.hadoop.shaded.javax.ws.</shadedPattern>
+                      <excludes>
+                        <exclude>**/pom.xml</exclude>
+                      </excludes>
+                    </relocation>
+                    <relocation>
+                      <pattern>net/</pattern>
+                      <shadedPattern>org.apache.hadoop.shaded.net.</shadedPattern>
+                      <excludes>
+                        <exclude>**/pom.xml</exclude>
+                        <exclude>net/topology/*</exclude>
+                        <exclude>net/topology/**/*</exclude>
+                      </excludes>
+                    </relocation>
+                    <relocation>
+                      <pattern>okio/</pattern>
+                      <shadedPattern>org.apache.hadoop.shaded.okio.</shadedPattern>
+                    </relocation>
+                  </relocations>
+                  <transformers>
+                    <transformer />
+                    <transformer />
+                    <transformer>
+                      <resource>NOTICE.txt</resource>
+                    </transformer>
+                    <transformer>
+                      <resource>META-INF/LICENSE.txt</resource>
+                      <file>/build/source/hadoop-client-modules/hadoop-client-api/../../LICENSE.txt</file>
+                    </transformer>
+                    <transformer>
+                      <resource>META-INF/NOTICE.txt</resource>
+                      <file>/build/source/hadoop-client-modules/hadoop-client-api/../../NOTICE.txt</file>
+                    </transformer>
+                  </transformers>
+                  <createSourcesJar>true</createSourcesJar>
+                  <shadeSourcesContent>true</shadeSourcesContent>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-maven-plugins</artifactId>
+                <version>3.3.1</version>
+                <scope>compile</scope>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <createSourcesJar>true</createSourcesJar>
+              <shadeSourcesContent>true</shadeSourcesContent>
+            </configuration>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.1/hadoop-client-api-3.3.1-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.1/hadoop-client-api-3.3.1-test-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.1/hadoop-client-api-3.3.1-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/hadoop/hadoop-client-api/3.3.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/hadoop/hadoop-client-api/3.3.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="hadoop-client-api-3.3.1-sources.jar" title="hadoop-client-api-3.3.1-sources.jar">hadoop-client-api-3.3.1-sources.jar</a>               2021-06-01 09:28   8639651      
+<a href="hadoop-client-api-3.3.1-sources.jar.asc" title="hadoop-client-api-3.3.1-sources.jar.asc">hadoop-client-api-3.3.1-sources.jar.asc</a>           2021-06-01 09:28       833      
+<a href="hadoop-client-api-3.3.1-sources.jar.md5" title="hadoop-client-api-3.3.1-sources.jar.md5">hadoop-client-api-3.3.1-sources.jar.md5</a>           2021-06-01 09:28        32      
+<a href="hadoop-client-api-3.3.1-sources.jar.sha1" title="hadoop-client-api-3.3.1-sources.jar.sha1">hadoop-client-api-3.3.1-sources.jar.sha1</a>          2021-06-01 09:28        40      
+<a href="hadoop-client-api-3.3.1.jar" title="hadoop-client-api-3.3.1.jar">hadoop-client-api-3.3.1.jar</a>                       2021-06-01 09:28  19406393      
+<a href="hadoop-client-api-3.3.1.jar.asc" title="hadoop-client-api-3.3.1.jar.asc">hadoop-client-api-3.3.1.jar.asc</a>                   2021-06-01 09:28       833      
+<a href="hadoop-client-api-3.3.1.jar.md5" title="hadoop-client-api-3.3.1.jar.md5">hadoop-client-api-3.3.1.jar.md5</a>                   2021-06-01 09:28        32      
+<a href="hadoop-client-api-3.3.1.jar.sha1" title="hadoop-client-api-3.3.1.jar.sha1">hadoop-client-api-3.3.1.jar.sha1</a>                  2021-06-01 09:28        40      
+<a href="hadoop-client-api-3.3.1.pom" title="hadoop-client-api-3.3.1.pom">hadoop-client-api-3.3.1.pom</a>                       2021-06-01 09:28     12500      
+<a href="hadoop-client-api-3.3.1.pom.asc" title="hadoop-client-api-3.3.1.pom.asc">hadoop-client-api-3.3.1.pom.asc</a>                   2021-06-01 09:28       833      
+<a href="hadoop-client-api-3.3.1.pom.md5" title="hadoop-client-api-3.3.1.pom.md5">hadoop-client-api-3.3.1.pom.md5</a>                   2021-06-01 09:28        32      
+<a href="hadoop-client-api-3.3.1.pom.sha1" title="hadoop-client-api-3.3.1.pom.sha1">hadoop-client-api-3.3.1.pom.sha1</a>                  2021-06-01 09:28        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 355ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 09 May 2026 05:05:40 GMT
+content-type: text/html
+cf-ray: 9f8e2ba51c73be59-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/hadoop/hadoop-client-api/3.3.1/hadoop-client-api-3.3.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: Maven Central org.apache.hadoop hadoop-client-api 3.3.1 sources jar javadoc jar
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-project/3.3.1/hadoop-project-3.3.1.pom | rg -n '<url>|<connection>|<developerConnection>|<tag>|<scm>|</scm>' -C 2" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.1/hadoop-client-api-3.3.1-javadoc.jar || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-api/src/test || true && curl -fsSI https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-api/src/main || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 307ms:
+HTTP/2 404 
+date: Sat, 09 May 2026 05:05:53 GMT
+content-type: text/html
+cf-ray: 9f8e2bf2ced7444c-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/hadoop/hadoop-client-api/3.3.1/hadoop-client-api-3.3.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 981ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 09 May 2026 05:05:53 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=YIibsr%2F%2FhIOhAdKdwKKkOCMhyaYMc1o7oQAtusHutrS04BCF8BhFuOWDu7EQfkf37DlmtBCvdSGWioTu37ixmPpVQ0QeQmYMxO%2F3sKP9U3tnoMBHGN6jD%2BKJtDvQD8ImVs8lqqQ%2BrRkh7wHsrgqpvvLVimpRyF7hEVEHe%2FmKrQu51bT%2BUHXm%2BKC4Y8o59QykdVOQOswnNzfm4izSWwn80fHG9FH5V3SbuH2QrCtBdyqontXvocXEagZL%2FrpD7uuG5KKHyTwy73R0bBhm1dsS5g%3D%3D--97%2FtKt1KTvh5kind--U5Mlo3Z%2BbI9xvCxcA2JpFA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.286072741.1778303153; expires=Sun, 09 May 2027 05:05:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 05:05:53 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5119:9E862:4F8D395:3EAE7DE:69FEC0B1
+
+HTTP/2 404 
+date: Sat, 09 May 2026 05:05:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=9ERtQuPvnQHUDq%2BQlWTJBkJWNDImYynHdwBc8mXcRnYdVnYfufQ2nuthY1PNN7F1KDSsnuD3axV3d6kNeN1CgHk1o2iv2ubycurl: (22) The requested URL returned error: 404
+VEzKUxFAM3hLazR5ze%2BNLiNDk24tN968uR5Msvl3k7srtpbK12tNUT8BYOD4rtiD8TKdjROl8xCj1VOlO1zNUV2ABgrL3fadnExhDZ3NFXuCE51YVTwe29ch0kd9CWDlO16WH4cEszwBwrPjo%2BGXIZbDOOKVkqSTLaM0R8CtAGX4qTL0cVhfAw%3D%3D--VX%2F5NMhW7oGxjBs7--Cj3m68V0sz71k53kSntfWQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2123345816.1778303153; expires=Sun, 09 May 2027 05:05:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 05:05:53 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5120:29F185:51C4BEF:403E009:69FEC0B1
+
+
+codex
+Maven Central has the runtime JAR and sources JAR for `hadoop-client-api:3.3.1`, but it does not publish `test-sources.jar` or `javadoc.jar` for this artifact, so the remaining URLs need to come from the release tag/docs rather than Maven classifiers.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-main/3.3.1/hadoop-main-3.3.1.pom | rg -n '<url>|<connection>|<developerConnection>|<tag>|<scm>|</scm>|<description>' -C 3" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+19-  <groupId>org.apache.hadoop</groupId>
+20-  <artifactId>hadoop-main</artifactId>
+21-  <version>3.3.1</version>
+22:  <description>Apache Hadoop Main</description>
+23-  <name>Apache Hadoop Main</name>
+24-  <packaging>pom</packaging>
+25-
+--
+38-    <repository>
+39-      <id>${distMgmtStagingId}</id>
+40-      <name>${distMgmtStagingName}</name>
+41:      <url>${distMgmtStagingUrl}</url>
+42-    </repository>
+43-    <snapshotRepository>
+44-      <id>${distMgmtSnapshotsId}</id>
+45-      <name>${distMgmtSnapshotsName}</name>
+46:      <url>${distMgmtSnapshotsUrl}</url>
+47-    </snapshotRepository>
+48-    <site>
+49-      <id>apache.website</id>
+50:      <url>scpexe://people.apache.org/www/hadoop.apache.org/docs/r${project.version}</url>
+51-    </site>
+52-  </distributionManagement>
+53-
+--
+55-    <repository>
+56-      <id>${distMgmtSnapshotsId}</id>
+57-      <name>${distMgmtSnapshotsName}</name>
+58:      <url>${distMgmtSnapshotsUrl}</url>
+59-    </repository>
+60-    <repository>
+61-      <id>repository.jboss.org</id>
+62:      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+63-      <snapshots>
+64-        <enabled>false</enabled>
+65-      </snapshots>
+--
+69-  <licenses>
+70-    <license>
+71-      <name>Apache License, Version 2.0</name>
+72:      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+73-    </license>
+74-  </licenses>
+75-
+76-  <organization>
+77-    <name>Apache Software Foundation</name>
+78:    <url>https://www.apache.org</url>
+79-  </organization>
+80-
+81-  <properties>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-project/3.3.1/hadoop-project-3.3.1.pom | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.hadoop</groupId>
+    <artifactId>hadoop-main</artifactId>
+    <version>3.3.1</version>
+  </parent>
+  <artifactId>hadoop-project</artifactId>
+  <version>3.3.1</version>
+  <description>Apache Hadoop Project POM</description>
+  <name>Apache Hadoop Project POM</name>
+  <packaging>pom</packaging>
+  <inceptionYear>2008</inceptionYear>
+
+  <properties>
+    <!-- Set the Release year during release -->
+    <release-year>2021</release-year>
+
+    <failIfNoTests>false</failIfNoTests>
+    <!--Whether to proceed to next module if any test failures exist-->
+    <ignoreTestFailure>true</ignoreTestFailure>
+    <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+    <jetty.version>9.4.40.v20210413</jetty.version>
+    <test.exclude>_</test.exclude>
+    <test.exclude.pattern>_</test.exclude.pattern>
+
+    <!-- number of threads/forks to use when running tests in parallel, see parallel-tests profile -->
+    <testsThreadCount>2</testsThreadCount>
+
+    <!-- These 2 versions are defined here because they are used -->
+    <!-- JDIFF generation from embedded ant in the antrun plugin -->
+    <jdiff.version>1.0.9</jdiff.version>
+    <!-- Version number for xerces used by JDiff -->
+    <xerces.jdiff.version>2.11.0</xerces.jdiff.version>
+
+    <kafka.version>2.4.0</kafka.version>
+
+    <commons-daemon.version>1.0.13</commons-daemon.version>
+
+    <test.build.dir>${project.build.directory}/test-dir</test.build.dir>
+    <test.build.data>${test.build.dir}</test.build.data>
+
+    <!-- Used for building path to native library loaded by tests.  Projects -->
+    <!-- at different nesting levels in the source tree may need to override. -->
+    <hadoop.common.build.dir>${basedir}/../../hadoop-common-project/hadoop-common/target</hadoop.common.build.dir>
+    <java.security.egd>file:///dev/urandom</java.security.egd>
+
+    <!-- avro version -->
+    <avro.version>1.7.7</avro.version>
+
+    <!-- jersey version -->
+    <jersey.version>1.19</jersey.version>
+
+    <!-- jackson versions -->
+    <jackson.version>1.9.13</jackson.version>
+    <jackson2.version>2.10.5</jackson2.version>
+    <jackson2.databind.version>2.10.5.1</jackson2.databind.version>
+
+    <!-- httpcomponents versions -->
+    <httpclient.version>4.5.13</httpclient.version>
+    <httpcore.version>4.4.13</httpcore.version>
+
+    <!-- SLF4J/LOG4J version -->
+    <slf4j.version>1.7.30</slf4j.version>
+    <log4j.version>1.2.17</log4j.version>
+
+    <!-- com.google.re2j version -->
+    <re2j.version>1.1</re2j.version>
+
+    <!--Protobuf version for backward compatibility-->
+    <protobuf.version>2.5.0</protobuf.version>
+    <!-- ProtocolBuffer version, actually used in Hadoop -->
+    <hadoop.protobuf.version>3.7.1</hadoop.protobuf.version>
+    <protoc.path>${env.HADOOP_PROTOC_PATH}</protoc.path>
+
+    <hadoop-thirdparty.version>1.1.1</hadoop-thirdparty.version>
+    <hadoop-thirdparty-protobuf.version>${hadoop-thirdparty.version}</hadoop-thirdparty-protobuf.version>
+    <hadoop-thirdparty-guava.version>${hadoop-thirdparty.version}</hadoop-thirdparty-guava.version>
+    <hadoop-thirdparty-shaded-prefix>org.apache.hadoop.thirdparty</hadoop-thirdparty-shaded-prefix>
+    <hadoop-thirdparty-shaded-protobuf-prefix>${hadoop-thirdparty-shaded-prefix}.protobuf</hadoop-thirdparty-shaded-protobuf-prefix>
+    <hadoop-thirdparty-shaded-guava-prefix>${hadoop-thirdparty-shaded-prefix}.com.google.common</hadoop-thirdparty-shaded-guava-prefix>
+
+    <zookeeper.version>3.5.6</zookeeper.version>
+    <curator.version>4.2.0</curator.version>
+    <findbugs.version>3.0.5</findbugs.version>
+    <dnsjava.version>2.1.7</dnsjava.version>
+
+    <guava.version>27.0-jre</guava.version>
+    <guice.version>4.0</guice.version>
+    <joda-time.version>2.9.9</joda-time.version>
+
+    <bouncycastle.version>1.60</bouncycastle.version>
+
+    <!-- Required for testing LDAP integration -->
+    <apacheds.version>2.0.0-M21</apacheds.version>
+    <ldap-api.version>1.0.0-M33</ldap-api.version>
+
+    <!-- Apache Commons dependencies -->
+    <commons-beanutils.version>1.9.4</commons-beanutils.version>
+    <commons-cli.version>1.2</commons-cli.version>
+    <commons-codec.version>1.11</commons-codec.version>
+    <commons-collections.version>3.2.2</commons-collections.version>
+    <commons-compress.version>1.19</commons-compress.version>
+    <commons-csv.version>1.0</commons-csv.version>
+    <commons-io.version>2.8.0</commons-io.version>
+    <commons-lang3.version>3.7</commons-lang3.version>
+    <commons-logging.version>1.1.3</commons-logging.version>
+    <commons-logging-api.version>1.1</commons-logging-api.version>
+    <commons-math3.version>3.1.1</commons-math3.version>
+    <commons-net.version>3.6</commons-net.version>
+    <commons-text.version>1.4</commons-text.version>
+
+    <kerby.version>1.0.1</kerby.version>
+    <jcache.version>1.0-alpha-1</jcache.version>
+    <ehcache.version>3.3.1</ehcache.version>
+    <hikari.version>2.4.12</hikari.version>
+    <mssql.version>6.2.1.jre7</mssql.version>
+    <okhttp.version>2.7.5</okhttp.version>
+    <jdom.version>1.1</jdom.version>
+    <jna.version>5.2.0</jna.version>
+    <grizzly.version>2.2.21</grizzly.version>
+    <gson.version>2.2.4</gson.version>
+    <htrace3.version>3.1.0-incubating</htrace3.version>
+    <htrace4.version>4.1.0-incubating</htrace4.version>
+    <metrics.version>3.2.4</metrics.version>
+    <netty3.version>3.10.6.Final</netty3.version>
+    <netty4.version>4.1.61.Final</netty4.version>
+    <snappy-java.version>1.1.8.2</snappy-java.version>
+    <lz4-java.version>1.7.1</lz4-java.version>
+
+    <!-- Maven protoc compiler -->
+    <protobuf-maven-plugin.version>0.5.1</protobuf-maven-plugin.version>
+    <maven-replacer-plugin.version>1.5.3</maven-replacer-plugin.version>
+
+    <protobuf-compile.version>3.5.1</protobuf-compile.version>
+    <grpc.version>1.10.0</grpc.version>
+    <os-maven-plugin.version>1.5.0.Final</os-maven-plugin.version>
+
+    <!-- define the Java language version used by the compiler -->
+    <javac.version>1.8</javac.version>
+
+    <!-- The java version enforced by the maven enforcer -->
+    <!-- more complex patterns can be used here, such as
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/hadoop/git/matching-refs/tags | rg '3\\.3\\.1|release' -n -C 1" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 378ms:
+292-  {
+293:    "ref": "refs/tags/rel/release-",
+294-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLQ==",
+295:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-",
+296-    "object": {
+--
+302-  {
+303:    "ref": "refs/tags/rel/release-2.10.0",
+304-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuMTAuMA==",
+305:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.10.0",
+306-    "object": {
+--
+312-  {
+313:    "ref": "refs/tags/rel/release-2.10.1",
+314-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuMTAuMQ==",
+315:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.10.1",
+316-    "object": {
+--
+322-  {
+323:    "ref": "refs/tags/rel/release-2.10.2",
+324-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuMTAuMg==",
+325:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.10.2",
+326-    "object": {
+--
+332-  {
+333:    "ref": "refs/tags/rel/release-2.6.4",
+334-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuNi40",
+335:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.6.4",
+336-    "object": {
+--
+342-  {
+343:    "ref": "refs/tags/rel/release-2.6.5",
+344-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuNi41",
+345:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.6.5",
+346-    "object": {
+--
+352-  {
+353:    "ref": "refs/tags/rel/release-2.7.2",
+354-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuNy4y",
+355:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.7.2",
+356-    "object": {
+--
+362-  {
+363:    "ref": "refs/tags/rel/release-2.7.3",
+364-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuNy4z",
+365:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.7.3",
+366-    "object": {
+--
+372-  {
+373:    "ref": "refs/tags/rel/release-2.7.4",
+374-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuNy40",
+375:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.7.4",
+376-    "object": {
+--
+382-  {
+383:    "ref": "refs/tags/rel/release-2.7.5",
+384-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuNy41",
+385:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.7.5",
+386-    "object": {
+--
+392-  {
+393:    "ref": "refs/tags/rel/release-2.7.6",
+394-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuNy42",
+395:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.7.6",
+396-    "object": {
+--
+402-  {
+403:    "ref": "refs/tags/rel/release-2.7.7",
+404-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuNy43",
+405:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.7.7",
+406-    "object": {
+--
+412-  {
+413:    "ref": "refs/tags/rel/release-2.8.0",
+414-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuOC4w",
+415:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.8.0",
+416-    "object": {
+--
+422-  {
+423:    "ref": "refs/tags/rel/release-2.8.1",
+424-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuOC4x",
+425:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.8.1",
+426-    "object": {
+--
+432-  {
+433:    "ref": "refs/tags/rel/release-2.8.2",
+434-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuOC4y",
+435:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.8.2",
+436-    "object": {
+--
+442-  {
+443:    "ref": "refs/tags/rel/release-2.8.3",
+444-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuOC4z",
+445:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.8.3",
+446-    "object": {
+--
+452-  {
+453:    "ref": "refs/tags/rel/release-2.8.4",
+454-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuOC40",
+455:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.8.4",
+456-    "object": {
+--
+462-  {
+463:    "ref": "refs/tags/rel/release-2.8.5",
+464-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuOC41",
+465:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.8.5",
+466-    "object": {
+--
+472-  {
+473:    "ref": "refs/tags/rel/release-2.9.0",
+474-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuOS4w",
+475:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.9.0",
+476-    "object": {
+--
+482-  {
+483:    "ref": "refs/tags/rel/release-2.9.1",
+484-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuOS4x",
+485:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.9.1",
+486-    "object": {
+--
+492-  {
+493:    "ref": "refs/tags/rel/release-2.9.2",
+494-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTIuOS4y",
+495:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-2.9.2",
+496-    "object": {
+--
+502-  {
+503:    "ref": "refs/tags/rel/release-3.0.0",
+504-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMC4w",
+505:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.0.0",
+506-    "object": {
+--
+512-  {
+513:    "ref": "refs/tags/rel/release-3.0.0-alpha1",
+514-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMC4wLWFscGhhMQ==",
+515:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.0.0-alpha1",
+516-    "object": {
+--
+522-  {
+523:    "ref": "refs/tags/rel/release-3.0.0-alpha2",
+524-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMC4wLWFscGhhMg==",
+525:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.0.0-alpha2",
+526-    "object": {
+--
+532-  {
+533:    "ref": "refs/tags/rel/release-3.0.0-alpha3",
+534-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMC4wLWFscGhhMw==",
+535:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.0.0-alpha3",
+536-    "object": {
+--
+542-  {
+543:    "ref": "refs/tags/rel/release-3.0.0-alpha4",
+544-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMC4wLWFscGhhNA==",
+545:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.0.0-alpha4",
+546-    "object": {
+--
+552-  {
+553:    "ref": "refs/tags/rel/release-3.0.0-beta1",
+554-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMC4wLWJldGEx",
+555:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.0.0-beta1",
+556-    "object": {
+--
+562-  {
+563:    "ref": "refs/tags/rel/release-3.0.1",
+564-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMC4x",
+565:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.0.1",
+566-    "object": {
+--
+572-  {
+573:    "ref": "refs/tags/rel/release-3.0.2",
+574-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMC4y",
+575:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.0.2",
+576-    "object": {
+--
+582-  {
+583:    "ref": "refs/tags/rel/release-3.0.3",
+584-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMC4z",
+585:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.0.3",
+586-    "object": {
+--
+592-  {
+593:    "ref": "refs/tags/rel/release-3.1.0",
+594-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMS4w",
+595:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.1.0",
+596-    "object": {
+--
+602-  {
+603:    "ref": "refs/tags/rel/release-3.1.1",
+604-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMS4x",
+605:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.1.1",
+606-    "object": {
+--
+612-  {
+613:    "ref": "refs/tags/rel/release-3.1.2",
+614-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMS4y",
+615:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.1.2",
+616-    "object": {
+--
+622-  {
+623:    "ref": "refs/tags/rel/release-3.1.3",
+624-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMS4z",
+625:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.1.3",
+626-    "object": {
+--
+632-  {
+633:    "ref": "refs/tags/rel/release-3.1.4",
+634-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMS40",
+635:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.1.4",
+636-    "object": {
+--
+642-  {
+643:    "ref": "refs/tags/rel/release-3.2.0",
+644-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMi4w",
+645:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.2.0",
+646-    "object": {
+--
+652-  {
+653:    "ref": "refs/tags/rel/release-3.2.1",
+654-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMi4x",
+655:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.2.1",
+656-    "object": {
+--
+662-  {
+663:    "ref": "refs/tags/rel/release-3.2.2",
+664-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMi4y",
+665:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.2.2",
+666-    "object": {
+--
+672-  {
+673:    "ref": "refs/tags/rel/release-3.2.3",
+674-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMi4z",
+675:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.2.3",
+676-    "object": {
+--
+682-  {
+683:    "ref": "refs/tags/rel/release-3.2.4",
+684-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMi40",
+685:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.2.4",
+686-    "object": {
+--
+692-  {
+693:    "ref": "refs/tags/rel/release-3.3.0",
+694-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMy4w",
+695:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.3.0",
+696-    "object": {
+--
+702-  {
+703:    "ref": "refs/tags/rel/release-3.3.1",
+704-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMy4x",
+705:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.3.1",
+706-    "object": {
+--
+712-  {
+713:    "ref": "refs/tags/rel/release-3.3.2",
+714-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMy4y",
+715:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.3.2",
+716-    "object": {
+--
+722-  {
+723:    "ref": "refs/tags/rel/release-3.3.3",
+724-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMy4z",
+725:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.3.3",
+726-    "object": {
+--
+732-  {
+733:    "ref": "refs/tags/rel/release-3.3.4",
+734-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMy40",
+735:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.3.4",
+736-    "object": {
+--
+742-  {
+743:    "ref": "refs/tags/rel/release-3.3.5",
+744-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMy41",
+745:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.3.5",
+746-    "object": {
+--
+752-  {
+753:    "ref": "refs/tags/rel/release-3.3.6",
+754-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMy42",
+755:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.3.6",
+756-    "object": {
+--
+762-  {
+763:    "ref": "refs/tags/rel/release-3.4.0",
+764-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuNC4w",
+765:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.4.0",
+766-    "object": {
+--
+772-  {
+773:    "ref": "refs/tags/rel/release-3.4.1",
+774-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuNC4x",
+775:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.4.1",
+776-    "object": {
+--
+782-  {
+783:    "ref": "refs/tags/rel/release-3.4.2",
+784-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuNC4y",
+785:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.4.2",
+786-    "object": {
+--
+792-  {
+793:    "ref": "refs/tags/rel/release-3.4.3",
+794-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuNC4z",
+795:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.4.3",
+796-    "object": {
+--
+802-  {
+803:    "ref": "refs/tags/rel/release-3.5.0",
+804-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuNS4w",
+805:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.5.0",
+806-    "object": {
+--
+812-  {
+813:    "ref": "refs/tags/rel/release-X.Y.Z",
+814-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLVguWS5a",
+815:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-X.Y.Z",
+816-    "object": {
+--
+832-  {
+833:    "ref": "refs/tags/release-0.1.0",
+834-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xLjA=",
+835:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.1.0",
+836-    "object": {
+--
+842-  {
+843:    "ref": "refs/tags/release-0.1.1",
+844-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xLjE=",
+845:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.1.1",
+846-    "object": {
+--
+852-  {
+853:    "ref": "refs/tags/release-0.10.0",
+854-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xMC4w",
+855:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.10.0",
+856-    "object": {
+--
+862-  {
+863:    "ref": "refs/tags/release-0.10.1",
+864-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xMC4x",
+865:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.10.1",
+866-    "object": {
+--
+872-  {
+873:    "ref": "refs/tags/release-0.11.0",
+874-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xMS4w",
+875:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.11.0",
+876-    "object": {
+--
+882-  {
+883:    "ref": "refs/tags/release-0.11.1",
+884-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xMS4x",
+885:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.11.1",
+886-    "object": {
+--
+892-  {
+893:    "ref": "refs/tags/release-0.11.2",
+894-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xMS4y",
+895:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.11.2",
+896-    "object": {
+--
+902-  {
+903:    "ref": "refs/tags/release-0.12.0",
+904-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xMi4w",
+905:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.12.0",
+906-    "object": {
+--
+912-  {
+913:    "ref": "refs/tags/release-0.12.1",
+914-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xMi4x",
+915:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.12.1",
+916-    "object": {
+--
+922-  {
+923:    "ref": "refs/tags/release-0.12.3",
+924-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xMi4z",
+925:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.12.3",
+926-    "object": {
+--
+932-  {
+933:    "ref": "refs/tags/release-0.13.0",
+934-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xMy4w",
+935:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.13.0",
+936-    "object": {
+--
+942-  {
+943:    "ref": "refs/tags/release-0.13.1",
+944-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xMy4x",
+945:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.13.1",
+946-    "object": {
+--
+952-  {
+953:    "ref": "refs/tags/release-0.14.0",
+954-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNC4w",
+955:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.14.0",
+956-    "object": {
+--
+962-  {
+963:    "ref": "refs/tags/release-0.14.1",
+964-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNC4x",
+965:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.14.1",
+966-    "object": {
+--
+972-  {
+973:    "ref": "refs/tags/release-0.14.2",
+974-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNC4y",
+975:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.14.2",
+976-    "object": {
+--
+982-  {
+983:    "ref": "refs/tags/release-0.14.3",
+984-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNC4z",
+985:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.14.3",
+986-    "object": {
+--
+992-  {
+993:    "ref": "refs/tags/release-0.14.4",
+994-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNC40",
+995:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.14.4",
+996-    "object": {
+--
+1002-  {
+1003:    "ref": "refs/tags/release-0.15.0",
+1004-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNS4w",
+1005:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.15.0",
+1006-    "object": {
+--
+1012-  {
+1013:    "ref": "refs/tags/release-0.15.1",
+1014-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNS4x",
+1015:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.15.1",
+1016-    "object": {
+--
+1022-  {
+1023:    "ref": "refs/tags/release-0.15.2",
+1024-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNS4y",
+1025:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.15.2",
+1026-    "object": {
+--
+1032-  {
+1033:    "ref": "refs/tags/release-0.15.3",
+1034-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNS4z",
+1035:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.15.3",
+1036-    "object": {
+--
+1042-  {
+1043:    "ref": "refs/tags/release-0.16.0",
+1044-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNi4w",
+1045:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.16.0",
+1046-    "object": {
+--
+1052-  {
+1053:    "ref": "refs/tags/release-0.16.1",
+1054-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNi4x",
+1055:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.16.1",
+1056-    "object": {
+--
+1062-  {
+1063:    "ref": "refs/tags/release-0.16.2",
+1064-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNi4y",
+1065:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.16.2",
+1066-    "object": {
+--
+1072-  {
+1073:    "ref": "refs/tags/release-0.16.3",
+1074-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNi4z",
+1075:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.16.3",
+1076-    "object": {
+--
+1082-  {
+1083:    "ref": "refs/tags/release-0.16.4",
+1084-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNi40",
+1085:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.16.4",
+1086-    "object": {
+--
+1092-  {
+1093:    "ref": "refs/tags/release-0.17.0",
+1094-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNy4w",
+1095:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.17.0",
+1096-    "object": {
+--
+1102-  {
+1103:    "ref": "refs/tags/release-0.17.1",
+1104-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNy4x",
+1105:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.17.1",
+1106-    "object": {
+--
+1112-  {
+1113:    "ref": "refs/tags/release-0.17.2",
+1114-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xNy4y",
+1115:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.17.2",
+1116-    "object": {
+--
+1122-  {
+1123:    "ref": "refs/tags/release-0.18.0",
+1124-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xOC4w",
+1125:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.18.0",
+1126-    "object": {
+--
+1132-  {
+1133:    "ref": "refs/tags/release-0.18.1",
+1134-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xOC4x",
+1135:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.18.1",
+1136-    "object": {
+--
+1142-  {
+1143:    "ref": "refs/tags/release-0.18.2",
+1144-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xOC4y",
+1145:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.18.2",
+1146-    "object": {
+--
+1152-  {
+1153:    "ref": "refs/tags/release-0.18.3",
+1154-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xOC4z",
+1155:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.18.3",
+1156-    "object": {
+--
+1162-  {
+1163:    "ref": "refs/tags/release-0.19.0",
+1164-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xOS4w",
+1165:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.19.0",
+1166-    "object": {
+--
+1172-  {
+1173:    "ref": "refs/tags/release-0.19.1",
+1174-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xOS4x",
+1175:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.19.1",
+1176-    "object": {
+--
+1182-  {
+1183:    "ref": "refs/tags/release-0.19.2",
+1184-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xOS4y",
+1185:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.19.2",
+1186-    "object": {
+--
+1192-  {
+1193:    "ref": "refs/tags/release-0.19.2-rc0",
+1194-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4xOS4yLXJjMA==",
+1195:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.19.2-rc0",
+1196-    "object": {
+--
+1202-  {
+1203:    "ref": "refs/tags/release-0.2.0",
+1204-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yLjA=",
+1205:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.2.0",
+1206-    "object": {
+--
+1212-  {
+1213:    "ref": "refs/tags/release-0.2.1",
+1214-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yLjE=",
+1215:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.2.1",
+1216-    "object": {
+--
+1222-  {
+1223:    "ref": "refs/tags/release-0.20.0",
+1224-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4w",
+1225:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.0",
+1226-    "object": {
+--
+1232-  {
+1233:    "ref": "refs/tags/release-0.20.1",
+1234-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4x",
+1235:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.1",
+1236-    "object": {
+--
+1242-  {
+1243:    "ref": "refs/tags/release-0.20.1-rc0",
+1244-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4xLXJjMA==",
+1245:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.1-rc0",
+1246-    "object": {
+--
+1252-  {
+1253:    "ref": "refs/tags/release-0.20.1-rc1",
+1254-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4xLXJjMQ==",
+1255:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.1-rc1",
+1256-    "object": {
+--
+1262-  {
+1263:    "ref": "refs/tags/release-0.20.2",
+1264-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4y",
+1265:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.2",
+1266-    "object": {
+--
+1272-  {
+1273:    "ref": "refs/tags/release-0.20.2-rc1",
+1274-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yLXJjMQ==",
+1275:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.2-rc1",
+1276-    "object": {
+--
+1282-  {
+1283:    "ref": "refs/tags/release-0.20.2-rc2",
+1284-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yLXJjMg==",
+1285:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.2-rc2",
+1286-    "object": {
+--
+1292-  {
+1293:    "ref": "refs/tags/release-0.20.2-rc3",
+1294-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yLXJjMw==",
+1295:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.2-rc3",
+1296-    "object": {
+--
+1302-  {
+1303:    "ref": "refs/tags/release-0.20.2-rc4",
+1304-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yLXJjNA==",
+1305:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.2-rc4",
+1306-    "object": {
+--
+1312-  {
+1313:    "ref": "refs/tags/release-0.20.203.0",
+1314-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDMuMA==",
+1315:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.203.0",
+1316-    "object": {
+--
+1322-  {
+1323:    "ref": "refs/tags/release-0.20.203.0-rc0",
+1324-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDMuMC1yYzA=",
+1325:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.203.0-rc0",
+1326-    "object": {
+--
+1332-  {
+1333:    "ref": "refs/tags/release-0.20.203.0-rc1",
+1334-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDMuMC1yYzE=",
+1335:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.203.0-rc1",
+1336-    "object": {
+--
+1342-  {
+1343:    "ref": "refs/tags/release-0.20.204-rc1",
+1344-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDQtcmMx",
+1345:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.204-rc1",
+1346-    "object": {
+--
+1352-  {
+1353:    "ref": "refs/tags/release-0.20.204.0",
+1354-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDQuMA==",
+1355:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.204.0",
+1356-    "object": {
+--
+1362-  {
+1363:    "ref": "refs/tags/release-0.20.204.0-rc0",
+1364-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDQuMC1yYzA=",
+1365:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.204.0-rc0",
+1366-    "object": {
+--
+1372-  {
+1373:    "ref": "refs/tags/release-0.20.204.0-rc2",
+1374-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDQuMC1yYzI=",
+1375:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.204.0-rc2",
+1376-    "object": {
+--
+1382-  {
+1383:    "ref": "refs/tags/release-0.20.204.0-rc3",
+1384-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDQuMC1yYzM=",
+1385:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.204.0-rc3",
+1386-    "object": {
+--
+1392-  {
+1393:    "ref": "refs/tags/release-0.20.205.0",
+1394-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDUuMA==",
+1395:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.205.0",
+1396-    "object": {
+--
+1402-  {
+1403:    "ref": "refs/tags/release-0.20.205.0-rc1",
+1404-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDUuMC1yYzE=",
+1405:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.205.0-rc1",
+1406-    "object": {
+--
+1412-  {
+1413:    "ref": "refs/tags/release-0.20.205.0-rc2",
+1414-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4yMDUuMC1yYzI=",
+1415:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.205.0-rc2",
+1416-    "object": {
+--
+1422-  {
+1423:    "ref": "refs/tags/release-0.20.3-rc0",
+1424-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4zLXJjMA==",
+1425:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.3-rc0",
+1426-    "object": {
+--
+1432-  {
+1433:    "ref": "refs/tags/release-0.20.3-rc1",
+1434-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4zLXJjMQ==",
+1435:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.3-rc1",
+1436-    "object": {
+--
+1442-  {
+1443:    "ref": "refs/tags/release-0.20.3-rc2",
+1444-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMC4zLXJjMg==",
+1445:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.20.3-rc2",
+1446-    "object": {
+--
+1452-  {
+1453:    "ref": "refs/tags/release-0.21.0",
+1454-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMS4w",
+1455:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.21.0",
+1456-    "object": {
+--
+1462-  {
+1463:    "ref": "refs/tags/release-0.21.0-rc0",
+1464-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMS4wLXJjMA==",
+1465:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.21.0-rc0",
+1466-    "object": {
+--
+1472-  {
+1473:    "ref": "refs/tags/release-0.21.0-rc1",
+1474-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMS4wLXJjMQ==",
+1475:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.21.0-rc1",
+1476-    "object": {
+--
+1482-  {
+1483:    "ref": "refs/tags/release-0.21.0-rc2",
+1484-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMS4wLXJjMg==",
+1485:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.21.0-rc2",
+1486-    "object": {
+--
+1492-  {
+1493:    "ref": "refs/tags/release-0.22.0",
+1494-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMi4w",
+1495:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.22.0",
+1496-    "object": {
+--
+1502-  {
+1503:    "ref": "refs/tags/release-0.22.0-rc0",
+1504-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMi4wLXJjMA==",
+1505:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.22.0-rc0",
+1506-    "object": {
+--
+1512-  {
+1513:    "ref": "refs/tags/release-0.23.0",
+1514-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4w",
+1515:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.0",
+1516-    "object": {
+--
+1522-  {
+1523:    "ref": "refs/tags/release-0.23.0-rc0",
+1524-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4wLXJjMA==",
+1525:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.0-rc0",
+1526-    "object": {
+--
+1532-  {
+1533:    "ref": "refs/tags/release-0.23.0-rc1",
+1534-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4wLXJjMQ==",
+1535:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.0-rc1",
+1536-    "object": {
+--
+1542-  {
+1543:    "ref": "refs/tags/release-0.23.0-rc2",
+1544-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4wLXJjMg==",
+1545:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.0-rc2",
+1546-    "object": {
+--
+1552-  {
+1553:    "ref": "refs/tags/release-0.23.1",
+1554-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4x",
+1555:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.1",
+1556-    "object": {
+--
+1562-  {
+1563:    "ref": "refs/tags/release-0.23.1-rc0",
+1564-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4xLXJjMA==",
+1565:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.1-rc0",
+1566-    "object": {
+--
+1572-  {
+1573:    "ref": "refs/tags/release-0.23.1-rc1",
+1574-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4xLXJjMQ==",
+1575:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.1-rc1",
+1576-    "object": {
+--
+1582-  {
+1583:    "ref": "refs/tags/release-0.23.1-rc2",
+1584-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4xLXJjMg==",
+1585:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.1-rc2",
+1586-    "object": {
+--
+1592-  {
+1593:    "ref": "refs/tags/release-0.23.10",
+1594-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4xMA==",
+1595:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.10",
+1596-    "object": {
+--
+1602-  {
+1603:    "ref": "refs/tags/release-0.23.10-rc0",
+1604-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4xMC1yYzA=",
+1605:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.10-rc0",
+1606-    "object": {
+--
+1612-  {
+1613:    "ref": "refs/tags/release-0.23.11",
+1614-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4xMQ==",
+1615:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.11",
+1616-    "object": {
+--
+1622-  {
+1623:    "ref": "refs/tags/release-0.23.11-rc0",
+1624-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4xMS1yYzA=",
+1625:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.11-rc0",
+1626-    "object": {
+--
+1632-  {
+1633:    "ref": "refs/tags/release-0.23.2-rc0",
+1634-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4yLXJjMA==",
+1635:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.2-rc0",
+1636-    "object": {
+--
+1642-  {
+1643:    "ref": "refs/tags/release-0.23.3",
+1644-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4z",
+1645:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.3",
+1646-    "object": {
+--
+1652-  {
+1653:    "ref": "refs/tags/release-0.23.3-rc0",
+1654-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy4zLXJjMA==",
+1655:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.3-rc0",
+1656-    "object": {
+--
+1662-  {
+1663:    "ref": "refs/tags/release-0.23.4",
+1664-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy40",
+1665:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.4",
+1666-    "object": {
+--
+1672-  {
+1673:    "ref": "refs/tags/release-0.23.4-rc0",
+1674-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy40LXJjMA==",
+1675:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.4-rc0",
+1676-    "object": {
+--
+1682-  {
+1683:    "ref": "refs/tags/release-0.23.4-rc1",
+1684-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy40LXJjMQ==",
+1685:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.4-rc1",
+1686-    "object": {
+--
+1692-  {
+1693:    "ref": "refs/tags/release-0.23.4-rc2",
+1694-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy40LXJjMg==",
+1695:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.4-rc2",
+1696-    "object": {
+--
+1702-  {
+1703:    "ref": "refs/tags/release-0.23.5",
+1704-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy41",
+1705:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.5",
+1706-    "object": {
+--
+1712-  {
+1713:    "ref": "refs/tags/release-0.23.5-rc0",
+1714-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy41LXJjMA==",
+1715:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.5-rc0",
+1716-    "object": {
+--
+1722-  {
+1723:    "ref": "refs/tags/release-0.23.6",
+1724-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy42",
+1725:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.6",
+1726-    "object": {
+--
+1732-  {
+1733:    "ref": "refs/tags/release-0.23.6-rc0",
+1734-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy42LXJjMA==",
+1735:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.6-rc0",
+1736-    "object": {
+--
+1742-  {
+1743:    "ref": "refs/tags/release-0.23.6-rc1",
+1744-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy42LXJjMQ==",
+1745:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.6-rc1",
+1746-    "object": {
+--
+1752-  {
+1753:    "ref": "refs/tags/release-0.23.6-rc1-old",
+1754-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy42LXJjMS1vbGQ=",
+1755:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.6-rc1-old",
+1756-    "object": {
+--
+1762-  {
+1763:    "ref": "refs/tags/release-0.23.7",
+1764-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy43",
+1765:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.7",
+1766-    "object": {
+--
+1772-  {
+1773:    "ref": "refs/tags/release-0.23.7-rc0",
+1774-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy43LXJjMA==",
+1775:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.7-rc0",
+1776-    "object": {
+--
+1782-  {
+1783:    "ref": "refs/tags/release-0.23.8",
+1784-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy44",
+1785:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.8",
+1786-    "object": {
+--
+1792-  {
+1793:    "ref": "refs/tags/release-0.23.8-rc0",
+1794-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy44LXJjMA==",
+1795:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.8-rc0",
+1796-    "object": {
+--
+1802-  {
+1803:    "ref": "refs/tags/release-0.23.9",
+1804-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy45",
+1805:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.9",
+1806-    "object": {
+--
+1812-  {
+1813:    "ref": "refs/tags/release-0.23.9-rc0",
+1814-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4yMy45LXJjMA==",
+1815:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.23.9-rc0",
+1816-    "object": {
+--
+1822-  {
+1823:    "ref": "refs/tags/release-0.3.0",
+1824-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4zLjA=",
+1825:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.3.0",
+1826-    "object": {
+--
+1832-  {
+1833:    "ref": "refs/tags/release-0.3.1",
+1834-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4zLjE=",
+1835:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.3.1",
+1836-    "object": {
+--
+1842-  {
+1843:    "ref": "refs/tags/release-0.3.2",
+1844-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC4zLjI=",
+1845:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.3.2",
+1846-    "object": {
+--
+1852-  {
+1853:    "ref": "refs/tags/release-0.4.0",
+1854-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC40LjA=",
+1855:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.4.0",
+1856-    "object": {
+--
+1862-  {
+1863:    "ref": "refs/tags/release-0.5.0",
+1864-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC41LjA=",
+1865:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.5.0",
+1866-    "object": {
+--
+1872-  {
+1873:    "ref": "refs/tags/release-0.6.0",
+1874-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC42LjA=",
+1875:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.6.0",
+1876-    "object": {
+--
+1882-  {
+1883:    "ref": "refs/tags/release-0.6.1",
+1884-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC42LjE=",
+1885:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.6.1",
+1886-    "object": {
+--
+1892-  {
+1893:    "ref": "refs/tags/release-0.6.2",
+1894-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC42LjI=",
+1895:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.6.2",
+1896-    "object": {
+--
+1902-  {
+1903:    "ref": "refs/tags/release-0.7.0",
+1904-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC43LjA=",
+1905:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.7.0",
+1906-    "object": {
+--
+1912-  {
+1913:    "ref": "refs/tags/release-0.7.1",
+1914-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC43LjE=",
+1915:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.7.1",
+1916-    "object": {
+--
+1922-  {
+1923:    "ref": "refs/tags/release-0.8.0",
+1924-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC44LjA=",
+1925:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.8.0",
+1926-    "object": {
+--
+1932-  {
+1933:    "ref": "refs/tags/release-0.9.0",
+1934-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC45LjA=",
+1935:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.9.0",
+1936-    "object": {
+--
+1942-  {
+1943:    "ref": "refs/tags/release-0.9.1",
+1944-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC45LjE=",
+1945:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.9.1",
+1946-    "object": {
+--
+1952-  {
+1953:    "ref": "refs/tags/release-0.9.2",
+1954-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMC45LjI=",
+1955:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-0.9.2",
+1956-    "object": {
+--
+1962-  {
+1963:    "ref": "refs/tags/release-1.0.0",
+1964-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjA=",
+1965:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.0",
+1966-    "object": {
+--
+1972-  {
+1973:    "ref": "refs/tags/release-1.0.0-rc2",
+1974-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjAtcmMy",
+1975:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.0-rc2",
+1976-    "object": {
+--
+1982-  {
+1983:    "ref": "refs/tags/release-1.0.0-rc3",
+1984-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjAtcmMz",
+1985:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.0-rc3",
+1986-    "object": {
+--
+1992-  {
+1993:    "ref": "refs/tags/release-1.0.1",
+1994-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjE=",
+1995:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.1",
+1996-    "object": {
+--
+2002-  {
+2003:    "ref": "refs/tags/release-1.0.1-rc1",
+2004-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjEtcmMx",
+2005:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.1-rc1",
+2006-    "object": {
+--
+2012-  {
+2013:    "ref": "refs/tags/release-1.0.2",
+2014-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjI=",
+2015:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.2",
+2016-    "object": {
+--
+2022-  {
+2023:    "ref": "refs/tags/release-1.0.2-rc1",
+2024-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjItcmMx",
+2025:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.2-rc1",
+2026-    "object": {
+--
+2032-  {
+2033:    "ref": "refs/tags/release-1.0.2-rc2",
+2034-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjItcmMy",
+2035:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.2-rc2",
+2036-    "object": {
+--
+2042-  {
+2043:    "ref": "refs/tags/release-1.0.3",
+2044-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjM=",
+2045:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.3",
+2046-    "object": {
+--
+2052-  {
+2053:    "ref": "refs/tags/release-1.0.3-rc0",
+2054-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjMtcmMw",
+2055:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.3-rc0",
+2056-    "object": {
+--
+2062-  {
+2063:    "ref": "refs/tags/release-1.0.3-rc1",
+2064-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjMtcmMx",
+2065:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.3-rc1",
+2066-    "object": {
+--
+2072-  {
+2073:    "ref": "refs/tags/release-1.0.4",
+2074-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjQ=",
+2075:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.4",
+2076-    "object": {
+--
+2082-  {
+2083:    "ref": "refs/tags/release-1.0.4-rc0",
+2084-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4wLjQtcmMw",
+2085:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.0.4-rc0",
+2086-    "object": {
+--
+2092-  {
+2093:    "ref": "refs/tags/release-1.1.0",
+2094-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjA=",
+2095:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.0",
+2096-    "object": {
+--
+2102-  {
+2103:    "ref": "refs/tags/release-1.1.0-rc0",
+2104-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjAtcmMw",
+2105:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.0-rc0",
+2106-    "object": {
+--
+2112-  {
+2113:    "ref": "refs/tags/release-1.1.0-rc1",
+2114-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjAtcmMx",
+2115:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.0-rc1",
+2116-    "object": {
+--
+2122-  {
+2123:    "ref": "refs/tags/release-1.1.0-rc2",
+2124-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjAtcmMy",
+2125:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.0-rc2",
+2126-    "object": {
+--
+2132-  {
+2133:    "ref": "refs/tags/release-1.1.0-rc3",
+2134-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjAtcmMz",
+2135:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.0-rc3",
+2136-    "object": {
+--
+2142-  {
+2143:    "ref": "refs/tags/release-1.1.0-rc4",
+2144-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjAtcmM0",
+2145:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.0-rc4",
+2146-    "object": {
+--
+2152-  {
+2153:    "ref": "refs/tags/release-1.1.0-rc5",
+2154-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjAtcmM1",
+2155:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.0-rc5",
+2156-    "object": {
+--
+2162-  {
+2163:    "ref": "refs/tags/release-1.1.1",
+2164-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjE=",
+2165:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.1",
+2166-    "object": {
+--
+2172-  {
+2173:    "ref": "refs/tags/release-1.1.1-rc0",
+2174-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjEtcmMw",
+2175:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.1-rc0",
+2176-    "object": {
+--
+2182-  {
+2183:    "ref": "refs/tags/release-1.1.2",
+2184-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjI=",
+2185:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.2",
+2186-    "object": {
+--
+2192-  {
+2193:    "ref": "refs/tags/release-1.1.2-rc0",
+2194-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjItcmMw",
+2195:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.2-rc0",
+2196-    "object": {
+--
+2202-  {
+2203:    "ref": "refs/tags/release-1.1.2-rc1",
+2204-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjItcmMx",
+2205:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.2-rc1",
+2206-    "object": {
+--
+2212-  {
+2213:    "ref": "refs/tags/release-1.1.2-rc3",
+2214-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjItcmMz",
+2215:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.2-rc3",
+2216-    "object": {
+--
+2222-  {
+2223:    "ref": "refs/tags/release-1.1.2-rc4",
+2224-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjItcmM0",
+2225:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.2-rc4",
+2226-    "object": {
+--
+2232-  {
+2233:    "ref": "refs/tags/release-1.1.2-rc5",
+2234-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4xLjItcmM1",
+2235:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.1.2-rc5",
+2236-    "object": {
+--
+2242-  {
+2243:    "ref": "refs/tags/release-1.2.0",
+2244-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4yLjA=",
+2245:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.2.0",
+2246-    "object": {
+--
+2252-  {
+2253:    "ref": "refs/tags/release-1.2.0-rc0",
+2254-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4yLjAtcmMw",
+2255:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.2.0-rc0",
+2256-    "object": {
+--
+2262-  {
+2263:    "ref": "refs/tags/release-1.2.0-rc1",
+2264-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4yLjAtcmMx",
+2265:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.2.0-rc1",
+2266-    "object": {
+--
+2272-  {
+2273:    "ref": "refs/tags/release-1.2.1",
+2274-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4yLjE=",
+2275:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.2.1",
+2276-    "object": {
+--
+2282-  {
+2283:    "ref": "refs/tags/release-1.2.1-rc0",
+2284-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMS4yLjEtcmMw",
+2285:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-1.2.1-rc0",
+2286-    "object": {
+--
+2292-  {
+2293:    "ref": "refs/tags/release-2.0.0-alpha",
+2294-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjAtYWxwaGE=",
+2295:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.0-alpha",
+2296-    "object": {
+--
+2302-  {
+2303:    "ref": "refs/tags/release-2.0.0-alpha-rc0",
+2304-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjAtYWxwaGEtcmMw",
+2305:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.0-alpha-rc0",
+2306-    "object": {
+--
+2312-  {
+2313:    "ref": "refs/tags/release-2.0.0-alpha-rc1",
+2314-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjAtYWxwaGEtcmMx",
+2315:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.0-alpha-rc1",
+2316-    "object": {
+--
+2322-  {
+2323:    "ref": "refs/tags/release-2.0.1-alpha",
+2324-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjEtYWxwaGE=",
+2325:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.1-alpha",
+2326-    "object": {
+--
+2332-  {
+2333:    "ref": "refs/tags/release-2.0.2-alpha",
+2334-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjItYWxwaGE=",
+2335:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.2-alpha",
+2336-    "object": {
+--
+2342-  {
+2343:    "ref": "refs/tags/release-2.0.2-alpha-rc0",
+2344-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjItYWxwaGEtcmMw",
+2345:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.2-alpha-rc0",
+2346-    "object": {
+--
+2352-  {
+2353:    "ref": "refs/tags/release-2.0.2-alpha-rc1",
+2354-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjItYWxwaGEtcmMx",
+2355:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.2-alpha-rc1",
+2356-    "object": {
+--
+2362-  {
+2363:    "ref": "refs/tags/release-2.0.2-alpha-rc2",
+2364-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjItYWxwaGEtcmMy",
+2365:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.2-alpha-rc2",
+2366-    "object": {
+--
+2372-  {
+2373:    "ref": "refs/tags/release-2.0.3-alpha",
+2374-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjMtYWxwaGE=",
+2375:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.3-alpha",
+2376-    "object": {
+--
+2382-  {
+2383:    "ref": "refs/tags/release-2.0.3-alpha-rc0",
+2384-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjMtYWxwaGEtcmMw",
+2385:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.3-alpha-rc0",
+2386-    "object": {
+--
+2392-  {
+2393:    "ref": "refs/tags/release-2.0.4-alpha",
+2394-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjQtYWxwaGE=",
+2395:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.4-alpha",
+2396-    "object": {
+--
+2402-  {
+2403:    "ref": "refs/tags/release-2.0.4-alpha-rc0",
+2404-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjQtYWxwaGEtcmMw",
+2405:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.4-alpha-rc0",
+2406-    "object": {
+--
+2412-  {
+2413:    "ref": "refs/tags/release-2.0.4-alpha-rc1",
+2414-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjQtYWxwaGEtcmMx",
+2415:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.4-alpha-rc1",
+2416-    "object": {
+--
+2422-  {
+2423:    "ref": "refs/tags/release-2.0.4-alpha-rc2",
+2424-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjQtYWxwaGEtcmMy",
+2425:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.4-alpha-rc2",
+2426-    "object": {
+--
+2432-  {
+2433:    "ref": "refs/tags/release-2.0.4.1-alpha-rc0",
+2434-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjQuMS1hbHBoYS1yYzA=",
+2435:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.4.1-alpha-rc0",
+2436-    "object": {
+--
+2442-  {
+2443:    "ref": "refs/tags/release-2.0.5-alpha",
+2444-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjUtYWxwaGE=",
+2445:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.5-alpha",
+2446-    "object": {
+--
+2452-  {
+2453:    "ref": "refs/tags/release-2.0.5-alpha-rc0",
+2454-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjUtYWxwaGEtcmMw",
+2455:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.5-alpha-rc0",
+2456-    "object": {
+--
+2462-  {
+2463:    "ref": "refs/tags/release-2.0.5-alpha-rc1",
+2464-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjUtYWxwaGEtcmMx",
+2465:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.5-alpha-rc1",
+2466-    "object": {
+--
+2472-  {
+2473:    "ref": "refs/tags/release-2.0.5-alpha-rc2",
+2474-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjUtYWxwaGEtcmMy",
+2475:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.5-alpha-rc2",
+2476-    "object": {
+--
+2482-  {
+2483:    "ref": "refs/tags/release-2.0.6-alpha",
+2484-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjYtYWxwaGE=",
+2485:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.6-alpha",
+2486-    "object": {
+--
+2492-  {
+2493:    "ref": "refs/tags/release-2.0.6-alpha-rc0",
+2494-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjYtYWxwaGEtcmMw",
+2495:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.6-alpha-rc0",
+2496-    "object": {
+--
+2502-  {
+2503:    "ref": "refs/tags/release-2.0.6-alpha-rc1",
+2504-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4wLjYtYWxwaGEtcmMx",
+2505:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.0.6-alpha-rc1",
+2506-    "object": {
+--
+2512-  {
+2513:    "ref": "refs/tags/release-2.1.0-beta",
+2514-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4xLjAtYmV0YQ==",
+2515:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.1.0-beta",
+2516-    "object": {
+--
+2522-  {
+2523:    "ref": "refs/tags/release-2.1.0-beta-rc0",
+2524-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4xLjAtYmV0YS1yYzA=",
+2525:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.1.0-beta-rc0",
+2526-    "object": {
+--
+2532-  {
+2533:    "ref": "refs/tags/release-2.1.0-beta-rc1",
+2534-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4xLjAtYmV0YS1yYzE=",
+2535:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.1.0-beta-rc1",
+2536-    "object": {
+--
+2542-  {
+2543:    "ref": "refs/tags/release-2.1.0-beta-rc2",
+2544-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4xLjAtYmV0YS1yYzI=",
+2545:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.1.0-beta-rc2",
+2546-    "object": {
+--
+2552-  {
+2553:    "ref": "refs/tags/release-2.1.1-beta-rc0",
+2554-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4xLjEtYmV0YS1yYzA=",
+2555:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.1.1-beta-rc0",
+2556-    "object": {
+--
+2562-  {
+2563:    "ref": "refs/tags/release-2.1.1-rc0",
+2564-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4xLjEtcmMw",
+2565:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.1.1-rc0",
+2566-    "object": {
+--
+2572-  {
+2573:    "ref": "refs/tags/release-2.10.0-RC0",
+2574-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4xMC4wLVJDMA==",
+2575:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.10.0-RC0",
+2576-    "object": {
+--
+2582-  {
+2583:    "ref": "refs/tags/release-2.10.0-RC1",
+2584-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4xMC4wLVJDMQ==",
+2585:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.10.0-RC1",
+2586-    "object": {
+--
+2592-  {
+2593:    "ref": "refs/tags/release-2.10.1-RC0",
+2594-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4xMC4xLVJDMA==",
+2595:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.10.1-RC0",
+2596-    "object": {
+--
+2602-  {
+2603:    "ref": "refs/tags/release-2.10.2-RC0",
+2604-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4xMC4yLVJDMA==",
+2605:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.10.2-RC0",
+2606-    "object": {
+--
+2612-  {
+2613:    "ref": "refs/tags/release-2.2.0",
+2614-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4yLjA=",
+2615:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.2.0",
+2616-    "object": {
+--
+2622-  {
+2623:    "ref": "refs/tags/release-2.2.0-rc0",
+2624-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4yLjAtcmMw",
+2625:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.2.0-rc0",
+2626-    "object": {
+--
+2632-  {
+2633:    "ref": "refs/tags/release-2.2.1-rc0",
+2634-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4yLjEtcmMw",
+2635:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.2.1-rc0",
+2636-    "object": {
+--
+2642-  {
+2643:    "ref": "refs/tags/release-2.3.0",
+2644-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4zLjA=",
+2645:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.3.0",
+2646-    "object": {
+--
+2652-  {
+2653:    "ref": "refs/tags/release-2.3.0-rc0",
+2654-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi4zLjAtcmMw",
+2655:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.3.0-rc0",
+2656-    "object": {
+--
+2662-  {
+2663:    "ref": "refs/tags/release-2.4.0",
+2664-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi40LjA=",
+2665:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.4.0",
+2666-    "object": {
+--
+2672-  {
+2673:    "ref": "refs/tags/release-2.4.0-rc0",
+2674-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi40LjAtcmMw",
+2675:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.4.0-rc0",
+2676-    "object": {
+--
+2682-  {
+2683:    "ref": "refs/tags/release-2.4.1",
+2684-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi40LjE=",
+2685:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.4.1",
+2686-    "object": {
+--
+2692-  {
+2693:    "ref": "refs/tags/release-2.4.1-rc0",
+2694-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi40LjEtcmMw",
+2695:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.4.1-rc0",
+2696-    "object": {
+--
+2702-  {
+2703:    "ref": "refs/tags/release-2.4.1-rc1",
+2704-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi40LjEtcmMx",
+2705:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.4.1-rc1",
+2706-    "object": {
+--
+2712-  {
+2713:    "ref": "refs/tags/release-2.5.0",
+2714-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi41LjA=",
+2715:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.5.0",
+2716-    "object": {
+--
+2722-  {
+2723:    "ref": "refs/tags/release-2.5.0-rc0",
+2724-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi41LjAtcmMw",
+2725:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.5.0-rc0",
+2726-    "object": {
+--
+2732-  {
+2733:    "ref": "refs/tags/release-2.5.0-rc1",
+2734-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi41LjAtcmMx",
+2735:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.5.0-rc1",
+2736-    "object": {
+--
+2742-  {
+2743:    "ref": "refs/tags/release-2.5.0-rc2",
+2744-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi41LjAtcmMy",
+2745:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.5.0-rc2",
+2746-    "object": {
+--
+2752-  {
+2753:    "ref": "refs/tags/release-2.5.1",
+2754-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi41LjE=",
+2755:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.5.1",
+2756-    "object": {
+--
+2762-  {
+2763:    "ref": "refs/tags/release-2.5.2",
+2764-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi41LjI=",
+2765:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.5.2",
+2766-    "object": {
+--
+2772-  {
+2773:    "ref": "refs/tags/release-2.5.2-RC0",
+2774-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi41LjItUkMw",
+2775:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.5.2-RC0",
+2776-    "object": {
+--
+2782-  {
+2783:    "ref": "refs/tags/release-2.5.2-RC1",
+2784-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi41LjItUkMx",
+2785:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.5.2-RC1",
+2786-    "object": {
+--
+2792-  {
+2793:    "ref": "refs/tags/release-2.6.0",
+2794-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjA=",
+2795:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.0",
+2796-    "object": {
+--
+2802-  {
+2803:    "ref": "refs/tags/release-2.6.0-rc0",
+2804-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjAtcmMw",
+2805:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.0-rc0",
+2806-    "object": {
+--
+2812-  {
+2813:    "ref": "refs/tags/release-2.6.0-rc1",
+2814-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjAtcmMx",
+2815:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.0-rc1",
+2816-    "object": {
+--
+2822-  {
+2823:    "ref": "refs/tags/release-2.6.1",
+2824-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjE=",
+2825:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.1",
+2826-    "object": {
+--
+2832-  {
+2833:    "ref": "refs/tags/release-2.6.1-RC0",
+2834-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjEtUkMw",
+2835:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.1-RC0",
+2836-    "object": {
+--
+2842-  {
+2843:    "ref": "refs/tags/release-2.6.1-RC1",
+2844-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjEtUkMx",
+2845:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.1-RC1",
+2846-    "object": {
+--
+2852-  {
+2853:    "ref": "refs/tags/release-2.6.2",
+2854-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjI=",
+2855:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.2",
+2856-    "object": {
+--
+2862-  {
+2863:    "ref": "refs/tags/release-2.6.2-RC0",
+2864-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjItUkMw",
+2865:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.2-RC0",
+2866-    "object": {
+--
+2872-  {
+2873:    "ref": "refs/tags/release-2.6.3",
+2874-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjM=",
+2875:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.3",
+2876-    "object": {
+--
+2882-  {
+2883:    "ref": "refs/tags/release-2.6.3-RC0",
+2884-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjMtUkMw",
+2885:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.3-RC0",
+2886-    "object": {
+--
+2892-  {
+2893:    "ref": "refs/tags/release-2.6.3-RC0.1",
+2894-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjMtUkMwLjE=",
+2895:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.3-RC0.1",
+2896-    "object": {
+--
+2902-  {
+2903:    "ref": "refs/tags/release-2.6.3-RC1",
+2904-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjMtUkMx",
+2905:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.3-RC1",
+2906-    "object": {
+--
+2912-  {
+2913:    "ref": "refs/tags/release-2.6.4-RC0",
+2914-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjQtUkMw",
+2915:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.4-RC0",
+2916-    "object": {
+--
+2922-  {
+2923:    "ref": "refs/tags/release-2.6.5-RC0",
+2924-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjUtUkMw",
+2925:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.5-RC0",
+2926-    "object": {
+--
+2932-  {
+2933:    "ref": "refs/tags/release-2.6.5-RC1",
+2934-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi42LjUtUkMx",
+2935:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.6.5-RC1",
+2936-    "object": {
+--
+2942-  {
+2943:    "ref": "refs/tags/release-2.7.0",
+2944-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjA=",
+2945:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.0",
+2946-    "object": {
+--
+2952-  {
+2953:    "ref": "refs/tags/release-2.7.0-RC0",
+2954-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjAtUkMw",
+2955:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.0-RC0",
+2956-    "object": {
+--
+2962-  {
+2963:    "ref": "refs/tags/release-2.7.1",
+2964-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjE=",
+2965:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.1",
+2966-    "object": {
+--
+2972-  {
+2973:    "ref": "refs/tags/release-2.7.1-RC0",
+2974-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjEtUkMw",
+2975:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.1-RC0",
+2976-    "object": {
+--
+2982-  {
+2983:    "ref": "refs/tags/release-2.7.2-RC0",
+2984-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjItUkMw",
+2985:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.2-RC0",
+2986-    "object": {
+--
+2992-  {
+2993:    "ref": "refs/tags/release-2.7.2-RC1",
+2994-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjItUkMx",
+2995:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.2-RC1",
+2996-    "object": {
+--
+3002-  {
+3003:    "ref": "refs/tags/release-2.7.2-RC2",
+3004-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjItUkMy",
+3005:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.2-RC2",
+3006-    "object": {
+--
+3012-  {
+3013:    "ref": "refs/tags/release-2.7.3-RC0",
+3014-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjMtUkMw",
+3015:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.3-RC0",
+3016-    "object": {
+--
+3022-  {
+3023:    "ref": "refs/tags/release-2.7.3-RC1",
+3024-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjMtUkMx",
+3025:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.3-RC1",
+3026-    "object": {
+--
+3032-  {
+3033:    "ref": "refs/tags/release-2.7.3-RC2",
+3034-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjMtUkMy",
+3035:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.3-RC2",
+3036-    "object": {
+--
+3042-  {
+3043:    "ref": "refs/tags/release-2.7.4-RC0",
+3044-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjQtUkMw",
+3045:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.4-RC0",
+3046-    "object": {
+--
+3052-  {
+3053:    "ref": "refs/tags/release-2.7.5-RC0",
+3054-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjUtUkMw",
+3055:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.5-RC0",
+3056-    "object": {
+--
+3062-  {
+3063:    "ref": "refs/tags/release-2.7.5-RC1",
+3064-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjUtUkMx",
+3065:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.5-RC1",
+3066-    "object": {
+--
+3072-  {
+3073:    "ref": "refs/tags/release-2.7.6-RC0",
+3074-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjYtUkMw",
+3075:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.6-RC0",
+3076-    "object": {
+--
+3082-  {
+3083:    "ref": "refs/tags/release-2.7.7-RC0",
+3084-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi43LjctUkMw",
+3085:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.7.7-RC0",
+3086-    "object": {
+--
+3092-  {
+3093:    "ref": "refs/tags/release-2.8.0-RC0",
+3094-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi44LjAtUkMw",
+3095:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.8.0-RC0",
+3096-    "object": {
+--
+3102-  {
+3103:    "ref": "refs/tags/release-2.8.0-RC1",
+3104-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi44LjAtUkMx",
+3105:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.8.0-RC1",
+3106-    "object": {
+--
+3112-  {
+3113:    "ref": "refs/tags/release-2.8.0-RC2",
+3114-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi44LjAtUkMy",
+3115:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.8.0-RC2",
+3116-    "object": {
+--
+3122-  {
+3123:    "ref": "refs/tags/release-2.8.0-RC3",
+3124-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi44LjAtUkMz",
+3125:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.8.0-RC3",
+3126-    "object": {
+--
+3132-  {
+3133:    "ref": "refs/tags/release-2.8.2-RC0",
+3134-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi44LjItUkMw",
+3135:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.8.2-RC0",
+3136-    "object": {
+--
+3142-  {
+3143:    "ref": "refs/tags/release-2.8.2-RC1",
+3144-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi44LjItUkMx",
+3145:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.8.2-RC1",
+3146-    "object": {
+--
+3152-  {
+3153:    "ref": "refs/tags/release-2.8.3-RC0",
+3154-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi44LjMtUkMw",
+3155:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.8.3-RC0",
+3156-    "object": {
+--
+3162-  {
+3163:    "ref": "refs/tags/release-2.8.4-RC0",
+3164-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi44LjQtUkMw",
+3165:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.8.4-RC0",
+3166-    "object": {
+--
+3172-  {
+3173:    "ref": "refs/tags/release-2.8.5-RC0",
+3174-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi44LjUtUkMw",
+3175:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.8.5-RC0",
+3176-    "object": {
+--
+3182-  {
+3183:    "ref": "refs/tags/release-2.9.0-RC0",
+3184-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi45LjAtUkMw",
+3185:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.9.0-RC0",
+3186-    "object": {
+--
+3192-  {
+3193:    "ref": "refs/tags/release-2.9.0-RC1",
+3194-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi45LjAtUkMx",
+3195:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.9.0-RC1",
+3196-    "object": {
+--
+3202-  {
+3203:    "ref": "refs/tags/release-2.9.0-RC2",
+3204-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi45LjAtUkMy",
+3205:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.9.0-RC2",
+3206-    "object": {
+--
+3212-  {
+3213:    "ref": "refs/tags/release-2.9.0-RC3",
+3214-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi45LjAtUkMz",
+3215:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.9.0-RC3",
+3216-    "object": {
+--
+3222-  {
+3223:    "ref": "refs/tags/release-2.9.1-RC0",
+3224-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi45LjEtUkMw",
+3225:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.9.1-RC0",
+3226-    "object": {
+--
+3232-  {
+3233:    "ref": "refs/tags/release-2.9.2-RC0",
+3234-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMi45LjItUkMw",
+3235:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-2.9.2-RC0",
+3236-    "object": {
+--
+3242-  {
+3243:    "ref": "refs/tags/release-3.0.0-RC0",
+3244-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjAtUkMw",
+3245:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.0-RC0",
+3246-    "object": {
+--
+3252-  {
+3253:    "ref": "refs/tags/release-3.0.0-RC1",
+3254-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjAtUkMx",
+3255:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.0-RC1",
+3256-    "object": {
+--
+3262-  {
+3263:    "ref": "refs/tags/release-3.0.0-alpha1-RC0",
+3264-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjAtYWxwaGExLVJDMA==",
+3265:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.0-alpha1-RC0",
+3266-    "object": {
+--
+3272-  {
+3273:    "ref": "refs/tags/release-3.0.0-alpha2-RC0",
+3274-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjAtYWxwaGEyLVJDMA==",
+3275:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.0-alpha2-RC0",
+3276-    "object": {
+--
+3282-  {
+3283:    "ref": "refs/tags/release-3.0.0-alpha4-RC0",
+3284-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjAtYWxwaGE0LVJDMA==",
+3285:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.0-alpha4-RC0",
+3286-    "object": {
+--
+3292-  {
+3293:    "ref": "refs/tags/release-3.0.0-beta1-RC0",
+3294-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjAtYmV0YTEtUkMw",
+3295:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.0-beta1-RC0",
+3296-    "object": {
+--
+3302-  {
+3303:    "ref": "refs/tags/release-3.0.1-RC0",
+3304-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjEtUkMw",
+3305:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.1-RC0",
+3306-    "object": {
+--
+3312-  {
+3313:    "ref": "refs/tags/release-3.0.1-RC1",
+3314-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjEtUkMx",
+3315:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.1-RC1",
+3316-    "object": {
+--
+3322-  {
+3323:    "ref": "refs/tags/release-3.0.2-RC0",
+3324-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjItUkMw",
+3325:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.2-RC0",
+3326-    "object": {
+--
+3332-  {
+3333:    "ref": "refs/tags/release-3.0.2-RC1",
+3334-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjItUkMx",
+3335:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.2-RC1",
+3336-    "object": {
+--
+3342-  {
+3343:    "ref": "refs/tags/release-3.0.3-RC0",
+3344-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4wLjMtUkMw",
+3345:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.0.3-RC0",
+3346-    "object": {
+--
+3352-  {
+3353:    "ref": "refs/tags/release-3.1.0-RC0",
+3354-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjAtUkMw",
+3355:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.0-RC0",
+3356-    "object": {
+--
+3362-  {
+3363:    "ref": "refs/tags/release-3.1.0-RC1",
+3364-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjAtUkMx",
+3365:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.0-RC1",
+3366-    "object": {
+--
+3372-  {
+3373:    "ref": "refs/tags/release-3.1.1-RC0",
+3374-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjEtUkMw",
+3375:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.1-RC0",
+3376-    "object": {
+--
+3382-  {
+3383:    "ref": "refs/tags/release-3.1.2-RC0",
+3384-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjItUkMw",
+3385:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.2-RC0",
+3386-    "object": {
+--
+3392-  {
+3393:    "ref": "refs/tags/release-3.1.2-RC1",
+3394-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjItUkMx",
+3395:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.2-RC1",
+3396-    "object": {
+--
+3402-  {
+3403:    "ref": "refs/tags/release-3.1.3-RC0",
+3404-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjMtUkMw",
+3405:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.3-RC0",
+3406-    "object": {
+--
+3412-  {
+3413:    "ref": "refs/tags/release-3.1.4-RC0",
+3414-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjQtUkMw",
+3415:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.4-RC0",
+3416-    "object": {
+--
+3422-  {
+3423:    "ref": "refs/tags/release-3.1.4-RC1",
+3424-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjQtUkMx",
+3425:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.4-RC1",
+3426-    "object": {
+--
+3432-  {
+3433:    "ref": "refs/tags/release-3.1.4-RC2",
+3434-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjQtUkMy",
+3435:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.4-RC2",
+3436-    "object": {
+--
+3442-  {
+3443:    "ref": "refs/tags/release-3.1.4-RC3",
+3444-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjQtUkMz",
+3445:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.4-RC3",
+3446-    "object": {
+--
+3452-  {
+3453:    "ref": "refs/tags/release-3.1.4-RC4",
+3454-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4xLjQtUkM0",
+3455:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.1.4-RC4",
+3456-    "object": {
+--
+3462-  {
+3463:    "ref": "refs/tags/release-3.2.0-RC0",
+3464-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjAtUkMw",
+3465:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.0-RC0",
+3466-    "object": {
+--
+3472-  {
+3473:    "ref": "refs/tags/release-3.2.0-RC1",
+3474-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjAtUkMx",
+3475:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.0-RC1",
+3476-    "object": {
+--
+3482-  {
+3483:    "ref": "refs/tags/release-3.2.1-RC0",
+3484-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjEtUkMw",
+3485:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.1-RC0",
+3486-    "object": {
+--
+3492-  {
+3493:    "ref": "refs/tags/release-3.2.2-RC0",
+3494-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjItUkMw",
+3495:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.2-RC0",
+3496-    "object": {
+--
+3502-  {
+3503:    "ref": "refs/tags/release-3.2.2-RC1",
+3504-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjItUkMx",
+3505:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.2-RC1",
+3506-    "object": {
+--
+3512-  {
+3513:    "ref": "refs/tags/release-3.2.2-RC2",
+3514-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjItUkMy",
+3515:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.2-RC2",
+3516-    "object": {
+--
+3522-  {
+3523:    "ref": "refs/tags/release-3.2.2-RC3",
+3524-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjItUkMz",
+3525:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.2-RC3",
+3526-    "object": {
+--
+3532-  {
+3533:    "ref": "refs/tags/release-3.2.2-RC4",
+3534-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjItUkM0",
+3535:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.2-RC4",
+3536-    "object": {
+--
+3542-  {
+3543:    "ref": "refs/tags/release-3.2.2-RC5",
+3544-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjItUkM1",
+3545:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.2-RC5",
+3546-    "object": {
+--
+3552-  {
+3553:    "ref": "refs/tags/release-3.2.3-RC0",
+3554-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjMtUkMw",
+3555:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.3-RC0",
+3556-    "object": {
+--
+3562-  {
+3563:    "ref": "refs/tags/release-3.2.3-RC1",
+3564-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjMtUkMx",
+3565:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.3-RC1",
+3566-    "object": {
+--
+3572-  {
+3573:    "ref": "refs/tags/release-3.2.4-RC0",
+3574-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4yLjQtUkMw",
+3575:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.2.4-RC0",
+3576-    "object": {
+--
+3582-  {
+3583:    "ref": "refs/tags/release-3.3.0-RC0",
+3584-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjAtUkMw",
+3585:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.0-RC0",
+3586-    "object": {
+--
+3592-  {
+3593:    "ref": "refs/tags/release-3.3.1-RC0",
+3594-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjEtUkMw",
+3595:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.1-RC0",
+3596-    "object": {
+--
+3602-  {
+3603:    "ref": "refs/tags/release-3.3.1-RC1",
+3604-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjEtUkMx",
+3605:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.1-RC1",
+3606-    "object": {
+--
+3612-  {
+3613:    "ref": "refs/tags/release-3.3.1-RC2",
+3614-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjEtUkMy",
+3615:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.1-RC2",
+3616-    "object": {
+--
+3622-  {
+3623:    "ref": "refs/tags/release-3.3.1-RC3",
+3624-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjEtUkMz",
+3625:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.1-RC3",
+3626-    "object": {
+--
+3632-  {
+3633:    "ref": "refs/tags/release-3.3.2-RC0",
+3634-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjItUkMw",
+3635:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.2-RC0",
+3636-    "object": {
+--
+3642-  {
+3643:    "ref": "refs/tags/release-3.3.2-RC1",
+3644-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjItUkMx",
+3645:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.2-RC1",
+3646-    "object": {
+--
+3652-  {
+3653:    "ref": "refs/tags/release-3.3.2-RC2",
+3654-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjItUkMy",
+3655:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.2-RC2",
+3656-    "object": {
+--
+3662-  {
+3663:    "ref": "refs/tags/release-3.3.2-RC3",
+3664-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjItUkMz",
+3665:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.2-RC3",
+3666-    "object": {
+--
+3672-  {
+3673:    "ref": "refs/tags/release-3.3.2-RC4",
+3674-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjItUkM0",
+3675:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.2-RC4",
+3676-    "object": {
+--
+3682-  {
+3683:    "ref": "refs/tags/release-3.3.2-RC5",
+3684-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjItUkM1",
+3685:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.2-RC5",
+3686-    "object": {
+--
+3692-  {
+3693:    "ref": "refs/tags/release-3.3.3-RC0",
+3694-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjMtUkMw",
+3695:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.3-RC0",
+3696-    "object": {
+--
+3702-  {
+3703:    "ref": "refs/tags/release-3.3.3-RC1",
+3704-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjMtUkMx",
+3705:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.3-RC1",
+3706-    "object": {
+--
+3712-  {
+3713:    "ref": "refs/tags/release-3.3.4-RC0",
+3714-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjQtUkMw",
+3715:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.4-RC0",
+3716-    "object": {
+--
+3722-  {
+3723:    "ref": "refs/tags/release-3.3.4-RC1",
+3724-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjQtUkMx",
+3725:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.4-RC1",
+3726-    "object": {
+--
+3732-  {
+3733:    "ref": "refs/tags/release-3.3.5-RC0",
+3734-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjUtUkMw",
+3735:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.5-RC0",
+3736-    "object": {
+--
+3742-  {
+3743:    "ref": "refs/tags/release-3.3.5-RC1",
+3744-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjUtUkMx",
+3745:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.5-RC1",
+3746-    "object": {
+--
+3752-  {
+3753:    "ref": "refs/tags/release-3.3.5-RC2",
+3754-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjUtUkMy",
+3755:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.5-RC2",
+3756-    "object": {
+--
+3762-  {
+3763:    "ref": "refs/tags/release-3.3.5-RC3",
+3764-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjUtUkMz",
+3765:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.5-RC3",
+3766-    "object": {
+--
+3772-  {
+3773:    "ref": "refs/tags/release-3.3.6-RC0",
+3774-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjYtUkMw",
+3775:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.6-RC0",
+3776-    "object": {
+--
+3782-  {
+3783:    "ref": "refs/tags/release-3.3.6-RC1",
+3784-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy4zLjYtUkMx",
+3785:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.3.6-RC1",
+3786-    "object": {
+--
+3792-  {
+3793:    "ref": "refs/tags/release-3.4.0-RC0",
+3794-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjAtUkMw",
+3795:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.0-RC0",
+3796-    "object": {
+--
+3802-  {
+3803:    "ref": "refs/tags/release-3.4.0-RC1",
+3804-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjAtUkMx",
+3805:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.0-RC1",
+3806-    "object": {
+--
+3812-  {
+3813:    "ref": "refs/tags/release-3.4.0-RC2",
+3814-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjAtUkMy",
+3815:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.0-RC2",
+3816-    "object": {
+--
+3822-  {
+3823:    "ref": "refs/tags/release-3.4.0-RC3",
+3824-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjAtUkMz",
+3825:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.0-RC3",
+3826-    "object": {
+--
+3832-  {
+3833:    "ref": "refs/tags/release-3.4.1-RC1",
+3834-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjEtUkMx",
+3835:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.1-RC1",
+3836-    "object": {
+--
+3842-  {
+3843:    "ref": "refs/tags/release-3.4.1-RC2",
+3844-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjEtUkMy",
+3845:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.1-RC2",
+3846-    "object": {
+--
+3852-  {
+3853:    "ref": "refs/tags/release-3.4.1-RC3",
+3854-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjEtUkMz",
+3855:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.1-RC3",
+3856-    "object": {
+--
+3862-  {
+3863:    "ref": "refs/tags/release-3.4.2-RC1",
+3864-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjItUkMx",
+3865:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.2-RC1",
+3866-    "object": {
+--
+3872-  {
+3873:    "ref": "refs/tags/release-3.4.2-RC2",
+3874-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjItUkMy",
+3875:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.2-RC2",
+3876-    "object": {
+--
+3882-  {
+3883:    "ref": "refs/tags/release-3.4.2-RC3",
+3884-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjItUkMz",
+3885:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.2-RC3",
+3886-    "object": {
+--
+3892-  {
+3893:    "ref": "refs/tags/release-3.4.3-RC0",
+3894-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjMtUkMw",
+3895:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.3-RC0",
+3896-    "object": {
+--
+3902-  {
+3903:    "ref": "refs/tags/release-3.4.3-RC1",
+3904-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy40LjMtUkMx",
+3905:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.4.3-RC1",
+3906-    "object": {
+--
+3912-  {
+3913:    "ref": "refs/tags/release-3.5.0-RC0",
+3914-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy41LjAtUkMw",
+3915:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.5.0-RC0",
+3916-    "object": {
+--
+3922-  {
+3923:    "ref": "refs/tags/release-3.5.0-RC1",
+3924-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy41LjAtUkMx",
+3925:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.5.0-RC1",
+3926-    "object": {
+--
+3932-  {
+3933:    "ref": "refs/tags/release-3.5.0-RC2",
+3934-    "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbGVhc2UtMy41LjAtUkMy",
+3935:    "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/release-3.5.0-RC2",
+3936-    "object": {
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/hadoop/git/ref/tags/rel/release-3.3.1' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules?ref=rel/release-3.3.1' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/hadoop/contents/?ref=rel/release-3.3.1' | rg '\"name\"|\"path\"|\"html_url\"' | head -100" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 214ms:
+{
+  "ref": "refs/tags/rel/release-3.3.1",
+  "node_id": "MDM6UmVmMjM0MTg1MTc6cmVmcy90YWdzL3JlbC9yZWxlYXNlLTMuMy4x",
+  "url": "https://api.github.com/repos/apache/hadoop/git/refs/tags/rel/release-3.3.1",
+  "object": {
+    "sha": "42069784d341817dc5b5f684c5e8e4f2896e8e4b",
+    "type": "tag",
+    "url": "https://api.github.com/repos/apache/hadoop/git/tags/42069784d341817dc5b5f684c5e8e4f2896e8e4b"
+  }
+}
+
+ succeeded in 206ms:
+[
+  {
+    "name": "hadoop-client-api",
+    "path": "hadoop-client-modules/hadoop-client-api",
+    "sha": "1ab0fcd4ff630310cd3f4c0e485f0392ba87ee58",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-api?ref=rel/release-3.3.1",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-api",
+    "git_url": "https://api.github.com/repos/apache/hadoop/git/trees/1ab0fcd4ff630310cd3f4c0e485f0392ba87ee58",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-api?ref=rel/release-3.3.1",
+      "git": "https://api.github.com/repos/apache/hadoop/git/trees/1ab0fcd4ff630310cd3f4c0e485f0392ba87ee58",
+      "html": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-api"
+    }
+  },
+  {
+    "name": "hadoop-client-check-invariants",
+    "path": "hadoop-client-modules/hadoop-client-check-invariants",
+    "sha": "3406f6a874911f1da820ba6ce3c02b6d32d4979d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-check-invariants?ref=rel/release-3.3.1",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-check-invariants",
+    "git_url": "https://api.github.com/repos/apache/hadoop/git/trees/3406f6a874911f1da820ba6ce3c02b6d32d4979d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-check-invariants?ref=rel/release-3.3.1",
+      "git": "https://api.github.com/repos/apache/hadoop/git/trees/3406f6a874911f1da820ba6ce3c02b6d32d4979d",
+      "html": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-check-invariants"
+    }
+  },
+  {
+    "name": "hadoop-client-check-test-invariants",
+    "path": "hadoop-client-modules/hadoop-client-check-test-invariants",
+    "sha": "79a9e2ddde128010fd7bff2148bbbefeac191a43",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-check-test-invariants?ref=rel/release-3.3.1",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-check-test-invariants",
+    "git_url": "https://api.github.com/repos/apache/hadoop/git/trees/79a9e2ddde128010fd7bff2148bbbefeac191a43",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-check-test-invariants?ref=rel/release-3.3.1",
+      "git": "https://api.github.com/repos/apache/hadoop/git/trees/79a9e2ddde128010fd7bff2148bbbefeac191a43",
+      "html": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-check-test-invariants"
+    }
+  },
+  {
+    "name": "hadoop-client-integration-tests",
+    "path": "hadoop-client-modules/hadoop-client-integration-tests",
+    "sha": "15ff77dfed05356f4f5c421c70632b2902f396e2",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-integration-tests?ref=rel/release-3.3.1",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests",
+    "git_url": "https://api.github.com/repos/apache/hadoop/git/trees/15ff77dfed05356f4f5c421c70632b2902f396e2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-integration-tests?ref=rel/release-3.3.1",
+      "git": "https://api.github.com/repos/apache/hadoop/git/trees/15ff77dfed05356f4f5c421c70632b2902f396e2",
+      "html": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests"
+    }
+  },
+  {
+    "name": "hadoop-client-minicluster",
+    "path": "hadoop-client-modules/hadoop-client-minicluster",
+    "sha": "0b3cf641912401fa07ace8c35b96a01e48e01f5a",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-minicluster?ref=rel/release-3.3.1",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-minicluster",
+    "git_url": "https://api.github.com/repos/apache/hadoop/git/trees/0b3cf641912401fa07ace8c35b96a01e48e01f5a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-minicluster?ref=rel/release-3.3.1",
+      "git": "https://api.github.com/repos/apache/hadoop/git/trees/0b3cf641912401fa07ace8c35b96a01e48e01f5a",
+      "html": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-minicluster"
+    }
+  },
+  {
+    "name": "hadoop-client-runtime",
+    "path": "hadoop-client-modules/hadoop-client-runtime",
+    "sha": "a34026d0dd0eaa0681272886ab8c75056542ea8d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-runtime?ref=rel/release-3.3.1",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-runtime",
+    "git_url": "https://api.github.com/repos/apache/hadoop/git/trees/a34026d0dd0eaa0681272886ab8c75056542ea8d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-runtime?ref=rel/release-3.3.1",
+      "git": "https://api.github.com/repos/apache/hadoop/git/trees/a34026d0dd0eaa0681272886ab8c75056542ea8d",
+      "html": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-runtime"
+    }
+  },
+  {
+    "name": "hadoop-client",
+    "path": "hadoop-client-modules/hadoop-client",
+    "sha": "a42b368a622c37cb2d5e9892c9378bf5084995da",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client?ref=rel/release-3.3.1",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client",
+    "git_url": "https://api.github.com/repos/apache/hadoop/git/trees/a42b368a622c37cb2d5e9892c9378bf5084995da",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client?ref=rel/release-3.3.1",
+      "git": "https://api.github.com/repos/apache/hadoop/git/trees/a42b368a622c37cb2d5e9892c9378bf5084995da",
+      "html": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "hadoop-client-modules/pom.xml",
+    "sha": "fad83f81d68499b7970868c4daacc9f088d8fc9d",
+    "size": 2076,
+    "url": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/pom.xml?ref=rel/release-3.3.1",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/hadoop-client-modules/pom.xml",
+    "git_url": "https://api.github.com/repos/apache/hadoop/git/blobs/fad83f81d68499b7970868c4daacc9f088d8fc9d",
+    "download_url": "https://raw.githubusercontent.com/apache/hadoop/rel/release-3.3.1/hadoop-client-modules/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/pom.xml?ref=rel/release-3.3.1",
+      "git": "https://api.github.com/repos/apache/hadoop/git/blobs/fad83f81d68499b7970868c4daacc9f088d8fc9d",
+      "html": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/hadoop-client-modules/pom.xml"
+    }
+  }
+]
+
+ succeeded in 199ms:
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/.gitattributes",
+    "name": ".github",
+    "path": ".github",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/.github",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/.gitignore",
+    "name": "BUILDING.txt",
+    "path": "BUILDING.txt",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/BUILDING.txt",
+    "name": "LICENSE-binary",
+    "path": "LICENSE-binary",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/LICENSE-binary",
+    "name": "LICENSE-binary-yarn-applications-catalog-webapp",
+    "path": "LICENSE-binary-yarn-applications-catalog-webapp",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/LICENSE-binary-yarn-applications-catalog-webapp",
+    "name": "LICENSE-binary-yarn-ui",
+    "path": "LICENSE-binary-yarn-ui",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/LICENSE-binary-yarn-ui",
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/LICENSE.txt",
+    "name": "NOTICE-binary",
+    "path": "NOTICE-binary",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/NOTICE-binary",
+    "name": "NOTICE.txt",
+    "path": "NOTICE.txt",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/NOTICE.txt",
+    "name": "README.txt",
+    "path": "README.txt",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/README.txt",
+    "name": "dev-support",
+    "path": "dev-support",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/dev-support",
+    "name": "hadoop-assemblies",
+    "path": "hadoop-assemblies",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-assemblies",
+    "name": "hadoop-build-tools",
+    "path": "hadoop-build-tools",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-build-tools",
+    "name": "hadoop-client-modules",
+    "path": "hadoop-client-modules",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules",
+    "name": "hadoop-cloud-storage-project",
+    "path": "hadoop-cloud-storage-project",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-cloud-storage-project",
+    "name": "hadoop-common-project",
+    "path": "hadoop-common-project",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-common-project",
+    "name": "hadoop-dist",
+    "path": "hadoop-dist",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-dist",
+    "name": "hadoop-hdfs-project",
+    "path": "hadoop-hdfs-project",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-hdfs-project",
+    "name": "hadoop-mapreduce-project",
+    "path": "hadoop-mapreduce-project",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-mapreduce-project",
+    "name": "hadoop-maven-plugins",
+    "path": "hadoop-maven-plugins",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-maven-plugins",
+    "name": "hadoop-minicluster",
+    "path": "hadoop-minicluster",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-minicluster",
+    "name": "hadoop-project-dist",
+    "path": "hadoop-project-dist",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-project-dist",
+    "name": "hadoop-project",
+    "path": "hadoop-project",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-project",
+    "name": "hadoop-tools",
+    "path": "hadoop-tools",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-tools",
+    "name": "hadoop-yarn-project",
+    "path": "hadoop-yarn-project",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-yarn-project",
+    "name": "licenses-binary",
+    "path": "licenses-binary",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/licenses-binary",
+    "name": "licenses",
+    "path": "licenses",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/licenses",
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/pom.xml",
+    "name": "start-build-env.sh",
+    "path": "start-build-env.sh",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/start-build-env.sh",
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-integration-tests?ref=rel/release-3.3.1' | rg '\"name\"|\"path\"|\"html_url\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-api?ref=rel/release-3.3.1' | rg '\"name\"|\"path\"|\"html_url\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+exec
+/usr/bin/bash -lc "curl -fsSI 'https://hadoop.apache.org/docs/r3.3.1/' || true && curl -fsSI 'https://hadoop.apache.org/docs/r3.3.1/api/' || true && curl -fsSI 'https://hadoop.apache.org/docs/r3.3.1/api/org/apache/hadoop/conf/Configuration.html' || true" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 183ms:
+    "name": "pom.xml",
+    "path": "hadoop-client-modules/hadoop-client-api/pom.xml",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/hadoop-client-modules/hadoop-client-api/pom.xml",
+    "type": "file",
+
+ succeeded in 222ms:
+    "name": "pom.xml",
+    "path": "hadoop-client-modules/hadoop-client-integration-tests/pom.xml",
+    "html_url": "https://github.com/apache/hadoop/blob/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests/pom.xml",
+    "type": "file",
+    "name": "src",
+    "path": "hadoop-client-modules/hadoop-client-integration-tests/src",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests/src",
+    "type": "dir",
+
+ succeeded in 254ms:
+HTTP/2 200 
+server: Apache
+last-modified: Mon, 12 Jan 2026 15:48:03 GMT
+etag: "ba9-64832cce23761"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Sat, 09 May 2026 05:06:12 GMT
+x-served-by: cache-hel1410032-HEL, cache-fra-eddf8230120-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1778303173.512106,VS0,VE27
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 2985
+
+HTTP/2 200 
+server: Apache
+last-modified: Mon, 12 Jan 2026 15:48:03 GMT
+etag: "34962-64832cce24701"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Sat, 09 May 2026 05:06:12 GMT
+x-served-by: cache-hel1410032-HEL, cache-fra-eddf8230076-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1778303173.602071,VS0,VE32
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 215394
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-integration-tests/src/test/java?ref=rel/release-3.3.1' | rg '\"name\"|\"path\"|\"html_url\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-integration-tests/src?ref=rel/release-3.3.1' | rg '\"name\"|\"path\"|\"html_url\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/hadoop/contents/hadoop-client-modules/hadoop-client-integration-tests/src/test?ref=rel/release-3.3.1' | rg '\"name\"|\"path\"|\"html_url\"|\"type\"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 172ms:
+    "name": "test",
+    "path": "hadoop-client-modules/hadoop-client-integration-tests/src/test",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests/src/test",
+    "type": "dir",
+
+ succeeded in 180ms:
+    "name": "org",
+    "path": "hadoop-client-modules/hadoop-client-integration-tests/src/test/java/org",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests/src/test/java/org",
+    "type": "dir",
+
+ succeeded in 227ms:
+    "name": "java",
+    "path": "hadoop-client-modules/hadoop-client-integration-tests/src/test/java",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests/src/test/java",
+    "type": "dir",
+    "name": "resources",
+    "path": "hadoop-client-modules/hadoop-client-integration-tests/src/test/resources",
+    "html_url": "https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests/src/test/resources",
+    "type": "dir",
+
+web search: 
+web search: Apache Hadoop hadoop-client-api hadoop-client-runtime explanation
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.hadoop/hadoop-client-api
+web search: 
+web search: site:hadoop.apache.org/docs/r3.3.1/api/ org.apache.hadoop.conf.Configuration Hadoop 3.3.1 API
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.1/
+codex
+I found the exact release tag as `rel/release-3.3.1`. Since the `hadoop-client-api` module itself only has a POM in that tag, I’ll point tests at Hadoop’s client integration test suite for the same release and use the published Maven sources JAR for source code.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+index 3eb48ad6c020faf054cafbe305c4d04b2dccb8d7..966641b95840bd29f2832c029faf2871b1bc8ef1
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1"
++  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/$version$/hadoop-client-api-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-client-modules/hadoop-client-integration-tests/src/test",
++  "documentation-url" : "https://hadoop.apache.org/docs/r$version$/api/",
++  "description" : "Apache Hadoop Client API provides the public Java client interfaces and classes used by applications to communicate with Hadoop services such as HDFS, YARN, and MapReduce. It is part of Hadoop's shaded client artifact set, which helps applications depend on Hadoop client APIs without exposing Hadoop's implementation dependencies on the application classpath."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+index 3eb48ad6c020faf054cafbe305c4d04b2dccb8d7..966641b95840bd29f2832c029faf2871b1bc8ef1
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1"
++  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/$version$/hadoop-client-api-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-client-modules/hadoop-client-integration-tests/src/test",
++  "documentation-url" : "https://hadoop.apache.org/docs/r$version$/api/",
++  "description" : "Apache Hadoop Client API provides the public Java client interfaces and classes used by applications to communicate with Hadoop services such as HDFS, YARN, and MapReduce. It is part of Hadoop's shaded client artifact set, which helps applications depend on Hadoop client APIs without exposing Hadoop's implementation dependencies on the application classpath."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.hadoop:hadoop-client-api:3.3.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/$version$/hadoop-client-api-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/hadoop",
+  "test-code-url": "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-client-modules/hadoop-client-integration-tests/src/test",
+  "documentation-url": "https://hadoop.apache.org/docs/r$version$/api/",
+  "description": "Apache Hadoop Client API provides the public Java client interfaces and classes used by applications to communicate with Hadoop services such as HDFS, YARN, and MapReduce. It is part of Hadoop's shaded client artifact set, which helps applications depend on Hadoop client APIs without exposing Hadoop's implementation dependencies on the application classpath."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.1/hadoop-client-api-3.3.1-sources.jar && curl -fsSI https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests/src/test && curl -fsSI https://hadoop.apache.org/docs/r3.3.1/api/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+index 3eb48ad6c020faf054cafbe305c4d04b2dccb8d7..966641b95840bd29f2832c029faf2871b1bc8ef1
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1"
++  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/$version$/hadoop-client-api-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-client-modules/hadoop-client-integration-tests/src/test",
++  "documentation-url" : "https://hadoop.apache.org/docs/r$version$/api/",
++  "description" : "Apache Hadoop Client API provides the public Java client interfaces and classes used by applications to communicate with Hadoop services such as HDFS, YARN, and MapReduce. It is part of Hadoop's shaded client artifact set, which helps applications depend on Hadoop client APIs without exposing Hadoop's implementation dependencies on the application classpath."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+index 3eb48ad6c020faf054cafbe305c4d04b2dccb8d7..966641b95840bd29f2832c029faf2871b1bc8ef1
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1"
++  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/$version$/hadoop-client-api-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-client-modules/hadoop-client-integration-tests/src/test",
++  "documentation-url" : "https://hadoop.apache.org/docs/r$version$/api/",
++  "description" : "Apache Hadoop Client API provides the public Java client interfaces and classes used by applications to communicate with Hadoop services such as HDFS, YARN, and MapReduce. It is part of Hadoop's shaded client artifact set, which helps applications depend on Hadoop client APIs without exposing Hadoop's implementation dependencies on the application classpath."
+ }
+
+ succeeded in 5721ms:
+HTTP/2 200 
+date: Sat, 09 May 2026 05:06:54 GMT
+content-type: application/java-archive
+content-length: 8639651
+cf-ray: 9f8e2d728a0d576e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 99399
+etag: "f427c249a171c0009291e3db91d26d48"
+last-modified: Tue, 01 Jun 2021 09:28:48 GMT
+x-checksum-md5: f427c249a171c0009291e3db91d26d48
+x-checksum-sha1: e888afc2765ab52ae9618f7100fd27bc6fcee816
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 09 May 2026 05:06:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"fee9a2303b421ea91db819725faab5a0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=x3HaH2KIAwtSj%2Bkaat08VoTLvW0D0AVDZMIzDNIlODQRYAqVHAheIAGbSFKT%2BLK6kfbRDmc0LTqpVjAlI49Jm8TefKTS5%2BsbFYYmN37ShxfkEhaY0xg3QBkx7h2W%2BnyBipu2Q%2FzT29SauYwuYlcQYhb46ZaIE8%2Fv8d6stpbmoko3Fif0QQYfybsPuuSmha5jMTa0DsDwPWnq9jz4IT9IM5ErE6EGpAsnn67F6%2FKVzVCrRLZ%2BdAXcWRDXsqRPP3jCu8RiSt40aPKXYoWNguNTkQ%3D%3D--7W4ReV0erf%2BhJv3b--RObtLUFDwE86MD4ub5AIlw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.661948088.1778303214; expires=Sun, 09 May 2027 05:06:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 09 May 2027 05:06:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5122:93B09:5167B7D:3FEFD54:69FEC0EE
+
+HTTP/2 200 
+server: Apache
+last-modified: Mon, 12 Jan 2026 15:48:03 GMT
+etag: "ba9-64832cce23761"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+date: Sat, 09 May 2026 05:06:55 GMT
+age: 43
+x-served-by: cache-hel1410032-HEL, cache-fra-eddf8230073-FRA
+x-cache: MISS, HIT
+x-cache-hits: 0, 1
+x-timer: S1778303215.186028,VS0,VE1
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 2985
+
+
+web search: 
+web search: hadoop-client-api 3.3.1 Maven Central
+web search: 
+web search: https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests/src/test
+web search: 
+web search: https://hadoop.apache.org/docs/r3.3.1/api/
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+index 3eb48ad6c020faf054cafbe305c4d04b2dccb8d7..966641b95840bd29f2832c029faf2871b1bc8ef1
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1"
++  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/$version$/hadoop-client-api-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-client-modules/hadoop-client-integration-tests/src/test",
++  "documentation-url" : "https://hadoop.apache.org/docs/r$version$/api/",
++  "description" : "Apache Hadoop Client API provides the public Java client interfaces and classes used by applications to communicate with Hadoop services such as HDFS, YARN, and MapReduce. It is part of Hadoop's shaded client artifact set, which helps applications depend on Hadoop client APIs without exposing Hadoop's implementation dependencies on the application classpath."
+ }
+
+web search: 
+web search: Maven Central org.apache.hadoop hadoop-client-api 3.3.1
+web search: 
+web search: https://github.com/apache/hadoop/tree/rel/release-3.3.1/hadoop-client-modules/hadoop-client-integration-tests/src/test
+web search: 
+web search: 
+web search: 
+web search: "hadoop-client-api" "hadoop-client-runtime" "shaded"
+codex
+Updated [org.apache.hadoop-hadoop-client-api-3.3.1.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json:1).
+
+I used the Maven Central sources JAR, the Apache Hadoop repository root, the `rel/release-3.3.1` client integration test suite, and the Hadoop 3.3.1 Java API docs. I left `language` absent and did not set `not-for-native-image` because this is a JVM JAR artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.1/?utm_source=openai))
+
+Verified the JSON parses with `jq` and the resolved source, test, and documentation URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+index 3eb48ad6c020faf054cafbe305c4d04b2dccb8d7..966641b95840bd29f2832c029faf2871b1bc8ef1
+--- a/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
++++ b/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1"
++  "coordinates" : "org.apache.hadoop:hadoop-client-api:3.3.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-client-api/$version$/hadoop-client-api-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/hadoop",
++  "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-client-modules/hadoop-client-integration-tests/src/test",
++  "documentation-url" : "https://hadoop.apache.org/docs/r$version$/api/",
++  "description" : "Apache Hadoop Client API provides the public Java client interfaces and classes used by applications to communicate with Hadoop services such as HDFS, YARN, and MapReduce. It is part of Hadoop's shaded client artifact set, which helps applications depend on Hadoop client APIs without exposing Hadoop's implementation dependencies on the application classpath."
+ }
+
+tokens used
+125,182
+Updated [org.apache.hadoop-hadoop-client-api-3.3.1.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/build/discovered-artifact-metadata/org.apache.hadoop-hadoop-client-api-3.3.1.json:1).
+
+I used the Maven Central sources JAR, the Apache Hadoop repository root, the `rel/release-3.3.1` client integration test suite, and the Hadoop 3.3.1 Java API docs. I left `language` absent and did not set `not-for-native-image` because this is a JVM JAR artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.1/?utm_source=openai))
+
+Verified the JSON parses with `jq` and the resolved source, test, and documentation URLs return HTTP 200.
+Ran agent for org.apache.hadoop:hadoop-client-api:3.3.1 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/build/agent-artifact-discovery-logs/org.apache.hadoop-hadoop-client-api-3.3.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2971-af8d3801/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 4s
+9 actionable tasks: 9 executed
