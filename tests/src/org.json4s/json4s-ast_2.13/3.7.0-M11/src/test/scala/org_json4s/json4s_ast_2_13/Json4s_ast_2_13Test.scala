@@ -83,6 +83,24 @@ class Json4s_ast_2_13Test {
   }
 
   @Test
+  def deconstructsAstNodesWithPublicExtractors(): Unit = {
+    val document: JValue = JObject(
+      JField("items", JArray(List(JString("book"), JInt(2)))),
+      JField("enabled", JBool(true))
+    )
+
+    val extracted: (String, List[JValue], Boolean) = document match {
+      case JObject(List(JField(itemsName, JArray(items)), JField(enabledName, JBool(enabled)))) =>
+        (s"$itemsName:$enabledName", items, enabled)
+      case other => fail(s"Unexpected JSON shape: $other")
+    }
+
+    assertEquals("items:enabled", extracted._1)
+    assertEquals(List(JString("book"), JInt(2)), extracted._2)
+    assertTrue(extracted._3)
+  }
+
+  @Test
   def concatenatesValuesWithJNothingAsIdentity(): Unit = {
     assertEquals(JInt(1), JNothing ++ JInt(1))
     assertEquals(JInt(1), JInt(1) ++ JNothing)
