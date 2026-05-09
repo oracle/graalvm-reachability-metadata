@@ -858,7 +858,7 @@ public class Hadoop_yarn_server_web_proxyTest {
 
         @Override
         public StringBuffer getRequestURL() {
-            return new StringBuffer("http://localhost" + requestUri);
+            return new java.lang.StringBuffer("http://localhost" + requestUri);
         }
 
         @Override
