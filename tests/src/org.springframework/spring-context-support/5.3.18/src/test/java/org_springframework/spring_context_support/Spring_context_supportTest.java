@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cache.Cache;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.cache.jcache.config.JCacheConfigurer;
+import org.springframework.cache.jcache.config.JCacheConfigurerSupport;
 import org.springframework.cache.transaction.AbstractTransactionSupportingCacheManager;
 import org.springframework.cache.transaction.TransactionAwareCacheDecorator;
 import org.springframework.cache.transaction.TransactionAwareCacheManagerProxy;
@@ -200,6 +202,15 @@ public class Spring_context_supportTest {
         assertThat(previous).isNull();
         assertThat(usersCache.get("alice", String.class)).isEqualTo("administrator");
         assertThat(targetManager.getCache("users").get("alice", String.class)).isEqualTo("administrator");
+    }
+
+    @Test
+    void jCacheConfigurerDefaultsToNoExceptionCacheResolver() {
+        JCacheConfigurerSupport support = new JCacheConfigurerSupport();
+        JCacheConfigurer configurer = support;
+
+        assertThat(support.exceptionCacheResolver()).isNull();
+        assertThat(configurer.exceptionCacheResolver()).isNull();
     }
 
     @Test
