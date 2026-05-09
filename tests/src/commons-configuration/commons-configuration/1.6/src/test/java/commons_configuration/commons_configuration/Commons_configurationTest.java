@@ -8,7 +8,7 @@ package commons_configuration.commons_configuration;
 
 import org.junit.jupiter.api.Test;
 
-class Commons_configurationTest {
+public class Commons_configurationTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
