@@ -15,15 +15,29 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELContextListener;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.jsp.ErrorData;
+import jakarta.servlet.jsp.JspApplicationContext;
+import jakarta.servlet.jsp.JspEngineInfo;
 import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspFactory;
 import jakarta.servlet.jsp.JspTagException;
 import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
 import jakarta.servlet.jsp.SkipPageException;
 import jakarta.servlet.jsp.tagext.BodyContent;
 import jakarta.servlet.jsp.tagext.BodyTag;
@@ -80,6 +94,42 @@ public class Jakarta_servlet_jsp_apiTest {
         assertThat(errorData.getStatusCode()).isEqualTo(503);
         assertThat(errorData.getRequestURI()).isEqualTo("/broken.jsp");
         assertThat(errorData.getServletName()).isEqualTo("jspServlet");
+    }
+
+    @Test
+    void jspFactoryRegistersDefaultFactoryAndExposesApplicationContext() {
+        JspFactory previousFactory = JspFactory.getDefaultFactory();
+        RecordingJspFactory factory = new RecordingJspFactory();
+        RecordingElResolver resolver = new RecordingElResolver();
+        ELContextListener listener = event -> {
+            throw new AssertionError("Registered listener should not be invoked by this test");
+        };
+
+        try {
+            JspFactory.setDefaultFactory(factory);
+
+            assertThat(JspFactory.getDefaultFactory()).isSameAs(factory);
+            assertThat(factory.getEngineInfo().getSpecificationVersion()).isEqualTo("test-specification");
+
+            JspApplicationContext applicationContext = factory.getJspApplicationContext(null);
+            applicationContext.addELResolver(resolver);
+            applicationContext.addELContextListener(listener);
+
+            assertThat(factory.getApplicationContext().getResolvers()).containsExactly(resolver);
+            assertThat(factory.getApplicationContext().getListeners()).containsExactly(listener);
+            assertThat(applicationContext.getExpressionFactory()).isNull();
+
+            assertThat(factory.getPageContext(null, null, null, "/errors/failure.jsp", true, 256, true)).isNull();
+            assertThat(factory.getLastErrorPageUrl()).isEqualTo("/errors/failure.jsp");
+            assertThat(factory.isLastSessionRequired()).isTrue();
+            assertThat(factory.getLastBufferSize()).isEqualTo(256);
+            assertThat(factory.isLastAutoFlush()).isTrue();
+
+            factory.releasePageContext(null);
+            assertThat(factory.getReleasedPageContexts()).containsExactly((PageContext) null);
+        } finally {
+            JspFactory.setDefaultFactory(previousFactory);
+        }
     }
 
     @Test
@@ -379,6 +429,124 @@ public class Jakarta_servlet_jsp_apiTest {
         assertThat(validator.validate("ui", "urn:ui", null)).isNull();
         validator.release();
         assertThat(validator.getInitParameters()).isSameAs(parameters);
+    }
+
+    private static final class RecordingJspFactory extends JspFactory {
+        private final RecordingJspApplicationContext applicationContext = new RecordingJspApplicationContext();
+        private final JspEngineInfo engineInfo = new JspEngineInfo() {
+            @Override
+            public String getSpecificationVersion() {
+                return "test-specification";
+            }
+        };
+        private final List<PageContext> releasedPageContexts = new ArrayList<>();
+        private String lastErrorPageUrl;
+        private boolean lastSessionRequired;
+        private int lastBufferSize;
+        private boolean lastAutoFlush;
+
+        private RecordingJspApplicationContext getApplicationContext() {
+            return applicationContext;
+        }
+
+        private String getLastErrorPageUrl() {
+            return lastErrorPageUrl;
+        }
+
+        private boolean isLastSessionRequired() {
+            return lastSessionRequired;
+        }
+
+        private int getLastBufferSize() {
+            return lastBufferSize;
+        }
+
+        private boolean isLastAutoFlush() {
+            return lastAutoFlush;
+        }
+
+        private List<PageContext> getReleasedPageContexts() {
+            return releasedPageContexts;
+        }
+
+        @Override
+        public PageContext getPageContext(Servlet servlet, ServletRequest request, ServletResponse response,
+                String errorPageUrl, boolean needsSession, int bufferSize, boolean autoFlush) {
+            lastErrorPageUrl = errorPageUrl;
+            lastSessionRequired = needsSession;
+            lastBufferSize = bufferSize;
+            lastAutoFlush = autoFlush;
+            return null;
+        }
+
+        @Override
+        public void releasePageContext(PageContext pageContext) {
+            releasedPageContexts.add(pageContext);
+        }
+
+        @Override
+        public JspEngineInfo getEngineInfo() {
+            return engineInfo;
+        }
+
+        @Override
+        public JspApplicationContext getJspApplicationContext(ServletContext context) {
+            return applicationContext;
+        }
+    }
+
+    private static final class RecordingJspApplicationContext implements JspApplicationContext {
+        private final List<ELResolver> resolvers = new ArrayList<>();
+        private final List<ELContextListener> listeners = new ArrayList<>();
+
+        private List<ELResolver> getResolvers() {
+            return resolvers;
+        }
+
+        private List<ELContextListener> getListeners() {
+            return listeners;
+        }
+
+        @Override
+        public void addELResolver(ELResolver resolver) {
+            resolvers.add(resolver);
+        }
+
+        @Override
+        public ExpressionFactory getExpressionFactory() {
+            return null;
+        }
+
+        @Override
+        public void addELContextListener(ELContextListener listener) {
+            listeners.add(listener);
+        }
+    }
+
+    private static final class RecordingElResolver extends ELResolver {
+        @Override
+        public Object getValue(ELContext context, Object base, Object property) {
+            return null;
+        }
+
+        @Override
+        public Class<?> getType(ELContext context, Object base, Object property) {
+            return null;
+        }
+
+        @Override
+        public void setValue(ELContext context, Object base, Object property, Object value) {
+        }
+
+        @Override
+        public boolean isReadOnly(ELContext context, Object base, Object property) {
+            return false;
+        }
+
+        @Override
+        public Class<?> getCommonPropertyType(ELContext context, Object base) {
+            return Object.class;
+        }
     }
 
     private static String readAll(Reader reader) throws IOException {
