@@ -292,7 +292,7 @@ public class ManagedBeanComponentProviderFactoryInnerManagedBeanComponentProvide
 
             @Override
             public Hashtable<?, ?> getEnvironment() {
-                return new Hashtable<Object, Object>();
+                return new java.util.Properties();
             }
 
             @Override

@@ -20,7 +20,7 @@ public class DiscoveredParameterTest {
         DiscoveredParameter parameter = new DiscoveredParameter(annotation, String.class, null, false);
 
         assertThat(parameter.getValue()).isEqualTo("customerId");
-        assertThat(parameter.getAnnotation()).isSameAs(annotation);
+        assertThat(parameter).extracting(DiscoveredParameter::getAnnotation).isSameAs(annotation);
         assertThat(parameter.getType()).isEqualTo(String.class);
         assertThat(parameter.getDefaultValue()).isNull();
         assertThat(parameter.isEncoded()).isFalse();

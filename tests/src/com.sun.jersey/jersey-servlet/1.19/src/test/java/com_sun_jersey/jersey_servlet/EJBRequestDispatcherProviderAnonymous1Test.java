@@ -42,7 +42,7 @@ public class EJBRequestDispatcherProviderAnonymous1Test {
                 void.class,
                 void.class,
                 "GET",
-                method.getAnnotations());
+                new java.lang.annotation.Annotation[0]);
         EJBRequestDispatcherProvider provider = new EJBRequestDispatcherProvider();
         injectDispatcherFactory(provider);
 

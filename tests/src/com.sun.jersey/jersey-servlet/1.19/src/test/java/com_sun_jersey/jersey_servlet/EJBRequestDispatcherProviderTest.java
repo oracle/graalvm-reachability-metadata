@@ -27,7 +27,7 @@ public class EJBRequestDispatcherProviderTest {
                 String.class,
                 String.class,
                 "GET",
-                method.getAnnotations());
+                new java.lang.annotation.Annotation[0]);
 
         EJBRequestDispatcherProvider provider = new EJBRequestDispatcherProvider();
 
