@@ -29,10 +29,27 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 public class ObjectImporterTest {
     private static final int SOCKET_TIMEOUT_MILLIS = 5_000;
+
+    @Test
+    void staticInitializerUsesCompilerGeneratedClassResolver() throws Exception {
+        IsolatedObjectImporterClassLoader classLoader = new IsolatedObjectImporterClassLoader(
+                ObjectImporterTest.class.getClassLoader());
+        try {
+            Class<?> reloadedClass = Class.forName(ObjectImporter.class.getName(), true, classLoader);
+
+            assertThat(reloadedClass.getName()).isEqualTo(ObjectImporter.class.getName());
+            assertThat(reloadedClass.getClassLoader()).isSameAs(classLoader);
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
+    }
 
     @Test
     void lookupObjectCreatesProxyFromRemoteClassName() throws Exception {
@@ -172,6 +189,43 @@ public class ObjectImporterTest {
                 serverSocket.close();
             } finally {
                 executorService.shutdownNow();
+            }
+        }
+    }
+
+    private static final class IsolatedObjectImporterClassLoader extends ClassLoader {
+        private IsolatedObjectImporterClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                Class<?> loadedClass = findLoadedClass(name);
+                if (loadedClass == null) {
+                    if (ObjectImporter.class.getName().equals(name)) {
+                        loadedClass = defineObjectImporterClass(name);
+                    } else {
+                        loadedClass = super.loadClass(name, false);
+                    }
+                }
+                if (resolve) {
+                    resolveClass(loadedClass);
+                }
+                return loadedClass;
+            }
+        }
+
+        private Class<?> defineObjectImporterClass(String className) throws ClassNotFoundException {
+            String resourceName = className.replace('.', '/') + ".class";
+            try (InputStream inputStream = getParent().getResourceAsStream(resourceName)) {
+                if (inputStream == null) {
+                    throw new ClassNotFoundException(className);
+                }
+                byte[] classBytes = inputStream.readAllBytes();
+                return defineClass(className, classBytes, 0, classBytes.length);
+            } catch (IOException exception) {
+                throw new ClassNotFoundException(className, exception);
             }
         }
     }
