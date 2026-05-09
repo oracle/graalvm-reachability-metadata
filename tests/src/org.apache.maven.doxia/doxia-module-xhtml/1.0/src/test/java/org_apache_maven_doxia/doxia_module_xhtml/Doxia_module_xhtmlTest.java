@@ -305,7 +305,7 @@ public class Doxia_module_xhtmlTest {
         assertThat(context.getAttribute("unknown")).isNull();
         assertThat(XhtmlSink.escapeHTML("<tag attr=\"value\">&</tag>"))
                 .isEqualTo("&lt;tag attr=&quot;value&quot;&gt;&amp;&lt;/tag&gt;");
-        assertThat(XhtmlSink.encodeURL("folder/My File.xhtml?x=1&y=ä"))
+        assertThat(XhtmlSink.encodeURL("folder/My File.xhtml?x=1&y=\u00e4"))
                 .isEqualTo("folder/My%20File.xhtml?x=1&y=%c3%a4");
         assertThat(XhtmlSink.encodeURL(null)).isNull();
         assertThat(XhtmlSink.encodeFragment("Hello, Doxia 1.0!")).isEqualTo("hellodoxia10");
