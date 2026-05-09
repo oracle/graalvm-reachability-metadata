@@ -110,7 +110,7 @@ public class ObjectImporterTest {
             ObjectImporter importer = new ObjectImporter(
                     InetAddress.getLoopbackAddress().getHostAddress(), server.port());
 
-            Object result = importer.call(11, 12, new Object[] { new LocalProxy(77), "payload" });
+            Object result = importer.call(11, 12, new Object[] {new LocalProxy(77), "payload"});
 
             assertThat(result).isEqualTo("remote result");
             server.await();

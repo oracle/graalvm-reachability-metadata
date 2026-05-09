@@ -20,7 +20,7 @@ public class JavassistLoaderTest {
         ExposedLoader loader = new ExposedLoader(JavassistLoaderTest.class.getClassLoader());
         loader.delegateLoadingOf(RunTarget.class.getName());
 
-        loader.run(RunTarget.class.getName(), new String[] { "alpha", "beta" });
+        loader.run(RunTarget.class.getName(), new String[] {"alpha", "beta"});
 
         assertThat(RunTarget.arguments).containsExactly("alpha", "beta");
     }

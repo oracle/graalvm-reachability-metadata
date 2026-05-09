@@ -23,7 +23,8 @@ public class AnnotationImplTest {
     @Test
     void proxyBackedAnnotationExposesTypeMembersHashCodeAndEqualsJdkAnnotation() {
         SampleAnnotation proxyAnnotation = createAnnotationProxy("configured", 42);
-        SampleAnnotation runtimeAnnotation = AnnotatedFixture.class.getAnnotation(SampleAnnotation.class);
+        Class<AnnotatedFixture> fixtureAnnotationAccess = AnnotatedFixture.class;
+        SampleAnnotation runtimeAnnotation = fixtureAnnotationAccess.getAnnotation(SampleAnnotation.class);
 
         assertThat(proxyAnnotation.annotationType()).isSameAs(SampleAnnotation.class);
         assertThat(proxyAnnotation.value()).isEqualTo("configured");

@@ -25,7 +25,7 @@ public class MetaobjectTest {
     @Test
     void metaobjectReadsWritesInvokesAndSerializesBaseObject() throws Throwable {
         SampleReflectiveObject target = new SampleReflectiveObject("initial");
-        Metaobject metaobject = new Metaobject(target, new Object[] { "initial" });
+        Metaobject metaobject = new Metaobject(target, new Object[] {"initial"});
         target._setMetaobject(metaobject);
 
         assertThat(metaobject.getObject()).isSameAs(target);
@@ -35,14 +35,14 @@ public class MetaobjectTest {
         metaobject.trapFieldWrite("value", "updated");
 
         assertThat(target.value).isEqualTo("updated");
-        assertThat(metaobject.trapMethodcall(0, new Object[] { "echo" })).isEqualTo("echo:updated");
+        assertThat(metaobject.trapMethodcall(0, new Object[] {"echo"})).isEqualTo("echo:updated");
 
         Metaobject deserialized = roundTrip(metaobject);
 
         assertThat(deserialized.getObject()).isInstanceOf(SampleReflectiveObject.class);
         assertThat(deserialized.getClassMetaobject().getJavaClass()).isSameAs(SampleReflectiveObject.class);
         assertThat(deserialized.trapFieldRead("value")).isEqualTo("updated");
-        assertThat(deserialized.trapMethodcall(0, new Object[] { "again" })).isEqualTo("again:updated");
+        assertThat(deserialized.trapMethodcall(0, new Object[] {"again"})).isEqualTo("again:updated");
     }
 
     private static Metaobject roundTrip(Metaobject metaobject) throws IOException, ClassNotFoundException {
@@ -59,7 +59,7 @@ public class MetaobjectTest {
 
     public static final class SampleReflectiveObject implements Metalevel, Serializable {
         private static final ClassMetaobject CLASS_METAOBJECT = new ClassMetaobject(
-                new String[] { SampleReflectiveObject.class.getName() });
+                new String[] {SampleReflectiveObject.class.getName()});
 
         public String value;
         private transient Metaobject metaobject;

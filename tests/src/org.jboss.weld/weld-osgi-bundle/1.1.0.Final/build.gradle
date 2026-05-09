@@ -32,6 +32,9 @@ graalvmNative {
     binaries {
         all {
             buildArgs.add("--add-opens=java.base/java.lang=ALL-UNNAMED")
+            buildArgs.add(
+                    "--initialize-at-run-time=com.google.common.collect.ImmutableCollection,com.google.common.collect.ImmutableCollection\$EmptyImmutableCollection,com.google.common.collect.ImmutableSet")
+            buildArgs.add("-H:+ClassForNameRespectsClassLoader")
         }
     }
 }

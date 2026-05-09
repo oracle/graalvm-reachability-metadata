@@ -26,7 +26,7 @@ public class ClassMetaobjectTest {
             ClassMetaobject.useContextClassLoader = false;
             SampleTarget.staticValue = "initial";
 
-            ClassMetaobject metaobject = new ClassMetaobject(new String[] { SampleTarget.class.getName() });
+            ClassMetaobject metaobject = new ClassMetaobject(new String[] {SampleTarget.class.getName()});
 
             assertThat(metaobject.getJavaClass()).isSameAs(SampleTarget.class);
             assertThat(metaobject.newInstance(new Object[0])).isInstanceOf(SampleTarget.class);
@@ -35,9 +35,9 @@ public class ClassMetaobjectTest {
             metaobject.trapFieldWrite("staticValue", "updated");
 
             assertThat(SampleTarget.staticValue).isEqualTo("updated");
-            assertThat(ClassMetaobject.invoke(new SampleTarget(), 7, new Object[] { "value" }))
+            assertThat(ClassMetaobject.invoke(new SampleTarget(), 7, new Object[] {"value"}))
                     .isEqualTo("instance:value");
-            assertThat(metaobject.trapMethodcall(0, new Object[] { "value" })).isEqualTo("static:value");
+            assertThat(metaobject.trapMethodcall(0, new Object[] {"value"})).isEqualTo("static:value");
 
             ClassMetaobject deserialized = roundTrip(metaobject);
 
@@ -57,7 +57,7 @@ public class ClassMetaobjectTest {
             ClassMetaobject.useContextClassLoader = true;
             thread.setContextClassLoader(SampleTarget.class.getClassLoader());
 
-            ClassMetaobject metaobject = new ClassMetaobject(new String[] { SampleTarget.class.getName() });
+            ClassMetaobject metaobject = new ClassMetaobject(new String[] {SampleTarget.class.getName()});
 
             assertThat(metaobject.getJavaClass()).isSameAs(SampleTarget.class);
         } finally {

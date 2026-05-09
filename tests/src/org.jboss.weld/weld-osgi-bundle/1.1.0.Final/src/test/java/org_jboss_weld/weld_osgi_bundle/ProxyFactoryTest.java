@@ -124,8 +124,8 @@ public class ProxyFactoryTest {
         proxyFactory.setHandler(new GreetingHandler());
 
         return (SampleService) proxyFactory.create(
-                new Class[] { String.class },
-                new Object[] { "delegate" });
+                new Class[] {String.class},
+                new Object[] {"delegate"});
     }
 
     public interface WeldGreetingContract {
