@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -33,6 +34,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.namespace.QName;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -126,6 +128,23 @@ public class Jersey_jsonTest {
     }
 
     @Test
+    void jsonUnmarshallerCreatesJaxbElementForClassWithoutRootAnnotation() throws JAXBException {
+        String json = """
+                {"headline":"Native JSON support","section":"features"}
+                """;
+        JSONConfiguration configuration = JSONConfiguration.natural().rootUnwrapping(true).build();
+        JSONJAXBContext context = new JSONJAXBContext(configuration, Article.class);
+
+        JAXBElement<Article> element = context.createJSONUnmarshaller()
+                .unmarshalJAXBElementFromJSON(new StringReader(json), Article.class);
+
+        assertThat(element.getName()).isEqualTo(new QName("article"));
+        assertThat(element.getDeclaredType()).isEqualTo(Article.class);
+        assertThat(element.getValue().headline).isEqualTo("Native JSON support");
+        assertThat(element.getValue().section).isEqualTo("features");
+    }
+
+    @Test
     void mappedJsonContextHonorsArrayNonStringAndAttributeElementMappings() throws Exception {
         Book book = new Book("978-1491950357", "Building Microservices", 280, true, Arrays.asList("architecture"));
         JSONConfiguration configuration = JSONConfiguration.mapped()
@@ -198,6 +217,18 @@ public class Jersey_jsonTest {
                 .isEqualTo("{\"status\":\"ok\",\"count\":2}");
         assertThatThrownBy(() -> new JSONWithPadding(null, "callback"))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Article {
+        @XmlElement
+        public String headline;
+
+        @XmlElement
+        public String section;
+
+        public Article() {
+        }
     }
 
     @XmlRootElement(name = "book")
