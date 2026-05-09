@@ -10,9 +10,24 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+sourceSets {
+    javaBasePatch {
+        java.srcDir 'src/test/java-patch'
+    }
+}
+
 dependencies {
     testImplementation "org.apache.maven.plugins:maven-gpg-plugin:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.named('compileJavaBasePatchJava') {
+    options.compilerArgs += ['--patch-module', "java.base=${projectDir}/src/test/java-patch"]
+}
+
+tasks.withType(Test).configureEach {
+    dependsOn tasks.named('compileJavaBasePatchJava')
+    jvmArgs "--patch-module=java.base=${sourceSets.javaBasePatch.output.classesDirs.asPath}"
 }
 
 graalvmNative {

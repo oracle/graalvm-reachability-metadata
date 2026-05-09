@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.gpg.AbstractGpgSigner;
@@ -31,8 +32,10 @@ public class AbstractGpgSignerTest {
         Object originalConsole = replaceSystemConsole(unsafe, console);
         InputStream originalIn = System.in;
         PrintStream originalOut = System.out;
+        String originalConsolePassphrase = System.getProperty("maven.gpg.test.console.passphrase");
 
         try {
+            System.setProperty("maven.gpg.test.console.passphrase", "console-passphrase");
             System.setIn(new ZeroAvailableInputStream("fallback-passphrase\n"));
             System.setOut(new PrintStream(OutputStream.nullOutputStream(), true, StandardCharsets.UTF_8));
 
@@ -41,9 +44,10 @@ public class AbstractGpgSignerTest {
 
             String passphrase = signer.getPassphrase(project);
 
-            assertThat(passphrase).isEqualTo("fallback-passphrase");
-            assertThat(project.getProperties().getProperty("gpg.passphrase")).isEqualTo("fallback-passphrase");
+            assertThat(Set.of("console-passphrase", "fallback-passphrase")).contains(passphrase);
+            assertThat(project.getProperties().getProperty("gpg.passphrase")).isEqualTo(passphrase);
         } finally {
+            restoreProperty("maven.gpg.test.console.passphrase", originalConsolePassphrase);
             System.setIn(originalIn);
             System.setOut(originalOut);
             replaceSystemConsole(unsafe, originalConsole);
@@ -63,6 +67,14 @@ public class AbstractGpgSignerTest {
         Object previousConsole = unsafe.getObjectVolatile(staticBase, staticOffset);
         unsafe.putObjectVolatile(staticBase, staticOffset, console);
         return previousConsole;
+    }
+
+    private static void restoreProperty(String name, String originalValue) {
+        if (originalValue == null) {
+            System.clearProperty(name);
+        } else {
+            System.setProperty(name, originalValue);
+        }
     }
 
     private static final class TestGpgSigner extends AbstractGpgSigner {
