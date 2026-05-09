@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -63,8 +64,11 @@ public class EclipseCdtFormatterStepTest {
             createMinimalP2Repository(p2Repository, cdtVersion);
 
             try (LocalP2Server p2Server = new LocalP2Server(p2Repository)) {
+                final Provisioner provisioner = new StubFormatterProvisioner(tempDir);
                 final EquoBasedStepBuilder builder = EclipseCdtFormatterStep.createBuilder(
-                        new StubFormatterProvisioner(tempDir));
+                        provisioner,
+                        (modelWrapper, mavenProvisioner, cacheDirectory) -> List.copyOf(
+                                mavenProvisioner.provisionWithTransitives(false, Collections.emptyList())));
                 builder.setVersion(cdtVersion);
                 builder.setP2Mirrors(Map.of(ECLIPSE_DOWNLOADS, p2Server.url()));
                 final FormatterStep formatter = builder.build();
