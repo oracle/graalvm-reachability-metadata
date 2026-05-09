@@ -6,6 +6,7 @@
  */
 package org_jboss_interceptor.jboss_interceptor_core;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 
 import org.jboss.interceptor.util.ReflectionFactoryUtils;
@@ -31,7 +32,7 @@ public class ReflectionFactoryUtilsTest {
         }
     }
 
-    public static final class ConstructorRequiredSample {
+    public static final class ConstructorRequiredSample implements Serializable {
         private final String value;
 
         public ConstructorRequiredSample(String value) {
