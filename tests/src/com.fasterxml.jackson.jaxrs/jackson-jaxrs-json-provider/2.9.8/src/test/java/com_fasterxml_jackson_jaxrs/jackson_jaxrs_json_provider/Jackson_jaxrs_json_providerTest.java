@@ -8,7 +8,7 @@ package com_fasterxml_jackson_jaxrs.jackson_jaxrs_json_provider;
 
 import org.junit.jupiter.api.Test;
 
-class Jackson_jaxrs_json_providerTest {
+public class Jackson_jaxrs_json_providerTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
