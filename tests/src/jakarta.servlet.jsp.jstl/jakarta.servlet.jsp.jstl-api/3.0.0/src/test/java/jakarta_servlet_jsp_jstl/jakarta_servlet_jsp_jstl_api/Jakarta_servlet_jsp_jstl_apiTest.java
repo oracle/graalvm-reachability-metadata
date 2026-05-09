@@ -82,6 +82,9 @@ import jakarta.servlet.jsp.tagext.ValidationMessage;
 import org.junit.jupiter.api.Test;
 
 public class Jakarta_servlet_jsp_jstl_apiTest {
+    private static final String NAMED_MESSAGES_BUNDLE = "jakarta_servlet_jsp_jstl.jakarta_servlet_jsp_jstl_api"
+            + ".Jakarta_servlet_jsp_jstl_apiTest$NamedLocaleMessages";
+
     @Test
     void configStoresScopedValuesAndFindsThemInStandardOrder() {
         TestPageContext pageContext = new TestPageContext();
@@ -132,6 +135,17 @@ public class Jakarta_servlet_jsp_jstl_apiTest {
         assertThat(LocaleSupport.getLocalizedMessage(pageContext, "missing")).isEqualTo("???missing???");
         assertThat(new LocalizationContext().getResourceBundle()).isNull();
         assertThat(new LocalizationContext(bundle).getLocale()).isNull();
+    }
+
+    @Test
+    void localeSupportLoadsBundleByBasenameAndAppliesConfiguredLocale() {
+        TestPageContext pageContext = new TestPageContext();
+
+        Config.set(pageContext, Config.FMT_LOCALE, "en-US", PageContext.PAGE_SCOPE);
+
+        assertThat(LocaleSupport.getLocalizedMessage(pageContext, "salutation", new Object[] {"Ada"},
+                NAMED_MESSAGES_BUNDLE)).isEqualTo("Howdy Ada");
+        assertThat(pageContext.getResponse().getLocale()).isEqualTo(Locale.US);
     }
 
     @Test
@@ -557,6 +571,24 @@ public class Jakarta_servlet_jsp_jstl_apiTest {
             return new Object[][] {
                     {"plain", "Plain text"},
                     {"welcome", "Welcome {0}"}
+            };
+        }
+    }
+
+    public static final class NamedLocaleMessages extends ListResourceBundle {
+        @Override
+        protected Object[][] getContents() {
+            return new Object[][] {
+                    {"salutation", "Hello {0}"}
+            };
+        }
+    }
+
+    public static final class NamedLocaleMessages_en_US extends ListResourceBundle {
+        @Override
+        protected Object[][] getContents() {
+            return new Object[][] {
+                    {"salutation", "Howdy {0}"}
             };
         }
     }
