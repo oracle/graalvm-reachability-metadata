@@ -51,6 +51,7 @@ public class ProxyFactoryTest {
             assertThat(org.jboss.weld.bean.proxy.ProxyFactory.isProxy(proxy)).isTrue();
             assertThat(proxy).isInstanceOf(WeldGreetingContract.class);
             assertThat(proxy.getClass().getName()).endsWith("_$$_WeldProxy");
+            assertThat(proxyFactory.getProxyClass()).isEqualTo(proxy.getClass());
 
             TargetInstanceProxy<?> targetProxy = (TargetInstanceProxy<?>) proxy;
             assertThat(targetProxy.getTargetClass()).isEqualTo(WeldProxiedService.class);
