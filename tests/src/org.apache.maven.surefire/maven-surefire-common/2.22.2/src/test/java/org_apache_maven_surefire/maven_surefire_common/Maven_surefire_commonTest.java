@@ -8,7 +8,7 @@ package org_apache_maven_surefire.maven_surefire_common;
 
 import org.junit.jupiter.api.Test;
 
-class Maven_surefire_commonTest {
+public class Maven_surefire_commonTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
