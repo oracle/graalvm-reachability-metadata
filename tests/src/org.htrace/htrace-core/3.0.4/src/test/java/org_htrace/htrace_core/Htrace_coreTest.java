@@ -133,6 +133,41 @@ public class Htrace_coreTest {
     }
 
     @Test
+    void samplerContextControlsRootSpanCreation() throws Exception {
+        POJOSpanReceiver receiver = new POJOSpanReceiver();
+        Trace.setProcessId("process-context-sampler");
+        Trace.addReceiver(receiver);
+        AtomicReference<String> sampledContext = new AtomicReference<>();
+        Sampler<String> onlyExpectedContext = context -> {
+            sampledContext.set(context);
+            return "trace-me".equals(context);
+        };
+
+        try {
+            try (TraceScope skipped = Trace.startSpan("skipped-by-context", onlyExpectedContext, "ignore-me")) {
+                assertThat(sampledContext).hasValue("ignore-me");
+                assertThat(skipped.getSpan()).isNull();
+                assertThat(Trace.isTracing()).isFalse();
+            }
+
+            try (TraceScope accepted = Trace.startSpan("accepted-by-context", onlyExpectedContext, "trace-me")) {
+                Span span = accepted.getSpan();
+                assertThat(sampledContext).hasValue("trace-me");
+                assertThat(span).isNotNull();
+                assertThat(span.getParentId()).isEqualTo(Span.ROOT_SPAN_ID);
+                assertThat(Trace.currentSpan()).isSameAs(span);
+            }
+
+            assertThat(receiver.getSpans())
+                    .extracting(Span::getDescription)
+                    .containsExactly("accepted-by-context");
+        } finally {
+            Trace.removeReceiver(receiver);
+            receiver.close();
+        }
+    }
+
+    @Test
     void traceInfoCanStartDetachedSpanAndContinueItLater() throws Exception {
         POJOSpanReceiver receiver = new POJOSpanReceiver();
         Trace.setProcessId("process-detached-scope");
