@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.hadoop.fs.Path;
@@ -111,6 +112,25 @@ public class Hadoop_yarn_clientTest {
 
         assertThat(client.getMatchingRequests(priority, ResourceRequest.ANY, capability))
                 .allSatisfy(requests -> assertThat(requests).doesNotContain(request));
+    }
+
+    @Test
+    void amrmClientWaitForPollsUntilConditionIsSatisfiedAndValidatesArguments() throws InterruptedException {
+        AMRMClient<AMRMClient.ContainerRequest> client = AMRMClient.createAMRMClient();
+        AtomicInteger checks = new AtomicInteger();
+
+        client.waitFor(() -> checks.incrementAndGet() == 3, 1, 10);
+
+        assertThat(checks.get()).isEqualTo(3);
+        assertThatThrownBy(() -> client.waitFor(null, 1, 1))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("check");
+        assertThatThrownBy(() -> client.waitFor(() -> true, -1, 1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("checkEveryMillis");
+        assertThatThrownBy(() -> client.waitFor(() -> true, 1, -1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("logInterval");
     }
 
     @Test
