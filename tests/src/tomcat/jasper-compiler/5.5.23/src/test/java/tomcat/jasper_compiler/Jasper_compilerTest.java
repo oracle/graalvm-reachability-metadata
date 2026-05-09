@@ -8,7 +8,7 @@ package tomcat.jasper_compiler;
 
 import org.junit.jupiter.api.Test;
 
-class Jasper_compilerTest {
+public class Jasper_compilerTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
