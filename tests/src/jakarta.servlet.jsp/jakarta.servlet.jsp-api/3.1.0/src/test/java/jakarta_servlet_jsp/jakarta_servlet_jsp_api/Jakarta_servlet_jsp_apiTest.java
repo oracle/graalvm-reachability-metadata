@@ -10,26 +10,38 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import jakarta.el.ELContext;
 import jakarta.el.ELContextListener;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.jsp.ErrorData;
 import jakarta.servlet.jsp.JspApplicationContext;
 import jakarta.servlet.jsp.JspEngineInfo;
@@ -39,6 +51,8 @@ import jakarta.servlet.jsp.JspTagException;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.PageContext;
 import jakarta.servlet.jsp.SkipPageException;
+import jakarta.servlet.jsp.el.ExpressionEvaluator;
+import jakarta.servlet.jsp.el.VariableResolver;
 import jakarta.servlet.jsp.tagext.BodyContent;
 import jakarta.servlet.jsp.tagext.BodyTag;
 import jakarta.servlet.jsp.tagext.BodyTagSupport;
@@ -89,6 +103,23 @@ public class Jakarta_servlet_jsp_apiTest {
         RuntimeException throwable = new RuntimeException("boom");
 
         ErrorData errorData = new ErrorData(throwable, 503, "/broken.jsp", "jspServlet");
+
+        assertThat(errorData.getThrowable()).isSameAs(throwable);
+        assertThat(errorData.getStatusCode()).isEqualTo(503);
+        assertThat(errorData.getRequestURI()).isEqualTo("/broken.jsp");
+        assertThat(errorData.getServletName()).isEqualTo("jspServlet");
+    }
+
+    @Test
+    void pageContextBuildsErrorDataFromServletErrorAttributes() {
+        RuntimeException throwable = new RuntimeException("boom");
+        ErrorAttributesRequest request = new ErrorAttributesRequest();
+        request.setAttribute(RequestDispatcher.ERROR_EXCEPTION, throwable);
+        request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, 503);
+        request.setAttribute(RequestDispatcher.ERROR_REQUEST_URI, "/broken.jsp");
+        request.setAttribute(RequestDispatcher.ERROR_SERVLET_NAME, "jspServlet");
+
+        ErrorData errorData = new ErrorPageContext(request).getErrorData();
 
         assertThat(errorData.getThrowable()).isSameAs(throwable);
         assertThat(errorData.getStatusCode()).isEqualTo(503);
@@ -520,6 +551,338 @@ public class Jakarta_servlet_jsp_apiTest {
         @Override
         public void addELContextListener(ELContextListener listener) {
             listeners.add(listener);
+        }
+    }
+
+    @SuppressWarnings({"deprecation", "removal"})
+    private static final class ErrorPageContext extends PageContext {
+        private final ServletRequest request;
+
+        private ErrorPageContext(ServletRequest request) {
+            this.request = request;
+        }
+
+        @Override
+        public void initialize(Servlet servlet, ServletRequest request, ServletResponse response, String errorPageUrl,
+                boolean needsSession, int bufferSize, boolean autoFlush) {
+        }
+
+        @Override
+        public void release() {
+        }
+
+        @Override
+        public HttpSession getSession() {
+            return null;
+        }
+
+        @Override
+        public Object getPage() {
+            return null;
+        }
+
+        @Override
+        public ServletRequest getRequest() {
+            return request;
+        }
+
+        @Override
+        public ServletResponse getResponse() {
+            return null;
+        }
+
+        @Override
+        public Exception getException() {
+            return null;
+        }
+
+        @Override
+        public ServletConfig getServletConfig() {
+            return null;
+        }
+
+        @Override
+        public ServletContext getServletContext() {
+            return null;
+        }
+
+        @Override
+        public void forward(String relativeUrlPath) {
+        }
+
+        @Override
+        public void include(String relativeUrlPath) {
+        }
+
+        @Override
+        public void include(String relativeUrlPath, boolean flush) {
+        }
+
+        @Override
+        public void handlePageException(Exception exception) {
+        }
+
+        @Override
+        public void handlePageException(Throwable throwable) {
+        }
+
+        @Override
+        public void setAttribute(String name, Object value) {
+        }
+
+        @Override
+        public void setAttribute(String name, Object value, int scope) {
+        }
+
+        @Override
+        public Object getAttribute(String name) {
+            return null;
+        }
+
+        @Override
+        public Object getAttribute(String name, int scope) {
+            return null;
+        }
+
+        @Override
+        public Object findAttribute(String name) {
+            return null;
+        }
+
+        @Override
+        public void removeAttribute(String name) {
+        }
+
+        @Override
+        public void removeAttribute(String name, int scope) {
+        }
+
+        @Override
+        public int getAttributesScope(String name) {
+            return 0;
+        }
+
+        @Override
+        public Enumeration<String> getAttributeNamesInScope(int scope) {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public JspWriter getOut() {
+            return null;
+        }
+
+        @Override
+        public ExpressionEvaluator getExpressionEvaluator() {
+            return null;
+        }
+
+        @Override
+        public VariableResolver getVariableResolver() {
+            return null;
+        }
+
+        @Override
+        public ELContext getELContext() {
+            return null;
+        }
+    }
+
+    private static final class ErrorAttributesRequest implements ServletRequest {
+        private final Map<String, Object> attributes = new HashMap<>();
+
+        @Override
+        public Object getAttribute(String name) {
+            return attributes.get(name);
+        }
+
+        @Override
+        public Enumeration<String> getAttributeNames() {
+            return Collections.enumeration(attributes.keySet());
+        }
+
+        @Override
+        public String getCharacterEncoding() {
+            return null;
+        }
+
+        @Override
+        public void setCharacterEncoding(String encoding) throws UnsupportedEncodingException {
+        }
+
+        @Override
+        public int getContentLength() {
+            return 0;
+        }
+
+        @Override
+        public long getContentLengthLong() {
+            return 0L;
+        }
+
+        @Override
+        public String getContentType() {
+            return null;
+        }
+
+        @Override
+        public ServletInputStream getInputStream() {
+            return null;
+        }
+
+        @Override
+        public String getParameter(String name) {
+            return null;
+        }
+
+        @Override
+        public Enumeration<String> getParameterNames() {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public String[] getParameterValues(String name) {
+            return null;
+        }
+
+        @Override
+        public Map<String, String[]> getParameterMap() {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        public String getProtocol() {
+            return null;
+        }
+
+        @Override
+        public String getScheme() {
+            return null;
+        }
+
+        @Override
+        public String getServerName() {
+            return null;
+        }
+
+        @Override
+        public int getServerPort() {
+            return 0;
+        }
+
+        @Override
+        public BufferedReader getReader() {
+            return null;
+        }
+
+        @Override
+        public String getRemoteAddr() {
+            return null;
+        }
+
+        @Override
+        public String getRemoteHost() {
+            return null;
+        }
+
+        @Override
+        public void setAttribute(String name, Object value) {
+            attributes.put(name, value);
+        }
+
+        @Override
+        public void removeAttribute(String name) {
+            attributes.remove(name);
+        }
+
+        @Override
+        public Locale getLocale() {
+            return Locale.getDefault();
+        }
+
+        @Override
+        public Enumeration<Locale> getLocales() {
+            return Collections.enumeration(Collections.singleton(Locale.getDefault()));
+        }
+
+        @Override
+        public boolean isSecure() {
+            return false;
+        }
+
+        @Override
+        public RequestDispatcher getRequestDispatcher(String path) {
+            return null;
+        }
+
+        @Override
+        public int getRemotePort() {
+            return 0;
+        }
+
+        @Override
+        public String getLocalName() {
+            return null;
+        }
+
+        @Override
+        public String getLocalAddr() {
+            return null;
+        }
+
+        @Override
+        public int getLocalPort() {
+            return 0;
+        }
+
+        @Override
+        public ServletContext getServletContext() {
+            return null;
+        }
+
+        @Override
+        public AsyncContext startAsync() {
+            throw new IllegalStateException("Async processing is not supported by this request");
+        }
+
+        @Override
+        public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) {
+            throw new IllegalStateException("Async processing is not supported by this request");
+        }
+
+        @Override
+        public boolean isAsyncStarted() {
+            return false;
+        }
+
+        @Override
+        public boolean isAsyncSupported() {
+            return false;
+        }
+
+        @Override
+        public AsyncContext getAsyncContext() {
+            return null;
+        }
+
+        @Override
+        public DispatcherType getDispatcherType() {
+            return DispatcherType.REQUEST;
+        }
+
+        @Override
+        public String getRequestId() {
+            return null;
+        }
+
+        @Override
+        public String getProtocolRequestId() {
+            return null;
+        }
+
+        @Override
+        public ServletConnection getServletConnection() {
+            return null;
         }
     }
 
