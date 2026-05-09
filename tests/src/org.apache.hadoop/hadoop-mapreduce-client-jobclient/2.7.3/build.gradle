@@ -10,8 +10,14 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+configurations.configureEach {
+    exclude group: 'com.sun.jersey'
+    exclude group: 'com.sun.jersey.contribs'
+}
+
 dependencies {
     testImplementation "org.apache.hadoop:hadoop-mapreduce-client-jobclient:$libraryVersion"
+    testImplementation "org.apache.hadoop:hadoop-common:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
