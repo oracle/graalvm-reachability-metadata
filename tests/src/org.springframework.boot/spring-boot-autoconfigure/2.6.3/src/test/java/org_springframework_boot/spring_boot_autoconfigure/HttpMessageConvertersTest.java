@@ -11,8 +11,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.hateoas.server.mvc.TypeConstrainedMappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,6 +29,21 @@ public class HttpMessageConvertersTest {
 
         assertThat(converters.getConverters()).containsExactly(converter);
         assertThat(converters).containsExactly(converter);
+    }
+
+    @Test
+    void keepsTypeConstrainedJacksonConverterAlongsideDefaultJacksonConverter() {
+        TypeConstrainedMappingJackson2HttpMessageConverter constrainedConverter =
+                new TypeConstrainedMappingJackson2HttpMessageConverter(Object.class);
+        List<HttpMessageConverter<?>> additionalConverters = List.of(constrainedConverter);
+
+        HttpMessageConverters converters = new HttpMessageConverters(additionalConverters);
+
+        assertThat(converters.getConverters()).contains(constrainedConverter);
+        assertThat(converters.getConverters()).anySatisfy((converter) -> {
+            assertThat(converter).isInstanceOf(MappingJackson2HttpMessageConverter.class);
+            assertThat(converter).isNotSameAs(constrainedConverter);
+        });
     }
 
 }
