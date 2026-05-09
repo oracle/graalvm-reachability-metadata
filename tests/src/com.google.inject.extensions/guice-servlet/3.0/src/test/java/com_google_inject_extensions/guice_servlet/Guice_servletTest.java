@@ -548,7 +548,7 @@ public class Guice_servletTest {
 
         @Override
         public StringBuffer getRequestURL() {
-            return new StringBuffer("http://localhost/session");
+            return new java.lang.StringBuffer("http://localhost/session");
         }
 
         @Override
