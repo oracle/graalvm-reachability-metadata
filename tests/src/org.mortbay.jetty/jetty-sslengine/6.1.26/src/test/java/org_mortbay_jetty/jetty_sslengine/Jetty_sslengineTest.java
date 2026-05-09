@@ -8,23 +8,29 @@ package org_mortbay_jetty.jetty_sslengine;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -224,6 +230,65 @@ public class Jetty_sslengineTest {
     }
 
     @Test
+    void requiresClientCertificateWhenNeedClientAuthIsEnabled() throws Exception {
+        Path keystore = writeKeystore();
+        Path truststore = writeTruststoreForCertificate(keystore);
+        SslSelectChannelConnector connector = new SslSelectChannelConnector();
+        connector.setHost("127.0.0.1");
+        connector.setPort(0);
+        connector.setMaxIdleTime(5_000);
+        connector.setKeystore(keystore.toString());
+        connector.setTruststore(truststore.toString());
+        connector.setPassword(PASSWORD);
+        connector.setKeyPassword(PASSWORD);
+        connector.setTrustPassword(PASSWORD);
+        connector.setNeedClientAuth(true);
+        connector.setWantClientAuth(false);
+        connector.setProtocol("TLSv1.2");
+
+        QueuedThreadPool threadPool = new QueuedThreadPool(8);
+        threadPool.setMinThreads(2);
+        threadPool.setDaemon(true);
+
+        Server server = new Server();
+        server.setThreadPool(threadPool);
+        server.addConnector(connector);
+        server.setHandler(new AbstractHandler() {
+            @Override
+            public void handle(String target, HttpServletRequest request, HttpServletResponse response, int dispatch)
+                    throws IOException, ServletException {
+                if (dispatch == Handler.REQUEST) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType("text/plain");
+                    byte[] body = "client-auth-response".getBytes(StandardCharsets.UTF_8);
+                    response.setContentLength(body.length);
+                    try (OutputStream output = response.getOutputStream()) {
+                        output.write(body);
+                    }
+                    ((Request) request).setHandled(true);
+                }
+            }
+        });
+
+        try {
+            server.start();
+            assertThat(connector.getLocalPort()).isPositive();
+
+            String url = "https://127.0.0.1:" + connector.getLocalPort() + "/client-auth-check";
+            assertThatThrownBy(() -> get(url)).isInstanceOf(IOException.class);
+
+            String body = get(url, sslContextWithClientCertificate(keystore));
+
+            assertThat(body).isEqualTo("client-auth-response");
+        } finally {
+            if (server.isStarted() || server.isStarting()) {
+                server.stop();
+            }
+            server.destroy();
+        }
+    }
+
+    @Test
     void excludesConfiguredCipherSuitesDuringHandshake() throws Exception {
         Path keystore = writeKeystore();
         String expectedCipherSuite = selectEnabledTls12RsaCipherSuite();
@@ -293,6 +358,25 @@ public class Jetty_sslengineTest {
         return file;
     }
 
+    private static Path writeTruststoreForCertificate(Path keystore) throws Exception {
+        KeyStore sourceKeyStore = loadKeyStore(keystore);
+        Enumeration<String> aliases = sourceKeyStore.aliases();
+        assertThat(aliases.hasMoreElements()).isTrue();
+        Certificate certificate = sourceKeyStore.getCertificate(aliases.nextElement());
+        assertThat(certificate).isNotNull();
+
+        KeyStore trustStore = KeyStore.getInstance("JKS");
+        trustStore.load(null, PASSWORD.toCharArray());
+        trustStore.setCertificateEntry("client", certificate);
+
+        Path file = Files.createTempFile("jetty-sslengine-truststore-test-", ".jks");
+        try (OutputStream output = Files.newOutputStream(file)) {
+            trustStore.store(output, PASSWORD.toCharArray());
+        }
+        file.toFile().deleteOnExit();
+        return file;
+    }
+
     private static String selectEnabledTls12RsaCipherSuite() throws Exception {
         List<String> enabledCipherSuites = Arrays.asList(enabledTls12CipherSuites());
         for (String cipherSuite : TLS12_RSA_CIPHER_SUITE_PREFERENCES) {
@@ -315,9 +399,33 @@ public class Jetty_sslengineTest {
         return sslContext.createSSLEngine().getEnabledCipherSuites();
     }
 
+    private static SSLContext sslContextWithClientCertificate(Path keystore) throws Exception {
+        KeyStore clientKeyStore = loadKeyStore(keystore);
+
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(clientKeyStore, PASSWORD.toCharArray());
+
+        SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+        sslContext.init(
+                keyManagerFactory.getKeyManagers(), new TrustManager[] {trustAllCertificates()}, new SecureRandom());
+        return sslContext;
+    }
+
+    private static KeyStore loadKeyStore(Path keystore) throws Exception {
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+        try (InputStream input = Files.newInputStream(keystore)) {
+            keyStore.load(input, PASSWORD.toCharArray());
+        }
+        return keyStore;
+    }
+
     private static String get(String url) throws Exception {
         SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
         sslContext.init(null, new TrustManager[] {trustAllCertificates()}, new SecureRandom());
+        return get(url, sslContext);
+    }
+
+    private static String get(String url, SSLContext sslContext) throws Exception {
         HostnameVerifier verifier = (host, session) -> "127.0.0.1".equals(host) || "localhost".equals(host);
         HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
         connection.setSSLSocketFactory(sslContext.getSocketFactory());
