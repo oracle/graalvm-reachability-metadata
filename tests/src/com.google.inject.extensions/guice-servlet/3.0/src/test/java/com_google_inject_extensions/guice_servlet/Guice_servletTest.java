@@ -40,6 +40,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -168,6 +169,28 @@ public class Guice_servletTest {
         assertThat(third.firstValue).isNotSameAs(first.firstValue);
     }
 
+    @Test
+    void continueRequestCreatesCallableThatUsesRequestScopeAfterServletFilterReturns() throws Exception {
+        Provider<RequestScopedValue> requestScopedProvider = ServletScopes.REQUEST.scope(
+                Key.get(RequestScopedValue.class), new RequestScopedValueProvider());
+        Provider<String> userProvider = ServletScopes.REQUEST.scope(REQUEST_USER_KEY, new DefaultRequestUserProvider());
+        Provider<SessionScopedValue> sessionScopedProvider = ServletScopes.SESSION.scope(
+                Key.get(SessionScopedValue.class), new SessionScopedValueProvider());
+        ContinuedRequestCapture capture = new ContinuedRequestCapture(
+                requestScopedProvider, userProvider, sessionScopedProvider);
+
+        new GuiceFilter().doFilter(
+                new TestHttpServletRequest(new TestHttpSession()), new TestHttpServletResponse(), capture);
+
+        ContinuedRequestResult result = capture.continuedRequest.call();
+
+        assertThat(result.firstValue).isSameAs(result.secondValue);
+        assertThat(result.user).isEqualTo(ContinuedRequestCapture.CONTINUED_USER);
+        assertThatThrownBy(() -> capture.continuedSessionAccess.call())
+                .isInstanceOf(OutOfScopeException.class)
+                .hasMessageContaining("Cannot access the session");
+    }
+
     private static ScopedRequestResult executeInRequestScope(
             Provider<RequestScopedValue> requestScopedProvider,
             Provider<String> userProvider,
@@ -288,6 +311,46 @@ public class Guice_servletTest {
         @Override
         public void doFilter(ServletRequest request, ServletResponse response) {
             value = supplier.get();
+        }
+    }
+
+    private static final class ContinuedRequestCapture implements FilterChain {
+        private static final String CONTINUED_USER = "continued-user";
+
+        private final Provider<RequestScopedValue> requestScopedProvider;
+        private final Provider<String> userProvider;
+        private final Provider<SessionScopedValue> sessionScopedProvider;
+        private Callable<ContinuedRequestResult> continuedRequest;
+        private Callable<SessionScopedValue> continuedSessionAccess;
+
+        private ContinuedRequestCapture(
+                Provider<RequestScopedValue> requestScopedProvider,
+                Provider<String> userProvider,
+                Provider<SessionScopedValue> sessionScopedProvider) {
+            this.requestScopedProvider = requestScopedProvider;
+            this.userProvider = userProvider;
+            this.sessionScopedProvider = sessionScopedProvider;
+        }
+
+        @Override
+        public void doFilter(ServletRequest request, ServletResponse response) {
+            Map<Key<?>, Object> seedMap = new LinkedHashMap<>();
+            seedMap.put(REQUEST_USER_KEY, CONTINUED_USER);
+            continuedRequest = ServletScopes.continueRequest(() -> new ContinuedRequestResult(
+                    requestScopedProvider.get(), requestScopedProvider.get(), userProvider.get()), seedMap);
+            continuedSessionAccess = ServletScopes.continueRequest(sessionScopedProvider::get, Collections.emptyMap());
+        }
+    }
+
+    private static final class ContinuedRequestResult {
+        private final RequestScopedValue firstValue;
+        private final RequestScopedValue secondValue;
+        private final String user;
+
+        private ContinuedRequestResult(RequestScopedValue firstValue, RequestScopedValue secondValue, String user) {
+            this.firstValue = firstValue;
+            this.secondValue = secondValue;
+            this.user = user;
         }
     }
 
