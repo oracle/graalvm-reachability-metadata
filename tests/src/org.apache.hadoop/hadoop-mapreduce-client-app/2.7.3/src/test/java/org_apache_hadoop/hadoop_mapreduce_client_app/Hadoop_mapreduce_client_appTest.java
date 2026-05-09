@@ -7,6 +7,8 @@
 package org_apache_hadoop.hadoop_mapreduce_client_app;
 
 import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapred.JobID;
@@ -21,8 +23,10 @@ import org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptState;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskId;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskType;
+import org.apache.hadoop.mapreduce.v2.app.AppContext;
 import org.apache.hadoop.mapreduce.v2.app.ClusterInfo;
 import org.apache.hadoop.mapreduce.v2.app.MRClientSecurityInfo;
+import org.apache.hadoop.mapreduce.v2.app.job.Job;
 import org.apache.hadoop.mapreduce.v2.app.job.event.JobCounterUpdateEvent;
 import org.apache.hadoop.mapreduce.v2.app.job.event.JobDiagnosticsUpdateEvent;
 import org.apache.hadoop.mapreduce.v2.app.job.event.JobEventType;
@@ -40,12 +44,19 @@ import org.apache.hadoop.mapreduce.v2.app.security.authorize.MRAMPolicyProvider;
 import org.apache.hadoop.mapreduce.v2.app.speculate.DataStatistics;
 import org.apache.hadoop.mapreduce.v2.app.speculate.Speculator;
 import org.apache.hadoop.mapreduce.v2.app.speculate.SpeculatorEvent;
+import org.apache.hadoop.mapreduce.v2.app.webapp.dao.BlacklistedNodesInfo;
+import org.apache.hadoop.mapreduce.v2.app.webapp.dao.ConfEntryInfo;
 import org.apache.hadoop.mapreduce.v2.util.MRBuilderUtils;
 import org.apache.hadoop.security.authorize.Service;
 import org.apache.hadoop.security.token.TokenInfo;
+import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
+import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.event.EventHandler;
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.SchedulerResourceTypes;
+import org.apache.hadoop.yarn.security.client.ClientToAMTokenSecretManager;
 import org.apache.hadoop.yarn.security.client.ClientToAMTokenSelector;
+import org.apache.hadoop.yarn.util.Clock;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -235,6 +246,21 @@ public class Hadoop_mapreduce_client_appTest {
     }
 
     @Test
+    void webAppDaoObjectsExposeConfigurationEntriesAndBlacklistedNodes() {
+        ConfEntryInfo entry = new ConfEntryInfo(
+                "mapreduce.job.queuename",
+                "analytics",
+                new String[] {"programmatic"});
+        Set<String> blacklistedNodes = Set.of("worker-a.example.test", "worker-b.example.test");
+        BlacklistedNodesInfo nodesInfo = new BlacklistedNodesInfo(new StaticBlacklistedNodesContext(blacklistedNodes));
+
+        assertThat(entry.getName()).isEqualTo("mapreduce.job.queuename");
+        assertThat(entry.getValue()).isEqualTo("analytics");
+        assertThat(entry.getSource()).containsExactly("programmatic");
+        assertThat(nodesInfo.getBlacklistedNodes()).containsExactlyInAnyOrderElementsOf(blacklistedNodes);
+    }
+
+    @Test
     void securityInfoAndPolicyProviderExposeMapReduceApplicationProtocols() {
         Configuration configuration = new Configuration(false);
         MRClientSecurityInfo securityInfo = new MRClientSecurityInfo();
@@ -252,6 +278,90 @@ public class Hadoop_mapreduce_client_appTest {
         assertThat(services).extracting(Service::getProtocol).containsExactly(
                 TaskUmbilicalProtocol.class,
                 MRClientProtocolPB.class);
+    }
+
+    private static final class StaticBlacklistedNodesContext implements AppContext {
+        private final Set<String> blacklistedNodes;
+
+        private StaticBlacklistedNodesContext(Set<String> blacklistedNodes) {
+            this.blacklistedNodes = blacklistedNodes;
+        }
+
+        @Override
+        public ApplicationId getApplicationID() {
+            return null;
+        }
+
+        @Override
+        public ApplicationAttemptId getApplicationAttemptId() {
+            return null;
+        }
+
+        @Override
+        public String getApplicationName() {
+            return null;
+        }
+
+        @Override
+        public long getStartTime() {
+            return 0L;
+        }
+
+        @Override
+        public CharSequence getUser() {
+            return null;
+        }
+
+        @Override
+        public Job getJob(JobId jobId) {
+            return null;
+        }
+
+        @Override
+        public Map<JobId, Job> getAllJobs() {
+            return Map.of();
+        }
+
+        @Override
+        @SuppressWarnings("rawtypes")
+        public EventHandler getEventHandler() {
+            return null;
+        }
+
+        @Override
+        public Clock getClock() {
+            return null;
+        }
+
+        @Override
+        public ClusterInfo getClusterInfo() {
+            return null;
+        }
+
+        @Override
+        public Set<String> getBlacklistedNodes() {
+            return blacklistedNodes;
+        }
+
+        @Override
+        public ClientToAMTokenSecretManager getClientToAMTokenSecretManager() {
+            return null;
+        }
+
+        @Override
+        public boolean isLastAMRetry() {
+            return false;
+        }
+
+        @Override
+        public boolean hasSuccessfullyUnregistered() {
+            return false;
+        }
+
+        @Override
+        public String getNMHostname() {
+            return null;
+        }
     }
 
     private static JobId newJobId() {
