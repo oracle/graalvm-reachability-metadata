@@ -15,6 +15,7 @@ import com.google.inject.OutOfScopeException;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.InstanceFilterBinding;
 import com.google.inject.servlet.InstanceServletBinding;
 import com.google.inject.servlet.LinkedFilterBinding;
@@ -28,18 +29,33 @@ import com.google.inject.spi.DefaultBindingTargetVisitor;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
 import com.google.inject.spi.Message;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionContext;
 import org.junit.jupiter.api.Test;
 
 public class Guice_servletTest {
@@ -130,6 +146,26 @@ public class Guice_servletTest {
                 .anySatisfy(message -> assertThat(message)
                         .contains("More than one servlet was mapped")
                         .contains("/duplicate"));
+    }
+
+    @Test
+    void sessionScopeCachesValuesAcrossRequestsUsingTheSameHttpSession() throws Exception {
+        Provider<SessionScopedValue> sessionScopedProvider = ServletScopes.SESSION.scope(
+                Key.get(SessionScopedValue.class), new SessionScopedValueProvider());
+        TestHttpSession session = new TestHttpSession();
+        TestHttpSession otherSession = new TestHttpSession();
+
+        ScopedSessionResult first = executeWithSession(session, () -> new ScopedSessionResult(
+                sessionScopedProvider.get(), sessionScopedProvider.get()));
+        ScopedSessionResult second = executeWithSession(session, () -> new ScopedSessionResult(
+                sessionScopedProvider.get(), sessionScopedProvider.get()));
+        ScopedSessionResult third = executeWithSession(otherSession, () -> new ScopedSessionResult(
+                sessionScopedProvider.get(), sessionScopedProvider.get()));
+
+        assertThat(first.firstValue).isSameAs(first.secondValue);
+        assertThat(second.firstValue).isSameAs(first.firstValue);
+        assertThat(third.firstValue).isSameAs(third.secondValue);
+        assertThat(third.firstValue).isNotSameAs(first.firstValue);
     }
 
     private static ScopedRequestResult executeInRequestScope(
@@ -230,6 +266,555 @@ public class Guice_servletTest {
         }
     }
 
+    private static <T> T executeWithSession(HttpSession session, ValueSupplier<T> supplier)
+            throws IOException, ServletException {
+        ValueCapturingFilterChain<T> chain = new ValueCapturingFilterChain<>(supplier);
+        new GuiceFilter().doFilter(new TestHttpServletRequest(session), new TestHttpServletResponse(), chain);
+        return chain.value;
+    }
+
+    private interface ValueSupplier<T> {
+        T get();
+    }
+
+    private static final class ValueCapturingFilterChain<T> implements FilterChain {
+        private final ValueSupplier<T> supplier;
+        private T value;
+
+        private ValueCapturingFilterChain(ValueSupplier<T> supplier) {
+            this.supplier = supplier;
+        }
+
+        @Override
+        public void doFilter(ServletRequest request, ServletResponse response) {
+            value = supplier.get();
+        }
+    }
+
+    private static final class ScopedSessionResult {
+        private final SessionScopedValue firstValue;
+        private final SessionScopedValue secondValue;
+
+        private ScopedSessionResult(SessionScopedValue firstValue, SessionScopedValue secondValue) {
+            this.firstValue = firstValue;
+            this.secondValue = secondValue;
+        }
+    }
+
+    private static final class TestHttpSession implements HttpSession {
+        private final Map<String, Object> attributes = new LinkedHashMap<>();
+
+        @Override
+        public long getCreationTime() {
+            return 0L;
+        }
+
+        @Override
+        public String getId() {
+            return "test-session";
+        }
+
+        @Override
+        public long getLastAccessedTime() {
+            return 0L;
+        }
+
+        @Override
+        public ServletContext getServletContext() {
+            return null;
+        }
+
+        @Override
+        public void setMaxInactiveInterval(int interval) {
+        }
+
+        @Override
+        public int getMaxInactiveInterval() {
+            return 0;
+        }
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public HttpSessionContext getSessionContext() {
+            return null;
+        }
+
+        @Override
+        public Object getAttribute(String name) {
+            return attributes.get(name);
+        }
+
+        @Override
+        public Object getValue(String name) {
+            return getAttribute(name);
+        }
+
+        @Override
+        public Enumeration<String> getAttributeNames() {
+            return Collections.enumeration(attributes.keySet());
+        }
+
+        @Override
+        public String[] getValueNames() {
+            return attributes.keySet().toArray(new String[0]);
+        }
+
+        @Override
+        public void setAttribute(String name, Object value) {
+            attributes.put(name, value);
+        }
+
+        @Override
+        public void putValue(String name, Object value) {
+            setAttribute(name, value);
+        }
+
+        @Override
+        public void removeAttribute(String name) {
+            attributes.remove(name);
+        }
+
+        @Override
+        public void removeValue(String name) {
+            removeAttribute(name);
+        }
+
+        @Override
+        public void invalidate() {
+            attributes.clear();
+        }
+
+        @Override
+        public boolean isNew() {
+            return false;
+        }
+    }
+
+    private static final class TestHttpServletRequest implements HttpServletRequest {
+        private final HttpSession session;
+        private final Map<String, Object> attributes = new LinkedHashMap<>();
+
+        private TestHttpServletRequest(HttpSession session) {
+            this.session = session;
+        }
+
+        @Override
+        public String getAuthType() {
+            return null;
+        }
+
+        @Override
+        public Cookie[] getCookies() {
+            return new Cookie[0];
+        }
+
+        @Override
+        public long getDateHeader(String name) {
+            return -1L;
+        }
+
+        @Override
+        public String getHeader(String name) {
+            return null;
+        }
+
+        @Override
+        public Enumeration<String> getHeaders(String name) {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public Enumeration<String> getHeaderNames() {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public int getIntHeader(String name) {
+            return -1;
+        }
+
+        @Override
+        public String getMethod() {
+            return "GET";
+        }
+
+        @Override
+        public String getPathInfo() {
+            return null;
+        }
+
+        @Override
+        public String getPathTranslated() {
+            return null;
+        }
+
+        @Override
+        public String getContextPath() {
+            return "";
+        }
+
+        @Override
+        public String getQueryString() {
+            return null;
+        }
+
+        @Override
+        public String getRemoteUser() {
+            return null;
+        }
+
+        @Override
+        public boolean isUserInRole(String role) {
+            return false;
+        }
+
+        @Override
+        public Principal getUserPrincipal() {
+            return null;
+        }
+
+        @Override
+        public String getRequestedSessionId() {
+            return session.getId();
+        }
+
+        @Override
+        public String getRequestURI() {
+            return "/session";
+        }
+
+        @Override
+        public StringBuffer getRequestURL() {
+            return new StringBuffer("http://localhost/session");
+        }
+
+        @Override
+        public String getServletPath() {
+            return "/session";
+        }
+
+        @Override
+        public HttpSession getSession(boolean create) {
+            return session;
+        }
+
+        @Override
+        public HttpSession getSession() {
+            return session;
+        }
+
+        @Override
+        public boolean isRequestedSessionIdValid() {
+            return true;
+        }
+
+        @Override
+        public boolean isRequestedSessionIdFromCookie() {
+            return false;
+        }
+
+        @Override
+        public boolean isRequestedSessionIdFromURL() {
+            return false;
+        }
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public boolean isRequestedSessionIdFromUrl() {
+            return false;
+        }
+
+        @Override
+        public Object getAttribute(String name) {
+            return attributes.get(name);
+        }
+
+        @Override
+        public Enumeration<String> getAttributeNames() {
+            return Collections.enumeration(attributes.keySet());
+        }
+
+        @Override
+        public String getCharacterEncoding() {
+            return "UTF-8";
+        }
+
+        @Override
+        public void setCharacterEncoding(String encoding) {
+        }
+
+        @Override
+        public int getContentLength() {
+            return 0;
+        }
+
+        @Override
+        public String getContentType() {
+            return null;
+        }
+
+        @Override
+        public ServletInputStream getInputStream() {
+            return null;
+        }
+
+        @Override
+        public String getParameter(String name) {
+            return null;
+        }
+
+        @Override
+        public Enumeration<String> getParameterNames() {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public String[] getParameterValues(String name) {
+            return null;
+        }
+
+        @Override
+        public Map<String, String[]> getParameterMap() {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        public String getProtocol() {
+            return "HTTP/1.1";
+        }
+
+        @Override
+        public String getScheme() {
+            return "http";
+        }
+
+        @Override
+        public String getServerName() {
+            return "localhost";
+        }
+
+        @Override
+        public int getServerPort() {
+            return 80;
+        }
+
+        @Override
+        public BufferedReader getReader() {
+            return null;
+        }
+
+        @Override
+        public String getRemoteAddr() {
+            return "127.0.0.1";
+        }
+
+        @Override
+        public String getRemoteHost() {
+            return "localhost";
+        }
+
+        @Override
+        public void setAttribute(String name, Object object) {
+            attributes.put(name, object);
+        }
+
+        @Override
+        public void removeAttribute(String name) {
+            attributes.remove(name);
+        }
+
+        @Override
+        public Locale getLocale() {
+            return Locale.ROOT;
+        }
+
+        @Override
+        public Enumeration<Locale> getLocales() {
+            return Collections.enumeration(List.of(Locale.ROOT));
+        }
+
+        @Override
+        public boolean isSecure() {
+            return false;
+        }
+
+        @Override
+        public RequestDispatcher getRequestDispatcher(String path) {
+            return null;
+        }
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public String getRealPath(String path) {
+            return null;
+        }
+
+        @Override
+        public int getRemotePort() {
+            return 0;
+        }
+
+        @Override
+        public String getLocalName() {
+            return "localhost";
+        }
+
+        @Override
+        public String getLocalAddr() {
+            return "127.0.0.1";
+        }
+
+        @Override
+        public int getLocalPort() {
+            return 80;
+        }
+    }
+
+    private static final class TestHttpServletResponse implements HttpServletResponse {
+        @Override
+        public void addCookie(Cookie cookie) {
+        }
+
+        @Override
+        public boolean containsHeader(String name) {
+            return false;
+        }
+
+        @Override
+        public String encodeURL(String url) {
+            return url;
+        }
+
+        @Override
+        public String encodeRedirectURL(String url) {
+            return url;
+        }
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public String encodeUrl(String url) {
+            return url;
+        }
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public String encodeRedirectUrl(String url) {
+            return url;
+        }
+
+        @Override
+        public void sendError(int statusCode, String message) {
+        }
+
+        @Override
+        public void sendError(int statusCode) {
+        }
+
+        @Override
+        public void sendRedirect(String location) {
+        }
+
+        @Override
+        public void setDateHeader(String name, long date) {
+        }
+
+        @Override
+        public void addDateHeader(String name, long date) {
+        }
+
+        @Override
+        public void setHeader(String name, String value) {
+        }
+
+        @Override
+        public void addHeader(String name, String value) {
+        }
+
+        @Override
+        public void setIntHeader(String name, int value) {
+        }
+
+        @Override
+        public void addIntHeader(String name, int value) {
+        }
+
+        @Override
+        public void setStatus(int statusCode) {
+        }
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public void setStatus(int statusCode, String message) {
+        }
+
+        @Override
+        public String getCharacterEncoding() {
+            return "UTF-8";
+        }
+
+        @Override
+        public String getContentType() {
+            return null;
+        }
+
+        @Override
+        public ServletOutputStream getOutputStream() {
+            return null;
+        }
+
+        @Override
+        public PrintWriter getWriter() {
+            return null;
+        }
+
+        @Override
+        public void setCharacterEncoding(String encoding) {
+        }
+
+        @Override
+        public void setContentLength(int length) {
+        }
+
+        @Override
+        public void setContentType(String type) {
+        }
+
+        @Override
+        public void setBufferSize(int size) {
+        }
+
+        @Override
+        public int getBufferSize() {
+            return 0;
+        }
+
+        @Override
+        public void flushBuffer() {
+        }
+
+        @Override
+        public void resetBuffer() {
+        }
+
+        @Override
+        public boolean isCommitted() {
+            return false;
+        }
+
+        @Override
+        public void reset() {
+        }
+
+        @Override
+        public void setLocale(Locale locale) {
+        }
+
+        @Override
+        public Locale getLocale() {
+            return Locale.ROOT;
+        }
+    }
+
     private static final class ScopedRequestResult {
         private final RequestScopedValue firstValue;
         private final RequestScopedValue secondValue;
@@ -256,7 +841,17 @@ public class Guice_servletTest {
         }
     }
 
+    private static final class SessionScopedValueProvider implements Provider<SessionScopedValue> {
+        @Override
+        public SessionScopedValue get() {
+            return new SessionScopedValue();
+        }
+    }
+
     private static final class RequestScopedValue {
+    }
+
+    private static final class SessionScopedValue {
     }
 
     private static class ApiFilter implements Filter {
