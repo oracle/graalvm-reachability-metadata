@@ -116,6 +116,42 @@ public class ResourceAllocationFilterTest {
         assertThat(filter.createdExecutors.get(0).scheduledCommands).hasSize(1);
     }
 
+    @Test
+    void handleReadUsesCeilingPolicyToContinueUnprivilegedRequestsWhenPoolsAreIdle() throws IOException {
+        RecordingResourceAllocationFilter filter = new RecordingResourceAllocationFilter(8);
+        String contextRoot = "/ceiling-policy-idle";
+        ExecutorService previousDefaultPool = filter.removeThreadPool("*");
+        ExecutorService previousContextPool = filter.removeThreadPool(contextRoot);
+        String previousAllocationPolicy = filter.allocationPolicy();
+        double previousLeftRatio = filter.leftRatio();
+        FilterChainContext context = new FilterChainContext();
+        Buffer buffer = Buffers.wrap(MemoryManager.DEFAULT_MEMORY_MANAGER,
+                "GET " + contextRoot + " HTTP/1.1\r\nHost: localhost\r\n\r\n");
+        context.setMessage(buffer);
+
+        try {
+            filter.setAllocationPolicy("ceiling");
+            filter.setLeftRatio(0.0);
+
+            NextAction nextAction = filter.handleRead(context);
+
+            assertThat(nextAction).isNotNull();
+            assertThat(filter.createdPoolSizes).containsExactly(5);
+            assertThat(filter.createdExecutors).hasSize(1);
+            assertThat(filter.createdExecutors.get(0).scheduledCommands).hasSize(1);
+        } finally {
+            filter.removeThreadPool("*");
+            filter.removeThreadPool(contextRoot);
+            filter.restoreThreadPool("*", previousDefaultPool);
+            filter.restoreThreadPool(contextRoot, previousContextPool);
+            filter.setAllocationPolicy(previousAllocationPolicy);
+            filter.setLeftRatio(previousLeftRatio);
+            for (RecordingExecutorService executor : filter.createdExecutors) {
+                executor.shutdownNow();
+            }
+        }
+    }
+
     private static void shutdownExecutor(ExecutorService executor) throws InterruptedException {
         executor.shutdownNow();
         if (!(executor instanceof GrizzlyExecutorService)) {
@@ -154,6 +190,32 @@ public class ResourceAllocationFilterTest {
 
         private void removePrivilegedToken(String token) {
             privilegedTokens.remove(token);
+        }
+
+        private ExecutorService removeThreadPool(String token) {
+            return threadPools.remove(token);
+        }
+
+        private void restoreThreadPool(String token, ExecutorService executor) {
+            if (executor != null) {
+                threadPools.put(token, executor);
+            }
+        }
+
+        private String allocationPolicy() {
+            return allocationPolicy;
+        }
+
+        private void setAllocationPolicy(String policy) {
+            allocationPolicy = policy;
+        }
+
+        private double leftRatio() {
+            return leftRatio;
+        }
+
+        private void setLeftRatio(double ratio) {
+            leftRatio = ratio;
         }
     }
 
