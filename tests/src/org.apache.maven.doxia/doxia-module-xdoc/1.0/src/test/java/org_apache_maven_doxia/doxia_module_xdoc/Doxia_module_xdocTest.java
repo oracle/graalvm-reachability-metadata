@@ -211,6 +211,32 @@ public class Doxia_module_xdocTest {
     }
 
     @Test
+    void parserConvertsLowerLevelHeadings() throws Exception {
+        String xdoc = """
+                <document>
+                  <body>
+                    <section name="Reference">
+                      <subsection name="Details">
+                        <h4>Command Options</h4>
+                        <h5>Environment Variables</h5>
+                        <h6>Fine Print</h6>
+                      </subsection>
+                    </section>
+                  </body>
+                </document>
+                """;
+        StringWriter writer = new StringWriter();
+
+        new XdocParser().parse(new StringReader(xdoc), new XdocSink(writer));
+
+        String normalizedXdoc = writer.toString().replaceAll("\\s+", " ");
+        assertThat(normalizedXdoc)
+                .contains("<h4>Command Options</h4>")
+                .contains("<h5>Environment Variables</h5>")
+                .contains("<h6>Fine Print</h6>");
+    }
+
+    @Test
     void parserKeepsTextFromUnknownElements() throws Exception {
         String xdoc = """
                 <document>
