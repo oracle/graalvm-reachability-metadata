@@ -25,8 +25,10 @@ import jakarta.batch.api.Decider;
 import jakarta.batch.api.chunk.AbstractCheckpointAlgorithm;
 import jakarta.batch.api.chunk.AbstractItemReader;
 import jakarta.batch.api.chunk.AbstractItemWriter;
+import jakarta.batch.api.chunk.CheckpointAlgorithm;
 import jakarta.batch.api.chunk.ItemProcessor;
 import jakarta.batch.api.chunk.ItemReader;
+import jakarta.batch.api.chunk.ItemWriter;
 import jakarta.batch.api.chunk.listener.AbstractChunkListener;
 import jakarta.batch.api.chunk.listener.AbstractItemProcessListener;
 import jakarta.batch.api.chunk.listener.AbstractItemReadListener;
@@ -99,6 +101,52 @@ public class Jakarta_batch_apiTest {
         assertThat(checkpointAlgorithm.isReadyToCheckpoint()).isFalse();
         assertThat(checkpointAlgorithm.isReadyToCheckpoint()).isTrue();
         checkpointAlgorithm.endCheckpoint();
+    }
+
+    @Test
+    void chunkProcessingCanFilterItemsAndCheckpointProgress() throws Exception {
+        RestartableItemReader reader = new RestartableItemReader(List.of("one", "skip", "two", "three"));
+        CheckpointingItemWriter writer = new CheckpointingItemWriter();
+        CheckpointAlgorithm checkpointAlgorithm = new FixedItemCountCheckpointAlgorithm(2);
+        ItemProcessor processor = item -> "skip".equals(item) ? null : String.valueOf(item).toUpperCase();
+
+        assertThat(checkpointAlgorithm.checkpointTimeout()).isZero();
+
+        reader.open(1);
+        writer.open("existing-output");
+        List<Object> chunk = new ArrayList<>();
+        List<Serializable> readerCheckpoints = new ArrayList<>();
+
+        checkpointAlgorithm.beginCheckpoint();
+        Object item = reader.readItem();
+        while (item != null) {
+            Object processedItem = processor.processItem(item);
+            if (processedItem != null) {
+                chunk.add(processedItem);
+            }
+            if (checkpointAlgorithm.isReadyToCheckpoint()) {
+                writer.writeItems(chunk);
+                chunk.clear();
+                readerCheckpoints.add(reader.checkpointInfo());
+                checkpointAlgorithm.endCheckpoint();
+                checkpointAlgorithm.beginCheckpoint();
+            }
+            item = reader.readItem();
+        }
+        if (!chunk.isEmpty()) {
+            writer.writeItems(chunk);
+            readerCheckpoints.add(reader.checkpointInfo());
+            checkpointAlgorithm.endCheckpoint();
+        }
+        writer.close();
+        reader.close();
+
+        assertThat(writer.items()).containsExactly("TWO", "THREE");
+        assertThat(writer.openedWith()).isEqualTo("existing-output");
+        assertThat(writer.checkpointInfo()).isEqualTo(2);
+        assertThat(readerCheckpoints).containsExactly(3, 4);
+        assertThat(((FixedItemCountCheckpointAlgorithm) checkpointAlgorithm).events())
+                .containsExactly("begin", "ready", "end", "begin", "end");
     }
 
     @Test
@@ -433,6 +481,109 @@ public class Jakarta_batch_apiTest {
 
         private List<Object> items() {
             return Collections.unmodifiableList(items);
+        }
+    }
+
+    private static final class RestartableItemReader implements ItemReader {
+        private final List<?> items;
+        private int index;
+
+        private RestartableItemReader(List<?> items) {
+            this.items = items;
+        }
+
+        @Override
+        public void open(Serializable checkpoint) {
+            index = (Integer) checkpoint;
+        }
+
+        @Override
+        public void close() {
+        }
+
+        @Override
+        public Object readItem() {
+            if (index >= items.size()) {
+                return null;
+            }
+            return items.get(index++);
+        }
+
+        @Override
+        public Serializable checkpointInfo() {
+            return index;
+        }
+    }
+
+    private static final class CheckpointingItemWriter implements ItemWriter {
+        private final List<Object> items = new ArrayList<>();
+        private Serializable openedWith;
+
+        @Override
+        public void open(Serializable checkpoint) {
+            openedWith = checkpoint;
+        }
+
+        @Override
+        public void close() {
+        }
+
+        @Override
+        public void writeItems(List<Object> items) {
+            this.items.addAll(items);
+        }
+
+        @Override
+        public Serializable checkpointInfo() {
+            return items.size();
+        }
+
+        private List<Object> items() {
+            return Collections.unmodifiableList(items);
+        }
+
+        private Serializable openedWith() {
+            return openedWith;
+        }
+    }
+
+    private static final class FixedItemCountCheckpointAlgorithm implements CheckpointAlgorithm {
+        private final List<String> events = new ArrayList<>();
+        private final int itemCount;
+        private int readSinceLastCheckpoint;
+
+        private FixedItemCountCheckpointAlgorithm(int itemCount) {
+            this.itemCount = itemCount;
+        }
+
+        @Override
+        public int checkpointTimeout() {
+            return 0;
+        }
+
+        @Override
+        public void beginCheckpoint() {
+            events.add("begin");
+            readSinceLastCheckpoint = 0;
+        }
+
+        @Override
+        public boolean isReadyToCheckpoint() {
+            readSinceLastCheckpoint++;
+            boolean ready = readSinceLastCheckpoint >= itemCount;
+            if (ready) {
+                events.add("ready");
+            }
+            return ready;
+        }
+
+        @Override
+        public void endCheckpoint() {
+            events.add("end");
+        }
+
+        private List<String> events() {
+            return events;
         }
     }
 
