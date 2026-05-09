@@ -11,7 +11,14 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.jboss.javaee:jboss-jacc-api_JDK4:$libraryVersion"
+    testImplementation("org.jboss.javaee:jboss-jacc-api_JDK4:$libraryVersion") {
+        exclude group: 'org.jboss.javaee', module: 'jboss-servlet-api_3.0'
+        exclude group: 'org.jboss', module: 'jboss-common-core'
+    }
+    testImplementation('org.jboss:jboss-common-core:2.0.5.GA') {
+        transitive = false
+    }
+    testImplementation 'javax.servlet:javax.servlet-api:3.0.1'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
