@@ -166,6 +166,23 @@ public class Doxia_module_xdocTest {
     }
 
     @Test
+    void xdocSinkWritesTableCaptionAsItalicParagraph() {
+        StringWriter writer = new StringWriter();
+        XdocSink sink = new XdocSink(writer);
+
+        sink.body();
+        sink.tableCaption();
+        sink.text("Module summary <caption> & notes");
+        sink.tableCaption_();
+        sink.body_();
+        sink.close();
+
+        String normalizedXdoc = writer.toString().replaceAll("\\s+", " ");
+        assertThat(normalizedXdoc)
+                .contains("<p><i>Module summary &lt;caption&gt; &amp; notes</i> </p>");
+    }
+
+    @Test
     void parserConvertsXdocMarkupToSinkEvents() throws Exception {
         String xdoc = """
                 <document>
