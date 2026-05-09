@@ -181,7 +181,8 @@ public class Jakarta_servlet_jsp_apiTest {
         data.setAttribute("literal", "updated");
         assertThat(data.getAttributeString("literal")).isEqualTo("updated");
 
-        Hashtable<String, Object> attributes = new Hashtable<>();
+        Hashtable<String, Object> attributes = new
+                Hashtable<>();
         attributes.put("id", "fromTable");
         attributes.put("enabled", Boolean.TRUE);
         TagData tableBackedData = new TagData(attributes);
