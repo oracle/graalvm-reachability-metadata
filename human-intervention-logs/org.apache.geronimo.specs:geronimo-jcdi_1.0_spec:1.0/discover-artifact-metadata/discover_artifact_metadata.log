@@ -1,0 +1,762 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0a31-f7e4-7443-811e-c35592e281ee
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0" when "$version$" is replaced with "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+- Set "coordinates" to "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream project sources, then patch the discovered JSON directly with the most specific URLs that resolve for version `1.0`.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+-rw-rw-r-- 1 vjovanov vjovanov 77 May  9 02:45 build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+{
+  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "geronimo-jcdi|org.apache.geronimo.specs" .' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 234ms:
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/1.1/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-annotation_1.3_spec:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/1.1/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-annotation_1.3_spec_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/1.1/src/test/java/org_apache_geronimo_specs/geronimo_annotation_1_3_spec/Geronimo_annotation_1_3_specTest.java:7:package org_apache_geronimo_specs.geronimo_annotation_1_3_spec;
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/1.1/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-annotation_1.3_spec:1.1
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/1.1/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-annotation_1.3_spec/1.1/
+./tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-jta_1.1_spec:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-jta_1.1_spec_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-interceptor_1.2_spec:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-interceptor_1.2_spec_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/src/test/java/org_apache_geronimo_specs/geronimo_jta_1_1_spec/Geronimo_jta_1_1_specTest.java:7:package org_apache_geronimo_specs.geronimo_jta_1_1_spec;
+./tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1
+./tests/src/org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1/
+./tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/src/test/java/org_apache_geronimo_specs/geronimo_interceptor_1_2_spec/Geronimo_interceptor_1_2_specTest.java:7:package org_apache_geronimo_specs.geronimo_interceptor_1_2_spec;
+./tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-interceptor_1.2_spec:1.1
+./tests/src/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/1.1/
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-annotation_1.1_spec:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-annotation_1.1_spec_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/src/test/java/org_apache_geronimo_specs/geronimo_annotation_1_1_spec/Geronimo_annotation_1_1_specTest.java:7:package org_apache_geronimo_specs.geronimo_annotation_1_1_spec;
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-annotation_1.1_spec:1.0
+./tests/src/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0/
+./tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-osgi-registry:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-osgi-registry_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/src/test/java/org_apache_geronimo_specs/geronimo_osgi_registry/ProviderRegistryImplInnerBundleProviderLoaderTest.java:7:package org_apache_geronimo_specs.geronimo_osgi_registry;
+./tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-osgi-registry:1.0
+./tests/src/org.apache.geronimo.specs/geronimo-osgi-registry/1.0/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-osgi-registry/1.0/
+./tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/build.gradle:14:    testImplementation "org.apache.geronimo.specs:geronimo-atinject_1.0_spec:$libraryVersion"
+./tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/settings.gradle:20:rootProject.name = 'org.apache.geronimo.specs.geronimo-atinject_1.0_spec_tests'
+./tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/src/test/java/org_apache_geronimo_specs/geronimo_atinject_1_0_spec/Geronimo_atinject_1_0_specTest.java:7:package org_apache_geronimo_specs.geronimo_atinject_1_0_spec;
+./tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/gradle.properties:4:library.coordinates = org.apache.geronimo.specs:geronimo-atinject_1.0_spec:1.0
+./tests/src/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/gradle.properties:6:metadata.dir = org.apache.geronimo.specs/geronimo-atinject_1.0_spec/1.0/
+
+web search: 
+web search: Maven org.apache.geronimo.specs geronimo-jcdi_1.0_spec 1.0 sources javadoc
+web search: 
+web search: 
+codex
+The local repo already uses Maven Central source and javadoc jars for neighboring Geronimo spec artifacts when those jars exist. I’m checking the `1.0` artifact directory and POM now to see whether Maven Central also has a test-sources artifact or only upstream SCM tests.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+exec
+/usr/bin/bash -lc "for url in https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0-sources.jar https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0-javadoc.jar https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0-test-sources.jar https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0-tests.jar; do printf '%s -> ' \""'$url"; curl -fsSI "$url" | awk '"'NR==1{print "'$2}'"'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 264ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.geronimo.genesis</groupId>
+        <artifactId>genesis-java5-flava</artifactId>
+        <version>2.0</version>
+    </parent>
+
+    <groupId>org.apache.geronimo.specs</groupId>
+    <artifactId>geronimo-jcdi_1.0_spec</artifactId>
+    <packaging>bundle</packaging>
+    <name>Apache Geronimo Java Contexts and Dependency Injection (JSR-299) Spec API</name>
+    <version>1.0</version>
+
+    <description>Apache Geronimo implementation of the JSR-299 Context and Dependency Injection for the Java EE Platform</description>
+    <url>http://geronimo.apache.org/maven/${siteId}/${version}</url>
+
+    <distributionManagement>
+        <site>
+            <id>apache-website</id>
+            <url>${site.deploy.url}/maven/${siteId}/${version}</url>
+        </site>
+    </distributionManagement>
+
+    <properties>
+        <siteId>specs/${artifactId}</siteId>
+    </properties>
+
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0</url>
+    </scm>
+
+    <!-- added so the build can find staged depends -->
+    <repositories>
+        <repository>
+            <id>apache.nexus.staging</id>
+            <name>Apache Staging Repository</name>
+            <layout>default</layout>
+            <url>https://repository.apache.org/content/repositories/staging/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-interceptor_1.1_spec</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-el_2.2_spec</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-atinject_1.0_spec</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-annotation_1.1_spec</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            javax.decorator*;version=1.0,
+                            javax.enterprise.context*;version=1.0,
+                            javax.enterprise.event*;version=1.0,
+                            javax.enterprise.inject*;version=1.0,
+                            javax.enterprise.util*;version=1.0
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+ succeeded in 296ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="geronimo-jcdi_1.0_spec-1.0-javadoc.jar" title="geronimo-jcdi_1.0_spec-1.0-javadoc.jar">geronimo-jcdi_1.0_spec-1.0-javadoc.jar</a>            2010-04-22 11:44    411168      
+<a href="geronimo-jcdi_1.0_spec-1.0-javadoc.jar.asc" title="geronimo-jcdi_1.0_spec-1.0-javadoc.jar.asc">geronimo-jcdi_1.0_spec-1.0-javadoc.jar.asc</a>        2010-04-22 11:44       851      
+<a href="geronimo-jcdi_1.0_spec-1.0-javadoc.jar.asc.md5" title="geronimo-jcdi_1.0_spec-1.0-javadoc.jar.asc.md5">geronimo-jcdi_1.0_spec-1.0-javadoc.jar.asc.md...</a>  2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0-javadoc.jar.asc.sha1" title="geronimo-jcdi_1.0_spec-1.0-javadoc.jar.asc.sha1">geronimo-jcdi_1.0_spec-1.0-javadoc.jar.asc.sh...</a>  2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0-javadoc.jar.md5" title="geronimo-jcdi_1.0_spec-1.0-javadoc.jar.md5">geronimo-jcdi_1.0_spec-1.0-javadoc.jar.md5</a>        2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0-javadoc.jar.sha1" title="geronimo-jcdi_1.0_spec-1.0-javadoc.jar.sha1">geronimo-jcdi_1.0_spec-1.0-javadoc.jar.sha1</a>       2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz" title="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz">geronimo-jcdi_1.0_spec-1.0-source-release.tar...</a>  2010-04-22 11:44     24076      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz.asc" title="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz.asc">geronimo-jcdi_1.0_spec-1.0-source-release.tar...</a>  2010-04-22 11:44       851      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz.asc.md5" title="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz.asc.md5">geronimo-jcdi_1.0_spec-1.0-source-release.tar...</a>  2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz.asc.sha1" title="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz.asc.sha1">geronimo-jcdi_1.0_spec-1.0-source-release.tar...</a>  2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz.md5" title="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz.md5">geronimo-jcdi_1.0_spec-1.0-source-release.tar...</a>  2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz.sha1" title="geronimo-jcdi_1.0_spec-1.0-source-release.tar.gz.sha1">geronimo-jcdi_1.0_spec-1.0-source-release.tar...</a>  2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.zip" title="geronimo-jcdi_1.0_spec-1.0-source-release.zip">geronimo-jcdi_1.0_spec-1.0-source-release.zip</a>     2010-04-22 11:44     91549      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.zip.asc" title="geronimo-jcdi_1.0_spec-1.0-source-release.zip.asc">geronimo-jcdi_1.0_spec-1.0-source-release.zip...</a>  2010-04-22 11:44       851      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.zip.asc.md5" title="geronimo-jcdi_1.0_spec-1.0-source-release.zip.asc.md5">geronimo-jcdi_1.0_spec-1.0-source-release.zip...</a>  2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.zip.asc.sha1" title="geronimo-jcdi_1.0_spec-1.0-source-release.zip.asc.sha1">geronimo-jcdi_1.0_spec-1.0-source-release.zip...</a>  2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.zip.md5" title="geronimo-jcdi_1.0_spec-1.0-source-release.zip.md5">geronimo-jcdi_1.0_spec-1.0-source-release.zip...</a>  2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0-source-release.zip.sha1" title="geronimo-jcdi_1.0_spec-1.0-source-release.zip.sha1">geronimo-jcdi_1.0_spec-1.0-source-release.zip...</a>  2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0-sources.jar" title="geronimo-jcdi_1.0_spec-1.0-sources.jar">geronimo-jcdi_1.0_spec-1.0-sources.jar</a>            2010-04-22 11:44     80354      
+<a href="geronimo-jcdi_1.0_spec-1.0-sources.jar.asc" title="geronimo-jcdi_1.0_spec-1.0-sources.jar.asc">geronimo-jcdi_1.0_spec-1.0-sources.jar.asc</a>        2010-04-22 11:44       851      
+<a href="geronimo-jcdi_1.0_spec-1.0-sources.jar.asc.md5" title="geronimo-jcdi_1.0_spec-1.0-sources.jar.asc.md5">geronimo-jcdi_1.0_spec-1.0-sources.jar.asc.md...</a>  2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0-sources.jar.asc.sha1" title="geronimo-jcdi_1.0_spec-1.0-sources.jar.asc.sha1">geronimo-jcdi_1.0_spec-1.0-sources.jar.asc.sh...</a>  2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0-sources.jar.md5" title="geronimo-jcdi_1.0_spec-1.0-sources.jar.md5">geronimo-jcdi_1.0_spec-1.0-sources.jar.md5</a>        2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0-sources.jar.sha1" title="geronimo-jcdi_1.0_spec-1.0-sources.jar.sha1">geronimo-jcdi_1.0_spec-1.0-sources.jar.sha1</a>       2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0.jar" title="geronimo-jcdi_1.0_spec-1.0.jar">geronimo-jcdi_1.0_spec-1.0.jar</a>                    2010-04-22 11:44     51184      
+<a href="geronimo-jcdi_1.0_spec-1.0.jar.asc" title="geronimo-jcdi_1.0_spec-1.0.jar.asc">geronimo-jcdi_1.0_spec-1.0.jar.asc</a>                2010-04-22 11:44       851      
+<a href="geronimo-jcdi_1.0_spec-1.0.jar.asc.md5" title="geronimo-jcdi_1.0_spec-1.0.jar.asc.md5">geronimo-jcdi_1.0_spec-1.0.jar.asc.md5</a>            2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0.jar.asc.sha1" title="geronimo-jcdi_1.0_spec-1.0.jar.asc.sha1">geronimo-jcdi_1.0_spec-1.0.jar.asc.sha1</a>           2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0.jar.md5" title="geronimo-jcdi_1.0_spec-1.0.jar.md5">geronimo-jcdi_1.0_spec-1.0.jar.md5</a>                2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0.jar.sha1" title="geronimo-jcdi_1.0_spec-1.0.jar.sha1">geronimo-jcdi_1.0_spec-1.0.jar.sha1</a>               2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0.pom" title="geronimo-jcdi_1.0_spec-1.0.pom">geronimo-jcdi_1.0_spec-1.0.pom</a>                    2010-04-22 11:44      4876      
+<a href="geronimo-jcdi_1.0_spec-1.0.pom.asc" title="geronimo-jcdi_1.0_spec-1.0.pom.asc">geronimo-jcdi_1.0_spec-1.0.pom.asc</a>                2010-04-22 11:44       851      
+<a href="geronimo-jcdi_1.0_spec-1.0.pom.asc.md5" title="geronimo-jcdi_1.0_spec-1.0.pom.asc.md5">geronimo-jcdi_1.0_spec-1.0.pom.asc.md5</a>            2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0.pom.asc.sha1" title="geronimo-jcdi_1.0_spec-1.0.pom.asc.sha1">geronimo-jcdi_1.0_spec-1.0.pom.asc.sha1</a>           2010-04-22 11:44        40      
+<a href="geronimo-jcdi_1.0_spec-1.0.pom.md5" title="geronimo-jcdi_1.0_spec-1.0.pom.md5">geronimo-jcdi_1.0_spec-1.0.pom.md5</a>                2010-04-22 11:44        32      
+<a href="geronimo-jcdi_1.0_spec-1.0.pom.sha1" title="geronimo-jcdi_1.0_spec-1.0.pom.sha1">geronimo-jcdi_1.0_spec-1.0.pom.sha1</a>               2010-04-22 11:44        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 1362ms:
+200
+https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0-javadoc.jar -> 200
+https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0-test-sources.jar -> curl: (22) The requested URL returned error: 404
+404
+https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0-tests.jar -> 404
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "for f in metadata/org.apache.geronimo.specs/*/index.json; do printf '%s\\n' \""'$f"; sed -n '"'1,80p' \""'$f"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 0ms:
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/$version$/geronimo-annotation_1.1_spec-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/$version$/geronimo-annotation_1.1_spec-$version$-javadoc.jar",
+    "description" : "This artifact provides Apache Geronimo's implementation of the JSR-250 Common Annotations 1.1 API in the javax.annotation packages. It supplies annotation types and annotation processing contracts used by Java EE components, dependency injection, security roles, lifecycle callbacks, generated code markers, and data source declarations.",
+    "tested-versions" : [
+      "1.0",
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "javax.annotation"
+    ]
+  }
+]
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/$version$/geronimo-annotation_1.3_spec-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/$version$/geronimo-annotation_1.3_spec-$version$-javadoc.jar",
+    "description" : "Apache Geronimo Annotation Spec 1.3 provides the JSR-250 Common Annotations 1.3 API in the javax.annotation packages. It supplies standard annotations for lifecycle callbacks, resource injection metadata, security roles, generated-code markers, priorities, and SQL data source declarations.",
+    "tested-versions" : [
+      "1.1",
+      "1.2",
+      "1.3"
+    ],
+    "allowed-packages" : [
+      "javax.annotation"
+    ]
+  }
+]
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_$version$_spec/$version$/geronimo-atinject_$version$_spec-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_$version$_spec/$version$/geronimo-atinject_$version$_spec-$version$-javadoc.jar",
+    "description" : "This artifact provides Apache Geronimo's implementation of the JSR-330 Dependency Injection for Java API in the javax.inject package. It contains standard annotations and contracts such as @Inject, @Named, @Qualifier, @Scope, @Singleton, and Provider that frameworks use to describe and supply injectable dependencies.",
+    "tested-versions" : [
+      "1.0",
+      "1.1",
+      "1.2"
+    ],
+    "allowed-packages" : [
+      "javax.inject"
+    ]
+  }
+]
+metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-interceptor_1.2_spec/$version$/geronimo-interceptor_1.2_spec-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-interceptor_1.2_spec/$version$/geronimo-interceptor_1.2_spec-$version$-javadoc.jar",
+    "description" : "Apache Geronimo Interceptor Spec provides the Java javax.interceptor API classes and annotations for defining interceptor bindings and lifecycle or method-invocation interception. It supplies standard types such as InvocationContext, AroundInvoke, AroundTimeout, Interceptor, and Interceptors for Java EE containers and frameworks that implement interceptor behavior.",
+    "tested-versions" : [
+      "1.1",
+      "1.2"
+    ],
+    "allowed-packages" : [
+      "javax.interceptor"
+    ]
+  }
+]
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jta_$version$_spec/$version$/geronimo-jta_$version$_spec-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jta_$version$_spec/$version$/geronimo-jta_$version$_spec-$version$-javadoc.jar",
+    "description" : "This artifact provides Apache Geronimo's Java Transaction API (JTA) 1.1 specification classes in the javax.transaction and javax.transaction.xa packages. It supplies the standard transaction contracts, status constants, exceptions, synchronization callbacks, and XA resource types used by transaction managers and Java EE applications.",
+    "tested-versions" : [
+      "1.1",
+      "1.1.1"
+    ],
+    "allowed-packages" : [
+      "javax.transaction"
+    ]
+  }
+]
+metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-osgi-registry/$version$/geronimo-osgi-registry-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-osgi-registry-itests/$version$/geronimo-osgi-registry-itests-$version$-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-osgi-registry/$version$/geronimo-osgi-registry-$version$-javadoc.jar",
+    "description" : "Geronimo OSGi Registry provides an extender that lets Geronimo specification provider bundles register factory implementations discovered through service metadata. It maintains a registry that spec bundles can use to locate factory classes supplied by other OSGi bundles.",
+    "tested-versions" : [
+      "1.0",
+      "1.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.geronimo.osgi.registry"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0-source-release.zip -o "$tmp/src.zip"; unzip -Z1 "$tmp/src.zip" | sed -n '"'1,200p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 148ms:
+<html><head><title>asf - Revision 1933968: /geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0</title></head>
+<body>
+ <h2>asf - Revision 1933968: /geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="LICENSE">LICENSE</a></li>
+  <li><a href="NOTICE">NOTICE</a></li>
+  <li><a href="pom.xml">pom.xml</a></li>
+  <li><a href="src/">src/</a></li>
+ </ul>
+</body></html>
+ succeeded in 211ms:
+geronimo-jcdi_1.0_spec-1.0/
+geronimo-jcdi_1.0_spec-1.0/src/
+geronimo-jcdi_1.0_spec-1.0/src/main/
+geronimo-jcdi_1.0_spec-1.0/src/main/java/
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/decorator/
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/spi/
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/event/
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/util/
+geronimo-jcdi_1.0_spec-1.0/src/main/resources/
+geronimo-jcdi_1.0_spec-1.0/src/site/
+geronimo-jcdi_1.0_spec-1.0/src/site/apt/
+geronimo-jcdi_1.0_spec-1.0/src/test/
+geronimo-jcdi_1.0_spec-1.0/src/test/java/
+geronimo-jcdi_1.0_spec-1.0/src/test/resources/
+geronimo-jcdi_1.0_spec-1.0/LICENSE
+geronimo-jcdi_1.0_spec-1.0/NOTICE
+geronimo-jcdi_1.0_spec-1.0/pom.xml
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/decorator/Decorator.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/decorator/Delegate.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/ApplicationScoped.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/BusyConversationException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/ContextException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/ContextNotActiveException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/Conversation.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/ConversationScoped.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/Dependent.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/NonexistentConversationException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/NormalScope.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/RequestScoped.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/SessionScoped.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/spi/Context.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/spi/Contextual.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/context/spi/CreationalContext.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/event/Event.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/event/ObserverException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/event/Observes.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/event/Reception.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/event/TransactionPhase.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/Alternative.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/AmbiguousResolutionException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/Any.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/CreationException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/Default.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/Disposes.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/IllegalProductException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/InjectionException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/Instance.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/Model.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/New.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/Produces.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/ResolutionException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/Specializes.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/AfterBeanDiscovery.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/AfterDeploymentValidation.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/Annotated.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/AnnotatedCallable.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/AnnotatedConstructor.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/AnnotatedField.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/AnnotatedMember.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/AnnotatedMethod.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/AnnotatedParameter.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/AnnotatedType.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/Bean.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/BeanManager.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/BeforeBeanDiscovery.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/BeforeShutdown.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/Decorator.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/Extension.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/InjectionPoint.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/InjectionTarget.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/InterceptionType.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/Interceptor.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/ObserverMethod.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/PassivationCapable.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/ProcessAnnotatedType.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/ProcessBean.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/ProcessInjectionTarget.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/ProcessManagedBean.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/ProcessObserverMethod.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/ProcessProducer.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/ProcessProducerField.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/ProcessProducerMethod.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/ProcessSessionBean.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/Producer.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/spi/SessionBeanType.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/Stereotype.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/Typed.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/UnproxyableResolutionException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/inject/UnsatisfiedResolutionException.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/util/AnnotationLiteral.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/util/Nonbinding.java
+geronimo-jcdi_1.0_spec-1.0/src/main/java/javax/enterprise/util/TypeLiteral.java
+geronimo-jcdi_1.0_spec-1.0/src/site/apt/index.apt
+geronimo-jcdi_1.0_spec-1.0/src/site/site.xml
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/test/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933968: /geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/test</title></head>
+<body>
+ <h2>asf - Revision 1933968: /geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/test</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="java/">java/</a></li>
+  <li><a href="resources/">resources/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/test/java/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933968: /geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/test/java</title></head>
+<body>
+ <h2>asf - Revision 1933968: /geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/test/java</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0.jar -o "$tmp/a.jar"; jar tf "$tmp/a.jar" | sed -n '"'1,200p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/site/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933968: /geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/site</title></head>
+<body>
+ <h2>asf - Revision 1933968: /geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/site</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="apt/">apt/</a></li>
+  <li><a href="site.xml">site.xml</a></li>
+ </ul>
+</body></html>
+ succeeded in 110ms:
+lass
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"not-for-native-image\"|\"language\"' build/discovered-artifact-metadata -g '*.json' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg --files build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+
+codex
+Maven Central has both `sources.jar` and `javadoc.jar`, but no `test-sources` or `tests` jar. The upstream tag contains only empty `src/test/java` and `src/test/resources` directories, so I’m going to mark the test suite URL as `N/A` rather than point at an empty folder.
+codex
+I’m updating the JSON now with the Maven Central source/javadoc artifacts, the Geronimo SVN repository root, and a CDI-focused two-sentence description.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+index d07dbcde28259522c9f1d828b53ad2ffb5ab7cf5..1271c1ab442d64be1d80bae3d84aa18d8dea6389
+--- a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0"
++  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-javadoc.jar",
++  "description" : "Apache Geronimo JCDI 1.0 Spec provides the Java Contexts and Dependency Injection API for JSR-299 in the javax.enterprise and javax.decorator packages. It supplies the standard annotations, context contracts, event APIs, injection SPI, and utility base classes used by CDI containers and Java EE applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+index d07dbcde28259522c9f1d828b53ad2ffb5ab7cf5..1271c1ab442d64be1d80bae3d84aa18d8dea6389
+--- a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0"
++  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-javadoc.jar",
++  "description" : "Apache Geronimo JCDI 1.0 Spec provides the Java Contexts and Dependency Injection API for JSR-299 in the javax.enterprise and javax.decorator packages. It supplies the standard annotations, context contracts, event APIs, injection SPI, and utility base classes used by CDI containers and Java EE applications."
+ }
+
+codex
+I’ll do a quick validation pass: parse the JSON and verify the templated Maven URLs resolve after substituting `1.0`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0",
+  "repository-url": "https://svn.apache.org/repos/asf/geronimo/specs/",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-javadoc.jar",
+  "description": "Apache Geronimo JCDI 1.0 Spec provides the Java Contexts and Dependency Injection API for JSR-299 in the javax.enterprise and javax.decorator packages. It supplies the standard annotations, context contracts, event APIs, injection SPI, and utility base classes used by CDI containers and Java EE applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in 'https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0-sources.jar' 'https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0/geronimo-jcdi_1.0_spec-1.0-javadoc.jar' 'https://svn.apache.org/repos/asf/geronimo/specs/'; do printf '%s -> ' \""'$url"; curl -fsSI "$url" | awk '"'NR==1{print "'$2}'"'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+diff --git a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+index d07dbcde28259522c9f1d828b53ad2ffb5ab7cf5..1271c1ab442d64be1d80bae3d84aa18d8dea6389
+--- a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0"
++  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-javadoc.jar",
++  "description" : "Apache Geronimo JCDI 1.0 Spec provides the Java Contexts and Dependency Injection API for JSR-299 in the javax.enterprise and javax.decorator packages. It supplies the standard annotations, context contracts, event APIs, injection SPI, and utility base classes used by CDI containers and Java EE applications."
+ }
+
+ succeeded in 270ms:
+200
+https://svn.apache.org/repos/asf/geronimo/specs/ -> 200
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json && git ls-files --stage build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+index d07dbcde28259522c9f1d828b53ad2ffb5ab7cf5..1271c1ab442d64be1d80bae3d84aa18d8dea6389
+--- a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0"
++  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-javadoc.jar",
++  "description" : "Apache Geronimo JCDI 1.0 Spec provides the Java Contexts and Dependency Injection API for JSR-299 in the javax.enterprise and javax.decorator packages. It supplies the standard annotations, context contracts, event APIs, injection SPI, and utility base classes used by CDI containers and Java EE applications."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_1.0_spec/1.0 geronimo-jcdi_1.0_spec-1.0-sources.jar javadoc
+web search: 
+web search: https://apache.googlesource.com/geronimo-specs/%2B/refs/heads/trunk/geronimo-jcdi_1.0_spec/pom.xml
+web search: 
+web search: https://jarcasting.com/artifacts/org.apache.geronimo.specs/geronimo-jcdi_1.0_spec/1.0/
+web search: 
+web search: site:svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/test/java geronimo-jcdi_1.0_spec-1.0 src test java
+web search: 
+web search: https://svn.apache.org/repos/asf/geronimo/specs/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/
+web search: 
+web search: https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/
+web search: 
+web search: https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/test/
+web search: 
+web search: https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-jcdi_1.0_spec-1.0/src/test/java/
+codex
+Updated [org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json).
+
+Set Maven Central source and javadoc URLs; both resolve for `1.0`. The artifact has no Maven test artifact, and the upstream `src/test/java` and `src/test/resources` directories are empty, so `test-code-url` is `N/A`. ([jarcasting.com](https://jarcasting.com/artifacts/org.apache.geronimo.specs/geronimo-jcdi_1.0_spec/1.0/))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a JVM Java bundle with class files, not a Kotlin/Groovy/Scala or non-JVM artifact. JSON parsing passed with `jq`; URL HEAD checks returned `200` for source, javadoc, and repository root.
+diff --git a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+index d07dbcde28259522c9f1d828b53ad2ffb5ab7cf5..1271c1ab442d64be1d80bae3d84aa18d8dea6389
+--- a/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0"
++  "coordinates" : "org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcdi_$version$_spec/$version$/geronimo-jcdi_$version$_spec-$version$-javadoc.jar",
++  "description" : "Apache Geronimo JCDI 1.0 Spec provides the Java Contexts and Dependency Injection API for JSR-299 in the javax.enterprise and javax.decorator packages. It supplies the standard annotations, context contracts, event APIs, injection SPI, and utility base classes used by CDI containers and Java EE applications."
+ }
+
+tokens used
+67,309
+Updated [org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9/build/discovered-artifact-metadata/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.json).
+
+Set Maven Central source and javadoc URLs; both resolve for `1.0`. The artifact has no Maven test artifact, and the upstream `src/test/java` and `src/test/resources` directories are empty, so `test-code-url` is `N/A`. ([jarcasting.com](https://jarcasting.com/artifacts/org.apache.geronimo.specs/geronimo-jcdi_1.0_spec/1.0/))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a JVM Java bundle with class files, not a Kotlin/Groovy/Scala or non-JVM artifact. JSON parsing passed with `jq`; URL HEAD checks returned `200` for source, javadoc, and repository root.
+Ran agent for org.apache.geronimo.specs:geronimo-jcdi_1.0_spec:1.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9/build/agent-artifact-discovery-logs/org.apache.geronimo.specs-geronimo-jcdi_1.0_spec-1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3139-152a61b9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 45s
+9 actionable tasks: 9 executed
