@@ -38,6 +38,11 @@ import org.apache.kerby.kerberos.kerb.type.base.HostAddresses;
 import org.apache.kerby.kerberos.kerb.type.base.HostAddrType;
 import org.apache.kerby.kerberos.kerb.type.base.NameType;
 import org.apache.kerby.kerberos.kerb.type.base.PrincipalName;
+import org.apache.kerby.kerberos.kerb.type.kdc.EncTgsRepPart;
+import org.apache.kerby.kerberos.kerb.type.ticket.KrbTicket;
+import org.apache.kerby.kerberos.kerb.type.ticket.Ticket;
+import org.apache.kerby.kerberos.kerb.type.ticket.TicketFlag;
+import org.apache.kerby.kerberos.kerb.type.ticket.TicketFlags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -180,6 +185,57 @@ public class Kerb_utilTest {
     }
 
     @Test
+    void credentialInitializesFieldsFromKerberosTicket() {
+        PrincipalName client = principal("alice@" + REALM, NameType.NT_PRINCIPAL);
+        PrincipalName service = principal("HTTP/host.example.com@" + REALM, NameType.NT_SRV_HST);
+        EncryptionKey sessionKey = new EncryptionKey(EncryptionType.AES128_CTS_HMAC_SHA1_96,
+                new byte[] {1, 3, 5, 7});
+        KerberosTime authTime = new KerberosTime(1_000L);
+        KerberosTime startTime = new KerberosTime(2_000L);
+        KerberosTime endTime = new KerberosTime(3_000L);
+        KerberosTime renewTill = new KerberosTime(4_000L);
+        TicketFlags flags = new TicketFlags();
+        flags.setFlag(TicketFlag.FORWARDABLE);
+        flags.setFlag(TicketFlag.RENEWABLE);
+        HostAddresses clientAddresses = new HostAddresses();
+        clientAddresses.addElement(hostAddress(HostAddrType.ADDRTYPE_INET, new byte[] {127, 0, 0, 1}));
+        Ticket ticket = new Ticket();
+        ticket.setRealm(REALM);
+        ticket.setSname(service);
+
+        EncTgsRepPart encRepPart = new EncTgsRepPart();
+        encRepPart.setSrealm(REALM);
+        encRepPart.setSname(service);
+        encRepPart.setKey(sessionKey);
+        encRepPart.setAuthTime(authTime);
+        encRepPart.setStartTime(startTime);
+        encRepPart.setEndTime(endTime);
+        encRepPart.setRenewTill(renewTill);
+        encRepPart.setFlags(flags);
+        encRepPart.setCaddr(clientAddresses);
+
+        Credential credential = new Credential(new KrbTicket(ticket, encRepPart), client);
+
+        assertThat(credential.getClientName()).isEqualTo(client);
+        assertThat(credential.getClientRealm()).isEqualTo(REALM);
+        assertThat(credential.getServicePrincipal()).isEqualTo(service);
+        assertThat(credential.getServerName().getRealm()).isEqualTo(REALM);
+        assertThat(credential.getKey()).isEqualTo(sessionKey);
+        assertThat(credential.getEType()).isEqualTo(EncryptionType.AES128_CTS_HMAC_SHA1_96.getValue());
+        assertThat(credential.getAuthTime()).isEqualTo(authTime);
+        assertThat(credential.getStartTime()).isEqualTo(startTime);
+        assertThat(credential.getEndTime()).isEqualTo(endTime);
+        assertThat(credential.getRenewTill()).isEqualTo(renewTill);
+        assertThat(credential.getTicketFlags().isFlagSet(TicketFlag.FORWARDABLE)).isTrue();
+        assertThat(credential.getTicketFlags().isFlagSet(TicketFlag.RENEWABLE)).isTrue();
+        assertThat(credential.getClientAddresses().getElements())
+                .containsExactlyElementsOf(clientAddresses.getElements());
+        assertThat(credential.getTicket()).isEqualTo(ticket);
+        assertThat(credential.isEncInSKey()).isFalse();
+        assertThat(credential.getSecondTicket()).isNull();
+    }
+
+    @Test
     void credentialCacheStreamsReadAndWriteKerberosStructures() throws IOException {
         PrincipalName client = principal("alice@" + REALM, NameType.NT_PRINCIPAL);
         EncryptionKey key = new EncryptionKey(EncryptionType.AES128_CTS_HMAC_SHA1_96, new byte[] {1, 3, 5, 7});
@@ -281,6 +337,13 @@ public class Kerb_utilTest {
         dataOutputStream.writeShort(addressType.getValue());
         dataOutputStream.writeInt(address.length);
         dataOutputStream.write(address);
+    }
+
+    private static HostAddress hostAddress(HostAddrType addressType, byte[] address) {
+        HostAddress hostAddress = new HostAddress();
+        hostAddress.setAddrType(addressType);
+        hostAddress.setAddress(address);
+        return hostAddress;
     }
 
     private static void writeAuthorizationDataEntry(DataOutputStream dataOutputStream,
