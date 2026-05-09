@@ -22,6 +22,7 @@ import org.apache.maven.doxia.module.apt.AptParser;
 import org.apache.maven.doxia.module.apt.AptReaderSource;
 import org.apache.maven.doxia.module.apt.AptSink;
 import org.apache.maven.doxia.module.apt.AptSiteModule;
+import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.sink.SinkAdapter;
 import org.junit.jupiter.api.Test;
 
@@ -259,6 +260,55 @@ public class Doxia_module_aptTest {
                 "section1_",
                 "body_");
         assertThat(sink.events).allMatch(event -> !event.contains("comment"));
+    }
+
+    @Test
+    void parserEmitsNestedNumberedListsWithExplicitNumberingStyles() throws Exception {
+        String document = String.join("\n",
+                "Numbering Styles",
+                "",
+                " [[a]] lower alpha item",
+                "",
+                "   [[A]] upper alpha item",
+                "",
+                "     [[i]] lower roman item",
+                "",
+                "       [[I]] upper roman item",
+                "",
+                "");
+        RecordingSink sink = new RecordingSink();
+
+        new AptParser().parse(new StringReader(document), sink);
+
+        assertThat(sink.events).containsSubsequence(
+                "numberedList:" + Sink.NUMBERING_LOWER_ALPHA,
+                "numberedListItem",
+                "paragraph",
+                "text:lower alpha item",
+                "paragraph_",
+                "numberedList:" + Sink.NUMBERING_UPPER_ALPHA,
+                "numberedListItem",
+                "paragraph",
+                "text:upper alpha item",
+                "paragraph_",
+                "numberedList:" + Sink.NUMBERING_LOWER_ROMAN,
+                "numberedListItem",
+                "paragraph",
+                "text:lower roman item",
+                "paragraph_",
+                "numberedList:" + Sink.NUMBERING_UPPER_ROMAN,
+                "numberedListItem",
+                "paragraph",
+                "text:upper roman item",
+                "paragraph_",
+                "numberedListItem_",
+                "numberedList_",
+                "numberedListItem_",
+                "numberedList_",
+                "numberedListItem_",
+                "numberedList_",
+                "numberedListItem_",
+                "numberedList_");
     }
 
     @Test
