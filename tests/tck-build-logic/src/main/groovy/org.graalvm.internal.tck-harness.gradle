@@ -551,6 +551,32 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
+// gradle generateChangedTestedVersionsMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedTestedVersionsMatrix = tasks.register("generateChangedTestedVersionsMatrix", DefaultTask) { task ->
+    task.setDescription("Returns matrix definition populated with artifact coordinates and newly added tested versions from changed metadata index files")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+
+        String base = project.property("baseCommit")
+        String head = project.findProperty("newCommit") ?: "HEAD"
+        List<Map<String, Object>> changedIndexEntries = flattenChangedTestedVersionEntries(tck.diffIndexTestedVersions(base, head))
+        boolean noneFound = changedIndexEntries.isEmpty()
+        List<Map<String, Object>> include = noneFound
+                ? []
+                : expandMatrixEntries(changedIndexEntries, "generateChangedTestedVersionsMatrix")
+        def matrix = [include: include]
+        if (noneFound) {
+            println "No changed metadata index tested-version additions were found!"
+        }
+
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
 // gradle generateChangedMetadataTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChangedMetadataTestMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files")
