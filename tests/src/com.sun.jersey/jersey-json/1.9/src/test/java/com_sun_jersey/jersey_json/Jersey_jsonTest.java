@@ -126,6 +126,36 @@ public class Jersey_jsonTest {
     }
 
     @Test
+    void mappedJsonContextHonorsArrayNonStringAndAttributeElementMappings() throws Exception {
+        Book book = new Book("978-1491950357", "Building Microservices", 280, true, Arrays.asList("architecture"));
+        JSONConfiguration configuration = JSONConfiguration.mapped()
+                .arrays("tag")
+                .attributeAsElement("isbn")
+                .nonStrings("pages", "available")
+                .rootUnwrapping(false)
+                .build();
+        JSONJAXBContext context = new JSONJAXBContext(configuration, Book.class);
+
+        StringWriter json = new StringWriter();
+        context.createJSONMarshaller().marshallToJSON(book, json);
+
+        Map<?, ?> document = new ObjectMapper().readValue(json.toString(), Map.class);
+        assertThat(document).hasSize(1);
+        assertThat(document.containsKey("book")).isTrue();
+        assertThat(document.get("book")).isInstanceOf(Map.class);
+        Map<?, ?> bookJson = (Map<?, ?>) document.get("book");
+        assertThat(bookJson.get("isbn")).isEqualTo(book.isbn);
+        assertThat(bookJson.containsKey("@isbn")).isFalse();
+        assertThat(bookJson.get("title")).isEqualTo(book.title);
+        assertThat(bookJson.get("pages")).isEqualTo(book.pages);
+        assertThat(bookJson.get("available")).isEqualTo(book.available);
+        assertThat(bookJson.get("tag")).isEqualTo(Arrays.asList("architecture"));
+
+        Book restored = context.createJSONUnmarshaller().unmarshalFromJSON(new StringReader(json.toString()), Book.class);
+        assertThat(restored).isEqualTo(book);
+    }
+
+    @Test
     void jsonMarshallerAndUnmarshallerAdaptersSupportStreamRoundTrip() throws JAXBException {
         Book book = new Book("978-0321356680", "Java Concurrency in Practice", 384, false,
                 Arrays.asList("threads", "testing"));
