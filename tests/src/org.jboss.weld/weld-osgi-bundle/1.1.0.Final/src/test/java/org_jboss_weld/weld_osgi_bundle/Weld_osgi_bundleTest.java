@@ -8,7 +8,7 @@ package org_jboss_weld.weld_osgi_bundle;
 
 import org.junit.jupiter.api.Test;
 
-class Weld_osgi_bundleTest {
+public class Weld_osgi_bundleTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
