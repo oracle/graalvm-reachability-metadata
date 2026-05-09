@@ -44,8 +44,59 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.http.FilterContainer;
+import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
+import org.apache.hadoop.yarn.api.protocolrecords.CancelDelegationTokenRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.CancelDelegationTokenResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptReportRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptReportResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptsRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptsResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationReportRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationReportResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationsRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationsResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetClusterMetricsRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetClusterMetricsResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetClusterNodeLabelsRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetClusterNodeLabelsResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetClusterNodesRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetClusterNodesResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetContainerReportRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetContainerReportResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetContainersRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetContainersResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetDelegationTokenRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetDelegationTokenResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetLabelsToNodesRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetLabelsToNodesResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetNodesToLabelsRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetNodesToLabelsResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetQueueInfoRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetQueueInfoResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetQueueUserAclsInfoRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetQueueUserAclsInfoResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.KillApplicationRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.KillApplicationResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.MoveApplicationAcrossQueuesRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.MoveApplicationAcrossQueuesResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.RenewDelegationTokenRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.RenewDelegationTokenResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.ReservationDeleteRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.ReservationDeleteResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationResponse;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.apache.hadoop.yarn.exceptions.ApplicationNotFoundException;
+import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.hadoop.yarn.server.webproxy.AppReportFetcher;
 import org.apache.hadoop.yarn.server.webproxy.ProxyUriUtils;
 import org.apache.hadoop.yarn.server.webproxy.ProxyUtils;
 import org.apache.hadoop.yarn.server.webproxy.WebAppProxy;
@@ -250,6 +301,31 @@ public class Hadoop_yarn_server_web_proxyTest {
     }
 
     @Test
+    void appReportFetcherRequestsApplicationReportsFromConfiguredClient() throws Exception {
+        RecordingApplicationClientProtocol applicationsManager = new RecordingApplicationClientProtocol();
+        AppReportFetcher fetcher = new AppReportFetcher(new Configuration(false), applicationsManager);
+
+        Object fetchedReport = fetcher.getApplicationReport(APPLICATION_ID);
+
+        assertThat(fetchedReport).isNotNull();
+        assertThat(applicationsManager.requestCount).isEqualTo(1);
+        assertThat(applicationsManager.requestedApplicationId).isEqualTo(APPLICATION_ID);
+    }
+
+    @Test
+    void appReportFetcherPropagatesMissingApplicationWhenHistoryServiceIsDisabled() {
+        ApplicationNotFoundException missingApplication = new ApplicationNotFoundException("missing application");
+        RecordingApplicationClientProtocol applicationsManager = new RecordingApplicationClientProtocol();
+        applicationsManager.applicationNotFoundException = missingApplication;
+        AppReportFetcher fetcher = new AppReportFetcher(new Configuration(false), applicationsManager);
+
+        assertThatThrownBy(() -> fetcher.getApplicationReport(APPLICATION_ID))
+                .isSameAs(missingApplication);
+        assertThat(applicationsManager.requestCount).isEqualTo(1);
+        assertThat(applicationsManager.requestedApplicationId).isEqualTo(APPLICATION_ID);
+    }
+
+    @Test
     void amFilterInitializerAddsProxyHostAndUriParametersToContainer() {
         Configuration configuration = new Configuration(false);
         configuration.set(YarnConfiguration.PROXY_ADDRESS, "proxyhost.example:1234");
@@ -321,6 +397,153 @@ public class Hadoop_yarn_server_web_proxyTest {
         @Override
         public void addGlobalFilter(String name, String classname, Map<String, String> parameters) {
             this.globalFilterAdded = true;
+        }
+    }
+
+    private static final class RecordingApplicationClientProtocol implements ApplicationClientProtocol {
+        private int requestCount;
+        private ApplicationId requestedApplicationId;
+        private ApplicationNotFoundException applicationNotFoundException;
+
+        @Override
+        public GetApplicationReportResponse getApplicationReport(GetApplicationReportRequest request)
+                throws YarnException, IOException {
+            requestCount++;
+            requestedApplicationId = request.getApplicationId();
+            if (applicationNotFoundException != null) {
+                throw applicationNotFoundException;
+            }
+            return new FixedApplicationReportResponse();
+        }
+
+        @Override
+        public GetNewApplicationResponse getNewApplication(GetNewApplicationRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public SubmitApplicationResponse submitApplication(SubmitApplicationRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public KillApplicationResponse forceKillApplication(KillApplicationRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetClusterMetricsResponse getClusterMetrics(GetClusterMetricsRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetClusterNodesResponse getClusterNodes(GetClusterNodesRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetQueueInfoResponse getQueueInfo(GetQueueInfoRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetQueueUserAclsInfoResponse getQueueUserAcls(GetQueueUserAclsInfoRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public MoveApplicationAcrossQueuesResponse moveApplicationAcrossQueues(
+                MoveApplicationAcrossQueuesRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public ReservationSubmissionResponse submitReservation(ReservationSubmissionRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public ReservationUpdateResponse updateReservation(ReservationUpdateRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public ReservationDeleteResponse deleteReservation(ReservationDeleteRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetNodesToLabelsResponse getNodeToLabels(GetNodesToLabelsRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetLabelsToNodesResponse getLabelsToNodes(GetLabelsToNodesRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetClusterNodeLabelsResponse getClusterNodeLabels(GetClusterNodeLabelsRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetApplicationsResponse getApplications(GetApplicationsRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetApplicationAttemptReportResponse getApplicationAttemptReport(
+                GetApplicationAttemptReportRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetApplicationAttemptsResponse getApplicationAttempts(GetApplicationAttemptsRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetContainerReportResponse getContainerReport(GetContainerReportRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetContainersResponse getContainers(GetContainersRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public GetDelegationTokenResponse getDelegationToken(GetDelegationTokenRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public RenewDelegationTokenResponse renewDelegationToken(RenewDelegationTokenRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public CancelDelegationTokenResponse cancelDelegationToken(CancelDelegationTokenRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        private UnsupportedOperationException unusedProtocolMethod() {
+            return new UnsupportedOperationException("This protocol method is not used by AppReportFetcher tests");
+        }
+    }
+
+    private static final class FixedApplicationReportResponse extends GetApplicationReportResponse {
+        private ApplicationReport applicationReport;
+
+        @Override
+        public ApplicationReport getApplicationReport() {
+            return applicationReport;
+        }
+
+        @Override
+        public void setApplicationReport(ApplicationReport applicationReport) {
+            this.applicationReport = applicationReport;
         }
     }
 
