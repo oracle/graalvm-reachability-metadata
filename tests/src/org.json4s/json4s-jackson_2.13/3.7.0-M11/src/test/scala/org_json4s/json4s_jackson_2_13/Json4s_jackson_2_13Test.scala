@@ -31,6 +31,8 @@ case class JacksonMoney(amount: BigDecimal, currency: String)
 
 case class JacksonAccount(name: String, score: Int)
 
+case class JacksonFieldMappedAccount(givenName: String, accountStatus: String, loginCount: Int)
+
 sealed trait JacksonNotification
 
 case class JacksonEmailNotification(subject: String, recipient: String) extends JacksonNotification
@@ -230,6 +232,31 @@ class Json4s_jackson_2_13Test {
     JacksonSerialization.write(source, outputStream)
     val streamedJson: String = outputStream.toString(StandardCharsets.UTF_8.name())
     assertEquals(parsed, parse(streamedJson, useBigDecimalForDouble = true))
+  }
+
+  @Test
+  def appliesFieldSerializersWhenWritingAndReadingCaseClasses(): Unit = {
+    import org.json4s.FieldSerializer._
+
+    implicit val formats: Formats = JacksonSerialization.formats(NoTypeHints) + FieldSerializer[JacksonFieldMappedAccount](
+      renameTo("givenName", "given_name") orElse renameTo("accountStatus", "status"),
+      renameFrom("given_name", "givenName") orElse renameFrom("status", "accountStatus")
+    )
+
+    val account: JacksonFieldMappedAccount = JacksonFieldMappedAccount("Ada", "active", 7)
+    val jsonText: String = JacksonSerialization.write(account)
+    val parsed: JValue = parse(jsonText)
+
+    assertEquals(JString("Ada"), parsed \ "given_name")
+    assertEquals(JString("active"), parsed \ "status")
+    assertEquals(JInt(7), parsed \ "loginCount")
+    assertEquals(JNothing, parsed \ "givenName")
+    assertEquals(JNothing, parsed \ "accountStatus")
+
+    val restored: JacksonFieldMappedAccount = JacksonSerialization.read[JacksonFieldMappedAccount](
+      """{"given_name":"Grace","status":"locked","loginCount":3}"""
+    )
+    assertEquals(JacksonFieldMappedAccount("Grace", "locked", 3), restored)
   }
 
   @Test
