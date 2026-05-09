@@ -193,6 +193,18 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.commons.configuration.beanutils.ConfigurationDynaBean"
+      },
+      "type": "org.apache.commons.logging.impl.Log4JLogger"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.commons.configuration.beanutils.ConfigurationDynaBean"
+      },
+      "type": "org.apache.commons.logging.impl.LogFactoryImpl"
     }
   ],
   "resources": [
@@ -204,9 +216,27 @@
     },
     {
       "condition": {
+        "typeReached": "org.apache.commons.configuration.beanutils.ConfigurationDynaBean"
+      },
+      "glob": "commons-logging.properties"
+    },
+    {
+      "condition": {
         "typeReached": "org.apache.commons.configuration.ConfigurationUtils"
       },
       "glob": "commons-configuration/configuration-utils-resource.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.commons.configuration.beanutils.ConfigurationDynaBean"
+      },
+      "glob": "META-INF/services/org.apache.commons.logging.LogFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.commons.configuration.XMLPropertiesConfiguration"
+      },
+      "glob": "META-INF/services/javax.xml.parsers.SAXParserFactory"
     },
     {
       "condition": {
