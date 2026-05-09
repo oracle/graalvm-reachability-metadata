@@ -1,0 +1,184 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.apache.maven.doxia:doxia-module-xdoc:1.0
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2436-8261c023/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 2 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+Doxia_module_xdocTest > parserPreservesUnknownElementsAsRawXdoc() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      "<body>raw text</body>
+    </document>
+    "
+    to contain:
+      "<custom data="value"><nested>raw text</nested></custom>" 
+        at org_apache_maven_doxia.doxia_module_xdoc.Doxia_module_xdocTest.parserPreservesUnknownElementsAsRawXdoc(Doxia_module_xdocTest.java:224)
+
+Doxia_module_xdocTest > xdocSinkWritesCompleteDocumentWithCommonInlineAndBlockElements() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      "<?xml version="1.0" ?>
+    <document><properties><title>Sample &lt;Document&gt;</title>
+    <author>Jane Developer</author>
+    <date>2026-05-10</date>
+    </properties>
+    <body><section name="Overview &amp; Usage"><p>Use <b>bold</b>, <i>italic</i>,
+    <tt>code &lt;tag&gt;</tt> and a
+    <a href="https://example.invalid/docs?x=1&y=2">link</a>.</p>
+    <a id="local_anchor" name="local_anchor">anchor text</a>&#160;<br />
+    <hr />
+    <img src="images/logo.png" alt="Logo &amp; mark" /></section>
+    </body>
+    </document>
+    "
+    to contain:
+      "Use <b>bold</b>, <i>italic</i>, <tt>code &lt;tag&gt;</tt>" 
+        at org_apache_maven_doxia.doxia_module_xdoc.Doxia_module_xdocTest.xdocSinkWritesCompleteDocumentWithCommonInlineAndBlockElements(Doxia_module_xdocTest.java:95)
+
+Doxia_module_xdocTest > xdocSinkWritesCollectionsTablesAndVerbatimBlocks() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      "<body><ul><li>first bullet</li>
+    </ul>
+    <ol style="list-style-type: upper-roman"><li>roman item</li>
+    </ol>
+    <dl><dt>term</dt>
+    <dd>definition</dd>
+    </dl>
+    <source>if (a &lt; b) {
+      return a &amp; b;
+    }</source>
+    <table align="center" border="1"><tr valign="top"><th>Name</th>
+    <th>Value</th>
+    </tr>
+    <tr valign="top"><td>alpha</td>
+    <td>42</td>
+    </tr>
+    </table>
+    </body>
+    </document>
+    "
+    to contain:
+      ["<ol style="list-style-type:upper-roman">", "<li>roman item</li>", "</ol>"]
+    but could not find:
+      ["<ol style="list-style-type:upper-roman">"]
+ 
+        at org_apache_maven_doxia.doxia_module_xdoc.Doxia_module_xdocTest.xdocSinkWritesCollectionsTablesAndVerbatimBlocks(Doxia_module_xdocTest.java:155)
+
+Doxia_module_xdocTest > parserConvertsXdocMarkupToSinkEvents() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      "<?xml version="1.0" ?>
+    <document><properties><title>Parser Test</title>
+    <author>Apache Maven</author>
+    </properties>
+    <body><section name="Getting Started"><p>Before <b>bold</b> and
+    <i>italic</i>.</p>
+    <subsection name="Links"><p><a href="https://example.invalid/ref">reference</a>
+    and <a id="local-id" name="local-id">target</a>.</p>
+    <source>line 1 &amp; line 2</source>
+    <ul><li>bullet</li>
+    </ul>
+    <ol style="list-style-type: decimal"><li>one</li>
+    </ol>
+    <dl><dt>term</dt>
+    <dd>definition</dd>
+    </dl>
+    <table align="center"><tr valign="top"><th>Column</th>
+    <td>Cell</td>
+    </tr>
+    </table>
+    <img src="images/pic.png" alt="Picture" /></subsection>
+    </section>
+    </body>
+    </document>
+    "
+    to contain:
+      "<p>Before <b>bold</b> and <i>italic</i>.</p>" 
+        at org_apache_maven_doxia.doxia_module_xdoc.Doxia_module_xdocTest.parserConvertsXdocMarkupToSinkEvents(Doxia_module_xdocTest.java:197)
+
+
+8 tests completed, 4 failed
+
+FAILURE: [Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2436-8261c023/tests/src/org.apache.maven.doxia/doxia-module-xdoc/1.0/build/reports/problems/problems-report.html
+Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2436-8261c023/tests/src/org.apache.maven.doxia/doxia-module-xdoc/1.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2436-8261c023/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.apache.maven.doxia:doxia-module-xdoc:1.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date
