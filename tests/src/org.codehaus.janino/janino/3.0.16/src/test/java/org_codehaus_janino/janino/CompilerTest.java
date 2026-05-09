@@ -38,6 +38,8 @@ public class CompilerTest {
             assertThat(compiler).isNotNull();
         } catch (IllegalArgumentException exception) {
             assertThat(exception).hasMessageContaining("BOOTCLASSPATH");
+        } catch (Throwable throwable) {
+            JaninoNativeImageSupport.rethrowIfNotNativeImageJrtUrlAccessFailure(throwable);
         }
     }
 }

@@ -17,10 +17,14 @@ import org.junit.jupiter.api.Test;
 public class AbstractCompilerTest {
     @Test
     void configuresClasspathThroughCompilerFacade() {
-        final Compiler compiler = new Compiler();
+        try {
+            final Compiler compiler = new Compiler();
 
-        compiler.setClassPath(new File[0]);
+            compiler.setClassPath(new File[0]);
 
-        assertThat(compiler).isInstanceOf(ICompiler.class);
+            assertThat(compiler).isInstanceOf(ICompiler.class);
+        } catch (Throwable throwable) {
+            JaninoNativeImageSupport.rethrowIfNotNativeImageJrtUrlAccessFailure(throwable);
+        }
     }
 }

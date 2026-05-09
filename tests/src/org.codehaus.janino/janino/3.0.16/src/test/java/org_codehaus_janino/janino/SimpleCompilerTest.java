@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.codehaus.janino.SimpleCompiler;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -51,16 +50,10 @@ public class SimpleCompilerTest {
             });
 
             assertThat(System.getProperty(RESULT_PROPERTY)).isEqualTo("left:right");
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            JaninoNativeImageSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         } finally {
             System.clearProperty(RESULT_PROPERTY);
-        }
-    }
-
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
         }
     }
 }

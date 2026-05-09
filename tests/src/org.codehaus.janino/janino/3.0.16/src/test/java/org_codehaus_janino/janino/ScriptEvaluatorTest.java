@@ -9,7 +9,6 @@ package org_codehaus_janino.janino;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.codehaus.janino.ScriptEvaluator;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 public class ScriptEvaluatorTest {
@@ -19,16 +18,16 @@ public class ScriptEvaluatorTest {
             final ScriptEvaluator evaluator = new ScriptEvaluator();
             evaluator.setReturnType(int.class);
             evaluator.setParameters(
-                    new String[] { "left", "right" },
-                    new Class<?>[] { int.class, int.class }
+                    new String[] {"left", "right" },
+                    new Class<?>[] {int.class, int.class }
             );
             evaluator.cook("return left + right;");
 
-            final Object result = evaluator.evaluate(new Object[] { 3, 4 });
+            final Object result = evaluator.evaluate(new Object[] {3, 4 });
 
             assertThat(result).isEqualTo(7);
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            JaninoNativeImageSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 
@@ -40,22 +39,16 @@ public class ScriptEvaluatorTest {
             final IntCombiner combiner = (IntCombiner) evaluator.createFastEvaluator(
                     "return first * 10 + second;",
                     IntCombiner.class,
-                    new String[] { "first", "second" }
+                    new String[] {"first", "second" }
             );
 
             assertThat(combiner.combine(6, 5)).isEqualTo(65);
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            JaninoNativeImageSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 
     public interface IntCombiner {
         int combine(int first, int second);
-    }
-
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
-        }
     }
 }

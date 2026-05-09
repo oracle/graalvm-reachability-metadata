@@ -9,7 +9,6 @@ package org_codehaus_janino.janino;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.codehaus.janino.ExpressionEvaluator;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 public class ReflectionIClassInnerReflectionIFieldTest {
@@ -25,8 +24,8 @@ public class ReflectionIClassInnerReflectionIFieldTest {
             final Object result = evaluator.evaluate(new Object[0]);
 
             assertThat(result).isEqualTo(49);
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            JaninoNativeImageSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 
@@ -34,12 +33,6 @@ public class ReflectionIClassInnerReflectionIFieldTest {
         public static final int VALUE = 42;
 
         private Constants() {
-        }
-    }
-
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
         }
     }
 }

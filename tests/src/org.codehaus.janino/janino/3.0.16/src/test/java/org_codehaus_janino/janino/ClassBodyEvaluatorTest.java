@@ -12,7 +12,6 @@ import java.io.StringReader;
 
 import org.codehaus.janino.ClassBodyEvaluator;
 import org.codehaus.janino.Scanner;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 public class ClassBodyEvaluatorTest {
@@ -20,7 +19,7 @@ public class ClassBodyEvaluatorTest {
     void createsInstanceFromClassBodyReader() throws Exception {
         try {
             final ClassBodyEvaluator evaluator = new ClassBodyEvaluator();
-            evaluator.setImplementedInterfaces(new Class<?>[] { ValueProvider.class });
+            evaluator.setImplementedInterfaces(new Class<?>[] {ValueProvider.class });
 
             final ValueProvider provider = (ValueProvider) evaluator.createInstance(new StringReader("""
                     public int value() {
@@ -29,8 +28,8 @@ public class ClassBodyEvaluatorTest {
                     """));
 
             assertThat(provider.value()).isEqualTo(41);
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            JaninoNativeImageSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 
@@ -48,23 +47,17 @@ public class ClassBodyEvaluatorTest {
                     scanner,
                     "GeneratedFastClassBody",
                     null,
-                    new Class<?>[] { ValueProvider.class },
+                    new Class<?>[] {ValueProvider.class },
                     ClassBodyEvaluatorTest.class.getClassLoader()
             );
 
             assertThat(provider.value()).isEqualTo(42);
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            JaninoNativeImageSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 
     public interface ValueProvider {
         int value();
-    }
-
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
-        }
     }
 }
