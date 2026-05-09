@@ -327,7 +327,7 @@ public class ProviderBaseTest {
         EndpointAsBeanProperty property = new EndpointAsBeanProperty(EndpointAsBeanProperty.ENDPOINT_NAME,
                 new ObjectMapper().constructType(Message.class), new Annotation[] {features});
         BeanProperty.Std typedProperty = property.withType(new ObjectMapper().constructType(String.class));
-        assertThat(property.getAnnotation(JacksonFeatures.class)).isSameAs(features);
+        assertThat(((java.util.function.Function<Class<JacksonFeatures>, JacksonFeatures>) property::getAnnotation).apply(JacksonFeatures.class)).isSameAs(features);
         assertThat(typedProperty.getType().getRawClass()).isEqualTo(String.class);
     }
 
