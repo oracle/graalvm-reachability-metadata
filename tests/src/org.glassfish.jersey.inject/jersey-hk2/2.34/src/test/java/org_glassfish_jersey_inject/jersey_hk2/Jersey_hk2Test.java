@@ -8,7 +8,7 @@ package org_glassfish_jersey_inject.jersey_hk2;
 
 import org.junit.jupiter.api.Test;
 
-class Jersey_hk2Test {
+public class Jersey_hk2Test {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
