@@ -7,6 +7,7 @@
 package com_typesafe_akka.akka_serialization_jackson_3
 
 import java.nio.charset.StandardCharsets
+import java.nio.file.Paths
 import java.time.Instant
 import java.util.zip.GZIPInputStream
 
@@ -174,6 +175,10 @@ object Akka_serialization_jackson_3Test {
   val SingletonNotificationClassName = SingletonNotification.getClass.getName
   val RenameOldNameMigrationClassName = s"$PackageName.RenameOldNameMigration"
 
+  val ReferenceConfig: Config = ConfigFactory
+    .parseFile(Paths.get("src", "test", "resources", "reference.conf").toFile)
+    .resolve()
+
   val TestConfig: Config = ConfigFactory
     .parseString(s"""
       akka.actor.serialization-bindings {
@@ -203,7 +208,8 @@ object Akka_serialization_jackson_3Test {
         }
       }
       """)
-    .withFallback(ConfigFactory.load())
+    .withFallback(ReferenceConfig)
+    .resolve()
 }
 
 final case class MapperEnvelope(
