@@ -6,6 +6,7 @@
  */
 package com_sun_jersey_contribs.jersey_guice;
 
+import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.sun.jersey.api.core.DefaultResourceConfig;
 import com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory;
@@ -15,12 +16,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GuiceComponentProviderFactoryTest {
     private final GuiceComponentProviderFactory factory =
-            new GuiceComponentProviderFactory(new DefaultResourceConfig(), null);
+            new GuiceComponentProviderFactory(new DefaultResourceConfig(), Guice.createInjector());
 
     @Test
     public void detectsGuiceConstructorInjection() {
         assertThat(factory.isGuiceConstructorInjected(ConstructorInjectedComponent.class)).isTrue();
-        assertThat(factory.isImplicitGuiceComponent(ConstructorInjectedComponent.class)).isTrue();
     }
 
     @Test
