@@ -9,10 +9,12 @@ package tomcat.jasper_runtime;
 import org.apache.jasper.runtime.JspRuntimeLibrary;
 import org.junit.jupiter.api.Test;
 
+import java.beans.PropertyEditorManager;
 import java.beans.PropertyEditorSupport;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -56,6 +58,71 @@ public class JspRuntimeLibraryTest {
         assertThat(((EditedValue) value).getText()).isEqualTo("JASPER");
     }
 
+    @Test
+    void createTypedArraySetsEverySupportedArrayType() throws Exception {
+        ArrayBean bean = new ArrayBean();
+
+        createTypedArray(bean, "integers", new String[] {"1", "2"}, Integer.class);
+        createTypedArray(bean, "bytes", new String[] {"3", "4"}, Byte.class);
+        createTypedArray(bean, "booleans", new String[] {"true", "false"}, Boolean.class);
+        createTypedArray(bean, "shorts", new String[] {"5", "6"}, Short.class);
+        createTypedArray(bean, "longs", new String[] {"7", "8"}, Long.class);
+        createTypedArray(bean, "doubles", new String[] {"1.25", "2.5"}, Double.class);
+        createTypedArray(bean, "floats", new String[] {"3.5", "4.5"}, Float.class);
+        createTypedArray(bean, "characters", new String[] {"a", "b"}, Character.class);
+        createTypedArray(bean, "primitiveInts", new String[] {"9", "10"}, int.class);
+        createTypedArray(bean, "primitiveBytes", new String[] {"11", "12"}, byte.class);
+        createTypedArray(bean, "primitiveBooleans", new String[] {"true", "false"}, boolean.class);
+        createTypedArray(bean, "primitiveShorts", new String[] {"13", "14"}, short.class);
+        createTypedArray(bean, "primitiveLongs", new String[] {"15", "16"}, long.class);
+        createTypedArray(bean, "primitiveDoubles", new String[] {"5.5", "6.5"}, double.class);
+        createTypedArray(bean, "primitiveFloats", new String[] {"7.5", "8.5"}, float.class);
+        createTypedArray(bean, "primitiveChars", new String[] {"x", "y"}, char.class);
+
+        assertThat(bean.getIntegers()).containsExactly(1, 2);
+        assertThat(bean.getBytes()).containsExactly((byte) 3, (byte) 4);
+        assertThat(bean.getBooleans()).containsExactly(true, false);
+        assertThat(bean.getShorts()).containsExactly((short) 5, (short) 6);
+        assertThat(bean.getLongs()).containsExactly(7L, 8L);
+        assertThat(bean.getDoubles()).containsExactly(1.25, 2.5);
+        assertThat(bean.getFloats()).containsExactly(3.5f, 4.5f);
+        assertThat(bean.getCharacters()).containsExactly('a', 'b');
+        assertThat(bean.getPrimitiveInts()).containsExactly(9, 10);
+        assertThat(bean.getPrimitiveBytes()).containsExactly((byte) 11, (byte) 12);
+        assertThat(bean.getPrimitiveBooleans()).containsExactly(true, false);
+        assertThat(bean.getPrimitiveShorts()).containsExactly((short) 13, (short) 14);
+        assertThat(bean.getPrimitiveLongs()).containsExactly(15L, 16L);
+        assertThat(bean.getPrimitiveDoubles()).containsExactly(5.5, 6.5);
+        assertThat(bean.getPrimitiveFloats()).containsExactly(7.5f, 8.5f);
+        assertThat(bean.getPrimitiveChars()).containsExactly('x', 'y');
+    }
+
+    @Test
+    void createTypedArrayUsesExplicitAndRegisteredPropertyEditors() throws Exception {
+        ArrayBean bean = new ArrayBean();
+        Method explicitEditorMethod = JspRuntimeLibrary.getWriteMethod(ArrayBean.class, "editorConvertedValues");
+        JspRuntimeLibrary.createTypedArray("editorConvertedValues", bean, explicitEditorMethod,
+                new String[] {"17", "18"}, Integer.class, IntegerArrayEditor.class);
+
+        try {
+            PropertyEditorManager.registerEditor(ManagerConvertedValue.class, IntegerArrayEditor.class);
+            Method managerEditorMethod = JspRuntimeLibrary.getWriteMethod(ArrayBean.class, "managerConvertedValues");
+            JspRuntimeLibrary.createTypedArray("managerConvertedValues", bean, managerEditorMethod,
+                    new String[] {"19", "20"}, ManagerConvertedValue.class, null);
+        } finally {
+            PropertyEditorManager.registerEditor(ManagerConvertedValue.class, null);
+        }
+
+        assertThat(bean.getEditorConvertedValues()).containsExactly(17, 18);
+        assertThat(bean.getManagerConvertedValues()).containsExactly(19, 20);
+    }
+
+    private static void createTypedArray(ArrayBean bean, String propertyName, String[] values,
+            Class<?> componentType) throws Exception {
+        Method method = JspRuntimeLibrary.getWriteMethod(ArrayBean.class, propertyName);
+        JspRuntimeLibrary.createTypedArray(propertyName, bean, method, values, componentType, null);
+    }
+
     public static class SampleBean {
         private int count;
         private String[] tags;
@@ -93,6 +160,181 @@ public class JspRuntimeLibraryTest {
         @Override
         public void setAsText(String text) {
             setValue(new EditedValue(text.toUpperCase(Locale.ROOT)));
+        }
+    }
+
+    public static class IntegerArrayEditor extends PropertyEditorSupport {
+        @Override
+        public void setAsText(String text) {
+            setValue(Integer.valueOf(text));
+        }
+    }
+
+    public static class ManagerConvertedValue {
+    }
+
+    public static class ArrayBean {
+        private Integer[] integers;
+        private Byte[] bytes;
+        private Boolean[] booleans;
+        private Short[] shorts;
+        private Long[] longs;
+        private Double[] doubles;
+        private Float[] floats;
+        private Character[] characters;
+        private int[] primitiveInts;
+        private byte[] primitiveBytes;
+        private boolean[] primitiveBooleans;
+        private short[] primitiveShorts;
+        private long[] primitiveLongs;
+        private double[] primitiveDoubles;
+        private float[] primitiveFloats;
+        private char[] primitiveChars;
+        private Object[] editorConvertedValues;
+        private Object[] managerConvertedValues;
+
+        public Integer[] getIntegers() {
+            return integers;
+        }
+
+        public void setIntegers(Integer[] integers) {
+            this.integers = integers;
+        }
+
+        public Byte[] getBytes() {
+            return bytes;
+        }
+
+        public void setBytes(Byte[] bytes) {
+            this.bytes = bytes;
+        }
+
+        public Boolean[] getBooleans() {
+            return booleans;
+        }
+
+        public void setBooleans(Boolean[] booleans) {
+            this.booleans = booleans;
+        }
+
+        public Short[] getShorts() {
+            return shorts;
+        }
+
+        public void setShorts(Short[] shorts) {
+            this.shorts = shorts;
+        }
+
+        public Long[] getLongs() {
+            return longs;
+        }
+
+        public void setLongs(Long[] longs) {
+            this.longs = longs;
+        }
+
+        public Double[] getDoubles() {
+            return doubles;
+        }
+
+        public void setDoubles(Double[] doubles) {
+            this.doubles = doubles;
+        }
+
+        public Float[] getFloats() {
+            return floats;
+        }
+
+        public void setFloats(Float[] floats) {
+            this.floats = floats;
+        }
+
+        public Character[] getCharacters() {
+            return characters;
+        }
+
+        public void setCharacters(Character[] characters) {
+            this.characters = characters;
+        }
+
+        public int[] getPrimitiveInts() {
+            return primitiveInts;
+        }
+
+        public void setPrimitiveInts(int[] primitiveInts) {
+            this.primitiveInts = primitiveInts;
+        }
+
+        public byte[] getPrimitiveBytes() {
+            return primitiveBytes;
+        }
+
+        public void setPrimitiveBytes(byte[] primitiveBytes) {
+            this.primitiveBytes = primitiveBytes;
+        }
+
+        public boolean[] getPrimitiveBooleans() {
+            return primitiveBooleans;
+        }
+
+        public void setPrimitiveBooleans(boolean[] primitiveBooleans) {
+            this.primitiveBooleans = primitiveBooleans;
+        }
+
+        public short[] getPrimitiveShorts() {
+            return primitiveShorts;
+        }
+
+        public void setPrimitiveShorts(short[] primitiveShorts) {
+            this.primitiveShorts = primitiveShorts;
+        }
+
+        public long[] getPrimitiveLongs() {
+            return primitiveLongs;
+        }
+
+        public void setPrimitiveLongs(long[] primitiveLongs) {
+            this.primitiveLongs = primitiveLongs;
+        }
+
+        public double[] getPrimitiveDoubles() {
+            return primitiveDoubles;
+        }
+
+        public void setPrimitiveDoubles(double[] primitiveDoubles) {
+            this.primitiveDoubles = primitiveDoubles;
+        }
+
+        public float[] getPrimitiveFloats() {
+            return primitiveFloats;
+        }
+
+        public void setPrimitiveFloats(float[] primitiveFloats) {
+            this.primitiveFloats = primitiveFloats;
+        }
+
+        public char[] getPrimitiveChars() {
+            return primitiveChars;
+        }
+
+        public void setPrimitiveChars(char[] primitiveChars) {
+            this.primitiveChars = primitiveChars;
+        }
+
+        public Object[] getEditorConvertedValues() {
+            return editorConvertedValues;
+        }
+
+        public void setEditorConvertedValues(Object[] editorConvertedValues) {
+            this.editorConvertedValues = editorConvertedValues;
+        }
+
+        public Object[] getManagerConvertedValues() {
+            return managerConvertedValues;
+        }
+
+        public void setManagerConvertedValues(Object[] managerConvertedValues) {
+            this.managerConvertedValues = managerConvertedValues;
         }
     }
 
