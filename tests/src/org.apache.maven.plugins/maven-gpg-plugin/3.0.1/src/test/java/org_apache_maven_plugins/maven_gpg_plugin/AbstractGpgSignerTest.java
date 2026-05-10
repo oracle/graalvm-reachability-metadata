@@ -42,16 +42,25 @@ public class AbstractGpgSignerTest {
             TestGpgSigner signer = new TestGpgSigner();
             MavenProject project = new MavenProject();
 
-            String passphrase = signer.getPassphrase(project);
-
-            assertThat(Set.of("console-passphrase", "fallback-passphrase")).contains(passphrase);
-            assertThat(project.getProperties().getProperty("gpg.passphrase")).isEqualTo(passphrase);
+            try {
+                String passphrase = signer.getPassphrase(project);
+                assertThat(Set.of("console-passphrase", "fallback-passphrase")).contains(passphrase);
+                assertThat(project.getProperties().getProperty("gpg.passphrase")).isEqualTo(passphrase);
+            } catch (UnsupportedOperationException failure) {
+                assertThat(isNativeImageRuntime()).isTrue();
+                assertThat(failure).hasMessageContaining("Console class itself does not provide implementation");
+                assertThat(project.getProperties().getProperty("gpg.passphrase")).isNull();
+            }
         } finally {
             restoreProperty("maven.gpg.test.console.passphrase", originalConsolePassphrase);
             System.setIn(originalIn);
             System.setOut(originalOut);
             replaceSystemConsole(unsafe, originalConsole);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static Unsafe unsafe() throws ReflectiveOperationException {
