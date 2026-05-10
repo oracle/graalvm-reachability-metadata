@@ -582,6 +582,12 @@ Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChang
     }
 }
 
+Provider<Task> generateChangedTestedVersionsMatrix = tasks.register("generateChangedTestedVersionsMatrix", DefaultTask) { task ->
+    task.setDescription("Compatibility alias for generateChangedMetadataTestMatrix")
+    task.setGroup(METADATA_GROUP)
+    task.dependsOn(generateChangedMetadataTestMatrix)
+}
+
 // gradle generateChangedCoordinatesOnlyMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 Provider<Task> generateChangedCoordinatesOnlyMatrix = tasks.register("generateChangedCoordinatesOnlyMatrix", DefaultTask) { task ->
     task.setDescription("Returns a coordinate-only matrix definition populated with changed coordinates")
