@@ -24,7 +24,7 @@ public class CglibAopProxyTest {
         proxyFactory.addAdvice(countingInterceptor(invocationCount));
         proxyFactory.setFrozen(true);
 
-        GreetingTarget proxy = (GreetingTarget) proxyFactory.getProxy();
+        GreetingService proxy = (GreetingService) proxyFactory.getProxy();
 
         assertThat(proxy.greet("Spring")).isEqualTo("Hello Spring");
         assertThat(invocationCount).hasValue(1);
@@ -37,7 +37,12 @@ public class CglibAopProxyTest {
         };
     }
 
-    public static class GreetingTarget {
+    public interface GreetingService {
+        String greet(String name);
+    }
+
+    public static class GreetingTarget implements GreetingService {
+        @Override
         public String greet(String name) {
             return "Hello " + name;
         }
