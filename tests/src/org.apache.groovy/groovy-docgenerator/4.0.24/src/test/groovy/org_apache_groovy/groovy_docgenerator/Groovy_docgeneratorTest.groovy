@@ -95,6 +95,28 @@ public class Groovy_docgeneratorTest {
     }
 
     @Test
+    void commandLineUsesConfiguredExternalDocumentationLinks() {
+        Path sourceFile = writeSourceWithExternalJavadocLinks('ExternallyLinkedGroovyMethods.java')
+        Path outputDirectory = temporaryDirectory.resolve('linked-docs')
+        String externalApiUrl = 'https://docs.example.test/api/'
+
+        boolean generated = runDocGeneratorAllowingNativeTemplateFailure([
+                '--outputDir', outputDirectory.toString(),
+                '--title', 'Linked GDK',
+                '-link', 'java.util', externalApiUrl,
+                sourceFile.toString()
+        ])
+        if (generated) {
+            String stringPage = read(outputDirectory.resolve('java/lang/String.html'))
+
+            assertThat(stringPage)
+                    .contains("href=\"${externalApiUrl}java/util/List.html\" title=\"Class in java.util\">List</a>")
+                    .contains("href=\"${externalApiUrl}java/util/Map.html\" title=\"Class in java.util\">Map</a>")
+                    .contains("href=\"${externalApiUrl}java/util/Collections.html#emptyList()\" title=\"Class in java.util\">Collections#emptyList()</a>")
+        }
+    }
+
+    @Test
     void commandLineReportsVersion() {
         PrintStream originalOut = System.out
         ByteArrayOutputStream capturedOut = new ByteArrayOutputStream()
@@ -208,6 +230,29 @@ public class Groovy_docgeneratorTest {
                  */
                 public static int squared(int self) {
                     return self * self;
+                }
+            }
+            '''.stripIndent())
+        return sourceFile
+    }
+
+    private Path writeSourceWithExternalJavadocLinks(String fileName) {
+        Path sourceFile = temporaryDirectory.resolve(fileName)
+        Files.writeString(sourceFile, '''
+            package sample.gdk;
+
+            /** Public static methods in this class mimic GDK extension methods. */
+            public final class ExternallyLinkedGroovyMethods {
+                /**
+                 * Converts {@code self} with values from {@link java.util.List}.
+                 *
+                 * @param self the receiver
+                 * @param values values from {@link java.util.List}
+                 * @return entries in a {@link java.util.Map}
+                 * @see java.util.Collections#emptyList()
+                 */
+                public static java.util.Map convert(java.lang.String self, java.util.List values) {
+                    return java.util.Collections.emptyMap();
                 }
             }
             '''.stripIndent())
