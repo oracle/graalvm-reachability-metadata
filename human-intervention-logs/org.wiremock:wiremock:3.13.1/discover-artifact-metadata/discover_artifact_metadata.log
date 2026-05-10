@@ -1,0 +1,576 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1000-2ddb-7271-ab23-13dda57a5e39
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.wiremock:wiremock:3.13.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.13.1" when "$version$" is replaced with "3.13.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+- Set "coordinates" to "org.wiremock:wiremock:3.13.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.13.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates and upstream tag layout, then update the JSON in place with URLs that resolve for `3.13.1`. After that I’ll do a quick validity check on the edited file.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a
+{
+  "coordinates" : "org.wiremock:wiremock:3.13.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.wiremock|wiremock\" metadata build/discovered-artifact-metadata || true" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json:2:  "coordinates" : "org.wiremock:wiremock:3.13.1"
+
+codex
+The local file is just the coordinate stub, and there isn’t an existing WireMock entry in the repo to mirror. I’m checking Maven Central and the upstream release tag next, because the requested source and test URLs should be version-pinned and Maven-hosted sources/tests are preferred when present.
+web search: 
+web search: Maven Central org.wiremock wiremock 3.13.1 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/
+web search: 
+web search: site:github.com/wiremock/wiremock/releases/tag 3.13.1 wiremock
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+
+ succeeded in 0ms:
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest_2.13/index.json:3:    "not-for-native-image": true,
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:10:    "language": {
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_2.13/$version$/scalatest-funspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funspec-test/src/test/scala/org/scalatest/funspec",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_2.13/$version$/scalatest-funspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:10:    "language" : {
+metadata/org.codehaus.jettison/jettison/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-sources.jar",
+metadata/org.codehaus.jettison/jettison/index.json:7:    "test-code-url" : "https://github.com/jettison-json/jettison/tree/jettison-$version$/src/test/java",
+metadata/org.codehaus.jettison/jettison/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-freespec_2.13/$version$/scalatest-freespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/freespec-test/src/test/scala/org/scalatest/freespec",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-freespec_2.13/$version$/scalatest-freespec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:10:    "language" : {
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:7:    "test-code-url" : "https://github.com/eclipse-sisu/sisu-project/tree/milestones/$version$/org.eclipse.sisu.inject.tests",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:66:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-sources.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:7:    "test-code-url": "https://github.com/javaee/jersey-1.x/tree/$version$/tests/functional/jersey-servlet3_0-integration",
+metadata/com.sun.jersey/jersey-servlet/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-sources.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-test-sources.jar",
+metadata/commons-cli/commons-cli/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-scala/tree/jackson-module-scala-$version$/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:10:    "language" : {
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:120:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+
+web search: 
+web search: Maven Central org.wiremock wiremock 3.13.1 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/
+codex
+Maven Central publishes `sources`, `tests`, and `javadoc` jars for this exact release, so those will be the strongest URLs for the three versioned fields. I’m using the upstream GitHub repository root for `repository-url` and will omit language and not-for-native-image fields because this is a normal JVM jar.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.wiremock</groupId>
+  <artifactId>wiremock</artifactId>
+  <version>3.13.1</version>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-bom</artifactId>
+        <version>11.0.24</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>2.19.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlets</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-proxy</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.http2</groupId>
+      <artifactId>http2-server</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-alpn-server</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-alpn-java-server</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-alpn-java-client</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-alpn-client</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.4.8-jre</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.5</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
+      <version>2.10.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-legacy</artifactId>
+      <version>2.10.2</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-placeholders</artifactId>
+      <version>2.10.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit-core</artifactId>
+      <version>2.40.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.jayway.jsonpath</groupId>
+      <artifactId>json-path</artifactId>
+      <version>2.9.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jopt-simple</groupId>
+      <artifactId>jopt-simple</artifactId>
+      <version>5.0.4</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.jknack</groupId>
+      <artifactId>handlebars</artifactId>
+      <version>4.3.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.mozilla</groupId>
+          <artifactId>rhino</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.github.jknack</groupId>
+      <artifactId>handlebars-helpers</artifactId>
+      <version>4.3.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.mozilla</groupId>
+          <artifactId>rhino</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.6.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.networknt</groupId>
+      <artifactId>json-schema-validator</artifactId>
+      <version>1.5.7</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.36</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+  <description>A web service test double for all occasions</description>
+  <name>WireMock</name>
+  <url>http://wiremock.org</url>
+  <scm>
+    <connection>https://github.com/wiremock/wiremock.git</connection>
+    <developerConnection>https://github.com/wiremock/wiremock.git</developerConnection>
+    <url>https://github.com/wiremock/wiremock</url>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-tests.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a
+ succeeded in 301ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 03:48:54 GMT
+content-type: application/java-archive
+content-length: 1131757
+cf-ray: 9f95f88d2d0e75ff-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "65f6250cc805f096fe1b7c9bd559d43c"
+last-modified: Wed, 11 Jun 2025 14:25:58 GMT
+x-checksum-md5: 65f6250cc805f096fe1b7c9bd559d43c
+x-checksum-sha1: c9a21231842503c962a4ae296bc7b9c75620fe6e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 10 May 2026 03:48:54 GMT
+content-type: application/java-archive
+content-length: 2534250
+cf-ray: 9f95f88e7b3fbc50-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1293377
+etag: "72ebafe8cafcdd3d74280f46e7196d20"
+last-modified: Wed, 11 Jun 2025 14:25:59 GMT
+x-checksum-md5: 72ebafe8cafcdd3d74280f46e7196d20
+x-checksum-sha1: a9d98adf8e183420c8990c4e78414441d0af6d28
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I’ve confirmed the POM’s SCM URL is `https://github.com/wiremock/wiremock`, and the Maven-hosted sources, tests, and javadoc jars all return 200 for `3.13.1`. I’m updating only the requested JSON fields now.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+diff --git a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json b/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+index 32b7e395efdb3b721a2a0267ea02b10bd04f6d60..3cdf0c34e25346317d2efda5580e71b2e8ab5066
+--- a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
++++ b/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.wiremock:wiremock:3.13.1"
++  "coordinates" : "org.wiremock:wiremock:3.13.1",
++  "repository-url" : "https://github.com/wiremock/wiremock",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-javadoc.jar",
++  "description" : "WireMock is a Java-based HTTP API mock server and test double for stubbing, recording, and verifying service interactions. It helps developers build reliable integration and contract tests by simulating external HTTP services with configurable request matching and response behavior."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json b/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+index 32b7e395efdb3b721a2a0267ea02b10bd04f6d60..3cdf0c34e25346317d2efda5580e71b2e8ab5066
+--- a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
++++ b/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.wiremock:wiremock:3.13.1"
++  "coordinates" : "org.wiremock:wiremock:3.13.1",
++  "repository-url" : "https://github.com/wiremock/wiremock",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-javadoc.jar",
++  "description" : "WireMock is a Java-based HTTP API mock server and test double for stubbing, recording, and verifying service interactions. It helps developers build reliable integration and contract tests by simulating external HTTP services with configurable request matching and response behavior."
+ }
+
+codex
+The metadata file is edited. I’ll run a JSON parse check and verify the `$version$` URLs resolve after substitution so the final state is defensible.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a
+ succeeded in 0ms:
+{
+  "coordinates": "org.wiremock:wiremock:3.13.1",
+  "repository-url": "https://github.com/wiremock/wiremock",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-javadoc.jar",
+  "description": "WireMock is a Java-based HTTP API mock server and test double for stubbing, recording, and verifying service interactions. It helps developers build reliable integration and contract tests by simulating external HTTP services with configurable request matching and response behavior."
+}
+
+exec
+/usr/bin/bash -lc "for url in https://repo.maven.apache.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-sources.jar https://repo.maven.apache.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-tests.jar https://repo.maven.apache.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-javadoc.jar https://github.com/wiremock/wiremock; do printf '%s ' \""'$url"; curl -o /dev/null -s -L -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a
+diff --git a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json b/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+index 32b7e395efdb3b721a2a0267ea02b10bd04f6d60..3cdf0c34e25346317d2efda5580e71b2e8ab5066
+--- a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
++++ b/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.wiremock:wiremock:3.13.1"
++  "coordinates" : "org.wiremock:wiremock:3.13.1",
++  "repository-url" : "https://github.com/wiremock/wiremock",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-javadoc.jar",
++  "description" : "WireMock is a Java-based HTTP API mock server and test double for stubbing, recording, and verifying service interactions. It helps developers build reliable integration and contract tests by simulating external HTTP services with configurable request matching and response behavior."
+ }
+
+ succeeded in 2675ms:
+200
+https://repo.maven.apache.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-tests.jar 200
+https://repo.maven.apache.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-javadoc.jar 200
+https://github.com/wiremock/wiremock 200
+
+diff --git a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json b/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+index 32b7e395efdb3b721a2a0267ea02b10bd04f6d60..3cdf0c34e25346317d2efda5580e71b2e8ab5066
+--- a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
++++ b/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.wiremock:wiremock:3.13.1"
++  "coordinates" : "org.wiremock:wiremock:3.13.1",
++  "repository-url" : "https://github.com/wiremock/wiremock",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-javadoc.jar",
++  "description" : "WireMock is a Java-based HTTP API mock server and test double for stubbing, recording, and verifying service interactions. It helps developers build reliable integration and contract tests by simulating external HTTP services with configurable request matching and response behavior."
+ }
+
+codex
+Updated [org.wiremock-wiremock-3.13.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json:1).
+
+Set Maven-hosted `sources`, `tests`, and `javadoc` URLs with `$version$`, repository root, and a two-sentence description. I left `language` and `not-for-native-image` absent because `org.wiremock:wiremock` is a normal JVM artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact.
+
+Verification: `jq` parsed the JSON successfully, and all substituted `3.13.1` URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json b/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+index 32b7e395efdb3b721a2a0267ea02b10bd04f6d60..3cdf0c34e25346317d2efda5580e71b2e8ab5066
+--- a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
++++ b/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.wiremock:wiremock:3.13.1"
++  "coordinates" : "org.wiremock:wiremock:3.13.1",
++  "repository-url" : "https://github.com/wiremock/wiremock",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-javadoc.jar",
++  "description" : "WireMock is a Java-based HTTP API mock server and test double for stubbing, recording, and verifying service interactions. It helps developers build reliable integration and contract tests by simulating external HTTP services with configurable request matching and response behavior."
+ }
+
+tokens used
+45,920
+Updated [org.wiremock-wiremock-3.13.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a/build/discovered-artifact-metadata/org.wiremock-wiremock-3.13.1.json:1).
+
+Set Maven-hosted `sources`, `tests`, and `javadoc` URLs with `$version$`, repository root, and a two-sentence description. I left `language` and `not-for-native-image` absent because `org.wiremock:wiremock` is a normal JVM artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact.
+
+Verification: `jq` parsed the JSON successfully, and all substituted `3.13.1` URLs returned HTTP 200.
+Ran agent for org.wiremock:wiremock:3.13.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a/build/agent-artifact-discovery-logs/org.wiremock-wiremock-3.13.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-d4697e4a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 9s
+9 actionable tasks: 9 executed
