@@ -1,0 +1,2701 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1081-eaa0-7be2-864b-2e9bf2593dac
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.groovy:groovy-test:4.0.24
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.0.24" when "$version$" is replaced with "4.0.24".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+- Set "coordinates" to "org.apache.groovy:groovy-test:4.0.24".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.24".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven and the upstream Apache Groovy repo, then update the JSON in place using the repository’s existing formatting conventions.
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 61 May 10 08:10 build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+{
+  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.apache\\.groovy:groovy-test|groovy-test|apache/groovy|\\\"language\\\"\" metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json:2:  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:10:    "language": {
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play_2.13/index.json:10:    "language" : {
+metadata/io.circe/circe-jawn_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/io.circe/circe-parser_3/index.json:10:    "language" : {
+metadata/org.playframework.twirl/twirl-api_3/index.json:10:    "language" : {
+metadata/com.github.ghostdogpr/caliban_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-ws_2.13/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:28:    "language" : {
+metadata/com.typesafe.play/twirl-api_2.13/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:28:    "language" : {
+metadata/org.playframework/play-configuration_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/io.circe/circe-core_3/index.json:5:    "language" : {
+metadata/io.circe/circe-core_3/index.json:28:    "language" : {
+metadata/org.playframework/play-server_3/index.json:10:    "language": {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/org.playframework/play-json_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/twirl-api_3/index.json:10:    "language" : {
+metadata/org.playframework/play-functional_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-json_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_3/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:10:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:28:    "language" : {
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/org.log4s/log4s_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/fs2_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/dev.zio/zio_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-test_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/org.tpolecat/typename_3/index.json:10:    "language" : {
+metadata/org.tpolecat/skunk-core_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:29:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:52:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_2.13/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio-logging_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson-core_3/index.json:10:    "language" : {
+metadata/com.github.fd4s/fs2-kafka_3/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+metadata/org.json4s/json4s-jackson_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-query_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_2.13/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scalap/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-interop-cats_3/index.json:10:    "language" : {
+metadata/com.beachape/enumeratum-circe_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-slf4j/index.json:10:    "language" : {
+metadata/com.beachape/enumeratum_3/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-derivation_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-managed_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-test-jvm/index.json:10:    "language" : {
+metadata/dev.zio/zio-json_3/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactor/index.json:10:    "language" : {
+metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx2/index.json:10:    "language" : {
+metadata/org.sangria-graphql/sangria-core_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-interop-tracer_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-io-jvm/index.json:10:    "language" : {
+metadata/org.scodec/scodec-bits_3/index.json:10:    "language" : {
+metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-metadata-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/cats-core_3/index.json:10:    "language" : {
+metadata/org.scalatra/scalatra_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/org.typelevel/twiddles-core_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect_3/index.json:118:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/munit-cats-effect_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-resilience-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/alleycats-core_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/com.github.takayahilton/sql-formatter_2.13/index.json:10:    "language" : {
+metadata/org.specs2/specs2-fp_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-guava/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/scalac-compat-annotation_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-core-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect-kernel_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-fx-coroutines-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/scalac-compat-annotation_2.13/index.json:10:    "language" : {
+metadata/com.monovore/decline_3/index.json:10:    "language" : {
+metadata/org.typelevel/log4cats-slf4j_3/index.json:10:    "language" : {
+metadata/com.monovore/decline-effect_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.client4/core_3/index.json:10:    "language" : {
+metadata/io.scalaland/chimney_3/index.json:10:    "language" : {
+metadata/org.typelevel/log4cats-core_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.client4/circe_3/index.json:10:    "language" : {
+metadata/com.chuusai/shapeless_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/cats-parse_3/index.json:10:    "language" : {
+metadata/org.typelevel/paiges-core_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+metadata/com.squareup.okhttp3/mockwebserver/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactive/index.json:10:    "language" : {
+metadata/org.typelevel/vault_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-jdk8/index.json:10:    "language" : {
+metadata/org.typelevel/otel4s-core-common_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-mtl_3/index.json:10:    "language" : {
+metadata/org.typelevel/case-insensitive_3/index.json:10:    "language" : {
+metadata/co.fs2/fs2-reactive-streams_3/index.json:10:    "language" : {
+metadata/io.kotest/kotest-extensions-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/keypool_3/index.json:10:    "language" : {
+metadata/org.typelevel/otel4s-core-trace_3/index.json:10:    "language" : {
+metadata/io.kotest/kotest-common-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/jawn-parser_3/index.json:10:    "language" : {
+metadata/co.fs2/fs2-core_3/index.json:10:    "language" : {
+metadata/co.fs2/fs2-core_3/index.json:30:    "language" : {
+metadata/io.kotest/kotest-runner-junit-platform-jvm/index.json:10:    "language" : {
+metadata/com.typesafe/ssl-config-core_3/index.json:10:    "language" : {
+metadata/com.typesafe/ssl-config-core_3/index.json:28:    "language" : {
+metadata/co.fs2/fs2-io_3/index.json:10:    "language" : {
+metadata/io.kotest/kotest-assertions-shared-jvm/index.json:10:    "language" : {
+metadata/com.typesafe/ssl-config-core_2.13/index.json:10:    "language" : {
+metadata/com.typesafe/ssl-config-core_2.13/index.json:28:    "language" : {
+metadata/io.kotest/kotest-property-jvm/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.1.0.json:71:        "language": {
+metadata/schemas/metadata-library-index-schema-v2.1.0.json:225:        "language": {
+metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:10:    "language" : {
+metadata/org.http4s/http4s-dsl_3/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/org.scalameta/scalafmt-config_2.13/index.json:10:    "language" : {
+metadata/org.http4s/http4s-circe_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+metadata/org.scalameta/scalafmt-sysops_2.13/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:35:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:62:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:103:    "language" : {
+metadata/org.scala-sbt/compiler-interface/index.json:121:    "language" : {
+metadata/org.scalameta/mdoc-parser_2.13/index.json:10:    "language" : {
+metadata/org.http4s/http4s-server_3/index.json:10:    "language" : {
+metadata/org.scalameta/scalameta_2.13/index.json:10:    "language" : {
+metadata/org.http4s/http4s-ember-server_3/index.json:10:    "language" : {
+metadata/org.scalameta/munit_3/index.json:10:    "language" : {
+metadata/org.http4s/http4s-ember-core_3/index.json:10:    "language" : {
+metadata/org.scalameta/munit-diff_3/index.json:10:    "language" : {
+metadata/org.scalameta/scalafmt-core_2.13/index.json:10:    "language" : {
+metadata/io.mockk/mockk-dsl-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-agent-api-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-network-jvm/index.json:10:    "language": {
+metadata/io.ktor/ktor-utils-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-agent-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-serialization-kotlinx-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-status-pages-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-websockets-jvm/index.json:10:    "language" : {
+metadata/io.mockk/mockk-core-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-sessions-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-test-host-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-websockets-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-serialization-kotlinx-json-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-serialization-kotlinx-protobuf-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-okhttp-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-test-dispatcher-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-network-tls-certificates-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-content-negotiation-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-http-cio-jvm/index.json:10:    "language": {
+metadata/io.ktor/ktor-http-cio-jvm/index.json:30:    "language": {
+metadata/io.ktor/ktor-events-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-websocket-serialization-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-java-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-content-negotiation-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-sse-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-auth-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-client-apache5-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-auth-jwt-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-network-tls-jvm/index.json:10:    "language": {
+metadata/io.ktor/ktor-network-tls-jvm/index.json:30:    "language": {
+metadata/io.ktor/ktor-client-logging-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-server-cio-jvm/index.json:10:    "language" : {
+metadata/io.ktor/ktor-io-jvm/index.json:10:    "language" : {
+metadata/eu.timepit/refined_3/index.json:10:    "language" : {
+metadata/tools.jackson.module/jackson-module-kotlin/index.json:10:    "language" : {
+metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:10:    "language" : {
+metadata/io.github.pdvrieze.xmlutil/serialization-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-java8-compat_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-parallel-collections_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-parallel-collections_2.13/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.tapir/tapir-cats_3/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-parser-combinators_2.13/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/async-extensions-jvm/index.json:10:    "language" : {
+metadata/app.cash.turbine/turbine-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-collection-compat_2.13/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-xml_2.13/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-xml_2.13/index.json:28:    "language" : {
+metadata/com.softwaremill.sttp.tapir/tapir-server_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/runtime-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-parser-combinators_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/sqlite-driver/index.json:10:    "language" : {
+metadata/org.scala-lang.modules/scala-collection-compat_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/jdbc-driver/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-parsing_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/sourcecode_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/geny_3/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:29:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fansi_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle_3/index.json:31:    "language" : {
+metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+metadata/com.lihaoyi/upack_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/pprint_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/sourcecode_2.13/index.json:10:    "language" : {
+metadata/com.lihaoyi/fastparse_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-implicits_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/fansi_2.13/index.json:10:    "language" : {
+metadata/com.lihaoyi/upickle-core_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/scalatags_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/requests_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/os-lib_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/unroll-annotation_3/index.json:10:    "language" : {
+metadata/com.geirsson/metaconfig-typesafe-config_2.13/index.json:10:    "language" : {
+metadata/com.lihaoyi/ujson_3/index.json:10:    "language" : {
+metadata/com.lihaoyi/ujson_3/index.json:31:    "language" : {
+metadata/com.geirsson/metaconfig-pprint_2.13/index.json:10:    "language" : {
+metadata/com.geirsson/metaconfig-core_2.13/index.json:10:    "language" : {
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:10:    "language" : {
+metadata/com.thesamet.scalapb/scalapb-runtime_2.13/index.json:10:    "language" : {
+metadata/com.thesamet.scalapb/lenses_2.13/index.json:10:    "language" : {
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+metadata/com.github.scopt/scopt_3/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13.16/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13.5/index.json:10:    "language" : {
+metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+
+web search: 
+web search: Maven Central org.apache.groovy groovy-test 4.0.24 pom scm url
+codex
+The local file only has coordinates today, and there isn’t an existing Groovy metadata entry nearby to copy from. I’m checking the Maven POM and published artifacts next, because the request prefers Maven-hosted source and documentation when they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.groovy</groupId>
+  <artifactId>groovy-test</artifactId>
+  <version>4.0.24</version>
+  <name>Apache Groovy</name>
+  <description>Groovy: A powerful multi-faceted language for the JVM</description>
+  <url>https://groovy-lang.org</url>
+  <inceptionYear>2003</inceptionYear>
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>https://apache.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>glaforge</id>
+      <name>Guillaume Laforge</name>
+      <organization>Google</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bob</id>
+      <name>bob mcwhirter</name>
+      <email>bob@werken.com</email>
+      <organization>The Werken Company</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jstrachan</id>
+      <name>James Strachan</name>
+      <email>james@coredevelopers.com</email>
+      <organization>Core Developers Network</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>joe</id>
+      <name>Joe Walnes</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>skizz</id>
+      <name>Chris Stevenson</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jamiemc</id>
+      <name>Jamie McCrindle</name>
+      <organization>Three</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mattf</id>
+      <name>Matt Foemmel</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>alextkachman</id>
+      <name>Alex Tkachman</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>roshandawrani</id>
+      <name>Roshan Dawrani</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>spullara</id>
+      <name>Sam Pullara</name>
+      <email>sam@sampullara.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>kasper</id>
+      <name>Kasper Nielsen</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>travis</id>
+      <name>Travis Kay</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>zohar</id>
+      <name>Zohar Melamed</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jwilson</id>
+      <name>John Wilson</name>
+      <email>tug@wilson.co.uk</email>
+      <organization>The Wilson Partnership</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cpoirier</id>
+      <name>Chris Poirier</name>
+      <email>cpoirier@dreaming.org</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>ckl</id>
+      <name>Christiaan ten Klooster</name>
+      <email>ckl@dacelo.nl</email>
+      <organization>Dacelo WebDevelopment</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>goetze</id>
+      <name>Steve Goetze</name>
+      <email>goetze@dovetail.com</email>
+      <organization>Dovetailed Technologies, LLC</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bran</id>
+      <name>Bing Ran</name>
+      <email>b55r@sina.com</email>
+      <organization>Leadingcare</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jez</id>
+      <name>Jeremy Rayner</name>
+      <email>jeremy.rayner@gmail.com</email>
+      <organization>javanicus</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jstump</id>
+      <name>John Stump</name>
+      <email>johnstump2@yahoo.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>blackdrag</id>
+      <name>Jochen Theodorou</name>
+      <email>blackdrag@gmx.org</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>russel</id>
+      <name>Russel Winder</name>
+      <email>russel@winder.org.uk</email>
+      <organization>Concertant LLP &amp; It'z Interactive Ltd</organization>
+      <roles>
+        <role>Developer</role>
+        <role>Founder of Gant</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>phk</id>
+      <name>Pilho Kim</name>
+      <email>phkim@cluecom.co.kr</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cstein</id>
+      <name>Christian Stein</name>
+      <email>sormuras@gmx.de</email>
+      <organization>CTSR.de</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mittie</id>
+      <name>Dierk Koenig</name>
+      <organization>Karakun AG</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>paulk</id>
+      <name>Paul King</name>
+      <email>paulk@asert.com.au</email>
+      <organization>OCI, Australia</organization>
+      <roles>
+        <role>Project Manager</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>galleon</id>
+      <name>Guillaume Alleon</name>
+      <email>guillaume.alleon@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>user57</id>
+      <name>Jason Dillon</name>
+      <email>jason@planet57.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>shemnon</id>
+      <name>Danno Ferrin</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jwill</id>
+      <name>James Williams</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>timyates</id>
+      <name>Tim Yates</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>aalmiray</id>
+      <name>Andres Almiray</name>
+      <email>aalmiray@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mguillem</id>
+      <name>Marc Guillemot</name>
+      <email>mguillemot@yahoo.fr</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jimwhite</id>
+      <name>Jim White</name>
+      <email>jim@pagesmiths.com</email>
+      <organization>IFCX.org</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pniederw</id>
+      <name>Peter Niederwieser</name>
+      <email>pniederw@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>andresteingress</id>
+      <name>Andre Steingress</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>hamletdrc</id>
+      <name>Hamlet D'Arcy</name>
+      <email>hamletdrc@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>melix</id>
+      <name>Cedric Champeau</name>
+      <email>cedric.champeau@gmail.com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pascalschumacher</id>
+      <name>Pascal Schumacher</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>sunlan</id>
+      <name>Daniel Sun</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>rpopma</id>
+      <name>Remko Popma</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>grocher</id>
+      <name>Graeme Rocher</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>emilles</id>
+      <name>Eric Milles</name>
+      <organization>Thomson Reuters</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Joern Eyrich</name>
+    </contributor>
+    <contributor>
+      <name>Robert Kuzelj</name>
+    </contributor>
+    <contributor>
+      <name>Rod Cope</name>
+    </contributor>
+    <contributor>
+      <name>Yuri Schimke</name>
+    </contributor>
+    <contributor>
+      <name>James Birchfield</name>
+    </contributor>
+    <contributor>
+      <name>Robert Fuller</name>
+    </contributor>
+    <contributor>
+      <name>Sergey Udovenko</name>
+    </contributor>
+    <contributor>
+      <name>Hallvard Traetteberg</name>
+    </contributor>
+    <contributor>
+      <name>Peter Reilly</name>
+    </contributor>
+    <contributor>
+      <name>Brian McCallister</name>
+    </contributor>
+    <contributor>
+      <name>Richard Monson-Haefel</name>
+    </contributor>
+    <contributor>
+      <name>Brian Larson</name>
+    </contributor>
+    <contributor>
+      <name>Artur Biesiadowski</name>
+      <email>abies@pg.gda.pl</email>
+    </contributor>
+    <contributor>
+      <name>Ivan Z. Ganza</name>
+    </contributor>
+    <contributor>
+      <name>Larry Jacobson</name>
+    </contributor>
+    <contributor>
+      <name>Jake Gage</name>
+    </contributor>
+    <contributor>
+      <name>Arjun Nayyar</name>
+    </contributor>
+    <contributor>
+      <name>Masato Nagai</name>
+    </contributor>
+    <contributor>
+      <name>Mark Chu-Carroll</name>
+    </contributor>
+    <contributor>
+      <name>Mark Turansky</name>
+    </contributor>
+    <contributor>
+      <name>Jean-Louis Berliet</name>
+    </contributor>
+    <contributor>
+      <name>Graham Miller</name>
+    </contributor>
+    <contributor>
+      <name>Marc Palmer</name>
+    </contributor>
+    <contributor>
+      <name>Tugdual Grall</name>
+    </contributor>
+    <contributor>
+      <name>Edwin Tellman</name>
+    </contributor>
+    <contributor>
+      <name>Evan "Hippy" Slatis</name>
+    </contributor>
+    <contributor>
+      <name>Mike Dillon</name>
+    </contributor>
+    <contributor>
+      <name>Bernhard Huber</name>
+    </contributor>
+    <contributor>
+      <name>Yasuharu Nakano</name>
+    </contributor>
+    <contributor>
+      <name>Marc DeXeT</name>
+    </contributor>
+    <contributor>
+      <name>Dejan Bosanac</name>
+      <email>dejan@nighttale.net</email>
+    </contributor>
+    <contributor>
+      <name>Denver Dino</name>
+    </contributor>
+    <contributor>
+      <name>Ted Naleid</name>
+    </contributor>
+    <contributor>
+      <name>Ted Leung</name>
+    </contributor>
+    <contributor>
+      <name>Merrick Schincariol</name>
+    </contributor>
+    <contributor>
+      <name>Chanwit Kaewkasi</name>
+    </contributor>
+    <contributor>
+      <name>Stefan Matthias Aust</name>
+    </contributor>
+    <contributor>
+      <name>Andy Dwelly</name>
+    </contributor>
+    <contributor>
+      <name>Philip Milne</name>
+    </contributor>
+    <contributor>
+      <name>Tiago Fernandez</name>
+    </contributor>
+    <contributor>
+      <name>Steve Button</name>
+    </contributor>
+    <contributor>
+      <name>Joachim Baumann</name>
+    </contributor>
+    <contributor>
+      <name>Jochen Eddel+</name>
+    </contributor>
+    <contributor>
+      <name>Ilinca V. Hallberg</name>
+    </contributor>
+    <contributor>
+      <name>Björn Westlin</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Glover</name>
+    </contributor>
+    <contributor>
+      <name>Brad Long</name>
+    </contributor>
+    <contributor>
+      <name>John Bito</name>
+    </contributor>
+    <contributor>
+      <name>Jim Jagielski</name>
+    </contributor>
+    <contributor>
+      <name>Rodolfo Velasco</name>
+    </contributor>
+    <contributor>
+      <name>John Hurst</name>
+    </contributor>
+    <contributor>
+      <name>Merlyn Albery-Speyer</name>
+    </contributor>
+    <contributor>
+      <name>jeremi Joslin</name>
+    </contributor>
+    <contributor>
+      <name>UEHARA Junji</name>
+    </contributor>
+    <contributor>
+      <name>NAKANO Yasuharu</name>
+    </contributor>
+    <contributor>
+      <name>Dinko Srkoc</name>
+    </contributor>
+    <contributor>
+      <name>Raffaele Cigni</name>
+    </contributor>
+    <contributor>
+      <name>Alberto Vilches Raton</name>
+    </contributor>
+    <contributor>
+      <name>Paulo Poiati</name>
+    </contributor>
+    <contributor>
+      <name>Alexander Klein</name>
+    </contributor>
+    <contributor>
+      <name>Adam Murdoch</name>
+    </contributor>
+    <contributor>
+      <name>David Durham</name>
+    </contributor>
+    <contributor>
+      <name>Daniel Henrique Alves Lima</name>
+    </contributor>
+    <contributor>
+      <name>John Wagenleitner</name>
+    </contributor>
+    <contributor>
+      <name>Colin Harrington</name>
+    </contributor>
+    <contributor>
+      <name>Brian Alexander</name>
+    </contributor>
+    <contributor>
+      <name>Jan Weitz</name>
+    </contributor>
+    <contributor>
+      <name>Chris K Wensel</name>
+    </contributor>
+    <contributor>
+      <name>David Sutherland</name>
+    </contributor>
+    <contributor>
+      <name>Mattias Reichel</name>
+    </contributor>
+    <contributor>
+      <name>David Lee</name>
+    </contributor>
+    <contributor>
+      <name>Sergei Egorov</name>
+    </contributor>
+    <contributor>
+      <name>Hein Meling</name>
+    </contributor>
+    <contributor>
+      <name>Michael Baehr</name>
+    </contributor>
+    <contributor>
+      <name>Craig Andrews</name>
+    </contributor>
+    <contributor>
+      <name>Peter Ledbrook</name>
+    </contributor>
+    <contributor>
+      <name>Scott Stirling</name>
+    </contributor>
+    <contributor>
+      <name>Thibault Kruse</name>
+    </contributor>
+    <contributor>
+      <name>Tim Tiemens</name>
+    </contributor>
+    <contributor>
+      <name>Mike Spille</name>
+    </contributor>
+    <contributor>
+      <name>Nikolay Chugunov</name>
+    </contributor>
+    <contributor>
+      <name>Francesco Durbin</name>
+    </contributor>
+    <contributor>
+      <name>Paolo Di Tommaso</name>
+    </contributor>
+    <contributor>
+      <name>Rene Scheibe</name>
+    </contributor>
+    <contributor>
+      <name>Matias Bjarland</name>
+    </contributor>
+    <contributor>
+      <name>Tomasz Bujok</name>
+    </contributor>
+    <contributor>
+      <name>Richard Hightower</name>
+    </contributor>
+    <contributor>
+      <name>Andrey Bloschetsov</name>
+    </contributor>
+    <contributor>
+      <name>Yu Kobayashi</name>
+    </contributor>
+    <contributor>
+      <name>Nick Grealy</name>
+    </contributor>
+    <contributor>
+      <name>Vaclav Pech</name>
+    </contributor>
+    <contributor>
+      <name>Chuck Tassoni</name>
+    </contributor>
+    <contributor>
+      <name>Steven Devijver</name>
+    </contributor>
+    <contributor>
+      <name>Ben Manes</name>
+    </contributor>
+    <contributor>
+      <name>Troy Heninger</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Eisenberg</name>
+    </contributor>
+    <contributor>
+      <name>Eric Milles</name>
+    </contributor>
+    <contributor>
+      <name>Kohsuke Kawaguchi</name>
+    </contributor>
+    <contributor>
+      <name>Scott Vlaminck</name>
+    </contributor>
+    <contributor>
+      <name>Hjalmar Ekengren</name>
+    </contributor>
+    <contributor>
+      <name>Rafael Luque</name>
+    </contributor>
+    <contributor>
+      <name>Joachim Heldmann</name>
+    </contributor>
+    <contributor>
+      <name>dgouyette</name>
+    </contributor>
+    <contributor>
+      <name>Marcin Grzejszczak</name>
+    </contributor>
+    <contributor>
+      <name>Pap Lőrinc</name>
+    </contributor>
+    <contributor>
+      <name>Guillaume Balaine</name>
+    </contributor>
+    <contributor>
+      <name>Santhosh Kumar T</name>
+    </contributor>
+    <contributor>
+      <name>Alan Green</name>
+    </contributor>
+    <contributor>
+      <name>Marty Saxton</name>
+    </contributor>
+    <contributor>
+      <name>Marcel Overdijk</name>
+    </contributor>
+    <contributor>
+      <name>Jonathan Carlson</name>
+    </contributor>
+    <contributor>
+      <name>Thomas Heller</name>
+    </contributor>
+    <contributor>
+      <name>John Stump</name>
+    </contributor>
+    <contributor>
+      <name>Ivan Ganza</name>
+    </contributor>
+    <contributor>
+      <name>Alex Popescu</name>
+    </contributor>
+    <contributor>
+      <name>Martin Kempf</name>
+    </contributor>
+    <contributor>
+      <name>Martin Ghados</name>
+    </contributor>
+    <contributor>
+      <name>Martin Stockhammer</name>
+    </contributor>
+    <contributor>
+      <name>Martin C. Martin</name>
+    </contributor>
+    <contributor>
+      <name>Alexey Verkhovsky</name>
+    </contributor>
+    <contributor>
+      <name>Alberto Mijares</name>
+    </contributor>
+    <contributor>
+      <name>Matthias Cullmann</name>
+    </contributor>
+    <contributor>
+      <name>Tomek Bujok</name>
+    </contributor>
+    <contributor>
+      <name>Stephane Landelle</name>
+    </contributor>
+    <contributor>
+      <name>Stephane Maldini</name>
+    </contributor>
+    <contributor>
+      <name>Mark Volkmann</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Taylor</name>
+    </contributor>
+    <contributor>
+      <name>Vladimir Vivien</name>
+    </contributor>
+    <contributor>
+      <name>Vladimir Orany</name>
+    </contributor>
+    <contributor>
+      <name>Joe Wolf</name>
+    </contributor>
+    <contributor>
+      <name>Kent Inge Fagerland Simonsen</name>
+    </contributor>
+    <contributor>
+      <name>Tom Nichols</name>
+    </contributor>
+    <contributor>
+      <name>Ingo Hoffmann</name>
+    </contributor>
+    <contributor>
+      <name>Sergii Bondarenko</name>
+    </contributor>
+    <contributor>
+      <name>mgroovy</name>
+    </contributor>
+    <contributor>
+      <name>Dominik Przybysz</name>
+    </contributor>
+    <contributor>
+      <name>Jason Thomas</name>
+    </contributor>
+    <contributor>
+      <name>Trygve Amundsens</name>
+    </contributor>
+    <contributor>
+      <name>Morgan Hankins</name>
+    </contributor>
+    <contributor>
+      <name>Shruti Gupta</name>
+    </contributor>
+    <contributor>
+      <name>Ben Yu</name>
+    </contributor>
+    <contributor>
+      <name>Dejan Bosanac</name>
+    </contributor>
+    <contributor>
+      <name>Lidia Donajczyk-Lipinska</name>
+    </contributor>
+    <contributor>
+      <name>Peter Gromov</name>
+    </contributor>
+    <contributor>
+      <name>Johannes Link</name>
+    </contributor>
+    <contributor>
+      <name>Chris Reeves</name>
+    </contributor>
+    <contributor>
+      <name>Sean Timm</name>
+    </contributor>
+    <contributor>
+      <name>Dmitry Vyazelenko</name>
+    </contributor>
+  </contributors>
+  <mailingLists>
+    <mailingList>
+      <name>Groovy Developer List</name>
+      <archive>https://mail-archives.apache.org/mod_mbox/groovy-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Groovy User List</name>
+      <archive>https://mail-archives.apache.org/mod_mbox/groovy-users/</archive>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:git:https://github.com/apache/groovy.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/groovy.git</developerConnection>
+    <url>https://github.com/apache/groovy.git</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.apache.org/jira/browse/GROOVY</url>
+  </issueManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.groovy</groupId>
+        <artifactId>groovy-bom</artifactId>
+        <version>4.0.24</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>4.0.24</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24.module' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy-test/4.0.24/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/groovy/groovy-test/4.0.24</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/groovy/groovy-test/4.0.24</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="groovy-test-4.0.24-grooid.jar" title="groovy-test-4.0.24-grooid.jar">groovy-test-4.0.24-grooid.jar</a>                     2024-11-05 01:26     69124      
+<a href="groovy-test-4.0.24-grooid.jar.asc" title="groovy-test-4.0.24-grooid.jar.asc">groovy-test-4.0.24-grooid.jar.asc</a>                 2024-11-05 01:26       848      
+<a href="groovy-test-4.0.24-grooid.jar.asc.md5" title="groovy-test-4.0.24-grooid.jar.asc.md5">groovy-test-4.0.24-grooid.jar.asc.md5</a>             2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24-grooid.jar.asc.sha1" title="groovy-test-4.0.24-grooid.jar.asc.sha1">groovy-test-4.0.24-grooid.jar.asc.sha1</a>            2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24-grooid.jar.asc.sha256" title="groovy-test-4.0.24-grooid.jar.asc.sha256">groovy-test-4.0.24-grooid.jar.asc.sha256</a>          2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24-grooid.jar.asc.sha512" title="groovy-test-4.0.24-grooid.jar.asc.sha512">groovy-test-4.0.24-grooid.jar.asc.sha512</a>          2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24-grooid.jar.md5" title="groovy-test-4.0.24-grooid.jar.md5">groovy-test-4.0.24-grooid.jar.md5</a>                 2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24-grooid.jar.sha1" title="groovy-test-4.0.24-grooid.jar.sha1">groovy-test-4.0.24-grooid.jar.sha1</a>                2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24-grooid.jar.sha256" title="groovy-test-4.0.24-grooid.jar.sha256">groovy-test-4.0.24-grooid.jar.sha256</a>              2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24-grooid.jar.sha512" title="groovy-test-4.0.24-grooid.jar.sha512">groovy-test-4.0.24-grooid.jar.sha512</a>              2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24-groovydoc.jar" title="groovy-test-4.0.24-groovydoc.jar">groovy-test-4.0.24-groovydoc.jar</a>                  2024-11-05 01:26    121899      
+<a href="groovy-test-4.0.24-groovydoc.jar.asc" title="groovy-test-4.0.24-groovydoc.jar.asc">groovy-test-4.0.24-groovydoc.jar.asc</a>              2024-11-05 01:26       848      
+<a href="groovy-test-4.0.24-groovydoc.jar.asc.md5" title="groovy-test-4.0.24-groovydoc.jar.asc.md5">groovy-test-4.0.24-groovydoc.jar.asc.md5</a>          2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24-groovydoc.jar.asc.sha1" title="groovy-test-4.0.24-groovydoc.jar.asc.sha1">groovy-test-4.0.24-groovydoc.jar.asc.sha1</a>         2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24-groovydoc.jar.asc.sha256" title="groovy-test-4.0.24-groovydoc.jar.asc.sha256">groovy-test-4.0.24-groovydoc.jar.asc.sha256</a>       2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24-groovydoc.jar.asc.sha512" title="groovy-test-4.0.24-groovydoc.jar.asc.sha512">groovy-test-4.0.24-groovydoc.jar.asc.sha512</a>       2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24-groovydoc.jar.md5" title="groovy-test-4.0.24-groovydoc.jar.md5">groovy-test-4.0.24-groovydoc.jar.md5</a>              2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24-groovydoc.jar.sha1" title="groovy-test-4.0.24-groovydoc.jar.sha1">groovy-test-4.0.24-groovydoc.jar.sha1</a>             2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24-groovydoc.jar.sha256" title="groovy-test-4.0.24-groovydoc.jar.sha256">groovy-test-4.0.24-groovydoc.jar.sha256</a>           2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24-groovydoc.jar.sha512" title="groovy-test-4.0.24-groovydoc.jar.sha512">groovy-test-4.0.24-groovydoc.jar.sha512</a>           2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24-javadoc.jar" title="groovy-test-4.0.24-javadoc.jar">groovy-test-4.0.24-javadoc.jar</a>                    2024-11-05 01:26    117760      
+<a href="groovy-test-4.0.24-javadoc.jar.asc" title="groovy-test-4.0.24-javadoc.jar.asc">groovy-test-4.0.24-javadoc.jar.asc</a>                2024-11-05 01:26       848      
+<a href="groovy-test-4.0.24-javadoc.jar.asc.md5" title="groovy-test-4.0.24-javadoc.jar.asc.md5">groovy-test-4.0.24-javadoc.jar.asc.md5</a>            2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24-javadoc.jar.asc.sha1" title="groovy-test-4.0.24-javadoc.jar.asc.sha1">groovy-test-4.0.24-javadoc.jar.asc.sha1</a>           2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24-javadoc.jar.asc.sha256" title="groovy-test-4.0.24-javadoc.jar.asc.sha256">groovy-test-4.0.24-javadoc.jar.asc.sha256</a>         2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24-javadoc.jar.asc.sha512" title="groovy-test-4.0.24-javadoc.jar.asc.sha512">groovy-test-4.0.24-javadoc.jar.asc.sha512</a>         2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24-javadoc.jar.md5" title="groovy-test-4.0.24-javadoc.jar.md5">groovy-test-4.0.24-javadoc.jar.md5</a>                2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24-javadoc.jar.sha1" title="groovy-test-4.0.24-javadoc.jar.sha1">groovy-test-4.0.24-javadoc.jar.sha1</a>               2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24-javadoc.jar.sha256" title="groovy-test-4.0.24-javadoc.jar.sha256">groovy-test-4.0.24-javadoc.jar.sha256</a>             2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24-javadoc.jar.sha512" title="groovy-test-4.0.24-javadoc.jar.sha512">groovy-test-4.0.24-javadoc.jar.sha512</a>             2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24-sources.jar" title="groovy-test-4.0.24-sources.jar">groovy-test-4.0.24-sources.jar</a>                    2024-11-05 01:26     43885      
+<a href="groovy-test-4.0.24-sources.jar.asc" title="groovy-test-4.0.24-sources.jar.asc">groovy-test-4.0.24-sources.jar.asc</a>                2024-11-05 01:26       848      
+<a href="groovy-test-4.0.24-sources.jar.asc.md5" title="groovy-test-4.0.24-sources.jar.asc.md5">groovy-test-4.0.24-sources.jar.asc.md5</a>            2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24-sources.jar.asc.sha1" title="groovy-test-4.0.24-sources.jar.asc.sha1">groovy-test-4.0.24-sources.jar.asc.sha1</a>           2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24-sources.jar.asc.sha256" title="groovy-test-4.0.24-sources.jar.asc.sha256">groovy-test-4.0.24-sources.jar.asc.sha256</a>         2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24-sources.jar.asc.sha512" title="groovy-test-4.0.24-sources.jar.asc.sha512">groovy-test-4.0.24-sources.jar.asc.sha512</a>         2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24-sources.jar.md5" title="groovy-test-4.0.24-sources.jar.md5">groovy-test-4.0.24-sources.jar.md5</a>                2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24-sources.jar.sha1" title="groovy-test-4.0.24-sources.jar.sha1">groovy-test-4.0.24-sources.jar.sha1</a>               2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24-sources.jar.sha256" title="groovy-test-4.0.24-sources.jar.sha256">groovy-test-4.0.24-sources.jar.sha256</a>             2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24-sources.jar.sha512" title="groovy-test-4.0.24-sources.jar.sha512">groovy-test-4.0.24-sources.jar.sha512</a>             2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24.jar" title="groovy-test-4.0.24.jar">groovy-test-4.0.24.jar</a>                            2024-11-05 01:26     69761      
+<a href="groovy-test-4.0.24.jar.asc" title="groovy-test-4.0.24.jar.asc">groovy-test-4.0.24.jar.asc</a>                        2024-11-05 01:26       848      
+<a href="groovy-test-4.0.24.jar.asc.md5" title="groovy-test-4.0.24.jar.asc.md5">groovy-test-4.0.24.jar.asc.md5</a>                    2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24.jar.asc.sha1" title="groovy-test-4.0.24.jar.asc.sha1">groovy-test-4.0.24.jar.asc.sha1</a>                   2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24.jar.asc.sha256" title="groovy-test-4.0.24.jar.asc.sha256">groovy-test-4.0.24.jar.asc.sha256</a>                 2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24.jar.asc.sha512" title="groovy-test-4.0.24.jar.asc.sha512">groovy-test-4.0.24.jar.asc.sha512</a>                 2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24.jar.md5" title="groovy-test-4.0.24.jar.md5">groovy-test-4.0.24.jar.md5</a>                        2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24.jar.sha1" title="groovy-test-4.0.24.jar.sha1">groovy-test-4.0.24.jar.sha1</a>                       2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24.jar.sha256" title="groovy-test-4.0.24.jar.sha256">groovy-test-4.0.24.jar.sha256</a>                     2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24.jar.sha512" title="groovy-test-4.0.24.jar.sha512">groovy-test-4.0.24.jar.sha512</a>                     2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24.module" title="groovy-test-4.0.24.module">groovy-test-4.0.24.module</a>                         2024-11-05 01:26      7106      
+<a href="groovy-test-4.0.24.module.asc" title="groovy-test-4.0.24.module.asc">groovy-test-4.0.24.module.asc</a>                     2024-11-05 01:26       848      
+<a href="groovy-test-4.0.24.module.asc.md5" title="groovy-test-4.0.24.module.asc.md5">groovy-test-4.0.24.module.asc.md5</a>                 2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24.module.asc.sha1" title="groovy-test-4.0.24.module.asc.sha1">groovy-test-4.0.24.module.asc.sha1</a>                2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24.module.asc.sha256" title="groovy-test-4.0.24.module.asc.sha256">groovy-test-4.0.24.module.asc.sha256</a>              2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24.module.asc.sha512" title="groovy-test-4.0.24.module.asc.sha512">groovy-test-4.0.24.module.asc.sha512</a>              2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24.module.md5" title="groovy-test-4.0.24.module.md5">groovy-test-4.0.24.module.md5</a>                     2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24.module.sha1" title="groovy-test-4.0.24.module.sha1">groovy-test-4.0.24.module.sha1</a>                    2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24.module.sha256" title="groovy-test-4.0.24.module.sha256">groovy-test-4.0.24.module.sha256</a>                  2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24.module.sha512" title="groovy-test-4.0.24.module.sha512">groovy-test-4.0.24.module.sha512</a>                  2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24.pom" title="groovy-test-4.0.24.pom">groovy-test-4.0.24.pom</a>                            2024-11-05 01:26     22741      
+<a href="groovy-test-4.0.24.pom.asc" title="groovy-test-4.0.24.pom.asc">groovy-test-4.0.24.pom.asc</a>                        2024-11-05 01:26       848      
+<a href="groovy-test-4.0.24.pom.asc.md5" title="groovy-test-4.0.24.pom.asc.md5">groovy-test-4.0.24.pom.asc.md5</a>                    2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24.pom.asc.sha1" title="groovy-test-4.0.24.pom.asc.sha1">groovy-test-4.0.24.pom.asc.sha1</a>                   2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24.pom.asc.sha256" title="groovy-test-4.0.24.pom.asc.sha256">groovy-test-4.0.24.pom.asc.sha256</a>                 2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24.pom.asc.sha512" title="groovy-test-4.0.24.pom.asc.sha512">groovy-test-4.0.24.pom.asc.sha512</a>                 2024-11-05 01:26       128      
+<a href="groovy-test-4.0.24.pom.md5" title="groovy-test-4.0.24.pom.md5">groovy-test-4.0.24.pom.md5</a>                        2024-11-05 01:26        32      
+<a href="groovy-test-4.0.24.pom.sha1" title="groovy-test-4.0.24.pom.sha1">groovy-test-4.0.24.pom.sha1</a>                       2024-11-05 01:26        40      
+<a href="groovy-test-4.0.24.pom.sha256" title="groovy-test-4.0.24.pom.sha256">groovy-test-4.0.24.pom.sha256</a>                     2024-11-05 01:26        64      
+<a href="groovy-test-4.0.24.pom.sha512" title="groovy-test-4.0.24.pom.sha512">groovy-test-4.0.24.pom.sha512</a>                     2024-11-05 01:26       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 216ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.apache.groovy",
+    "module": "groovy-test",
+    "version": "4.0.24",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "groovydocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "groovydoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "groovy-test-4.0.24-groovydoc.jar",
+          "url": "groovy-test-4.0.24-groovydoc.jar",
+          "size": 121899,
+          "sha512": "61873659b78d596fcbc6758a9f2a579f94ba42730322c396f4ee6b93908ec2ae1d729191fcce6ad3bf5dd5fc83e66be5eac07601d43111cf47b58ab0b098427b",
+          "sha256": "7a7b1acd1ef3f535f22da5fee5abe88c395aeb54d8dd7aee25214f3ff4a57a3a",
+          "sha1": "352850135f3ea4c1cb269dae0d4d6209b5ba67b5",
+          "md5": "b2eb193466c3ebd919bb7bfc79a96c45"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "groovy-test-4.0.24-javadoc.jar",
+          "url": "groovy-test-4.0.24-javadoc.jar",
+          "size": 117760,
+          "sha512": "89911269adfb52e13b494fe9c74582991e59146f821323a505e44525f67a5f452f54214a629e685bc7963b6ca7e4b00adbc16a2c8090dbdf725299f814889b6f",
+          "sha256": "93385914a7348b29526f2d462a17377e873dc3585f56309f9ab3a481a380d208",
+          "sha1": "dbb6e2bfde77b286aeb6b3f1eaf7c4826ecf4dec",
+          "md5": "486081b5f5add7b5aaa2fb111f6c567f"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "groovy-test-4.0.24-sources.jar",
+          "url": "groovy-test-4.0.24-sources.jar",
+          "size": 43885,
+          "sha512": "6d630a7946f70a858009b67123eff19ca0c3e18b8504a8a15951f9d79503e5d0ecae7b773235729f38715886245817e2048a0920384205a1fab60a5b0d6ba819",
+          "sha256": "30a9398a5ce49b53e72551480236b89050e68df3aaaa19b712de582f8c65bb8a",
+          "sha1": "9704f7ad0d47b577095d283f8057c1da29c2f9f0",
+          "md5": "f4bccd95634d9cc4f6465212f99553e2"
+        }
+      ]
+    },
+    {
+      "name": "groovyApiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy-bom",
+          "version": {
+            "requires": "4.0.24"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy",
+          "version": {
+            "requires": "4.0.24"
+          }
+        },
+        {
+          "group": "junit",
+          "module": "junit",
+          "version": {
+            "requires": "4.13.2"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "groovy-test-4.0.24.jar",
+          "url": "groovy-test-4.0.24.jar",
+          "size": 69761,
+          "sha512": "f46a5a20652c5e1c400c7b43d19c237198677cc2115ce1e861fb36a3f3e4958e0cd48615860db1d994317aa3b8b1f3a8f1a51ecf9c9b3ef504f981a666f78ecf",
+          "sha256": "15545a40ccb3c30b5a3cd9155aa285bf471a41782655005db681f9ca0374da47",
+          "sha1": "d6de72140cadbf0191b81ffc78fa60fc762ca0e0",
+          "md5": "fc98174ad55096047eb758a87559318f"
+        }
+      ],
+      "capabilities": [
+        {
+          "group": "org.codehaus.groovy",
+          "name": "groovy-test",
+          "version": "4.0.24"
+        },
+        {
+          "group": "org.apache.groovy",
+          "name": "groovy-test",
+          "version": "4.0.24"
+        }
+      ]
+    },
+    {
+      "name": "groovyRuntimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy-bom",
+          "version": {
+            "requires": "4.0.24"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy",
+          "version": {
+            "requires": "4.0.24"
+          }
+        },
+        {
+          "group": "junit",
+          "module": "junit",
+          "version": {
+            "requires": "4.13.2"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "groovy-test-4.0.24.jar",
+          "url": "groovy-test-4.0.24.jar",
+          "size": 69761,
+          "sha512": "f46a5a20652c5e1c400c7b43d19c237198677cc2115ce1e861fb36a3f3e4958e0cd48615860db1d994317aa3b8b1f3a8f1a51ecf9c9b3ef504f981a666f78ecf",
+          "sha256": "15545a40ccb3c30b5a3cd9155aa285bf471a41782655005db681f9ca0374da47",
+          "sha1": "d6de72140cadbf0191b81ffc78fa60fc762ca0e0",
+          "md5": "fc98174ad55096047eb758a87559318f"
+        }
+      ],
+      "capabilities": [
+        {
+          "group": "org.codehaus.groovy",
+          "name": "groovy-test",
+          "version": "4.0.24"
+        },
+        {
+          "group": "org.apache.groovy",
+          "name": "groovy-test",
+          "version": "4.0.24"
+        }
+      ]
+    },
+    {
+      "name": "androidRuntimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "groovy-test-4.0.24-grooid.jar",
+          "url": "groovy-test-4.0.24-grooid.jar",
+          "size": 69124,
+          "sha512": "f60b869dde0711a148ffd7983e1df5c4b407f21169aeb435961d3cd43ecda74d86ae4465a74d1db759c40b7c93a9028408566fad2a36c0f9bc7e156c82700249",
+          "sha256": "256c5816fc87ee24dfd78bbe98f0b9f6aeb966af6a760be63dbdb96c88e30e66",
+          "sha1": "4574c18b6e4634b678941dd57d235f94a5b06337",
+          "md5": "170d983ed7d5e00c2019033dd2548e74"
+        }
+      ],
+      "capabilities": [
+        {
+          "group": "org.apache.groovy",
+          "name": "groovy-test-grooid",
+          "version": "4.0.24"
+        }
+      ]
+    }
+  ]
+}
+
+web search: 
+web search: Maven Central org.apache.groovy groovy-test 4.0.24 pom scm url
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/groovy/git/refs/tags/GROOVY_4_0_24' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main?ref=GROOVY_4_0_24' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/test?ref=GROOVY_4_0_24' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 160ms:
+[
+  {
+    "name": "groovy",
+    "path": "subprojects/groovy-test/src/main/groovy",
+    "sha": "e876ba52f30f186b4230b8d3593b465c04f0b5b6",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/e876ba52f30f186b4230b8d3593b465c04f0b5b6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/e876ba52f30f186b4230b8d3593b465c04f0b5b6",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy"
+    }
+  },
+  {
+    "name": "java",
+    "path": "subprojects/groovy-test/src/main/java",
+    "sha": "091d7e9c39f6ee3fdd83411e4d493978278bb5af",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/java?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/main/java",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/091d7e9c39f6ee3fdd83411e4d493978278bb5af",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/java?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/091d7e9c39f6ee3fdd83411e4d493978278bb5af",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/main/java"
+    }
+  }
+]
+
+ succeeded in 164ms:
+[
+  {
+    "name": "groovy",
+    "path": "subprojects/groovy-test/src/test/groovy",
+    "sha": "3bc3986f893f88384589e548e33e924dd7c7ed75",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/test/groovy?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test/groovy",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/3bc3986f893f88384589e548e33e924dd7c7ed75",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/test/groovy?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/3bc3986f893f88384589e548e33e924dd7c7ed75",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test/groovy"
+    }
+  }
+]
+
+ succeeded in 197ms:
+{
+  "ref": "refs/tags/GROOVY_4_0_24",
+  "node_id": "MDM6UmVmMzQwMzk2OTA6cmVmcy90YWdzL0dST09WWV80XzBfMjQ=",
+  "url": "https://api.github.com/repos/apache/groovy/git/refs/tags/GROOVY_4_0_24",
+  "object": {
+    "sha": "c37125802f4ed0db459927b6782b4806cf1d331d",
+    "type": "tag",
+    "url": "https://api.github.com/repos/apache/groovy/git/tags/c37125802f4ed0db459927b6782b4806cf1d331d"
+  }
+}
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jetbrains.kotlin/kotlin-test/index.json && sed -n '1,60p' metadata/org.scala-lang/scalap/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/kotlin.test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+    "description" : "kotlin-test is Kotlin's multiplatform testing library, providing common assertion functions and test annotations for Kotlin code. It integrates the shared kotlin.test API with platform test runners such as JUnit, JUnit 5, TestNG, JavaScript frameworks, and WebAssembly targets.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.0"
+    },
+    "tested-versions" : [
+      "2.0.21",
+      "2.1.0",
+      "2.1.10",
+      "2.1.20",
+      "2.1.21",
+      "2.2.0",
+      "2.2.10",
+      "2.2.20",
+      "2.2.21",
+      "2.3.0",
+      "2.3.10",
+      "2.3.20",
+      "2.3.21",
+      "2.4.0-Beta1",
+      "2.4.0-Beta2"
+    ],
+    "allowed-packages" : [
+      "kotlin.test"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.13.13",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scalap/$version$/scalap-$version$-sources.jar",
+    "repository-url" : "https://github.com/scala/scala",
+    "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test/files/scalap",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scalap/$version$/scalap-$version$-javadoc.jar",
+    "description" : "Scalap is the Scala 2 bytecode analysis tool for inspecting compiled Scala class files. It decodes Scala signatures and classfile metadata so developers can view the declarations, types, and members that were emitted by the compiler.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.13.13",
+      "2.13.14",
+      "2.13.15",
+      "2.13.16",
+      "2.13.17",
+      "2.13.18"
+    ],
+    "allowed-packages" : [
+      "scala.tools.scalap"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n \"repo1\\.maven\\.org|javadoc\\.io|source-code-url|test-code-url|documentation-url\" build/discovered-artifact-metadata metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -40 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
+}
+
+ succeeded in 0ms:
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_2.13/$version$/scalatest-funspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funspec-test/src/test/scala/org/scalatest/funspec",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_2.13/$version$/scalatest-funspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-freespec_2.13/$version$/scalatest-freespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/freespec-test/src/test/scala/org/scalatest/freespec",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-freespec_2.13/$version$/scalatest-freespec_2.13-$version$-javadoc.jar",
+metadata/org.codehaus.jettison/jettison/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-sources.jar",
+metadata/org.codehaus.jettison/jettison/index.json:7:    "test-code-url" : "https://github.com/jettison-json/jettison/tree/jettison-$version$/src/test/java",
+metadata/org.codehaus.jettison/jettison/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:66:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:7:    "test-code-url" : "https://github.com/eclipse-sisu/sisu-project/tree/milestones/$version$/org.eclipse.sisu.inject.tests",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-sources.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:7:    "test-code-url": "https://github.com/javaee/jersey-1.x/tree/$version$/tests/functional/jersey-servlet3_0-integration",
+metadata/com.sun.jersey/jersey-servlet/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-sources.jar",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-i18n/$version$/apacheds-i18n-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:120:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-sources.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-test-sources.jar",
+metadata/commons-cli/commons-cli/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-scala/tree/jackson-module-scala-$version$/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-javadoc.jar",
+metadata/org.apache.directory.server/apacheds-kerberos-codec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-kerberos-codec/$version$/apacheds-kerberos-codec-$version$-sources.jar",
+metadata/org.apache.directory.server/apacheds-kerberos-codec/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/apacheds/tags/$version$/kerberos-codec/src/test/java/",
+metadata/org.apache.directory.server/apacheds-kerberos-codec/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/directory/server/apacheds-kerberos-codec/$version$/apacheds-kerberos-codec-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/parameter-names/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/$version$/opengauss-jdbc-$version$-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:10:    "test-code-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+metadata/org.opengauss/opengauss-jdbc/index.json:11:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/org.hamcrest/hamcrest-library/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-library/$version$/hamcrest-library-$version$-sources.jar",
+metadata/org.hamcrest/hamcrest-library/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-$version$/hamcrest-unit-test/src/main/java",
+metadata/org.hamcrest/hamcrest-library/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-library/$version$/hamcrest-library-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:7:    "test-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-jakarta-xmlbind-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-jakarta-xmlbind-annotations/$version$/jackson-module-jakarta-xmlbind-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-jakarta-xmlbind-annotations/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-base/tree/jackson-modules-base-$version$/jakarta-xmlbind/src/test/java",
+metadata/com.fasterxml.jackson.module/jackson-module-jakarta-xmlbind-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-jakarta-xmlbind-annotations/$version$/jackson-module-jakarta-xmlbind-annotations-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-ext/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/$version$/slf4j-ext-$version$-sources.jar",
+metadata/org.slf4j/slf4j-ext/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v$version$/slf4j-ext/src/test",
+metadata/org.slf4j/slf4j-ext/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/org.osgi/org.osgi.framework/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.framework/$version$/org.osgi.framework-$version$-sources.jar",
+metadata/org.osgi/org.osgi.framework/index.json:7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework",
+metadata/org.osgi/org.osgi.framework/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.framework/$version$/org.osgi.framework-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-common/tree/$version$/expression/src/test/java",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-javadoc.jar",
+metadata/org.hamcrest/hamcrest-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$version$/hamcrest-core-$version$-sources.jar",
+metadata/org.hamcrest/hamcrest-core/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-$version$/hamcrest-unit-test/src/main/java",
+metadata/org.hamcrest/hamcrest-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$version$/hamcrest-core-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-sources.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:6:    "test-code-url" : "https://github.com/open-telemetry/semantic-conventions-java/tree/v1.23.1/src/test",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-javadoc.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-sources.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:21:    "test-code-url" : "https://github.com/open-telemetry/semantic-conventions-java/tree/v1.25.0/semconv/src/test",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-javadoc.jar",
+
+codex
+Maven Central publishes the main JVM jar, sources jar, javadoc jar, and Groovydoc jar for `4.0.24`; it does not publish a test-sources or tests jar for this artifact. The upstream tag is `GROOVY_4_0_24`, and that tag contains the module test directory under `subprojects/groovy-test/src/test`.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-test-sources.jar || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-groovydoc.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-tests.jar || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 214ms:
+HTTP/2 404 
+date: Sun, 10 May 2026 06:10:48 GMT
+content-type: text/html
+cf-ray: 9f96c86a9ad8b571-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 224ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 10 May 2026 06:10:48 GMT
+content-type: text/html
+cf-ray: 9f96c86a9d4703b5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 618ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 06:10:48 GMT
+content-type: application/java-archive
+content-length: 121899
+cf-ray: 9f96c86aff4101e3-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "b2eb193466c3ebd919bb7bfc79a96c45"
+last-modified: Tue, 05 Nov 2024 01:26:59 GMT
+x-checksum-md5: b2eb193466c3ebd919bb7bfc79a96c45
+x-checksum-sha1: 352850135f3ea4c1cb269dae0d4d6209b5ba67b5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 10 May 2026 06:10:48 GMT
+content-type: application/java-archive
+content-length: 69761
+cf-ray: 9f96c86e4dbf0211-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1860300
+etag: "fc98174ad55096047eb758a87559318f"
+last-modified: Tue, 05 Nov 2024 01:26:52 GMT
+x-checksum-md5: fc98174ad55096047eb758a87559318f
+x-checksum-sha1: d6de72140cadbf0191b81ffc78fa60fc762ca0e0
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/groovy-test.jar" https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24.jar; jar tf "$tmp/groovy-test.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/groovy-release-info.properties
+groovy/
+groovy/mock/
+groovy/mock/interceptor/
+groovy/mock/interceptor/CallSpec.class
+groovy/mock/interceptor/Demand.class
+groovy/mock/interceptor/Ignore.class
+groovy/mock/interceptor/LooseExpectation$_match_closure1.class
+groovy/mock/interceptor/LooseExpectation.class
+groovy/mock/interceptor/MockFor.class
+groovy/mock/interceptor/MockInterceptor.class
+groovy/mock/interceptor/MockProxyMetaClass$FallThroughMarker.class
+groovy/mock/interceptor/MockProxyMetaClass.class
+groovy/mock/interceptor/StrictExpectation$_match_closure1.class
+groovy/mock/interceptor/StrictExpectation.class
+groovy/mock/interceptor/StubFor.class
+groovy/test/
+groovy/test/AllTestSuite.class
+groovy/test/GroovyAssert.class
+groovy/test/GroovyLogTestCase.class
+groovy/test/GroovyShellTestCase.class
+groovy/test/GroovyTestCase.class
+groovy/test/GroovyTestSuite.class
+groovy/test/JavadocAssertionTestBuilder$_getAssertionTags_closure1.class
+groovy/test/JavadocAssertionTestBuilder$_getAssertion_closure3.class
+groovy/test/JavadocAssertionTestBuilder$_getLineNumberToAssertionsMap_closure2.class
+groovy/test/JavadocAssertionTestBuilder$_getTestMethods_closure4$_closure5.class
+groovy/test/JavadocAssertionTestBuilder$_getTestMethods_closure4.class
+groovy/test/JavadocAssertionTestBuilder.class
+groovy/test/JavadocAssertionTestSuite$_suite_closure1.class
+groovy/test/JavadocAssertionTestSuite.class
+groovy/test/NotYetImplemented.class
+groovy/test/StringTestUtil.class
+org/
+org/apache/
+org/apache/groovy/
+org/apache/groovy/test/
+org/apache/groovy/test/ScriptTestAdapter.class
+org/apache/groovy/test/transform/
+org/apache/groovy/test/transform/NotYetImplementedASTTransformation.class
+META-INF/INDEX.LIST
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test?ref=GROOVY_4_0_24' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/test/groovy?ref=GROOVY_4_0_24' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 141ms:
+[
+  {
+    "name": "groovy",
+    "path": "subprojects/groovy-test/src/test/groovy/groovy",
+    "sha": "75757ff07e2a3c94993c3624b059a4eaf17c6504",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/test/groovy/groovy?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test/groovy/groovy",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/75757ff07e2a3c94993c3624b059a4eaf17c6504",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/test/groovy/groovy?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/75757ff07e2a3c94993c3624b059a4eaf17c6504",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test/groovy/groovy"
+    }
+  },
+  {
+    "name": "org",
+    "path": "subprojects/groovy-test/src/test/groovy/org",
+    "sha": "bb6987a7624ac8716d404edc952242ffc05f3c43",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/test/groovy/org?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test/groovy/org",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/bb6987a7624ac8716d404edc952242ffc05f3c43",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/test/groovy/org?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/bb6987a7624ac8716d404edc952242ffc05f3c43",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test/groovy/org"
+    }
+  }
+]
+
+ succeeded in 153ms:
+[
+  {
+    "name": "GroovyLogTestCase.groovy",
+    "path": "subprojects/groovy-test/src/main/groovy/groovy/test/GroovyLogTestCase.groovy",
+    "sha": "e2241a1e2e920aadca262dff72a7b57158d0fb22",
+    "size": 3223,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test/GroovyLogTestCase.groovy?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/GroovyLogTestCase.groovy",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/blobs/e2241a1e2e920aadca262dff72a7b57158d0fb22",
+    "download_url": "https://raw.githubusercontent.com/apache/groovy/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/GroovyLogTestCase.groovy",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test/GroovyLogTestCase.groovy?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/blobs/e2241a1e2e920aadca262dff72a7b57158d0fb22",
+      "html": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/GroovyLogTestCase.groovy"
+    }
+  },
+  {
+    "name": "GroovyShellTestCase.groovy",
+    "path": "subprojects/groovy-test/src/main/groovy/groovy/test/GroovyShellTestCase.groovy",
+    "sha": "d994a0fd7d7060925c6e5b48d13a91b41e108c52",
+    "size": 2188,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test/GroovyShellTestCase.groovy?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/GroovyShellTestCase.groovy",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/blobs/d994a0fd7d7060925c6e5b48d13a91b41e108c52",
+    "download_url": "https://raw.githubusercontent.com/apache/groovy/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/GroovyShellTestCase.groovy",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test/GroovyShellTestCase.groovy?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/blobs/d994a0fd7d7060925c6e5b48d13a91b41e108c52",
+      "html": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/GroovyShellTestCase.groovy"
+    }
+  },
+  {
+    "name": "JavadocAssertionTestBuilder.groovy",
+    "path": "subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestBuilder.groovy",
+    "sha": "71cc863e4279ed3c05bc43bc08ef7a388e3c1cac",
+    "size": 5538,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestBuilder.groovy?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestBuilder.groovy",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/blobs/71cc863e4279ed3c05bc43bc08ef7a388e3c1cac",
+    "download_url": "https://raw.githubusercontent.com/apache/groovy/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestBuilder.groovy",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestBuilder.groovy?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/blobs/71cc863e4279ed3c05bc43bc08ef7a388e3c1cac",
+      "html": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestBuilder.groovy"
+    }
+  },
+  {
+    "name": "JavadocAssertionTestSuite.groovy",
+    "path": "subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestSuite.groovy",
+    "sha": "9b1b3313a1e8130f3c59444f6472d4520d270dbb",
+    "size": 5063,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestSuite.groovy?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestSuite.groovy",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/blobs/9b1b3313a1e8130f3c59444f6472d4520d270dbb",
+    "download_url": "https://raw.githubusercontent.com/apache/groovy/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestSuite.groovy",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestSuite.groovy?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/blobs/9b1b3313a1e8130f3c59444f6472d4520d270dbb",
+      "html": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/JavadocAssertionTestSuite.groovy"
+    }
+  },
+  {
+    "name": "StringTestUtil.groovy",
+    "path": "subprojects/groovy-test/src/main/groovy/groovy/test/StringTestUtil.groovy",
+    "sha": "c8fc9ca8c76f5775743979abb216caa53f50deb7",
+    "size": 1252,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test/StringTestUtil.groovy?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/StringTestUtil.groovy",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/blobs/c8fc9ca8c76f5775743979abb216caa53f50deb7",
+    "download_url": "https://raw.githubusercontent.com/apache/groovy/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/StringTestUtil.groovy",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-test/src/main/groovy/groovy/test/StringTestUtil.groovy?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/blobs/c8fc9ca8c76f5775743979abb216caa53f50deb7",
+      "html": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-test/src/main/groovy/groovy/test/StringTestUtil.groovy"
+    }
+  }
+]
+
+web search: 
+web search: repo.maven.apache.org maven2 org apache groovy groovy-test 4.0.24 sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.groovy/groovy-test/4.0.24
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/groovy/tags?per_page=100' | rg -n '4[._]0[._]24|name' | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+exec
+/usr/bin/bash -lc "rg -n \"GROOVY_\\"'$version'"\\"'$|GROOVY_4_|groovy-lang|org'"\\.apache\\.groovy\" metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json:2:  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
+
+exec
+/usr/bin/bash -lc 'for tag in GROOVY_4.0.24 groovy-4.0.24 v4.0.24 4.0.24 GROOVY_4_0_24; do status=$(curl -s -o /dev/null -w '"'%{http_code}' \"https://api.github.com/repos/apache/groovy/git/ref/tags/"'$tag"); printf '"'%s %s\\n' \""'$status" "$tag"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 244ms:
+3:    "name": "GROOVY_6_0_0_ALPHA_1",
+13:    "name": "GROOVY_5_0_6",
+23:    "name": "GROOVY_5_0_5",
+33:    "name": "GROOVY_5_0_4",
+43:    "name": "GROOVY_5_0_3",
+53:    "name": "GROOVY_5_0_2",
+63:    "name": "GROOVY_5_0_1",
+73:    "name": "GROOVY_5_0_0",
+83:    "name": "GROOVY_5_0_0_RC_1",
+93:    "name": "GROOVY_5_0_0_BETA_2",
+103:    "name": "GROOVY_5_0_0_BETA_1",
+113:    "name": "GROOVY_5_0_0_ALPHA_12",
+123:    "name": "GROOVY_5_0_0_ALPHA_11",
+133:    "name": "GROOVY_5_0_0_ALPHA_10",
+143:    "name": "GROOVY_5_0_0_ALPHA_9",
+153:    "name": "GROOVY_5_0_0_ALPHA_8",
+163:    "name": "GROOVY_5_0_0_ALPHA_7",
+173:    "name": "GROOVY_5_0_0_ALPHA_6",
+183:    "name": "GROOVY_5_0_0_ALPHA_5",
+193:    "name": "GROOVY_5_0_0_ALPHA_4",
+203:    "name": "GROOVY_5_0_0_ALPHA_3",
+213:    "name": "GROOVY_5_0_0_ALPHA_2",
+223:    "name": "GROOVY_5_0_0_ALPHA_1",
+233:    "name": "GROOVY_4_0_32",
+243:    "name": "GROOVY_4_0_31",
+253:    "name": "GROOVY_4_0_30",
+263:    "name": "GROOVY_4_0_29",
+273:    "name": "GROOVY_4_0_28",
+283:    "name": "GROOVY_4_0_27",
+293:    "name": "GROOVY_4_0_26",
+303:    "name": "GROOVY_4_0_25",
+313:    "name": "GROOVY_4_0_24",
+314:    "zipball_url": "https://api.github.com/repos/apache/groovy/zipball/refs/tags/GROOVY_4_0_24",
+315:    "tarball_url": "https://api.github.com/repos/apache/groovy/tarball/refs/tags/GROOVY_4_0_24",
+323:    "name": "GROOVY_4_0_23",
+333:    "name": "GROOVY_4_0_22",
+343:    "name": "GROOVY_4_0_21",
+353:    "name": "GROOVY_4_0_20",
+363:    "name": "GROOVY_4_0_19",
+373:    "name": "GROOVY_4_0_18",
+
+ succeeded in 1325ms:
+404 GROOVY_4.0.24
+404 groovy-4.0.24
+404 v4.0.24
+404 4.0.24
+200 GROOVY_4_0_24
+
+codex
+I’m going to write the metadata with Maven Central URLs for sources and Groovydoc, the GitHub repo root, and the upstream tag path for tests. I’ll leave `not-for-native-image` absent because the default artifact is a JVM jar with class files, not an Android-only or non-JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+web search: 
+web search: https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test
+web search: 
+web search: site:central.sonatype.com/artifact/org.apache.groovy/groovy-test/4.0.24 org.apache.groovy groovy-test 4.0.24
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.groovy/groovy-test/4.0.24
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.groovy:groovy-test:4.0.24",
+  "repository-url": "https://github.com/apache/groovy",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
+  "description": "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
+  "language": {
+    "name": "groovy",
+    "version": "4.0"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+codex
+The JSON parses cleanly. The file is under `build/`, so it may not appear in a normal tracked-file diff even though the file content has been updated on disk.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
+  "repository-url" : "https://github.com/apache/groovy",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
+  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
+  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
+  "language" : {
+    "name" : "groovy",
+    "version" : "4.0"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 255ms:
+!! build/
+
+web search: 
+web search: central sonatype org.apache.groovy groovy-test 4.0.24
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.groovy/groovy-test/4.0.24
+web search: 
+web search: https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test
+web search: 
+web search: "groovy-test-4.0.24-sources.jar" "groovy-test-4.0.24-groovydoc.jar"
+web search: 
+web search: 'groovy-test-4.0.24-sources.jar' in https://central.sonatype.com/artifact/org.apache.groovy/groovy-test/4.0.24
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/groovy/4.0.24/sources/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+exec
+/usr/bin/bash -lc 'curl -fsSI https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip && curl -fsSI https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip.asc' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 135ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/groovy/4.0.24/sources</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/groovy/4.0.24/">Parent Directory</a>                                         -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="apache-groovy-src-4.0.24.zip">apache-groovy-src-4.0.24.zip</a>        2024-11-08 02:06  9.1M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="apache-groovy-src-4.0.24.zip.asc">apache-groovy-src-4.0.24.zip.asc</a>    2024-11-08 02:06  848   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="apache-groovy-src-4.0.24.zip.sha256">apache-groovy-src-4.0.24.zip.sha256</a> 2024-11-08 02:06   66   
+<hr></pre>
+</body></html>
+
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 246ms:
+HTTP/1.1 200 OK
+Date: Sun, 10 May 2026 06:12:17 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Fri, 08 Nov 2024 02:06:26 GMT
+ETag: "90e888-6265d32c93c0b"
+Accept-Ranges: bytes
+Content-Length: 9496712
+Content-Type: application/zip
+
+HTTP/1.1 200 OK
+Date: Sun, 10 May 2026 06:12:17 GMT
+Server: Apache
+Vary: Slow,Glacial,Accept-Encoding
+Last-Modified: Fri, 08 Nov 2024 02:06:26 GMT
+ETag: "350-6265d32c93c0b"
+Accept-Ranges: bytes
+Content-Length: 848
+Content-Type: text/plain
+
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/src.zip" https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip; zipinfo -1 "$tmp/src.zip" | rg '"'"'^apache-groovy-src-4'"\\.0\\.24/subprojects/groovy-test/src/test' | sed -n '1,20p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 2344ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/src.zip" https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip; zipinfo -1 "$tmp/src.zip" | sed -n '"'1,60p'; zipinfo -1 \""'$tmp/src.zip" | rg '"'groovy-test/src/test' | sed -n '1,20p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 6024ms:
+groovy-4.0.24/
+groovy-4.0.24/subprojects/
+groovy-4.0.24/subprojects/binary-compatibility/
+groovy-4.0.24/subprojects/binary-compatibility/build.gradle
+groovy-4.0.24/subprojects/groovy-all/
+groovy-4.0.24/subprojects/groovy-all/build.gradle
+groovy-4.0.24/subprojects/groovy-ant/
+groovy-4.0.24/subprojects/groovy-ant/build.gradle
+groovy-4.0.24/subprojects/groovy-ant/src/
+groovy-4.0.24/subprojects/groovy-ant/src/main/
+groovy-4.0.24/subprojects/groovy-ant/src/main/groovy/
+groovy-4.0.24/subprojects/groovy-ant/src/main/groovy/groovy/
+groovy-4.0.24/subprojects/groovy-ant/src/main/groovy/groovy/ant/
+groovy-4.0.24/subprojects/groovy-ant/src/main/groovy/groovy/ant/FileNameFinder.groovy
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/groovy/
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/groovy/ant/
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/groovy/ant/AntBuilder.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/AntProjectPropertiesDelegate.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/CompileTaskSupport.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/FileIterator.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/FileScanner.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/FileSystemCompilerFacade.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/GenerateStubsTask.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/Groovy.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/Groovyc.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/GroovycTask.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/Groovydoc.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/LoggingHelper.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/RootLoaderRef.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/UberCompileTask.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/VerifyClass.java
+groovy-4.0.24/subprojects/groovy-ant/src/main/java/org/codehaus/groovy/ant/package.html
+groovy-4.0.24/subprojects/groovy-ant/src/main/resources/
+groovy-4.0.24/subprojects/groovy-ant/src/main/resources/groovy/
+groovy-4.0.24/subprojects/groovy-ant/src/main/resources/groovy/ant/
+groovy-4.0.24/subprojects/groovy-ant/src/main/resources/groovy/ant/antlib.xml
+groovy-4.0.24/subprojects/groovy-ant/src/main/resources/org/
+groovy-4.0.24/subprojects/groovy-ant/src/main/resources/org/codehaus/
+groovy-4.0.24/subprojects/groovy-ant/src/main/resources/org/codehaus/groovy/
+groovy-4.0.24/subprojects/groovy-ant/src/main/resources/org/codehaus/groovy/antlib.xml
+groovy-4.0.24/subprojects/groovy-ant/src/spec/
+groovy-4.0.24/subprojects/groovy-ant/src/spec/doc/
+groovy-4.0.24/subprojects/groovy-ant/src/spec/doc/_ant-builder.adoc
+groovy-4.0.24/subprojects/groovy-ant/src/spec/doc/groovy-ant-task.adoc
+groovy-4.0.24/subprojects/groovy-ant/src/spec/doc/groovyc-ant-task.adoc
+groovy-4.0.24/subprojects/groovy-ant/src/spec/test/
+groovy-4.0.24/subprojects/groovy-ant/src/spec/test/builder/
+groovy-4.0.24/subprojects/groovy-ant/src/spec/test/builder/AntBuilderSpecTest.groovy
+groovy-4.0.24/subprojects/groovy-ant/src/test/
+groovy-4.0.24/subprojects/groovy-ant/src/test/groovy/
+groovy-4.0.24/subprojects/groovy-ant/src/test/groovy/groovy/
+groovy-4.0.24/subprojects/groovy-ant/src/test/groovy/groovy/ant/
+groovy-4.0.24/subprojects/groovy-ant/src/test/groovy/groovy/ant/AntTest.groovy
+groovy-4.0.24/subprojects/groovy-ant/src/test/groovy/groovy/ant/AntTestCase.groovy
+groovy-4.0.24/subprojects/groovy-ant/src/test/groovy/groovy/ant/FileNameFinderTest.groovy
+groovy-4.0.24/subprojects/groovy-test/src/test/
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/groovy/
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/groovy/test/
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/groovy/test/AllTestSuiteTest.groovy
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/groovy/test/GroovyAssertTest.groovy
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/groovy/test/GroovyLogTestCaseTest.groovy
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/groovy/test/GroovyTestCaseTest.groovy
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/groovy/test/GroovyTestJavadocAssertionTest.groovy
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/groovy/test/JavadocAssertionTestBuilderTest.groovy
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/groovy/test/suite/
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/groovy/test/suite/ATestScriptThatsNoTestCase.groovy
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/org/
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/org/apache/
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/org/apache/groovy/
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/org/apache/groovy/test/
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/org/apache/groovy/test/transform/
+groovy-4.0.24/subprojects/groovy-test/src/test/groovy/org/apache/groovy/test/transform/NotYetImplementedTransformTest.groovy
+
+exec
+/usr/bin/bash -lc "rg -n \"archive\\.apache\\.org/dist/.+src|apache-groovy-src|\\"'$version'"\\"'$.+zip" metadata build/discovered-artifact-metadata -g '"'*.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+metadata/org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7/index.json:5:    "source-code-url" : "https://archive.apache.org/dist/hadoop/thirdparty/thirdparty-1.1.1/hadoop-thirdparty-1.1.1-src.tar.gz",
+metadata/commons-configuration/commons-configuration/index.json:7:    "test-code-url" : "https://archive.apache.org/dist/commons/configuration/source/commons-configuration-$version$-src.tar.gz",
+metadata/tomcat/jasper-compiler/index.json:5:    "source-code-url" : "https://archive.apache.org/dist/tomcat/tomcat-5/v$version$/src/apache-tomcat-$version$-src.tar.gz",
+metadata/tomcat/jasper-compiler/index.json:7:    "test-code-url" : "https://archive.apache.org/dist/tomcat/tomcat-5/v$version$/src/apache-tomcat-$version$-src.tar.gz",
+metadata/tomcat/jasper-runtime/index.json:5:    "source-code-url" : "https://archive.apache.org/dist/tomcat/tomcat-5/v$version$/src/apache-tomcat-$version$-src.tar.gz",
+metadata/tomcat/jasper-runtime/index.json:7:    "test-code-url" : "https://archive.apache.org/dist/tomcat/tomcat-5/v$version$/src/apache-tomcat-$version$-src.tar.gz",
+metadata/org.apache.tomcat/annotations-api/index.json:5:    "source-code-url" : "https://archive.apache.org/dist/tomcat/tomcat-6/v$version$/src/apache-tomcat-$version$-src.tar.gz",
+metadata/org.apache.tomcat/annotations-api/index.json:7:    "test-code-url" : "https://archive.apache.org/dist/tomcat/tomcat-6/v$version$/src/apache-tomcat-$version$-src.tar.gz",
+
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "jq -r '.\"source-code-url\", .\"test-code-url\", .\"documentation-url\"' build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json | sed 's/\\"'$version'"\\"'$/4.0.24/g'"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+ succeeded in 0ms:
+https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-sources.jar
+https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test
+https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-groovydoc.jar
+
+exec
+/usr/bin/bash -lc "for url in \\
+  \"https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-sources.jar\" \\
+  \"https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test\" \\
+  \"https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-groovydoc.jar\"; do code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 737ms:
+200 https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test
+200 https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/4.0.24/groovy-test-4.0.24-groovydoc.jar
+
+web search: 
+web search: Apache Groovy groovy-test 4.0.24 Maven Central
+web search: 
+web search: https://github.com/apache/groovy
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.groovy/groovy-test/4.0.24
+web search: 
+web search: 
+web search: 
+web search: "Central Repository: org/apache/groovy/groovy-test/4.0.24"
+web search: 
+web search: https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test
+codex
+Updated [org.apache.groovy-groovy-test-4.0.24.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json).
+
+I used Maven Central for the artifact identity, POM metadata, and SCM URL, and the Apache Groovy `GROOVY_4_0_24` GitHub tag for the test directory. ([central.sonatype.com](https://central.sonatype.com/artifact/org.apache.groovy/groovy-test/4.0.24)) The artifact is Groovy language-specific, so I set `"language"` to Groovy `4.0`; I left `not-for-native-image` absent because the default jar contains JVM `.class` files.
+
+Validated the JSON with `jq` and checked the substituted source, test, and documentation URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+index 9f43a806756af970df4129752c3240bff1977ead..b13be798aac948d99ca38e6a5b33a7767be41fc8
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-test:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-test:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-test/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test/$version$/groovy-test-$version$-groovydoc.jar",
++  "description" : "groovy-test provides Apache Groovy's test support classes and assertions for writing Groovy-based tests on the JVM. It includes GroovyTestCase, GroovyAssert, GroovyTestSuite, mock/stub helpers, and supporting utilities that integrate Groovy code with JUnit-style testing.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+tokens used
+174,060
+Updated [org.apache.groovy-groovy-test-4.0.24.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1/build/discovered-artifact-metadata/org.apache.groovy-groovy-test-4.0.24.json).
+
+I used Maven Central for the artifact identity, POM metadata, and SCM URL, and the Apache Groovy `GROOVY_4_0_24` GitHub tag for the test directory. ([central.sonatype.com](https://central.sonatype.com/artifact/org.apache.groovy/groovy-test/4.0.24)) The artifact is Groovy language-specific, so I set `"language"` to Groovy `4.0`; I left `not-for-native-image` absent because the default jar contains JVM `.class` files.
+
+Validated the JSON with `jq` and checked the substituted source, test, and documentation URLs return HTTP 200.
+Ran agent for org.apache.groovy:groovy-test:4.0.24 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1/build/agent-artifact-discovery-logs/org.apache.groovy-groovy-test-4.0.24.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2470-b96c62f1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 26s
+9 actionable tasks: 9 executed
