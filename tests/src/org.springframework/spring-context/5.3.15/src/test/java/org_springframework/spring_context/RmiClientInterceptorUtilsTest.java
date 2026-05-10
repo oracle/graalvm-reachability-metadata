@@ -7,7 +7,6 @@
 package org_springframework.spring_context;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
