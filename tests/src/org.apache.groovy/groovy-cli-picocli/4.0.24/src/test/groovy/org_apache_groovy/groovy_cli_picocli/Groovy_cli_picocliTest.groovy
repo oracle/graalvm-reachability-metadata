@@ -77,6 +77,35 @@ public class Groovy_cli_picocliTest {
     }
 
     @Test
+    void controlsPosixShortOptionClustering() {
+        CliBuilder posixCli = new CliBuilder(name: 'archive')
+        posixCli.a('add files')
+        posixCli.v('verbose output')
+        posixCli.f(type: String, argName: 'file', 'archive file')
+
+        OptionAccessor clusteredOptions = posixCli.parse(['-avfbackup.zip', 'docs'] as String[])
+
+        assertThat(clusteredOptions).isNotNull()
+        assertThat(clusteredOptions.a).isTrue()
+        assertThat(clusteredOptions.v).isTrue()
+        assertThat(clusteredOptions.f).isEqualTo('backup.zip')
+        assertThat(clusteredOptions.arguments()).containsExactly('docs')
+
+        CliBuilder nonPosixCli = new CliBuilder(name: 'archive', posix: false)
+        nonPosixCli.a('add files')
+        nonPosixCli.v('verbose output')
+        nonPosixCli.f(type: String, argName: 'file', 'archive file')
+
+        OptionAccessor literalOptions = nonPosixCli.parse(['-avfbackup.zip', 'docs'] as String[])
+
+        assertThat(literalOptions).isNotNull()
+        assertThat(literalOptions.a).isFalse()
+        assertThat(literalOptions.v).isFalse()
+        assertThat(literalOptions.f).isFalse()
+        assertThat(literalOptions.arguments()).containsExactly('-avfbackup.zip', 'docs')
+    }
+
+    @Test
     void expandsArgumentFilesAndCanTreatThemAsLiteralArguments() {
         Path argumentFile = temporaryDirectory.resolve('command.args')
         Files.writeString(argumentFile, '--name\nAda\nfirst\nsecond\n')
