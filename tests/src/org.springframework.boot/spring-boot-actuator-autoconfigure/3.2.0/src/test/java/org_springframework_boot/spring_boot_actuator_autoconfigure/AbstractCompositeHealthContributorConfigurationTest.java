@@ -35,6 +35,10 @@ public class AbstractCompositeHealthContributorConfigurationTest {
     static final class TestHealthContributorConfiguration
             extends CompositeHealthContributorConfiguration<TestHealthIndicator, TestClient> {
 
+        TestHealthContributorConfiguration() {
+            super(TestHealthIndicator::new);
+        }
+
         HealthContributor create(Map<String, TestClient> clients) {
             return createContributor(clients);
         }
