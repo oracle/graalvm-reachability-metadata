@@ -29,6 +29,14 @@ public class Application {
         this.quitHandler = quitHandler;
     }
 
+    public boolean dispatchQuitRequest(QuitResponse response) {
+        if (quitHandler == null)
+            return false;
+
+        quitHandler.handleQuitRequestWith(new AppEvent.QuitEvent(), response);
+        return true;
+    }
+
     public boolean hasAboutHandler() {
         return aboutHandler != null;
     }

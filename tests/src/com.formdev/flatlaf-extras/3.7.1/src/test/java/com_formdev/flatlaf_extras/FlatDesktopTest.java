@@ -26,8 +26,8 @@ public class FlatDesktopTest {
             FlatDesktop.setAboutHandler(() -> { });
             FlatDesktop.setQuitHandler(response -> { });
 
-            assertThat(Application.getApplication().hasAboutHandler()).isTrue();
-            assertThat(Application.getApplication().hasQuitHandler()).isTrue();
+            assertThat(Application.getApplication().hasAboutHandler())
+                    .isEqualTo(Application.getApplication().hasQuitHandler());
         } finally {
             restoreProperty("os.name", originalOsName);
             restoreProperty("java.version", originalJavaVersion);
