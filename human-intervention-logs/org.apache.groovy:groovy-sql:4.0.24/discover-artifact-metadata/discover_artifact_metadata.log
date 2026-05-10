@@ -1,0 +1,2261 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0f58-39aa-7a90-b659-e7481890f8c2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.groovy:groovy-sql:4.0.24
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.0.24" when "$version$" is replaced with "4.0.24".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+- Set "coordinates" to "org.apache.groovy:groovy-sql:4.0.24".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.24".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata conventions and the target file, then verify the artifact URLs from Maven/upstream before editing.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|\"not-for-native-image\"|groovy-sql|org.apache.groovy' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json:2:  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+
+codex
+The target JSON only has coordinates, so this is a fresh metadata fill. I’m checking Maven Central first because the request prefers Maven-hosted sources/tests/docs when available, then I’ll fall back to the Apache Groovy repository tag for anything Maven does not publish.
+web search: 
+web search: Maven Central org.apache.groovy groovy-sql 4.0.24 sources javadoc tests
+web search: 
+web search: https://github.com/apache/groovy/tree/GROOVY_4_0_24
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 1ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.groovy</groupId>
+  <artifactId>groovy-sql</artifactId>
+  <version>4.0.24</version>
+  <name>Apache Groovy</name>
+  <description>Groovy: A powerful multi-faceted language for the JVM</description>
+  <url>https://groovy-lang.org</url>
+  <inceptionYear>2003</inceptionYear>
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>https://apache.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>glaforge</id>
+      <name>Guillaume Laforge</name>
+      <organization>Google</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bob</id>
+      <name>bob mcwhirter</name>
+      <email>bob@werken.com</email>
+      <organization>The Werken Company</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jstrachan</id>
+      <name>James Strachan</name>
+      <email>james@coredevelopers.com</email>
+      <organization>Core Developers Network</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>joe</id>
+      <name>Joe Walnes</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>skizz</id>
+      <name>Chris Stevenson</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jamiemc</id>
+      <name>Jamie McCrindle</name>
+      <organization>Three</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mattf</id>
+      <name>Matt Foemmel</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>alextkachman</id>
+      <name>Alex Tkachman</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>roshandawrani</id>
+      <name>Roshan Dawrani</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>spullara</id>
+      <name>Sam Pullara</name>
+      <email>sam@sampullara.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>kasper</id>
+      <name>Kasper Nielsen</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>travis</id>
+      <name>Travis Kay</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>zohar</id>
+      <name>Zohar Melamed</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jwilson</id>
+      <name>John Wilson</name>
+      <email>tug@wilson.co.uk</email>
+      <organization>The Wilson Partnership</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cpoirier</id>
+      <name>Chris Poirier</name>
+      <email>cpoirier@dreaming.org</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>ckl</id>
+      <name>Christiaan ten Klooster</name>
+      <email>ckl@dacelo.nl</email>
+      <organization>Dacelo WebDevelopment</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>goetze</id>
+      <name>Steve Goetze</name>
+      <email>goetze@dovetail.com</email>
+      <organization>Dovetailed Technologies, LLC</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bran</id>
+      <name>Bing Ran</name>
+      <email>b55r@sina.com</email>
+      <organization>Leadingcare</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jez</id>
+      <name>Jeremy Rayner</name>
+      <email>jeremy.rayner@gmail.com</email>
+      <organization>javanicus</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jstump</id>
+      <name>John Stump</name>
+      <email>johnstump2@yahoo.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>blackdrag</id>
+      <name>Jochen Theodorou</name>
+      <email>blackdrag@gmx.org</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>russel</id>
+      <name>Russel Winder</name>
+      <email>russel@winder.org.uk</email>
+      <organization>Concertant LLP &amp; It'z Interactive Ltd</organization>
+      <roles>
+        <role>Developer</role>
+        <role>Founder of Gant</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>phk</id>
+      <name>Pilho Kim</name>
+      <email>phkim@cluecom.co.kr</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cstein</id>
+      <name>Christian Stein</name>
+      <email>sormuras@gmx.de</email>
+      <organization>CTSR.de</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mittie</id>
+      <name>Dierk Koenig</name>
+      <organization>Karakun AG</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>paulk</id>
+      <name>Paul King</name>
+      <email>paulk@asert.com.au</email>
+      <organization>OCI, Australia</organization>
+      <roles>
+        <role>Project Manager</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>galleon</id>
+      <name>Guillaume Alleon</name>
+      <email>guillaume.alleon@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>user57</id>
+      <name>Jason Dillon</name>
+      <email>jason@planet57.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>shemnon</id>
+      <name>Danno Ferrin</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jwill</id>
+      <name>James Williams</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>timyates</id>
+      <name>Tim Yates</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>aalmiray</id>
+      <name>Andres Almiray</name>
+      <email>aalmiray@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mguillem</id>
+      <name>Marc Guillemot</name>
+      <email>mguillemot@yahoo.fr</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jimwhite</id>
+      <name>Jim White</name>
+      <email>jim@pagesmiths.com</email>
+      <organization>IFCX.org</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pniederw</id>
+      <name>Peter Niederwieser</name>
+      <email>pniederw@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>andresteingress</id>
+      <name>Andre Steingress</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>hamletdrc</id>
+      <name>Hamlet D'Arcy</name>
+      <email>hamletdrc@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>melix</id>
+      <name>Cedric Champeau</name>
+      <email>cedric.champeau@gmail.com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pascalschumacher</id>
+      <name>Pascal Schumacher</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>sunlan</id>
+      <name>Daniel Sun</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>rpopma</id>
+      <name>Remko Popma</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>grocher</id>
+      <name>Graeme Rocher</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>emilles</id>
+      <name>Eric Milles</name>
+      <organization>Thomson Reuters</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Joern Eyrich</name>
+    </contributor>
+    <contributor>
+      <name>Robert Kuzelj</name>
+    </contributor>
+    <contributor>
+      <name>Rod Cope</name>
+    </contributor>
+    <contributor>
+      <name>Yuri Schimke</name>
+    </contributor>
+    <contributor>
+      <name>James Birchfield</name>
+    </contributor>
+    <contributor>
+      <name>Robert Fuller</name>
+    </contributor>
+    <contributor>
+      <name>Sergey Udovenko</name>
+    </contributor>
+    <contributor>
+      <name>Hallvard Traetteberg</name>
+    </contributor>
+    <contributor>
+      <name>Peter Reilly</name>
+    </contributor>
+    <contributor>
+      <name>Brian McCallister</name>
+    </contributor>
+    <contributor>
+      <name>Richard Monson-Haefel</name>
+    </contributor>
+    <contributor>
+      <name>Brian Larson</name>
+    </contributor>
+    <contributor>
+      <name>Artur Biesiadowski</name>
+      <email>abies@pg.gda.pl</email>
+    </contributor>
+    <contributor>
+      <name>Ivan Z. Ganza</name>
+    </contributor>
+    <contributor>
+      <name>Larry Jacobson</name>
+    </contributor>
+    <contributor>
+      <name>Jake Gage</name>
+    </contributor>
+    <contributor>
+      <name>Arjun Nayyar</name>
+    </contributor>
+    <contributor>
+      <name>Masato Nagai</name>
+    </contributor>
+    <contributor>
+      <name>Mark Chu-Carroll</name>
+    </contributor>
+    <contributor>
+      <name>Mark Turansky</name>
+    </contributor>
+    <contributor>
+      <name>Jean-Louis Berliet</name>
+    </contributor>
+    <contributor>
+      <name>Graham Miller</name>
+    </contributor>
+    <contributor>
+      <name>Marc Palmer</name>
+    </contributor>
+    <contributor>
+      <name>Tugdual Grall</name>
+    </contributor>
+    <contributor>
+      <name>Edwin Tellman</name>
+    </contributor>
+    <contributor>
+      <name>Evan "Hippy" Slatis</name>
+    </contributor>
+    <contributor>
+      <name>Mike Dillon</name>
+    </contributor>
+    <contributor>
+      <name>Bernhard Huber</name>
+    </contributor>
+    <contributor>
+      <name>Yasuharu Nakano</name>
+    </contributor>
+    <contributor>
+      <name>Marc DeXeT</name>
+    </contributor>
+    <contributor>
+      <name>Dejan Bosanac</name>
+      <email>dejan@nighttale.net</email>
+    </contributor>
+    <contributor>
+      <name>Denver Dino</name>
+    </contributor>
+    <contributor>
+      <name>Ted Naleid</name>
+    </contributor>
+    <contributor>
+      <name>Ted Leung</name>
+    </contributor>
+    <contributor>
+      <name>Merrick Schincariol</name>
+    </contributor>
+    <contributor>
+      <name>Chanwit Kaewkasi</name>
+    </contributor>
+    <contributor>
+      <name>Stefan Matthias Aust</name>
+    </contributor>
+    <contributor>
+      <name>Andy Dwelly</name>
+    </contributor>
+    <contributor>
+      <name>Philip Milne</name>
+    </contributor>
+    <contributor>
+      <name>Tiago Fernandez</name>
+    </contributor>
+    <contributor>
+      <name>Steve Button</name>
+    </contributor>
+    <contributor>
+      <name>Joachim Baumann</name>
+    </contributor>
+    <contributor>
+      <name>Jochen Eddel+</name>
+    </contributor>
+    <contributor>
+      <name>Ilinca V. Hallberg</name>
+    </contributor>
+    <contributor>
+      <name>Björn Westlin</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Glover</name>
+    </contributor>
+    <contributor>
+      <name>Brad Long</name>
+    </contributor>
+    <contributor>
+      <name>John Bito</name>
+    </contributor>
+    <contributor>
+      <name>Jim Jagielski</name>
+    </contributor>
+    <contributor>
+      <name>Rodolfo Velasco</name>
+    </contributor>
+    <contributor>
+      <name>John Hurst</name>
+    </contributor>
+    <contributor>
+      <name>Merlyn Albery-Speyer</name>
+    </contributor>
+    <contributor>
+      <name>jeremi Joslin</name>
+    </contributor>
+    <contributor>
+      <name>UEHARA Junji</name>
+    </contributor>
+    <contributor>
+      <name>NAKANO Yasuharu</name>
+    </contributor>
+    <contributor>
+      <name>Dinko Srkoc</name>
+    </contributor>
+    <contributor>
+      <name>Raffaele Cigni</name>
+    </contributor>
+    <contributor>
+      <name>Alberto Vilches Raton</name>
+    </contributor>
+    <contributor>
+      <name>Paulo Poiati</name>
+    </contributor>
+    <contributor>
+      <name>Alexander Klein</name>
+    </contributor>
+    <contributor>
+      <name>Adam Murdoch</name>
+    </contributor>
+    <contributor>
+      <name>David Durham</name>
+    </contributor>
+    <contributor>
+      <name>Daniel Henrique Alves Lima</name>
+    </contributor>
+    <contributor>
+      <name>John Wagenleitner</name>
+    </contributor>
+    <contributor>
+      <name>Colin Harrington</name>
+    </contributor>
+    <contributor>
+      <name>Brian Alexander</name>
+    </contributor>
+    <contributor>
+      <name>Jan Weitz</name>
+    </contributor>
+    <contributor>
+      <name>Chris K Wensel</name>
+    </contributor>
+    <contributor>
+      <name>David Sutherland</name>
+    </contributor>
+    <contributor>
+      <name>Mattias Reichel</name>
+    </contributor>
+    <contributor>
+      <name>David Lee</name>
+    </contributor>
+    <contributor>
+      <name>Sergei Egorov</name>
+    </contributor>
+    <contributor>
+      <name>Hein Meling</name>
+    </contributor>
+    <contributor>
+      <name>Michael Baehr</name>
+    </contributor>
+    <contributor>
+      <name>Craig Andrews</name>
+    </contributor>
+    <contributor>
+      <name>Peter Ledbrook</name>
+    </contributor>
+    <contributor>
+      <name>Scott Stirling</name>
+    </contributor>
+    <contributor>
+      <name>Thibault Kruse</name>
+    </contributor>
+    <contributor>
+      <name>Tim Tiemens</name>
+    </contributor>
+    <contributor>
+      <name>Mike Spille</name>
+    </contributor>
+    <contributor>
+      <name>Nikolay Chugunov</name>
+    </contributor>
+    <contributor>
+      <name>Francesco Durbin</name>
+    </contributor>
+    <contributor>
+      <name>Paolo Di Tommaso</name>
+    </contributor>
+    <contributor>
+      <name>Rene Scheibe</name>
+    </contributor>
+    <contributor>
+      <name>Matias Bjarland</name>
+    </contributor>
+    <contributor>
+      <name>Tomasz Bujok</name>
+    </contributor>
+    <contributor>
+      <name>Richard Hightower</name>
+    </contributor>
+    <contributor>
+      <name>Andrey Bloschetsov</name>
+    </contributor>
+    <contributor>
+      <name>Yu Kobayashi</name>
+    </contributor>
+    <contributor>
+      <name>Nick Grealy</name>
+    </contributor>
+    <contributor>
+      <name>Vaclav Pech</name>
+    </contributor>
+    <contributor>
+      <name>Chuck Tassoni</name>
+    </contributor>
+    <contributor>
+      <name>Steven Devijver</name>
+    </contributor>
+    <contributor>
+      <name>Ben Manes</name>
+    </contributor>
+    <contributor>
+      <name>Troy Heninger</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Eisenberg</name>
+    </contributor>
+    <contributor>
+      <name>Eric Milles</name>
+    </contributor>
+    <contributor>
+      <name>Kohsuke Kawaguchi</name>
+    </contributor>
+    <contributor>
+      <name>Scott Vlaminck</name>
+    </contributor>
+    <contributor>
+      <name>Hjalmar Ekengren</name>
+    </contributor>
+    <contributor>
+      <name>Rafael Luque</name>
+    </contributor>
+    <contributor>
+      <name>Joachim Heldmann</name>
+    </contributor>
+    <contributor>
+      <name>dgouyette</name>
+    </contributor>
+    <contributor>
+      <name>Marcin Grzejszczak</name>
+    </contributor>
+    <contributor>
+      <name>Pap Lőrinc</name>
+    </contributor>
+    <contributor>
+      <name>Guillaume Balaine</name>
+    </contributor>
+    <contributor>
+      <name>Santhosh Kumar T</name>
+    </contributor>
+    <contributor>
+      <name>Alan Green</name>
+    </contributor>
+    <contributor>
+      <name>Marty Saxton</name>
+    </contributor>
+    <contributor>
+      <name>Marcel Overdijk</name>
+    </contributor>
+    <contributor>
+      <name>Jonathan Carlson</name>
+    </contributor>
+    <contributor>
+      <name>Thomas Heller</name>
+    </contributor>
+    <contributor>
+      <name>John Stump</name>
+    </contributor>
+    <contributor>
+      <name>Ivan Ganza</name>
+    </contributor>
+    <contributor>
+      <name>Alex Popescu</name>
+    </contributor>
+    <contributor>
+      <name>Martin Kempf</name>
+    </contributor>
+    <contributor>
+      <name>Martin Ghados</name>
+    </contributor>
+    <contributor>
+      <name>Martin Stockhammer</name>
+    </contributor>
+    <contributor>
+      <name>Martin C. Martin</name>
+    </contributor>
+    <contributor>
+      <name>Alexey Verkhovsky</name>
+    </contributor>
+    <contributor>
+      <name>Alberto Mijares</name>
+    </contributor>
+    <contributor>
+      <name>Matthias Cullmann</name>
+    </contributor>
+    <contributor>
+      <name>Tomek Bujok</name>
+    </contributor>
+    <contributor>
+      <name>Stephane Landelle</name>
+    </contributor>
+    <contributor>
+      <name>Stephane Maldini</name>
+    </contributor>
+    <contributor>
+      <name>Mark Volkmann</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Taylor</name>
+    </contributor>
+    <contributor>
+      <name>Vladimir Vivien</name>
+    </contributor>
+    <contributor>
+      <name>Vladimir Orany</name>
+    </contributor>
+    <contributor>
+      <name>Joe Wolf</name>
+    </contributor>
+    <contributor>
+      <name>Kent Inge Fagerland Simonsen</name>
+    </contributor>
+    <contributor>
+      <name>Tom Nichols</name>
+    </contributor>
+    <contributor>
+      <name>Ingo Hoffmann</name>
+    </contributor>
+    <contributor>
+      <name>Sergii Bondarenko</name>
+    </contributor>
+    <contributor>
+      <name>mgroovy</name>
+    </contributor>
+    <contributor>
+      <name>Dominik Przybysz</name>
+    </contributor>
+    <contributor>
+      <name>Jason Thomas</name>
+    </contributor>
+    <contributor>
+      <name>Trygve Amundsens</name>
+    </contributor>
+    <contributor>
+      <name>Morgan Hankins</name>
+    </contributor>
+    <contributor>
+      <name>Shruti Gupta</name>
+    </contributor>
+    <contributor>
+      <name>Ben Yu</name>
+    </contributor>
+    <contributor>
+      <name>Dejan Bosanac</name>
+    </contributor>
+    <contributor>
+      <name>Lidia Donajczyk-Lipinska</name>
+    </contributor>
+    <contributor>
+      <name>Peter Gromov</name>
+    </contributor>
+    <contributor>
+      <name>Johannes Link</name>
+    </contributor>
+    <contributor>
+      <name>Chris Reeves</name>
+    </contributor>
+    <contributor>
+      <name>Sean Timm</name>
+    </contributor>
+    <contributor>
+      <name>Dmitry Vyazelenko</name>
+    </contributor>
+  </contributors>
+  <mailingLists>
+    <mailingList>
+      <name>Groovy Developer List</name>
+      <archive>https://mail-archives.apache.org/mod_mbox/groovy-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Groovy User List</name>
+      <archive>https://mail-archives.apache.org/mod_mbox/groovy-users/</archive>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:git:https://github.com/apache/groovy.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/groovy.git</developerConnection>
+    <url>https://github.com/apache/groovy.git</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.apache.org/jira/browse/GROOVY</url>
+  </issueManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.groovy</groupId>
+        <artifactId>groovy-bom</artifactId>
+        <version>4.0.24</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>4.0.24</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy-sql/4.0.24/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://docs.groovy-lang.org/docs/groovy-4.0.24/html/gapi/groovy/sql/Sql.html' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+HTTP/1.1 200 OK
+Date: Sun, 10 May 2026 00:45:18 GMT
+Server: Apache/2.4.29 (Ubuntu)
+Accept-Ranges: bytes
+X-Mod-Pagespeed: 1.13.35.2-0
+Vary: Accept-Encoding
+Content-Security-Policy: default-src 'self' data: 'unsafe-inline' https://www.apachecon.com/ https://analytics.apache.org/ http://analytics.apache.org/; frame-src 'self' https://docs.groovy-lang.org/; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://analytics.apache.org/; style-src 'self' 'unsafe-inline'; frame-ancestors 'self' https://groovy-lang.org/;
+Cache-Control: max-age=0, no-cache
+Content-Length: 515753
+Content-Type: text/html; charset=windows-1252
+
+
+ exited 22 in 239ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 10 May 2026 00:45:19 GMT
+content-type: text/html
+cf-ray: 9f94eba12ccd0396-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 302ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/groovy/groovy-sql/4.0.24</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/groovy/groovy-sql/4.0.24</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="groovy-sql-4.0.24-groovydoc.jar" title="groovy-sql-4.0.24-groovydoc.jar">groovy-sql-4.0.24-groovydoc.jar</a>                   2024-11-05 01:24    140835      
+<a href="groovy-sql-4.0.24-groovydoc.jar.asc" title="groovy-sql-4.0.24-groovydoc.jar.asc">groovy-sql-4.0.24-groovydoc.jar.asc</a>               2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24-groovydoc.jar.asc.md5" title="groovy-sql-4.0.24-groovydoc.jar.asc.md5">groovy-sql-4.0.24-groovydoc.jar.asc.md5</a>           2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-groovydoc.jar.asc.sha1" title="groovy-sql-4.0.24-groovydoc.jar.asc.sha1">groovy-sql-4.0.24-groovydoc.jar.asc.sha1</a>          2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-groovydoc.jar.asc.sha256" title="groovy-sql-4.0.24-groovydoc.jar.asc.sha256">groovy-sql-4.0.24-groovydoc.jar.asc.sha256</a>        2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-groovydoc.jar.asc.sha512" title="groovy-sql-4.0.24-groovydoc.jar.asc.sha512">groovy-sql-4.0.24-groovydoc.jar.asc.sha512</a>        2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24-groovydoc.jar.md5" title="groovy-sql-4.0.24-groovydoc.jar.md5">groovy-sql-4.0.24-groovydoc.jar.md5</a>               2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-groovydoc.jar.sha1" title="groovy-sql-4.0.24-groovydoc.jar.sha1">groovy-sql-4.0.24-groovydoc.jar.sha1</a>              2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-groovydoc.jar.sha256" title="groovy-sql-4.0.24-groovydoc.jar.sha256">groovy-sql-4.0.24-groovydoc.jar.sha256</a>            2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-groovydoc.jar.sha512" title="groovy-sql-4.0.24-groovydoc.jar.sha512">groovy-sql-4.0.24-groovydoc.jar.sha512</a>            2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24-javadoc.jar" title="groovy-sql-4.0.24-javadoc.jar">groovy-sql-4.0.24-javadoc.jar</a>                     2024-11-05 01:24    191105      
+<a href="groovy-sql-4.0.24-javadoc.jar.asc" title="groovy-sql-4.0.24-javadoc.jar.asc">groovy-sql-4.0.24-javadoc.jar.asc</a>                 2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24-javadoc.jar.asc.md5" title="groovy-sql-4.0.24-javadoc.jar.asc.md5">groovy-sql-4.0.24-javadoc.jar.asc.md5</a>             2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-javadoc.jar.asc.sha1" title="groovy-sql-4.0.24-javadoc.jar.asc.sha1">groovy-sql-4.0.24-javadoc.jar.asc.sha1</a>            2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-javadoc.jar.asc.sha256" title="groovy-sql-4.0.24-javadoc.jar.asc.sha256">groovy-sql-4.0.24-javadoc.jar.asc.sha256</a>          2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-javadoc.jar.asc.sha512" title="groovy-sql-4.0.24-javadoc.jar.asc.sha512">groovy-sql-4.0.24-javadoc.jar.asc.sha512</a>          2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24-javadoc.jar.md5" title="groovy-sql-4.0.24-javadoc.jar.md5">groovy-sql-4.0.24-javadoc.jar.md5</a>                 2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-javadoc.jar.sha1" title="groovy-sql-4.0.24-javadoc.jar.sha1">groovy-sql-4.0.24-javadoc.jar.sha1</a>                2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-javadoc.jar.sha256" title="groovy-sql-4.0.24-javadoc.jar.sha256">groovy-sql-4.0.24-javadoc.jar.sha256</a>              2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-javadoc.jar.sha512" title="groovy-sql-4.0.24-javadoc.jar.sha512">groovy-sql-4.0.24-javadoc.jar.sha512</a>              2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24-sources.jar" title="groovy-sql-4.0.24-sources.jar">groovy-sql-4.0.24-sources.jar</a>                     2024-11-05 01:24     64044      
+<a href="groovy-sql-4.0.24-sources.jar.asc" title="groovy-sql-4.0.24-sources.jar.asc">groovy-sql-4.0.24-sources.jar.asc</a>                 2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24-sources.jar.asc.md5" title="groovy-sql-4.0.24-sources.jar.asc.md5">groovy-sql-4.0.24-sources.jar.asc.md5</a>             2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-sources.jar.asc.sha1" title="groovy-sql-4.0.24-sources.jar.asc.sha1">groovy-sql-4.0.24-sources.jar.asc.sha1</a>            2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-sources.jar.asc.sha256" title="groovy-sql-4.0.24-sources.jar.asc.sha256">groovy-sql-4.0.24-sources.jar.asc.sha256</a>          2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-sources.jar.asc.sha512" title="groovy-sql-4.0.24-sources.jar.asc.sha512">groovy-sql-4.0.24-sources.jar.asc.sha512</a>          2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24-sources.jar.md5" title="groovy-sql-4.0.24-sources.jar.md5">groovy-sql-4.0.24-sources.jar.md5</a>                 2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-sources.jar.sha1" title="groovy-sql-4.0.24-sources.jar.sha1">groovy-sql-4.0.24-sources.jar.sha1</a>                2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-sources.jar.sha256" title="groovy-sql-4.0.24-sources.jar.sha256">groovy-sql-4.0.24-sources.jar.sha256</a>              2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-sources.jar.sha512" title="groovy-sql-4.0.24-sources.jar.sha512">groovy-sql-4.0.24-sources.jar.sha512</a>              2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.jar" title="groovy-sql-4.0.24.jar">groovy-sql-4.0.24.jar</a>                             2024-11-05 01:24     79568      
+<a href="groovy-sql-4.0.24.jar.asc" title="groovy-sql-4.0.24.jar.asc">groovy-sql-4.0.24.jar.asc</a>                         2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24.jar.asc.md5" title="groovy-sql-4.0.24.jar.asc.md5">groovy-sql-4.0.24.jar.asc.md5</a>                     2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.jar.asc.sha1" title="groovy-sql-4.0.24.jar.asc.sha1">groovy-sql-4.0.24.jar.asc.sha1</a>                    2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.jar.asc.sha256" title="groovy-sql-4.0.24.jar.asc.sha256">groovy-sql-4.0.24.jar.asc.sha256</a>                  2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.jar.asc.sha512" title="groovy-sql-4.0.24.jar.asc.sha512">groovy-sql-4.0.24.jar.asc.sha512</a>                  2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.jar.md5" title="groovy-sql-4.0.24.jar.md5">groovy-sql-4.0.24.jar.md5</a>                         2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.jar.sha1" title="groovy-sql-4.0.24.jar.sha1">groovy-sql-4.0.24.jar.sha1</a>                        2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.jar.sha256" title="groovy-sql-4.0.24.jar.sha256">groovy-sql-4.0.24.jar.sha256</a>                      2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.jar.sha512" title="groovy-sql-4.0.24.jar.sha512">groovy-sql-4.0.24.jar.sha512</a>                      2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.module" title="groovy-sql-4.0.24.module">groovy-sql-4.0.24.module</a>                          2024-11-05 01:24      5806      
+<a href="groovy-sql-4.0.24.module.asc" title="groovy-sql-4.0.24.module.asc">groovy-sql-4.0.24.module.asc</a>                      2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24.module.asc.md5" title="groovy-sql-4.0.24.module.asc.md5">groovy-sql-4.0.24.module.asc.md5</a>                  2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.module.asc.sha1" title="groovy-sql-4.0.24.module.asc.sha1">groovy-sql-4.0.24.module.asc.sha1</a>                 2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.module.asc.sha256" title="groovy-sql-4.0.24.module.asc.sha256">groovy-sql-4.0.24.module.asc.sha256</a>               2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.module.asc.sha512" title="groovy-sql-4.0.24.module.asc.sha512">groovy-sql-4.0.24.module.asc.sha512</a>               2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.module.md5" title="groovy-sql-4.0.24.module.md5">groovy-sql-4.0.24.module.md5</a>                      2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.module.sha1" title="groovy-sql-4.0.24.module.sha1">groovy-sql-4.0.24.module.sha1</a>                     2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.module.sha256" title="groovy-sql-4.0.24.module.sha256">groovy-sql-4.0.24.module.sha256</a>                   2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.module.sha512" title="groovy-sql-4.0.24.module.sha512">groovy-sql-4.0.24.module.sha512</a>                   2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.pom" title="groovy-sql-4.0.24.pom">groovy-sql-4.0.24.pom</a>                             2024-11-05 01:24     22570      
+<a href="groovy-sql-4.0.24.pom.asc" title="groovy-sql-4.0.24.pom.asc">groovy-sql-4.0.24.pom.asc</a>                         2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24.pom.asc.md5" title="groovy-sql-4.0.24.pom.asc.md5">groovy-sql-4.0.24.pom.asc.md5</a>                     2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.pom.asc.sha1" title="groovy-sql-4.0.24.pom.asc.sha1">groovy-sql-4.0.24.pom.asc.sha1</a>                    2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.pom.asc.sha256" title="groovy-sql-4.0.24.pom.asc.sha256">groovy-sql-4.0.24.pom.asc.sha256</a>                  2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.pom.asc.sha512" title="groovy-sql-4.0.24.pom.asc.sha512">groovy-sql-4.0.24.pom.asc.sha512</a>                  2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.pom.md5" title="groovy-sql-4.0.24.pom.md5">groovy-sql-4.0.24.pom.md5</a>                         2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.pom.sha1" title="groovy-sql-4.0.24.pom.sha1">groovy-sql-4.0.24.pom.sha1</a>                        2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.pom.sha256" title="groovy-sql-4.0.24.pom.sha256">groovy-sql-4.0.24.pom.sha256</a>                      2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.pom.sha512" title="groovy-sql-4.0.24.pom.sha512">groovy-sql-4.0.24.pom.sha512</a>                      2024-11-05 01:24       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.apache.groovy groovy-sql 4.0.24
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/main/java' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql?ref=GROOVY_4_0_24' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 159ms:
+[
+  {
+    "name": "build.gradle",
+    "path": "subprojects/groovy-sql/build.gradle",
+    "sha": "3b638f0787afea00e87f2fcbb4cbae35cc3daac5",
+    "size": 1853,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/build.gradle?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-sql/build.gradle",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/blobs/3b638f0787afea00e87f2fcbb4cbae35cc3daac5",
+    "download_url": "https://raw.githubusercontent.com/apache/groovy/GROOVY_4_0_24/subprojects/groovy-sql/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/build.gradle?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/blobs/3b638f0787afea00e87f2fcbb4cbae35cc3daac5",
+      "html": "https://github.com/apache/groovy/blob/GROOVY_4_0_24/subprojects/groovy-sql/build.gradle"
+    }
+  },
+  {
+    "name": "src",
+    "path": "subprojects/groovy-sql/src",
+    "sha": "b2096ea3205c78308267cc2f428dae4cfdf9239d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/b2096ea3205c78308267cc2f428dae4cfdf9239d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/b2096ea3205c78308267cc2f428dae4cfdf9239d",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src"
+    }
+  }
+]
+
+ succeeded in 565ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 00:45:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"dd819d6defecd9c84bad3a341b9222c0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=gWWCuLNgu7Q9abBlkZ5qxhHfqbU2rhkxy4CDGYqNUfdW6NtNLRawL39%2BNmJrCkrYn8Y3iJeoLOPoiEBrulB%2BDkMQlgaf1teTDSIoUV9TWcmyNGpVmX3wR7Pz76nW2cD0XRPhp7cbbfKwIP8KtuAd2kjuBlMg3DGsN5C1QglZ%2FGSQRqIGIQF9mIERSRwP8qs2sHXdjTYWYYNs4anNu3VEYmCuxoJIPWANzU6amMJHvPznBuQ5obuCGkFvjMOc0pZ8FJHYiU76SskcUa3RpRtbDA%3D%3D--ysNndSGGMGG7Do%2BP--FBjjk4VSaXoy2fb7Klgkxg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.397050348.1778373931; expires=Mon, 10 May 2027 00:45:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 10 May 2027 00:45:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510D:11CD58:F75294D:BAD7DBD:69FFD52B
+
+
+ succeeded in 564ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 00:45:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0b19c8d738f231c6b9b2853815ceffb5"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=NBvqzLfogVl%2FV78MGnRBGWXVtXin0755NGL6FlabSVgfVLtwD7QlE3WlWaic9YLYW4UO90ld7JjF8P5HwKNYOcwFKGjmbGO0t1EVCF5TDNrExId%2BVhhxh41N3P38SGG1RieNdCzPudEsAsN8e9CrhzIJ7Y6kNAnx56gdErLF32adMmygoi%2BlzdJREw88cuD1ef0wmdMk%2Fc98Clg8pe8Jbq1Bm0tiUXx0EvF3xkD23oxgv7iTxObE06t%2BIZUYy30tCX33JDjhRnwsN2%2BaqtkmnQ%3D%3D--AyEVHATVABkpgolt--IYgOb9oLFewjMMi6l3q5Dg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.263575559.1778373931; expires=Mon, 10 May 2027 00:45:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 10 May 2027 00:45:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FD:9E862:F43D088:B871959:69FFD52B
+
+
+ succeeded in 562ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 00:45:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"34122732c016384e8402aa2594d31828"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=t0pvK%2FGceQuT0KsQ0ExbKh%2F7Kvf52lWP8Q%2FaVtDHmn0diDqtuNMTSvR1A2ep27PZ1qFrM%2FTM3wLDJsn8BL0tTzAB8koQu3N9LRHH2C%2F50EZgw%2FIVqulLNz67uLBPgkDlz2v5JuHB2f8fe9MrWXvpBQErrl1rpqkFUS42NLnt9CaWO6PYDoSkGIdVS8SlMaWKSxQkUKD13FgZQBaJG84gaMwuZV0QjzRGje1zoZIBG1JukGWh5bMtmNoNg7Axf9c3eaGoAeLukersn2KwSLiiUw%3D%3D--9G%2Fh8YcPSz0KrPkW--eoDcjbyHrz63fYDnNfRzeA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.96043548.1778373931; expires=Mon, 10 May 2027 00:45:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 10 May 2027 00:45:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5137:93B09:FA67DF8:BCA9C15:69FFD52B
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"|\"source-code-url\"|\"test-code-url\"|\"language\"' . -g '*.json' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+./metadata/org.eclipse.jetty/jetty-alpn-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-server/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.eclipse.jetty/jetty-alpn-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-freespec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-freespec_2.13/$version$/scalatest-freespec_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-freespec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/freespec-test/src/test/scala/org/scalatest/freespec",
+./metadata/org.scalatest/scalatest-freespec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-freespec_2.13/$version$/scalatest-freespec_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-freespec_2.13/index.json:10:    "language" : {
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:66:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+./metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language" : {
+./metadata/org.eclipse.jetty/jetty-alpn-client/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-client/index.json:7:    "test-code-url": "N/A",
+./metadata/org.eclipse.jetty/jetty-alpn-client/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-client/index.json:21:    "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-client/index.json:23:    "test-code-url": "N/A",
+./metadata/org.eclipse.jetty/jetty-alpn-client/index.json:24:    "documentation-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-security/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-security/$version$/jetty-security-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-security/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-security/src/test",
+./metadata/org.eclipse.jetty/jetty-security/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-security/$version$/jetty-security-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:7:    "test-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:120:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-featurespec_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-featurespec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test",
+./metadata/org.scalatest/scalatest-featurespec_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-featurespec_2.13/index.json:10:    "language" : {
+./metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:56:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:58:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:59:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:71:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-io/index.json:73:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+./metadata/org.eclipse.jetty/jetty-io/index.json:74:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-funsuite_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-funsuite_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+./metadata/org.scalatest/scalatest-funsuite_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-funsuite_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-refspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-refspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+./metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-refspec_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-funspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_2.13/$version$/scalatest-funspec_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-funspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funspec-test/src/test/scala/org/scalatest/funspec",
+./metadata/org.scalatest/scalatest-funspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_2.13/$version$/scalatest-funspec_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-funspec_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+./metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+./metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+./metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:10:    "language": {
+./metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+./metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:26:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:63:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:65:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-client/src/test",
+./metadata/org.eclipse.jetty/jetty-client/index.json:66:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+./metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:26:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:28:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+./metadata/org.eclipse.jetty/jetty-server/index.json:29:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:56:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:58:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-server/src/test",
+./metadata/org.eclipse.jetty/jetty-server/index.json:59:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-ee/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/$version$/jetty-ee-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-ee/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-ee/src/test",
+./metadata/org.eclipse.jetty/jetty-ee/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/$version$/jetty-ee-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 00:45:39 GMT
+content-type: application/java-archive
+content-length: 64044
+cf-ray: 9f94ec1ebf7fbc4a-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 225639
+etag: "a62c9e9bd97ed184040949072b218d3e"
+last-modified: Tue, 05 Nov 2024 01:25:03 GMT
+x-checksum-md5: a62c9e9bd97ed184040949072b218d3e
+x-checksum-sha1: 5d9e5cd9bacbe51a5eb85d849e16d1cc8b3e5e0a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src?ref=GROOVY_4_0_24' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-groovydoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 152ms:
+[
+  {
+    "name": "main",
+    "path": "subprojects/groovy-sql/src/main",
+    "sha": "3464602b0ba93817a2ef0486326df865eb4c7857",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/main?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/main",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/3464602b0ba93817a2ef0486326df865eb4c7857",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/main?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/3464602b0ba93817a2ef0486326df865eb4c7857",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/main"
+    }
+  },
+  {
+    "name": "spec",
+    "path": "subprojects/groovy-sql/src/spec",
+    "sha": "f03ef2cdf3f432b9dac6fa9d04061f5e78b52808",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/spec?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/spec",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/f03ef2cdf3f432b9dac6fa9d04061f5e78b52808",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/spec?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/f03ef2cdf3f432b9dac6fa9d04061f5e78b52808",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/spec"
+    }
+  },
+  {
+    "name": "test",
+    "path": "subprojects/groovy-sql/src/test",
+    "sha": "c16fec38bfa71eca664c6095115e3527fa132c9d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/test?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/test",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/c16fec38bfa71eca664c6095115e3527fa132c9d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/test?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/c16fec38bfa71eca664c6095115e3527fa132c9d",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/test"
+    }
+  }
+]
+
+ succeeded in 382ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 00:45:39 GMT
+content-type: application/java-archive
+content-length: 140835
+cf-ray: 9f94ec1eb972931a-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "4edf5d591733af3c3507955d579b7708"
+last-modified: Tue, 05 Nov 2024 01:25:12 GMT
+x-checksum-md5: 4edf5d591733af3c3507955d579b7708
+x-checksum-sha1: b32554ae0b7cbd18c0834499e0e436d2443f8989
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"' metadata/org.scalatest metadata/org.eclipse.jetty metadata/org.apache.groovy build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+rg: metadata/org.apache.groovy: No such file or directory (os error 2)
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.eclipse.jetty/jetty-session/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:6:    "repository-url": "https://github.com/scalatest/scalatest",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:6:    "repository-url": "https://github.com/jetty/jetty.project",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-compatible/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.eclipse.jetty/jetty-io/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:57:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:72:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:6:    "repository-url": "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:22:    "repository-url": "https://github.com/jetty/jetty.project",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-security/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-ee/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:7:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:25:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:64:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:91:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:112:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:27:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:57:    "repository-url" : "https://github.com/jetty/jetty.project",
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 00:45:45 GMT
+content-type: application/java-archive
+content-length: 64044
+cf-ray: 9f94ec453ba0bc12-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 641274
+etag: "a62c9e9bd97ed184040949072b218d3e"
+last-modified: Tue, 05 Nov 2024 01:25:03 GMT
+x-checksum-md5: a62c9e9bd97ed184040949072b218d3e
+x-checksum-sha1: 5d9e5cd9bacbe51a5eb85d849e16d1cc8b3e5e0a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-groovydoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ exited 22 in 255ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 10 May 2026 00:45:45 GMT
+content-type: text/html
+cf-ray: 9f94ec45c9c3bac5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 355ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 00:45:45 GMT
+content-type: application/java-archive
+content-length: 140835
+cf-ray: 9f94ec45399bbab0-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "4edf5d591733af3c3507955d579b7708"
+last-modified: Tue, 05 Nov 2024 01:25:12 GMT
+x-checksum-md5: 4edf5d591733af3c3507955d579b7708
+x-checksum-sha1: b32554ae0b7cbd18c0834499e0e436d2443f8989
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+Maven Central has the main JAR, sources JAR, and Groovydoc/Javadoc JARs, but no `tests.jar` for this artifact. The upstream tests are in the Apache Groovy tag; I’m checking whether there is a versioned Apache source distribution URL that can satisfy the `$version$` placeholder requirement for tests without hard-coding Groovy’s underscore tag name.
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://downloads.apache.org/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/1.1 404 Not Found
+Date: Sun, 10 May 2026 00:45:56 GMT
+Server: Apache
+Content-Type: text/html; charset=iso-8859-1
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://archive.apache.org/dist/groovy/4.0.24/sources/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/groovy/tree/GROOVY_4.0.24/subprojects/groovy-sql/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 112ms:
+HTTP/1.1 200 OK
+Date: Sun, 10 May 2026 00:45:57 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Fri, 08 Nov 2024 02:06:26 GMT
+ETag: "90e888-6265d32c93c0b"
+Accept-Ranges: bytes
+Content-Length: 9496712
+Content-Type: application/zip
+
+
+ succeeded in 135ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/groovy/4.0.24/sources</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/groovy/4.0.24/">Parent Directory</a>                                         -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="apache-groovy-src-4.0.24.zip">apache-groovy-src-4.0.24.zip</a>        2024-11-08 02:06  9.1M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="apache-groovy-src-4.0.24.zip.asc">apache-groovy-src-4.0.24.zip.asc</a>    2024-11-08 02:06  848   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="apache-groovy-src-4.0.24.zip.sha256">apache-groovy-src-4.0.24.zip.sha256</a> 2024-11-08 02:06   66   
+<hr></pre>
+</body></html>
+
+ exited 22 in 449ms:
+HTTP/2 404 
+date: Sun, 10 May 2026 00:45:57 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=jSn%2FXPlsdSxYTB8yjBsJyOmcXSyawKqnldGpqi5B%2FFoEFuJL4TbNzjjVRMqiyqCpNz8PhgnB5L8ib71AM%2BUT0Jt1qCWZBfIOjfsYmW2csClbpH%2Bd%2F7uFR9eL7RxDfDZoWrpkwmJ9J5zAwltGlgWsKXXySjBhPC7HYnPkxCNsLx2NX2tJJUGt0uS3dJs74H7X%2Bq8T3v3F71QDvyNNYIFYrqB53bZ7wydSY4W0h5qeC%2F9kLSoivgECn3CcnTPMDpUT%2B4RugMlSqjJY498TeoR87w%3D%3D--u1a%2F2BI6tFy%2BJlTc--XvO4wFqUNOaAjpwJzVJvIA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.420089215.1778373956; expires=Mon, 10 May 2027 00:45:56 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 10 May 2027 00:45:56 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5102:1F0377:FBF6612:BE1BF9A:69FFD544
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24.module | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.apache.groovy",
+    "module": "groovy-sql",
+    "version": "4.0.24",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "groovydocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "groovydoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "groovy-sql-4.0.24-groovydoc.jar",
+          "url": "groovy-sql-4.0.24-groovydoc.jar",
+          "size": 140835,
+          "sha512": "21ed098f7db99b61e521e1fcb7e73a172f964431dff1ae27190be6646fffbbe56ceb82e3219432f303f10695d45c864d665bcbb47a1e9c2cf7952be93c2c3c32",
+          "sha256": "b97ea923fd94d2a2b861a61faa2d005fc01be8364173060490c384f751d86247",
+          "sha1": "b32554ae0b7cbd18c0834499e0e436d2443f8989",
+          "md5": "4edf5d591733af3c3507955d579b7708"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "groovy-sql-4.0.24-javadoc.jar",
+          "url": "groovy-sql-4.0.24-javadoc.jar",
+          "size": 191105,
+          "sha512": "e6be17e9f3b22bb481c6a2f620303b970cf2786d8e9a8079550aefcf2abd12ad6ae0c4ae82ebd446805f5a0b1d517748d9f02ead3af8e711fb7a5adc9d176be3",
+          "sha256": "b0fe440d0fd03949ae1f9327307e0b3d70ffba6bdd507ad5063e6d1ec042d1a8",
+          "sha1": "e5d4fcb5ca6ab2da0b832f484cb9a6dd6976ec58",
+          "md5": "574335dfe82e33ddb540aababe12d8f7"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "groovy-sql-4.0.24-sources.jar",
+          "url": "groovy-sql-4.0.24-sources.jar",
+          "size": 64044,
+          "sha512": "2273f2404c311ead821a29a3743c3d1a70337778ab647958102858db399e4400a18464c595ab8d53da9522b1e4acba057ad438896268f0d6f4881b9b9e7529df",
+          "sha256": "58e61856017924a069ef0221524f899114faf9cb14a3bf9262e9369cf2d73249",
+          "sha1": "5d9e5cd9bacbe51a5eb85d849e16d1cc8b3e5e0a",
+          "md5": "a62c9e9bd97ed184040949072b218d3e"
+        }
+      ]
+    },
+    {
+      "name": "groovyApiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy-bom",
+          "version": {
+            "requires": "4.0.24"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy",
+          "version": {
+            "requires": "4.0.24"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "groovy-sql-4.0.24.jar",
+          "url": "groovy-sql-4.0.24.jar",
+          "size": 79568,
+          "sha512": "7feb3eb902f064b7ef2e48c2811900747b72df51a51da788e1525e3986047991b01976611b87cedb49e1dccc2e69866657d67fa3bcc5269c782a9ff1e541ccd3",
+          "sha256": "3e69b76a1df309e852f8d5b68893051a278d7118543eb833b398811c337a6935",
+          "sha1": "0533cc61c311ffc0e7693892b7711782b2678023",
+          "md5": "cd9ffd3ca5b5602e377eadb925c0ecf7"
+        }
+      ],
+      "capabilities": [
+        {
+          "group": "org.apache.groovy",
+          "name": "groovy-sql",
+          "version": "4.0.24"
+        },
+        {
+          "group": "org.codehaus.groovy",
+          "name": "groovy-sql",
+          "version": "4.0.24"
+        }
+      ]
+    },
+    {
+      "name": "groovyRuntimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy-bom",
+          "version": {
+            "requires": "4.0.24"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy",
+          "version": {
+            "requires": "4.0.24"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "groovy-sql-4.0.24.jar",
+          "url": "groovy-sql-4.0.24.jar",
+          "size": 79568,
+          "sha512": "7feb3eb902f064b7ef2e48c2811900747b72df51a51da788e1525e3986047991b01976611b87cedb49e1dccc2e69866657d67fa3bcc5269c782a9ff1e541ccd3",
+          "sha256": "3e69b76a1df309e852f8d5b68893051a278d7118543eb833b398811c337a6935",
+          "sha1": "0533cc61c311ffc0e7693892b7711782b2678023",
+          "md5": "cd9ffd3ca5b5602e377eadb925c0ecf7"
+        }
+      ],
+      "capabilities": [
+        {
+          "group": "org.apache.groovy",
+          "name": "groovy-sql",
+          "version": "4.0.24"
+        },
+        {
+          "group": "org.codehaus.groovy",
+          "name": "groovy-sql",
+          "version": "4.0.24"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-sources.jar -o /tmp/groovy-sql-4.0.24-sources.jar && jar tf /tmp/groovy-sql-4.0.24-sources.jar | head -40' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/groovy-release-info.properties
+META-INF/LICENSE
+META-INF/NOTICE
+groovy/
+groovy/sql/
+groovy/sql/BatchingPreparedStatementWrapper.java
+groovy/sql/BatchingStatementWrapper.java
+groovy/sql/CallResultSet.java
+groovy/sql/DataSet.java
+groovy/sql/ExpandedVariable.java
+groovy/sql/ExtractIndexAndSql.java
+groovy/sql/GroovyResultSet.java
+groovy/sql/GroovyResultSetExtension.java
+groovy/sql/GroovyResultSetProxy.java
+groovy/sql/GroovyRowResult.java
+groovy/sql/InOutParameter.java
+groovy/sql/InParameter.java
+groovy/sql/OutParameter.java
+groovy/sql/ResultSetMetaDataWrapper.java
+groovy/sql/ResultSetOutParameter.java
+groovy/sql/Sql.java
+groovy/sql/SqlOrderByVisitor.java
+groovy/sql/SqlWhereVisitor.java
+groovy/sql/SqlWithParams.java
+groovy/sql/package.html
+org/
+org/apache/
+org/apache/groovy/
+org/apache/groovy/sql/
+org/apache/groovy/sql/extensions/
+org/apache/groovy/sql/extensions/SqlExtensions.java
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24.jar -o /tmp/groovy-sql-4.0.24.jar && jar tf /tmp/groovy-sql-4.0.24.jar | head -40' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/groovy-release-info.properties
+META-INF/groovy/
+META-INF/groovy/org.codehaus.groovy.runtime.ExtensionModule
+groovy/
+groovy/sql/
+groovy/sql/BatchingPreparedStatementWrapper.class
+groovy/sql/BatchingStatementWrapper.class
+groovy/sql/CallResultSet.class
+groovy/sql/DataSet$1.class
+groovy/sql/DataSet.class
+groovy/sql/ExpandedVariable.class
+groovy/sql/ExtractIndexAndSql.class
+groovy/sql/GroovyResultSet.class
+groovy/sql/GroovyResultSetExtension.class
+groovy/sql/GroovyResultSetProxy$DummyResultSet.class
+groovy/sql/GroovyResultSetProxy.class
+groovy/sql/GroovyRowResult.class
+groovy/sql/InOutParameter.class
+groovy/sql/InParameter.class
+groovy/sql/OutParameter.class
+groovy/sql/ResultSetMetaDataWrapper.class
+groovy/sql/ResultSetOutParameter.class
+groovy/sql/Sql$1.class
+groovy/sql/Sql$10.class
+groovy/sql/Sql$11.class
+groovy/sql/Sql$12.class
+groovy/sql/Sql$13.class
+groovy/sql/Sql$14.class
+groovy/sql/Sql$15.class
+groovy/sql/Sql$16.class
+groovy/sql/Sql$17.class
+groovy/sql/Sql$18.class
+groovy/sql/Sql$19.class
+groovy/sql/Sql$2.class
+groovy/sql/Sql$20.class
+groovy/sql/Sql$21.class
+groovy/sql/Sql$22.class
+groovy/sql/Sql$23.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/groovy/GROOVY_4_0_24/subprojects/groovy-sql/build.gradle | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 252ms:
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ */
+plugins {
+    id 'org.apache.groovy-library'
+}
+
+dependencies {
+    api rootProject // Sql uses Closure...
+    testImplementation group: 'org.hsqldb', name: 'hsqldb', version: '2.7.3', classifier: 'jdk8'
+// uncomment to test with other databases (requires changes elsewhere too)
+//    testImplementation 'com.h2database:h2:1.3.164'
+//    testImplementation 'hsqldb:hsqldb:1.8.0.10'
+    testImplementation projects.groovyTest
+    testRuntimeOnly(project(':')) {
+        because "Tests are using Grapes"
+        capabilities {
+            requireCapability("org.apache.groovy:groovy-grapes")
+        }
+    }
+    testCompileOnly(projects.groovyMacro) {
+        because "tests are using macro methods"
+    }
+}
+
+tasks.withType(Test).configureEach {
+    excludes = ['**/*TestCase.class', '**/*$*.class']
+// required for DataSet tests
+    classpath = classpath + files('src/test/groovy') + files('src/spec/test')
+}
+
+groovyLibrary {
+    moduleDescriptor {
+        extensionClasses = 'org.apache.groovy.sql.extensions.SqlExtensions'
+    }
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://docs.groovy-lang.org/docs/groovy-4.0.24/html/documentation/sql-userguide.html' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+HTTP/1.1 200 OK
+Date: Sun, 10 May 2026 00:46:17 GMT
+Server: Apache/2.4.29 (Ubuntu)
+Accept-Ranges: bytes
+X-Mod-Pagespeed: 1.13.35.2-0
+Vary: Accept-Encoding
+Content-Security-Policy: default-src 'self' data: 'unsafe-inline' https://www.apachecon.com/ https://analytics.apache.org/ http://analytics.apache.org/; frame-src 'self' https://docs.groovy-lang.org/; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://analytics.apache.org/; style-src 'self' 'unsafe-inline'; frame-ancestors 'self' https://groovy-lang.org/;
+Cache-Control: max-age=0, no-cache
+Content-Length: 41480
+Content-Type: text/html
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://docs.groovy-lang.org/docs/groovy-4.0.24/html/documentation/sql-userguide.html | sed -n '1,60p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html lang="">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.20">
+<title>Interacting with a SQL database</title>
+<link rel="stylesheet" href="assets/css/A.style.css.pagespeed.cf.jbv2jICbsG.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
+<style>.listingblock a.view-result{float:right;font-weight:normal;text-decoration:none;font-size:.9em;line-height:1.4;margin-top:.15em}.exampleblock.result{display:none}</style>
+<script src='assets/js/jquery-min-2.1.1.js'></script>
+<script src='assets/js/view-example.js'></script></head>
+<body id="processing-sql" class="book toc2 toc-left">
+<div id="header">
+<h1>Interacting with a SQL database</h1>
+<div class="details">
+<span id="revnumber">version 4.0.24</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_connecting_to_the_database">1. Connecting to the database</a>
+<ul class="sectlevel2">
+<li><a href="#_connecting_with_a_datasource">1.1. Connecting with a DataSource</a></li>
+<li><a href="#_connecting_using_grab">1.2. Connecting using @Grab</a></li>
+</ul>
+</li>
+<li><a href="#_executing_sql">2. Executing SQL</a>
+<ul class="sectlevel2">
+<li><a href="#_creating_tables">2.1. Creating tables</a></li>
+</ul>
+</li>
+<li><a href="#_basic_crud_operations">3. Basic CRUD operations</a>
+<ul class="sectlevel2">
+<li><a href="#_creatinginserting_data">3.1. Creating/Inserting data</a></li>
+<li><a href="#_reading_rows">3.2. Reading rows</a></li>
+<li><a href="#_updating_rows">3.3. Updating rows</a></li>
+<li><a href="#_deleting_rows">3.4. Deleting rows</a></li>
+</ul>
+</li>
+<li><a href="#_advanced_sql_operations">4. Advanced SQL operations</a>
+<ul class="sectlevel2">
+<li><a href="#_working_with_transactions">4.1. Working with transactions</a></li>
+<li><a href="#_using_batches">4.2. Using batches</a></li>
+<li><a href="#_performing_pagination">4.3. Performing pagination</a></li>
+<li><a href="#_fetching_metadata">4.4. Fetching metadata</a></li>
+<li><a href="#_named_and_named_ordinal_parameters">4.5. Named and named-ordinal parameters</a></li>
+<li><a href="#_stored_procedures">4.6. Stored procedures</a></li>
+</ul>
+</li>
+<li><a href="#_using_datasets">5. Using DataSets</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip -o /tmp/apache-groovy-src-4.0.24.zip && unzip -l /tmp/apache-groovy-src-4.0.24.zip '*/subprojects/groovy-sql/src/test/*' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 219ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 00:46:17 GMT
+content-type: application/java-archive
+content-length: 191105
+cf-ray: 9f94ed0d0840bb10-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "574335dfe82e33ddb540aababe12d8f7"
+last-modified: Tue, 05 Nov 2024 01:25:10 GMT
+x-checksum-md5: 574335dfe82e33ddb540aababe12d8f7
+x-checksum-sha1: e5d4fcb5ca6ab2da0b832f484cb9a6dd6976ec58
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1288ms:
+Archive:  /tmp/apache-groovy-src-4.0.24.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/
+     7902  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/ExtractIndexAndSqlTest.groovy
+     4249  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/GroovyRowResultTest.groovy
+      906  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/Person.groovy
+     4454  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/PersonTest.groovy
+    10778  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlBatchTest.groovy
+    10673  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlCacheTest.groovy
+    12300  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlCallTest.groovy
+    20556  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlCompleteTest.groovy
+     1268  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlCompleteWithoutDataSourceTest.groovy
+     4314  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlHelperTestCase.groovy
+     5078  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlRowsTest.groovy
+     2967  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlSTCTest.groovy
+     2480  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlStatementTest.groovy
+     9501  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlTest.groovy
+     2677  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlTestConstants.groovy
+     1323  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlTransactionConnectionTest.groovy
+     1310  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlTransactionDataSourceTest.groovy
+     7007  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlTransactionTestCase.groovy
+     1247  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlWithBuilderTest.groovy
+     2487  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-sql/src/test/groovy/groovy/sql/SqlWithTypedResultsTest.groovy
+---------                     -------
+   113477                     24 files
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/groovy/git/matching-refs/tags/GROOVY_4_0_24'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/groovy/git/matching-refs/tags/4.0.24'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/groovy/git/matching-refs/tags/groovy-4.0.24'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/groovy/tree/4.0.24/subprojects/groovy-sql/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 161ms:
+[
+
+]
+
+ succeeded in 162ms:
+[
+
+]
+
+ succeeded in 172ms:
+[
+  {
+    "ref": "refs/tags/GROOVY_4_0_24",
+    "node_id": "MDM6UmVmMzQwMzk2OTA6cmVmcy90YWdzL0dST09WWV80XzBfMjQ=",
+    "url": "https://api.github.com/repos/apache/groovy/git/refs/tags/GROOVY_4_0_24",
+    "object": {
+      "sha": "c37125802f4ed0db459927b6782b4806cf1d331d",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/groovy/git/tags/c37125802f4ed0db459927b6782b4806cf1d331d"
+    }
+  }
+]
+
+ exited 22 in 414ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 10 May 2026 00:46:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=vMN4noVngth8GAFK6Z1vp1DY0Z%2FxM9OEwZmrGZ%2B2K7hBi9GWlY58jpnoqAVpJQ9LSF4t5EN1MLFKRD%2FzjDCmwHRLTChUiE7rYEc85Q1t5f17lDPPrVY87I5PLhWZYYjiWwAUmyqIom9dDfTuxh8wwkn%2FOxpxgpF1RKVSg7xapeCFPyslDG0sAYurkWK9P0Nk%2FfIVJ9oTdT0f4RpAik7IJyCehs6zV9wbZrk%2Ff5C6JiNNeq4zm9ZBptg30MOSJysOrvre%2BCuLbi7LYFNLAaHOGQ%3D%3D--weBkk0mzrtjiLIwn--mrNbyWJCArUCV4aFx7xfPQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2016625723.1778373989; expires=Mon, 10 May 2027 00:46:29 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 10 May 2027 00:46:29 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5108:1F0377:FC044A1:BE276A3:69FFD565
+
+
+codex
+I found enough evidence to fill the entry: Maven for sources, the Apache source distribution for the test suite because no Maven test artifact exists, and the versioned Groovy SQL guide for documentation. I’m going to update only the requested JSON file and leave the Native Image exclusion fields absent because the artifact is a JVM JAR with `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+index 52ad6f1ad3f5f18831f1a20cacc9d68481f086fd..738b525737bac6f65810d66b599b9594f3b18f10
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/groovy",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://docs.groovy-lang.org/docs/groovy-$version$/html/documentation/sql-userguide.html",
++  "description" : "Apache Groovy SQL adds the groovy.sql API for working with relational databases through JDBC from Groovy code. It provides conveniences for executing queries and updates, parameter binding, result-set handling, batching, transactions, and DataSet-style data access.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+index 52ad6f1ad3f5f18831f1a20cacc9d68481f086fd..738b525737bac6f65810d66b599b9594f3b18f10
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/groovy",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://docs.groovy-lang.org/docs/groovy-$version$/html/documentation/sql-userguide.html",
++  "description" : "Apache Groovy SQL adds the groovy.sql API for working with relational databases through JDBC from Groovy code. It provides conveniences for executing queries and updates, parameter binding, result-set handling, batching, transactions, and DataSet-style data access.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.groovy:groovy-sql:4.0.24",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/groovy",
+  "test-code-url": "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+  "documentation-url": "https://docs.groovy-lang.org/docs/groovy-$version$/html/documentation/sql-userguide.html",
+  "description": "Apache Groovy SQL adds the groovy.sql API for working with relational databases through JDBC from Groovy code. It provides conveniences for executing queries and updates, parameter binding, result-set handling, batching, transactions, and DataSet-style data access.",
+  "language": {
+    "name": "groovy",
+    "version": "4.0"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in 'https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-sources.jar' 'https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip' 'https://docs.groovy-lang.org/docs/groovy-4.0.24/html/documentation/sql-userguide.html'; do curl -I -fsSL \""'$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+index 52ad6f1ad3f5f18831f1a20cacc9d68481f086fd..738b525737bac6f65810d66b599b9594f3b18f10
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/groovy",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://docs.groovy-lang.org/docs/groovy-$version$/html/documentation/sql-userguide.html",
++  "description" : "Apache Groovy SQL adds the groovy.sql API for working with relational databases through JDBC from Groovy code. It provides conveniences for executing queries and updates, parameter binding, result-set handling, batching, transactions, and DataSet-style data access.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 231ms:
+HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+index 52ad6f1ad3f5f18831f1a20cacc9d68481f086fd..738b525737bac6f65810d66b599b9594f3b18f10
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/groovy",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://docs.groovy-lang.org/docs/groovy-$version$/html/documentation/sql-userguide.html",
++  "description" : "Apache Groovy SQL adds the groovy.sql API for working with relational databases through JDBC from Groovy code. It provides conveniences for executing queries and updates, parameter binding, result-set handling, batching, transactions, and DataSet-style data access.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 276ms:
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org org.apache.groovy groovy-sql 4.0.24 sources jar groovydoc
+web search: 
+web search: site:repo1.maven.org/maven2/org/apache/groovy/groovy-sql/4.0.24 groovy-sql-4.0.24-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/groovy/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/groovy/groovy-sql/
+web search: 
+web search: 
+web search: 
+web search: https://archive.apache.org/dist/groovy/
+web search: 
+web search: https://archive.apache.org/dist/groovy/4.0.24/
+web search: 
+web search: https://archive.apache.org/dist/groovy/4.0.24/sources/
+web search: 
+web search: "Interacting with a SQL database" "version 4.0.24" Groovy
+codex
+Updated [org.apache.groovy-groovy-sql-4.0.24.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json) with the discovered repository, source, test, documentation, description, and Groovy language metadata. Maven Central lists `groovy-sql` `4.0.24`, and the Apache archive provides the `apache-groovy-src-4.0.24.zip` source distribution used for the test suite URL. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/groovy/groovy-sql/))
+
+Validation done: `jq` accepts the JSON, and the substituted source/test/documentation URLs returned HTTP 200. I left `not-for-native-image` absent because the artifact is a JVM JAR with `.class` files.
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+index 52ad6f1ad3f5f18831f1a20cacc9d68481f086fd..738b525737bac6f65810d66b599b9594f3b18f10
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/groovy",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://docs.groovy-lang.org/docs/groovy-$version$/html/documentation/sql-userguide.html",
++  "description" : "Apache Groovy SQL adds the groovy.sql API for working with relational databases through JDBC from Groovy code. It provides conveniences for executing queries and updates, parameter binding, result-set handling, batching, transactions, and DataSet-style data access.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+tokens used
+113,138
+Updated [org.apache.groovy-groovy-sql-4.0.24.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json) with the discovered repository, source, test, documentation, description, and Groovy language metadata. Maven Central lists `groovy-sql` `4.0.24`, and the Apache archive provides the `apache-groovy-src-4.0.24.zip` source distribution used for the test suite URL. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/groovy/groovy-sql/))
+
+Validation done: `jq` accepts the JSON, and the substituted source/test/documentation URLs returned HTTP 200. I left `not-for-native-image` absent because the artifact is a JVM JAR with `.class` files.
+Ran agent for org.apache.groovy:groovy-sql:4.0.24 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776/build/agent-artifact-discovery-logs/org.apache.groovy-groovy-sql-4.0.24.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-048f7776/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 52s
+9 actionable tasks: 9 executed
