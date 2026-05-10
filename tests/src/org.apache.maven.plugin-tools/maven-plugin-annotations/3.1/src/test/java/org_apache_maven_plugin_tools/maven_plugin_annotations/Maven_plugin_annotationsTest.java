@@ -6,6 +6,8 @@
  */
 package org_apache_maven_plugin_tools.maven_plugin_annotations;
 
+import java.lang.annotation.Annotation;
+
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.InstanciationStrategy;
@@ -161,6 +163,46 @@ public class Maven_plugin_annotationsTest {
         assertThat(new MinimalMojo().isConfigured()).isFalse();
     }
 
+    @Test
+    void annotationInterfacesExposeTypedPluginDescriptorMetadata() {
+        Mojo mojo = new DescriptorMojoMetadata();
+        Execute execute = new DescriptorExecutionMetadata();
+        Parameter parameter = new DescriptorParameterMetadata();
+        Component component = new DescriptorComponentMetadata();
+
+        assertThat(mojo.annotationType()).isEqualTo(Mojo.class);
+        assertThat(mojo.name()).isEqualTo("compile-assets");
+        assertThat(mojo.defaultPhase()).isSameAs(LifecyclePhase.PROCESS_RESOURCES);
+        assertThat(mojo.requiresDependencyResolution()).isSameAs(ResolutionScope.RUNTIME);
+        assertThat(mojo.requiresDependencyCollection()).isSameAs(ResolutionScope.COMPILE);
+        assertThat(mojo.instantiationStrategy()).isSameAs(InstanciationStrategy.KEEP_ALIVE);
+        assertThat(mojo.executionStrategy()).isEqualTo("always");
+        assertThat(mojo.requiresProject()).isTrue();
+        assertThat(mojo.requiresReports()).isFalse();
+        assertThat(mojo.aggregator()).isFalse();
+        assertThat(mojo.requiresDirectInvocation()).isFalse();
+        assertThat(mojo.requiresOnline()).isTrue();
+        assertThat(mojo.inheritByDefault()).isTrue();
+        assertThat(mojo.configurator()).isEqualTo("map-oriented");
+        assertThat(mojo.threadSafe()).isTrue();
+
+        assertThat(execute.annotationType()).isEqualTo(Execute.class);
+        assertThat(execute.phase()).isSameAs(LifecyclePhase.TEST_COMPILE);
+        assertThat(execute.goal()).isEqualTo("generate-test-stubs");
+        assertThat(execute.lifecycle()).isEqualTo("stub-generation");
+
+        assertThat(parameter.annotationType()).isEqualTo(Parameter.class);
+        assertThat(parameter.alias()).isEqualTo("assetOutput");
+        assertThat(parameter.property()).isEqualTo("assets.outputDirectory");
+        assertThat(parameter.defaultValue()).isEqualTo("${project.build.directory}/assets");
+        assertThat(parameter.required()).isTrue();
+        assertThat(parameter.readonly()).isFalse();
+
+        assertThat(component.annotationType()).isEqualTo(Component.class);
+        assertThat(component.role()).isEqualTo(Runnable.class);
+        assertThat(component.hint()).isEqualTo("asset-compiler");
+    }
+
     @Mojo(
             name = "full-metadata",
             defaultPhase = LifecyclePhase.VERIFY,
@@ -204,6 +246,154 @@ public class Maven_plugin_annotationsTest {
 
         private boolean isConfigured() {
             return optionalParameter != null || callback != null;
+        }
+    }
+
+    private static final class DescriptorMojoMetadata implements Mojo {
+        @Override
+        public String name() {
+            return "compile-assets";
+        }
+
+        @Override
+        public LifecyclePhase defaultPhase() {
+            return LifecyclePhase.PROCESS_RESOURCES;
+        }
+
+        @Override
+        public ResolutionScope requiresDependencyResolution() {
+            return ResolutionScope.RUNTIME;
+        }
+
+        @Override
+        public ResolutionScope requiresDependencyCollection() {
+            return ResolutionScope.COMPILE;
+        }
+
+        @Override
+        public InstanciationStrategy instantiationStrategy() {
+            return InstanciationStrategy.KEEP_ALIVE;
+        }
+
+        @Override
+        public String executionStrategy() {
+            return "always";
+        }
+
+        @Override
+        public boolean requiresProject() {
+            return true;
+        }
+
+        @Override
+        public boolean requiresReports() {
+            return false;
+        }
+
+        @Override
+        public boolean aggregator() {
+            return false;
+        }
+
+        @Override
+        public boolean requiresDirectInvocation() {
+            return false;
+        }
+
+        @Override
+        public boolean requiresOnline() {
+            return true;
+        }
+
+        @Override
+        public boolean inheritByDefault() {
+            return true;
+        }
+
+        @Override
+        public String configurator() {
+            return "map-oriented";
+        }
+
+        @Override
+        public boolean threadSafe() {
+            return true;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Mojo.class;
+        }
+    }
+
+    private static final class DescriptorExecutionMetadata implements Execute {
+        @Override
+        public LifecyclePhase phase() {
+            return LifecyclePhase.TEST_COMPILE;
+        }
+
+        @Override
+        public String goal() {
+            return "generate-test-stubs";
+        }
+
+        @Override
+        public String lifecycle() {
+            return "stub-generation";
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Execute.class;
+        }
+    }
+
+    private static final class DescriptorParameterMetadata implements Parameter {
+        @Override
+        public String alias() {
+            return "assetOutput";
+        }
+
+        @Override
+        public String property() {
+            return "assets.outputDirectory";
+        }
+
+        @Override
+        public String defaultValue() {
+            return "${project.build.directory}/assets";
+        }
+
+        @Override
+        public boolean required() {
+            return true;
+        }
+
+        @Override
+        public boolean readonly() {
+            return false;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Parameter.class;
+        }
+    }
+
+    private static final class DescriptorComponentMetadata implements Component {
+        @Override
+        public Class<?> role() {
+            return Runnable.class;
+        }
+
+        @Override
+        public String hint() {
+            return "asset-compiler";
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Component.class;
         }
     }
 }
