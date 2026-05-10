@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.gpg.AbstractGpgSigner;
+import org.apache.maven.plugins.gpg.AbstractGpgSigner;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.Test;
 

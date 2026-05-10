@@ -8,7 +8,7 @@ package org_apache_maven_plugins.maven_gpg_plugin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.maven.plugin.gpg.HelpMojo;
+import org.apache.maven.plugins.gpg.HelpMojo;
 import org.apache.maven.plugin.logging.Log;
 import org.junit.jupiter.api.Test;
 
