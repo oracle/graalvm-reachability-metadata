@@ -29,7 +29,7 @@ public class MvcUriComponentsBuilderInnerControllerMethodInvocationInterceptorTe
                 throw exception;
             }
         } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            if (!hasUnsupportedFeatureErrorCause(error)) {
                 throw error;
             }
         } finally {
