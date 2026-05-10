@@ -1,0 +1,792 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1301-a9dc-7b91-90ec-aab0fdd07f3f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.formdev:flatlaf:3.7.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.7.1" when "$version$" is replaced with "3.7.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+- Set "coordinates" to "com.formdev:flatlaf:3.7.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.7.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/GitHub and then patch the JSON in place. First I’m checking the existing file shape and nearby metadata conventions so the URL choices match this repo’s expectations.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 0ms:
+{
+  "coordinates" : "com.formdev:flatlaf:3.7.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:13:    "repository-url": "https://github.com/jboss/jboss-jakarta-servlet-api_spec",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:6:    "repository-url" : "https://github.com/google/truth",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-sources.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:6:    "repository-url" : "https://github.com/apache/pulsar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:7:    "test-code-url" : "https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test/java/org/apache/pulsar/client/api",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'com\\.formdev|flatlaf|JFormDesigner|FlatLaf' . -g '*.json' -g '*.xml' -g '*.gradle' -g '*.md'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ exited 1 in 0ms:
+web search: 
+web search: com.formdev flatlaf 3.7.1 maven pom github tag
+web search: 
+web search: https://github.com/JFormDesigner/FlatLaf
+codex
+The repo conventions prefer Maven `*-sources.jar` and `*-javadoc.jar` when they exist, with GitHub only for tests unless a `*-tests.jar` is published. I’m checking the actual Maven directory and tag layout now, because FlatLaf’s repository has several subprojects.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/formdev/flatlaf/3.7.1/flatlaf-3.7.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.formdev</groupId>
+  <artifactId>flatlaf</artifactId>
+  <version>3.7.1</version>
+  <name>FlatLaf</name>
+  <description>Flat Look and Feel</description>
+  <url>https://github.com/JFormDesigner/FlatLaf</url>
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Karl Tauber</name>
+      <organization>FormDev Software GmbH</organization>
+      <organizationUrl>https://www.formdev.com/</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/JFormDesigner/FlatLaf.git</connection>
+    <url>https://github.com/JFormDesigner/FlatLaf</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/JFormDesigner/FlatLaf/issues</url>
+  </issueManagement>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/formdev/flatlaf/3.7.1/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/JFormDesigner/FlatLaf/3.7.1/settings.gradle.kts' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/JFormDesigner/FlatLaf/contents/flatlaf-core/src/test?ref=3.7.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 169ms:
+[
+  {
+    "name": "java",
+    "path": "flatlaf-core/src/test/java",
+    "sha": "831d8b7a50d460a779c7bd46548043523f6e5282",
+    "size": 0,
+    "url": "https://api.github.com/repos/JFormDesigner/FlatLaf/contents/flatlaf-core/src/test/java?ref=3.7.1",
+    "html_url": "https://github.com/JFormDesigner/FlatLaf/tree/3.7.1/flatlaf-core/src/test/java",
+    "git_url": "https://api.github.com/repos/JFormDesigner/FlatLaf/git/trees/831d8b7a50d460a779c7bd46548043523f6e5282",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/JFormDesigner/FlatLaf/contents/flatlaf-core/src/test/java?ref=3.7.1",
+      "git": "https://api.github.com/repos/JFormDesigner/FlatLaf/git/trees/831d8b7a50d460a779c7bd46548043523f6e5282",
+      "html": "https://github.com/JFormDesigner/FlatLaf/tree/3.7.1/flatlaf-core/src/test/java"
+    }
+  }
+]
+
+ succeeded in 184ms:
+/*
+ * Copyright 2019 FormDev Software GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+rootProject.name = "FlatLaf"
+
+include( "flatlaf-core" )
+include( "flatlaf-extras" )
+include( "flatlaf-swingx" )
+include( "flatlaf-jide-oss" )
+include( "flatlaf-intellij-themes" )
+include( "flatlaf-demo" )
+include( "flatlaf-testing" )
+include( "flatlaf-theme-editor" )
+
+includeProject( "flatlaf-fonts-inter",          "flatlaf-fonts/flatlaf-fonts-inter" )
+includeProject( "flatlaf-fonts-jetbrains-mono", "flatlaf-fonts/flatlaf-fonts-jetbrains-mono" )
+includeProject( "flatlaf-fonts-roboto",         "flatlaf-fonts/flatlaf-fonts-roboto" )
+includeProject( "flatlaf-fonts-roboto-mono",    "flatlaf-fonts/flatlaf-fonts-roboto-mono" )
+
+includeProject( "flatlaf-natives-windows", "flatlaf-natives/flatlaf-natives-windows" )
+includeProject( "flatlaf-natives-macos",   "flatlaf-natives/flatlaf-natives-macos" )
+includeProject( "flatlaf-natives-linux",   "flatlaf-natives/flatlaf-natives-linux" )
+includeProject( "flatlaf-natives-jna",     "flatlaf-natives/flatlaf-natives-jna" )
+
+includeProject( "flatlaf-testing-modular-app", "flatlaf-testing/flatlaf-testing-modular-app" )
+
+fun includeProject( projectPath: String, projectDir: String ) {
+	include( projectPath )
+	project( ":$projectPath" ).projectDir = file( projectDir )
+}
+
+
+// for using newer Java version via toolchain
+plugins {
+	id( "org.gradle.toolchains.foojay-resolver-convention" ) version( "1.0.0" )
+}
+
+ succeeded in 215ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/formdev/flatlaf/3.7.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/formdev/flatlaf/3.7.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="flatlaf-3.7.1-javadoc.jar" title="flatlaf-3.7.1-javadoc.jar">flatlaf-3.7.1-javadoc.jar</a>                         2026-03-10 09:30   5812351      
+<a href="flatlaf-3.7.1-javadoc.jar.asc" title="flatlaf-3.7.1-javadoc.jar.asc">flatlaf-3.7.1-javadoc.jar.asc</a>                     2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1-javadoc.jar.asc.md5" title="flatlaf-3.7.1-javadoc.jar.asc.md5">flatlaf-3.7.1-javadoc.jar.asc.md5</a>                 2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-javadoc.jar.asc.sha1" title="flatlaf-3.7.1-javadoc.jar.asc.sha1">flatlaf-3.7.1-javadoc.jar.asc.sha1</a>                2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-javadoc.jar.asc.sha256" title="flatlaf-3.7.1-javadoc.jar.asc.sha256">flatlaf-3.7.1-javadoc.jar.asc.sha256</a>              2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-javadoc.jar.asc.sha512" title="flatlaf-3.7.1-javadoc.jar.asc.sha512">flatlaf-3.7.1-javadoc.jar.asc.sha512</a>              2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-javadoc.jar.md5" title="flatlaf-3.7.1-javadoc.jar.md5">flatlaf-3.7.1-javadoc.jar.md5</a>                     2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-javadoc.jar.sha1" title="flatlaf-3.7.1-javadoc.jar.sha1">flatlaf-3.7.1-javadoc.jar.sha1</a>                    2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-javadoc.jar.sha256" title="flatlaf-3.7.1-javadoc.jar.sha256">flatlaf-3.7.1-javadoc.jar.sha256</a>                  2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-javadoc.jar.sha512" title="flatlaf-3.7.1-javadoc.jar.sha512">flatlaf-3.7.1-javadoc.jar.sha512</a>                  2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-linux-arm64.so" title="flatlaf-3.7.1-linux-arm64.so">flatlaf-3.7.1-linux-arm64.so</a>                      2026-03-10 09:30     75776      
+<a href="flatlaf-3.7.1-linux-arm64.so.asc" title="flatlaf-3.7.1-linux-arm64.so.asc">flatlaf-3.7.1-linux-arm64.so.asc</a>                  2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1-linux-arm64.so.asc.md5" title="flatlaf-3.7.1-linux-arm64.so.asc.md5">flatlaf-3.7.1-linux-arm64.so.asc.md5</a>              2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-linux-arm64.so.asc.sha1" title="flatlaf-3.7.1-linux-arm64.so.asc.sha1">flatlaf-3.7.1-linux-arm64.so.asc.sha1</a>             2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-linux-arm64.so.asc.sha256" title="flatlaf-3.7.1-linux-arm64.so.asc.sha256">flatlaf-3.7.1-linux-arm64.so.asc.sha256</a>           2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-linux-arm64.so.asc.sha512" title="flatlaf-3.7.1-linux-arm64.so.asc.sha512">flatlaf-3.7.1-linux-arm64.so.asc.sha512</a>           2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-linux-arm64.so.md5" title="flatlaf-3.7.1-linux-arm64.so.md5">flatlaf-3.7.1-linux-arm64.so.md5</a>                  2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-linux-arm64.so.sha1" title="flatlaf-3.7.1-linux-arm64.so.sha1">flatlaf-3.7.1-linux-arm64.so.sha1</a>                 2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-linux-arm64.so.sha256" title="flatlaf-3.7.1-linux-arm64.so.sha256">flatlaf-3.7.1-linux-arm64.so.sha256</a>               2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-linux-arm64.so.sha512" title="flatlaf-3.7.1-linux-arm64.so.sha512">flatlaf-3.7.1-linux-arm64.so.sha512</a>               2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-linux-x86_64.so" title="flatlaf-3.7.1-linux-x86_64.so">flatlaf-3.7.1-linux-x86_64.so</a>                     2026-03-10 09:30     29664      
+<a href="flatlaf-3.7.1-linux-x86_64.so.asc" title="flatlaf-3.7.1-linux-x86_64.so.asc">flatlaf-3.7.1-linux-x86_64.so.asc</a>                 2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1-linux-x86_64.so.asc.md5" title="flatlaf-3.7.1-linux-x86_64.so.asc.md5">flatlaf-3.7.1-linux-x86_64.so.asc.md5</a>             2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-linux-x86_64.so.asc.sha1" title="flatlaf-3.7.1-linux-x86_64.so.asc.sha1">flatlaf-3.7.1-linux-x86_64.so.asc.sha1</a>            2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-linux-x86_64.so.asc.sha256" title="flatlaf-3.7.1-linux-x86_64.so.asc.sha256">flatlaf-3.7.1-linux-x86_64.so.asc.sha256</a>          2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-linux-x86_64.so.asc.sha512" title="flatlaf-3.7.1-linux-x86_64.so.asc.sha512">flatlaf-3.7.1-linux-x86_64.so.asc.sha512</a>          2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-linux-x86_64.so.md5" title="flatlaf-3.7.1-linux-x86_64.so.md5">flatlaf-3.7.1-linux-x86_64.so.md5</a>                 2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-linux-x86_64.so.sha1" title="flatlaf-3.7.1-linux-x86_64.so.sha1">flatlaf-3.7.1-linux-x86_64.so.sha1</a>                2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-linux-x86_64.so.sha256" title="flatlaf-3.7.1-linux-x86_64.so.sha256">flatlaf-3.7.1-linux-x86_64.so.sha256</a>              2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-linux-x86_64.so.sha512" title="flatlaf-3.7.1-linux-x86_64.so.sha512">flatlaf-3.7.1-linux-x86_64.so.sha512</a>              2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-macos-arm64.dylib" title="flatlaf-3.7.1-macos-arm64.dylib">flatlaf-3.7.1-macos-arm64.dylib</a>                   2026-03-10 09:30     85984      
+<a href="flatlaf-3.7.1-macos-arm64.dylib.asc" title="flatlaf-3.7.1-macos-arm64.dylib.asc">flatlaf-3.7.1-macos-arm64.dylib.asc</a>               2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1-macos-arm64.dylib.asc.md5" title="flatlaf-3.7.1-macos-arm64.dylib.asc.md5">flatlaf-3.7.1-macos-arm64.dylib.asc.md5</a>           2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-macos-arm64.dylib.asc.sha1" title="flatlaf-3.7.1-macos-arm64.dylib.asc.sha1">flatlaf-3.7.1-macos-arm64.dylib.asc.sha1</a>          2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-macos-arm64.dylib.asc.sha256" title="flatlaf-3.7.1-macos-arm64.dylib.asc.sha256">flatlaf-3.7.1-macos-arm64.dylib.asc.sha256</a>        2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-macos-arm64.dylib.asc.sha512" title="flatlaf-3.7.1-macos-arm64.dylib.asc.sha512">flatlaf-3.7.1-macos-arm64.dylib.asc.sha512</a>        2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-macos-arm64.dylib.md5" title="flatlaf-3.7.1-macos-arm64.dylib.md5">flatlaf-3.7.1-macos-arm64.dylib.md5</a>               2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-macos-arm64.dylib.sha1" title="flatlaf-3.7.1-macos-arm64.dylib.sha1">flatlaf-3.7.1-macos-arm64.dylib.sha1</a>              2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-macos-arm64.dylib.sha256" title="flatlaf-3.7.1-macos-arm64.dylib.sha256">flatlaf-3.7.1-macos-arm64.dylib.sha256</a>            2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-macos-arm64.dylib.sha512" title="flatlaf-3.7.1-macos-arm64.dylib.sha512">flatlaf-3.7.1-macos-arm64.dylib.sha512</a>            2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-macos-x86_64.dylib" title="flatlaf-3.7.1-macos-x86_64.dylib">flatlaf-3.7.1-macos-x86_64.dylib</a>                  2026-03-10 09:30     56720      
+<a href="flatlaf-3.7.1-macos-x86_64.dylib.asc" title="flatlaf-3.7.1-macos-x86_64.dylib.asc">flatlaf-3.7.1-macos-x86_64.dylib.asc</a>              2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1-macos-x86_64.dylib.asc.md5" title="flatlaf-3.7.1-macos-x86_64.dylib.asc.md5">flatlaf-3.7.1-macos-x86_64.dylib.asc.md5</a>          2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-macos-x86_64.dylib.asc.sha1" title="flatlaf-3.7.1-macos-x86_64.dylib.asc.sha1">flatlaf-3.7.1-macos-x86_64.dylib.asc.sha1</a>         2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-macos-x86_64.dylib.asc.sha256" title="flatlaf-3.7.1-macos-x86_64.dylib.asc.sha256">flatlaf-3.7.1-macos-x86_64.dylib.asc.sha256</a>       2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-macos-x86_64.dylib.asc.sha512" title="flatlaf-3.7.1-macos-x86_64.dylib.asc.sha512">flatlaf-3.7.1-macos-x86_64.dylib.asc.sha512</a>       2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-macos-x86_64.dylib.md5" title="flatlaf-3.7.1-macos-x86_64.dylib.md5">flatlaf-3.7.1-macos-x86_64.dylib.md5</a>              2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-macos-x86_64.dylib.sha1" title="flatlaf-3.7.1-macos-x86_64.dylib.sha1">flatlaf-3.7.1-macos-x86_64.dylib.sha1</a>             2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-macos-x86_64.dylib.sha256" title="flatlaf-3.7.1-macos-x86_64.dylib.sha256">flatlaf-3.7.1-macos-x86_64.dylib.sha256</a>           2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-macos-x86_64.dylib.sha512" title="flatlaf-3.7.1-macos-x86_64.dylib.sha512">flatlaf-3.7.1-macos-x86_64.dylib.sha512</a>           2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-no-natives.jar" title="flatlaf-3.7.1-no-natives.jar">flatlaf-3.7.1-no-natives.jar</a>                      2026-03-10 09:30    884187      
+<a href="flatlaf-3.7.1-no-natives.jar.asc" title="flatlaf-3.7.1-no-natives.jar.asc">flatlaf-3.7.1-no-natives.jar.asc</a>                  2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1-no-natives.jar.asc.md5" title="flatlaf-3.7.1-no-natives.jar.asc.md5">flatlaf-3.7.1-no-natives.jar.asc.md5</a>              2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-no-natives.jar.asc.sha1" title="flatlaf-3.7.1-no-natives.jar.asc.sha1">flatlaf-3.7.1-no-natives.jar.asc.sha1</a>             2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-no-natives.jar.asc.sha256" title="flatlaf-3.7.1-no-natives.jar.asc.sha256">flatlaf-3.7.1-no-natives.jar.asc.sha256</a>           2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-no-natives.jar.asc.sha512" title="flatlaf-3.7.1-no-natives.jar.asc.sha512">flatlaf-3.7.1-no-natives.jar.asc.sha512</a>           2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-no-natives.jar.md5" title="flatlaf-3.7.1-no-natives.jar.md5">flatlaf-3.7.1-no-natives.jar.md5</a>                  2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-no-natives.jar.sha1" title="flatlaf-3.7.1-no-natives.jar.sha1">flatlaf-3.7.1-no-natives.jar.sha1</a>                 2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-no-natives.jar.sha256" title="flatlaf-3.7.1-no-natives.jar.sha256">flatlaf-3.7.1-no-natives.jar.sha256</a>               2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-no-natives.jar.sha512" title="flatlaf-3.7.1-no-natives.jar.sha512">flatlaf-3.7.1-no-natives.jar.sha512</a>               2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-sources.jar" title="flatlaf-3.7.1-sources.jar">flatlaf-3.7.1-sources.jar</a>                         2026-03-10 09:30    688077      
+<a href="flatlaf-3.7.1-sources.jar.asc" title="flatlaf-3.7.1-sources.jar.asc">flatlaf-3.7.1-sources.jar.asc</a>                     2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1-sources.jar.asc.md5" title="flatlaf-3.7.1-sources.jar.asc.md5">flatlaf-3.7.1-sources.jar.asc.md5</a>                 2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-sources.jar.asc.sha1" title="flatlaf-3.7.1-sources.jar.asc.sha1">flatlaf-3.7.1-sources.jar.asc.sha1</a>                2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-sources.jar.asc.sha256" title="flatlaf-3.7.1-sources.jar.asc.sha256">flatlaf-3.7.1-sources.jar.asc.sha256</a>              2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-sources.jar.asc.sha512" title="flatlaf-3.7.1-sources.jar.asc.sha512">flatlaf-3.7.1-sources.jar.asc.sha512</a>              2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-sources.jar.md5" title="flatlaf-3.7.1-sources.jar.md5">flatlaf-3.7.1-sources.jar.md5</a>                     2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-sources.jar.sha1" title="flatlaf-3.7.1-sources.jar.sha1">flatlaf-3.7.1-sources.jar.sha1</a>                    2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-sources.jar.sha256" title="flatlaf-3.7.1-sources.jar.sha256">flatlaf-3.7.1-sources.jar.sha256</a>                  2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-sources.jar.sha512" title="flatlaf-3.7.1-sources.jar.sha512">flatlaf-3.7.1-sources.jar.sha512</a>                  2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-windows-arm64.dll" title="flatlaf-3.7.1-windows-arm64.dll">flatlaf-3.7.1-windows-arm64.dll</a>                   2026-03-10 09:30     34632      
+<a href="flatlaf-3.7.1-windows-arm64.dll.asc" title="flatlaf-3.7.1-windows-arm64.dll.asc">flatlaf-3.7.1-windows-arm64.dll.asc</a>               2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1-windows-arm64.dll.asc.md5" title="flatlaf-3.7.1-windows-arm64.dll.asc.md5">flatlaf-3.7.1-windows-arm64.dll.asc.md5</a>           2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-windows-arm64.dll.asc.sha1" title="flatlaf-3.7.1-windows-arm64.dll.asc.sha1">flatlaf-3.7.1-windows-arm64.dll.asc.sha1</a>          2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-windows-arm64.dll.asc.sha256" title="flatlaf-3.7.1-windows-arm64.dll.asc.sha256">flatlaf-3.7.1-windows-arm64.dll.asc.sha256</a>        2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-windows-arm64.dll.asc.sha512" title="flatlaf-3.7.1-windows-arm64.dll.asc.sha512">flatlaf-3.7.1-windows-arm64.dll.asc.sha512</a>        2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-windows-arm64.dll.md5" title="flatlaf-3.7.1-windows-arm64.dll.md5">flatlaf-3.7.1-windows-arm64.dll.md5</a>               2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-windows-arm64.dll.sha1" title="flatlaf-3.7.1-windows-arm64.dll.sha1">flatlaf-3.7.1-windows-arm64.dll.sha1</a>              2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-windows-arm64.dll.sha256" title="flatlaf-3.7.1-windows-arm64.dll.sha256">flatlaf-3.7.1-windows-arm64.dll.sha256</a>            2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-windows-arm64.dll.sha512" title="flatlaf-3.7.1-windows-arm64.dll.sha512">flatlaf-3.7.1-windows-arm64.dll.sha512</a>            2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-windows-x86.dll" title="flatlaf-3.7.1-windows-x86.dll">flatlaf-3.7.1-windows-x86.dll</a>                     2026-03-10 09:30     30536      
+<a href="flatlaf-3.7.1-windows-x86.dll.asc" title="flatlaf-3.7.1-windows-x86.dll.asc">flatlaf-3.7.1-windows-x86.dll.asc</a>                 2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1-windows-x86.dll.asc.md5" title="flatlaf-3.7.1-windows-x86.dll.asc.md5">flatlaf-3.7.1-windows-x86.dll.asc.md5</a>             2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-windows-x86.dll.asc.sha1" title="flatlaf-3.7.1-windows-x86.dll.asc.sha1">flatlaf-3.7.1-windows-x86.dll.asc.sha1</a>            2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-windows-x86.dll.asc.sha256" title="flatlaf-3.7.1-windows-x86.dll.asc.sha256">flatlaf-3.7.1-windows-x86.dll.asc.sha256</a>          2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-windows-x86.dll.asc.sha512" title="flatlaf-3.7.1-windows-x86.dll.asc.sha512">flatlaf-3.7.1-windows-x86.dll.asc.sha512</a>          2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-windows-x86.dll.md5" title="flatlaf-3.7.1-windows-x86.dll.md5">flatlaf-3.7.1-windows-x86.dll.md5</a>                 2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-windows-x86.dll.sha1" title="flatlaf-3.7.1-windows-x86.dll.sha1">flatlaf-3.7.1-windows-x86.dll.sha1</a>                2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-windows-x86.dll.sha256" title="flatlaf-3.7.1-windows-x86.dll.sha256">flatlaf-3.7.1-windows-x86.dll.sha256</a>              2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-windows-x86.dll.sha512" title="flatlaf-3.7.1-windows-x86.dll.sha512">flatlaf-3.7.1-windows-x86.dll.sha512</a>              2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-windows-x86_64.dll" title="flatlaf-3.7.1-windows-x86_64.dll">flatlaf-3.7.1-windows-x86_64.dll</a>                  2026-03-10 09:30     34632      
+<a href="flatlaf-3.7.1-windows-x86_64.dll.asc" title="flatlaf-3.7.1-windows-x86_64.dll.asc">flatlaf-3.7.1-windows-x86_64.dll.asc</a>              2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1-windows-x86_64.dll.asc.md5" title="flatlaf-3.7.1-windows-x86_64.dll.asc.md5">flatlaf-3.7.1-windows-x86_64.dll.asc.md5</a>          2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-windows-x86_64.dll.asc.sha1" title="flatlaf-3.7.1-windows-x86_64.dll.asc.sha1">flatlaf-3.7.1-windows-x86_64.dll.asc.sha1</a>         2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-windows-x86_64.dll.asc.sha256" title="flatlaf-3.7.1-windows-x86_64.dll.asc.sha256">flatlaf-3.7.1-windows-x86_64.dll.asc.sha256</a>       2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-windows-x86_64.dll.asc.sha512" title="flatlaf-3.7.1-windows-x86_64.dll.asc.sha512">flatlaf-3.7.1-windows-x86_64.dll.asc.sha512</a>       2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1-windows-x86_64.dll.md5" title="flatlaf-3.7.1-windows-x86_64.dll.md5">flatlaf-3.7.1-windows-x86_64.dll.md5</a>              2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1-windows-x86_64.dll.sha1" title="flatlaf-3.7.1-windows-x86_64.dll.sha1">flatlaf-3.7.1-windows-x86_64.dll.sha1</a>             2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1-windows-x86_64.dll.sha256" title="flatlaf-3.7.1-windows-x86_64.dll.sha256">flatlaf-3.7.1-windows-x86_64.dll.sha256</a>           2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1-windows-x86_64.dll.sha512" title="flatlaf-3.7.1-windows-x86_64.dll.sha512">flatlaf-3.7.1-windows-x86_64.dll.sha512</a>           2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1.jar" title="flatlaf-3.7.1.jar">flatlaf-3.7.1.jar</a>                                 2026-03-10 09:30   1010321      
+<a href="flatlaf-3.7.1.jar.asc" title="flatlaf-3.7.1.jar.asc">flatlaf-3.7.1.jar.asc</a>                             2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1.jar.asc.md5" title="flatlaf-3.7.1.jar.asc.md5">flatlaf-3.7.1.jar.asc.md5</a>                         2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1.jar.asc.sha1" title="flatlaf-3.7.1.jar.asc.sha1">flatlaf-3.7.1.jar.asc.sha1</a>                        2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1.jar.asc.sha256" title="flatlaf-3.7.1.jar.asc.sha256">flatlaf-3.7.1.jar.asc.sha256</a>                      2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1.jar.asc.sha512" title="flatlaf-3.7.1.jar.asc.sha512">flatlaf-3.7.1.jar.asc.sha512</a>                      2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1.jar.md5" title="flatlaf-3.7.1.jar.md5">flatlaf-3.7.1.jar.md5</a>                             2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1.jar.sha1" title="flatlaf-3.7.1.jar.sha1">flatlaf-3.7.1.jar.sha1</a>                            2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1.jar.sha256" title="flatlaf-3.7.1.jar.sha256">flatlaf-3.7.1.jar.sha256</a>                          2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1.jar.sha512" title="flatlaf-3.7.1.jar.sha512">flatlaf-3.7.1.jar.sha512</a>                          2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1.module" title="flatlaf-3.7.1.module">flatlaf-3.7.1.module</a>                              2026-03-10 09:30      3439      
+<a href="flatlaf-3.7.1.module.asc" title="flatlaf-3.7.1.module.asc">flatlaf-3.7.1.module.asc</a>                          2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1.module.asc.md5" title="flatlaf-3.7.1.module.asc.md5">flatlaf-3.7.1.module.asc.md5</a>                      2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1.module.asc.sha1" title="flatlaf-3.7.1.module.asc.sha1">flatlaf-3.7.1.module.asc.sha1</a>                     2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1.module.asc.sha256" title="flatlaf-3.7.1.module.asc.sha256">flatlaf-3.7.1.module.asc.sha256</a>                   2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1.module.asc.sha512" title="flatlaf-3.7.1.module.asc.sha512">flatlaf-3.7.1.module.asc.sha512</a>                   2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1.module.md5" title="flatlaf-3.7.1.module.md5">flatlaf-3.7.1.module.md5</a>                          2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1.module.sha1" title="flatlaf-3.7.1.module.sha1">flatlaf-3.7.1.module.sha1</a>                         2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1.module.sha256" title="flatlaf-3.7.1.module.sha256">flatlaf-3.7.1.module.sha256</a>                       2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1.module.sha512" title="flatlaf-3.7.1.module.sha512">flatlaf-3.7.1.module.sha512</a>                       2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1.pom" title="flatlaf-3.7.1.pom">flatlaf-3.7.1.pom</a>                                 2026-03-10 09:30      1549      
+<a href="flatlaf-3.7.1.pom.asc" title="flatlaf-3.7.1.pom.asc">flatlaf-3.7.1.pom.asc</a>                             2026-03-10 09:30       455      
+<a href="flatlaf-3.7.1.pom.asc.md5" title="flatlaf-3.7.1.pom.asc.md5">flatlaf-3.7.1.pom.asc.md5</a>                         2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1.pom.asc.sha1" title="flatlaf-3.7.1.pom.asc.sha1">flatlaf-3.7.1.pom.asc.sha1</a>                        2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1.pom.asc.sha256" title="flatlaf-3.7.1.pom.asc.sha256">flatlaf-3.7.1.pom.asc.sha256</a>                      2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1.pom.asc.sha512" title="flatlaf-3.7.1.pom.asc.sha512">flatlaf-3.7.1.pom.asc.sha512</a>                      2026-03-10 09:30       128      
+<a href="flatlaf-3.7.1.pom.md5" title="flatlaf-3.7.1.pom.md5">flatlaf-3.7.1.pom.md5</a>                             2026-03-10 09:30        32      
+<a href="flatlaf-3.7.1.pom.sha1" title="flatlaf-3.7.1.pom.sha1">flatlaf-3.7.1.pom.sha1</a>                            2026-03-10 09:30        40      
+<a href="flatlaf-3.7.1.pom.sha256" title="flatlaf-3.7.1.pom.sha256">flatlaf-3.7.1.pom.sha256</a>                          2026-03-10 09:30        64      
+<a href="flatlaf-3.7.1.pom.sha512" title="flatlaf-3.7.1.pom.sha512">flatlaf-3.7.1.pom.sha512</a>                          2026-03-10 09:30       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: https://raw.githubusercontent.com/JFormDesigner/FlatLaf/3.7.1/settings.gradle.kts
+web search: 
+web search: repo.maven.apache.org/maven2/com/formdev/flatlaf/3.7.1/flatlaf-3.7.1.pom
+web search: 
+web search: https://github.com/JFormDesigner/FlatLaf
+web search: 
+web search: https://mvnrepository.com/artifact/com.formdev/flatlaf/3.7.1
+web search: 
+web search: https://repo1.maven.org/maven2/com/formdev/flatlaf/3.7.1/
+codex
+The Maven directory publishes the main JAR plus sources and Javadoc, but no tests classifier, so I’ll use Maven for source/docs and the tagged GitHub test tree for tests. I’m also confirming whether the published artifact has JVM class files so the Native Image applicability fields stay absent unless there’s clear contrary evidence.
+exec
+/usr/bin/bash -lc "curl -fIsL https://repo1.maven.org/maven2/com/formdev/flatlaf/3.7.1/flatlaf-3.7.1-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 17:49:42 GMT
+content-type: application/java-archive
+content-length: 688077
+cf-ray: 9f9ac8321db69808-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 189201
+etag: "ac6f30e05df32516dd4cd471181288a8"
+last-modified: Tue, 10 Mar 2026 09:30:03 GMT
+x-checksum-md5: ac6f30e05df32516dd4cd471181288a8
+x-checksum-sha1: 6624a372b57d63b8e4b2cca1041bd114136b89b2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fIsL https://github.com/JFormDesigner/FlatLaf/tree/3.7.1/flatlaf-core/src/test/java | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+exec
+/usr/bin/bash -lc "curl -fIsL https://repo1.maven.org/maven2/com/formdev/flatlaf/3.7.1/flatlaf-3.7.1-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 17:49:42 GMT
+content-type: application/java-archive
+content-length: 5812351
+cf-ray: 9f9ac8328b9e444c-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 674690
+etag: "b5a3823f5da11d06207a83a799b88bdb"
+last-modified: Tue, 10 Mar 2026 09:30:03 GMT
+x-checksum-md5: b5a3823f5da11d06207a83a799b88bdb
+x-checksum-sha1: e4b2390484a4a859cce391d837a02beb1cbde250
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d) && curl -fsSL https://repo1.maven.org/maven2/com/formdev/flatlaf/3.7.1/flatlaf-3.7.1.jar -o "$tmpdir/flatlaf.jar" && jar tf "$tmpdir/flatlaf.jar" | sed -n '"'1,80p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 426ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 17:49:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8b09847d984a59002227b5faa483ea4e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ua6u2qd0rUZGJeAvhw4cknW1ZSZerrWTSAOk2FJsXtv8E%2BmTlHybWOlOel9mIc63sRKpeEz9E66DzhSAP4JgQYA2TAxzc9oJH6PZAVnlouNlWyHnEk1ZUVMbjfb2MXUG96QjF76IGQ6FztJPhtqtpYEXhNQayDoZ9wCIapRtbSxZshofynoEzECxNNrd6iQZpBuTXLZL%2FJFpIfEHbi8MgOwr3Le7IXOPXNDIEE1Pu15M6t8CULeOvn9TW3nqMDWOdUbl8Vggxfzg1b8qzILKxg%3D%3D--09sauR5PsnoACIB8--67rSEz2XCW5H9%2FrQIKi9Dg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1668043113.1778435382; expires=Mon, 10 May 2027 17:49:42 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 10 May 2027 17:49:42 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5110:2DEE83:76DFEB7:56CDF14:6A00C536
+
+
+ succeeded in 643ms:
+com/formdev/flatlaf/FlatDarculaLaf.properties
+com/formdev/flatlaf/FlatDarkLaf.properties
+com/formdev/flatlaf/FlatIntelliJLaf.properties
+com/formdev/flatlaf/FlatLaf.properties
+com/formdev/flatlaf/FlatLightLaf.properties
+com/formdev/flatlaf/IntelliJTheme$ThemeLaf.properties
+com/formdev/flatlaf/resources/Bundle.properties
+com/formdev/flatlaf/resources/Bundle_de.properties
+com/formdev/flatlaf/resources/Bundle_es.properties
+com/formdev/flatlaf/resources/Bundle_fr.properties
+com/formdev/flatlaf/themes/FlatMacDarkLaf.properties
+com/formdev/flatlaf/themes/FlatMacLightLaf.properties
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/formdev/
+com/formdev/flatlaf/
+com/formdev/flatlaf/FlatClientProperties.class
+com/formdev/flatlaf/FlatDarculaLaf.class
+com/formdev/flatlaf/FlatDarkLaf.class
+com/formdev/flatlaf/FlatDefaultsAddon.class
+com/formdev/flatlaf/FlatIconColors.class
+com/formdev/flatlaf/FlatInputMaps$LazyInputMapEx.class
+com/formdev/flatlaf/FlatInputMaps$LazyModifyInputMap.class
+com/formdev/flatlaf/FlatInputMaps.class
+com/formdev/flatlaf/FlatIntelliJLaf.class
+com/formdev/flatlaf/FlatLaf$1.class
+com/formdev/flatlaf/FlatLaf$ActiveFont.class
+com/formdev/flatlaf/FlatLaf$DisabledIconProvider.class
+com/formdev/flatlaf/FlatLaf$FlatUIDefaults$1.class
+com/formdev/flatlaf/FlatLaf$FlatUIDefaults.class
+com/formdev/flatlaf/FlatLaf$ImageIconUIResource.class
+com/formdev/flatlaf/FlatLaf.class
+com/formdev/flatlaf/FlatLightLaf.class
+com/formdev/flatlaf/FlatPropertiesLaf.class
+com/formdev/flatlaf/FlatSystemProperties.class
+com/formdev/flatlaf/IntelliJTheme$ThemeLaf.class
+com/formdev/flatlaf/IntelliJTheme.class
+com/formdev/flatlaf/LinuxFontPolicy.class
+com/formdev/flatlaf/LinuxPopupMenuCanceler.class
+com/formdev/flatlaf/MnemonicHandler$1.class
+com/formdev/flatlaf/MnemonicHandler.class
+com/formdev/flatlaf/SubMenuUsabilityHelper$SafeTrianglePainter.class
+com/formdev/flatlaf/SubMenuUsabilityHelper$SubMenuEventQueue.class
+com/formdev/flatlaf/SubMenuUsabilityHelper.class
+com/formdev/flatlaf/UIDefaultsLoader$1.class
+com/formdev/flatlaf/UIDefaultsLoader$2.class
+com/formdev/flatlaf/UIDefaultsLoader$ValueType.class
+com/formdev/flatlaf/UIDefaultsLoader.class
+com/formdev/flatlaf/icons/
+com/formdev/flatlaf/icons/FlatAbstractIcon.class
+com/formdev/flatlaf/icons/FlatAnimatedIcon.class
+com/formdev/flatlaf/icons/FlatAscendingSortIcon.class
+com/formdev/flatlaf/icons/FlatCapsLockIcon.class
+com/formdev/flatlaf/icons/FlatCheckBoxIcon.class
+com/formdev/flatlaf/icons/FlatCheckBoxMenuItemIcon.class
+com/formdev/flatlaf/icons/FlatClearIcon.class
+com/formdev/flatlaf/icons/FlatDescendingSortIcon.class
+com/formdev/flatlaf/icons/FlatFileChooserDetailsViewIcon.class
+com/formdev/flatlaf/icons/FlatFileChooserHomeFolderIcon.class
+com/formdev/flatlaf/icons/FlatFileChooserListViewIcon.class
+com/formdev/flatlaf/icons/FlatFileChooserNewFolderIcon.class
+com/formdev/flatlaf/icons/FlatFileChooserUpFolderIcon.class
+com/formdev/flatlaf/icons/FlatFileViewComputerIcon.class
+com/formdev/flatlaf/icons/FlatFileViewDirectoryIcon.class
+com/formdev/flatlaf/icons/FlatFileViewFileIcon.class
+com/formdev/flatlaf/icons/FlatFileViewFloppyDriveIcon.class
+com/formdev/flatlaf/icons/FlatFileViewHardDriveIcon.class
+com/formdev/flatlaf/icons/FlatHelpButtonIcon.class
+com/formdev/flatlaf/icons/FlatInternalFrameAbstractIcon.class
+com/formdev/flatlaf/icons/FlatInternalFrameCloseIcon.class
+com/formdev/flatlaf/icons/FlatInternalFrameIconifyIcon.class
+com/formdev/flatlaf/icons/FlatInternalFrameMaximizeIcon.class
+com/formdev/flatlaf/icons/FlatInternalFrameRestoreIcon.class
+com/formdev/flatlaf/icons/FlatMenuArrowIcon.class
+com/formdev/flatlaf/icons/FlatMenuItemArrowIcon.class
+com/formdev/flatlaf/icons/FlatOptionPaneAbstractIcon.class
+com/formdev/flatlaf/icons/FlatOptionPaneErrorIcon.class
+com/formdev/flatlaf/icons/FlatOptionPaneInformationIcon.class
+com/formdev/flatlaf/icons/FlatOptionPaneQuestionIcon.class
+
+web search: 
+web search: https://raw.githubusercontent.com/JFormDesigner/FlatLaf/3.7.1/README.md
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/com/formdev/flatlaf/3.7.1/ flatlaf-3.7.1-sources.jar javadoc
+web search: 
+web search: https://github.com/JFormDesigner/FlatLaf/tree/3.7.1/flatlaf-core/src/test/java
+web search: 
+web search: https://mvnrepository.com/artifact/com.formdev/flatlaf/3.7.1
+web search: 
+web search: https://repo1.maven.org/maven2/com/formdev/flatlaf/3.7.1/
+web search: 
+web search: 
+codex
+I’ve got enough evidence to patch the file: this is a JVM Swing library, not Kotlin/Groovy/Scala-specific, and the artifact JAR contains `.class` files, so no `not-for-native-image` marker is appropriate. The metadata will use the 3.7.1 Maven sources/Javadoc artifacts and the 3.7.1 GitHub test tree.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+diff --git a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+index ec2aac329ee7f84ad6ee1c43edce7b291a759d3f..a1606b2f41c839b5966f4a772d7bf53338089892
+--- a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
++++ b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.formdev:flatlaf:3.7.1"
++  "coordinates" : "com.formdev:flatlaf:3.7.1",
++  "repository-url" : "https://github.com/JFormDesigner/FlatLaf",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JFormDesigner/FlatLaf/tree/$version$/flatlaf-core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-javadoc.jar",
++  "description" : "FlatLaf is a modern open-source cross-platform Look and Feel for Java Swing desktop applications. It provides clean flat light, dark, IntelliJ, Darcula, and macOS-inspired themes with HiDPI support for standard Swing user interfaces."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+index ec2aac329ee7f84ad6ee1c43edce7b291a759d3f..a1606b2f41c839b5966f4a772d7bf53338089892
+--- a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
++++ b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.formdev:flatlaf:3.7.1"
++  "coordinates" : "com.formdev:flatlaf:3.7.1",
++  "repository-url" : "https://github.com/JFormDesigner/FlatLaf",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JFormDesigner/FlatLaf/tree/$version$/flatlaf-core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-javadoc.jar",
++  "description" : "FlatLaf is a modern open-source cross-platform Look and Feel for Java Swing desktop applications. It provides clean flat light, dark, IntelliJ, Darcula, and macOS-inspired themes with HiDPI support for standard Swing user interfaces."
+ }
+
+codex
+The JSON is patched. I’m doing a quick validation pass on syntax and the rendered URLs so we catch any typo before I hand it back.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 0ms:
+{
+  "coordinates": "com.formdev:flatlaf:3.7.1",
+  "repository-url": "https://github.com/JFormDesigner/FlatLaf",
+  "source-code-url": "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-sources.jar",
+  "test-code-url": "https://github.com/JFormDesigner/FlatLaf/tree/$version$/flatlaf-core/src/test/java",
+  "documentation-url": "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-javadoc.jar",
+  "description": "FlatLaf is a modern open-source cross-platform Look and Feel for Java Swing desktop applications. It provides clean flat light, dark, IntelliJ, Darcula, and macOS-inspired themes with HiDPI support for standard Swing user interfaces."
+}
+
+exec
+/usr/bin/bash -lc "curl -fIsL https://repo1.maven.org/maven2/com/formdev/flatlaf/3.7.1/flatlaf-3.7.1-javadoc.jar | sed -n '1,5p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 17:50:11 GMT
+content-type: application/java-archive
+content-length: 5812351
+cf-ray: 9f9ac8eb3cda1453-ZRH
+
+exec
+/usr/bin/bash -lc "curl -fIsL https://github.com/JFormDesigner/FlatLaf/tree/3.7.1/flatlaf-core/src/test/java | sed -n '1,5p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 17:49:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8b09847d984a59002227b5faa483ea4e"
+
+exec
+/usr/bin/bash -lc "curl -fIsL https://repo1.maven.org/maven2/com/formdev/flatlaf/3.7.1/flatlaf-3.7.1-sources.jar | sed -n '1,5p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 17:50:11 GMT
+content-type: application/java-archive
+content-length: 688077
+cf-ray: 9f9ac8eb3a20be72-ZRH
+
+diff --git a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+index ec2aac329ee7f84ad6ee1c43edce7b291a759d3f..a1606b2f41c839b5966f4a772d7bf53338089892
+--- a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
++++ b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.formdev:flatlaf:3.7.1"
++  "coordinates" : "com.formdev:flatlaf:3.7.1",
++  "repository-url" : "https://github.com/JFormDesigner/FlatLaf",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JFormDesigner/FlatLaf/tree/$version$/flatlaf-core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-javadoc.jar",
++  "description" : "FlatLaf is a modern open-source cross-platform Look and Feel for Java Swing desktop applications. It provides clean flat light, dark, IntelliJ, Darcula, and macOS-inspired themes with HiDPI support for standard Swing user interfaces."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+index ec2aac329ee7f84ad6ee1c43edce7b291a759d3f..a1606b2f41c839b5966f4a772d7bf53338089892
+--- a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
++++ b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.formdev:flatlaf:3.7.1"
++  "coordinates" : "com.formdev:flatlaf:3.7.1",
++  "repository-url" : "https://github.com/JFormDesigner/FlatLaf",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JFormDesigner/FlatLaf/tree/$version$/flatlaf-core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-javadoc.jar",
++  "description" : "FlatLaf is a modern open-source cross-platform Look and Feel for Java Swing desktop applications. It provides clean flat light, dark, IntelliJ, Darcula, and macOS-inspired themes with HiDPI support for standard Swing user interfaces."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab
+diff --git a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+index ec2aac329ee7f84ad6ee1c43edce7b291a759d3f..a1606b2f41c839b5966f4a772d7bf53338089892
+--- a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
++++ b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.formdev:flatlaf:3.7.1"
++  "coordinates" : "com.formdev:flatlaf:3.7.1",
++  "repository-url" : "https://github.com/JFormDesigner/FlatLaf",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JFormDesigner/FlatLaf/tree/$version$/flatlaf-core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-javadoc.jar",
++  "description" : "FlatLaf is a modern open-source cross-platform Look and Feel for Java Swing desktop applications. It provides clean flat light, dark, IntelliJ, Darcula, and macOS-inspired themes with HiDPI support for standard Swing user interfaces."
+ }
+
+ succeeded in 255ms:
+web search: 
+web search: https://github.com/JFormDesigner/FlatLaf/tree/3.7.1/flatlaf-core/src/test/java
+web search: 
+web search: repo1.maven.org/maven2/com/formdev/flatlaf/3.7.1/flatlaf-3.7.1-sources.jar
+web search: 
+web search: https://www.formdev.com/flatlaf/
+codex
+Updated [com.formdev-flatlaf-3.7.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json:1) with repository, Maven sources/Javadoc URLs, tagged GitHub test URL, and the two-sentence description. FlatLaf is a Java Swing Look and Feel, and the artifact is a JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([formdev.com](https://www.formdev.com/flatlaf/))
+
+Validation done: `jq` parses the file, and the rendered 3.7.1 source, Javadoc, and tagged test URLs all returned HTTP 200. The tagged test directory exists under `flatlaf-core/src/test/java`. ([github.com](https://github.com/JFormDesigner/FlatLaf/tree/3.7.1/flatlaf-core/src/test/java))
+diff --git a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+index ec2aac329ee7f84ad6ee1c43edce7b291a759d3f..a1606b2f41c839b5966f4a772d7bf53338089892
+--- a/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
++++ b/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.formdev:flatlaf:3.7.1"
++  "coordinates" : "com.formdev:flatlaf:3.7.1",
++  "repository-url" : "https://github.com/JFormDesigner/FlatLaf",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JFormDesigner/FlatLaf/tree/$version$/flatlaf-core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/formdev/flatlaf/$version$/flatlaf-$version$-javadoc.jar",
++  "description" : "FlatLaf is a modern open-source cross-platform Look and Feel for Java Swing desktop applications. It provides clean flat light, dark, IntelliJ, Darcula, and macOS-inspired themes with HiDPI support for standard Swing user interfaces."
+ }
+
+tokens used
+94,515
+Updated [com.formdev-flatlaf-3.7.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab/build/discovered-artifact-metadata/com.formdev-flatlaf-3.7.1.json:1) with repository, Maven sources/Javadoc URLs, tagged GitHub test URL, and the two-sentence description. FlatLaf is a Java Swing Look and Feel, and the artifact is a JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([formdev.com](https://www.formdev.com/flatlaf/))
+
+Validation done: `jq` parses the file, and the rendered 3.7.1 source, Javadoc, and tagged test URLs all returned HTTP 200. The tagged test directory exists under `flatlaf-core/src/test/java`. ([github.com](https://github.com/JFormDesigner/FlatLaf/tree/3.7.1/flatlaf-core/src/test/java))
+Ran agent for com.formdev:flatlaf:3.7.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab/build/agent-artifact-discovery-logs/com.formdev-flatlaf-3.7.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6751-65d0c7ab/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 17s
+9 actionable tasks: 9 executed
