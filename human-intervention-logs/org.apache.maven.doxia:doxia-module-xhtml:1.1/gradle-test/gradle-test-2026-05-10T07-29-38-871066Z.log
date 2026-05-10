@@ -1,0 +1,131 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.apache.maven.doxia:doxia-module-xhtml:1.1
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6731-6f64b5f3/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+Doxia_module_xhtmlTest > parserConvertsXhtmlDocumentIntoXhtmlSinkOutput() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      "
+      <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>Parsed Title</title></head>
+      <body>
+        <h1>Main &amp; Intro</h1>
+        <p>Before <b>bold</b> and <i>italic</i> text.</p>
+        <div class="section"><h2>Details</h2>
+        <p><a class="externalLink" href="https://example.com">site</a> and <a name="inside">anchor</a>.</p>
+        <div><pre>code &amp; symbols</pre></div>
+        <ul><li>first</li><li>second</li></ul>
+        <ol style="list-style-type: decimal"><li>one</li></ol>
+        <table align="center" border="1" class="bodyTable"><tr class="a"><th align="left">head</th><td align="left">cell</td></tr></table>
+        <img src="diagram.png" alt="Diagram" />
+        <hr />
+      </div></body></html>
+    "
+    to contain:
+      "<h2>Main &amp; Intro</h2>" 
+        at org_apache_maven_doxia.doxia_module_xhtml.Doxia_module_xhtmlTest.parserConvertsXhtmlDocumentIntoXhtmlSinkOutput(Doxia_module_xhtmlTest.java:212)
+
+Doxia_module_xhtmlTest > sinkWritesLinksAnchorsInlineMarkupImagesListsTablesAndSpecialWhitespace() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      "<body><a name="a1_intro_anchor"></a><p><a class="externalLink" href="https://example.com/search?q=one&amp;lang=en" target="_blank">external</a> <a href="local-section"><b><i><tt>local link</tt></i></b></a><br />&#160;</p><div class="source"><pre>&lt;xml&gt;&amp;value&lt;/xml&gt;</pre></div><div class="figure"><p align="center"><img src="images/logo.png" alt="" /></p><p align="center"><i>Logo</i></p></div><ul><li>bullet</li></ul><ol style="list-style-type: upper-alpha"><li>numbered</li></ol><dl><dt>term</dt><dd>definition</dd></dl><caption>Metrics</caption><table align="center" border="1" class="bodyTable"><tr class="a"><th align="left" width="25%">Name</th><td align="center" width="50%">Middle</td><td align="right">Value</td></tr></table><hr /></body></html>"
+    to contain:
+      "href="#local-section"" 
+        at org_apache_maven_doxia.doxia_module_xhtml.Doxia_module_xhtmlTest.sinkWritesLinksAnchorsInlineMarkupImagesListsTablesAndSpecialWhitespace(Doxia_module_xhtmlTest.java:155)
+
+Doxia_module_xhtmlTest > parserClosesNestedSectionsWhenHigherLevelHeadingStarts() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      "
+      <body><h1>First</h1><p>one</p><div class="section"><h2>Child</h2><p>two</p><h1>Second</h1><p>three</p></div></body></html>
+    "
+    to contain:
+      "<div class="section"><h2>First</h2><p>one</p><div class="section"><h3>Child</h3><p>two</p></div></div><div class="section"><h2>Second</h2><p>three</p></div>" 
+
+        at org_apache_maven_doxia.doxia_module_xhtml.Doxia_module_xhtmlTest.parserClosesNestedSectionsWhenHigherLevelHeadingStarts(Doxia_module_xhtmlTest.java:277)
+7 tests completed, 3 failed
+
+
+FAILURE: [Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6731-6f64b5f3/tests/src/org.apache.maven.doxia/doxia-module-xhtml/1.1/build/reports/problems/problems-report.html
+Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6731-6f64b5f3/tests/src/org.apache.maven.doxia/doxia-module-xhtml/1.1/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+BUILD FAILED
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation. in 3s
+
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6731-6f64b5f3/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.apache.maven.doxia:doxia-module-xhtml:1.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+9 actionable tasks: 1 executed, 8 up-to-date
