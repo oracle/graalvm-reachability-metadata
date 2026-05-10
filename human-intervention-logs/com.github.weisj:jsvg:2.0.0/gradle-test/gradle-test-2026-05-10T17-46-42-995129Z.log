@@ -1,0 +1,214 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.github.weisj:jsvg:2.0.0
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6752-6d6babdc/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 14 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6752-6d6babdc/tests/src/com.github.weisj/jsvg/2.0.0/build/test-results/test/testlist
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6752-6d6babdc/tests/src/com.github.weisj/jsvg/2.0.0/build/test-results/test/testlist] and its subfolders.
+JUnit Platform on Native Image - report
+----------------------------------------
+
+com_github_weisj.jsvg.JsvgTest > loadsStyledGeometryDefinitionsAndComputesShape() FAILED
+
+com_github_weisj.jsvg.JsvgTest > loadsExternalImageResourcesRelativeToDocumentUrl(Path) FAILED
+
+com_github_weisj.jsvg.JsvgTest > rendersPatternPaintWithRepeatedTiles() FAILED
+
+com_github_weisj.jsvg.JsvgTest > exposesAnimationStateAndHonorsDocumentLimits() FAILED
+
+com_github_weisj.jsvg.JsvgTest > rendersMasksWithPartialTransparency() FAILED
+
+com_github_weisj.jsvg.JsvgTest > rendersGradientClippingAndTransforms() FAILED
+
+
+Failures (6):
+  JUnit Jupiter:JsvgTest:loadsStyledGeometryDefinitionsAndComputesShape()
+    MethodSource [className = 'com_github_weisj.jsvg.JsvgTest', methodName = 'loadsStyledGeometryDefinitionsAndComputesShape', methodParameterTypes = '']
+    => java.lang.NoSuchMethodError: sun.awt.image.BufImgSurfaceData$ICMColorData.<init>(J)V
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.jni.functions.JNIFunctions$Support.getMethodID(JNIFunctions.java:1860)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.jni.functions.JNIFunctions$Support.getMethodID(JNIFunctions.java:1841)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.jni.functions.JNIFunctions.GetMethodID(JNIFunctions.java:438)
+       java.desktop@25.0.2/sun.awt.image.BufImgSurfaceData.initIDs(Native Method)
+       java.desktop@25.0.2/sun.awt.image.BufImgSurfaceData.<clinit>(BufImgSurfaceData.java:70)
+       java.desktop@25.0.2/sun.awt.image.BufImgSurfaceManager.<init>(BufImgSurfaceManager.java:55)
+       java.desktop@25.0.2/sun.awt.image.SurfaceManager.getManager(SurfaceManager.java:82)
+       java.desktop@25.0.2/sun.java2d.SurfaceData.getPrimarySurfaceData(SurfaceData.java:270)
+       java.desktop@25.0.2/sun.java2d.SunGraphicsEnvironment.createGraphics(SunGraphicsEnvironment.java:128)
+       java.desktop@25.0.2/java.awt.image.BufferedImage.createGraphics(BufferedImage.java:1171)
+       [...]
+  JUnit Jupiter:JsvgTest:loadsExternalImageResourcesRelativeToDocumentUrl(Path)
+    MethodSource [className = 'com_github_weisj.jsvg.JsvgTest', methodName = 'loadsExternalImageResourcesRelativeToDocumentUrl', methodParameterTypes = 'java.nio.file.Path']
+    => java.lang.NoClassDefFoundError: Could not initialize class sun.awt.image.BufImgSurfaceData
+       java.desktop@25.0.2/sun.awt.image.BufImgSurfaceManager.<init>(BufImgSurfaceManager.java:55)
+       java.desktop@25.0.2/sun.awt.image.SurfaceManager.getManager(SurfaceManager.java:82)
+       java.desktop@25.0.2/sun.java2d.SurfaceData.getPrimarySurfaceData(SurfaceData.java:270)
+       java.desktop@25.0.2/sun.java2d.SunGraphicsEnvironment.createGraphics(SunGraphicsEnvironment.java:128)
+       java.desktop@25.0.2/java.awt.image.BufferedImage.createGraphics(BufferedImage.java:1171)
+       com_github_weisj.jsvg.JsvgTest.loadsExternalImageResourcesRelativeToDocumentUrl(JsvgTest.java:184)
+       java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+       [...]
+  JUnit Jupiter:JsvgTest:rendersPatternPaintWithRepeatedTiles()
+    MethodSource [className = 'com_github_weisj.jsvg.JsvgTest', methodName = 'rendersPatternPaintWithRepeatedTiles', methodParameterTypes = '']
+    => java.lang.NoClassDefFoundError: Could not initialize class sun.awt.image.BufImgSurfaceData
+       java.desktop@25.0.2/sun.awt.image.BufImgSurfaceManager.<init>(BufImgSurfaceManager.java:55)
+       java.desktop@25.0.2/sun.awt.image.SurfaceManager.getManager(SurfaceManager.java:82)
+       java.desktop@25.0.2/sun.java2d.SurfaceData.getPrimarySurfaceData(SurfaceData.java:270)
+       java.desktop@25.0.2/sun.java2d.SunGraphicsEnvironment.createGraphics(SunGraphicsEnvironment.java:128)
+       java.desktop@25.0.2/java.awt.image.BufferedImage.createGraphics(BufferedImage.java:1171)
+       com_github_weisj.jsvg.JsvgTest.render(JsvgTest.java:273)
+       com_github_weisj.jsvg.JsvgTest.rendersPatternPaintWithRepeatedTiles(JsvgTest.java:160)
+       java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       [...]
+  JUnit Jupiter:JsvgTest:exposesAnimationStateAndHonorsDocumentLimits()
+    MethodSource [className = 'com_github_weisj.jsvg.JsvgTest', methodName = 'exposesAnimationStateAndHonorsDocumentLimits', methodParameterTypes = '']
+    => java.lang.NoClassDefFoundError: Could not initialize class sun.awt.image.BufImgSurfaceData
+       java.desktop@25.0.2/sun.awt.image.BufImgSurfaceManager.<init>(BufImgSurfaceManager.java:55)
+       java.desktop@25.0.2/sun.awt.image.SurfaceManager.getManager(SurfaceManager.java:82)
+       java.desktop@25.0.2/sun.java2d.SurfaceData.getPrimarySurfaceData(SurfaceData.java:270)
+       java.desktop@25.0.2/sun.java2d.SunGraphicsEnvironment.createGraphics(SunGraphicsEnvironment.java:128)
+       java.desktop@25.0.2/java.awt.image.BufferedImage.createGraphics(BufferedImage.java:1171)
+       com_github_weisj.jsvg.JsvgTest.exposesAnimationStateAndHonorsDocumentLimits(JsvgTest.java:230)
+       java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+       [...]
+  JUnit Jupiter:JsvgTest:rendersMasksWithPartialTransparency()
+    MethodSource [className = 'com_github_weisj.jsvg.JsvgTest', methodName = 'rendersMasksWithPartialTransparency', methodParameterTypes = '']
+    => java.lang.NoClassDefFoundError: Could not initialize class sun.awt.image.BufImgSurfaceData
+       java.desktop@25.0.2/sun.awt.image.BufImgSurfaceManager.<init>(BufImgSurfaceManager.java:55)
+       java.desktop@25.0.2/sun.awt.image.SurfaceManager.getManager(SurfaceManager.java:82)
+       java.desktop@25.0.2/sun.java2d.SurfaceData.getPrimarySurfaceData(SurfaceData.java:270)
+       java.desktop@25.0.2/sun.java2d.SunGraphicsEnvironment.createGraphics(SunGraphicsEnvironment.java:128)
+       java.desktop@25.0.2/java.awt.image.BufferedImage.createGraphics(BufferedImage.java:1171)
+       com_github_weisj.jsvg.JsvgTest.render(JsvgTest.java:273)
+       com_github_weisj.jsvg.JsvgTest.rendersMasksWithPartialTransparency(JsvgTest.java:133)
+       java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       [...]
+  JUnit Jupiter:JsvgTest:rendersGradientClippingAndTransforms()
+    MethodSource [className = 'com_github_weisj.jsvg.JsvgTest', methodName = 'rendersGradientClippingAndTransforms', methodParameterTypes = '']
+    => java.lang.NoClassDefFoundError: Could not initialize class sun.awt.image.BufImgSurfaceData
+       java.desktop@25.0.2/sun.awt.image.BufImgSurfaceManager.<init>(BufImgSurfaceManager.java:55)
+       java.desktop@25.0.2/sun.awt.image.SurfaceManager.getManager(SurfaceManager.java:82)
+       java.desktop@25.0.2/sun.java2d.SurfaceData.getPrimarySurfaceData(SurfaceData.java:270)
+       java.desktop@25.0.2/sun.java2d.SunGraphicsEnvironment.createGraphics(SunGraphicsEnvironment.java:128)
+       java.desktop@25.0.2/java.awt.image.BufferedImage.createGraphics(BufferedImage.java:1171)
+       com_github_weisj.jsvg.JsvgTest.render(JsvgTest.java:273)
+       com_github_weisj.jsvg.JsvgTest.rendersGradientClippingAndTransforms(JsvgTest.java:104)
+       java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       [...]
+
+Test run finished after 8 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         6 tests found           ]
+[         0 tests skipped         ]
+[         6 tests started         ]
+[         0 tests aborted         ]
+[         0 tests successful      ]
+[         6 tests failed          ]
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6752-6d6babdc/tests/src/com.github.weisj/jsvg/2.0.0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':nativeTest'.
+> Process 'command '/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6752-6d6babdc/tests/src/com.github.weisj/jsvg/2.0.0/build/native/nativeTestCompile/com.github.weisj.jsvg_tests-tests'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+BUILD FAILED in 3s
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+17 actionable tasks: 2 executed, 15 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6752-6d6babdc/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.github.weisj:jsvg:2.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date
