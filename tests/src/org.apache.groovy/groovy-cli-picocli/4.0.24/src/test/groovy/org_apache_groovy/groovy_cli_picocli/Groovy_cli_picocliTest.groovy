@@ -136,6 +136,22 @@ public class Groovy_cli_picocliTest {
     }
 
     @Test
+    void exposesMapOptionsAsProperties() {
+        CliBuilder cli = new CliBuilder(name: 'launch')
+        cli.D(type: Map, argName: 'property=value', 'set launch properties')
+
+        OptionAccessor options = cli.parse(['-Denv=prod', '-Ddebug=true', 'service'] as String[])
+
+        assertThat(options).isNotNull()
+        Properties properties = options.getOptionProperties('D')
+        assertThat(properties)
+                .containsEntry('env', 'prod')
+                .containsEntry('debug', 'true')
+        assertThat(options.getOptionProperties('missing')).isNull()
+        assertThat(options.arguments()).containsExactly('service')
+    }
+
+    @Test
     void parsesAnnotatedInterfacesIntoTypedOptionViews() {
         CliBuilder cli = new CliBuilder(usage: 'ls [options] [files]')
 
