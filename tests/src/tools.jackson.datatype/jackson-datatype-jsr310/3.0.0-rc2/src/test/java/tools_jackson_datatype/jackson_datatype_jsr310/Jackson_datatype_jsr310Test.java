@@ -89,6 +89,28 @@ public class Jackson_datatype_jsr310Test {
     }
 
     @Test
+    void discoversJavaTimeModuleThroughMapperModuleDiscovery() throws Exception {
+        ObjectMapper discoveredMapper = JsonMapper.builder()
+                .findAndAddModules()
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .disable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
+                .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+                .build();
+        AutoDiscoveredSnapshot snapshot = new AutoDiscoveredSnapshot(
+                LocalDate.of(2024, 4, 5),
+                OffsetDateTime.of(2024, 4, 5, 6, 7, 8, 0, ZoneOffset.UTC),
+                Duration.ofMinutes(45));
+
+        String json = discoveredMapper.writeValueAsString(snapshot);
+        JsonNode tree = discoveredMapper.readTree(json);
+
+        assertThat(tree.get("date").asText()).isEqualTo("2024-04-05");
+        assertThat(tree.get("publishedAt").asText()).isEqualTo("2024-04-05T06:07:08Z");
+        assertThat(tree.get("processingTime").asText()).isEqualTo("PT45M");
+        assertThat(discoveredMapper.readValue(json, AutoDiscoveredSnapshot.class)).isEqualTo(snapshot);
+    }
+
+    @Test
     void writesAndReadsArrayAndNumericTimestampShapes() throws Exception {
         ObjectMapper timestampMapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())
@@ -261,6 +283,12 @@ public class Jackson_datatype_jsr310Test {
             LocalDateTime dateTime,
             Instant instant,
             Duration duration) {
+    }
+
+    public record AutoDiscoveredSnapshot(
+            LocalDate date,
+            OffsetDateTime publishedAt,
+            Duration processingTime) {
     }
 
     public record MapKeySnapshot(
