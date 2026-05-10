@@ -11,9 +11,6 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.specs2.fp.Applicative
-import org.specs2.fp.EitherIdOps
-import org.specs2.fp.EitherObjectOps
-import org.specs2.fp.EitherOps
 import org.specs2.fp.Foldable
 import org.specs2.fp.Memo
 import org.specs2.fp.Monad
@@ -30,7 +27,7 @@ import org.specs2.fp.Value
 import org.specs2.fp.syntax.*
 import org.specs2.fp.Id
 
-import scala.collection.immutable.Stream
+import scala.collection.immutable.LazyList
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -42,13 +39,13 @@ class Specs2_fp_3Test {
 
   @Test
   def monadAndApplicativeInstancesComposeStrictAndOptionalValues(): Unit = {
-    val optionMonad: Monad[Option] = Monad[Option]
+    val optionMonad: Monad[Option] = summon[Monad[Option]]
     val lifted: Option[Int] = optionMonad.point(2)
     val bound: Option[String] = optionMonad.bind(lifted)(i => Some(s"value-${i + 1}"))
     val joined: Option[Int] = optionMonad.join(Some(Some(7)))
-    val tailRecursive: Option[String] = optionMonad.tailrecM[Int, String] { i =>
+    val tailRecursive: Option[String] = optionMonad.tailrecM(1) { i =>
       Some(if i < 4 then Left(i + 1) else Right(s"done-$i"))
-    }(1)
+    }
 
     assertEquals(Some("value-3"), bound)
     assertEquals(Some(7), joined)
@@ -65,13 +62,13 @@ class Specs2_fp_3Test {
     assertEquals(Some((1, "two", true)), tupled)
     assertEquals(Some(6), liftedSum)
     assertEquals(Some(List(2, 4)), filtered)
-    assertEquals(Some(()), optionApplicative.whenM(false)(throw new AssertionError("should not evaluate")))
-    assertEquals(Some(()), optionApplicative.unlessM(true)(throw new AssertionError("should not evaluate")))
+    assertEquals(Some(()), optionApplicative.when(false)(throw new AssertionError("should not evaluate")))
+    assertEquals(Some(()), optionApplicative.unless(true)(throw new AssertionError("should not evaluate")))
   }
 
   @Test
   def monadIterationRepeatsActionsUntilPredicatesChange(): Unit = {
-    val nameMonad: Monad[Name] = Name.name
+    val nameMonad: Monad[Name] = summon[Monad[Name]]
 
     var untilCalls: Int = 0
     val untilValue: Name[Int] = nameMonad.iterateUntil(Name {
@@ -94,8 +91,6 @@ class Specs2_fp_3Test {
 
   @Test
   def syntaxExtensionsDelegateToFunctorApplicativeMonadAndShowTypeClasses(): Unit = {
-    given Applicative[Option] = Applicative.optionApplicative
-
     val mapped: Option[Int] = Option(4).map(_ + 1)
     val replaced: Option[String] = Option(4).as("constant")
     val voided: Option[Unit] = Option(4).void
@@ -156,8 +151,8 @@ class Specs2_fp_3Test {
     assertTrue(foldableList.empty(List.empty[Int]))
     assertEquals("a,b,c", foldableList.intercalate(List("a", "b", "c"), ","))
 
-    val foldedOption: Option[Int] = values.foldLeftM[Option, Int](0)((acc, value) => Some(acc + value))
-    val traversedOption: Option[Unit] = values.traverse_[Option, Int](value => Some(value * 2))
+    val foldedOption: Option[Int] = values.foldLeftM(0)((acc: Int, value: Int) => Option(acc + value))
+    val traversedOption: Option[Unit] = values.traverse_((value: Int) => Option(value * 2))
     assertEquals(Some(10), foldedOption)
     assertEquals(Some(()), traversedOption)
     assertEquals(10, values.sumAll)
@@ -165,16 +160,16 @@ class Specs2_fp_3Test {
 
   @Test
   def traverseInstancesSequenceEffectsAcrossListsOptionsAndEitherValues(): Unit = {
-    val listTraverse: Traverse[List] = Traverse[List]
-    val optionTraverse: Traverse[Option] = Traverse[Option]
-    val eitherTraverse: Traverse[[A] =>> Either[String, A]] = Traverse[[A] =>> Either[String, A]]
+    val listTraverse: Traverse[List] = summon[Traverse[List]]
+    val optionTraverse: Traverse[Option] = summon[Traverse[Option]]
+    val eitherTraverse: Traverse[[A] =>> Either[String, A]] = summon[Traverse[[A] =>> Either[String, A]]]
 
-    val traversedList: Option[List[String]] = listTraverse.traverse(List(1, 2, 3))(i => Option(s"n$i"))
-    val failedList: Option[List[Int]] = listTraverse.traverse(List(1, -1, 3))(i => if i > 0 then Option(i) else None)
+    val traversedList: Option[List[String]] = listTraverse.traverse(List(1, 2, 3))((i: Int) => Option(s"n$i"))
+    val failedList: Option[List[Int]] = listTraverse.traverse(List(1, -1, 3))((i: Int) => if i > 0 then Option(i) else None)
     val sequencedList: Option[List[Int]] = listTraverse.sequence(List[Option[Int]](Some(1), Some(2), Some(3)))
-    val traversedOption: Either[String, Option[Int]] = optionTraverse.traverse(Some(5))(i => Right(i + 1): Either[String, Int])
-    val traversedLeft: Option[Either[String, Int]] = eitherTraverse.traverse(Left("stop"): Either[String, Int])(i => Option(i + 1))
-    val syntaxTraverse: Option[List[Int]] = List(1, 2, 3).traverse[Option, Int](i => Option(i * 10))
+    val traversedOption: Either[String, Option[Int]] = optionTraverse.traverse(Some(5))((i: Int) => Right(i + 1): Either[String, Int])
+    val traversedLeft: Option[Either[String, Int]] = eitherTraverse.traverse(Left("stop"): Either[String, Int])((i: Int) => Option(i + 1))
+    val syntaxTraverse: Option[List[Int]] = List(1, 2, 3).traverse((i: Int) => Option(i * 10))
     val syntaxSequence: Option[List[Int]] = List[Option[Int]](Some(1), Some(2)).sequence
 
     assertEquals(Some(List("n1", "n2", "n3")), traversedList)
@@ -188,43 +183,40 @@ class Specs2_fp_3Test {
 
   @Test
   def eitherSyntaxProvidesCatsLikeOperationsWithoutUsingReflection(): Unit = {
-    val eitherObject: EitherObjectOps = new EitherObjectOps(Either)
-    val rightOps: EitherOps[String, Int] = new EitherOps[String, Int](Right(2))
-    val leftOps: EitherOps[String, Int] = new EitherOps[String, Int](Left("bad"))
-    val numberFormat: Either[Throwable, Int] = eitherObject.catchNonFatal("not-a-number".toInt)
+    val right: Either[String, Int] = Right(2)
+    val left: Either[String, Int] = Left("bad")
+    val eitherApplicative: Applicative[[A] =>> Either[String, A]] = summon[Applicative[[A] =>> Either[String, A]]]
 
-    assertEquals(Right(2), eitherObject.right[String, Int](2))
-    assertEquals(Left("left"), eitherObject.left[String, Int]("left"))
-    assertLeftThrowable(numberFormat, _.isInstanceOf[NumberFormatException])
-    assertEquals(Right(3), eitherObject.fromTry(Success(3)))
-    assertLeftThrowable(eitherObject.fromTry(Failure(new IllegalStateException("boom"))), _.isInstanceOf[IllegalStateException])
-    assertEquals(Right("present"), eitherObject.fromOption(Some("present"), "missing"))
-    assertEquals(Left("missing"), eitherObject.fromOption(None, "missing"))
+    assertEquals(Right(2), Right(2): Either[String, Int])
+    assertEquals(Left("left"), Left("left"): Either[String, Int])
+    assertEquals(Right("present"), Option("present").toRight("missing"))
+    assertEquals(Left("missing"), Option.empty[String].toRight("missing"))
+    assertLeftThrowable(scala.util.Try("not-a-number".toInt).toEither, _.isInstanceOf[NumberFormatException])
+    assertEquals(Right(3), Success(3).toEither)
+    assertLeftThrowable(Failure(new IllegalStateException("boom")).toEither, _.isInstanceOf[IllegalStateException])
 
-    assertEquals(Right(3), rightOps.map(_ + 1))
-    assertEquals(Right("value-2"), rightOps.bimap(_.toUpperCase, i => s"value-$i"))
-    assertEquals(Right(4), rightOps.flatMap(i => Right(i * 2)))
-    assertEquals(Right(5), rightOps.ap(Right((i: Int) => i + 3)))
-    assertEquals(Right(5), rightOps.append(Right(3))(intAdditionSemigroup))
-    assertEquals(Right(2), rightOps.ensure("too-small")(_ >= 2))
-    assertEquals(Some(2), rightOps.toOption)
-    assertEquals(List(2), rightOps.toList)
-    assertEquals(2, rightOps.getOrElse(0))
-    assertEquals(2, rightOps.valueOr(_.length))
-    assertEquals(4, rightOps.foldLeft(2)(_ * _))
-    assertEquals("Right(2)", rightOps.show(Show.showFromToString[String], Show.showFromToString[Int]))
+    assertEquals(Right(3), right.map(_ + 1))
+    assertEquals(Right("value-2"), right.bimap(_.toUpperCase, i => s"value-$i"))
+    assertEquals(Right(4), right.flatMap(i => Right(i * 2)))
+    assertEquals(Right(5), eitherApplicative.ap(right)(Right((i: Int) => i + 3)))
+    assertEquals(Right(5), right.append(Right(3))(using intAdditionSemigroup))
+    assertEquals(Right(2), right.ensure("too-small")(_ >= 2))
+    assertEquals(Some(2), right.toOption)
+    assertEquals(List(2), right.toList)
+    assertEquals(2, right.getOrElse(0))
+    assertEquals(2, right.valueOr(_.length))
+    assertEquals(4, right.foldLeft(2)(_ * _))
+    assertEquals("Right(2)", right.show(using Show.showFromToString[String], Show.showFromToString[Int]))
 
-    assertEquals(Left("BAD"), leftOps.leftMap(_.toUpperCase))
-    assertEquals(Right(7), leftOps.recover { case "bad" => 7 })
-    assertEquals(Right(8), leftOps.recoverWith { case "bad" => Right(8) })
-    assertEquals(Right(9), leftOps.orElse(Right(9)))
-    assertEquals(3, leftOps.valueOr(_.length))
-    assertEquals(Left("bad"), leftOps.append(Right(3))(intAdditionSemigroup))
-    assertEquals(Left("bad"), leftOps.ensure("unused")(_ => false))
-    assertEquals(None, leftOps.toOption)
-    assertEquals(Nil, leftOps.toList)
-    assertEquals(Right(2), new EitherIdOps[Int](2).asRight[String])
-    assertEquals(Left("problem"), new EitherIdOps[String]("problem").asLeft[Int])
+    assertEquals(Left("BAD"), left.leftMap(_.toUpperCase))
+    assertEquals(Right(7), left.recover { case "bad" => 7 })
+    assertEquals(Right(8), left.recoverWith { case "bad" => Right(8) })
+    assertEquals(Right(9), left.orElse(Right(9)))
+    assertEquals(3, left.valueOr(_.length))
+    assertEquals(Left("bad"), left.append(Right(3))(using intAdditionSemigroup))
+    assertEquals(Left("bad"), left.ensure("unused")(_ => false))
+    assertEquals(None, left.toOption)
+    assertEquals(Nil, left.toList)
   }
 
   @Test
@@ -250,7 +242,7 @@ class Specs2_fp_3Test {
     assertEquals("cached", value.value)
     assertEquals("cached", Value.unapply(value).value)
     assertEquals(Some(10), Need.unapply(need))
-    assertEquals(3, Name.name.bind(Name(1))(i => Name(i + 2)).value)
+    assertEquals(3, summon[Monad[Name]].bind(Name(1))(i => Name(i + 2)).value)
 
     var mutableCalls: Int = 0
     val mutableMemoized: Int => String = Memo.mutableHashMapMemo[Int, String].apply { key =>
@@ -283,8 +275,8 @@ class Specs2_fp_3Test {
   def treeSupportsTraversalDrawingMappingBindingAndZipperEditing(): Unit = {
     val tree: Tree[String] = Tree.Node(
       "root",
-      Stream(
-        Tree.Node("left", Stream(Tree.Leaf("left.leaf"))),
+      LazyList(
+        Tree.Node("left", LazyList(Tree.Leaf("left.leaf"))),
         Tree.Leaf("right")
       )
     )
@@ -293,7 +285,7 @@ class Specs2_fp_3Test {
     assertEquals(List("root", "left", "left.leaf", "right"), tree.flatten.toList)
     assertEquals(4, tree.size)
     assertEquals(List(List("root"), List("left", "right"), List("left.leaf")), tree.levels.map(_.toList).toList)
-    assertTrue(tree.drawTree(Show.showFromToString[String]).contains("left.leaf"))
+    assertTrue(tree.drawTree(using Show.showFromToString[String]).contains("left.leaf"))
     assertEquals(List(4, 4, 9, 5), tree.map(_.length).flatten.toList)
     assertEquals(22, tree.foldMap(_.length))
     assertEquals("root/left/left.leaf/right/end", tree.foldRight("end")((label, rest) => s"$label/$rest"))
@@ -301,7 +293,7 @@ class Specs2_fp_3Test {
     val scanned: Tree[Int] = tree.scanr((label, children) => label.length + children.map(_.rootLabel).sum)
     assertEquals(22, scanned.rootLabel)
 
-    val duplicatedLabels: Tree[String] = tree.flatMap(label => Tree.Node(label.toUpperCase, Stream(Tree.Leaf(label.toLowerCase))))
+    val duplicatedLabels: Tree[String] = tree.flatMap(label => Tree.Node(label.toUpperCase, LazyList(Tree.Leaf(label.toLowerCase))))
     assertEquals(List("ROOT", "root", "LEFT", "left", "LEFT.LEAF", "left.leaf", "RIGHT", "right"), duplicatedLabels.flatten.toList)
 
     val loc: TreeLoc[String] = tree.loc
@@ -315,12 +307,12 @@ class Specs2_fp_3Test {
     assertTrue(loc.isRoot)
     assertTrue(leftChild.isChild)
     assertTrue(leftChild.hasChildren)
-    assertEquals(Stream("left", "root").toList, leftChild.path.toList)
+    assertEquals(LazyList("left", "root").toList, leftChild.path.toList)
     assertEquals("right", rightChild.getLabel)
     assertEquals(List("root", "left", "left.leaf", "middle", "right-updated"), editedRoot.toTree.flatten.toList)
     assertEquals(Some("left"), loc.findChild(_.rootLabel == "left").map(_.getLabel))
     assertEquals(Some("left.leaf"), loc.find(_.getLabel == "left.leaf").map(_.getLabel))
-    assertEquals(Some("root"), TreeLoc.fromForest(Stream(tree)).map(_.getLabel))
+    assertEquals(List("root"), loc.toForest.map(_.rootLabel).toList)
     assertEquals(List(4, 4, 9, 5), loc.map(_.length).toTree.flatten.toList)
   }
 
@@ -328,15 +320,15 @@ class Specs2_fp_3Test {
   def treeCobindAndUnzipCreateContextAwareAndSplitTrees(): Unit = {
     val tree: Tree[String] = Tree.Node(
       "root",
-      Stream(
-        Tree.Node("left", Stream(Tree.Leaf("left.leaf"))),
+      LazyList(
+        Tree.Node("left", LazyList(Tree.Leaf("left.leaf"))),
         Tree.Leaf("right")
       )
     )
 
     val contextSizes: Tree[String] = tree.cobind(subtree => s"${subtree.rootLabel}:${subtree.size}")
     val labelled: Tree[(String, Int)] = tree.map(label => (label, label.length))
-    val unzipped: (Tree[String], Tree[Int]) = labelled.unzip { case (label, length) => (label, length) }
+    val unzipped: (Tree[String], Tree[Int]) = labelled.unzip(using (pair: (String, Int)) => pair)
 
     assertEquals(List("root:4", "left:2", "left.leaf:1", "right:1"), contextSizes.flatten.toList)
     assertEquals(List("root", "left", "left.leaf", "right"), unzipped._1.flatten.toList)
@@ -346,13 +338,13 @@ class Specs2_fp_3Test {
   @Test
   def unfoldBuildsTreesAndForestsFromSeeds(): Unit = {
     val unfolded: Tree[Int] = Tree.unfoldTree(1) { seed =>
-      val children: Stream[Int] = if seed < 3 then Stream(seed + 1, seed + 2) else Stream.empty
+      val children: LazyList[Int] = if seed < 3 then LazyList(seed + 1, seed + 2) else LazyList.empty
       (seed, () => children)
     }
-    val unfoldedForest: Stream[Tree[Int]] = Tree.unfoldForest(Stream(1, 2)) { seed =>
-      (seed * 10, () => Stream.empty[Int])
+    val unfoldedForest: LazyList[Tree[Int]] = Tree.unfoldForest(LazyList(1, 2)) { seed =>
+      (seed * 10, () => LazyList.empty[Int])
     }
-    val counted: Stream[Int] = TreeLoc.unfold(0)(i => if i < 3 then Some((i + 1, i + 1)) else None)
+    val counted: LazyList[Int] = TreeLoc.unfold(0)(i => if i < 3 then Some((i + 1, i + 1)) else None)
 
     assertEquals(List(1, 2, 3, 4, 3), unfolded.flatten.toList)
     assertEquals(List(10, 20), unfoldedForest.map(_.rootLabel).toList)
@@ -363,15 +355,15 @@ class Specs2_fp_3Test {
   def futureInstancesAndNaturalTransformationsProduceExpectedValuesWithBoundedAwait(): Unit = {
     given ExecutionContext = ExecutionContext.fromExecutor((command: Runnable) => command.run())
 
-    val futureMonad: Monad[Future] = Monad.futureMonad
-    val futureApplicative: Applicative[Future] = Applicative.futureApplicative
+    val futureMonad: Monad[Future] = summon[Monad[Future]]
+    val futureApplicative: Applicative[Future] = summon[Applicative[Future]]
     val futureValue: Future[Int] = futureMonad.bind(Future.successful(4))(i => Future.successful(i * 3))
     val futureTuple: Future[(String, Int)] = futureApplicative.tuple2(Future.successful("age"), Future.successful(42))
 
     assertEquals(12, Await.result(futureValue, 5.seconds))
     assertEquals(("age", 42), Await.result(futureTuple, 5.seconds))
 
-    val natural: NaturalTransformation[Id, Option] = NaturalTransformation.naturalId[Option]
+    val natural: NaturalTransformation[Id, Option] = summon[NaturalTransformation[Id, Option]]
     assertEquals(Some("lifted"), natural.apply("lifted"))
   }
 
