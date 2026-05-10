@@ -121,6 +121,31 @@ value: 2
     }
 
     @Test
+    void ignoresYamlCommentsWhilePreservingQuotedHashCharacters() {
+        String yaml = '''\
+---
+# document-level comment
+service:
+  name: inventory # inline comment
+  route: '/api#v1'
+  ports:
+    - 8080 # public port
+    # internal port follows
+    - 9000
+  labels:
+    owner: 'team # platform'
+'''
+
+        Map parsed = new YamlSlurper().parseText(yaml) as Map
+
+        Map service = parsed['service'] as Map
+        assertThat(service['name']).isEqualTo('inventory')
+        assertThat(service['route']).isEqualTo('/api#v1')
+        assertThat(service['ports']).containsExactly(8080, 9000)
+        assertThat(service['labels']).containsEntry('owner', 'team # platform')
+    }
+
+    @Test
     void buildsYamlFromMapListVarargsAndWritesToAWriter() {
         YamlBuilder mapBuilder = new YamlBuilder()
         Map mapContent = mapBuilder(
