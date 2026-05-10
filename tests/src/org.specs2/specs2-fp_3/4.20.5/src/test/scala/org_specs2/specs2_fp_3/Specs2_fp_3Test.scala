@@ -325,6 +325,25 @@ class Specs2_fp_3Test {
   }
 
   @Test
+  def treeCobindAndUnzipCreateContextAwareAndSplitTrees(): Unit = {
+    val tree: Tree[String] = Tree.Node(
+      "root",
+      Stream(
+        Tree.Node("left", Stream(Tree.Leaf("left.leaf"))),
+        Tree.Leaf("right")
+      )
+    )
+
+    val contextSizes: Tree[String] = tree.cobind(subtree => s"${subtree.rootLabel}:${subtree.size}")
+    val labelled: Tree[(String, Int)] = tree.map(label => (label, label.length))
+    val unzipped: (Tree[String], Tree[Int]) = labelled.unzip { case (label, length) => (label, length) }
+
+    assertEquals(List("root:4", "left:2", "left.leaf:1", "right:1"), contextSizes.flatten.toList)
+    assertEquals(List("root", "left", "left.leaf", "right"), unzipped._1.flatten.toList)
+    assertEquals(List(4, 4, 9, 5), unzipped._2.flatten.toList)
+  }
+
+  @Test
   def unfoldBuildsTreesAndForestsFromSeeds(): Unit = {
     val unfolded: Tree[Int] = Tree.unfoldTree(1) { seed =>
       val children: Stream[Int] = if seed < 3 then Stream(seed + 1, seed + 2) else Stream.empty
