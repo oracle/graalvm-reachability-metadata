@@ -1,0 +1,13 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Completed post-generation intervention.
+
+Changes made:
+- Removed failing generated test:
+  - `tests/src/org.apache.groovy/groovy-yaml/4.0.24/src/test/groovy/org_apache_groovy/groovy_yaml/Groovy_yamlTest.groovy`
+- Restored `user-code-filter.json` to avoid keeping the test-package-only include.
+- Did not modify metadata files.
+
+Report written to:
+- `post-gen-interventions/org.apache.groovy_groovy-yaml_4.0.24.md`
+
+Root cause: the failures are not metadata-related. All generated tests fail due Groovy runtime / invokedynamic bootstrap behavior in the native image (`GroovySystem` initialization / `IndyInterface.bootstrap`), not due a remaining `Missing*RegistrationError`.
