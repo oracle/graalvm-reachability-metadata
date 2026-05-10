@@ -9,6 +9,8 @@ plugins {
     id "groovy"
 }
 
+import org.gradle.api.tasks.compile.GroovyCompile
+
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
@@ -32,4 +34,8 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.withType(GroovyCompile).configureEach {
+    groovyOptions.optimizationOptions.indy = false
 }

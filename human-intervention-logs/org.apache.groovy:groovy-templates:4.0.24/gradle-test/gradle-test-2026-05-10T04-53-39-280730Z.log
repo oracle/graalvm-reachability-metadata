@@ -1,0 +1,193 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.apache.groovy:groovy-templates:4.0.24
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2468-4e28ecc8/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 2 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileGroovy NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar
+> Task :compileTestJava NO-SOURCE
+> Task :compileTestGroovy
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+Groovy_templatesTest > xmlTemplateEngineEvaluatesGspScriptletsAndExpressions() FAILED
+    java.lang.ExceptionInInitializerError
+        at org.codehaus.groovy.reflection.ClassInfo.isValidWeakMetaClass(ClassInfo.java:283)
+        at org.codehaus.groovy.reflection.ClassInfo.getMetaClassForClass(ClassInfo.java:253)
+        at org.codehaus.groovy.reflection.ClassInfo.getMetaClass(ClassInfo.java:309)
+        at org_apache_groovy.groovy_templates.Groovy_templatesTest.$getStaticMetaClass(Groovy_templatesTest.groovy)
+        at org_apache_groovy.groovy_templates.Groovy_templatesTest.<init>(Groovy_templatesTest.groovy)
+
+        Caused by:
+        groovy.lang.GroovyRuntimeException: Conflicting module versions. Module [groovy-xml is loaded in version 4.0.24 and you are trying to load version 4.0.28
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl$DefaultModuleListener.onModule(MetaClassRegistryImpl.java:524)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanExtensionModuleFromProperties(ExtensionModuleScanner.java:85)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanExtensionModuleFromMetaInf(ExtensionModuleScanner.java:79)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanClasspathModulesFrom(ExtensionModuleScanner.java:61)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanClasspathModules(ExtensionModuleScanner.java:54)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.<init>(MetaClassRegistryImpl.java:133)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.<init>(MetaClassRegistryImpl.java:94)
+            at groovy.lang.GroovySystem.<clinit>(GroovySystem.java:37)
+            ... 5 more
+
+Groovy_templatesTest > simpleTemplateEngineEvaluatesBindingsExpressionsAndScriptlets() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class groovy.lang.GroovySystem
+        at org.codehaus.groovy.reflection.ClassInfo.isValidWeakMetaClass(ClassInfo.java:283)
+        at org.codehaus.groovy.reflection.ClassInfo.getMetaClassForClass(ClassInfo.java:253)
+        at org.codehaus.groovy.reflection.ClassInfo.getMetaClass(ClassInfo.java:309)
+        at org_apache_groovy.groovy_templates.Groovy_templatesTest.$getStaticMetaClass(Groovy_templatesTest.groovy)
+        at org_apache_groovy.groovy_templates.Groovy_templatesTest.<init>(Groovy_templatesTest.groovy)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception groovy.lang.GroovyRuntimeException: Conflicting module versions. Module [groovy-xml is loaded in version 4.0.24 and you are trying to load version 4.0.28 [in thread "Test worker"]
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl$DefaultModuleListener.onModule(MetaClassRegistryImpl.java:524)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanExtensionModuleFromProperties(ExtensionModuleScanner.java:85)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanExtensionModuleFromMetaInf(ExtensionModuleScanner.java:79)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanClasspathModulesFrom(ExtensionModuleScanner.java:61)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanClasspathModules(ExtensionModuleScanner.java:54)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.<init>(MetaClassRegistryImpl.java:133)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.<init>(MetaClassRegistryImpl.java:94)
+            at groovy.lang.GroovySystem.<clinit>(GroovySystem.java:37)
+            ... 5 more
+
+Groovy_templatesTest > markupTemplateEngineBuildsEscapedMarkupWithConfiguration() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class groovy.lang.GroovySystem
+        at org.codehaus.groovy.reflection.ClassInfo.isValidWeakMetaClass(ClassInfo.java:283)
+        at org.codehaus.groovy.reflection.ClassInfo.getMetaClassForClass(ClassInfo.java:253)
+        at org.codehaus.groovy.reflection.ClassInfo.getMetaClass(ClassInfo.java:309)
+        at org_apache_groovy.groovy_templates.Groovy_templatesTest.$getStaticMetaClass(Groovy_templatesTest.groovy)
+        at org_apache_groovy.groovy_templates.Groovy_templatesTest.<init>(Groovy_templatesTest.groovy)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception groovy.lang.GroovyRuntimeException: Conflicting module versions. Module [groovy-xml is loaded in version 4.0.24 and you are trying to load version 4.0.28 [in thread "Test worker"]
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl$DefaultModuleListener.onModule(MetaClassRegistryImpl.java:524)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanExtensionModuleFromProperties(ExtensionModuleScanner.java:85)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanExtensionModuleFromMetaInf(ExtensionModuleScanner.java:79)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanClasspathModulesFrom(ExtensionModuleScanner.java:61)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanClasspathModules(ExtensionModuleScanner.java:54)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.<init>(MetaClassRegistryImpl.java:133)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.<init>(MetaClassRegistryImpl.java:94)
+            at groovy.lang.GroovySystem.<clinit>(GroovySystem.java:37)
+            ... 5 more
+
+Groovy_templatesTest > gStringTemplateEngineUsesModelValuesAndOutputWriter() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class groovy.lang.GroovySystem
+        at org.codehaus.groovy.reflection.ClassInfo.isValidWeakMetaClass(ClassInfo.java:283)
+        at org.codehaus.groovy.reflection.ClassInfo.getMetaClassForClass(ClassInfo.java:253)
+        at org.codehaus.groovy.reflection.ClassInfo.getMetaClass(ClassInfo.java:309)
+        at org_apache_groovy.groovy_templates.Groovy_templatesTest.$getStaticMetaClass(Groovy_templatesTest.groovy)
+        at org_apache_groovy.groovy_templates.Groovy_templatesTest.<init>(Groovy_templatesTest.groovy)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception groovy.lang.GroovyRuntimeException: Conflicting module versions. Module [groovy-xml is loaded in version 4.0.24 and you are trying to load version 4.0.28 [in thread "Test worker"]
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl$DefaultModuleListener.onModule(MetaClassRegistryImpl.java:524)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanExtensionModuleFromProperties(ExtensionModuleScanner.java:85)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanExtensionModuleFromMetaInf(ExtensionModuleScanner.java:79)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanClasspathModulesFrom(ExtensionModuleScanner.java:61)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanClasspathModules(ExtensionModuleScanner.java:54)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.<init>(MetaClassRegistryImpl.java:133)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.<init>(MetaClassRegistryImpl.java:94)
+            at groovy.lang.GroovySystem.<clinit>(GroovySystem.java:37)
+            ... 5 more
+
+Groovy_templatesTest > streamingTemplateEngineWritesTemplatesCreatedFromReaders() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class groovy.lang.GroovySystem
+        at org.codehaus.groovy.reflection.ClassInfo.isValidWeakMetaClass(ClassInfo.java:283)
+        at org.codehaus.groovy.reflection.ClassInfo.getMetaClassForClass(ClassInfo.java:253)
+        at org.codehaus.groovy.reflection.ClassInfo.getMetaClass(ClassInfo.java:309)
+        at org_apache_groovy.groovy_templates.Groovy_templatesTest.$getStaticMetaClass(Groovy_templatesTest.groovy)
+        at org_apache_groovy.groovy_templates.Groovy_templatesTest.<init>(Groovy_templatesTest.groovy)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception groovy.lang.GroovyRuntimeException: Conflicting module versions. Module [groovy-xml is loaded in version 4.0.24 and you are trying to load version 4.0.28 [in thread "Test worker"]
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl$DefaultModuleListener.onModule(MetaClassRegistryImpl.java:524)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanExtensionModuleFromProperties(ExtensionModuleScanner.java:85)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanExtensionModuleFromMetaInf(ExtensionModuleScanner.java:79)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanClasspathModulesFrom(ExtensionModuleScanner.java:61)
+            at org.codehaus.groovy.runtime.m12n.ExtensionModuleScanner.scanClasspathModules(ExtensionModuleScanner.java:54)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.<init>(MetaClassRegistryImpl.java:133)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.<init>(MetaClassRegistryImpl.java:94)
+            at groovy.lang.GroovySystem.<clinit>(GroovySystem.java:37)
+            ... 5 more
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2468-4e28ecc8/tests/src/org.apache.groovy/groovy-templates/4.0.24/build/reports/problems/problems-report.html
+
+
+5 tests completed, 5 failed
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+FAILURE: Build failed with an exception.
+
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+* What went wrong:
+
+Execution failed for task ':test'.
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2468-4e28ecc8/tests/src/org.apache.groovy/groovy-templates/4.0.24/build/reports/tests/test/index.html
+
+
+14 actionable tasks: 4 executed, 10 up-to-date
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 10s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2468-4e28ecc8/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.apache.groovy:groovy-templates:4.0.24 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 12s
+9 actionable tasks: 1 executed, 8 up-to-date
