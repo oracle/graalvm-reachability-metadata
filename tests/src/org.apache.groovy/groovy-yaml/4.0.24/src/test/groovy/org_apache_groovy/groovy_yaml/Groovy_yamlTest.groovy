@@ -71,6 +71,28 @@ matrix:
     }
 
     @Test
+    void honorsExplicitYamlScalarTypeTags() {
+        String yaml = '''\
+---
+stringNumber: !!str 42
+stringBoolean: !!str true
+integer: !!int "42"
+floatingPoint: !!float "6.25"
+enabled: !!bool "true"
+explicitNull: !!null "ignored"
+'''
+
+        Map parsed = new YamlSlurper().parseText(yaml) as Map
+
+        assertThat(parsed['stringNumber']).isEqualTo('42')
+        assertThat(parsed['stringBoolean']).isEqualTo('true')
+        assertThat(parsed['integer']).isEqualTo(42)
+        assertThat(parsed['floatingPoint']).isEqualTo(6.25)
+        assertThat(parsed['enabled']).isEqualTo(true)
+        assertThat(parsed['explicitNull']).isNull()
+    }
+
+    @Test
     void parsesYamlFromReaderInputStreamFileAndPath() {
         String yaml = '''\
 ---
