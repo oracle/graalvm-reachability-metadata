@@ -34,6 +34,7 @@ import org.apache.logging.slf4j.SLF4JLoggerContextFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
+import org.slf4j.MarkerFactory;
 import org.slf4j.helpers.MarkerIgnoringBase;
 import org.slf4j.spi.LocationAwareLogger;
 
@@ -148,6 +149,30 @@ public class Log4j_to_slf4jTest {
         assertThat(event.arguments).isNull();
         assertThat(message.getLoggerName()).isEqualTo("location.dispatch");
         assertThat(logger.getLogger()).isSameAs(delegate);
+    }
+
+    @Test
+    void markerHierarchyIsConvertedForEnablementChecksAndPlainLogging() {
+        RecordingMarkerLogger delegate = new RecordingMarkerLogger("marker.dispatch");
+        SLF4JLogger logger = new SLF4JLogger(delegate.getName(), delegate);
+        Marker parent = MarkerManager.getMarker("BRIDGE_PARENT_MARKER");
+        Marker child = MarkerManager.getMarker("BRIDGE_CHILD_MARKER").addParents(parent);
+        RuntimeException error = new RuntimeException("marked");
+
+        assertThat(logger.isEnabled(Level.INFO, child, "marker enabled")).isTrue();
+
+        org.slf4j.Marker enabledMarker = delegate.enabledMarker;
+        assertThat(enabledMarker.getName()).isEqualTo("BRIDGE_CHILD_MARKER");
+        assertThat(enabledMarker.contains(MarkerFactory.getMarker("BRIDGE_PARENT_MARKER"))).isTrue();
+
+        logger.logMessage(FQCN, Level.INFO, child, new SimpleMessage("marked message"), error);
+
+        assertThat(delegate.markerEvents).hasSize(1);
+        MarkerEvent event = delegate.markerEvents.get(0);
+        assertThat(event.marker.getName()).isEqualTo("BRIDGE_CHILD_MARKER");
+        assertThat(event.marker.contains(MarkerFactory.getMarker("BRIDGE_PARENT_MARKER"))).isTrue();
+        assertThat(event.message).isEqualTo("marked message");
+        assertThat(event.throwable).isSameAs(error);
     }
 
     @Test
@@ -386,6 +411,26 @@ public class Log4j_to_slf4jTest {
         }
     }
 
+    private static final class RecordingMarkerLogger extends RecordingLogger {
+        private final List<MarkerEvent> markerEvents = new ArrayList<>();
+        private org.slf4j.Marker enabledMarker;
+
+        private RecordingMarkerLogger(String name) {
+            super(name);
+        }
+
+        @Override
+        public boolean isInfoEnabled(org.slf4j.Marker marker) {
+            enabledMarker = marker;
+            return isInfoEnabled();
+        }
+
+        @Override
+        public void info(org.slf4j.Marker marker, String message, Throwable throwable) {
+            markerEvents.add(new MarkerEvent(marker, message, throwable));
+        }
+    }
+
     private static final class LogEvent {
         private final Slf4jLevel level;
         private final String message;
@@ -413,6 +458,18 @@ public class Log4j_to_slf4jTest {
             this.level = level;
             this.message = message;
             this.arguments = arguments;
+            this.throwable = throwable;
+        }
+    }
+
+    private static final class MarkerEvent {
+        private final org.slf4j.Marker marker;
+        private final String message;
+        private final Throwable throwable;
+
+        private MarkerEvent(org.slf4j.Marker marker, String message, Throwable throwable) {
+            this.marker = marker;
+            this.message = message;
             this.throwable = throwable;
         }
     }
