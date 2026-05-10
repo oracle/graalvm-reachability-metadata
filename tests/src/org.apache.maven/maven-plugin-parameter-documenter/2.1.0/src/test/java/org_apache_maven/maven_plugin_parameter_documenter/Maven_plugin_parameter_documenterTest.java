@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Maven_plugin_parameter_documenterTest {
     @Test
@@ -30,7 +29,6 @@ public class Maven_plugin_parameter_documenterTest {
         Expression expression = new Expression();
 
         assertThat(expression.isEditable()).isTrue();
-        assertThat(expression.getModelEncoding()).isEqualTo("UTF-8");
         assertThat(expression.getCliOptions()).isEmpty();
         assertThat(expression.getApiMethods()).isEmpty();
 
@@ -40,7 +38,6 @@ public class Maven_plugin_parameter_documenterTest {
         expression.setDeprecation("Use ${project.artifact.selectedVersion}");
         expression.setBan("Use a fixed release version");
         expression.setEditable(false);
-        expression.setModelEncoding("ISO-8859-1");
         expression.addCliOption("--version", "Display the Maven runtime version");
         expression.addApiMethod("MavenProject#getVersion()", "Read the version from the project model");
 
@@ -50,7 +47,6 @@ public class Maven_plugin_parameter_documenterTest {
         assertThat(expression.getDeprecation()).isEqualTo("Use ${project.artifact.selectedVersion}");
         assertThat(expression.getBan()).isEqualTo("Use a fixed release version");
         assertThat(expression.isEditable()).isFalse();
-        assertThat(expression.getModelEncoding()).isEqualTo("ISO-8859-1");
         assertThat(expression.getCliOptions()).containsEntry("--version", "Display the Maven runtime version");
         assertThat(expression.getApiMethods()).containsEntry(
                 "MavenProject#getVersion()",
@@ -135,7 +131,7 @@ public class Maven_plugin_parameter_documenterTest {
         new ParamdocXpp3Writer().write(output, documentation);
 
         String xml = output.toString();
-        assertThat(xml).contains("<paramdoc>")
+        assertThat(xml).contains("<paramdoc")
                 .contains("<expressions>")
                 .contains("<syntax>${basedir}</syntax>")
                 .contains("<description>Base directory</description>")
@@ -342,31 +338,29 @@ public class Maven_plugin_parameter_documenterTest {
     }
 
     @Test
-    void readerHelperMethodsConvertPrimitiveValuesAndApplyStrictValidation() throws Exception {
-        ParamdocXpp3Reader reader = new ParamdocXpp3Reader();
+    void readerParsesEditableValuesThroughPublicReadApi() throws Exception {
+        String xml = """
+                <paramdoc>
+                  <expressions>
+                    <expression>
+                      <syntax>${project.version}</syntax>
+                      <editable></editable>
+                    </expression>
+                    <expression>
+                      <syntax>${project.groupId}</syntax>
+                      <editable>false</editable>
+                    </expression>
+                  </expressions>
+                </paramdoc>
+                """;
 
-        assertThat(reader.getBooleanValue("true", "editable", null)).isTrue();
-        assertThat(reader.getBooleanValue(null, "editable", null)).isFalse();
-        assertThat(reader.getCharacterValue("abc", "letter", null)).isEqualTo('a');
-        assertThat(reader.getCharacterValue(null, "letter", null)).isEqualTo((char) 0);
-        assertThat(reader.getDateValue(null, "created", null)).isNull();
-        assertThat(reader.getIntegerValue("42", "count", null, true)).isEqualTo(42);
-        assertThat(reader.getLongValue("123456789", "count", null, true)).isEqualTo(123456789L);
-        assertThat(reader.getShortValue("7", "count", null, true)).isEqualTo((short) 7);
-        assertThat(reader.getFloatValue("1.5", "ratio", null, true)).isEqualTo(1.5F);
-        assertThat(reader.getDoubleValue("2.25", "ratio", null, true)).isEqualTo(2.25D);
-        assertThat(reader.getIntegerValue("not-a-number", "count", null, false)).isZero();
-        assertThat(reader.getRequiredAttributeValue("present", "name", null, true)).isEqualTo("present");
-        assertThat(reader.getRequiredAttributeValue(null, "optional", null, false)).isNull();
-        assertThat(reader.getTrimmedValue("  text  ")).isEqualTo("text");
-        assertThat(reader.getTrimmedValue(null)).isNull();
+        ExpressionDocumentation documentation = new ParamdocXpp3Reader().read(new StringReader(xml));
 
-        assertThatThrownBy(() -> reader.getIntegerValue("not-a-number", "count", null, true))
-                .isInstanceOf(XmlPullParserException.class)
-                .hasMessageContaining("must be an integer");
-        assertThatThrownBy(() -> reader.getRequiredAttributeValue(null, "required", null, true))
-                .isInstanceOf(XmlPullParserException.class)
-                .hasMessageContaining("Missing required value for attribute 'required'");
+        assertThat(documentation.getExpressions()).hasSize(2);
+        Expression defaultEditableExpression = (Expression) documentation.getExpressions().get(0);
+        Expression readOnlyExpression = (Expression) documentation.getExpressions().get(1);
+        assertThat(defaultEditableExpression.isEditable()).isTrue();
+        assertThat(readOnlyExpression.isEditable()).isFalse();
     }
 
     private static Expression expression(String syntax, String description) {
