@@ -70,6 +70,29 @@ class Specs2_fp_3Test {
   }
 
   @Test
+  def monadIterationRepeatsActionsUntilPredicatesChange(): Unit = {
+    val nameMonad: Monad[Name] = Name.name
+
+    var untilCalls: Int = 0
+    val untilValue: Name[Int] = nameMonad.iterateUntil(Name {
+      untilCalls += 1
+      untilCalls
+    })(_ >= 3)
+
+    assertEquals(3, untilValue.value)
+    assertEquals(3, untilCalls)
+
+    var whileCalls: Int = 0
+    val whileValue: Name[Int] = nameMonad.iterateWhile(Name {
+      whileCalls += 1
+      whileCalls
+    })(_ < 4)
+
+    assertEquals(4, whileValue.value)
+    assertEquals(4, whileCalls)
+  }
+
+  @Test
   def syntaxExtensionsDelegateToFunctorApplicativeMonadAndShowTypeClasses(): Unit = {
     given Applicative[Option] = Applicative.optionApplicative
 
