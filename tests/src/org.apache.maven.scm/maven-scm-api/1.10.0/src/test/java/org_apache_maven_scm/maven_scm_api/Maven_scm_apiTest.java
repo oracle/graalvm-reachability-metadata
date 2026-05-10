@@ -140,7 +140,9 @@ public class Maven_scm_apiTest {
         assertThat(branchParameters.toString()).contains("Create release branch", "branch-source-revision");
 
         parameters.remove(CommandParameter.MESSAGE);
-        assertThat(parameters.getString(CommandParameter.MESSAGE, "fallback")).isEqualTo("Commit message");
+        assertThat(parameters.getString(CommandParameter.MESSAGE, "fallback")).isEqualTo("fallback");
+        parameters.setString(CommandParameter.MESSAGE, "Updated commit message");
+        assertThat(parameters.getString(CommandParameter.MESSAGE)).isEqualTo("Updated commit message");
 
         ScmRepository repository = new ScmRepository("record", new RecordingRepository("memory://repository"));
         ScmFileSet fileSet = new ScmFileSet(temporaryDirectory, new File("pom.xml"));
