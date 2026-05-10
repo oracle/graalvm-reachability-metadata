@@ -6,6 +6,7 @@
  */
 package org_apache_groovy.groovy_servlet
 
+import groovy.json.JsonSlurper
 import groovy.servlet.GroovyServlet
 import groovy.servlet.ServletBinding
 import groovy.servlet.ServletCategory
@@ -93,6 +94,31 @@ public class Groovy_servletTest {
         assertThat(request.dispatchers['/target'].forwarded).isTrue()
         assertThat(request.dispatchers['/fragment'].included).isTrue()
         assertThat(response.redirectLocation).isEqualTo('/next')
+    }
+
+    @Test
+    void servletBindingProvidesJsonBuilderForStructuredResponses() {
+        TestServletContext context = new TestServletContext(Files.createTempDirectory('groovy-servlet-json-binding'))
+        TestHttpServletRequest request = new TestHttpServletRequest(context, new TestHttpSession(context))
+        TestHttpServletResponse response = new TestHttpServletResponse()
+        ServletBinding binding = new ServletBinding(request, response, context)
+
+        Object json = binding.getVariable('json')
+        json.call {
+            message 'hello'
+            tags(['servlet', 'json'])
+            nested {
+                enabled true
+            }
+        }
+        (binding.getVariable('out') as PrintWriter).flush()
+
+        Map payload = new JsonSlurper().parseText(response.body) as Map
+        List tags = payload['tags'] as List
+        Map nested = payload['nested'] as Map
+        assertThat(payload).containsEntry('message', 'hello')
+        assertThat(tags).containsExactly('servlet', 'json')
+        assertThat(nested).containsEntry('enabled', true)
     }
 
     @Test
