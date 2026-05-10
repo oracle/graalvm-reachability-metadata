@@ -8,10 +8,12 @@ package org_apache_maven_scm.maven_scm_api;
 
 import java.io.File;
 import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.maven.scm.ChangeFile;
@@ -64,6 +66,7 @@ import org.apache.maven.scm.provider.ScmProviderRepository;
 import org.apache.maven.scm.provider.ScmProviderRepositoryWithHost;
 import org.apache.maven.scm.provider.ScmUrlUtils;
 import org.apache.maven.scm.repository.ScmRepository;
+import org.apache.maven.scm.util.AbstractConsumer;
 import org.apache.maven.scm.util.FilenameUtils;
 import org.apache.maven.scm.util.ThreadSafeDateFormat;
 import org.junit.jupiter.api.Test;
@@ -430,6 +433,26 @@ public class Maven_scm_apiTest {
     }
 
     @Test
+    void consumersParseProviderDatesWithConfiguredPatternsAndWarnOnInvalidInput() {
+        TestScmLogger logger = new TestScmLogger(false, false, true, false);
+        DateParsingConsumer consumer = new DateParsingConsumer(logger);
+        consumer.consumeLine("provider output");
+        assertThat(consumer.lastConsumedLine).isEqualTo("provider output");
+
+        Date parsedWithUserPattern = consumer.parseWithPatterns("2024/01/02", "yyyy/MM/dd", "yyyy-MM-dd");
+        assertThat(formatDate(parsedWithUserPattern, "yyyy-MM-dd")).isEqualTo("2024-01-02");
+
+        Date parsedWithLocale = consumer.parseWithLocale("02 Jan 2024", null, "dd MMM yyyy", Locale.ENGLISH);
+        assertThat(formatDate(parsedWithLocale, "yyyy-MM-dd")).isEqualTo("2024-01-02");
+
+        assertThat(consumer.parseWithLocale("not-a-date", null, "yyyy-MM-dd", Locale.ENGLISH)).isNull();
+        assertThat(logger.events).hasSize(1);
+        assertThat(logger.events.get(0))
+                .startsWith("warn:skip ParseException:")
+                .contains("not-a-date", "yyyy-MM-dd", Locale.ENGLISH.toString());
+    }
+
+    @Test
     void logDispatcherAggregatesListenersAndRoutesInfoMessagesToEnabledLoggers() {
         ScmLogDispatcher dispatcher = new ScmLogDispatcher();
         TestScmLogger mutedLogger = new TestScmLogger(false, false, false, false);
@@ -489,6 +512,31 @@ public class Maven_scm_apiTest {
         assertThat(repository.getPassphrase()).isEqualTo("passphrase");
         assertThat(child.getParent()).isSameAs(repository);
         assertThat(new ScmRepository("record", repository).toString()).contains("record");
+    }
+
+    private static String formatDate(Date date, String pattern) {
+        return new SimpleDateFormat(pattern, Locale.ENGLISH).format(date);
+    }
+
+    private static final class DateParsingConsumer extends AbstractConsumer {
+        private String lastConsumedLine;
+
+        private DateParsingConsumer(ScmLogger logger) {
+            super(logger);
+        }
+
+        @Override
+        public void consumeLine(String line) {
+            lastConsumedLine = line;
+        }
+
+        private Date parseWithPatterns(String date, String userPattern, String defaultPattern) {
+            return parseDate(date, userPattern, defaultPattern);
+        }
+
+        private Date parseWithLocale(String date, String userPattern, String defaultPattern, Locale locale) {
+            return parseDate(date, userPattern, defaultPattern, locale);
+        }
     }
 
     private static final class TestScmLogger implements ScmLogger {
