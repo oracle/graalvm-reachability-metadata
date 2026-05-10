@@ -1,0 +1,893 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e0f84-292e-7353-b0cd-b7130dc8ce05
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven.doxia:doxia-site-renderer:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0" when "$version$" is replaced with "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+- Set "coordinates" to "org.apache.maven.doxia:doxia-site-renderer:1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata file and the artifact’s Maven metadata first, then verify the project tag URLs before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>doxia-sitetools</artifactId>
+    <groupId>org.apache.maven.doxia</groupId>
+    <version>1.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>doxia-site-renderer</artifactId>
+  <name>Doxia Sitetools :: Site Renderer Component</name>
+  <description>The Site Renderer handles the rendering of sites.</description>
+
+  <contributors>
+    <contributor>
+      <name>Vincent Siveton</name>
+      <email>vsiveton@apache.org</email>
+      <organization>Apache Software Foundation</organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+      <timezone>-5</timezone>
+    </contributor>
+  </contributors>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-sink-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-i18n</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-velocity</artifactId>
+      <version>1.1.7</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-collections</groupId>
+          <artifactId>commons-collections</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>velocity</groupId>
+          <artifactId>velocity</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-decoration-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>htmlunit</groupId>
+      <artifactId>htmlunit</artifactId>
+      <version>1.9</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2</version>
+    </dependency>
+    <!-- The modules are not in doxia core anymore so you have to state a dependency so that
+         the component descriptor gets picked up. -->
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-module-apt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-module-fml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-module-xdoc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-module-xhtml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/doxia/doxia-site-renderer/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/doxia/doxia-site-renderer/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="doxia-site-renderer-1.0-javadoc.jar" title="doxia-site-renderer-1.0-javadoc.jar">doxia-site-renderer-1.0-javadoc.jar</a>               2009-02-24 15:30     72256      
+<a href="doxia-site-renderer-1.0-javadoc.jar.asc" title="doxia-site-renderer-1.0-javadoc.jar.asc">doxia-site-renderer-1.0-javadoc.jar.asc</a>           2009-02-24 15:30       194      
+<a href="doxia-site-renderer-1.0-javadoc.jar.asc.md5" title="doxia-site-renderer-1.0-javadoc.jar.asc.md5">doxia-site-renderer-1.0-javadoc.jar.asc.md5</a>       2009-02-24 15:30        32      
+<a href="doxia-site-renderer-1.0-javadoc.jar.asc.sha1" title="doxia-site-renderer-1.0-javadoc.jar.asc.sha1">doxia-site-renderer-1.0-javadoc.jar.asc.sha1</a>      2009-02-24 15:30        40      
+<a href="doxia-site-renderer-1.0-javadoc.jar.md5" title="doxia-site-renderer-1.0-javadoc.jar.md5">doxia-site-renderer-1.0-javadoc.jar.md5</a>           2009-02-24 15:30        32      
+<a href="doxia-site-renderer-1.0-javadoc.jar.sha1" title="doxia-site-renderer-1.0-javadoc.jar.sha1">doxia-site-renderer-1.0-javadoc.jar.sha1</a>          2009-02-24 15:30        40      
+<a href="doxia-site-renderer-1.0-sources.jar" title="doxia-site-renderer-1.0-sources.jar">doxia-site-renderer-1.0-sources.jar</a>               2009-02-24 15:30     42241      
+<a href="doxia-site-renderer-1.0-sources.jar.asc" title="doxia-site-renderer-1.0-sources.jar.asc">doxia-site-renderer-1.0-sources.jar.asc</a>           2009-02-24 15:30       194      
+<a href="doxia-site-renderer-1.0-sources.jar.asc.md5" title="doxia-site-renderer-1.0-sources.jar.asc.md5">doxia-site-renderer-1.0-sources.jar.asc.md5</a>       2009-02-24 15:30        32      
+<a href="doxia-site-renderer-1.0-sources.jar.asc.sha1" title="doxia-site-renderer-1.0-sources.jar.asc.sha1">doxia-site-renderer-1.0-sources.jar.asc.sha1</a>      2009-02-24 15:30        40      
+<a href="doxia-site-renderer-1.0-sources.jar.md5" title="doxia-site-renderer-1.0-sources.jar.md5">doxia-site-renderer-1.0-sources.jar.md5</a>           2009-02-24 15:30        32      
+<a href="doxia-site-renderer-1.0-sources.jar.sha1" title="doxia-site-renderer-1.0-sources.jar.sha1">doxia-site-renderer-1.0-sources.jar.sha1</a>          2009-02-24 15:30        40      
+<a href="doxia-site-renderer-1.0.jar" title="doxia-site-renderer-1.0.jar">doxia-site-renderer-1.0.jar</a>                       2009-02-24 15:30     46517      
+<a href="doxia-site-renderer-1.0.jar.asc" title="doxia-site-renderer-1.0.jar.asc">doxia-site-renderer-1.0.jar.asc</a>                   2009-02-24 15:30       194      
+<a href="doxia-site-renderer-1.0.jar.asc.md5" title="doxia-site-renderer-1.0.jar.asc.md5">doxia-site-renderer-1.0.jar.asc.md5</a>               2009-02-24 15:30        32      
+<a href="doxia-site-renderer-1.0.jar.asc.sha1" title="doxia-site-renderer-1.0.jar.asc.sha1">doxia-site-renderer-1.0.jar.asc.sha1</a>              2009-02-24 15:30        40      
+<a href="doxia-site-renderer-1.0.jar.md5" title="doxia-site-renderer-1.0.jar.md5">doxia-site-renderer-1.0.jar.md5</a>                   2009-02-24 15:30        32      
+<a href="doxia-site-renderer-1.0.jar.sha1" title="doxia-site-renderer-1.0.jar.sha1">doxia-site-renderer-1.0.jar.sha1</a>                  2009-02-24 15:30        40      
+<a href="doxia-site-renderer-1.0.pom" title="doxia-site-renderer-1.0.pom">doxia-site-renderer-1.0.pom</a>                       2009-02-24 15:30      4427      
+<a href="doxia-site-renderer-1.0.pom.asc" title="doxia-site-renderer-1.0.pom.asc">doxia-site-renderer-1.0.pom.asc</a>                   2009-02-24 15:30       194      
+<a href="doxia-site-renderer-1.0.pom.asc.md5" title="doxia-site-renderer-1.0.pom.asc.md5">doxia-site-renderer-1.0.pom.asc.md5</a>               2009-02-24 15:30        32      
+<a href="doxia-site-renderer-1.0.pom.asc.sha1" title="doxia-site-renderer-1.0.pom.asc.sha1">doxia-site-renderer-1.0.pom.asc.sha1</a>              2009-02-24 15:30        40      
+<a href="doxia-site-renderer-1.0.pom.md5" title="doxia-site-renderer-1.0.pom.md5">doxia-site-renderer-1.0.pom.md5</a>                   2009-02-24 15:30        32      
+<a href="doxia-site-renderer-1.0.pom.sha1" title="doxia-site-renderer-1.0.pom.sha1">doxia-site-renderer-1.0.pom.sha1</a>                  2009-02-24 15:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+The artifact has a normal JVM `.jar` plus a Maven Central sources and javadoc jar. I’m checking the parent POM and source tree now because the artifact POM inherits project SCM data from the Doxia Sitetools parent.
+exec
+/usr/bin/bash -lc "jar tf <(curl -fsSL https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0.jar) | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+output to destination
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-sitetools/1.0/doxia-sitetools-1.0.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>11</version>
+    <relativePath>../../pom/maven/pom.xml</relativePath>
+  </parent>
+
+  <groupId>org.apache.maven.doxia</groupId>
+  <artifactId>doxia-sitetools</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+
+  <name>Doxia Sitetools</name>
+  <description>Doxia Sitetools generates sites, consisting of static and dynamic content that was generated by Doxia.</description>
+  <url>http://maven.apache.org/doxia/doxia-sitetools</url>
+  <inceptionYear>2005</inceptionYear>
+
+  <mailingLists>
+    <mailingList>
+      <name>Doxia Developer List</name>
+      <post>doxia-dev@maven.apache.org</post>
+      <subscribe>doxia-dev-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>doxia-dev-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-doxia-dev/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/doxia-dev@maven.apache.org</otherArchive>
+        <otherArchive>http://www.nabble.com/Doxia---dev-f11816.html</otherArchive>
+        <otherArchive>http://maven.doxia.dev.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Doxia User List</name>
+      <post>doxia-users@maven.apache.org</post>
+      <subscribe>doxia-users-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>doxia-users-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-doxia-users/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/doxia-users@maven.apache.org</otherArchive>
+        <otherArchive>http://www.nabble.com/Doxia---Users-f14483.html</otherArchive>
+        <otherArchive>http://maven.doxia.users.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Doxia Commits List</name>
+      <subscribe>doxia-commits-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>doxia-commits-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-doxia-commits/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/doxia-commits@maven.apache.org</otherArchive>
+        <otherArchive>http://maven.doxia.commits.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Maven Issues List</name>
+      <subscribe>issues-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>issues-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-issues/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/issues@maven.apache.org</otherArchive>
+        <otherArchive>http://www.nabble.com/Maven---Issues-f15573.html</otherArchive>
+        <otherArchive>http://maven.issues.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+
+  <modules>
+    <module>doxia-decoration-model</module>
+    <module>doxia-doc-renderer</module>
+    <module>doxia-site-renderer</module>
+  </modules>
+
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0</developerConnection>
+    <url>https://svn.apache.org/viewvc/maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/DOXIASITETOOLS</url>
+  </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scp://people.apache.org/www/maven.apache.org/doxia/doxia-sitetools-1.0.x</url>
+    </site>
+  </distributionManagement>
+
+  <properties>
+    <projectVersion>${project.version}</projectVersion>
+    <doxiaVersion>1.0</doxiaVersion>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-sink-api</artifactId>
+        <version>${doxiaVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-core</artifactId>
+        <version>${doxiaVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-module-apt</artifactId>
+        <version>${doxiaVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-module-fml</artifactId>
+        <version>${doxiaVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-module-xdoc</artifactId>
+        <version>${doxiaVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-module-xhtml</artifactId>
+        <version>${doxiaVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-decoration-model</artifactId>
+        <version>${projectVersion}</version>
+      </dependency>
+      <!-- Plexus -->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.0-alpha-30</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-i18n</artifactId>
+        <version>1.0-beta-7</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-component-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>1.5.7</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <tagBase>https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags</tagBase>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.modello</groupId>
+          <artifactId>modello-maven-plugin</artifactId>
+          <version>1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-maven-plugin</artifactId>
+          <version>1.3.5</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>reporting</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <source>1.4</source>
+              <aggregate>true</aggregate>
+              <links>
+                <link>http://java.sun.com/j2se/1.4.2/docs/api/</link>
+                <link>http://plexus.codehaus.org/plexus-utils/apidocs/</link>
+                <link>http://junit.sourceforge.net/javadoc/</link>
+              </links>
+              <tagletArtifacts>
+                <tagletArtifact>
+                  <groupId>org.codehaus.plexus</groupId>
+                  <artifactId>plexus-javadoc</artifactId>
+                  <version>1.0</version>
+                </tagletArtifact>
+              </tagletArtifacts>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <configuration>
+              <aggregate>true</aggregate>
+            </configuration>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0-test-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0-tests.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ exited 22 in 245ms:
+HTTP/2 404 
+date: Sun, 10 May 2026 01:33:13 GMT
+content-type: text/html
+cf-ray: 9f9531ccfb6203b5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 270ms:
+HTTP/2 404 
+date: Sun, 10 May 2026 01:33:13 GMT
+content-type: text/html
+cf-ray: 9f9531cd09780d25-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|doxia-site-renderer|repo1.maven.org|svn.apache.org/viewvc/maven/doxia/doxia-sitetools' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json:2:  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0"
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:6:    "repository-url": "https://github.com/openjdk/jfx",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:22:    "repository-url": "https://github.com/javafxports/openjdk-jfx",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/io.getquill/quill-engine_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-quill",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:6:    "repository-url" : "https://github.com/zio/zio-quill",
+metadata/io.getquill/quill-util_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-quill",
+metadata/com.github.javaparser/javaparser-core/index.json:7:    "repository-url" : "https://github.com/javaparser/javaparser",
+metadata/com.github.javaparser/javaparser-core/index.json:22:    "repository-url" : "https://github.com/javaparser/javaparser",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/apacheds",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-core-asl/$version$/jackson-core-asl-$version$-sources.jar",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:6:    "repository-url" : "https://github.com/codehaus/jackson",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v2.9.3",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/org.codehaus.jackson/jackson-mapper-asl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/$version$/jackson-mapper-asl-$version$-sources.jar",
+metadata/org.codehaus.jackson/jackson-mapper-asl/index.json:6:    "repository-url" : "https://github.com/codehaus/jackson",
+metadata/jakarta.json/jakarta.json-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/jsonp-api",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/oro/oro/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/jakarta/oro/",
+metadata/org.slf4j/slf4j-ext/index.json:6:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:6:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:23:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:38:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+metadata/javax.persistence/persistence-api/index.json:6:    "repository-url" : "N/A",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/$version$/logback-jackson-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:9:    "repository-url": "https://github.com/qos-ch/logback-contrib",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/$version$/logback-jackson-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/javax.persistence/javax.persistence-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-sources.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:7:    "repository-url": "https://github.com/javaee/jpa-spec",
+metadata/javax.persistence/javax.persistence-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/$version$/logback-json-classic-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:9:    "repository-url": "https://github.com/qos-ch/logback-contrib",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/$version$/logback-json-classic-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:6:    "repository-url" : "https://github.com/profunktor/redis4cats",
+metadata/xpp3/xpp3/index.json:6:    "repository-url" : "http://www.extreme.indiana.edu/viewcvs/~checkout~/XPP3/java/",
+metadata/com.github.albfernandez/juniversalchardet/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/albfernandez/juniversalchardet/$version$/juniversalchardet-$version$-sources.jar",
+metadata/com.github.albfernandez/juniversalchardet/index.json:6:    "repository-url" : "https://github.com/albfernandez/juniversalchardet",
+metadata/com.github.albfernandez/juniversalchardet/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/albfernandez/juniversalchardet/$version$/juniversalchardet-$version$-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:5:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/$version$/slf4j-site-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:20:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/$version$/logback-json-core-$version$-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:7:    "repository-url": "https://github.com/qos-ch/logback-contrib",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/$version$/logback-json-core-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsI 'https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0/doxia-site-renderer/src/test/java/'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://svn.apache.org/viewvc/maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0/doxia-site-renderer/src/test/java/?view=co'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://svn.apache.org/viewvc/maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0/doxia-site-renderer/?view=co'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ exited 22 in 102ms:
+ exited 22 in 103ms:
+ succeeded in 107ms:
+HTTP/1.1 200 OK
+Date: Sun, 10 May 2026 01:33:22 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Fri, 31 Aug 2007 19:41:04 GMT
+ETag: W/"571555//maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0/doxia-site-renderer/src/test/java"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0-sources.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 01:33:30 GMT
+content-type: application/java-archive
+content-length: 42241
+cf-ray: 9f95323ac8aabc5d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1119346
+etag: "f825e97db42a3414dec769eb85271a1e"
+last-modified: Tue, 24 Feb 2009 15:30:27 GMT
+x-checksum-md5: f825e97db42a3414dec769eb85271a1e
+x-checksum-sha1: e71a44eb610ad181f5e91eb2d9ddceff305d7e69
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsI 'https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0/doxia-site-renderer/src/test/'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+HTTP/1.1 200 OK
+Date: Sun, 10 May 2026 01:33:30 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Fri, 31 Aug 2007 19:41:04 GMT
+ETag: W/"571555//maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0/doxia-site-renderer/src/test"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0/doxia-site-renderer/src/test/' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1934012: /maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0/doxia-site-renderer/src/test</title></head>
+<body>
+ <h2>asf - Revision 1934012: /maven/doxia/doxia-sitetools/tags/doxia-sitetools-1.0/doxia-site-renderer/src/test</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="java/">java/</a></li>
+  <li><a href="resources/">resources/</a></li>
+  <li><a href="site/">site/</a></li>
+ </ul>
+</body></html>
+ succeeded in 504ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 01:33:31 GMT
+content-type: application/java-archive
+content-length: 72256
+cf-ray: 9f95323ac9c0be8b-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "6c458675ba6be93122e5dc48a09a5ed2"
+last-modified: Tue, 24 Feb 2009 15:30:36 GMT
+x-checksum-md5: 6c458675ba6be93122e5dc48a09a5ed2
+x-checksum-sha1: ed6632d70e61e1ad35df1227071f74b581d099c4
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: org.apache.maven.doxia doxia-site-renderer 1.0 Maven Central
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.maven.doxia/doxia-site-renderer
+web search: 
+web search: repo.maven.apache.org maven2 org apache maven doxia doxia-site-renderer 1.0 sources javadoc
+codex
+I found no Maven Central test-source or tests jar for `1.0`, so the test suite URL needs to use the Apache SVN release tag. The source and documentation artifacts do exist on Maven Central, so I’ll use those for the source and javadoc fields as requested.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json b/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+index b62a68fc898bde46a7ef8431a7fd47798efc17eb..aa975f47f397e6841ce69cead59d0f828c2cf8d1
+--- a/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0"
++  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-$version$/doxia-site-renderer/src/test/",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-javadoc.jar",
++  "description" : "Doxia Site Renderer renders Maven Doxia site content by combining a site model, templates or skins, and documents produced by Doxia parsers or reports. It is used by Maven site tooling to assemble static and generated documentation into a coherent project website."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json b/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+index b62a68fc898bde46a7ef8431a7fd47798efc17eb..aa975f47f397e6841ce69cead59d0f828c2cf8d1
+--- a/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0"
++  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-$version$/doxia-site-renderer/src/test/",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-javadoc.jar",
++  "description" : "Doxia Site Renderer renders Maven Doxia site content by combining a site model, templates or skins, and documents produced by Doxia parsers or reports. It is used by Maven site tooling to assemble static and generated documentation into a coherent project website."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven.doxia:doxia-site-renderer:1.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-sources.jar",
+  "repository-url": "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools",
+  "test-code-url": "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-$version$/doxia-site-renderer/src/test/",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-javadoc.jar",
+  "description": "Doxia Site Renderer renders Maven Doxia site content by combining a site model, templates or skins, and documents produced by Doxia parsers or reports. It is used by Maven site tooling to assemble static and generated documentation into a coherent project website."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0.jar -o "$tmp"; jar tf "$tmp" | rg '"'\\.class"'$'"' | sed -n '1,20p'; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+org/apache/maven/doxia/siterenderer/DefaultSiteRenderer.class
+org/apache/maven/doxia/siterenderer/DocumentRenderer.class
+org/apache/maven/doxia/siterenderer/DoxiaDocumentRenderer.class
+org/apache/maven/doxia/siterenderer/ModuleReference.class
+org/apache/maven/doxia/siterenderer/Renderer$1.class
+org/apache/maven/doxia/siterenderer/Renderer.class
+org/apache/maven/doxia/siterenderer/RendererException.class
+org/apache/maven/doxia/siterenderer/sink/SiteRendererSink.class
+org/apache/maven/doxia/siterenderer/SiteRenderingContext.class
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json b/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+index b62a68fc898bde46a7ef8431a7fd47798efc17eb..aa975f47f397e6841ce69cead59d0f828c2cf8d1
+--- a/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0"
++  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-$version$/doxia-site-renderer/src/test/",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-javadoc.jar",
++  "description" : "Doxia Site Renderer renders Maven Doxia site content by combining a site model, templates or skins, and documents produced by Doxia parsers or reports. It is used by Maven site tooling to assemble static and generated documentation into a coherent project website."
+ }
+
+exec
+/usr/bin/bash -lc 'git ls-files --stage build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-sources.jar",
+  "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools",
+  "test-code-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-$version$/doxia-site-renderer/src/test/",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-javadoc.jar",
+  "description" : "Doxia Site Renderer renders Maven Doxia site content by combining a site model, templates or skins, and documents produced by Doxia parsers or reports. It is used by Maven site tooling to assemble static and generated documentation into a coherent project website."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json b/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+index b62a68fc898bde46a7ef8431a7fd47798efc17eb..aa975f47f397e6841ce69cead59d0f828c2cf8d1
+--- a/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0"
++  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-$version$/doxia-site-renderer/src/test/",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-javadoc.jar",
++  "description" : "Doxia Site Renderer renders Maven Doxia site content by combining a site model, templates or skins, and documents produced by Doxia parsers or reports. It is used by Maven site tooling to assemble static and generated documentation into a coherent project website."
+ }
+
+web search: 
+web search: Maven Central org.apache.maven.doxia doxia-site-renderer 1.0 sources javadoc
+web search: 
+web search: https://maven.apache.org/doxia/doxia-sitetools/doxia-site-renderer/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/
+codex
+Updated [org.apache.maven.doxia-doxia-site-renderer-1.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json).
+
+I used Maven Central source/javadoc artifacts, the Apache SVN `doxia-sitetools-1.0` tag for tests, and left `language` plus `not-for-native-image` absent because this is a normal JVM jar with `.class` files. The description matches Apache’s Site Renderer docs: it assembles a site template or skin with generated or static Doxia documents. ([maven.apache.org](https://maven.apache.org/doxia/doxia-sitetools/doxia-site-renderer/))
+
+Validation run: `jq .` succeeded, and I verified the `1.0` jar contains JVM class files.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json b/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+index b62a68fc898bde46a7ef8431a7fd47798efc17eb..aa975f47f397e6841ce69cead59d0f828c2cf8d1
+--- a/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0"
++  "coordinates" : "org.apache.maven.doxia:doxia-site-renderer:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia-sitetools/tags/doxia-sitetools-$version$/doxia-site-renderer/src/test/",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-site-renderer/$version$/doxia-site-renderer-$version$-javadoc.jar",
++  "description" : "Doxia Site Renderer renders Maven Doxia site content by combining a site model, templates or skins, and documents produced by Doxia parsers or reports. It is used by Maven site tooling to assemble static and generated documentation into a coherent project website."
+ }
+
+tokens used
+62,018
+Updated [org.apache.maven.doxia-doxia-site-renderer-1.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803/build/discovered-artifact-metadata/org.apache.maven.doxia-doxia-site-renderer-1.0.json).
+
+I used Maven Central source/javadoc artifacts, the Apache SVN `doxia-sitetools-1.0` tag for tests, and left `language` plus `not-for-native-image` absent because this is a normal JVM jar with `.class` files. The description matches Apache’s Site Renderer docs: it assembles a site template or skin with generated or static Doxia documents. ([maven.apache.org](https://maven.apache.org/doxia/doxia-sitetools/doxia-site-renderer/))
+
+Validation run: `jq .` succeeded, and I verified the `1.0` jar contains JVM class files.
+Ran agent for org.apache.maven.doxia:doxia-site-renderer:1.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803/build/agent-artifact-discovery-logs/org.apache.maven.doxia-doxia-site-renderer-1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2438-561b2803/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 59s
+9 actionable tasks: 9 executed
