@@ -115,6 +115,42 @@ public class JsvgTest {
     }
 
     @Test
+    void rendersPatternPaintWithRepeatedTiles() {
+        String svg = """
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" viewBox="0 0 32 16">
+                  <defs>
+                    <pattern id="checker" patternUnits="userSpaceOnUse" width="8" height="8">
+                      <rect width="8" height="8" fill="#ffffff"/>
+                      <rect x="0" y="0" width="4" height="4" fill="#ff6600"/>
+                      <rect x="4" y="4" width="4" height="4" fill="#0033cc"/>
+                    </pattern>
+                  </defs>
+                  <rect width="32" height="16" fill="url(#checker)"/>
+                </svg>
+                """;
+
+        BufferedImage image = render(loadSvg(svg), 32, 16);
+        Color firstOrangeTile = colorAt(image, 2, 2);
+        Color repeatedOrangeTile = colorAt(image, 10, 2);
+        Color firstBlueTile = colorAt(image, 6, 6);
+        Color repeatedBlueTile = colorAt(image, 14, 6);
+        Color tileBackground = colorAt(image, 6, 2);
+
+        assertThat(firstOrangeTile.getRed()).isGreaterThan(200);
+        assertThat(firstOrangeTile.getGreen()).isGreaterThan(70);
+        assertThat(firstOrangeTile.getBlue()).isLessThan(40);
+        assertThat(repeatedOrangeTile).isEqualTo(firstOrangeTile);
+        assertThat(firstBlueTile.getBlue()).isGreaterThan(150);
+        assertThat(firstBlueTile.getRed()).isLessThan(40);
+        assertThat(firstBlueTile.getGreen()).isLessThan(80);
+        assertThat(repeatedBlueTile).isEqualTo(firstBlueTile);
+        assertThat(tileBackground.getRed()).isGreaterThan(240);
+        assertThat(tileBackground.getGreen()).isGreaterThan(240);
+        assertThat(tileBackground.getBlue()).isGreaterThan(240);
+        assertThat(tileBackground.getAlpha()).isEqualTo(255);
+    }
+
+    @Test
     void loadsExternalImageResourcesRelativeToDocumentUrl(@TempDir Path tempDir) throws Exception {
         BufferedImage pixel = new BufferedImage(4, 4, BufferedImage.TYPE_INT_ARGB);
         Graphics2D imageGraphics = pixel.createGraphics();
