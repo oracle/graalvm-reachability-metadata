@@ -140,6 +140,31 @@ public class Groovy_servletTest {
     }
 
     @Test
+    void templateServletAppliesResourceNamePatternBeforeLoadingTemplate() {
+        try {
+            Path root = Files.createTempDirectory('groovy-template-resource-pattern')
+            Files.writeString(root.resolve('resolved.tpl'), 'Mapped template', StandardCharsets.UTF_8)
+            TestServletContext context = new TestServletContext(root)
+            TemplateServlet servlet = new TemplateServlet()
+            servlet.init(new TestServletConfig(context, [
+                    'generated.by'              : 'false',
+                    'resource.name.regex'       : '\\.page$',
+                    'resource.name.replacement' : '.tpl'
+            ]))
+            TestHttpServletRequest request = new TestHttpServletRequest(context, new TestHttpSession(context))
+            request.servletPath = '/resolved.page'
+            TestHttpServletResponse response = new TestHttpServletResponse()
+
+            servlet.service(request, response)
+
+            assertThat(response.status).isEqualTo(HttpServletResponse.SC_OK)
+            assertThat(response.body).isEqualTo('Mapped template')
+        } catch (Error error) {
+            rethrowIfNotNativeImageDynamicClassLoadingError(error)
+        }
+    }
+
+    @Test
     void groovyServletRunsGroovletScriptsWithServletBindingAndCategorySupport() {
         try {
             Path root = Files.createTempDirectory('groovy-groovlet-servlet')
