@@ -109,6 +109,29 @@ public class Groovy_docgeneratorTest {
                 .contains(GroovySystem.version)
     }
 
+    @Test
+    void collectsInheritedGdkMethodsFromDocumentedSuperTypes() {
+        List<Path> sourceFiles = writeInheritedMethodSources()
+        DocGenerator generator = new DocGenerator(sourceFiles*.toFile(), temporaryDirectory.resolve('inherited-docs').toFile())
+
+        def docTypes = generator.docSource.allDocTypes
+        def parentDocType = docTypes.find { it.fullyQualifiedClassName == 'target.ParentTarget' }
+        def childDocType = docTypes.find { it.fullyQualifiedClassName == 'target.ChildTarget' }
+        def inheritedEntry = childDocType.inheritedMethods.find { inheritedType, inheritedMethods ->
+            inheritedType.fullyQualifiedClassName == 'target.ParentTarget'
+        }
+
+        assertThat(docTypes*.fullyQualifiedClassName)
+                .contains('target.ParentTarget', 'target.ChildTarget')
+        assertThat(parentDocType.docMethods*.name).containsExactly('sharedBehavior')
+        assertThat(childDocType.docMethods*.name).containsExactly('childBehavior')
+        assertThat(parentDocType.inheritedMethods).isEmpty()
+        assertThat(inheritedEntry).isNotNull()
+        assertThat(inheritedEntry.value*.name).containsExactly('sharedBehavior')
+        assertThat(inheritedEntry.value.first().declaringDocType.fullyQualifiedClassName)
+                .isEqualTo('target.ParentTarget')
+    }
+
     private Path writeSampleSource(String fileName) {
         Path sourceFile = temporaryDirectory.resolve(fileName)
         Files.writeString(sourceFile, '''
@@ -189,6 +212,61 @@ public class Groovy_docgeneratorTest {
             }
             '''.stripIndent())
         return sourceFile
+    }
+
+    private List<Path> writeInheritedMethodSources() {
+        Path targetDirectory = temporaryDirectory.resolve('target')
+        Path methodDirectory = temporaryDirectory.resolve('sample/gdk')
+        Files.createDirectories(targetDirectory)
+        Files.createDirectories(methodDirectory)
+
+        Path parentFile = targetDirectory.resolve('ParentTarget.java')
+        Files.writeString(parentFile, '''
+            package target;
+
+            /** Target type that owns a documented GDK method. */
+            public class ParentTarget {
+            }
+            '''.stripIndent())
+
+        Path childFile = targetDirectory.resolve('ChildTarget.java')
+        Files.writeString(childFile, '''
+            package target;
+
+            /** Target type that should inherit documented GDK methods from ParentTarget. */
+            public class ChildTarget extends ParentTarget {
+            }
+            '''.stripIndent())
+
+        Path methodFile = methodDirectory.resolve('InheritedGroovyMethods.java')
+        Files.writeString(methodFile, '''
+            package sample.gdk;
+
+            /** Public static methods in this class mimic GDK extension methods. */
+            public final class InheritedGroovyMethods {
+                /**
+                 * Adds behavior documented directly on the parent target type.
+                 *
+                 * @param self the receiver
+                 * @return the shared behavior name
+                 */
+                public static java.lang.String sharedBehavior(target.ParentTarget self) {
+                    return "shared";
+                }
+
+                /**
+                 * Adds behavior documented directly on the child target type.
+                 *
+                 * @param self the receiver
+                 * @return the child behavior name
+                 */
+                public static java.lang.String childBehavior(target.ChildTarget self) {
+                    return "child";
+                }
+            }
+            '''.stripIndent())
+
+        return [parentFile, childFile, methodFile]
     }
 
     private static boolean runDocGeneratorAllowingNativeTemplateFailure(List<String> arguments) {
