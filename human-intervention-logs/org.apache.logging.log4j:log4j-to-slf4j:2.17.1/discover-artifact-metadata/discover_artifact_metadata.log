@@ -1,0 +1,1132 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e10e8-e283-7d30-a5fd-aa65f6748170
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.logging.log4j:log4j-to-slf4j:2.17.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.17.1" when "$version$" is replaced with "2.17.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+- Set "coordinates" to "org.apache.logging.log4j:log4j-to-slf4j:2.17.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.17.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven/source metadata, then update the JSON in place with the discovered URLs and applicability fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.apache\\.logging\\.log4j-log4j-to-slf4j-2\\.17\\.1\\.json"'$|log4j'"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+
+exec
+/usr/bin/bash -lc "rg -n 'log4j-to-slf4j|org\\.apache\\.logging\\.log4j' metadata tests build/discovered-artifact-metadata -g '*.json' -g '*.java' -g '*.gradle'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json:2:  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1"
+metadata/org.springframework/spring-jcl/5.3.15/reachability-metadata.json:7:      "type": "org.apache.logging.log4j.spi.ExtendedLogger"
+metadata/org.apache.activemq/artemis-jms-client/2.36.0/reachability-metadata.json:855:      "type": "org.apache.logging.log4j.Logger"
+metadata/io.smallrye.common/smallrye-common-process/2.16.0/reachability-metadata.json:45:      "type": "org.apache.logging.log4j.Logger"
+metadata/io.smallrye.common/smallrye-common-process/2.17.0/reachability-metadata.json:45:      "type": "org.apache.logging.log4j.Logger"
+metadata/io.smallrye.common/smallrye-common-function/2.10.0/reachability-metadata.json:45:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.springframework.security/spring-security-crypto/6.0.0/reachability-metadata.json:127:      "type": "org.apache.logging.log4j.spi.ExtendedLogger"
+metadata/org.springframework.security/spring-security-crypto/5.7.3/reachability-metadata.json:127:      "type": "org.apache.logging.log4j.spi.ExtendedLogger"
+metadata/org.springframework.security/spring-security-crypto/6.4.0/reachability-metadata.json:127:      "type": "org.apache.logging.log4j.spi.ExtendedLogger"
+metadata/org.jboss.resteasy/resteasy-client/6.2.12.Final/reachability-metadata.json:177:      "type" : "org.apache.logging.log4j.Logger"
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/1.6.1/reachability-metadata.json:31:      "type" : "org.apache.logging.log4j.Logger"
+metadata/com.mchange/mchange-commons-java/0.2.15/reachability-metadata.json:889:      "type" : "org.apache.logging.log4j.LogManager"
+metadata/org.jboss.narayana.jta/jta/7.3.1.Final/reachability-metadata.json:96:      "type" : "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/6.6.0.Final/reachability-metadata.json:115:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/6.6.0.Final/reachability-metadata.json:121:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/6.6.0.Final/reachability-metadata.json:127:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/6.6.0.Final/reachability-metadata.json:133:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate/hibernate-core/6.0.0.Final/reachability-metadata.json:482:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.0.0.Final/reachability-metadata.json:2771:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.0.0.Final/reachability-metadata.json:2777:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.0.0.Final/reachability-metadata.json:2783:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.0.0.Final/reachability-metadata.json:2789:      "type": "org.apache.logging.log4j.Logger"
+metadata/com.atomikos/transactions/6.0.0/reachability-metadata.json:37:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/8.0.0.Alpha1/reachability-metadata.json:2915:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/8.0.0.Alpha1/reachability-metadata.json:2921:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/8.0.0.Alpha1/reachability-metadata.json:2927:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/8.0.0.Alpha1/reachability-metadata.json:2933:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.2.0.Final/reachability-metadata.json:2771:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.2.0.Final/reachability-metadata.json:2777:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.2.0.Final/reachability-metadata.json:2783:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.2.0.Final/reachability-metadata.json:2789:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.1.0.Final/reachability-metadata.json:2771:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.1.0.Final/reachability-metadata.json:2777:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.1.0.Final/reachability-metadata.json:2783:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.1.0.Final/reachability-metadata.json:2789:      "type": "org.apache.logging.log4j.Logger"
+metadata/io.undertow/undertow-core/2.3.0.Final/reachability-metadata.json:997:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/6.5.0.Final/reachability-metadata.json:115:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/6.5.0.Final/reachability-metadata.json:121:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/6.5.0.Final/reachability-metadata.json:127:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/6.5.0.Final/reachability-metadata.json:133:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1427:      "type": "org.apache.logging.log4j.core.Appender[]"
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1433:      "type": "org.apache.logging.log4j.core.config.AppenderControl[]"
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1439:      "type": "org.apache.logging.log4j.core.config.AppenderRef[]"
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1445:      "type": "org.apache.logging.log4j.core.config.LoggerConfig[]"
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1451:      "type": "org.apache.logging.log4j.core.config.Property[]"
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1457:      "type": "org.apache.logging.log4j.core.pattern.PatternFormatter[]"
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:10977:      "glob": "META-INF/services/org.apache.logging.log4j.spi.Provider"
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:10983:      "glob": "META-INF/services/org.apache.logging.log4j.util.PropertySource"
+metadata/org.hibernate.orm/hibernate-core/7.3.0.Final/reachability-metadata.json:2771:      "type" : "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.3.0.Final/reachability-metadata.json:2777:      "type" : "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.3.0.Final/reachability-metadata.json:2783:      "type" : "org.apache.logging.log4j.Logger"
+metadata/org.hibernate.orm/hibernate-core/7.3.0.Final/reachability-metadata.json:2789:      "type" : "org.apache.logging.log4j.Logger"
+metadata/org.flywaydb/flyway-core/9.0.1/reachability-metadata.json:12:        "typeReached": "org.apache.logging.log4j.Logger"
+metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:42:        "typeReached": "org.apache.logging.log4j.Logger"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:49:      "type" : "org.apache.logging.log4j.util.EnvironmentPropertySource"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:55:      "type" : "org.apache.logging.log4j.util.SystemPropertiesPropertySource"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:459:      "glob" : "META-INF/services/org.apache.logging.log4j.spi.Provider"
+metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:465:      "glob" : "META-INF/services/org.apache.logging.log4j.util.PropertySource"
+metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:42:        "typeReached": "org.apache.logging.log4j.Logger"
+metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:100:      "type": "org.apache.logging.log4j.Logger"
+metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:61:      "type" : "org.apache.logging.log4j.Logger"
+metadata/io.quarkus/quarkus-bootstrap-app-model/3.34.0/reachability-metadata.json:177:      "type": "org.apache.logging.log4j.Logger"
+metadata/io.quarkus/quarkus-bootstrap-app-model/3.33.1/reachability-metadata.json:177:      "type": "org.apache.logging.log4j.Logger"
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/build.gradle:24:    testImplementation('org.apache.logging.log4j:log4j-core:2.18.0')
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/resource-config.json:19:        "pattern": "\\QMETA-INF/services/org.apache.logging.log4j.spi.Provider\\E",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/resource-config.json:25:        "pattern": "\\QMETA-INF/services/org.apache.logging.log4j.util.PropertySource\\E",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:704:    "name": "[Lorg.apache.logging.log4j.core.Appender;",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:710:    "name": "[Lorg.apache.logging.log4j.core.config.AppenderControl;",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:716:    "name": "[Lorg.apache.logging.log4j.core.config.AppenderRef;",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:722:    "name": "[Lorg.apache.logging.log4j.core.config.LoggerConfig;",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:728:    "name": "[Lorg.apache.logging.log4j.core.config.Property;",
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/dto-runtime-hints/reflect-config.json:734:    "name": "[Lorg.apache.logging.log4j.core.pattern.PatternFormatter;",
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/build.gradle:29:    testImplementation('org.apache.logging.log4j:log4j-core:2.18.0')
+tests/src/org.flywaydb/flyway-core/11.14.1/build.gradle:19:    testRuntimeOnly 'org.apache.logging.log4j:log4j-api:2.24.1'
+tests/src/org.flywaydb/flyway-core/10.20.1/build.gradle:19:    testRuntimeOnly 'org.apache.logging.log4j:log4j-api:2.24.1'
+tests/src/org.flywaydb/flyway-core/10.20.0/build.gradle:19:    testRuntimeOnly 'org.apache.logging.log4j:log4j-api:2.24.1'
+
+web search: 
+web search: Maven Central org.apache.logging.log4j log4j-to-slf4j 2.17.1 pom scm url source jar tests jar
+codex
+The existing file only has coordinates. Maven Central has both sources and test-sources artifacts for this version, so I’m checking the POM and nearby metadata conventions before writing the final URL fields.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/log4j-to-slf4j-2.17.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>2.17.1</version>
+    <relativePath>../</relativePath>
+  </parent>
+  <artifactId>log4j-to-slf4j</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache Log4j to SLF4J Adapter</name>
+  <description>The Apache Log4j binding between Log4j 2 API and SLF4J.</description>
+  <properties>
+    <log4jParentDir>${basedir}/..</log4jParentDir>
+    <docLabel>SLF4J Documentation</docLabel>
+    <projectDir>/log4j-to-slf4j</projectDir>
+    <module.name>org.apache.logging.slf4j</module.name>
+    <maven.doap.skip>true</maven.doap.skip>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <!-- Include the standard NOTICE and LICENSE -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <skip>false</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>org.apache.logging.slf4j</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>${changes.plugin.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+          <useJql>true</useJql>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyle.plugin.version}</version>
+        <configuration>
+          <!--<propertiesLocation>${vfs.parent.dir}/checkstyle.properties</propertiesLocation> -->
+          <configLocation>${log4jParentDir}/checkstyle.xml</configLocation>
+          <suppressionsLocation>${log4jParentDir}/checkstyle-suppressions.xml</suppressionsLocation>
+          <enableRulesSummary>false</enableRulesSummary>
+          <propertyExpansion>basedir=${basedir}</propertyExpansion>
+          <propertyExpansion>licensedir=${log4jParentDir}/checkstyle-header.txt</propertyExpansion>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${javadoc.plugin.version}</version>
+        <configuration>
+          <bottom><![CDATA[<p align="center">Copyright &#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.<br />
+            Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
+            and the Apache Log4j logo are trademarks of The Apache Software Foundation.</p>]]></bottom>
+          <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
+               project -->
+          <detectOfflineLinks>false</detectOfflineLinks>
+          <linksource>true</linksource>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <id>non-aggregate</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>${jxr.plugin.version}</version>
+        <reportSets>
+          <reportSet>
+            <id>non-aggregate</id>
+            <reports>
+              <report>jxr</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>aggregate</id>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${pmd.plugin.version}</version>
+        <configuration>
+          <targetJdk>${maven.compiler.target}</targetJdk>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 0ms:
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-jcl/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/authentication",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:6:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:26:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:27:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:6:    "repository-url" : "https://github.com/junit-team/junit-framework",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter/index.json:3:    "not-for-native-image": true,
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:6:    "repository-url" : "https://github.com/slick/slick",
+metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-sources.jar",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:6:    "repository-url" : "https://github.com/stephenc/jcip-annotations",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:6:    "repository-url" : "https://github.com/slick/slick",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-sources.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:6:    "repository-url" : "https://github.com/eclipse/eclipse-collections",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:7:    "test-code-url" : "https://github.com/eclipse/eclipse-collections/tree/$version$/unit-tests/src/test/java",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-javadoc.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:6:    "repository-url" : "https://github.com/diffplug/durian-swt",
+metadata/com.diffplug.durian/durian-swt.os/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/$version$/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+metadata/com.diffplug.durian/durian-swt.os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-javadoc.jar",
+metadata/org.threeten/threetenbp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+metadata/org.threeten/threetenbp/index.json:6:    "repository-url" : "https://github.com/ThreeTen/threetenbp",
+metadata/org.threeten/threetenbp/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+metadata/org.threeten/threetenbp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+metadata/org.lz4/lz4-java/index.json:7:    "repository-url": "https://github.com/lz4/lz4-java",
+metadata/org.lz4/lz4-java/index.json:8:    "test-code-url": "https://github.com/lz4/lz4-java/tree/$version$/src/test",
+metadata/org.lz4/lz4-java/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jmx/src/test/java",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/com.diffplug.durian/durian-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/$version$/durian-core-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-core/index.json:6:    "repository-url" : "https://github.com/diffplug/durian",
+metadata/com.diffplug.durian/durian-core/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian/tree/ed0c024120/core/tests/tests",
+metadata/com.diffplug.durian/durian-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/$version$/durian-core-$version$-javadoc.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:6:    "repository-url" : "https://github.com/ThreeTen/threeten-extra",
+metadata/org.threeten/threeten-extra/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threeten-extra/tree/v$version$/src/test",
+metadata/org.threeten/threeten-extra/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics/",
+metadata/io.dropwizard.metrics/metrics-json/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-json/src/test/java",
+metadata/io.dropwizard.metrics/metrics-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest_2.13/index.json:3:    "not-for-native-image": true,
+metadata/javax.enterprise/cdi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-sources.jar",
+metadata/javax.enterprise/cdi-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/weld/api",
+metadata/javax.enterprise/cdi-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.enterprise/cdi-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics/",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jvm/src/test",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-javadoc.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-sources.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:5:    "repository-url" : "https://github.com/open-telemetry/semantic-conventions-java",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:6:    "test-code-url" : "https://github.com/open-telemetry/semantic-conventions-java/tree/v1.23.1/src/test",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-javadoc.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-sources.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:20:    "repository-url" : "https://github.com/open-telemetry/semantic-conventions-java",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:21:    "test-code-url" : "https://github.com/open-telemetry/semantic-conventions-java/tree/v1.25.0/semconv/src/test",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 324ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/logging/log4j/log4j-to-slf4j/2.17.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/logging/log4j/log4j-to-slf4j/2.17.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="log4j-to-slf4j-2.17.1-javadoc.jar" title="log4j-to-slf4j-2.17.1-javadoc.jar">log4j-to-slf4j-2.17.1-javadoc.jar</a>                 2021-12-27 23:32     56701      
+<a href="log4j-to-slf4j-2.17.1-javadoc.jar.asc" title="log4j-to-slf4j-2.17.1-javadoc.jar.asc">log4j-to-slf4j-2.17.1-javadoc.jar.asc</a>             2021-12-27 23:32       833      
+<a href="log4j-to-slf4j-2.17.1-javadoc.jar.md5" title="log4j-to-slf4j-2.17.1-javadoc.jar.md5">log4j-to-slf4j-2.17.1-javadoc.jar.md5</a>             2021-12-27 23:32        32      
+<a href="log4j-to-slf4j-2.17.1-javadoc.jar.sha1" title="log4j-to-slf4j-2.17.1-javadoc.jar.sha1">log4j-to-slf4j-2.17.1-javadoc.jar.sha1</a>            2021-12-27 23:32        40      
+<a href="log4j-to-slf4j-2.17.1-sources.jar" title="log4j-to-slf4j-2.17.1-sources.jar">log4j-to-slf4j-2.17.1-sources.jar</a>                 2021-12-27 23:32     15708      
+<a href="log4j-to-slf4j-2.17.1-sources.jar.asc" title="log4j-to-slf4j-2.17.1-sources.jar.asc">log4j-to-slf4j-2.17.1-sources.jar.asc</a>             2021-12-27 23:32       833      
+<a href="log4j-to-slf4j-2.17.1-sources.jar.md5" title="log4j-to-slf4j-2.17.1-sources.jar.md5">log4j-to-slf4j-2.17.1-sources.jar.md5</a>             2021-12-27 23:32        32      
+<a href="log4j-to-slf4j-2.17.1-sources.jar.sha1" title="log4j-to-slf4j-2.17.1-sources.jar.sha1">log4j-to-slf4j-2.17.1-sources.jar.sha1</a>            2021-12-27 23:32        40      
+<a href="log4j-to-slf4j-2.17.1-test-sources.jar" title="log4j-to-slf4j-2.17.1-test-sources.jar">log4j-to-slf4j-2.17.1-test-sources.jar</a>            2021-12-27 23:32     16790      
+<a href="log4j-to-slf4j-2.17.1-test-sources.jar.asc" title="log4j-to-slf4j-2.17.1-test-sources.jar.asc">log4j-to-slf4j-2.17.1-test-sources.jar.asc</a>        2021-12-27 23:32       833      
+<a href="log4j-to-slf4j-2.17.1-test-sources.jar.md5" title="log4j-to-slf4j-2.17.1-test-sources.jar.md5">log4j-to-slf4j-2.17.1-test-sources.jar.md5</a>        2021-12-27 23:32        32      
+<a href="log4j-to-slf4j-2.17.1-test-sources.jar.sha1" title="log4j-to-slf4j-2.17.1-test-sources.jar.sha1">log4j-to-slf4j-2.17.1-test-sources.jar.sha1</a>       2021-12-27 23:32        40      
+<a href="log4j-to-slf4j-2.17.1.jar" title="log4j-to-slf4j-2.17.1.jar">log4j-to-slf4j-2.17.1.jar</a>                         2021-12-27 23:32     17891      
+<a href="log4j-to-slf4j-2.17.1.jar.asc" title="log4j-to-slf4j-2.17.1.jar.asc">log4j-to-slf4j-2.17.1.jar.asc</a>                     2021-12-27 23:32       833      
+<a href="log4j-to-slf4j-2.17.1.jar.md5" title="log4j-to-slf4j-2.17.1.jar.md5">log4j-to-slf4j-2.17.1.jar.md5</a>                     2021-12-27 23:32        32      
+<a href="log4j-to-slf4j-2.17.1.jar.sha1" title="log4j-to-slf4j-2.17.1.jar.sha1">log4j-to-slf4j-2.17.1.jar.sha1</a>                    2021-12-27 23:32        40      
+<a href="log4j-to-slf4j-2.17.1.pom" title="log4j-to-slf4j-2.17.1.pom">log4j-to-slf4j-2.17.1.pom</a>                         2021-12-27 23:32      6999      
+<a href="log4j-to-slf4j-2.17.1.pom.asc" title="log4j-to-slf4j-2.17.1.pom.asc">log4j-to-slf4j-2.17.1.pom.asc</a>                     2021-12-27 23:32       833      
+<a href="log4j-to-slf4j-2.17.1.pom.md5" title="log4j-to-slf4j-2.17.1.pom.md5">log4j-to-slf4j-2.17.1.pom.md5</a>                     2021-12-27 23:32        32      
+<a href="log4j-to-slf4j-2.17.1.pom.sha1" title="log4j-to-slf4j-2.17.1.pom.sha1">log4j-to-slf4j-2.17.1.pom.sha1</a>                    2021-12-27 23:32        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: org.apache.logging.log4j log4j-to-slf4j 2.17.1 Maven Central sources test-sources javadoc
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j/2.17.1/log4j-2.17.1.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements. See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache license, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License. You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the license for the specific language governing permissions and
+  ~ limitations under the license.
+  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j</artifactId>
+  <packaging>pom</packaging>
+  <name>Apache Log4j 2</name>
+  <version>2.17.1</version>
+  <parent>
+    <groupId>org.apache.logging</groupId>
+    <artifactId>logging-parent</artifactId>
+    <version>3</version>
+    <relativePath />
+  </parent>
+  <description>Apache Log4j 2</description>
+  <url>https://logging.apache.org/log4j/2.x/</url>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://issues.apache.org/jira/browse/LOG4J2</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>https://ci-builds.apache.org/job/Logging/job/log4j/</url>
+  </ciManagement>
+  <inceptionYear>1999</inceptionYear>
+  <developers>
+    <developer>
+      <id>rgoers</id>
+      <name>Ralph Goers</name>
+      <email>rgoers@apache.org</email>
+      <organization>Nextiva</organization>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>America/Phoenix</timezone>
+    </developer>
+    <developer>
+      <id>ggregory</id>
+      <name>Gary Gregory</name>
+      <email>ggregory@apache.org</email>
+      <organization>Rocket Software</organization>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>America/Denver</timezone>
+    </developer>
+    <developer>
+      <id>sdeboy</id>
+      <name>Scott Deboy</name>
+      <email>sdeboy@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>America/Los_Angeles</timezone>
+    </developer>
+    <developer>
+      <id>rpopma</id>
+      <name>Remko Popma</name>
+      <email>rpopma@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>Asia/Tokyo</timezone>
+      <properties>
+        <picUrl>http://people.apache.org/~rpopma/img/profilepic.jpg</picUrl>
+      </properties>
+    </developer>
+    <developer>
+      <id>nickwilliams</id>
+      <name>Nick Williams</name>
+      <email>nickwilliams@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>America/Chicago</timezone>
+    </developer>
+    <developer>
+      <id>mattsicker</id>
+      <name>Matt Sicker</name>
+      <email>mattsicker@apache.org</email>
+      <organization>CloudBees</organization>
+      <roles>
+        <role>PMC Chair</role>
+      </roles>
+      <timezone>America/Chicago</timezone>
+    </developer>
+    <developer>
+      <id>bbrouwer</id>
+      <name>Bruce Brouwer</name>
+      <email>bruce.brouwer@gmail.com</email>
+      <roles>
+        <role>Committer</role>
+      </roles>
+      <timezone>America/Detroit</timezone>
+    </developer>
+    <developer>
+      <id>mikes</id>
+      <name>Mikael Ståldal</name>
+      <email>mikes@apache.org</email>
+      <organization>Spotify</organization>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>Europe/Stockholm</timezone>
+    </developer>
+    <developer>
+      <id>ckozak</id>
+      <name>Carter Kozak</name>
+      <email>ckozak@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>America/New York</timezone>
+    </developer>
+    <developer>
+      <id>vy</id>
+      <name>Volkan Yazıcı</name>
+      <email>vy@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>Europe/Amsterdam</timezone>
+    </developer>
+  </developers>
+  <!-- Contributors -->
+  <contributors>
+      <contributor>
+        <name>Murad Ersoy</name>
+        <email>muradersoy@gmail.com</email>
+        <url>https://www.behance.net/muradersoy</url>
+        <roles>
+          <role>Illustrator and Designer</role>
+          <role>created the new Log4j 2 logo.</role>
+        </roles>
+        <timezone>Europe/Istanbul</timezone>
+        <properties>
+          <picUrl>https://mir-s3-cdn-cf.behance.net/user/138/403dcf1521581.54d67f8fb01f7.jpg</picUrl>
+        </properties>
+      </contributor>
+   </contributors>
+  <mailingLists>
+    <mailingList>
+      <name>log4j-user</name>
+      <subscribe>log4j-user-subscribe@logging.apache.org</subscribe>
+      <unsubscribe>log4j-user-unsubscribe@logging.apache.org</unsubscribe>
+      <post>log4j-user@logging.apache.org</post>
+      <archive>https://lists.apache.org/list.html?log4j-user@logging.apache.org</archive>
+      <otherArchives>
+        <otherArchive>http://mail-archives.apache.org/mod_mbox/logging-log4j-user/</otherArchive>
+        <otherArchive>http://marc.info/?l=log4j-user</otherArchive>
+        <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>dev</name>
+      <subscribe>dev-subscribe@logging.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@logging.apache.org</unsubscribe>
+      <post>dev@logging.apache.org</post>
+      <archive>https://lists.apache.org/list.html?dev@logging.apache.org</archive>
+      <otherArchives>
+        <otherArchive>http://mail-archives.apache.org/mod_mbox/logging-dev/</otherArchive>
+        <otherArchive>http://marc.info/?l=dev</otherArchive>
+        <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</developerConnection>
+    <url>https://gitbox.apache.org/repos/asf?p=logging-log4j2.git</url>
+    <tag>log4j-2.17.1-rc1</tag>
+  </scm>
+  <properties>
+    <!-- make sure to update these for each release! -->
+    <log4jParentDir>${basedir}</log4jParentDir>
+    <Log4jReleaseVersion>2.17.1</Log4jReleaseVersion>
+    <Log4jReleaseVersionJava7>2.12.3</Log4jReleaseVersionJava7>
+    <Log4jReleaseVersionJava6>2.3.1</Log4jReleaseVersionJava6>
+    <Log4jReleaseManager>Matt Sicker</Log4jReleaseManager>
+    <Log4jReleaseKey>D7C92B70FA1C814D</Log4jReleaseKey>
+    <Log4jSigningUserName>mattsicker@apache.org</Log4jSigningUserName>
+    <!-- note that any properties you want available in velocity templates must not use periods! -->
+    <slf4jVersion>1.7.25</slf4jVersion>
+    <logbackVersion>1.2.3</logbackVersion>
+    <jackson1Version>1.9.13</jackson1Version>
+    <jackson2Version>2.12.4</jackson2Version>
+    <spring-boot.version>2.5.7</spring-boot.version>
+    <springVersion>5.3.13</springVersion>
+    <kubernetes-client.version>4.6.1</kubernetes-client.version>
+    <flumeVersion>1.9.0</flumeVersion>
+    <disruptorVersion>3.4.4</disruptorVersion>
+    <conversantDisruptorVersion>1.2.15</conversantDisruptorVersion> <!-- Version 1.2.16 requires Java 9 -->
+    <elastic.version>7.6.2</elastic.version>
+    <mongodb3.version>3.12.7</mongodb3.version>
+    <mongodb4.version>4.2.2</mongodb4.version>
+    <!-- POM for jackson-dataformat-xml 2.12.4 depends on woodstox-core 6.2.4 -->
+    <woodstox.version>6.2.6</woodstox.version>
+    <groovy.version>3.0.8</groovy.version>
+    <compiler.plugin.version>3.8.1</compiler.plugin.version>
+    <pmd.plugin.version>3.10.0</pmd.plugin.version>
+    <changes.plugin.version>2.12.1</changes.plugin.version>
+    <javadoc.plugin.version>3.3.1</javadoc.plugin.version>
+    <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
+    <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
+    <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
+    <surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
+    <failsafe.plugin.version>3.0.0-M5</failsafe.plugin.version>
+    <checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
+    <deploy.plugin.version>2.8.2</deploy.plugin.version>
+    <rat.plugin.version>0.13</rat.plugin.version>
+    <pdf.plugin.version>1.2</pdf.plugin.version>
+    <cobertura.plugin.version>2.7</cobertura.plugin.version>
+    <jacoco.plugin.version>0.8.6</jacoco.plugin.version>
+    <release.plugin.version>2.5.3</release.plugin.version>
+    <scm.plugin.version>1.9.5</scm.plugin.version>
+    <jxr.plugin.version>2.5</jxr.plugin.version>
+    <revapi.plugin.version>0.11.1</revapi.plugin.version>
+    <revapi.skip>false</revapi.skip>
+    <clirr.plugin.version>2.8</clirr.plugin.version>
+    <site.plugin.version>3.8.2</site.plugin.version>
+    <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
+    <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
+    <velocity.plugin.version>1.5</velocity.plugin.version>
+    <asciidoc.plugin.version>1.5.6</asciidoc.plugin.version>
+    <remote.resources.plugin.version>1.5</remote.resources.plugin.version>
+    <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.doap.skip>false</maven.doap.skip>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
+    <project.build.outputTimestamp>10</project.build.outputTimestamp>
+    <docLabel>Site Documentation</docLabel>
+    <projectDir />
+    <commonsLoggingVersion>1.2</commonsLoggingVersion>
+    <javax.persistence>2.2.1</javax.persistence>
+    <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
+    <osgi.api.version>4.3.1</osgi.api.version>
+    <activemq.version>5.16.3</activemq.version>
+    <!-- Allow Clirr severity to be overriden by the command-line option -DminSeverity=level -->
+    <minSeverity>info</minSeverity>
+    <jctoolsVersion>1.2.1</jctoolsVersion>
+    <junitVersion>4.13.2</junitVersion>
+    <junitJupiterVersion>5.7.2</junitJupiterVersion>
+    <mockitoVersion>3.11.2</mockitoVersion>
+
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/apache/logging-log4j2/tree/rel/2.17.1/log4j-to-slf4j/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/apache/logging-log4j2/tree/log4j-2.17.1/log4j-to-slf4j/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/apache/logging-log4j2/tree/2.17.1/log4j-to-slf4j/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 452ms:
+HTTP/2 404 
+date: Sun, 10 May 2026 08:03:04 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=4enb73HX7EXuISG8M5hB95SP9gXdXGD2%2BXdeWlkn9ugMclxBrO4XdecNfcYbTRT31X0nNzUrtL%2Frb%2BOH2qsv5ntNV2tB%2Ftn3DB190QovNLnsjzCLzP13M3Ekg2NUTfWNsupXetQxjmnmVAtfRBxUcqzQn6HyWFeMImcT%2FvQpeKmARGfLy2%2FAUYde5sadu%2Bz%2BYojnPf68L1RQdey9HwCV%2BAulmIlo%2BqGtkXEMSB6UFKj8iqkqkFF8xdOX0iV3XUjGAf8PR5to%2By34j6Di0umyuw%3D%3D--2UfA7aIfDiCobwUY--1gN2DJ%2Bm8%2FkfaSA3ARn3Sg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1658187220.1778400184; expires=Mon, 10 May 2027 08:03:04 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 10 May 2027 08:03:04 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5113:B4EC7:1CA3457:153AF70:6A003BB8
+
+
+ succeeded in 455ms:
+HTTP/2 404 
+date: Sun, 10 May 2026 08:03:04 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=ZwV1lqwsf5KBbdlU%2Fa%2FEQ2fPuVALzqIos0nqn2up74rGoZrArgjDpp9Sclqg3JfHIkCx8tPMc%2Fc7Ac5nC9lStSHyk5ocec5qFzlGDqbu6DcWyZnaCSQzBCqlb1b19ZQxA%2BnkRgMPyHw8u6dYiqppFLVL0wOV30k4ezr%2F948ovBK9618NaHdMr2FtwHT5nn60kbrDo4tafmHapWal32%2Fpi56k5LO0BmiTwVdT0pWdEX1%2FNqX5sNlL8NeKA0KGguFsCKccFzFvVG6%2FcXQnJMahbA%3D%3D--BLQzAKpzb5IH3Edb--16of07Npc6MyzZJFQx%2BvVw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1784177322.1778400184; expires=Mon, 10 May 2027 08:03:04 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 10 May 2027 08:03:04 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5112:1E82C3:1BF6CE7:14B3AFE:6A003BB8
+
+
+ succeeded in 550ms:
+HTTP/2 200 
+date: Sun, 10 May 2026 08:03:04 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"9883216c2a9bff7291bdde1597de6b24"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=49Be320GwmWwJZCzyss%2FcsBSUn%2Fo5skBnDSBAKKvX%2F%2Bns5hccd7HQ1Ad4RgY5gnADLowvaAGtI3%2F54V9lOere7uDruilhtkk0HoErik1Msh3y0FNeYWbGvQd05SO%2FVn%2BTSZIV3aBEt6j2JoQtacvsy%2BBhfnO1SKoAcTBhIb6l9MhaVEd09%2FZD07JS7sk%2BsUlBGT%2FBo320%2Fvm7NU6r7sp0W70VQd4YzZJLCxUqK57LH2qTzb%2F0YXo7xpChA2mj4ONTvJlPpiuTooxikRHh2UKyw%3D%3D--h5p6OjCPvqrwQTYL--hs76hqScd%2B2kK%2B46LjOu%2Fg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.184012423.1778400184; expires=Mon, 10 May 2027 08:03:04 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 10 May 2027 08:03:04 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5111:38873D:1CAFFD5:153BD42:6A003BB8
+
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.apache.logging.log4j log4j-to-slf4j 2.17.1 sources test-sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/
+web search: 
+web search: 
+web search: 
+web search: https://github.com/apache/logging-log4j2/tree/rel/2.17.1/log4j-to-slf4j/src/test
+web search: 
+web search: 'Apache Log4j is a versatile' in https://github.com/apache/logging-log4j2
+codex
+I found the Maven Central listing for `2.17.1`: it includes source, test-source, javadoc, and binary JARs. This is a normal JVM JAR, so I’ll leave the language and `not-for-native-image` fields absent.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/log4j-to-slf4j-2.17.1.jar -o /tmp/log4j-to-slf4j-2.17.1.jar && jar tf /tmp/log4j-to-slf4j-2.17.1.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/log4j-to-slf4j-2.17.1-test-sources.jar -o /tmp/log4j-to-slf4j-2.17.1-test-sources.jar && jar tf /tmp/log4j-to-slf4j-2.17.1-test-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/log4j-to-slf4j-2.17.1-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/log4j-to-slf4j-2.17.1-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/log4j-to-slf4j-2.17.1-javadoc.jar; do curl -fsI \""'$u" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/log4j-to-slf4j-2.17.1-sources.jar -o /tmp/log4j-to-slf4j-2.17.1-sources.jar && jar tf /tmp/log4j-to-slf4j-2.17.1-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 119ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/apache/
+org/apache/logging/
+org/apache/logging/slf4j/
+META-INF/services/
+META-INF/maven/
+META-INF/maven/org.apache.logging.log4j/
+META-INF/maven/org.apache.logging.log4j/log4j-to-slf4j/
+org/apache/logging/slf4j/SLF4JLoggerContext.class
+META-INF/maven/org.apache.logging.log4j/log4j-to-slf4j/pom.xml
+org/apache/logging/slf4j/SLF4JLogger$1.class
+META-INF/maven/org.apache.logging.log4j/log4j-to-slf4j/pom.properties
+org/apache/logging/slf4j/SLF4JProvider.class
+org/apache/logging/slf4j/SLF4JLoggerContextFactory.class
+org/apache/logging/slf4j/MDCContextMap.class
+org/apache/logging/slf4j/SLF4JLogger.class
+META-INF/LICENSE
+META-INF/DEPENDENCIES
+META-INF/NOTICE
+META-INF/services/org.apache.logging.log4j.spi.Provider
+
+ succeeded in 342ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/apache/
+org/apache/logging/
+org/apache/logging/slf4j/
+META-INF/services/
+META-INF/maven/
+META-INF/maven/org.apache.logging.log4j/
+META-INF/maven/org.apache.logging.log4j/log4j-to-slf4j/
+META-INF/LICENSE
+META-INF/DEPENDENCIES
+META-INF/maven/org.apache.logging.log4j/log4j-to-slf4j/pom.xml
+META-INF/NOTICE
+META-INF/maven/org.apache.logging.log4j/log4j-to-slf4j/pom.properties
+org/apache/logging/slf4j/SLF4JProvider.java
+org/apache/logging/slf4j/SLF4JLoggerContextFactory.java
+org/apache/logging/slf4j/SLF4JLogger.java
+org/apache/logging/slf4j/SLF4JLoggerContext.java
+org/apache/logging/slf4j/MDCContextMap.java
+org/apache/logging/slf4j/package-info.java
+META-INF/services/org.apache.logging.log4j.spi.Provider
+
+ succeeded in 500ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/apache/
+org/apache/logging/
+org/apache/logging/slf4j/
+META-INF/maven/
+META-INF/maven/org.apache.logging.log4j/
+META-INF/maven/org.apache.logging.log4j/log4j-to-slf4j/
+META-INF/LICENSE
+META-INF/DEPENDENCIES
+META-INF/maven/org.apache.logging.log4j/log4j-to-slf4j/pom.xml
+META-INF/NOTICE
+META-INF/maven/org.apache.logging.log4j/log4j-to-slf4j/pom.properties
+org/apache/logging/slf4j/CallerInformationTest.java
+org/apache/logging/slf4j/LoggerContextRule.java
+org/apache/logging/slf4j/Log4j2Jira1688Test.java
+org/apache/logging/slf4j/TestUtil.java
+org/apache/logging/slf4j/LoggerTest.java
+logback-calling-class.xml
+logback-slf4j.xml
+
+ succeeded in 660ms:
+HTTP/2 200 
+HTTP/2 200 
+HTTP/2 200 
+
+codex
+I’m updating the metadata file now, using Maven Central artifact URLs for sources, test sources, and javadocs, and the Apache GitHub mirror as the repository root.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+index 18f2ad0c6ff5ef4e9ff86ba28fae36724574d28e..e8407c7e9908880ad73b558a5bf3f67a80af9dd8
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-javadoc.jar",
++  "description" : "Apache Log4j to SLF4J is an adapter that routes Log4j 2 API logging calls to an SLF4J binding. It lets applications written against the Log4j 2 API use an SLF4J-backed logging implementation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+index 18f2ad0c6ff5ef4e9ff86ba28fae36724574d28e..e8407c7e9908880ad73b558a5bf3f67a80af9dd8
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-javadoc.jar",
++  "description" : "Apache Log4j to SLF4J is an adapter that routes Log4j 2 API logging calls to an SLF4J binding. It lets applications written against the Log4j 2 API use an SLF4J-backed logging implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.logging.log4j:log4j-to-slf4j:2.17.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/logging-log4j2",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-test-sources.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-javadoc.jar",
+  "description": "Apache Log4j to SLF4J is an adapter that routes Log4j 2 API logging calls to an SLF4J binding. It lets applications written against the Log4j 2 API use an SLF4J-backed logging implementation."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "jq -r '.\"source-code-url\", .\"test-code-url\", .\"documentation-url\"' build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json | sed 's/\\"'$version'"\\"'$/2.17.1/g'"' | while IFS= read -r u; do printf '%s -> ' \""'$u"; curl -fsI "$u" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+index 18f2ad0c6ff5ef4e9ff86ba28fae36724574d28e..e8407c7e9908880ad73b558a5bf3f67a80af9dd8
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-javadoc.jar",
++  "description" : "Apache Log4j to SLF4J is an adapter that routes Log4j 2 API logging calls to an SLF4J binding. It lets applications written against the Log4j 2 API use an SLF4J-backed logging implementation."
+ }
+
+ succeeded in 117ms:
+HTTP/2 200 
+
+codex
+Validation passed: the JSON parses, and all three `$version$`-substituted Maven URLs returned HTTP 200 for `2.17.1`.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-sources.jar",
+  "repository-url" : "https://github.com/apache/logging-log4j2",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-test-sources.jar",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-javadoc.jar",
+  "description" : "Apache Log4j to SLF4J is an adapter that routes Log4j 2 API logging calls to an SLF4J binding. It lets applications written against the Log4j 2 API use an SLF4J-backed logging implementation."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+index 18f2ad0c6ff5ef4e9ff86ba28fae36724574d28e..e8407c7e9908880ad73b558a5bf3f67a80af9dd8
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-javadoc.jar",
++  "description" : "Apache Log4j to SLF4J is an adapter that routes Log4j 2 API logging calls to an SLF4J binding. It lets applications written against the Log4j 2 API use an SLF4J-backed logging implementation."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org org apache logging log4j log4j-to-slf4j 2.17.1 javadoc sources test-sources
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.logging.log4j/log4j-to-slf4j/2.17.1
+codex
+Updated [org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json).
+
+Set Maven Central URLs for sources, test sources, and javadocs; those artifacts are present for `2.17.1`. The artifact is a JVM `jar`, so I left `language` and `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/))
+
+Validation: JSON parses, and the three `$version$` URLs return HTTP 200 after substituting `2.17.1`.
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+index 18f2ad0c6ff5ef4e9ff86ba28fae36724574d28e..e8407c7e9908880ad73b558a5bf3f67a80af9dd8
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-to-slf4j:2.17.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/$version$/log4j-to-slf4j-$version$-javadoc.jar",
++  "description" : "Apache Log4j to SLF4J is an adapter that routes Log4j 2 API logging calls to an SLF4J binding. It lets applications written against the Log4j 2 API use an SLF4J-backed logging implementation."
+ }
+
+tokens used
+87,285
+Updated [org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.json).
+
+Set Maven Central URLs for sources, test sources, and javadocs; those artifacts are present for `2.17.1`. The artifact is a JVM `jar`, so I left `language` and `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-to-slf4j/2.17.1/))
+
+Validation: JSON parses, and the three `$version$` URLs return HTTP 200 after substituting `2.17.1`.
+Ran agent for org.apache.logging.log4j:log4j-to-slf4j:2.17.1 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db/build/agent-artifact-discovery-logs/org.apache.logging.log4j-log4j-to-slf4j-2.17.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2265-6fe5d7db/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 6s
+9 actionable tasks: 9 executed
