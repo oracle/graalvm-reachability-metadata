@@ -182,6 +182,23 @@ public class Jackson_datatype_jsr310Test {
     }
 
     @Test
+    void allowsStringifiedNumericTimestampsWithCustomOffsetDateTimeFormatterWhenConfigured() throws Exception {
+        ObjectMapper stringifiedTimestampMapper = JsonMapper.builder()
+                .addModule(new JavaTimeModule().enable(JavaTimeFeature.ALWAYS_ALLOW_STRINGIFIED_DATE_TIMESTAMPS))
+                .defaultTimeZone(TimeZone.getTimeZone("UTC"))
+                .enable(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS)
+                .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+                .build();
+
+        StringifiedTimestampSnapshot snapshot = stringifiedTimestampMapper.readValue(
+                "{\"timestamp\":\"1706933106.123456789\"}",
+                StringifiedTimestampSnapshot.class);
+
+        assertThat(snapshot).isEqualTo(new StringifiedTimestampSnapshot(
+                OffsetDateTime.of(2024, 2, 3, 4, 5, 6, 123456789, ZoneOffset.UTC)));
+    }
+
+    @Test
     void appliesJavaTimeModuleFeatureFlagsForMonthsAndLenientLocalDates() throws Exception {
         ObjectMapper oneBasedMonthMapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule().enable(JavaTimeFeature.ONE_BASED_MONTHS))
@@ -266,5 +283,9 @@ public class Jackson_datatype_jsr310Test {
     }
 
     public record MonthSnapshot(Month month) {
+    }
+
+    public record StringifiedTimestampSnapshot(
+            @JsonFormat(pattern = "uuuu/MM/dd HH:mm:ss XXX") OffsetDateTime timestamp) {
     }
 }
