@@ -1,0 +1,665 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e116c-af54-7d61-830f-62881f0eaa2f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework:spring-orm:5.3.18
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "5.3.18" when "$version$" is replaced with "5.3.18".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+- Set "coordinates" to "org.springframework:spring-orm:5.3.18".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "5.3.18".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s Maven metadata and Spring’s tagged source layout, then update the discovered metadata JSON in place.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.springframework-spring-orm-5\\.3\\.18\\.json"'$'"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework:spring-orm:5.3.18"
+}
+
+web search: 
+web search: Maven Central org.springframework spring-orm 5.3.18 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/
+web search: 
+web search: https://github.com/spring-projects/spring-framework/tree/v5.3.18/spring-orm/src/test/java
+web search: 
+web search: central.sonatype org.springframework spring-orm 5.3.18 source control spring-framework
+codex
+The Maven Central listing has the main jar, sources jar, and javadoc jar but no test-sources jar, so I’m using Maven Central for source/docs where available and the Spring Framework v5.3.18 tag for the test suite.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/spring-orm-5.3.18.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework</groupId>
+  <artifactId>spring-orm</artifactId>
+  <version>5.3.18</version>
+  <name>Spring Object/Relational Mapping</name>
+  <description>Spring Object/Relational Mapping</description>
+  <url>https://github.com/spring-projects/spring-framework</url>
+  <organization>
+    <name>Spring IO</name>
+    <url>https://spring.io/projects/spring-framework</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>jhoeller</id>
+      <name>Juergen Hoeller</name>
+      <email>jhoeller@pivotal.io</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-framework</connection>
+    <developerConnection>scm:git:git://github.com/spring-projects/spring-framework</developerConnection>
+    <url>https://github.com/spring-projects/spring-framework</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-framework/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>5.3.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>5.3.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>5.3.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>5.3.18</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata -g '*.json' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/spring-orm-5.3.18.jar -o /tmp/spring-orm-5.3.18.jar && jar tf /tmp/spring-orm-5.3.18.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 247ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/springframework/
+org/springframework/orm/
+org/springframework/orm/ObjectOptimisticLockingFailureException.class
+org/springframework/orm/package-info.class
+org/springframework/orm/jpa/
+org/springframework/orm/jpa/SharedEntityManagerCreator.class
+org/springframework/orm/jpa/ExtendedEntityManagerCreator.class
+org/springframework/orm/jpa/JpaVendorAdapter.class
+org/springframework/orm/jpa/SharedEntityManagerCreator$DeferredQueryInvocationHandler.class
+org/springframework/orm/jpa/JpaSystemException.class
+org/springframework/orm/jpa/vendor/
+org/springframework/orm/jpa/vendor/HibernateJpaDialect.class
+org/springframework/orm/jpa/vendor/HibernateJpaDialect$SessionTransactionData.class
+org/springframework/orm/jpa/vendor/HibernateJpaDialect$HibernateConnectionHandle.class
+org/springframework/orm/jpa/vendor/package-info.class
+org/springframework/orm/jpa/vendor/EclipseLinkJpaDialect.class
+org/springframework/orm/jpa/vendor/HibernateJpaSessionFactoryBean.class
+org/springframework/orm/jpa/vendor/HibernateJpaVendorAdapter.class
+org/springframework/orm/jpa/vendor/EclipseLinkJpaVendorAdapter$1.class
+org/springframework/orm/jpa/vendor/EclipseLinkJpaDialect$EclipseLinkConnectionHandle.class
+org/springframework/orm/jpa/vendor/SpringHibernateJpaPersistenceProvider.class
+org/springframework/orm/jpa/vendor/EclipseLinkJpaVendorAdapter.class
+org/springframework/orm/jpa/vendor/AbstractJpaVendorAdapter.class
+org/springframework/orm/jpa/vendor/Database.class
+org/springframework/orm/jpa/vendor/SpringHibernateJpaPersistenceProvider$1.class
+org/springframework/orm/jpa/vendor/HibernateJpaVendorAdapter$1.class
+org/springframework/orm/jpa/ExtendedEntityManagerCreator$ExtendedEntityManagerSynchronization.class
+org/springframework/orm/jpa/LocalEntityManagerFactoryBean.class
+org/springframework/orm/jpa/EntityManagerFactoryUtils$TransactionScopedEntityManagerSynchronization.class
+org/springframework/orm/jpa/SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.class
+org/springframework/orm/jpa/EntityManagerHolder.class
+org/springframework/orm/jpa/JpaTransactionManager.class
+org/springframework/orm/jpa/package-info.class
+org/springframework/orm/jpa/EntityManagerFactoryAccessor.class
+org/springframework/orm/jpa/AbstractEntityManagerFactoryBean.class
+org/springframework/orm/jpa/LocalContainerEntityManagerFactoryBean.class
+org/springframework/orm/jpa/JpaDialect.class
+org/springframework/orm/jpa/JpaTransactionManager$1.class
+org/springframework/orm/jpa/JpaOptimisticLockingFailureException.class
+org/springframework/orm/jpa/EntityManagerFactoryInfo.class
+org/springframework/orm/jpa/support/
+org/springframework/orm/jpa/support/PersistenceAnnotationBeanPostProcessor$PersistenceElement.class
+org/springframework/orm/jpa/support/package-info.class
+org/springframework/orm/jpa/support/PersistenceAnnotationBeanPostProcessor$1.class
+org/springframework/orm/jpa/support/AsyncRequestInterceptor.class
+org/springframework/orm/jpa/support/OpenEntityManagerInViewFilter.class
+org/springframework/orm/jpa/support/PersistenceAnnotationBeanPostProcessor.class
+org/springframework/orm/jpa/support/PersistenceAnnotationBeanPostProcessor$LocatorDelegate.class
+org/springframework/orm/jpa/support/OpenEntityManagerInViewInterceptor.class
+org/springframework/orm/jpa/support/SharedEntityManagerBean.class
+org/springframework/orm/jpa/JpaTransactionManager$JpaTransactionDefinition.class
+org/springframework/orm/jpa/ExtendedEntityManagerCreator$ExtendedEntityManagerInvocationHandler.class
+org/springframework/orm/jpa/EntityManagerProxy.class
+org/springframework/orm/jpa/ExtendedEntityManagerCreator$1.class
+org/springframework/orm/jpa/EntityManagerFactoryUtils$TransactionalEntityManagerSynchronization.class
+org/springframework/orm/jpa/JpaTransactionManager$SuspendedResourcesHolder.class
+org/springframework/orm/jpa/DefaultJpaDialect.class
+org/springframework/orm/jpa/persistenceunit/
+org/springframework/orm/jpa/persistenceunit/ClassFileTransformerAdapter.class
+org/springframework/orm/jpa/persistenceunit/PersistenceUnitManager.class
+org/springframework/orm/jpa/persistenceunit/PersistenceUnitPostProcessor.class
+org/springframework/orm/jpa/persistenceunit/package-info.class
+org/springframework/orm/jpa/persistenceunit/MutablePersistenceUnitInfo.class
+org/springframework/orm/jpa/persistenceunit/PersistenceUnitReader.class
+org/springframework/orm/jpa/persistenceunit/SpringPersistenceUnitInfo.class
+org/springframework/orm/jpa/persistenceunit/DefaultPersistenceUnitManager.class
+org/springframework/orm/jpa/persistenceunit/SmartPersistenceUnitInfo.class
+org/springframework/orm/jpa/JpaTransactionManager$JpaTransactionObject.class
+org/springframework/orm/jpa/EntityManagerFactoryUtils.class
+org/springframework/orm/jpa/JpaObjectRetrievalFailureException.class
+org/springframework/orm/jpa/AbstractEntityManagerFactoryBean$ManagedEntityManagerFactoryInvocationHandler.class
+org/springframework/orm/jpa/AbstractEntityManagerFactoryBean$SerializedEntityManagerFactoryBeanReference.class
+org/springframework/orm/ObjectRetrievalFailureException.class
+org/springframework/orm/hibernate5/
+org/springframework/orm/hibernate5/HibernateOptimisticLockingFailureException.class
+org/springframework/orm/hibernate5/SpringBeanContainer.class
+org/springframework/orm/hibernate5/SpringJtaSessionContext.class
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/
+web search: 
+web search: https://github.com/spring-projects/spring-framework/tree/v5.3.18/spring-orm
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' . -g '*.json' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 0ms:
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+./metadata/com.github.javaparser/javaparser-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+./metadata/com.github.javaparser/javaparser-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+./metadata/oro/oro/index.json:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-$version$/docs/index.html",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+./metadata/com.itextpdf/kernel/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+./metadata/com.itextpdf/forms/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+./metadata/org.springframework/spring-instrument/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+./metadata/io.getquill/quill-engine_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-javadoc.jar",
+./metadata/com.itextpdf/layout/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+./metadata/org.springframework/spring-aspects/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+./metadata/io.getquill/quill-engine_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+./metadata/com.itextpdf/svg/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-javadoc.jar",
+./metadata/io.getquill/quill-util_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-javadoc.jar",
+./metadata/org.springframework/spring-jcl/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+./metadata/com.itextpdf/io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+./metadata/org.yaml/snakeyaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+./metadata/org.yaml/snakeyaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+./metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+./metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/io.vertx/vertx-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+./metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+./metadata/io.lettuce/lettuce-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/com.typesafe.slick/slick_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+./metadata/com.google.re2j/re2j/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+./metadata/org.mortbay.jetty/servlet-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+./metadata/com.squareup.moshi/moshi-adapters/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+./metadata/com.squareup.moshi/moshi-kotlin/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+./metadata/javax.validation/validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+./metadata/net.postgis/postgis-geometry/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+./metadata/net.postgis/postgis-jdbc/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.springframework/spring-instrument/index.json metadata/org.springframework/spring-aspects/index.json metadata/org.springframework/spring-jcl/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.3.31",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-framework",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+    "description" : "Spring Instrument provides a Java instrumentation agent that captures and exposes the JVM Instrumentation instance for later use by Spring-based applications. It supports Spring features that need load-time class transformation or other access to the JVM instrumentation API.",
+    "tested-versions" : [
+      "5.3.31",
+      "5.3.32",
+      "5.3.33",
+      "5.3.34",
+      "5.3.35",
+      "5.3.36",
+      "5.3.37",
+      "5.3.38",
+      "5.3.39",
+      "6.0.0",
+      "6.0.1",
+      "6.0.2",
+      "6.0.3",
+      "6.0.4",
+      "6.0.5",
+      "6.0.6",
+      "6.0.7",
+      "6.0.8",
+      "6.0.9",
+      "6.0.10",
+      "6.0.11",
+      "6.0.12",
+      "6.0.13",
+      "6.0.14",
+      "6.0.15",
+      "6.0.16",
+      "6.0.17",
+      "6.0.18",
+      "6.0.19",
+      "6.0.20",
+      "6.0.21",
+      "6.0.22",
+      "6.0.23",
+      "6.1.0",
+      "6.1.1",
+      "6.1.2",
+      "6.1.3",
+      "6.1.4",
+      "6.1.5",
+      "6.1.6",
+      "6.1.7",
+      "6.1.8",
+      "6.1.9",
+      "6.1.10",
+      "6.1.11",
+      "6.1.12",
+      "6.1.13",
+      "6.1.14",
+      "6.1.15",
+      "6.1.16",
+      "6.1.17",
+      "6.1.18",
+      "6.1.19",
+      "6.1.20",
+      "6.1.21",
+      "6.2.0",
+      "6.2.1",
+      "6.2.2",
+      "6.2.3",
+      "6.2.4",
+      "6.2.5",
+      "6.2.6",
+      "6.2.7",
+      "6.2.8",
+      "6.2.9",
+      "6.2.10",
+      "6.2.11",
+      "6.2.12",
+      "6.2.13",
+      "6.2.14",
+      "6.2.15",
+      "6.2.16",
+      "6.2.17",
+      "6.2.18",
+      "7.0.0",
+      "7.0.1",
+      "7.0.2",
+      "7.0.3",
+      "7.0.4",
+      "7.0.5",
+      "7.0.6",
+      "7.0.7"
+    ],
+    "allowed-packages" : [
+      "org.springframework.instrument"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.3.31",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-framework",
+    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+    "description" : "Spring Aspects provides AspectJ aspects that let Spring facilities such as dependency injection, transaction management, caching, and asynchronous execution participate in AspectJ-weaved applications. It is part of the Spring Framework and supplies runtime support for applying those cross-cutting concerns outside standard proxy-based Spring AOP.",
+    "tested-versions" : [
+      "5.3.31",
+      "5.3.32",
+      "5.3.33",
+      "5.3.34",
+      "5.3.35",
+      "5.3.36",
+      "5.3.37",
+      "5.3.38",
+      "5.3.39"
+    ],
+    "allowed-packages" : [
+      "org.springframework.beans.factory.aspectj",
+
+exec
+/usr/bin/bash -lc "sed -n '120,260p' metadata/org.springframework/spring-aspects/index.json metadata/org.springframework/spring-jcl/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 0ms:
+      "6.2.8",
+      "6.2.9",
+      "6.2.10",
+      "6.2.11",
+      "6.2.12",
+      "6.2.13",
+      "6.2.14",
+      "6.2.15",
+      "6.2.16",
+      "6.2.17",
+      "6.2.18"
+    ],
+    "allowed-packages" : [
+      "org.apache.commons.logging"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/ | rg 'spring-orm-5\\.3\\.18-(sources|javadoc|test-sources)|spring-orm-5\\.3\\.18\\.jar'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 0ms:
+<a href="spring-orm-5.3.18-javadoc.jar" title="spring-orm-5.3.18-javadoc.jar">spring-orm-5.3.18-javadoc.jar</a>                     2022-03-31 09:40    483400      
+<a href="spring-orm-5.3.18-javadoc.jar.asc" title="spring-orm-5.3.18-javadoc.jar.asc">spring-orm-5.3.18-javadoc.jar.asc</a>                 2022-03-31 09:40       488      
+<a href="spring-orm-5.3.18-javadoc.jar.md5" title="spring-orm-5.3.18-javadoc.jar.md5">spring-orm-5.3.18-javadoc.jar.md5</a>                 2022-03-31 09:40        32      
+<a href="spring-orm-5.3.18-javadoc.jar.sha1" title="spring-orm-5.3.18-javadoc.jar.sha1">spring-orm-5.3.18-javadoc.jar.sha1</a>                2022-03-31 09:40        40      
+<a href="spring-orm-5.3.18-sources.jar" title="spring-orm-5.3.18-sources.jar">spring-orm-5.3.18-sources.jar</a>                     2022-03-31 09:40    176792      
+<a href="spring-orm-5.3.18-sources.jar.asc" title="spring-orm-5.3.18-sources.jar.asc">spring-orm-5.3.18-sources.jar.asc</a>                 2022-03-31 09:40       488      
+<a href="spring-orm-5.3.18-sources.jar.md5" title="spring-orm-5.3.18-sources.jar.md5">spring-orm-5.3.18-sources.jar.md5</a>                 2022-03-31 09:40        32      
+<a href="spring-orm-5.3.18-sources.jar.sha1" title="spring-orm-5.3.18-sources.jar.sha1">spring-orm-5.3.18-sources.jar.sha1</a>                2022-03-31 09:40        40      
+<a href="spring-orm-5.3.18.jar" title="spring-orm-5.3.18.jar">spring-orm-5.3.18.jar</a>                             2022-03-31 09:40    204146      
+<a href="spring-orm-5.3.18.jar.asc" title="spring-orm-5.3.18.jar.asc">spring-orm-5.3.18.jar.asc</a>                         2022-03-31 09:40       488      
+<a href="spring-orm-5.3.18.jar.md5" title="spring-orm-5.3.18.jar.md5">spring-orm-5.3.18.jar.md5</a>                         2022-03-31 09:40        32      
+<a href="spring-orm-5.3.18.jar.sha1" title="spring-orm-5.3.18.jar.sha1">spring-orm-5.3.18.jar.sha1</a>                        2022-03-31 09:40        40      
+
+codex
+I found the artifact is a normal JVM jar with `.class` files, so it remains a Native Image metadata target and does not need `not-for-native-image`. I’m updating the JSON with the Maven sources/javadoc URLs and the tagged Spring test path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+index accd553eecf2b0661519dec94974fbbd7e2a3e2d..0c31ec381ddc20a644b1cf9e82302644996be992
+--- a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-orm:5.3.18"
++  "coordinates" : "org.springframework:spring-orm:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-orm/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-javadoc.jar",
++  "description" : "Spring ORM provides integration between Spring's data access infrastructure and object-relational mapping technologies such as JPA and Hibernate. It supplies entity manager and session factory support, transaction management adapters, exception translation, and utilities that let ORM code participate in Spring-managed applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+index accd553eecf2b0661519dec94974fbbd7e2a3e2d..0c31ec381ddc20a644b1cf9e82302644996be992
+--- a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-orm:5.3.18"
++  "coordinates" : "org.springframework:spring-orm:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-orm/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-javadoc.jar",
++  "description" : "Spring ORM provides integration between Spring's data access infrastructure and object-relational mapping technologies such as JPA and Hibernate. It supplies entity manager and session factory support, transaction management adapters, exception translation, and utilities that let ORM code participate in Spring-managed applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework:spring-orm:5.3.18",
+  "repository-url": "https://github.com/spring-projects/spring-framework",
+  "source-code-url": "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-orm/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-javadoc.jar",
+  "description": "Spring ORM provides integration between Spring's data access infrastructure and object-relational mapping technologies such as JPA and Hibernate. It supplies entity manager and session factory support, transaction management adapters, exception translation, and utilities that let ORM code participate in Spring-managed applications."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/spring-orm-5.3.18-sources.jar \\
+  https://github.com/spring-projects/spring-framework/tree/v5.3.18/spring-orm/src/test \\
+  https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/spring-orm-5.3.18-javadoc.jar; do \\
+  status="'$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url"); '"\\
+  printf '%s %s\\n' \""'$status" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+index accd553eecf2b0661519dec94974fbbd7e2a3e2d..0c31ec381ddc20a644b1cf9e82302644996be992
+--- a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-orm:5.3.18"
++  "coordinates" : "org.springframework:spring-orm:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-orm/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-javadoc.jar",
++  "description" : "Spring ORM provides integration between Spring's data access infrastructure and object-relational mapping technologies such as JPA and Hibernate. It supplies entity manager and session factory support, transaction management adapters, exception translation, and utilities that let ORM code participate in Spring-managed applications."
+ }
+
+ succeeded in 735ms:
+200 https://github.com/spring-projects/spring-framework/tree/v5.3.18/spring-orm/src/test
+200 https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/spring-orm-5.3.18-javadoc.jar
+
+web search: 
+web search: repo1.maven.org maven2 org springframework spring-orm 5.3.18 spring-orm-5.3.18-sources.jar javadoc.jar
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+index accd553eecf2b0661519dec94974fbbd7e2a3e2d..0c31ec381ddc20a644b1cf9e82302644996be992
+--- a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-orm:5.3.18"
++  "coordinates" : "org.springframework:spring-orm:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-orm/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-javadoc.jar",
++  "description" : "Spring ORM provides integration between Spring's data access infrastructure and object-relational mapping technologies such as JPA and Hibernate. It supplies entity manager and session factory support, transaction management adapters, exception translation, and utilities that let ORM code participate in Spring-managed applications."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+index accd553eecf2b0661519dec94974fbbd7e2a3e2d..0c31ec381ddc20a644b1cf9e82302644996be992
+--- a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-orm:5.3.18"
++  "coordinates" : "org.springframework:spring-orm:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-orm/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-javadoc.jar",
++  "description" : "Spring ORM provides integration between Spring's data access infrastructure and object-relational mapping technologies such as JPA and Hibernate. It supplies entity manager and session factory support, transaction management adapters, exception translation, and utilities that let ORM code participate in Spring-managed applications."
+ }
+
+ succeeded in 223ms:
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/
+web search: 
+web search: https://github.com/spring-projects/spring-framework
+codex
+Updated [org.springframework-spring-orm-5.3.18.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json).
+
+Set the Spring Framework GitHub repo root, Maven Central sources/javadoc URLs, and the tagged `v$version$` Spring ORM test path. Maven Central has the `5.3.18` jar, sources jar, and javadoc jar; the GitHub tag contains `spring-orm/src/test`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a regular JVM Spring Framework artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. Validated the JSON with `jq` and confirmed the substituted URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+index accd553eecf2b0661519dec94974fbbd7e2a3e2d..0c31ec381ddc20a644b1cf9e82302644996be992
+--- a/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-orm:5.3.18"
++  "coordinates" : "org.springframework:spring-orm:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-orm/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-orm/$version$/spring-orm-$version$-javadoc.jar",
++  "description" : "Spring ORM provides integration between Spring's data access infrastructure and object-relational mapping technologies such as JPA and Hibernate. It supplies entity manager and session factory support, transaction management adapters, exception translation, and utilities that let ORM code participate in Spring-managed applications."
+ }
+
+tokens used
+64,439
+Updated [org.springframework-spring-orm-5.3.18.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815/build/discovered-artifact-metadata/org.springframework-spring-orm-5.3.18.json).
+
+Set the Spring Framework GitHub repo root, Maven Central sources/javadoc URLs, and the tagged `v$version$` Spring ORM test path. Maven Central has the `5.3.18` jar, sources jar, and javadoc jar; the GitHub tag contains `spring-orm/src/test`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/springframework/spring-orm/5.3.18/))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a regular JVM Spring Framework artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. Validated the JSON with `jq` and confirmed the substituted URLs return HTTP 200.
+Ran agent for org.springframework:spring-orm:5.3.18 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815/build/agent-artifact-discovery-logs/org.springframework-spring-orm-5.3.18.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2642-113e5815/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 42s
+9 actionable tasks: 9 executed
