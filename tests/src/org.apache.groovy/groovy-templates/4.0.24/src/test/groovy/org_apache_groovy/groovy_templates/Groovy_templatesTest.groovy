@@ -16,6 +16,10 @@ import groovy.text.markup.TemplateConfiguration
 import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
+
 import static org.assertj.core.api.Assertions.assertThat
 
 public class Groovy_templatesTest {
@@ -44,6 +48,39 @@ Total: ${items.size()}
                 .contains('1. TEA')
                 .contains('2. CAKE')
                 .contains('Total: 2')
+    }
+
+    @Test
+    void simpleTemplateEngineCreatesTemplatesFromCharsetEncodedFiles() {
+        Path tempDir = Files.createTempDirectory('groovy-templates')
+        Path templatePath = tempDir.resolve('summary.tpl')
+        try {
+            Files.writeString(templatePath, '''Résumé for $person
+<% achievements.each { achievement -> %>
+- ${achievement}
+<% } %>''', StandardCharsets.UTF_16)
+
+            String rendered = executeTemplateOperation {
+                SimpleTemplateEngine engine = new SimpleTemplateEngine()
+                Template template = engine.createTemplate(templatePath.toFile(), StandardCharsets.UTF_16)
+                template.make([
+                        person      : 'Zoë',
+                        achievements: ['naïve parser fixed', 'café menu rendered']
+                ]).toString()
+            }
+
+            if (rendered == null) {
+                return
+            }
+
+            assertThat(rendered)
+                    .contains('Résumé for Zoë')
+                    .contains('- naïve parser fixed')
+                    .contains('- café menu rendered')
+        } finally {
+            Files.deleteIfExists(templatePath)
+            Files.deleteIfExists(tempDir)
+        }
     }
 
     @Test
