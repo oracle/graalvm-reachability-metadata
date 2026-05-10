@@ -10,7 +10,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.glassfish.jersey.internal.l10n.Localizable;
-import org.glassfish.jersey.servlet.init.internal.LocalizationMessages;
+import org.glassfish.jersey.servlet.internal.l10n.LocalizationMessages;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
