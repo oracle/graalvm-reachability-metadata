@@ -92,7 +92,7 @@ public class Log4j_to_slf4jTest {
         assertThat(logger.isEnabled(Level.ERROR, null, Integer.valueOf(7), null)).isTrue();
         assertThat(logger.isEnabled(Level.DEBUG, null, "one {}", "argument")).isTrue();
         assertThat(logger.isEnabled(Level.DEBUG, null, "two {} {}", "first", "second")).isTrue();
-        assertThat(logger.isEnabled(Level.DEBUG, null, "varargs {}", new Object[] { "value" })).isTrue();
+        assertThat(logger.isEnabled(Level.DEBUG, null, "varargs {}", new Object[] {"value"})).isTrue();
 
         delegate.enableOnly();
         assertThat(logger.getLevel()).isEqualTo(Level.OFF);
