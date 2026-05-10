@@ -10,6 +10,11 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+tasks.named("jar", Jar) {
+    dependsOn(tasks.named("processTestResources"))
+    from(layout.buildDirectory.dir("resources/test"))
+}
+
 dependencies {
     testImplementation "org.apache.maven.doxia:doxia-site-renderer:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
