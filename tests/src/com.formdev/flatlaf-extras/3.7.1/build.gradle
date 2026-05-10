@@ -34,5 +34,9 @@ graalvmNative {
         all {
             buildArgs.add("--add-opens=java.desktop/javax.swing=ALL-UNNAMED")
         }
+        test {
+            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
+            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+        }
     }
 }

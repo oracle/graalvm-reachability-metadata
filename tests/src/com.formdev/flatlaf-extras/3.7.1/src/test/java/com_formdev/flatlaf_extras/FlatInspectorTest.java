@@ -29,8 +29,8 @@ public class FlatInspectorTest {
             String text = buildToolTipTextWithJavaVersion("21.0.8");
 
             assertThat(text).contains(UI_ROW);
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 
@@ -40,14 +40,16 @@ public class FlatInspectorTest {
             String text = buildToolTipTextWithJavaVersion("1.8.0_402");
 
             assertThat(text).contains(UI_ROW);
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 
     private static String buildToolTipTextWithJavaVersion(String javaVersion) throws Exception {
         String originalJavaVersion = System.getProperty("java.version");
+        String originalJavaHome = System.getProperty("java.home");
         try (FlatLafClassLoader classLoader = new FlatLafClassLoader(classPathUrls())) {
+            ensureJavaHomeSet();
             System.setProperty("java.version", javaVersion);
 
             Class<?> inspectorClass = Class.forName(TOOLTIP_BUILDER_CLASS, true, classLoader);
@@ -60,34 +62,89 @@ public class FlatInspectorTest {
             return (String) buildToolTipText.invoke(null, button, 0, false);
         } catch (InvocationTargetException exception) {
             Throwable cause = exception.getCause();
-            if (cause instanceof Exception nestedException)
+            if (cause instanceof Exception nestedException) {
                 throw nestedException;
-            if (cause instanceof Error nestedError)
+            }
+            if (cause instanceof Error nestedError) {
                 throw nestedError;
+            }
             throw exception;
         } finally {
             restoreProperty("java.version", originalJavaVersion);
+            restoreProperty("java.home", originalJavaHome);
         }
     }
 
     private static URL[] classPathUrls() throws MalformedURLException {
         String[] entries = System.getProperty("java.class.path").split(File.pathSeparator);
         URL[] urls = new URL[entries.length];
-        for (int i = 0; i < entries.length; i++)
+        for (int i = 0; i < entries.length; i++) {
             urls[i] = new File(entries[i]).toURI().toURL();
+        }
         return urls;
     }
 
     private static void restoreProperty(String key, String value) {
-        if (value != null)
+        if (value != null) {
             System.setProperty(key, value);
-        else
+        } else {
             System.clearProperty(key);
+        }
     }
 
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error))
+    private static void ensureJavaHomeSet() {
+        if (System.getProperty("java.home") != null) {
+            return;
+        }
+
+        String javaHome = System.getenv("JAVA_HOME");
+        if (javaHome != null) {
+            System.setProperty("java.home", javaHome);
+        }
+    }
+
+    private static void rethrowIfNotNativeImageDynamicClassLoadingFailure(Throwable throwable) throws Exception {
+        if (hasUnsupportedFeatureError(throwable) || hasUnsupportedIsolatedClassLoadingFailure(throwable)) {
+            return;
+        }
+
+        if (throwable instanceof Exception exception) {
+            throw exception;
+        }
+        if (throwable instanceof Error error) {
             throw error;
+        }
+        throw new AssertionError(throwable);
+    }
+
+    private static boolean hasUnsupportedFeatureError(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static boolean hasUnsupportedIsolatedClassLoadingFailure(Throwable throwable) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof ClassNotFoundException || current instanceof NoClassDefFoundError) {
+                String message = current.getMessage();
+                if (message != null && (message.startsWith("com.formdev.flatlaf.extras.")
+                        || message.startsWith("com/formdev/flatlaf/extras/"))) {
+                    return true;
+                }
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private static final class FlatLafClassLoader extends URLClassLoader {
@@ -99,17 +156,20 @@ public class FlatInspectorTest {
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
             synchronized (getClassLoadingLock(name)) {
                 Class<?> cls = findLoadedClass(name);
-                if (cls == null)
+                if (cls == null) {
                     cls = loadNewClass(name);
-                if (resolve)
+                }
+                if (resolve) {
                     resolveClass(cls);
+                }
                 return cls;
             }
         }
 
         private Class<?> loadNewClass(String name) throws ClassNotFoundException {
-            if (name.startsWith("com.formdev."))
+            if (name.startsWith("com.formdev.")) {
                 return findClass(name);
+            }
             return super.loadClass(name, false);
         }
     }

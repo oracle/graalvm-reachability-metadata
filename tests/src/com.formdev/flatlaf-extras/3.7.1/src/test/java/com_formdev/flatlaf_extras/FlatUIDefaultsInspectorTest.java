@@ -48,8 +48,9 @@ public class FlatUIDefaultsInspectorTest {
     }
 
     private static <T> T invokeOnEventDispatchThread(ThrowingSupplier<T> supplier) throws Exception {
-        if (SwingUtilities.isEventDispatchThread())
+        if (SwingUtilities.isEventDispatchThread()) {
             return supplier.get();
+        }
 
         Result<T> result = new Result<>();
         SwingUtilities.invokeAndWait(() -> {
@@ -59,19 +60,22 @@ public class FlatUIDefaultsInspectorTest {
                 result.exception = exception;
             }
         });
-        if (result.exception != null)
+        if (result.exception != null) {
             throw result.exception;
+        }
         return result.value;
     }
 
     private static JTable findTable(Component component) {
-        if (component instanceof JTable table)
+        if (component instanceof JTable table) {
             return table;
+        }
         if (component instanceof Container container) {
             for (Component child : container.getComponents()) {
                 JTable table = findTable(child);
-                if (table != null)
+                if (table != null) {
                     return table;
+                }
             }
         }
         return null;

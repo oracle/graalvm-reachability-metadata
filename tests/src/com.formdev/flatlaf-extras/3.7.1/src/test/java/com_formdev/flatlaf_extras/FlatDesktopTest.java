@@ -35,9 +35,10 @@ public class FlatDesktopTest {
     }
 
     private static void restoreProperty(String key, String value) {
-        if (value != null)
+        if (value != null) {
             System.setProperty(key, value);
-        else
+        } else {
             System.clearProperty(key);
+        }
     }
 }

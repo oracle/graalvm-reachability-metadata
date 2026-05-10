@@ -30,8 +30,9 @@ public class Application {
     }
 
     public boolean dispatchQuitRequest(QuitResponse response) {
-        if (quitHandler == null)
+        if (quitHandler == null) {
             return false;
+        }
 
         quitHandler.handleQuitRequestWith(new AppEvent.QuitEvent(), response);
         return true;
