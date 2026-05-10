@@ -16,11 +16,11 @@ import org.apache.tika.utils.ServiceLoaderUtils;
 public class ServiceLoaderUtilsTest {
 
     @Test
-    public void newInstanceLoadsClassNameWithRequestedClassLoader() {
+    public void newInstanceUsesZeroArgumentConstructorForRequestedClass() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         NameConstructedService service = ServiceLoaderUtils.newInstance(
-                NameConstructedService.class.getName(), classLoader);
+                NameConstructedService.class, new ServiceLoader(classLoader));
 
         assertThat(service.getSource()).isEqualTo("class-name");
     }

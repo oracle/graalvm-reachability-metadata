@@ -9,14 +9,13 @@ package org_apache_tika.tika_core;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import org.junit.jupiter.api.Test;
 
 import org.apache.tika.detect.NNExampleModelDetector;
+import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.ParseContext;
 
 public class NNExampleModelDetectorTest {
 
@@ -26,8 +25,8 @@ public class NNExampleModelDetectorTest {
 
         detector.loadDefaultModels(NNExampleModelDetectorTest.class.getClassLoader());
 
-        try (InputStream stream = new ByteArrayInputStream("sample content".getBytes(UTF_8))) {
-            MediaType detectedType = detector.detect(stream, new Metadata());
+        try (TikaInputStream stream = TikaInputStream.get("sample content".getBytes(UTF_8))) {
+            MediaType detectedType = detector.detect(stream, new Metadata(), new ParseContext());
 
             assertThat(detectedType).isNotNull();
         }

@@ -22,7 +22,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import org.apache.tika.config.LoadErrorHandler;
 import org.apache.tika.config.ServiceLoader;
 
 public class ServiceLoaderTest {
@@ -48,13 +47,24 @@ public class ServiceLoaderTest {
         Path serviceFile = createServiceFile(TestService.class, TestServiceProvider.class);
         ServiceLoader serviceLoader = new ServiceLoader(new ServiceResourceClassLoader(
                 ServiceLoaderTest.class.getClassLoader(),
-                List.of(serviceFile.toUri().toURL())), LoadErrorHandler.THROW);
+                List.of(serviceFile.toUri().toURL())));
 
         List<TestService> providers = serviceLoader.loadStaticServiceProviders(TestService.class);
 
         assertThat(providers).hasSize(1);
         assertThat(providers.get(0)).isInstanceOf(TestServiceProvider.class);
         assertThat(providers.get(0).value()).isEqualTo("loaded-from-service-resource");
+    }
+
+    @Test
+    public void getsServiceClassFromConfiguredClassLoader() throws Exception {
+        ServiceLoader serviceLoader = new ServiceLoader(new ServiceResourceClassLoader(
+                ServiceLoaderTest.class.getClassLoader(), Collections.emptyList()));
+
+        Class<? extends TestService> serviceClass = serviceLoader.getServiceClass(
+                TestService.class, TestServiceProvider.class.getName());
+
+        assertThat(serviceClass).isSameAs(TestServiceProvider.class);
     }
 
     private Path createServiceFile(Class<?> serviceInterface, Class<?> provider)
