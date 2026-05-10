@@ -115,6 +115,34 @@ public class JsvgTest {
     }
 
     @Test
+    void rendersMasksWithPartialTransparency() {
+        String svg = """
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" viewBox="0 0 40 20">
+                  <defs>
+                    <mask id="fade" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse"
+                          x="0" y="0" width="40" height="20">
+                      <rect width="40" height="20" fill="#000000"/>
+                      <rect width="20" height="20" fill="#ffffff"/>
+                      <rect x="20" width="10" height="20" fill="#808080"/>
+                    </mask>
+                  </defs>
+                  <rect width="40" height="20" fill="#0066ff" mask="url(#fade)"/>
+                </svg>
+                """;
+
+        BufferedImage image = render(loadSvg(svg), 40, 20);
+        Color visible = colorAt(image, 10, 10);
+        Color partiallyMasked = colorAt(image, 25, 10);
+        Color fullyMasked = colorAt(image, 35, 10);
+
+        assertThat(visible.getBlue()).isGreaterThan(200);
+        assertThat(visible.getAlpha()).isEqualTo(255);
+        assertThat(partiallyMasked.getBlue()).isGreaterThan(200);
+        assertThat(partiallyMasked.getAlpha()).isBetween(120, 140);
+        assertThat(fullyMasked.getAlpha()).isZero();
+    }
+
+    @Test
     void rendersPatternPaintWithRepeatedTiles() {
         String svg = """
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" viewBox="0 0 32 16">
