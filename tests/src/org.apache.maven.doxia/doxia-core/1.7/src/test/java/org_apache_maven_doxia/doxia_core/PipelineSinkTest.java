@@ -9,9 +9,9 @@ package org_apache_maven_doxia.doxia_core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.doxia.sink.PipelineSink;
 import org.apache.maven.doxia.sink.Sink;
-import org.apache.maven.doxia.sink.SinkAdapter;
+import org.apache.maven.doxia.sink.impl.PipelineSink;
+import org.apache.maven.doxia.sink.impl.SinkAdapter;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
