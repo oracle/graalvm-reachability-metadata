@@ -1,0 +1,19 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Implemented the post-generation intervention.
+
+Changes made:
+- Removed failing generated test:
+  - `tests/src/org.apache.groovy/groovy-docgenerator/4.0.24/src/test/groovy/org_apache_groovy/groovy_docgenerator/Groovy_docgeneratorTest.groovy`
+- Removed generated test-only substitution source:
+  - `tests/src/org.apache.groovy/groovy-docgenerator/4.0.24/src/test/java/org/codehaus/groovy/vmplugin/v8/Target_IndyInterface.java`
+- Wrote report:
+  - `post-gen-interventions/org.apache.groovy_groovy-docgenerator_4.0.24.md`
+
+Root cause:
+- The failures were non-metadata-related. All generated tests failed because the Groovy test class triggered Groovy runtime/metaclass and invokedynamic call-site initialization in native image, ending in `GroovySystem` initialization failure / `NoClassDefFoundError`, not a `Missing*RegistrationError`.
+
+Validation:
+- Ran `./gradlew test -Pcoordinates=org.apache.groovy:groovy-docgenerator:4.0.24 --stacktrace`
+- Build completed successfully after removing the generated failing test code.
+
+No metadata files were modified.
