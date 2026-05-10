@@ -17,7 +17,21 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    systemProperty "spring.objenesis.ignore", "true"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dspring.objenesis.ignore=true")
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Dspring.objenesis.ignore=true")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {

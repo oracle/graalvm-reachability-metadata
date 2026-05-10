@@ -9,8 +9,8 @@ package org_springframework.spring_aop;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -26,27 +26,28 @@ public class ObjenesisCglibAopProxyTest {
         recordJdkProxyMetadataForNativeImageFallback();
     }
 
-    @AfterAll
-    static void restoreObjenesisProperty() {
-        System.clearProperty(SpringObjenesis.IGNORE_OBJENESIS_PROPERTY_NAME);
-    }
-
     @Test
     void cglibProxyFallsBackToDefaultConstructorWhenObjenesisIsIgnored() {
-        GreetingService proxy = createProxy(DefaultGreetingService.class, new DefaultGreetingService());
+        DefaultGreetingService target = new DefaultGreetingService();
+        DefaultGreetingService.constructorInvocations.set(0);
+
+        GreetingService proxy = createProxy(DefaultGreetingService.class, target);
 
         assertThat(proxy.greet("Spring")).isEqualTo("Hello Spring");
+        assertThat(DefaultGreetingService.constructorInvocations).hasValue(1);
     }
 
     @Test
     void cglibProxyFallsBackToMatchingConstructorWhenConstructorArgumentsAreConfigured() {
-        AopProxy aopProxy = createAopProxy(ConstructorGreetingService.class,
-                new ConstructorGreetingService("Hello"));
+        ConstructorGreetingService target = new ConstructorGreetingService("Hello");
+        ConstructorGreetingService.lastConstructedGreeting = null;
+        AopProxy aopProxy = createAopProxy(ConstructorGreetingService.class, target);
         configureConstructorArgumentsIfCglibProxy(aopProxy, new Object[] {"Proxy"}, new Class<?>[] {String.class});
 
         GreetingService proxy = (GreetingService) aopProxy.getProxy();
 
         assertThat(proxy.greet("Spring")).isEqualTo("Hello Spring");
+        assertThat(ConstructorGreetingService.lastConstructedGreeting).isEqualTo("Proxy");
     }
 
     private static GreetingService createProxy(Class<? extends GreetingService> targetClass, GreetingService target) {
@@ -101,7 +102,10 @@ public class ObjenesisCglibAopProxyTest {
     }
 
     public static class DefaultGreetingService implements GreetingService {
+        private static final AtomicInteger constructorInvocations = new AtomicInteger();
+
         public DefaultGreetingService() {
+            constructorInvocations.incrementAndGet();
         }
 
         @Override
@@ -111,9 +115,12 @@ public class ObjenesisCglibAopProxyTest {
     }
 
     public static class ConstructorGreetingService implements GreetingService {
+        private static String lastConstructedGreeting;
+
         private final String greeting;
 
         public ConstructorGreetingService(String greeting) {
+            lastConstructedGreeting = greeting;
             this.greeting = greeting;
         }
 

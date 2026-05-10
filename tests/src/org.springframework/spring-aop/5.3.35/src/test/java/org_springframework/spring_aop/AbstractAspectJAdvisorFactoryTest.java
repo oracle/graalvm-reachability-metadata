@@ -16,10 +16,19 @@ import org.springframework.aop.aspectj.annotation.ReflectiveAspectJAdvisorFactor
 public class AbstractAspectJAdvisorFactoryTest {
 
     @Test
-    void rejectsAspectWithAjcCompiledMarkerField() {
+    void acceptsAnnotationStyleAspectWithAjcCompiledMarkerField() {
         ReflectiveAspectJAdvisorFactory factory = new ReflectiveAspectJAdvisorFactory();
 
         boolean aspect = factory.isAspect(AjcCompiledMarkerAspect.class);
+
+        assertThat(aspect).isTrue();
+    }
+
+    @Test
+    void rejectsClassWithoutAspectAnnotation() {
+        ReflectiveAspectJAdvisorFactory factory = new ReflectiveAspectJAdvisorFactory();
+
+        boolean aspect = factory.isAspect(NonAspect.class);
 
         assertThat(aspect).isFalse();
     }
@@ -40,5 +49,8 @@ public class AbstractAspectJAdvisorFactoryTest {
 
     @Aspect
     public static class AnnotationStyleAspect {
+    }
+
+    public static class NonAspect {
     }
 }
