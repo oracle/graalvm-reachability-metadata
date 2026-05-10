@@ -8,8 +8,10 @@ package org_apache_logging_log4j.log4j_1_2_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.log4j.Level;
+import java.util.Properties;
+
 import org.apache.log4j.config.PropertySetter;
+import org.apache.log4j.spi.OptionHandler;
 import org.junit.jupiter.api.Test;
 
 public class PropertySetterTest {
@@ -18,18 +20,24 @@ public class PropertySetterTest {
     void setsBeanPropertiesFromStringValues() {
         ConfigurableTarget target = new ConfigurableTarget();
         PropertySetter setter = new PropertySetter(target);
+        Properties properties = new Properties();
+        properties.setProperty("handler", RecordingOptionHandler.class.getName());
+        properties.setProperty("handler.name", "configured-handler");
 
         setter.setProperty("name", "example-appender");
         setter.setProperty("count", "42");
         setter.setProperty("timeout", "123456789");
         setter.setProperty("enabled", "true");
-        setter.setProperty("threshold", "ERROR");
+        PropertySetter.setProperties(target, properties, "");
 
         assertThat(target.getName()).isEqualTo("example-appender");
         assertThat(target.getCount()).isEqualTo(42);
         assertThat(target.getTimeout()).isEqualTo(123456789L);
         assertThat(target.isEnabled()).isTrue();
-        assertThat(target.getThreshold()).isEqualTo(Level.ERROR);
+        assertThat(target.getHandler()).isInstanceOfSatisfying(RecordingOptionHandler.class, handler -> {
+            assertThat(handler.getName()).isEqualTo("configured-handler");
+            assertThat(handler.isActivated()).isTrue();
+        });
     }
 
     public static final class ConfigurableTarget {
@@ -38,7 +46,7 @@ public class PropertySetterTest {
         private int count;
         private long timeout;
         private boolean enabled;
-        private Level threshold;
+        private OptionHandler handler;
 
         public String getName() {
             return name;
@@ -72,12 +80,35 @@ public class PropertySetterTest {
             this.enabled = enabled;
         }
 
-        public Level getThreshold() {
-            return threshold;
+        public OptionHandler getHandler() {
+            return handler;
         }
 
-        public void setThreshold(Level threshold) {
-            this.threshold = threshold;
+        public void setHandler(OptionHandler handler) {
+            this.handler = handler;
+        }
+    }
+
+    public static final class RecordingOptionHandler implements OptionHandler {
+
+        private String name;
+        private boolean activated;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public boolean isActivated() {
+            return activated;
+        }
+
+        @Override
+        public void activateOptions() {
+            activated = true;
         }
     }
 }
