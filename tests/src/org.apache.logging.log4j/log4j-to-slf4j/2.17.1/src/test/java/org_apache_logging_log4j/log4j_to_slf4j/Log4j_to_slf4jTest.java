@@ -131,6 +131,22 @@ public class Log4j_to_slf4jTest {
     }
 
     @Test
+    void loggerFormatsLog4jMessagesBeforeForwardingToSlf4j() {
+        RecordingLogger delegate = new RecordingLogger("formatted.messages");
+        SLF4JLogger logger = new SLF4JLogger(delegate.getName(), ParameterizedMessageFactory.INSTANCE, delegate);
+        Message message = ParameterizedMessageFactory.INSTANCE.newMessage(
+                "Order {} for {} contains {} item(s)", "A-42", "alice", Integer.valueOf(3));
+
+        logger.logMessage(FQCN, Level.INFO, null, message, null);
+
+        assertThat(delegate.events).hasSize(1);
+        LogEvent event = delegate.events.get(0);
+        assertThat(event.level).isEqualTo(Slf4jLevel.INFO);
+        assertThat(event.message).isEqualTo("Order A-42 for alice contains 3 item(s)");
+        assertThat(event.throwable).isNull();
+    }
+
+    @Test
     void locationAwareLoggerReceivesFqcnMarkerLevelAndLoggerNameAwareMessage() {
         RecordingLocationAwareLogger delegate = new RecordingLocationAwareLogger("location.dispatch");
         SLF4JLogger logger = new SLF4JLogger(delegate.getName(), delegate);
