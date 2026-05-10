@@ -176,6 +176,126 @@ object Akka_serialization_jackson_3Test {
 
   val TestConfig: Config = ConfigFactory
     .parseString(s"""
+      akka {
+        version = "2.6.21"
+        home = ""
+        loggers = ["akka.event.Logging$$DefaultLogger"]
+        logging-filter = "akka.event.DefaultLoggingFilter"
+        loggers-dispatcher = "akka.actor.default-dispatcher"
+        logger-startup-timeout = 5s
+        loglevel = "INFO"
+        stdout-loglevel = "WARNING"
+        log-config-on-start = off
+        log-dead-letters = 10
+        log-dead-letters-during-shutdown = off
+        log-dead-letters-suspend-duration = 5 minutes
+        daemonic = off
+        jvm-exit-on-fatal-error = on
+        jvm-shutdown-hooks = on
+        fail-mixed-versions = on
+        scheduler.implementation = "akka.actor.LightArrayRevolverScheduler"
+
+        coordinated-shutdown {
+          terminate-actor-system = on
+          run-by-actor-system-terminate = on
+        }
+
+        actor {
+          provider = "local"
+          guardian-supervisor-strategy = "akka.actor.DefaultSupervisorStrategy"
+          creation-timeout = 20s
+          unstarted-push-timeout = 10s
+          allow-java-serialization = off
+          serialize-messages = off
+          serialize-creators = off
+          no-serialization-verification-needed-class-prefix = ["akka."]
+
+          debug {
+            receive = off
+            autoreceive = off
+            lifecycle = off
+            fsm = off
+            event-stream = off
+            unhandled = off
+            router-misconfiguration = off
+          }
+
+          serializers {
+            jackson-json = "akka.serialization.jackson.JacksonJsonSerializer"
+            jackson-cbor = "akka.serialization.jackson.JacksonCborSerializer"
+            jackson-cbor-264 = "akka.serialization.jackson.JacksonJsonSerializer"
+          }
+
+          serialization-identifiers {
+            jackson-json = 31
+            jackson-cbor = 33
+            jackson-cbor-264 = 32
+          }
+
+          deployment {
+            default {
+              virtual-nodes-factor = 10
+            }
+          }
+
+          serialization-bindings {
+            "$JsonPayloadClassName" = jackson-json
+            "$CborPayloadClassName" = jackson-cbor
+            "$ActorRefPayloadClassName" = jackson-json
+            "$MigratingMessageClassName" = jackson-json
+            "$SingletonNotificationClassName" = jackson-json
+          }
+        }
+
+        serialization.jackson {
+          jackson-modules = [
+            "akka.serialization.jackson.AkkaJacksonModule",
+            "akka.serialization.jackson.AkkaTypedJacksonModule",
+            "akka.serialization.jackson.AkkaStreamJacksonModule",
+            "com.fasterxml.jackson.module.paramnames.ParameterNamesModule",
+            "com.fasterxml.jackson.datatype.jdk8.Jdk8Module",
+            "com.fasterxml.jackson.datatype.jsr310.JavaTimeModule",
+            "com.fasterxml.jackson.module.scala.DefaultScalaModule"
+          ]
+          verbose-debug-logging = off
+          migrations {}
+          serialization-features {
+            WRITE_DATES_AS_TIMESTAMPS = off
+            WRITE_DURATIONS_AS_TIMESTAMPS = off
+            FAIL_ON_EMPTY_BEANS = off
+          }
+          deserialization-features {
+            FAIL_ON_UNKNOWN_PROPERTIES = off
+          }
+          mapper-features {}
+          json-parser-features {}
+          json-generator-features {}
+          stream-read-features {}
+          stream-write-features {}
+          json-read-features {}
+          json-write-features {}
+          visibility {
+            FIELD = ANY
+          }
+          whitelist-class-prefix = []
+          allowed-class-prefix = ["$PackageName."]
+          compression {
+            algorithm = off
+            compress-larger-than = 0 KiB
+          }
+          type-in-manifest = on
+          deserialization-type = ""
+          jackson-json {}
+          jackson-cbor {}
+          jackson-cbor-264 = $${akka.serialization.jackson.jackson-cbor}
+        }
+      }
+
+      akka.serialization.jackson.jackson-json.compression {
+        algorithm = gzip
+        compress-larger-than = 32 KiB
+      }
+
       akka.actor.serialization-bindings {
         "$JsonPayloadClassName" = jackson-json
         "$CborPayloadClassName" = jackson-cbor
@@ -204,6 +324,7 @@ object Akka_serialization_jackson_3Test {
       }
       """)
     .withFallback(ConfigFactory.load())
+    .resolve()
 }
 
 final case class MapperEnvelope(
