@@ -203,6 +203,46 @@ public class Maven_plugin_annotationsTest {
         assertThat(component.hint()).isEqualTo("asset-compiler");
     }
 
+    @Test
+    void annotationInterfacesRepresentMinimalDescriptorDefaults() {
+        Mojo mojo = new MinimalDescriptorMojoMetadata();
+        Execute execute = new MinimalDescriptorExecutionMetadata();
+        Parameter parameter = new MinimalDescriptorParameterMetadata();
+        Component component = new MinimalDescriptorComponentMetadata();
+
+        assertThat(mojo.annotationType()).isEqualTo(Mojo.class);
+        assertThat(mojo.name()).isEqualTo("generate-help");
+        assertThat(mojo.defaultPhase()).isSameAs(LifecyclePhase.NONE);
+        assertThat(mojo.requiresDependencyResolution()).isSameAs(ResolutionScope.NONE);
+        assertThat(mojo.requiresDependencyCollection()).isSameAs(ResolutionScope.NONE);
+        assertThat(mojo.instantiationStrategy()).isSameAs(InstanciationStrategy.PER_LOOKUP);
+        assertThat(mojo.executionStrategy()).isEqualTo("once-per-session");
+        assertThat(mojo.requiresProject()).isTrue();
+        assertThat(mojo.requiresReports()).isFalse();
+        assertThat(mojo.aggregator()).isFalse();
+        assertThat(mojo.requiresDirectInvocation()).isFalse();
+        assertThat(mojo.requiresOnline()).isFalse();
+        assertThat(mojo.inheritByDefault()).isTrue();
+        assertThat(mojo.configurator()).isEmpty();
+        assertThat(mojo.threadSafe()).isFalse();
+
+        assertThat(execute.annotationType()).isEqualTo(Execute.class);
+        assertThat(execute.phase()).isSameAs(LifecyclePhase.NONE);
+        assertThat(execute.goal()).isEmpty();
+        assertThat(execute.lifecycle()).isEmpty();
+
+        assertThat(parameter.annotationType()).isEqualTo(Parameter.class);
+        assertThat(parameter.alias()).isEmpty();
+        assertThat(parameter.property()).isEmpty();
+        assertThat(parameter.defaultValue()).isEmpty();
+        assertThat(parameter.required()).isFalse();
+        assertThat(parameter.readonly()).isFalse();
+
+        assertThat(component.annotationType()).isEqualTo(Component.class);
+        assertThat(component.role()).isEqualTo(Object.class);
+        assertThat(component.hint()).isEmpty();
+    }
+
     @Mojo(
             name = "full-metadata",
             defaultPhase = LifecyclePhase.VERIFY,
@@ -246,6 +286,154 @@ public class Maven_plugin_annotationsTest {
 
         private boolean isConfigured() {
             return optionalParameter != null || callback != null;
+        }
+    }
+
+    private static final class MinimalDescriptorMojoMetadata implements Mojo {
+        @Override
+        public String name() {
+            return "generate-help";
+        }
+
+        @Override
+        public LifecyclePhase defaultPhase() {
+            return LifecyclePhase.NONE;
+        }
+
+        @Override
+        public ResolutionScope requiresDependencyResolution() {
+            return ResolutionScope.NONE;
+        }
+
+        @Override
+        public ResolutionScope requiresDependencyCollection() {
+            return ResolutionScope.NONE;
+        }
+
+        @Override
+        public InstanciationStrategy instantiationStrategy() {
+            return InstanciationStrategy.PER_LOOKUP;
+        }
+
+        @Override
+        public String executionStrategy() {
+            return "once-per-session";
+        }
+
+        @Override
+        public boolean requiresProject() {
+            return true;
+        }
+
+        @Override
+        public boolean requiresReports() {
+            return false;
+        }
+
+        @Override
+        public boolean aggregator() {
+            return false;
+        }
+
+        @Override
+        public boolean requiresDirectInvocation() {
+            return false;
+        }
+
+        @Override
+        public boolean requiresOnline() {
+            return false;
+        }
+
+        @Override
+        public boolean inheritByDefault() {
+            return true;
+        }
+
+        @Override
+        public String configurator() {
+            return "";
+        }
+
+        @Override
+        public boolean threadSafe() {
+            return false;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Mojo.class;
+        }
+    }
+
+    private static final class MinimalDescriptorExecutionMetadata implements Execute {
+        @Override
+        public LifecyclePhase phase() {
+            return LifecyclePhase.NONE;
+        }
+
+        @Override
+        public String goal() {
+            return "";
+        }
+
+        @Override
+        public String lifecycle() {
+            return "";
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Execute.class;
+        }
+    }
+
+    private static final class MinimalDescriptorParameterMetadata implements Parameter {
+        @Override
+        public String alias() {
+            return "";
+        }
+
+        @Override
+        public String property() {
+            return "";
+        }
+
+        @Override
+        public String defaultValue() {
+            return "";
+        }
+
+        @Override
+        public boolean required() {
+            return false;
+        }
+
+        @Override
+        public boolean readonly() {
+            return false;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Parameter.class;
+        }
+    }
+
+    private static final class MinimalDescriptorComponentMetadata implements Component {
+        @Override
+        public Class<?> role() {
+            return Object.class;
+        }
+
+        @Override
+        public String hint() {
+            return "";
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Component.class;
         }
     }
 
