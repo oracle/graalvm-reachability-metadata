@@ -8,7 +8,7 @@ package io_rest_assured.rest_assured;
 
 import org.junit.jupiter.api.Test;
 
-class Rest_assuredTest {
+public class Rest_assuredTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
