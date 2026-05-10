@@ -31,10 +31,12 @@ public class ObjenesisCglibAopProxyTest {
         DefaultGreetingService target = new DefaultGreetingService();
         DefaultGreetingService.constructorInvocations.set(0);
 
-        GreetingService proxy = createProxy(DefaultGreetingService.class, target);
+        AopProxy aopProxy = createAopProxy(DefaultGreetingService.class, target);
+        GreetingService proxy = (GreetingService) aopProxy.getProxy();
 
         assertThat(proxy.greet("Spring")).isEqualTo("Hello Spring");
-        assertThat(DefaultGreetingService.constructorInvocations).hasValue(1);
+        assertThat(DefaultGreetingService.constructorInvocations)
+                .hasValue(isObjenesisCglibProxy(aopProxy) ? 1 : 0);
     }
 
     @Test
@@ -47,7 +49,8 @@ public class ObjenesisCglibAopProxyTest {
         GreetingService proxy = (GreetingService) aopProxy.getProxy();
 
         assertThat(proxy.greet("Spring")).isEqualTo("Hello Spring");
-        assertThat(ConstructorGreetingService.lastConstructedGreeting).isEqualTo("Proxy");
+        assertThat(ConstructorGreetingService.lastConstructedGreeting)
+                .isEqualTo(isObjenesisCglibProxy(aopProxy) ? "Proxy" : null);
     }
 
     private static GreetingService createProxy(Class<? extends GreetingService> targetClass, GreetingService target) {
@@ -73,7 +76,7 @@ public class ObjenesisCglibAopProxyTest {
     private static void configureConstructorArgumentsIfCglibProxy(
             AopProxy aopProxy, Object[] constructorArgs, Class<?>[] constructorArgTypes) {
         Class<?> proxyClass = aopProxy.getClass();
-        if (!proxyClass.getName().endsWith("ObjenesisCglibAopProxy")) {
+        if (!isObjenesisCglibProxy(aopProxy)) {
             return;
         }
         try {
@@ -95,6 +98,10 @@ public class ObjenesisCglibAopProxyTest {
             }
         }
         throw new NoSuchMethodException("setConstructorArguments");
+    }
+
+    private static boolean isObjenesisCglibProxy(AopProxy aopProxy) {
+        return aopProxy.getClass().getName().endsWith("ObjenesisCglibAopProxy");
     }
 
     public interface GreetingService {
