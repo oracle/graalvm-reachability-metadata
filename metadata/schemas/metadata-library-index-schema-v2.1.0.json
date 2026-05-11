@@ -165,7 +165,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "enum": [ "kotlin", "scala" ]
+          "enum": [ "groovy", "kotlin", "scala" ]
         },
         "version": {
           "type": "string",
@@ -173,6 +173,23 @@
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "groovy"
+              }
+            },
+            "required": [ "name" ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+              }
+            }
+          }
+        },
         {
           "if": {
             "properties": {
