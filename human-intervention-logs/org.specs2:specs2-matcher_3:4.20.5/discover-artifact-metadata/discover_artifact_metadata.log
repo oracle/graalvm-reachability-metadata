@@ -1,0 +1,1290 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e183f-6909-7100-b647-17e3b088129b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.specs2:specs2-matcher_3:4.20.5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.20.5" when "$version$" is replaced with "4.20.5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+- Set "coordinates" to "org.specs2:specs2-matcher_3:4.20.5".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.20.5".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact layout and existing metadata patterns first, then cross-check Maven and upstream tags so the URLs are version-resolved rather than guessed.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+{
+  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' -n build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.specs2|specs2'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+
+web search: 
+web search: Maven Central org.specs2 specs2-matcher_3 4.20.5 sources test-sources
+web search: 
+web search: https://central.sonatype.com/artifact/org.specs2/specs2-matcher_3
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org specs2 specs2-matcher_3 4.20.5 pom
+web search: 
+web search: https://github.com/etorreborre/specs2
+web search: 
+web search: site:github.com/etorreborre/specs2/releases 4.20.5 specs2
+codex
+The artifact is the JVM Scala 3 variant (`_3`) and Maven/Scaladex both show it as a normal jar dependency, so I’m treating it as a Native Image candidate unless the downloaded jar says otherwise. Next I’m checking Maven classifiers and the upstream tag names.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/etorreborre/specs2.git '*4.20.5*'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5.jar -o /tmp/specs2-matcher_3-4.20.5.jar && jar tf /tmp/specs2-matcher_3-4.20.5.jar | head -50' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 203ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.specs2</groupId>
+    <artifactId>specs2-matcher_3</artifactId>
+    <packaging>jar</packaging>
+    <description>specs2-matcher</description>
+    <version>4.20.5</version>
+    <name>specs2-matcher</name>
+    <organization>
+        <name>org.specs2</name>
+    </organization>
+    <scm>
+        <url>https://github.com/etorreborre/specs2.git</url>
+        <connection>scm:git:https://github.com/etorreborre/specs2.git.git</connection>
+        <developerConnection>scm:git:git@github.com:etorreborre/specs2.git.git</developerConnection>
+    </scm>
+    <url>http://specs2.org/</url>
+    <licenses>
+        <license>
+            <name>MIT-style</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>etorreborre</id>
+            <name>Eric Torreborre</name>
+            <url>http://etorreborre.blogspot.com/</url>
+        </developer>
+    </developers>
+    <properties>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-common_3</artifactId>
+            <version>4.20.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+    </dependencies>
+</project>
+ succeeded in 283ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/specs2/specs2-matcher_3/4.20.5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/specs2/specs2-matcher_3/4.20.5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="specs2-matcher_3-4.20.5-javadoc.jar" title="specs2-matcher_3-4.20.5-javadoc.jar">specs2-matcher_3-4.20.5-javadoc.jar</a>               2024-01-23 16:25   5365711      
+<a href="specs2-matcher_3-4.20.5-javadoc.jar.asc" title="specs2-matcher_3-4.20.5-javadoc.jar.asc">specs2-matcher_3-4.20.5-javadoc.jar.asc</a>           2024-01-23 16:25       228      
+<a href="specs2-matcher_3-4.20.5-javadoc.jar.asc.md5" title="specs2-matcher_3-4.20.5-javadoc.jar.asc.md5">specs2-matcher_3-4.20.5-javadoc.jar.asc.md5</a>       2024-01-23 16:25        32      
+<a href="specs2-matcher_3-4.20.5-javadoc.jar.asc.sha1" title="specs2-matcher_3-4.20.5-javadoc.jar.asc.sha1">specs2-matcher_3-4.20.5-javadoc.jar.asc.sha1</a>      2024-01-23 16:25        40      
+<a href="specs2-matcher_3-4.20.5-javadoc.jar.md5" title="specs2-matcher_3-4.20.5-javadoc.jar.md5">specs2-matcher_3-4.20.5-javadoc.jar.md5</a>           2024-01-23 16:25        32      
+<a href="specs2-matcher_3-4.20.5-javadoc.jar.sha1" title="specs2-matcher_3-4.20.5-javadoc.jar.sha1">specs2-matcher_3-4.20.5-javadoc.jar.sha1</a>          2024-01-23 16:25        40      
+<a href="specs2-matcher_3-4.20.5-sources.jar" title="specs2-matcher_3-4.20.5-sources.jar">specs2-matcher_3-4.20.5-sources.jar</a>               2024-01-23 16:25     64999      
+<a href="specs2-matcher_3-4.20.5-sources.jar.asc" title="specs2-matcher_3-4.20.5-sources.jar.asc">specs2-matcher_3-4.20.5-sources.jar.asc</a>           2024-01-23 16:25       228      
+<a href="specs2-matcher_3-4.20.5-sources.jar.asc.md5" title="specs2-matcher_3-4.20.5-sources.jar.asc.md5">specs2-matcher_3-4.20.5-sources.jar.asc.md5</a>       2024-01-23 16:25        32      
+<a href="specs2-matcher_3-4.20.5-sources.jar.asc.sha1" title="specs2-matcher_3-4.20.5-sources.jar.asc.sha1">specs2-matcher_3-4.20.5-sources.jar.asc.sha1</a>      2024-01-23 16:25        40      
+<a href="specs2-matcher_3-4.20.5-sources.jar.md5" title="specs2-matcher_3-4.20.5-sources.jar.md5">specs2-matcher_3-4.20.5-sources.jar.md5</a>           2024-01-23 16:25        32      
+<a href="specs2-matcher_3-4.20.5-sources.jar.sha1" title="specs2-matcher_3-4.20.5-sources.jar.sha1">specs2-matcher_3-4.20.5-sources.jar.sha1</a>          2024-01-23 16:25        40      
+<a href="specs2-matcher_3-4.20.5.jar" title="specs2-matcher_3-4.20.5.jar">specs2-matcher_3-4.20.5.jar</a>                       2024-01-23 16:25   1896884      
+<a href="specs2-matcher_3-4.20.5.jar.asc" title="specs2-matcher_3-4.20.5.jar.asc">specs2-matcher_3-4.20.5.jar.asc</a>                   2024-01-23 16:25       228      
+<a href="specs2-matcher_3-4.20.5.jar.asc.md5" title="specs2-matcher_3-4.20.5.jar.asc.md5">specs2-matcher_3-4.20.5.jar.asc.md5</a>               2024-01-23 16:25        32      
+<a href="specs2-matcher_3-4.20.5.jar.asc.sha1" title="specs2-matcher_3-4.20.5.jar.asc.sha1">specs2-matcher_3-4.20.5.jar.asc.sha1</a>              2024-01-23 16:25        40      
+<a href="specs2-matcher_3-4.20.5.jar.md5" title="specs2-matcher_3-4.20.5.jar.md5">specs2-matcher_3-4.20.5.jar.md5</a>                   2024-01-23 16:25        32      
+<a href="specs2-matcher_3-4.20.5.jar.sha1" title="specs2-matcher_3-4.20.5.jar.sha1">specs2-matcher_3-4.20.5.jar.sha1</a>                  2024-01-23 16:25        40      
+<a href="specs2-matcher_3-4.20.5.pom" title="specs2-matcher_3-4.20.5.pom">specs2-matcher_3-4.20.5.pom</a>                       2024-01-23 16:25      1807      
+<a href="specs2-matcher_3-4.20.5.pom.asc" title="specs2-matcher_3-4.20.5.pom.asc">specs2-matcher_3-4.20.5.pom.asc</a>                   2024-01-23 16:25       228      
+<a href="specs2-matcher_3-4.20.5.pom.asc.md5" title="specs2-matcher_3-4.20.5.pom.asc.md5">specs2-matcher_3-4.20.5.pom.asc.md5</a>               2024-01-23 16:25        32      
+<a href="specs2-matcher_3-4.20.5.pom.asc.sha1" title="specs2-matcher_3-4.20.5.pom.asc.sha1">specs2-matcher_3-4.20.5.pom.asc.sha1</a>              2024-01-23 16:25        40      
+<a href="specs2-matcher_3-4.20.5.pom.md5" title="specs2-matcher_3-4.20.5.pom.md5">specs2-matcher_3-4.20.5.pom.md5</a>                   2024-01-23 16:25        32      
+<a href="specs2-matcher_3-4.20.5.pom.sha1" title="specs2-matcher_3-4.20.5.pom.sha1">specs2-matcher_3-4.20.5.pom.sha1</a>                  2024-01-23 16:25        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 353ms:
+c9049ff7b80d67203caa2801676296f1bc3eed19	refs/tags/SPECS-4.20.5
+
+ succeeded in 939ms:
+META-INF/MANIFEST.MF
+org/
+org/specs2/
+org/specs2/matcher/
+org/specs2/matcher/describe/
+org/specs2/matcher/AdaptableMatcher$$anon$1.class
+org/specs2/matcher/AdaptableMatcher$$anon$2.class
+org/specs2/matcher/AdaptableMatcher.class
+org/specs2/matcher/AdaptableMatcher.tasty
+org/specs2/matcher/AlwaysMatcher$.class
+org/specs2/matcher/AlwaysMatcher.class
+org/specs2/matcher/AlwaysMatcher.tasty
+org/specs2/matcher/AndMatch.class
+org/specs2/matcher/AndMatch.tasty
+org/specs2/matcher/AndNotMatch.class
+org/specs2/matcher/AndNotMatch.tasty
+org/specs2/matcher/AnyBaseMatchers$$anon$1.class
+org/specs2/matcher/AnyBaseMatchers$$anon$2.class
+org/specs2/matcher/AnyBaseMatchers$$anon$3.class
+org/specs2/matcher/AnyBaseMatchers$$anon$4.class
+org/specs2/matcher/AnyBaseMatchers$$anon$5.class
+org/specs2/matcher/AnyBaseMatchers$$anon$6.class
+org/specs2/matcher/AnyBaseMatchers$$anon$7.class
+org/specs2/matcher/AnyBaseMatchers$$anon$8.class
+org/specs2/matcher/AnyBaseMatchers.class
+org/specs2/matcher/AnyBaseMatchers.tasty
+org/specs2/matcher/AnyBeHaveMatchers$AnyBeHaveMatchers.class
+org/specs2/matcher/AnyBeHaveMatchers$AnyMatcherResult.class
+org/specs2/matcher/AnyBeHaveMatchers$AnyRefMatcherResult.class
+org/specs2/matcher/AnyBeHaveMatchers$AnyWithEmptyMatchers.class
+org/specs2/matcher/AnyBeHaveMatchers$BeLikeResultMatcher.class
+org/specs2/matcher/AnyBeHaveMatchers$ClassMatcherResult.class
+org/specs2/matcher/AnyBeHaveMatchers.class
+org/specs2/matcher/AnyBeHaveMatchers.tasty
+org/specs2/matcher/AnyMatchers$.class
+org/specs2/matcher/AnyMatchers.class
+org/specs2/matcher/AnyMatchers.tasty
+org/specs2/matcher/BeCloseTo.class
+org/specs2/matcher/BeCloseTo.tasty
+org/specs2/matcher/BeEqualTo.class
+org/specs2/matcher/BeEqualTo.tasty
+org/specs2/matcher/BeEqualTypedValueCheck$.class
+org/specs2/matcher/BeEqualTypedValueCheck.class
+org/specs2/matcher/BeEqualTypedValueCheck.tasty
+org/specs2/matcher/BeEqualValueCheck$.class
+org/specs2/matcher/BeEqualValueCheck.class
+org/specs2/matcher/BeEqualValueCheck.tasty
+org/specs2/matcher/BeHaveMatchers.class
+org/specs2/matcher/BeHaveMatchers.tasty
+org/specs2/matcher/BeLessThan.class
+
+web search: 
+web search: https://github.com/etorreborre/specs2/tree/SPECS-4.20.5
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5-sources.jar
+exec
+/usr/bin/bash -lc "rg 'repo.maven.apache.org.*/.*-sources.jar|javadoc.io/doc|github.com/.*/tree/.*/.*src' -n metadata build/discovered-artifact-metadata | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.jetbrains.exposed/exposed-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:25:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:43:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v$version$/jctools-core/src/test",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-json/src/test",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-kotlin-datetime/src/test/kotlin",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:7:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:21:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/dev.profunktor/redis4cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:7:    "test-code-url" : "https://github.com/profunktor/redis4cats/tree/v$version$/modules/core/src/test",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:7:    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/com.squareup.moshi/moshi-adapters/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:7:    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-adapters/src/test",
+metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:7:    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-kotlin/src/test",
+metadata/com.ongres.stringprep/stringprep/index.json:7:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:30:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:45:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/com.ongres.stringprep/saslprep/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/ongres/stringprep/saslprep/$version$/saslprep-$version$-sources.jar",
+metadata/com.ongres.stringprep/saslprep/index.json:7:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/saslprep/src/test",
+metadata/com.android.databinding/baseLibrary/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:37:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:113:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/org.jline/jline-terminal-jni/index.json:40:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:42:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-generic-base_3/$version$/pureconfig-generic-base_3-$version$-sources.jar",
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:7:    "test-code-url" : "https://github.com/pureconfig/pureconfig/tree/v$version$/modules/generic-base/src/test",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-core_3/$version$/pureconfig-core_3-$version$-sources.jar",
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:7:    "test-code-url" : "https://github.com/pureconfig/pureconfig/tree/v$version$/tests/src/test",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:7:    "test-code-url" : "https://github.com/pureconfig/pureconfig/tree/v$version$/modules/generic-scala3/src/test",
+metadata/org.hibernate.models/hibernate-models/index.json:7:    "test-code-url" : "https://github.com/hibernate/hibernate-models/tree/$version$/hibernate-models/src/test",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+metadata/io.getquill/quill-engine_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_2.13/$version$/scalatest-funspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funspec-test/src/test/scala/org/scalatest/funspec",
+metadata/io.getquill/quill-engine_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-freespec_2.13/$version$/scalatest-freespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/freespec-test/src/test/scala/org/scalatest/freespec",
+metadata/io.getquill/quill-util_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url|language|not-for-native-image' -n metadata build/discovered-artifact-metadata | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/io.suzaku/boopickle_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+metadata/io.suzaku/boopickle_3/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+metadata/net.bytebuddy/byte-buddy-agent/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
+metadata/net.bytebuddy/byte-buddy-agent/index.json:7:    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
+metadata/net.bytebuddy/byte-buddy-agent/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-javadoc.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/tree/$version$/docs/api/exposed-jdbc",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:25:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:26:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:43:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:44:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-json/src/test",
+metadata/org.jetbrains.exposed/exposed-json/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/documentation-website/Writerside/topics/JSON-And-JSONB-types.topic",
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "find . -path '*org.specs2*' -maxdepth 5 -type f | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+./build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+./build/agent-artifact-discovery-logs/org.specs2-specs2-matcher_3-4.20.5.log
+
+exec
+/usr/bin/bash -lc "unzip -p /tmp/specs2-matcher_3-4.20.5.jar META-INF/MANIFEST.MF | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Specification-Title: specs2-matcher
+Specification-Version: 4.20.5
+Specification-Vendor: org.specs2
+Implementation-Title: specs2-matcher
+Implementation-Version: 4.20.5
+Implementation-Vendor: org.specs2
+Implementation-Vendor-Id: org.specs2
+Main-Class: org.specs2.matcher.DataTablesGenerator
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5-test-sources.jar || true
+curl -I -fsSL https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5-tests.jar || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+exec
+/usr/bin/bash -lc 'rm -rf /tmp/specs2-4.20.5 && git clone --depth 1 --branch SPECS-4.20.5 https://github.com/etorreborre/specs2.git /tmp/specs2-4.20.5' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 587ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 11 May 2026 18:15:19 GMT
+content-type: text/html
+cf-ray: 9fa32b1aa9d6ba83-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 11 May 2026 18:15:20 GMT
+content-type: text/html
+cf-ray: 9fa32b1cce245258-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1038ms:
+Note: switching to 'c9049ff7b80d67203caa2801676296f1bc3eed19'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+
+codex
+Maven has sources and javadocs for this exact artifact, but no test-sources/tests classifier. I’ve pulled the release tag locally just to locate the matching upstream test directory accurately.
+exec
+/usr/bin/bash -lc "find /tmp/specs2-4.20.5 -maxdepth 4 -type d \\( -iname '*matcher*' -o -path '*/src/test*' \\) | sed 's#/tmp/specs2-4.20.5/##' | sort | head -160" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+analysis/jvm/src/test
+cats/jvm/src/test
+common/shared/src/test
+core/jvm/src/test
+core/shared/src/test
+examples/jvm/src/test
+examples/shared/src/test
+form/src/test
+form/src/test/scala
+guide/src/test
+guide/src/test/resources
+guide/src/test/scala
+gwt/src/test
+gwt/src/test/scala
+html/src/test
+html/src/test/scala
+junit/jvm/src/test
+markdown/src/test
+markdown/src/test/scala
+matcher
+matcher-extra
+matcher-extra/jvm/src/test
+mock/jvm/src/test
+scalacheck/jvm/src/test
+scalaz/jvm/src/test
+shapeless/src/test
+shapeless/src/test/scala
+tests/src/test
+tests/src/test/scala
+xml/shared/src/test
+
+exec
+/usr/bin/bash -lc "find /tmp/specs2-4.20.5 -type f | rg 'matcher.*(Test|Spec)|src/test|shared/src/test' | sed 's#/tmp/specs2-4.20.5/##' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+scalaz/jvm/src/test/scala/org/specs2/matcher/ValidationMatchersSpec.scala
+scalaz/jvm/src/test/scala/org/specs2/matcher/FuturezMatchersSpec.scala
+scalaz/jvm/src/test/scala/org/specs2/matcher/DisjunctionMatchersSpec.scala
+scalaz/jvm/src/test/scala/org/specs2/matcher/TaskMatchersSpec.scala
+mock/jvm/src/test/scala/org/specs2/mock/HamcrestMatcherAdapterSpec.scala
+mock/jvm/src/test/scala/org/specs2/mock/MockitoSpec.scala
+form/src/test/scala/org/specs2/form/PropSpec.scala
+form/src/test/scala/org/specs2/form/FormsSpec.scala
+form/src/test/scala/org/specs2/form/FieldSpec.scala
+form/src/test/scala/org/specs2/form/CellsSpec.scala
+form/src/test/scala/org/specs2/form/FormSpec.scala
+form/src/test/scala/org/specs2/specification/FormComponentsSpec.scala
+form/src/test/scala/org/specs2/specification/ComponentsDefinitions.scala
+form/src/test/scala/org/specs2/specification/FormsFragmentsSpec.scala
+form/src/test/scala/org/specs2/reporter/FormTextPrinterSpec.scala
+html/src/test/scala/org/specs2/html/TableOfContentsSpec.scala
+html/src/test/scala/org/specs2/html/HtmlTemplateSpec.scala
+html/src/test/scala/org/specs2/html/SpecHtmlPageSpec.scala
+html/src/test/scala/org/specs2/html/HtmlxSpec.scala
+html/src/test/scala/org/specs2/html/HtmlDocuments.scala
+html/src/test/scala/org/specs2/reporter/HtmlUrlsSpec.scala
+html/src/test/scala/org/specs2/reporter/HtmlPrinterSpec.scala
+html/src/test/scala/org/specs2/reporter/HtmlBodyPrinterSpec.scala
+html/src/test/scala/org/specs2/reporter/HtmlOptionsSpec.scala
+html/src/test/scala/org/specs2/reporter/IndexingSpec.scala
+scalacheck/jvm/src/test/scala/org/specs2/scalacheck/CommandLinePropertiesMutableSpec.scala
+cats/jvm/src/test/scala/org/specs2/matcher/NonEmptyListMatchersSpec.scala
+cats/jvm/src/test/scala/org/specs2/matcher/IOMatchersSpec.scala
+cats/jvm/src/test/scala/org/specs2/matcher/ValidatedMatchersSpec.scala
+junit/jvm/src/test/scala/org/specs2/runner/JUnitRunnerSpec.scala
+junit/jvm/src/test/scala/org/specs2/reporter/JUnitDescriptionSpec.scala
+junit/jvm/src/test/scala/org/specs2/reporter/JUnitReporterSpec.scala
+junit/jvm/src/test/scala/org/specs2/reporter/JUnitXmlPrinterSpec.scala
+matcher-extra/jvm/src/test/scala/org/specs2/matcher/FilesContentMatchersSpec.scala
+matcher-extra/jvm/src/test/scala/org/specs2/xml/NodeFunctionsSpec.scala
+tests/src/test/scala/org/specs2/ModulesSpec.scala
+tests/src/test/scala/org/specs2/runner/SbtRunnerSpec.scala
+tests/src/test/scala/org/specs2/mock/MockitoSpec.scala
+tests/src/test/scala/org/specs2/execute/AsResultSpec.scala
+tests/src/test/scala/org/specs2/execute/ResultImplicitsSpec.scala
+tests/src/test/scala/org/specs2/execute/PendingUntilFixedSpec.scala
+tests/src/test/scala/org/specs2/collection/BiMapSpec.scala
+tests/src/test/scala/org/specs2/scalacheck/ScalaCheckMutableSpec.scala
+tests/src/test/scala/org/specs2/scalacheck/ScalaCheckMatchersResultsSpec.scala
+tests/src/test/scala/org/specs2/scalacheck/ScalaCheckMatchersApiSpec.scala
+tests/src/test/scala/org/specs2/scalacheck/ScalaCheckMatchersContextSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatcherMacrosSpec.scala
+tests/src/test/scala/org/specs2/matcher/TryMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/TerminationMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/ContentMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/FileMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/BeEqualToMatcherSpec.scala
+tests/src/test/scala/org/specs2/matcher/ResultMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/JUnitMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/TypecheckMatcherSpec.scala
+tests/src/test/scala/org/specs2/matcher/StandardMatchResultsSpec.scala
+tests/src/test/scala/org/specs2/matcher/ExceptionMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/TraversableMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatchResultSpec.scala
+tests/src/test/scala/org/specs2/matcher/HamcrestSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatcherZipOperatorsSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatchersImplicitsSpec.scala
+tests/src/test/scala/org/specs2/matcher/ArgThatSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatchResultCombinatorsSpec.scala
+tests/src/test/scala/org/specs2/matcher/ExpectableSpec.scala
+tests/src/test/scala/org/specs2/matcher/EitherMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/NumericMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/MapMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/LogicalMatcherSpec.scala
+tests/src/test/scala/org/specs2/matcher/AnyMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/DataTablesSpec.scala
+tests/src/test/scala/org/specs2/matcher/describe/DiffablePlusSpec.scala
+tests/src/test/scala/org/specs2/matcher/describe/ComparisonResultSpec.scala
+tests/src/test/scala/org/specs2/matcher/describe/DiffableSpec.scala
+tests/src/test/scala/org/specs2/matcher/describe/IsCaseClassMacroTest.scala
+tests/src/test/scala/org/specs2/matcher/ParserMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatcherSpec.scala
+tests/src/test/scala/org/specs2/matcher/FutureMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/FpMatchers.scala
+tests/src/test/scala/org/specs2/matcher/JsonMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/XmlMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/BeHaveMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/EventuallyMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/OptionMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/StringMatchersSpec.scala
+tests/src/test/scala/org/specs2/DependenciesSpec.scala
+tests/src/test/scala/org/specs2/json/JsonSpec.scala
+tests/src/test/scala/org/specs2/control/ExecutableSpec.scala
+tests/src/test/scala/org/specs2/data/TopologicalSortSpec.scala
+tests/src/test/scala/org/specs2/data/MonoidxSpec.scala
+tests/src/test/scala/org/specs2/data/TreesSpec.scala
+tests/src/test/scala/org/specs2/specification/process/IndentationSpec.scala
+tests/src/test/scala/org/specs2/specification/process/StatsSpec.scala
+tests/src/test/scala/org/specs2/specification/core/SpecificationStructureSpec.scala
+tests/src/test/scala/org/specs2/specification/core/DependencyInjectionSpec.scala
+tests/src/test/scala/org/specs2/specification/core/Arbitraries.scala
+tests/src/test/scala/org/specs2/specification/mutable/EffectBlocksSpec.scala
+tests/src/test/scala/org/specs2/specification/mutable/FormDslSpec.scala
+tests/src/test/scala/org/specs2/text/LineComparisonSpec.scala
+tests/src/test/scala/org/specs2/text/InterpolatedSpec.scala
+tests/src/test/scala/org/specs2/reporter/SbtPrinterSpec.scala
+tests/src/test/scala/user/TestSpec.scala
+tests/src/test/scala/user/reporter/AcceptanceSpecification.scala
+tests/src/test/scala/user/reporter/CustomNotifier.scala
+tests/src/test/scala/user/reporter/MutableSpecification.scala
+core/jvm/src/test/scala/org/specs2/runner/SbtSelectorSpec.scala
+core/jvm/src/test/scala/org/specs2/runner/SpecificationsFinderSpec.scala
+core/jvm/src/test/scala/org/specs2/runner/RunnerSpec.scala
+core/jvm/src/test/scala/org/specs2/execute/ResultExecutionSpec.scala
+core/jvm/src/test/scala/org/specs2/execute/EventuallyResultsSpec.scala
+core/jvm/src/test/scala/org/specs2/execute/PendingUntilFixedSpec.scala
+core/jvm/src/test/scala/org/specs2/collection/SeqxSpec.scala
+core/jvm/src/test/scala/org/specs2/collection/IterablexSpec.scala
+core/jvm/src/test/scala/org/specs2/io/LocationSpec.scala
+core/jvm/src/test/scala/org/specs2/io/DirectoryPathSpec.scala
+core/jvm/src/test/scala/org/specs2/control/DefaultStackTraceFilterSpec.scala
+core/jvm/src/test/scala/org/specs2/control/ThrowablexSpec.scala
+core/jvm/src/test/scala/org/specs2/control/DebugSpec.scala
+core/jvm/src/test/scala/org/specs2/control/ActionsSpec.scala
+core/jvm/src/test/scala/org/specs2/specification/SelectorSpec.scala
+
+exec
+/usr/bin/bash -lc "find /tmp/specs2-4.20.5 -maxdepth 2 -type f \\( -name build.sbt -o -name '*.scala' -o -name '*.sbt' \\) -print | sed 's#/tmp/specs2-4.20.5/##' | sort | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+build.sbt
+project/depends.scala
+project/plugins.sbt
+scripts/wordle.scala
+version.sbt
+
+exec
+/usr/bin/bash -lc "find /tmp/specs2-4.20.5/matcher -maxdepth 5 -type f | sed 's#/tmp/specs2-4.20.5/##' | sort | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find /tmp/specs2-4.20.5/tests/src/test/scala/org/specs2/matcher -maxdepth 3 -type f | sed 's#/tmp/specs2-4.20.5/##' | sort | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+tests/src/test/scala/org/specs2/matcher/AnyMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/ArgThatSpec.scala
+tests/src/test/scala/org/specs2/matcher/BeEqualToMatcherSpec.scala
+tests/src/test/scala/org/specs2/matcher/BeHaveMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/ContentMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/DataTablesSpec.scala
+tests/src/test/scala/org/specs2/matcher/EitherMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/EventuallyMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/ExceptionMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/ExpectableSpec.scala
+tests/src/test/scala/org/specs2/matcher/FileMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/FpMatchers.scala
+tests/src/test/scala/org/specs2/matcher/FutureMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/HamcrestSpec.scala
+tests/src/test/scala/org/specs2/matcher/JUnitMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/JsonMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/LogicalMatcherSpec.scala
+tests/src/test/scala/org/specs2/matcher/MapMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatchResultCombinatorsSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatchResultSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatcherMacrosSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatcherSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatcherZipOperatorsSpec.scala
+tests/src/test/scala/org/specs2/matcher/MatchersImplicitsSpec.scala
+tests/src/test/scala/org/specs2/matcher/NumericMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/OptionMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/ParserMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/ResultMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/StandardMatchResultsSpec.scala
+tests/src/test/scala/org/specs2/matcher/StringMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/TerminationMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/TraversableMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/TryMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/TypecheckMatcherSpec.scala
+tests/src/test/scala/org/specs2/matcher/XmlMatchersSpec.scala
+tests/src/test/scala/org/specs2/matcher/describe/ComparisonResultSpec.scala
+tests/src/test/scala/org/specs2/matcher/describe/DiffablePlusSpec.scala
+tests/src/test/scala/org/specs2/matcher/describe/DiffableSpec.scala
+tests/src/test/scala/org/specs2/matcher/describe/IsCaseClassMacroTest.scala
+
+exec
+/usr/bin/bash -lc "rg 'matcher|specs2-matcher|lazy val matcher|project.*matcher' -n /tmp/specs2-4.20.5/build.sbt /tmp/specs2-4.20.5/project | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+/tmp/specs2-4.20.5/build.sbt:23:    fpJVM, catsJVM, commonJVM, matcherJVM, coreJVM, matcherExtraJVM, scalazJVM, html,
+/tmp/specs2-4.20.5/build.sbt:25:    tests, fpJS, catsJS, commonJS, matcherJS, coreJS, matcherExtraJS, scalazJS, analysisJS,
+/tmp/specs2-4.20.5/build.sbt:26:    shapelessJS, junitJS, scalacheckJS, mockJS, fpNative, catsNative, commonNative, matcherNative,
+/tmp/specs2-4.20.5/build.sbt:27:    coreNative, matcherExtraNative, scalazNative, analysisNative, shapelessNative, junitNative,
+/tmp/specs2-4.20.5/build.sbt:94:  dependsOn(common % "test->test", core, matcher, scalacheck % Test)
+/tmp/specs2-4.20.5/build.sbt:111:  dependsOn(matcher, core % "test->test")
+/tmp/specs2-4.20.5/build.sbt:163:  dependsOn(matcher, common, common % "test->test")
+/tmp/specs2-4.20.5/build.sbt:176:  dependsOn(common, matcher, core, matcherExtra, junit, scalacheck, mock)
+/tmp/specs2-4.20.5/build.sbt:202:  dependsOn(core, markdown, matcherExtra, scalacheck % "test->test", xml)
+/tmp/specs2-4.20.5/build.sbt:226:  dependsOn(core, matcherExtra, scalacheck)
+/tmp/specs2-4.20.5/build.sbt:238:  dependsOn(formJVM, mockJVM % Test, matcherExtraJVM % Test, scalacheckJVM % Test, xmlJVM)
+/tmp/specs2-4.20.5/build.sbt:250:  dependsOn(core, matcherExtra % Test, mock % Test)
+/tmp/specs2-4.20.5/build.sbt:274:lazy val matcher = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file("matcher")).
+/tmp/specs2-4.20.5/build.sbt:277:    name := "specs2-matcher").
+/tmp/specs2-4.20.5/build.sbt:283:lazy val matcherJS = matcher.js
+/tmp/specs2-4.20.5/build.sbt:284:lazy val matcherJVM = matcher.jvm
+/tmp/specs2-4.20.5/build.sbt:285:lazy val matcherNative = matcher.native
+/tmp/specs2-4.20.5/build.sbt:287:lazy val matcherExtra = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file("matcher-extra")).
+/tmp/specs2-4.20.5/build.sbt:290:    name := "specs2-matcher-extra",
+/tmp/specs2-4.20.5/build.sbt:296:  dependsOn(analysis, matcher, xml, core % "test->test")
+/tmp/specs2-4.20.5/build.sbt:298:lazy val matcherExtraJS = matcherExtra.js
+/tmp/specs2-4.20.5/build.sbt:299:lazy val matcherExtraJVM = matcherExtra.jvm
+/tmp/specs2-4.20.5/build.sbt:300:lazy val matcherExtraNative = matcherExtra.native
+/tmp/specs2-4.20.5/build.sbt:304:  dependsOn(catsJVM, commonJVM, matcherJVM, matcherExtraJVM, coreJVM, scalazJVM, html, analysisJVM,
+/tmp/specs2-4.20.5/build.sbt:319:  dependsOn(matcher, matcherExtra % "test->test")
+/tmp/specs2-4.20.5/build.sbt:335:  dependsOn(matcher, core % "test->test")
+/tmp/specs2-4.20.5/build.sbt:387:  matcherExtraJVM,
+/tmp/specs2-4.20.5/build.sbt:498:  inProjects(fpJVM, commonJVM, matcherJVM, matcherExtraJVM, coreJVM, html, analysisJVM, formJVM, shapelessJVM, markdownJVM, gwtJVM, junitJVM, scalacheckJVM, mockJVM),
+/tmp/specs2-4.20.5/build.sbt:502:  inProjects(fpJVM, commonJVM, matcherJVM, matcherExtraJVM, coreJVM, html, analysisJVM, formJVM, shapelessJVM, markdownJVM, gwtJVM, junitJVM, scalacheckJVM, mockJVM),
+
+exec
+/usr/bin/bash -lc "find /tmp/specs2-4.20.5/matcher -maxdepth 7 -type d | sed 's#/tmp/specs2-4.20.5/##' | sort | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+matcher
+matcher/js
+matcher/js/src
+matcher/js/src/main
+matcher/js/src/main/scala
+matcher/js/src/main/scala/org
+matcher/js/src/main/scala/org/specs2
+matcher/js/src/main/scala/org/specs2/matcher
+matcher/jvm
+matcher/jvm/src
+matcher/jvm/src/main
+matcher/jvm/src/main/scala
+matcher/jvm/src/main/scala/org
+matcher/jvm/src/main/scala/org/specs2
+matcher/jvm/src/main/scala/org/specs2/matcher
+matcher/native
+matcher/native/src
+matcher/native/src/main
+matcher/native/src/main/scala
+matcher/native/src/main/scala/org
+matcher/native/src/main/scala/org/specs2
+matcher/native/src/main/scala/org/specs2/matcher
+matcher/shared
+matcher/shared/src
+matcher/shared/src/main
+matcher/shared/src/main/scala
+matcher/shared/src/main/scala/org
+matcher/shared/src/main/scala/org/specs2
+matcher/shared/src/main/scala/org/specs2/matcher
+
+exec
+/usr/bin/bash -lc "find /tmp/specs2-4.20.5/matcher -type f | sed 's#/tmp/specs2-4.20.5/##' | sort | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+matcher/js/src/main/scala/org/specs2/matcher/Matchers.scala
+matcher/jvm/src/main/scala/org/specs2/matcher/FutureMatchers.scala
+matcher/jvm/src/main/scala/org/specs2/matcher/Matchers.scala
+matcher/native/src/main/scala/org/specs2/matcher/Matchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/AdaptableMatcher.scala
+matcher/shared/src/main/scala/org/specs2/matcher/AnyMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/BeHaveMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/BeTypedEqualTo.scala
+matcher/shared/src/main/scala/org/specs2/matcher/DataTable.scala
+matcher/shared/src/main/scala/org/specs2/matcher/EitherMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/EqualityMatcher.scala
+matcher/shared/src/main/scala/org/specs2/matcher/EventuallyMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/ExceptionMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/Expectable.scala
+matcher/shared/src/main/scala/org/specs2/matcher/Expectations.scala
+matcher/shared/src/main/scala/org/specs2/matcher/ExpectationsDescription.scala
+matcher/shared/src/main/scala/org/specs2/matcher/MapMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/MatchResult.scala
+matcher/shared/src/main/scala/org/specs2/matcher/MatchResultCombinators.scala
+matcher/shared/src/main/scala/org/specs2/matcher/MatchResultMessages.scala
+matcher/shared/src/main/scala/org/specs2/matcher/Matcher.scala
+matcher/shared/src/main/scala/org/specs2/matcher/MatcherZipOperators.scala
+matcher/shared/src/main/scala/org/specs2/matcher/MatchersImplicits.scala
+matcher/shared/src/main/scala/org/specs2/matcher/MustExpectable.scala
+matcher/shared/src/main/scala/org/specs2/matcher/MustExpectations.scala
+matcher/shared/src/main/scala/org/specs2/matcher/NumericMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/OperationMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/OptionMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/ResultMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/ReturnsSyntax.scala
+matcher/shared/src/main/scala/org/specs2/matcher/ShouldExpectable.scala
+matcher/shared/src/main/scala/org/specs2/matcher/ShouldExpectations.scala
+matcher/shared/src/main/scala/org/specs2/matcher/StandardMatchResults.scala
+matcher/shared/src/main/scala/org/specs2/matcher/StoredExpectations.scala
+matcher/shared/src/main/scala/org/specs2/matcher/StringMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/ThrownExpectations.scala
+matcher/shared/src/main/scala/org/specs2/matcher/TraversableMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/TryMatchers.scala
+matcher/shared/src/main/scala/org/specs2/matcher/TypedEqual.scala
+matcher/shared/src/main/scala/org/specs2/matcher/ValueCheck.scala
+matcher/shared/src/main/scala/org/specs2/matcher/describe/ComparisonResult.scala
+matcher/shared/src/main/scala/org/specs2/matcher/describe/Diffable.scala
+matcher/shared/src/main/scala/org/specs2/matcher/describe/Diffables.scala
+matcher/shared/src/main/scala/org/specs2/matcher/describe/LinesDiffable.scala
+matcher/shared/src/main/scala/org/specs2/matcher/package.scala
+
+exec
+/usr/bin/bash -lc "sed -n '260,286p' /tmp/specs2-4.20.5/build.sbt" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+    libraryDependencies ++= Seq(
+      depends.pegdown,
+      depends.scalaXml),
+    commonSettings,
+    name := "specs2-markdown").
+  jvmSettings(depends.jvmTest, commonJvmSettings).
+  jsSettings(depends.jsTest, commonJsSettings).
+  nativeSettings(depends.nativeTest, commonNativeSettings).
+  dependsOn(common, core % "compile->test")
+
+lazy val markdownJVM = markdown.jvm
+lazy val markdownJS = markdown.js
+lazy val markdownNative = markdown.native
+
+lazy val matcher = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file("matcher")).
+  settings(
+    commonSettings,
+    name := "specs2-matcher").
+  jsSettings(depends.jsTest, commonJsSettings).
+  jvmSettings(commonJvmSettings).
+  nativeSettings(depends.nativeTest, commonNativeSettings).
+  dependsOn(common)
+
+lazy val matcherJS = matcher.js
+lazy val matcherJVM = matcher.jvm
+lazy val matcherNative = matcher.native
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/io.suzaku/boopickle_3/index.json; sed -n '1,40p' metadata/com.github.pureconfig/pureconfig-core_3/index.json; sed -n '1,25p' metadata/org.scalatest/scalatest-wordspec_2.13/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.4.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/suzaku-io/boopickle",
+    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+    "description" : "BooPickle is a Scala binary serialization library for pickling and unpickling values into compact ByteBuffer data. It supports primitives, collections, options, tuples, case classes, custom serializers, references, and deduplication without reflection across JVM, Scala.js, and Scala Native.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.4.0",
+      "1.5.0"
+    ],
+    "allowed-packages" : [
+      "boopickle"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.17.9",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-core_3/$version$/pureconfig-core_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/pureconfig/pureconfig",
+    "test-code-url" : "https://github.com/pureconfig/pureconfig/tree/v$version$/tests/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-core_3/$version$/pureconfig-core_3-$version$-javadoc.jar",
+    "description" : "PureConfig Core is a Scala library for loading Typesafe Config, HOCON, JSON, and Java properties configuration into typed Scala data structures. It provides the core readers, writers, cursors, naming conventions, and derivation support used to map configuration values to case classes, sealed traits, collections, options, and custom types.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "0.17.9",
+      "0.17.10"
+    ],
+    "allowed-packages" : [
+      "pureconfig"
+    ]
+  }
+]
+[
+  {
+    "latest": true,
+    "metadata-version": "3.2.19",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+    "repository-url": "https://github.com/scalatest/scalatest",
+    "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+    "description": "ScalaTest WordSpec provides the WordSpec style for writing behavior-driven ScalaTest suites using nested words and sentences to describe a system under test. It includes synchronous, asynchronous, and fixture-based suite classes that integrate with ScalaTest assertions, matchers, tagging, and test lifecycle features.",
+    "language": {
+      "name": "scala",
+      "version": "2"
+    },
+    "tested-versions": [
+      "3.2.19"
+    ],
+    "allowed-packages": [
+      "org.scalatest.wordspec",
+      "org.scalatest"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg '\"language\" : \\{\\n\\s+\"name\" : \"scala\"' -n metadata | head -20" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+rg: the literal "\n" is not allowed in a regex
+
+Consider enabling multiline mode with the --multiline flag (or -U for short).
+When multiline mode is enabled, new line characters can be matched.
+
+exec
+/usr/bin/bash -lc "rg 'github.com/.*\\.git\"' -n metadata build/discovered-artifact-metadata | head -50" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.specs2 specs2-matcher_3 4.20.5
+web search: 
+web search: https://github.com/etorreborre/specs2/tree/SPECS-4.20.5/tests/src/test/scala/org/specs2/matcher
+web search: 
+web search: https://central.sonatype.com/artifact/org.specs2/specs2-matcher_3
+web search: 
+web search: 
+web search: 
+web search: "specs2-matcher_3-4.20.5-sources.jar"
+codex
+I found the upstream release tag convention as `SPECS-$version$`; the matcher tests live under the shared specs2 test module rather than under the matcher module itself. I’m updating only the discovered metadata JSON now.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+diff --git a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+index 5e8819e16f1a993d9cf278cdeab9550e4c7139a4..4250fa1e25d9fdc456141d46b27ff21d2b62e71b
+--- a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
++++ b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5"
++  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5",
++  "repository-url" : "https://github.com/etorreborre/specs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS-$version$/tests/src/test/scala/org/specs2/matcher",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-javadoc.jar",
++  "description" : "Specs2 Matcher provides the core matcher DSL used by specs2 tests to express expectations for equality, collections, options, exceptions, futures, XML, JSON, and data tables. It supplies reusable matcher traits and result combinators for Scala 3 test code, integrating with the wider specs2 testing framework.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+index 5e8819e16f1a993d9cf278cdeab9550e4c7139a4..4250fa1e25d9fdc456141d46b27ff21d2b62e71b
+--- a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
++++ b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5"
++  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5",
++  "repository-url" : "https://github.com/etorreborre/specs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS-$version$/tests/src/test/scala/org/specs2/matcher",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-javadoc.jar",
++  "description" : "Specs2 Matcher provides the core matcher DSL used by specs2 tests to express expectations for equality, collections, options, exceptions, futures, XML, JSON, and data tables. It supplies reusable matcher traits and result combinators for Scala 3 test code, integrating with the wider specs2 testing framework.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+{
+  "coordinates": "org.specs2:specs2-matcher_3:4.20.5",
+  "repository-url": "https://github.com/etorreborre/specs2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/etorreborre/specs2/tree/SPECS-$version$/tests/src/test/scala/org/specs2/matcher",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-javadoc.jar",
+  "description": "Specs2 Matcher provides the core matcher DSL used by specs2 tests to express expectations for equality, collections, options, exceptions, futures, XML, JSON, and data tables. It supplies reusable matcher traits and result combinators for Scala 3 test code, integrating with the wider specs2 testing framework.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -o /dev/null -sS -L -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5-sources.jar" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+exec
+/usr/bin/bash -lc "curl -o /dev/null -sS -L -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5-javadoc.jar" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+exec
+/usr/bin/bash -lc "curl -o /dev/null -sS -L -w '%{http_code} %{url_effective}\\n' https://github.com/etorreborre/specs2/tree/SPECS-4.20.5/tests/src/test/scala/org/specs2/matcher" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 357ms:
+200 https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5-sources.jar
+
+ succeeded in 680ms:
+200 https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5-javadoc.jar
+
+diff --git a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+index 5e8819e16f1a993d9cf278cdeab9550e4c7139a4..4250fa1e25d9fdc456141d46b27ff21d2b62e71b
+--- a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
++++ b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5"
++  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5",
++  "repository-url" : "https://github.com/etorreborre/specs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS-$version$/tests/src/test/scala/org/specs2/matcher",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-javadoc.jar",
++  "description" : "Specs2 Matcher provides the core matcher DSL used by specs2 tests to express expectations for equality, collections, options, exceptions, futures, XML, JSON, and data tables. It supplies reusable matcher traits and result combinators for Scala 3 test code, integrating with the wider specs2 testing framework.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 941ms:
+200 https://github.com/etorreborre/specs2/tree/SPECS-4.20.5/tests/src/test/scala/org/specs2/matcher
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "jar tf /tmp/specs2-matcher_3-4.20.5.jar | rg '\\.class"'$'"' | head -5" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+org/specs2/matcher/AdaptableMatcher$$anon$1.class
+org/specs2/matcher/AdaptableMatcher$$anon$2.class
+org/specs2/matcher/AdaptableMatcher.class
+org/specs2/matcher/AlwaysMatcher$.class
+org/specs2/matcher/AlwaysMatcher.class
+
+exec
+/usr/bin/bash -lc "curl -o /dev/null -sS -L -w '%{http_code} %{url_effective}\\n' https://github.com/etorreborre/specs2" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+diff --git a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+index 5e8819e16f1a993d9cf278cdeab9550e4c7139a4..4250fa1e25d9fdc456141d46b27ff21d2b62e71b
+--- a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
++++ b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5"
++  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5",
++  "repository-url" : "https://github.com/etorreborre/specs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS-$version$/tests/src/test/scala/org/specs2/matcher",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-javadoc.jar",
++  "description" : "Specs2 Matcher provides the core matcher DSL used by specs2 tests to express expectations for equality, collections, options, exceptions, futures, XML, JSON, and data tables. It supplies reusable matcher traits and result combinators for Scala 3 test code, integrating with the wider specs2 testing framework.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 734ms:
+200 https://github.com/etorreborre/specs2
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored=matching build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+diff --git a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+index 5e8819e16f1a993d9cf278cdeab9550e4c7139a4..4250fa1e25d9fdc456141d46b27ff21d2b62e71b
+--- a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
++++ b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5"
++  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5",
++  "repository-url" : "https://github.com/etorreborre/specs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS-$version$/tests/src/test/scala/org/specs2/matcher",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-javadoc.jar",
++  "description" : "Specs2 Matcher provides the core matcher DSL used by specs2 tests to express expectations for equality, collections, options, exceptions, futures, XML, JSON, and data tables. It supplies reusable matcher traits and result combinators for Scala 3 test code, integrating with the wider specs2 testing framework.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 252ms:
+!! build/
+
+web search: 
+web search: Maven Central org.specs2 specs2-matcher_3 4.20.5
+web search: 
+web search: https://github.com/etorreborre/specs2/tree/SPECS-4.20.5/tests/src/test/scala/org/specs2/matcher
+web search: 
+web search: 
+web search: 
+web search: "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/4.20.5/specs2-matcher_3-4.20.5-sources.jar"
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5",
+     3	  "repository-url" : "https://github.com/etorreborre/specs2",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS-$version$/tests/src/test/scala/org/specs2/matcher",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-javadoc.jar",
+     7	  "description" : "Specs2 Matcher provides the core matcher DSL used by specs2 tests to express expectations for equality, collections, options, exceptions, futures, XML, JSON, and data tables. It supplies reusable matcher traits and result combinators for Scala 3 test code, integrating with the wider specs2 testing framework.",
+     8	  "language" : {
+     9	    "name" : "scala",
+    10	    "version" : "3"
+    11	  }
+    12	}
+
+diff --git a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+index 5e8819e16f1a993d9cf278cdeab9550e4c7139a4..4250fa1e25d9fdc456141d46b27ff21d2b62e71b
+--- a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
++++ b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5"
++  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5",
++  "repository-url" : "https://github.com/etorreborre/specs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS-$version$/tests/src/test/scala/org/specs2/matcher",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-javadoc.jar",
++  "description" : "Specs2 Matcher provides the core matcher DSL used by specs2 tests to express expectations for equality, collections, options, exceptions, futures, XML, JSON, and data tables. It supplies reusable matcher traits and result combinators for Scala 3 test code, integrating with the wider specs2 testing framework.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+codex
+Updated [org.specs2-specs2-matcher_3-4.20.5.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json:1).
+
+Set the repository, Maven sources/javadocs URLs, tagged GitHub matcher test URL, two-sentence description, and Scala 3 language field. I left `not-for-native-image` absent because the artifact is a JVM jar with `.class` files.
+
+Verification: `jq` passed, and the resolved source, documentation, repository, and test URLs all returned HTTP 200 for `4.20.5`.
+diff --git a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+index 5e8819e16f1a993d9cf278cdeab9550e4c7139a4..4250fa1e25d9fdc456141d46b27ff21d2b62e71b
+--- a/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
++++ b/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5"
++  "coordinates" : "org.specs2:specs2-matcher_3:4.20.5",
++  "repository-url" : "https://github.com/etorreborre/specs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS-$version$/tests/src/test/scala/org/specs2/matcher",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-matcher_3/$version$/specs2-matcher_3-$version$-javadoc.jar",
++  "description" : "Specs2 Matcher provides the core matcher DSL used by specs2 tests to express expectations for equality, collections, options, exceptions, futures, XML, JSON, and data tables. It supplies reusable matcher traits and result combinators for Scala 3 test code, integrating with the wider specs2 testing framework.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+116,613
+Updated [org.specs2-specs2-matcher_3-4.20.5.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62/build/discovered-artifact-metadata/org.specs2-specs2-matcher_3-4.20.5.json:1).
+
+Set the repository, Maven sources/javadocs URLs, tagged GitHub matcher test URL, two-sentence description, and Scala 3 language field. I left `not-for-native-image` absent because the artifact is a JVM jar with `.class` files.
+
+Verification: `jq` passed, and the resolved source, documentation, repository, and test URLs all returned HTTP 200 for `4.20.5`.
+Ran agent for org.specs2:specs2-matcher_3:4.20.5 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62/build/agent-artifact-discovery-logs/org.specs2-specs2-matcher_3-4.20.5.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2682-5eecad62/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 54s
+9 actionable tasks: 9 executed

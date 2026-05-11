@@ -176,6 +176,7 @@ object Akka_serialization_jackson_3Test {
 
   val TestConfig: Config = ConfigFactory
     .parseString(s"""
+      akka.version = "2.6.21"
       akka.actor.serialization-bindings {
         "$JsonPayloadClassName" = jackson-json
         "$CborPayloadClassName" = jackson-cbor
