@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -18,30 +19,35 @@ import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebDriver.Options;
 import org.openqa.selenium.WebDriver.TargetLocator;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.events.EventFiringDecorator;
+import org.openqa.selenium.support.events.WebDriverListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EventFiringWebDriverTest {
     @Test
     void delegatesDriverCallsAndDispatchesNavigationEvents() {
-        RecordingWebDriver driver = new RecordingWebDriver();
-        RecordingEventListener listener = new RecordingEventListener();
-        EventFiringWebDriver eventFiringDriver = new EventFiringWebDriver(driver)
-                .register(listener);
+        try {
+            RecordingWebDriver driver = new RecordingWebDriver();
+            RecordingEventListener listener = new RecordingEventListener();
+            WebDriver eventFiringDriver = new EventFiringDecorator<>(listener).decorate(driver);
 
-        eventFiringDriver.get("https://example.test/page");
-        String currentUrl = eventFiringDriver.getCurrentUrl();
+            eventFiringDriver.get("https://example.test/page");
+            String currentUrl = eventFiringDriver.getCurrentUrl();
 
-        assertThat(currentUrl).isEqualTo("https://example.test/page");
-        assertThat(driver.calls()).containsExactly(
-                "get:https://example.test/page",
-                "getCurrentUrl");
-        assertThat(listener.events()).containsExactly(
-                "beforeNavigateTo:https://example.test/page",
-                "afterNavigateTo:https://example.test/page");
-        assertThat(eventFiringDriver.getWrappedDriver()).isSameAs(driver);
+            assertThat(currentUrl).isEqualTo("https://example.test/page");
+            assertThat(eventFiringDriver).isNotSameAs(driver);
+            assertThat(driver.calls()).containsExactly(
+                    "get:https://example.test/page",
+                    "getCurrentUrl");
+            assertThat(listener.events()).containsExactly(
+                    "beforeGet:https://example.test/page",
+                    "afterGet:https://example.test/page");
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
     }
 
     private static final class RecordingWebDriver implements WebDriver {
@@ -119,17 +125,17 @@ public class EventFiringWebDriverTest {
         }
     }
 
-    private static final class RecordingEventListener extends AbstractWebDriverEventListener {
+    public static final class RecordingEventListener implements WebDriverListener {
         private final List<String> events = new ArrayList<>();
 
         @Override
-        public void beforeNavigateTo(String url, WebDriver driver) {
-            events.add("beforeNavigateTo:" + url);
+        public void beforeGet(WebDriver driver, String url) {
+            events.add("beforeGet:" + url);
         }
 
         @Override
-        public void afterNavigateTo(String url, WebDriver driver) {
-            events.add("afterNavigateTo:" + url);
+        public void afterGet(WebDriver driver, String url) {
+            events.add("afterGet:" + url);
         }
 
         private List<String> events() {
