@@ -19,6 +19,11 @@ import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
+import org.gradle.api.attributes.Bundling;
+import org.gradle.api.attributes.Category;
+import org.gradle.api.attributes.LibraryElements;
+import org.gradle.api.attributes.Usage;
+import org.gradle.api.attributes.java.TargetJvmEnvironment;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.process.ExecOperations;
@@ -63,6 +68,28 @@ public final class MetadataGenerationUtils {
                 dependencies.create(coordinates.group() + ":" + coordinates.artifact() + ":" + coordinates.version())
         );
         configuration.setTransitive(false);
+        configuration.attributes(attributes -> {
+            attributes.attribute(
+                    Category.CATEGORY_ATTRIBUTE,
+                    project.getObjects().named(Category.class, Category.LIBRARY)
+            );
+            attributes.attribute(
+                    Bundling.BUNDLING_ATTRIBUTE,
+                    project.getObjects().named(Bundling.class, Bundling.EXTERNAL)
+            );
+            attributes.attribute(
+                    LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
+                    project.getObjects().named(LibraryElements.class, LibraryElements.JAR)
+            );
+            attributes.attribute(
+                    Usage.USAGE_ATTRIBUTE,
+                    project.getObjects().named(Usage.class, Usage.JAVA_RUNTIME)
+            );
+            attributes.attribute(
+                    TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
+                    project.getObjects().named(TargetJvmEnvironment.class, TargetJvmEnvironment.STANDARD_JVM)
+            );
+        });
 
         List<Path> jars = configuration.resolve().stream()
                 .map(file -> file.toPath().toAbsolutePath())
