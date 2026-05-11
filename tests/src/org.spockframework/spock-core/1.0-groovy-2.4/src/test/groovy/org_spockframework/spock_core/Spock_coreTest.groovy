@@ -107,6 +107,14 @@ public class Spock_coreTest {
     }
 
     @Test
+    void supportsOldValueAssertionsAcrossStateChanges() {
+        Result result = JUnitCore.runClasses(OldValueSpecification)
+
+        assertThat(result.failures).isEmpty()
+        assertThat(result.runCount).isEqualTo(1)
+    }
+
+    @Test
     void coordinatesAsynchronousWorkWithSpockConcurrentUtilities() {
         ExecutorService executor = Executors.newSingleThreadExecutor()
         BlockingVariable<String> blockingVariable = new BlockingVariable<String>(1)
@@ -263,6 +271,40 @@ public class Spock_coreTest {
 
         int multiply(int left, int right) {
             left * right
+        }
+    }
+
+    public static class OldValueSpecification extends Specification {
+        def 'compares state before and after a when block'() {
+            given:
+            BankAccount account = new BankAccount('checking', 10)
+
+            when:
+            account.deposit(7)
+
+            then:
+            account.balance == old(account.balance) + 7
+            account.changeCount == old(account.changeCount) + 1
+            account.lastTransaction == 'deposit:7'
+        }
+    }
+
+    public static class BankAccount {
+        final String name
+        int balance
+        int changeCount
+        String lastTransaction
+
+        BankAccount(String name, int openingBalance) {
+            this.name = name
+            this.balance = openingBalance
+            this.lastTransaction = 'opening'
+        }
+
+        void deposit(int amount) {
+            balance += amount
+            changeCount++
+            lastTransaction = "deposit:${amount}"
         }
     }
 
