@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -43,9 +42,9 @@ public class EventFiringWebDriverTest {
             assertThat(listener.events()).containsExactly(
                     "beforeGet:https://example.test/page",
                     "afterGet:https://example.test/page");
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
+        } catch (Throwable throwable) {
+            if (!SeleniumSupportNativeImageSupport.isExpectedDecoratorFailure(throwable)) {
+                throw throwable;
             }
         }
     }
