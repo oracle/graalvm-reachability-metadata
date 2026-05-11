@@ -8,7 +8,7 @@ package com_networknt.json_schema_validator;
 
 import org.junit.jupiter.api.Test;
 
-class Json_schema_validatorTest {
+public class Json_schema_validatorTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
