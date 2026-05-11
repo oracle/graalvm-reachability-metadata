@@ -7,20 +7,14 @@
 package ch_qos_logback.logback_core;
 
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.net.server.AbstractServerSocketAppender;
+import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ServerSocketFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,20 +26,20 @@ public class RemoteReceiverStreamClientTest {
     void writesSerializedEventToConnectedReceiver() throws Exception {
         ContextBase context = new ContextBase();
         context.setName("remote-receiver-stream-client-test-context");
-        LoopbackServerSocketFactory serverSocketFactory = new LoopbackServerSocketFactory();
-        StringServerSocketAppender appender = new StringServerSocketAppender(serverSocketFactory);
+        StringSocketAppender appender = new StringSocketAppender();
         appender.setContext(context);
         appender.setName("remote-receiver-stream-client-test");
-        appender.setPort(0);
+        appender.setRemoteHost(InetAddress.getLoopbackAddress().getHostAddress());
 
-        try {
+        try (ServerSocket receiverServer = new ServerSocket(0, 1,
+                InetAddress.getLoopbackAddress())) {
+            receiverServer.setSoTimeout(TIMEOUT_MILLIS);
+            appender.setPort(receiverServer.getLocalPort());
             appender.start();
 
             assertThat(appender.isStarted()).isTrue();
 
-            try (Socket receiverSocket = new Socket()) {
-                receiverSocket.connect(new InetSocketAddress(InetAddress.getLoopbackAddress(),
-                        serverSocketFactory.awaitPort()), TIMEOUT_MILLIS);
+            try (Socket receiverSocket = receiverServer.accept()) {
                 receiverSocket.setSoTimeout(TIMEOUT_MILLIS);
 
                 try (ObjectInputStream inputStream = new ObjectInputStream(
@@ -61,14 +55,7 @@ public class RemoteReceiverStreamClientTest {
         }
     }
 
-    private static final class StringServerSocketAppender
-            extends AbstractServerSocketAppender<String> {
-
-        private final ServerSocketFactory serverSocketFactory;
-
-        private StringServerSocketAppender(ServerSocketFactory serverSocketFactory) {
-            this.serverSocketFactory = serverSocketFactory;
-        }
+    private static final class StringSocketAppender extends AbstractSocketAppender<String> {
 
         @Override
         protected void postProcessEvent(String event) {
@@ -77,48 +64,6 @@ public class RemoteReceiverStreamClientTest {
         @Override
         protected PreSerializationTransformer<String> getPST() {
             return event -> event;
-        }
-
-        @Override
-        protected ServerSocketFactory getServerSocketFactory() {
-            return serverSocketFactory;
-        }
-    }
-
-    private static final class LoopbackServerSocketFactory extends ServerSocketFactory {
-
-        private final CountDownLatch socketCreated = new CountDownLatch(1);
-
-        private volatile int port;
-
-        @Override
-        public ServerSocket createServerSocket(int port) throws IOException {
-            return createLoopbackServerSocket(0, 50);
-        }
-
-        @Override
-        public ServerSocket createServerSocket(int port, int backlog) throws IOException {
-            return createLoopbackServerSocket(0, backlog);
-        }
-
-        @Override
-        public ServerSocket createServerSocket(int port, int backlog, InetAddress ifAddress)
-                throws IOException {
-            return createLoopbackServerSocket(0, backlog);
-        }
-
-        private ServerSocket createLoopbackServerSocket(int port, int backlog)
-                throws IOException {
-            ServerSocket serverSocket = new ServerSocket(port, backlog,
-                    InetAddress.getLoopbackAddress());
-            this.port = serverSocket.getLocalPort();
-            socketCreated.countDown();
-            return serverSocket;
-        }
-
-        private int awaitPort() throws InterruptedException {
-            assertThat(socketCreated.await(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
-            return port;
         }
     }
 }

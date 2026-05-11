@@ -11,7 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.util.VersionUtil;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 import org.junit.jupiter.api.Test;
 
 public class VersionUtilTest {
@@ -22,21 +25,37 @@ public class VersionUtilTest {
     private static final String TEST_DEPENDENCY_VERSION = "4.5.6-test";
 
     @Test
-    void readsArtifactVersionFromClassRelativeProperties() {
-        String version = VersionUtil.getArtifactVersionBySelfDeclaredProperties(
-                VersionUtilTest.class,
-                TEST_MODULE_NAME
+    void reportsWarningWhenDependencyVersionDoesNotMatch() {
+        ContextBase context = new ContextBase();
+
+        VersionUtil.checkForVersionEquality(
+                context,
+                TEST_MODULE_VERSION,
+                TEST_DEPENDENCY_VERSION,
+                TEST_MODULE_NAME,
+                TEST_DEPENDENCY_NAME
         );
 
-        assertThat(version).isEqualTo(TEST_MODULE_VERSION);
+        List<Status> statuses = context.getStatusManager().getCopyOfStatusList();
+        assertThat(statuses).extracting(Status::getMessage).containsExactly(
+                "Found " + TEST_MODULE_NAME + " version " + TEST_MODULE_VERSION,
+                "Found " + TEST_DEPENDENCY_NAME + " version " + TEST_DEPENDENCY_VERSION,
+                "Versions of " + TEST_DEPENDENCY_NAME + " and " + TEST_MODULE_VERSION
+                        + " are different or unknown."
+        );
+        assertThat(statuses).extracting(Status::getLevel).containsExactly(
+                Status.INFO,
+                Status.INFO,
+                Status.WARN
+        );
     }
 
     @Test
     void comparesExpectedDependencyVersionFromClassLoaderProperties() {
         ContextBase context = new ContextBase();
+        VersionUtil versionUtil = new ResourceBackedVersionUtil(context);
 
-        VersionUtil.compareExpectedAndFoundVersion(
-                context,
+        versionUtil.compareExpectedAndFoundVersion(
                 TEST_DEPENDENCY_VERSION,
                 VersionUtilTest.class,
                 TEST_MODULE_VERSION,
@@ -50,5 +69,26 @@ public class VersionUtilTest {
                 "Found " + TEST_MODULE_NAME + " version " + TEST_MODULE_VERSION
         );
         assertThat(statuses).extracting(Status::getLevel).containsOnly(Status.INFO);
+    }
+
+    private static final class ResourceBackedVersionUtil extends VersionUtil {
+
+        private ResourceBackedVersionUtil(ContextBase context) {
+            super(context);
+        }
+
+        @Override
+        protected String getExpectedVersionOfDependencyByProperties(Class<?> dependerClass,
+                String propertiesFileName, String dependencyNameAsKey) {
+            Properties properties = new Properties();
+            try (InputStream inputStream = dependerClass.getClassLoader()
+                    .getResourceAsStream(propertiesFileName)) {
+                assertThat(inputStream).isNotNull();
+                properties.load(inputStream);
+                return properties.getProperty(dependencyNameAsKey);
+            } catch (IOException e) {
+                throw new IllegalStateException("Could not load " + propertiesFileName, e);
+            }
+        }
     }
 }
