@@ -9,11 +9,13 @@ package com_google_guava.guava;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.base.FinalizableReferenceQueue;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLClassLoader;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
@@ -33,8 +35,7 @@ public class FinalizableReferenceQueueInnerDecoupledLoaderTest {
 
             assertNotNull(finalizerClass);
             assertEquals(FINALIZER_CLASS_NAME, finalizerClass.getName());
-            assertNotSame(
-                    FinalizableReferenceQueue.class.getClassLoader(), finalizerClass.getClassLoader());
+            assertExpectedFinalizerLoader(finalizerClass.getClassLoader());
         } catch (InvocationTargetException exception) {
             rethrowUnlessUnsupportedDynamicClassLoading(exception.getCause());
         }
@@ -45,6 +46,22 @@ public class FinalizableReferenceQueueInnerDecoupledLoaderTest {
         Constructor<?> constructor = decoupledLoaderClass.getDeclaredConstructor();
         constructor.setAccessible(true);
         return constructor.newInstance();
+    }
+
+    private static void assertExpectedFinalizerLoader(ClassLoader finalizerLoader) {
+        if (isNativeImageRuntime()) {
+            assertTrue(
+                    finalizerLoader instanceof URLClassLoader
+                            || finalizerLoader == ClassLoader.getSystemClassLoader());
+            return;
+        }
+
+        assertTrue(finalizerLoader instanceof URLClassLoader);
+        assertNotSame(FinalizableReferenceQueue.class.getClassLoader(), finalizerLoader);
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static void rethrowUnlessUnsupportedDynamicClassLoading(Throwable throwable) {
