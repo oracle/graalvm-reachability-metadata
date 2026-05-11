@@ -16,12 +16,12 @@ import org.springframework.aop.aspectj.annotation.ReflectiveAspectJAdvisorFactor
 public class AbstractAspectJAdvisorFactoryTest {
 
     @Test
-    void acceptsAnnotationStyleAspectWithAjcCompiledMarkerField() {
+    void rejectsAspectWithAjcCompiledMarkerField() {
         ReflectiveAspectJAdvisorFactory factory = new ReflectiveAspectJAdvisorFactory();
 
         boolean aspect = factory.isAspect(AjcCompiledMarkerAspect.class);
 
-        assertThat(aspect).isTrue();
+        assertThat(aspect).isFalse();
     }
 
     @Test
