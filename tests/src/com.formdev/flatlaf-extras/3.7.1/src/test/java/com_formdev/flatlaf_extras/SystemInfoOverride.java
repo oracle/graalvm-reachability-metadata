@@ -11,18 +11,14 @@ import java.lang.reflect.Field;
 import sun.misc.Unsafe;
 
 final class SystemInfoOverride implements AutoCloseable {
-    private final StaticBooleanField macOs;
-    private final StaticBooleanField java9OrLater;
+    private final StaticBooleanField[] fields;
 
-    private SystemInfoOverride(StaticBooleanField macOs, StaticBooleanField java9OrLater) {
-        this.macOs = macOs;
-        this.java9OrLater = java9OrLater;
+    private SystemInfoOverride(StaticBooleanField... fields) {
+        this.fields = fields;
     }
 
     static SystemInfoOverride legacyMacJava8() throws ReflectiveOperationException {
-        Class.forName(SystemInfo.class.getName(), true, SystemInfo.class.getClassLoader());
-
-        Unsafe unsafe = unsafe();
+        Unsafe unsafe = initializedUnsafe();
         StaticBooleanField macOs = staticBooleanField(unsafe, "isMacOS");
         StaticBooleanField java9OrLater = staticBooleanField(unsafe, "isJava_9_orLater");
         macOs.set(true);
@@ -30,10 +26,23 @@ final class SystemInfoOverride implements AutoCloseable {
         return new SystemInfoOverride(macOs, java9OrLater);
     }
 
+    static SystemInfoOverride java9OrLater(boolean value) throws ReflectiveOperationException {
+        Unsafe unsafe = initializedUnsafe();
+        StaticBooleanField java9OrLater = staticBooleanField(unsafe, "isJava_9_orLater");
+        java9OrLater.set(value);
+        return new SystemInfoOverride(java9OrLater);
+    }
+
     @Override
     public void close() {
-        java9OrLater.restore();
-        macOs.restore();
+        for (int i = fields.length - 1; i >= 0; i--) {
+            fields[i].restore();
+        }
+    }
+
+    private static Unsafe initializedUnsafe() throws ReflectiveOperationException {
+        Class.forName(SystemInfo.class.getName(), true, SystemInfo.class.getClassLoader());
+        return unsafe();
     }
 
     private static StaticBooleanField staticBooleanField(Unsafe unsafe, String fieldName) throws NoSuchFieldException {

@@ -8,58 +8,52 @@ package com_formdev.flatlaf_extras;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.formdev.flatlaf.extras.FlatInspector;
+import com.formdev.flatlaf.util.SystemInfo;
 import java.awt.Component;
-import java.io.File;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import javax.swing.JButton;
-import org.graalvm.internal.tck.NativeImageSupport;
+import javax.swing.JComponent;
+import javax.swing.plaf.ComponentUI;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
+@ResourceLock(Resources.SYSTEM_PROPERTIES)
+@ResourceLock("com.formdev.flatlaf.util.SystemInfo")
 public class FlatInspectorTest {
-    private static final String TOOLTIP_BUILDER_CLASS = "com.formdev.flatlaf.extras.FlatInspector";
     private static final String UI_ROW = "UI:</td><td>";
+    private static final String TEST_UI_CLASS_NAME = TestComponentUi.class.getSimpleName();
 
     @Test
     void buildsTooltipUsingPublicJComponentUiMethodOnModernJava() throws Exception {
-        try {
-            String text = buildToolTipTextWithJavaVersion("21.0.8");
+        String text = buildToolTipTextWithJavaVersion(true);
 
-            assertThat(text).contains(UI_ROW);
-        } catch (Throwable throwable) {
-            rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
-        }
+        assertThat(text).contains(UI_ROW).contains(TEST_UI_CLASS_NAME);
     }
 
     @Test
     void buildsTooltipUsingJComponentUiFieldOnLegacyJava() throws Exception {
-        try {
-            String text = buildToolTipTextWithJavaVersion("1.8.0_402");
+        String text = buildToolTipTextWithJavaVersion(false);
 
-            assertThat(text).contains(UI_ROW);
-        } catch (Throwable throwable) {
-            rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
-        }
+        assertThat(text).contains(UI_ROW).contains(TEST_UI_CLASS_NAME);
     }
 
-    private static String buildToolTipTextWithJavaVersion(String javaVersion) throws Exception {
-        String originalJavaVersion = System.getProperty("java.version");
+    private static String buildToolTipTextWithJavaVersion(boolean java9OrLater) throws Exception {
         String originalJavaHome = System.getProperty("java.home");
-        try (FlatLafClassLoader classLoader = new FlatLafClassLoader(classPathUrls())) {
+        try (SystemInfoOverride ignored = SystemInfoOverride.java9OrLater(java9OrLater)) {
             ensureJavaHomeSet();
-            System.setProperty("java.version", javaVersion);
-
-            Class<?> inspectorClass = Class.forName(TOOLTIP_BUILDER_CLASS, true, classLoader);
-            Method buildToolTipText = inspectorClass.getDeclaredMethod(
+            assertThat(SystemInfo.isJava_9_orLater).isEqualTo(java9OrLater);
+            Method buildToolTipText = FlatInspector.class.getDeclaredMethod(
                     "buildToolTipText", Component.class, int.class, boolean.class);
             buildToolTipText.setAccessible(true);
 
-            JButton button = new JButton("Inspect");
-            button.setSize(button.getPreferredSize());
-            return (String) buildToolTipText.invoke(null, button, 0, false);
+            TestComponent component = new TestComponent();
+            component.setSize(component.getPreferredSize());
+            return (String) buildToolTipText.invoke(null, component, 0, false);
         } catch (InvocationTargetException exception) {
             Throwable cause = exception.getCause();
             if (cause instanceof Exception nestedException) {
@@ -70,25 +64,7 @@ public class FlatInspectorTest {
             }
             throw exception;
         } finally {
-            restoreProperty("java.version", originalJavaVersion);
             restoreProperty("java.home", originalJavaHome);
-        }
-    }
-
-    private static URL[] classPathUrls() throws MalformedURLException {
-        String[] entries = System.getProperty("java.class.path").split(File.pathSeparator);
-        URL[] urls = new URL[entries.length];
-        for (int i = 0; i < entries.length; i++) {
-            urls[i] = new File(entries[i]).toURI().toURL();
-        }
-        return urls;
-    }
-
-    private static void restoreProperty(String key, String value) {
-        if (value != null) {
-            System.setProperty(key, value);
-        } else {
-            System.clearProperty(key);
         }
     }
 
@@ -103,55 +79,26 @@ public class FlatInspectorTest {
         }
     }
 
-    private static void rethrowIfNotNativeImageDynamicClassLoadingFailure(Throwable throwable) throws Exception {
-        if (hasUnsupportedFeatureError(throwable)) {
-            return;
+    private static void restoreProperty(String key, String value) {
+        if (value != null) {
+            System.setProperty(key, value);
+        } else {
+            System.clearProperty(key);
         }
-
-        if (throwable instanceof Exception exception) {
-            throw exception;
-        }
-        if (throwable instanceof Error error) {
-            throw error;
-        }
-        throw new AssertionError(throwable);
     }
 
-    private static boolean hasUnsupportedFeatureError(Throwable throwable) {
-        Throwable current = throwable;
-        while (current != null) {
-            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
-                return true;
-            }
-            current = current.getCause();
+    private static final class TestComponent extends JComponent {
+        private TestComponent() {
+            setUI(new TestComponentUi());
+            setBackground(Color.WHITE);
+            setForeground(Color.BLACK);
+            setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
+            setMinimumSize(new Dimension(16, 8));
+            setPreferredSize(new Dimension(64, 24));
+            setMaximumSize(new Dimension(128, 48));
         }
-        return false;
     }
 
-    private static final class FlatLafClassLoader extends URLClassLoader {
-        private FlatLafClassLoader(URL[] urls) {
-            super(urls, FlatInspectorTest.class.getClassLoader());
-        }
-
-        @Override
-        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-            synchronized (getClassLoadingLock(name)) {
-                Class<?> cls = findLoadedClass(name);
-                if (cls == null) {
-                    cls = loadNewClass(name);
-                }
-                if (resolve) {
-                    resolveClass(cls);
-                }
-                return cls;
-            }
-        }
-
-        private Class<?> loadNewClass(String name) throws ClassNotFoundException {
-            if (name.startsWith("com.formdev.")) {
-                return findClass(name);
-            }
-            return super.loadClass(name, false);
-        }
+    private static final class TestComponentUi extends ComponentUI {
     }
 }
