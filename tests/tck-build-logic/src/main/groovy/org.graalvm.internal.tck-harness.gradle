@@ -491,6 +491,28 @@ List<Map<String, Object>> changedMetadataTestEntries(
     entries
 }
 
+void writeChangedMetadataTestMatrix(String matrixSection, List<String> changedCoordinates) {
+    int versionsPerJob = versionsPerJobFor(matrixSection)
+    String base = project.property("baseCommit")
+    String head = project.findProperty("newCommit") ?: "HEAD"
+    List<Map<String, Object>> testEntries = changedMetadataTestEntries(base, head, versionsPerJob, changedCoordinates)
+    boolean noneFound = testEntries.isEmpty()
+    List<Map<String, Object>> include = noneFound
+            ? []
+            : expandMatrixEntries(testEntries, matrixSection)
+    def matrix = [include: include]
+    if (noneFound) {
+        println "No changed metadata test entries were found!"
+    }
+    println "Changed metadata test entries:"
+    testEntries.each { entry ->
+        println " - ${entry["coordinates"]}: ${(entry["versions"] as List<?>).join(", ")}"
+    }
+
+    writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+    writeGithubOutput("none-found", noneFound.toString())
+}
+
 // gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
 Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatrixMatchingCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with all matching coordinates")
@@ -559,26 +581,19 @@ Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChang
         if (!project.hasProperty("baseCommit")) {
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
+        writeChangedMetadataTestMatrix("generateChangedMetadataTestMatrix", diffCoordinates)
+    }
+}
 
-        int versionsPerJob = versionsPerJobFor("generateChangedMetadataTestMatrix")
-        String base = project.property("baseCommit")
-        String head = project.findProperty("newCommit") ?: "HEAD"
-        List<Map<String, Object>> testEntries = changedMetadataTestEntries(base, head, versionsPerJob, diffCoordinates)
-        boolean noneFound = testEntries.isEmpty()
-        List<Map<String, Object>> include = noneFound
-                ? []
-                : expandMatrixEntries(testEntries, "generateChangedMetadataTestMatrix")
-        def matrix = [include: include]
-        if (noneFound) {
-            println "No changed metadata test entries were found!"
+// gradle generateChangedTestedVersionsMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+tasks.register("generateChangedTestedVersionsMatrix", DefaultTask) { task ->
+    task.setDescription("Compatibility alias for generateChangedMetadataTestMatrix")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
-        println "Changed metadata test entries:"
-        testEntries.each { entry ->
-            println " - ${entry["coordinates"]}: ${(entry["versions"] as List<?>).join(", ")}"
-        }
-
-        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
-        writeGithubOutput("none-found", noneFound.toString())
+        writeChangedMetadataTestMatrix("generateChangedMetadataTestMatrix", diffCoordinates)
     }
 }
 
