@@ -9,11 +9,17 @@ package org_specs2.specs2_matcher_3
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.specs2.execute.Error
+import org.specs2.execute.Failure as SpecsFailure
+import org.specs2.execute.Pending
 import org.specs2.execute.Result
+import org.specs2.execute.Skipped
+import org.specs2.execute.Success as SpecsSuccess
 import org.specs2.matcher.DataTables
 import org.specs2.matcher.MatchResult
 import org.specs2.matcher.Matcher
 import org.specs2.matcher.MustMatchers
+import org.specs2.matcher.ResultMatchers
 
 import scala.util.Failure
 import scala.util.Success
@@ -107,6 +113,19 @@ class Specs2_matcher_3Test extends MustMatchers with DataTables {
     assertFailed((5 must be_>(10)) or (5 must be_<(0)))
     assertSuccessful(describedResult)
     assertTrue(describedResult.message.contains("artifact name"), describedResult.message)
+  }
+
+  @Test
+  def resultMatchersDistinguishExecutionStatusesAndMessages(): Unit = {
+    assertSuccessful(SpecsSuccess("calculation completed") must ResultMatchers.beSuccessful[Result])
+    assertSuccessful(SpecsFailure("expected a positive total") must ResultMatchers.beFailing[Result](".*positive total.*"))
+    assertSuccessful(Error("socket timeout") must ResultMatchers.beError[Result](".*socket timeout.*"))
+    assertSuccessful(Skipped("external service unavailable") must ResultMatchers.beSkipped[Result](".*service unavailable.*"))
+    assertSuccessful(Pending("scenario not implemented") must ResultMatchers.bePending[Result](".*not implemented.*"))
+
+    assertFailed(SpecsSuccess("calculation completed") must ResultMatchers.beFailing[Result])
+    assertFailed(SpecsFailure("expected a positive total") must ResultMatchers.beSuccessful[Result])
+    assertFailed(Skipped("external service unavailable") must ResultMatchers.bePending[Result])
   }
 
   @Test
