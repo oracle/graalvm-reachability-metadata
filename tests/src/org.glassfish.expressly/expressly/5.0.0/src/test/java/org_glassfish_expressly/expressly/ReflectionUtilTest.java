@@ -34,8 +34,8 @@ public class ReflectionUtilTest {
         Method method = ReflectionUtil.findMethod(
                 HiddenInterfaceGreeting.class,
                 "greet",
-                new Class<?>[] { String.class },
-                new Object[] { "Duke" });
+                new Class<?>[] {String.class},
+                new Object[] {"Duke"});
 
         assertThat(method).isNotNull();
         assertThat(method.getDeclaringClass()).isEqualTo(Greeting.class);
@@ -46,8 +46,8 @@ public class ReflectionUtilTest {
         Method method = ReflectionUtil.findMethod(
                 HiddenBaseGreeting.class,
                 "inheritedGreeting",
-                new Class<?>[] { String.class },
-                new Object[] { "Duke" });
+                new Class<?>[] {String.class},
+                new Object[] {"Duke"});
 
         assertThat(method).isNotNull();
         assertThat(method.getDeclaringClass()).isEqualTo(BaseGreeting.class);
@@ -57,11 +57,11 @@ public class ReflectionUtilTest {
     void invokesVarArgsMethodWithConvertedParameters() {
         ELContext context = new StandardELContext(new ExpressionFactoryImpl());
         VarArgsTarget target = new VarArgsTarget();
-        Object[] arguments = new Object[] { "hello", "native", "image" };
+        Object[] arguments = new Object[] {"hello", "native", "image"};
         Method method = ReflectionUtil.findMethod(
                 VarArgsTarget.class,
                 "join",
-                new Class<?>[] { String.class, String.class, String.class },
+                new Class<?>[] {String.class, String.class, String.class},
                 arguments);
 
         Object result = ReflectionUtil.invokeMethod(context, method, target, arguments);

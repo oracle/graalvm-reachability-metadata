@@ -26,7 +26,7 @@ public class ELSupportTest {
     void coercesArrayElementsToRequestedComponentType() {
         ELContext context = new StandardELContext(new ExpressionFactoryImpl());
 
-        Integer[] value = ELSupport.coerceToType(context, new String[] { "1", "2", "3" }, Integer[].class);
+        Integer[] value = ELSupport.coerceToType(context, new String[] {"1", "2", "3" }, Integer[].class);
 
         assertThat(value).containsExactly(1, 2, 3);
     }

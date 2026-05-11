@@ -31,7 +31,7 @@ public class ELSupportInnerLambdaHandlerTest {
         ELSupport.LambdaHandler lambdaHandler = new ELSupport.LambdaHandler(elContext, lambdaExpression);
         Method greetingMethod = Greeting.class.getMethod("greeting", String.class);
 
-        Object greeting = lambdaHandler.invoke(new GreetingReceiver(), greetingMethod, new Object[] { "Expressly" });
+        Object greeting = lambdaHandler.invoke(new GreetingReceiver(), greetingMethod, new Object[] {"Expressly"});
 
         assertThat(greeting).isEqualTo("Hello, Expressly");
     }
