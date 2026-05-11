@@ -235,6 +235,38 @@ public class Spring_security_configTest {
         }
     }
 
+    @Test
+    void authenticationConfigurationUsesUserDetailsServiceBeanAndPasswordEncoderBean() throws Exception {
+        PasswordEncoder passwordEncoder = new PrefixPasswordEncoder();
+        UserDetailsService userDetailsService = new InMemoryUserDetailsManager(User.withUsername("reporter")
+                .password(passwordEncoder.encode("changeit"))
+                .roles("REPORTER")
+                .build());
+        ObjectPostProcessor<Object> objectPostProcessor = new RecordingObjectPostProcessor(new ArrayList<>());
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            context.registerBean(UserDetailsService.class, () -> userDetailsService);
+            context.registerBean(PasswordEncoder.class, () -> passwordEncoder);
+            context.registerBean(AuthenticationManagerBuilder.class,
+                    () -> new AuthenticationManagerBuilder(objectPostProcessor));
+            context.refresh();
+            AuthenticationConfiguration configuration = new AuthenticationConfiguration();
+            configuration.setApplicationContext(context);
+            configuration.setObjectPostProcessor(objectPostProcessor);
+            configuration.setGlobalAuthenticationConfigurers(new ArrayList<>(
+                    List.of(AuthenticationConfiguration.initializeUserDetailsBeanManagerConfigurer(context))));
+
+            AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
+            Authentication authentication = authenticationManager.authenticate(
+                    UsernamePasswordAuthenticationToken.unauthenticated("reporter", "changeit"));
+
+            assertThat(authentication.isAuthenticated()).isTrue();
+            assertThat(authentication.getName()).isEqualTo("reporter");
+            assertThat(authentication.getAuthorities())
+                    .extracting(GrantedAuthority::getAuthority)
+                    .containsExactly("ROLE_REPORTER");
+        }
+    }
+
     private static UserDetails userNamed(Collection<UserDetails> users, String username) {
         return users.stream()
                 .filter(user -> username.equals(user.getUsername()))
