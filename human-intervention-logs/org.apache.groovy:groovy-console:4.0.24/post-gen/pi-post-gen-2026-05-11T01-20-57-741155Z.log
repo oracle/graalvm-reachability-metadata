@@ -1,0 +1,12 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Handled the post-generation intervention.
+
+Changes made:
+- Removed the non-metadata-related failing generated test:
+  - `tests/src/org.apache.groovy/groovy-console/4.0.24/src/test/groovy/org_apache_groovy/groovy_console/Groovy_consoleTest.groovy`
+- Wrote the required report:
+  - `post-gen-interventions/org.apache.groovy_groovy-console_4.0.24.md`
+
+Root cause recorded in the report:
+- All eight native test failures came from the generated Groovy test class hitting Groovy invokedynamic/native-image bootstrap failure in `IndyInterface` / `MethodHandles.insertArgumentsChecks`, not from missing reachability metadata.
+- No metadata files were modified during this intervention.
