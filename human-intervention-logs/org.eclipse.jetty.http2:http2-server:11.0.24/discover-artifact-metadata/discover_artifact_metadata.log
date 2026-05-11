@@ -1,0 +1,1547 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e193a-a6cf-78e0-9d5e-064ef6a534c4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.eclipse.jetty.http2:http2-server:11.0.24
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "11.0.24" when "$version$" is replaced with "11.0.24".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+- Set "coordinates" to "org.eclipse.jetty.http2:http2-server:11.0.24".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "11.0.24".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata shape, then verify Jetty’s Maven and upstream tag URLs before editing the JSON directly.
+exec
+/usr/bin/bash -lc "if [ -f build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json ]; then sed -n '1,200p' build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json; else printf 'missing\\n'; fi" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+{
+  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.eclipse.jetty.http2 http2-server 11.0.24 sources test-sources
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org eclipse jetty http2 http2-server 11.0.24 pom
+web search: 
+web search: github eclipse jetty.project tag jetty-11.0.24 http2-server tests
+codex
+Maven Central publishes the main JAR, source JAR, and javadoc JAR for `11.0.24`; I’m checking the POM and the upstream tag now to decide whether tests should use a Maven test artifact or the tagged source tree.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/http2-server-11.0.24.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.jetty.http2</groupId>
+    <artifactId>http2-parent</artifactId>
+    <version>11.0.24</version>
+  </parent>
+  <artifactId>http2-server</artifactId>
+  <name>Jetty :: HTTP2 :: Server</name>
+
+  <properties>
+    <bundle-symbolic-name>${project.groupId}.server</bundle-symbolic-name>
+    <manual.test.port>28888</manual.test.port>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.http2</groupId>
+      <artifactId>http2-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-alpn-server</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlets</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-slf4j-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-test-helper</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>@{argLine} ${jetty.surefire.argLine}
+            --add-modules jetty.servlet.api
+            --add-reads org.eclipse.jetty.http2.server=jetty.servlet.api
+            --add-reads org.eclipse.jetty.http2.server=org.eclipse.jetty.logging</argLine>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>h2spec-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>org.eclipse.jetty.http2.server.H2SpecServer</mainClass>
+          <skip>${skipTests}</skip>
+          <junitPackage>org.eclipse.jetty.h2spec</junitPackage>
+          <skipNoDockerAvailable>true</skipNoDockerAvailable>
+          <reportsDirectory>${project.build.directory}/h2spec-reports</reportsDirectory>
+          <testFailureIgnore>true</testFailureIgnore>
+          <excludeSpecs>
+            <excludeSpec>3.5 - Sends invalid connection preface</excludeSpec>
+          </excludeSpecs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>h2spec</id>
+            <goals>
+              <goal>h2spec</goal>
+            </goals>
+            <phase>test</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>run-spec-server</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>spec-server-run</id>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <phase>test</phase>
+                <configuration>
+                  <mainClass>org.eclipse.jetty.http2.server.H2SpecServer</mainClass>
+                  <classpathScope>test</classpathScope>
+                  <arguments>
+                    <argument>${manual.test.port}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jetty/jetty.project/git/ref/tags/jetty-11.0.24' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/ | rg 'test|source|javadoc|\\.jar|\\.pom'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+<a href="http2-server-11.0.24-config.jar" title="http2-server-11.0.24-config.jar">http2-server-11.0.24-config.jar</a>                   2024-08-26 18:14      2669      
+<a href="http2-server-11.0.24-config.jar.asc" title="http2-server-11.0.24-config.jar.asc">http2-server-11.0.24-config.jar.asc</a>               2024-08-26 18:14       870      
+<a href="http2-server-11.0.24-config.jar.md5" title="http2-server-11.0.24-config.jar.md5">http2-server-11.0.24-config.jar.md5</a>               2024-08-26 18:14        32      
+<a href="http2-server-11.0.24-config.jar.sha1" title="http2-server-11.0.24-config.jar.sha1">http2-server-11.0.24-config.jar.sha1</a>              2024-08-26 18:14        40      
+<a href="http2-server-11.0.24-javadoc.jar" title="http2-server-11.0.24-javadoc.jar">http2-server-11.0.24-javadoc.jar</a>                  2024-08-26 18:14    189975      
+<a href="http2-server-11.0.24-javadoc.jar.asc" title="http2-server-11.0.24-javadoc.jar.asc">http2-server-11.0.24-javadoc.jar.asc</a>              2024-08-26 18:14       870      
+<a href="http2-server-11.0.24-javadoc.jar.md5" title="http2-server-11.0.24-javadoc.jar.md5">http2-server-11.0.24-javadoc.jar.md5</a>              2024-08-26 18:14        32      
+<a href="http2-server-11.0.24-javadoc.jar.sha1" title="http2-server-11.0.24-javadoc.jar.sha1">http2-server-11.0.24-javadoc.jar.sha1</a>             2024-08-26 18:14        40      
+<a href="http2-server-11.0.24-sources.jar" title="http2-server-11.0.24-sources.jar">http2-server-11.0.24-sources.jar</a>                  2024-08-26 18:14     38257      
+<a href="http2-server-11.0.24-sources.jar.asc" title="http2-server-11.0.24-sources.jar.asc">http2-server-11.0.24-sources.jar.asc</a>              2024-08-26 18:14       870      
+<a href="http2-server-11.0.24-sources.jar.md5" title="http2-server-11.0.24-sources.jar.md5">http2-server-11.0.24-sources.jar.md5</a>              2024-08-26 18:14        32      
+<a href="http2-server-11.0.24-sources.jar.sha1" title="http2-server-11.0.24-sources.jar.sha1">http2-server-11.0.24-sources.jar.sha1</a>             2024-08-26 18:14        40      
+<a href="http2-server-11.0.24.jar" title="http2-server-11.0.24.jar">http2-server-11.0.24.jar</a>                          2024-08-26 18:14     71618      
+<a href="http2-server-11.0.24.jar.asc" title="http2-server-11.0.24.jar.asc">http2-server-11.0.24.jar.asc</a>                      2024-08-26 18:14       870      
+<a href="http2-server-11.0.24.jar.md5" title="http2-server-11.0.24.jar.md5">http2-server-11.0.24.jar.md5</a>                      2024-08-26 18:14        32      
+<a href="http2-server-11.0.24.jar.sha1" title="http2-server-11.0.24.jar.sha1">http2-server-11.0.24.jar.sha1</a>                     2024-08-26 18:14        40      
+<a href="http2-server-11.0.24.pom" title="http2-server-11.0.24.pom">http2-server-11.0.24.pom</a>                          2024-08-26 18:14      4087      
+<a href="http2-server-11.0.24.pom.asc" title="http2-server-11.0.24.pom.asc">http2-server-11.0.24.pom.asc</a>                      2024-08-26 18:14       870      
+<a href="http2-server-11.0.24.pom.md5" title="http2-server-11.0.24.pom.md5">http2-server-11.0.24.pom.md5</a>                      2024-08-26 18:14        32      
+<a href="http2-server-11.0.24.pom.sha1" title="http2-server-11.0.24.pom.sha1">http2-server-11.0.24.pom.sha1</a>                     2024-08-26 18:14        40      
+
+ succeeded in 193ms:
+{
+  "ref": "refs/tags/jetty-11.0.24",
+  "node_id": "MDM6UmVmMjA0NTIwNzpyZWZzL3RhZ3MvamV0dHktMTEuMC4yNA==",
+  "url": "https://api.github.com/repos/jetty/jetty.project/git/refs/tags/jetty-11.0.24",
+  "object": {
+    "sha": "921ddef0cd5b49154f475527e32c9b9a9f1e210e",
+    "type": "tag",
+    "url": "https://api.github.com/repos/jetty/jetty.project/git/tags/921ddef0cd5b49154f475527e32c9b9a9f1e210e"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/main/java?ref=jetty-11.0.24 | head -80' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/test?ref=jetty-11.0.24 | head -80' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/http2-server-11.0.24.jar -o /tmp/http2-server-11.0.24.jar && jar tf /tmp/http2-server-11.0.24.jar | head -50' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/eclipse/
+org/eclipse/jetty/
+org/eclipse/jetty/http2/
+org/eclipse/jetty/http2/server/
+META-INF/maven/
+META-INF/maven/org.eclipse.jetty.http2/
+META-INF/maven/org.eclipse.jetty.http2/http2-server/
+META-INF/NOTICE.txt
+META-INF/LICENSE
+org/eclipse/jetty/http2/server/HttpTransportOverHTTP2$SendTrailers.class
+org/eclipse/jetty/http2/server/HTTP2ServerConnectionFactory$HTTPServerSessionListener.class
+org/eclipse/jetty/http2/server/RawHTTP2ServerConnectionFactory$RawServerSessionListener.class
+org/eclipse/jetty/http2/server/HttpChannelOverHTTP2$FailureTask.class
+org/eclipse/jetty/http2/server/HttpTransportOverHTTP2$State.class
+org/eclipse/jetty/http2/server/HTTP2ServerSession.class
+org/eclipse/jetty/http2/server/AbstractHTTP2ServerConnectionFactory.class
+org/eclipse/jetty/http2/server/HttpChannelOverHTTP2$DemandingContent.class
+org/eclipse/jetty/http2/server/HttpTransportOverHTTP2$1.class
+org/eclipse/jetty/http2/server/HttpChannelOverHTTP2.class
+org/eclipse/jetty/http2/server/HTTP2ServerConnection.class
+org/eclipse/jetty/http2/server/HttpChannelOverHTTP2$ContentDemander.class
+org/eclipse/jetty/http2/server/HTTP2ServerConnectionFactory.class
+org/eclipse/jetty/http2/server/AbstractHTTP2ServerConnectionFactory$HTTP2SessionContainer.class
+org/eclipse/jetty/http2/server/HTTP2ServerSession$1.class
+org/eclipse/jetty/http2/server/RawHTTP2ServerConnectionFactory.class
+org/eclipse/jetty/http2/server/HttpTransportOverHTTP2.class
+org/eclipse/jetty/http2/server/HTTP2ServerConnection$ServerHttpChannelOverHTTP2.class
+org/eclipse/jetty/http2/server/HTTP2CServerConnectionFactory.class
+org/eclipse/jetty/http2/server/HttpTransportOverHTTP2$TransportCallback.class
+org/eclipse/jetty/http2/server/ServerHTTP2StreamEndPoint.class
+org/eclipse/jetty/http2/server/HttpChannelOverHTTP2$1.class
+META-INF/maven/org.eclipse.jetty.http2/http2-server/pom.xml
+META-INF/maven/org.eclipse.jetty.http2/http2-server/pom.properties
+module-info.class
+
+ succeeded in 159ms:
+[
+  {
+    "name": "module-info.java",
+    "path": "jetty-http2/http2-server/src/main/java/module-info.java",
+    "sha": "bc46656b24ed84cda26a631e92aef27d0ee816a4",
+    "size": 786,
+    "url": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/main/java/module-info.java?ref=jetty-11.0.24",
+    "html_url": "https://github.com/jetty/jetty.project/blob/jetty-11.0.24/jetty-http2/http2-server/src/main/java/module-info.java",
+    "git_url": "https://api.github.com/repos/jetty/jetty.project/git/blobs/bc46656b24ed84cda26a631e92aef27d0ee816a4",
+    "download_url": "https://raw.githubusercontent.com/jetty/jetty.project/jetty-11.0.24/jetty-http2/http2-server/src/main/java/module-info.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/main/java/module-info.java?ref=jetty-11.0.24",
+      "git": "https://api.github.com/repos/jetty/jetty.project/git/blobs/bc46656b24ed84cda26a631e92aef27d0ee816a4",
+      "html": "https://github.com/jetty/jetty.project/blob/jetty-11.0.24/jetty-http2/http2-server/src/main/java/module-info.java"
+    }
+  },
+  {
+    "name": "org",
+    "path": "jetty-http2/http2-server/src/main/java/org",
+    "sha": "79d121a554fb3501cc04d3ae4734baa6ae1d7349",
+    "size": 0,
+    "url": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/main/java/org?ref=jetty-11.0.24",
+    "html_url": "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-http2/http2-server/src/main/java/org",
+    "git_url": "https://api.github.com/repos/jetty/jetty.project/git/trees/79d121a554fb3501cc04d3ae4734baa6ae1d7349",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/main/java/org?ref=jetty-11.0.24",
+      "git": "https://api.github.com/repos/jetty/jetty.project/git/trees/79d121a554fb3501cc04d3ae4734baa6ae1d7349",
+      "html": "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-http2/http2-server/src/main/java/org"
+    }
+  }
+]
+
+ succeeded in 163ms:
+[
+  {
+    "name": "java",
+    "path": "jetty-http2/http2-server/src/test/java",
+    "sha": "569d208fdadf997fbbff770ea1bb17aa98aea85c",
+    "size": 0,
+    "url": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/test/java?ref=jetty-11.0.24",
+    "html_url": "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-http2/http2-server/src/test/java",
+    "git_url": "https://api.github.com/repos/jetty/jetty.project/git/trees/569d208fdadf997fbbff770ea1bb17aa98aea85c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/test/java?ref=jetty-11.0.24",
+      "git": "https://api.github.com/repos/jetty/jetty.project/git/trees/569d208fdadf997fbbff770ea1bb17aa98aea85c",
+      "html": "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-http2/http2-server/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "jetty-http2/http2-server/src/test/resources",
+    "sha": "89f1962ad2c5119652ec77e7007f05aaae120e5c",
+    "size": 0,
+    "url": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/test/resources?ref=jetty-11.0.24",
+    "html_url": "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-http2/http2-server/src/test/resources",
+    "git_url": "https://api.github.com/repos/jetty/jetty.project/git/trees/89f1962ad2c5119652ec77e7007f05aaae120e5c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/test/resources?ref=jetty-11.0.24",
+      "git": "https://api.github.com/repos/jetty/jetty.project/git/trees/89f1962ad2c5119652ec77e7007f05aaae120e5c",
+      "html": "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-http2/http2-server/src/test/resources"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"\\s*:' . | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:259:                    "documentation-url": "https://example.com/docs-a",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:30:                    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:63:                    "documentation-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-common-protos/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-common-protos/$version$/proto-google-common-protos-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta1/$version$/proto-google-cloud-bigquerystorage-v1beta1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-instance-v1/$version$/grpc-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-database-v1/$version$/proto-google-cloud-spanner-admin-database-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-executor-v1/$version$/grpc-google-cloud-spanner-executor-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1alpha/$version$/proto-google-cloud-bigquerystorage-v1alpha-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta/$version$/proto-google-cloud-bigquerystorage-v1beta-$version$-javadoc.jar",
+./metadata/ru.vyarus/generics-resolver/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-javadoc.jar",
+./metadata/dev.zio/zio_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio_3/$version$/zio_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-test_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-test_3/$version$/zio-test_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_2.13/$version$/zio-internal-macros_2.13-$version$-javadoc.jar",
+./metadata/dev.zio/zio-http_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-logging_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-logging_2.13/$version$/zio-logging_2.13-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/izumi-reflect-thirdparty-boopickle-shaded_2.13-2.3.8-javadoc.jar",
+./metadata/dev.zio/zio-schema_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema_3/$version$/zio-schema_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-schema-derivation_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-derivation_3/$version$/zio-schema-derivation_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-prelude_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude_3/$version$/zio-prelude_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-interop-cats_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-schema-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-managed_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-managed_3/$version$/zio-managed_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-json_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-json_3/$version$/zio-json_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-prelude-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude-macros_3/$version$/zio-prelude-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-config-typesafe_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config-typesafe_3/$version$/zio-config-typesafe_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-interop-tracer_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-tracer_3/$version$/zio-interop-tracer_3-$version$-javadoc.jar",
+./metadata/org.scalatra/scalatra-common_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatra/scalatra-common_3/$version$/scalatra-common_3-$version$-javadoc.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.apache.arrow/arrow-memory-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-javadoc.jar",
+./metadata/org.apache.arrow/arrow-memory-core/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-javadoc.jar",
+./metadata/com.monovore/decline_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/monovore/decline_3/$version$/decline_3-$version$-javadoc.jar",
+./metadata/com.monovore/decline-effect_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/monovore/decline-effect_3/$version$/decline-effect_3-$version$-javadoc.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+./metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/com.chuusai/shapeless_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/chuusai/shapeless_2.13/$version$/shapeless_2.13-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-parent/11.0.24/http2-parent-11.0.24.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.jetty</groupId>
+    <artifactId>jetty-project</artifactId>
+    <version>11.0.24</version>
+  </parent>
+  <groupId>org.eclipse.jetty.http2</groupId>
+  <artifactId>http2-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>Jetty :: HTTP2</name>
+
+  <modules>
+    <module>http2-client</module>
+    <module>http2-common</module>
+    <module>http2-hpack</module>
+    <module>http2-http-client-transport</module>
+    <module>http2-server</module>
+  </modules>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/test/java?ref=jetty-11.0.24 | rg 'html_url|name' | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 160ms:
+    "name": "org",
+    "html_url": "https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-http2/http2-server/src/test/java/org",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-project/11.0.24/jetty-project-11.0.24.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-project</artifactId>
+  <version>11.0.24</version>
+  <packaging>pom</packaging>
+  <name>Jetty :: Project</name>
+  <description>The Eclipse Jetty Project</description>
+  <url>https://jetty.org</url>
+  <inceptionYear>1995</inceptionYear>
+
+  <organization>
+    <name>Webtide</name>
+    <url>https://webtide.com</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License - Version 2.0</name>
+      <url>https://www.eclipse.org/legal/epl-2.0/</url>
+    </license>
+    <license>
+      <name>Apache Software License - Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>gregw</id>
+      <name>Greg Wilkins</name>
+      <email>gregw@webtide.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>janb</id>
+      <name>Jan Bartel</name>
+      <email>janb@webtide.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>jesse</id>
+      <name>Jesse McConnell</name>
+      <email>jesse.mcconnell@gmail.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>-6</timezone>
+    </developer>
+    <developer>
+      <id>joakime</id>
+      <name>Joakim Erdfelt</name>
+      <email>joakim.erdfelt@gmail.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>-6</timezone>
+    </developer>
+    <developer>
+      <id>sbordet</id>
+      <name>Simone Bordet</name>
+      <email>simone.bordet@gmail.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>1</timezone>
+    </developer>
+    <developer>
+      <id>djencks</id>
+      <name>David Jencks</name>
+      <email>david.a.jencks@gmail.com</email>
+      <organization>IBM</organization>
+      <timezone>-8</timezone>
+    </developer>
+    <developer>
+      <id>olamy</id>
+      <name>Olivier Lamy</name>
+      <email>oliver.lamy@gmail.com</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>Australia/Brisbane</timezone>
+    </developer>
+    <developer>
+      <id>lorban</id>
+      <name>Ludovic Orban</name>
+      <email>lorban@bitronix.be</email>
+      <organization>Webtide, LLC</organization>
+      <organizationUrl>https://webtide.com</organizationUrl>
+      <timezone>1</timezone>
+    </developer>
+  </developers>
+
+  <mailingLists>
+    <mailingList>
+      <name>Jetty Developer Mailing List</name>
+      <subscribe>https://accounts.eclipse.org/mailing-list/jetty-dev</subscribe>
+      <archive>https://www.eclipse.org/lists/jetty-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Jetty Users Mailing List</name>
+      <subscribe>https://accounts.eclipse.org/mailing-list/jetty-users</subscribe>
+      <archive>https://www.eclipse.org/lists/jetty-users/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Jetty Announce Mailing List</name>
+      <subscribe>https://accounts.eclipse.org/mailing-list/jetty-announce</subscribe>
+      <archive>https://www.eclipse.org/lists/jetty-announce/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <modules>
+    <module>apache-jsp</module>
+    <module>build-resources</module>
+    <module>demos</module>
+    <module>documentation</module>
+    <module>glassfish-jstl</module>
+    <module>javadoc</module>
+    <module>jetty-alpn</module>
+    <module>jetty-annotations</module>
+    <module>jetty-ant</module>
+    <module>jetty-bom</module>
+    <module>jetty-cdi</module>
+    <module>jetty-client</module>
+    <module>jetty-deploy</module>
+    <module>jetty-fcgi</module>
+    <module>jetty-gcloud</module>
+    <module>jetty-hazelcast</module>
+    <module>jetty-home</module>
+    <module>jetty-http</module>
+    <module>jetty-http-spi</module>
+    <module>jetty-http2</module>
+    <module>jetty-http3</module>
+    <module>jetty-infinispan</module>
+    <module>jetty-io</module>
+    <module>jetty-jaas</module>
+    <module>jetty-jaspi</module>
+    <module>jetty-jmx</module>
+    <module>jetty-jndi</module>
+    <module>jetty-jspc-maven-plugin</module>
+    <module>jetty-keystore</module>
+    <module>jetty-maven-plugin</module>
+    <module>jetty-memcached</module>
+    <module>jetty-nosql</module>
+    <module>jetty-openid</module>
+    <module>jetty-osgi</module>
+    <module>jetty-plus</module>
+    <module>jetty-proxy</module>
+    <module>jetty-quic</module>
+    <module>jetty-quickstart</module>
+    <module>jetty-rewrite</module>
+    <module>jetty-runner</module>
+    <module>jetty-security</module>
+    <module>jetty-server</module>
+    <module>jetty-servlet</module>
+    <module>jetty-servlets</module>
+    <module>jetty-slf4j-impl</module>
+    <module>jetty-start</module>
+    <module>jetty-unixdomain-server</module>
+    <module>jetty-unixsocket</module>
+    <module>jetty-util</module>
+    <module>jetty-util-ajax</module>
+    <module>jetty-webapp</module>
+    <module>jetty-websocket</module>
+    <module>jetty-xml</module>
+    <module>tests</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:https://github.com/jetty/jetty.project.git</connection>
+    <developerConnection>scm:git:git@github.com:jetty/jetty.project.git</developerConnection>
+    <url>https://github.com/jetty/jetty.project</url>
+  </scm>
+
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/jetty/jetty.project/issues</url>
+  </issueManagement>
+
+  <distributionManagement>
+    <repository>
+      <id>oss.sonatype.org</id>
+      <name>Jetty Staging Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>oss.sonatype.org</id>
+      <name>Jetty Snapshot Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/jetty-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <properties>
+    <alpn.agent.version>2.0.10</alpn.agent.version>
+    <ant.version>1.10.14</ant.version>
+    <apache.avro.version>1.11.3</apache.avro.version>
+    <apache.httpclient.version>4.5.14</apache.httpclient.version>
+    <apache.httpcore.version>4.4.16</apache.httpcore.version>
+    <asm.version>9.7</asm.version>
+    <awaitility.version>4.2.1</awaitility.version>
+    <bndlib.version>6.4.1</bndlib.version>
+    <build-helper.maven.plugin.version>3.6.0</build-helper.maven.plugin.version>
+    <build-support.version>1.5</build-support.version>
+    <buildnumber.maven.plugin.version>3.2.0</buildnumber.maven.plugin.version>
+    <checkstyle.version>10.17.0</checkstyle.version>
+    <commons-codec.version>1.17.1</commons-codec.version>
+    <commons-lang3.version>3.15.0</commons-lang3.version>
+    <commons.compress.version>1.26.2</commons.compress.version>
+    <commons.io.version>2.16.1</commons.io.version>
+    <compiler.release>11</compiler.release>
+    <compiler.source>11</compiler.source>
+    <compiler.target>11</compiler.target>
+    <conscrypt.version>2.5.2</conscrypt.version>
+    <depends.maven.plugin.version>1.5.0</depends.maven.plugin.version>
+    <disruptor.version>3.4.2</disruptor.version>
+    <felix.version>7.0.5</felix.version>
+    <findbugs.jsr305.version>3.0.2</findbugs.jsr305.version>
+    <flatten.maven.plugin.version>1.6.0</flatten.maven.plugin.version>
+    <google.errorprone.version>2.29.2</google.errorprone.version>
+    <groovy.version>4.0.6</groovy.version>
+    <grpc.version>1.65.1</grpc.version>
+    <gson.version>2.11.0</gson.version>
+    <guava.version>33.2.1-jre</guava.version>
+    <guice.version>5.1.0</guice.version>
+    <h2spec.maven.plugin.version>1.0.12</h2spec.maven.plugin.version>
+    <hamcrest.version>2.2</hamcrest.version>
+    <hawtio.version>3.0.2</hawtio.version>
+    <hazelcast.version>5.3.7</hazelcast.version>
+    <infinispan.protostream.version>4.6.5.Final</infinispan.protostream.version>
+    <infinispan.version>11.0.19.Final</infinispan.version>
+    <invoker.mergeUserSettings>false</invoker.mergeUserSettings>
+    <it.debug>false</it.debug>
+    <jackson.version>2.17.2</jackson.version>
+    <jacoco.maven.plugin.version>0.8.12</jacoco.maven.plugin.version>
+    <jakarta.activation.api.version>2.0.1</jakarta.activation.api.version>
+    <jakarta.annotation.api.version>2.1.1</jakarta.annotation.api.version>
+    <jakarta.authentication.api.version>2.0.0</jakarta.authentication.api.version>
+    <jakarta.el.api.version>4.0.0</jakarta.el.api.version>
+    <jakarta.enterprise.cdi.api.version>3.0.1</jakarta.enterprise.cdi.api.version>
+    <jakarta.inject.api.version>2.0.1</jakarta.inject.api.version>
+    <jakarta.interceptor.api.version>2.0.1</jakarta.interceptor.api.version>
+    <jakarta.mail.api.version>2.0.1</jakarta.mail.api.version>
+    <jakarta.security.auth.message.version>1.1.3</jakarta.security.auth.message.version>
+    <jakarta.servlet.api.version>5.0.0</jakarta.servlet.api.version>
+    <jakarta.servlet.jsp.api.version>3.0.0</jakarta.servlet.jsp.api.version>
+    <jakarta.servlet.jsp.jstl.api.version>2.0.0</jakarta.servlet.jsp.jstl.api.version>
+    <jakarta.servlet.jsp.jstl.impl.version>2.0.0</jakarta.servlet.jsp.jstl.impl.version>
+    <!-- TODO: remove? -->
+    <jakarta.transaction-api.version>2.0.0</jakarta.transaction-api.version>
+    <jakarta.websocket.api.version>2.0.0</jakarta.websocket.api.version>
+    <jakarta.ws.rs.api.version>3.1.0</jakarta.ws.rs.api.version>
+    <jakarta.xml.bind.api.version>3.0.1</jakarta.xml.bind.api.version>
+    <jakarta.xml.bind.impl.version>3.0.2</jakarta.xml.bind.impl.version>
+    <jakarta.xml.jaxws.impl.version>3.0.2</jakarta.xml.jaxws.impl.version>
+    <jakarta.xml.ws.api.version>3.0.1</jakarta.xml.ws.api.version>
+    <jamon.version>2.82</jamon.version>
+    <javax.activation.impl.version>1.1.0.v201105071233</javax.activation.impl.version>
+    <javax.cdi.api.version>2.0</javax.cdi.api.version>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/ | rg 'test' || true" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jetty/jetty.project/contents/jetty-http2/http2-server/src/test/java/org/eclipse/jetty/http2/server?ref=jetty-11.0.24 | rg 'name|html_url' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 164ms:
+    "name": "AbstractServerTest.java",
+    "html_url": "https://github.com/jetty/jetty.project/blob/jetty-11.0.24/jetty-http2/http2-server/src/test/java/org/eclipse/jetty/http2/server/AbstractServerTest.java",
+    "name": "BadURITest.java",
+    "html_url": "https://github.com/jetty/jetty.project/blob/jetty-11.0.24/jetty-http2/http2-server/src/test/java/org/eclipse/jetty/http2/server/BadURITest.java",
+    "name": "CloseTest.java",
+    "html_url": "https://github.com/jetty/jetty.project/blob/jetty-11.0.24/jetty-http2/http2-server/src/test/java/org/eclipse/jetty/http2/server/CloseTest.java",
+    "name": "H2SpecServer.java",
+    "html_url": "https://github.com/jetty/jetty.project/blob/jetty-11.0.24/jetty-http2/http2-server/src/test/java/org/eclipse/jetty/http2/server/H2SpecServer.java",
+    "name": "HTTP2CServer.java",
+    "html_url": "https://github.com/jetty/jetty.project/blob/jetty-11.0.24/jetty-http2/http2-server/src/test/java/org/eclipse/jetty/http2/server/HTTP2CServer.java",
+    "name": "HTTP2CServerTest.java",
+    "html_url": "https://github.com/jetty/jetty.project/blob/jetty-11.0.24/jetty-http2/http2-server/src/test/java/org/eclipse/jetty/http2/server/HTTP2CServerTest.java",
+    "name": "HTTP2ServerTest.java",
+    "html_url": "https://github.com/jetty/jetty.project/blob/jetty-11.0.24/jetty-http2/http2-server/src/test/java/org/eclipse/jetty/http2/server/HTTP2ServerTest.java",
+
+web search: 
+web search: org.eclipse.jetty.http2:http2-server:11.0.24 Maven Central
+codex
+The artifact is a normal JVM JAR with `.class` files, so it remains a Native Image metadata candidate. I found no Maven test artifact in the version directory, so the test URL will point at the `jetty-11.0.24` GitHub tag’s test tree.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.eclipse.jetty.websocket/websocket-client/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "9.4.40.v20210413",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+    "repository-url" : "https://github.com/eclipse/jetty.project",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+    "description" : "Jetty WebSocket Client provides Jetty 9's Java client implementation for opening, configuring, and managing WebSocket connections from applications. It builds on Jetty's HTTP client and WebSocket common runtime to perform handshakes, create sessions, and send or receive WebSocket messages asynchronously.",
+    "tested-versions" : [
+      "9.4.40.v20210413",
+      "9.4.41.v20210516",
+      "9.4.42.v20210604",
+      "9.4.43.v20210629",
+      "9.4.44.v20210927",
+      "9.4.45.v20220203",
+      "9.4.46.v20220331",
+      "9.4.47.v20220610",
+      "9.4.48.v20220622",
+      "9.4.49.v20220914",
+      "9.4.50.v20221201",
+      "9.4.51.v20230217",
+      "9.4.52.v20230823",
+      "9.4.53.v20231009",
+      "9.4.54.v20240208",
+      "9.4.55.v20240627",
+      "9.4.56.v20240826",
+      "9.4.57.v20241219",
+      "9.4.58.v20250814"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.jetty.websocket.client"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "12.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+    "description" : "Jetty ALPN Java Server provides the JDK 9+ server-side ALPN processor used by Eclipse Jetty to negotiate application protocols during TLS handshakes. It integrates Jetty's Java ALPN implementation with server connections so secure sessions can select HTTP/1.1, HTTP/2, or other supported protocols.",
+    "tested-versions" : [
+      "12.0.0",
+      "12.0.1",
+      "12.0.2",
+      "12.0.3",
+      "12.0.4",
+      "12.0.5",
+      "12.0.6",
+      "12.0.7",
+      "12.0.8",
+      "12.0.9",
+      "12.0.10",
+      "12.0.11",
+      "12.0.12",
+      "12.0.13",
+      "12.0.14",
+      "12.0.15",
+      "12.0.16",
+      "12.0.17",
+      "12.0.18",
+      "12.0.19",
+      "12.0.20",
+      "12.0.21",
+      "12.0.22",
+      "12.0.23",
+      "12.0.24",
+      "12.0.25",
+      "12.0.26",
+      "12.0.27",
+      "12.0.28",
+      "12.0.29",
+      "12.0.30",
+      "12.0.31",
+      "12.0.32",
+      "12.0.33",
+      "12.0.34",
+      "12.1.0",
+      "12.1.1",
+      "12.1.2",
+      "12.1.3",
+      "12.1.4",
+      "12.1.5",
+      "12.1.6",
+      "12.1.7",
+      "12.1.8",
+      "12.1.9"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.jetty.alpn.java.server"
+    ]
+  },
+  {
+    "metadata-version" : "11.0.24",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+    "description" : "Jetty ALPN Java Server provides the JDK 9+ server-side ALPN processor used by Eclipse Jetty to negotiate application protocols during TLS handshakes. It registers Jetty's Java ALPN implementation with the server connector layer so secure connections can select HTTP/1.1, HTTP/2, or other supported protocols.",
+    "tested-versions" : [
+      "11.0.24",
+      "11.0.25",
+      "11.0.26"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.jetty.alpn.java.server"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"description\"' metadata/org.eclipse.jetty* metadata/org.eclipse.jetty.websocket -g 'index.json' | head -20" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:9:    "description" : "Jetty WebSocket Client provides Jetty 9's Java client implementation for opening, configuring, and managing WebSocket connections from applications. It builds on Jetty's HTTP client and WebSocket common runtime to perform handshakes, create sessions, and send or receive WebSocket messages asynchronously.",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:9:    "description" : "Jetty WebSocket Client provides Jetty 9's Java client implementation for opening, configuring, and managing WebSocket connections from applications. It builds on Jetty's HTTP client and WebSocket common runtime to perform handshakes, create sessions, and send or receive WebSocket messages asynchronously.",
+metadata/org.eclipse.jetty.http2/http2-hpack/index.json:9:    "description" : "Jetty HTTP2 HPACK provides Jetty's implementation of HPACK header compression for HTTP/2. It encodes and decodes HTTP header fields using the HPACK dynamic and static table mechanisms used by Jetty's HTTP/2 client and server components.",
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/index.json:10:    "description": "Jetty Jakarta Servlet API packages the Jakarta Servlet 5.0 API together with related XML schema resources. It is tailored for JPMS and OSGi environments so applications can use the servlet API and deployment descriptors from a single artifact.",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:10:    "description": "Jetty ALPN API provides interfaces for using Application-Layer Protocol Negotiation (ALPN) over TLS with SSLSocket and SSLEngine. It lets client and server applications register providers that advertise, select, and react to negotiated application protocols.",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:9:    "description" : "Jetty WebSocket API provides the public interfaces and annotations used to define WebSocket endpoints, sessions, frames, and message handling for Jetty 9. It is the standalone API layer for Jetty's WebSocket implementation and intentionally avoids depending on other Jetty modules for web application classloader isolation.",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:9:    "description" : "Jetty ALPN Java Server provides the JDK 9+ server-side ALPN processor used by Eclipse Jetty to negotiate application protocols during TLS handshakes. It integrates Jetty's Java ALPN implementation with server connections so secure sessions can select HTTP/1.1, HTTP/2, or other supported protocols.",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:67:    "description" : "Jetty ALPN Java Server provides the JDK 9+ server-side ALPN processor used by Eclipse Jetty to negotiate application protocols during TLS handshakes. It registers Jetty's Java ALPN implementation with the server connector layer so secure connections can select HTTP/1.1, HTTP/2, or other supported protocols.",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:9:    "description" : "Jetty WebSocket API provides the public interfaces and annotations used to define WebSocket endpoints, sessions, frames, and message handling for Jetty 9. It is the standalone API layer for Jetty's WebSocket implementation and intentionally avoids depending on other Jetty modules for web application classloader isolation.",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:9:    "description" : "Jetty WebSocket Common provides the internal implementation classes used by Jetty 9's WebSocket API, including session handling, frame parsing and generation, message streams, and extension support. It is intended as the shared runtime layer behind Jetty's WebSocket client, server, and servlet integrations rather than as an application-facing API.",
+metadata/org.eclipse.jetty/jetty-http/index.json:9:    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+metadata/org.eclipse.jetty/jetty-http/index.json:94:    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+metadata/org.eclipse.jetty/jetty-http/index.json:115:    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+metadata/org.eclipse.jetty/jetty-security/index.json:9:    "description" : "Jetty Security provides authentication, authorization, login services, identity handling, and constraint enforcement used by Jetty server and web applications. It supplies servlet security handlers and authenticators that plug into Jetty's request handling pipeline.",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:9:    "description" : "Jetty WebSocket Common provides the internal implementation classes used by Jetty 9's WebSocket API, including session handling, frame parsing and generation, message streams, and extension support. It is intended as the shared runtime layer behind Jetty's WebSocket client, server, and servlet integrations rather than as an application-facing API.",
+metadata/org.eclipse.jetty/jetty-io/index.json:9:    "description" : "Jetty IO Utility provides core non-blocking I/O abstractions and utilities for Eclipse Jetty, including buffers, endpoints, and connection support. It underpins Jetty's network transport layer for Java applications that embed or extend the server.",
+metadata/org.eclipse.jetty/jetty-io/index.json:60:    "description" : "Jetty IO Utility provides core non-blocking I/O abstractions and utilities for Eclipse Jetty, including buffers, endpoints, and connection support. It underpins Jetty's network transport layer for Java applications that embed or extend the server.",
+metadata/org.eclipse.jetty/jetty-io/index.json:75:    "description" : "Jetty IO Utility provides core I/O abstractions and utilities used by the Eclipse Jetty server, including buffers, endpoints, and connection handling support. It underpins Jetty's non-blocking network transport layer and is intended for Java applications embedding or extending Jetty.",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:9:    "description" : "Jetty Util Ajax provides JSON and Ajax utility classes for Jetty applications. It includes parsers, generators, and converters for mapping Java objects, collections, dates, enums, and POJOs to and from JSON.",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:121:    "description" : "Jetty Util Ajax provides JSON and Ajax utility classes used by Jetty for converting Java objects, collections, dates, enums, and POJOs to and from JSON. It supplies the org.eclipse.jetty.util.ajax JSON APIs, including synchronous and asynchronous JSON parsing and generation helpers for Jetty applications.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.eclipse.jetty.http2/http2-hpack/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "11.0.24",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-hpack/$version$/http2-hpack-$version$-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http2/http2-hpack/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-hpack/$version$/http2-hpack-$version$-javadoc.jar",
+    "description" : "Jetty HTTP2 HPACK provides Jetty's implementation of HPACK header compression for HTTP/2. It encodes and decodes HTTP header fields using the HPACK dynamic and static table mechanisms used by Jetty's HTTP/2 client and server components.",
+    "tested-versions" : [
+      "11.0.24",
+      "11.0.25",
+      "11.0.26"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.jetty.http2.hpack"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'http2-server' metadata build -g '*.json'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json:2:  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24"
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"\\s*:' metadata build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language": {
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:10:    "language": {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:10:    "language": {
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:10:    "language": {
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:10:    "language": {
+metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-serialization-jackson_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f -name '*.json' -maxdepth 1 -print | wc -l && find build/discovered-artifact-metadata -type f -name '*.json' -maxdepth 1 -print | head -10" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+1
+build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata|coordinates\"' docs tests buildSrc src -g '*.md' -g '*.java' -g '*.groovy' -g '*.kt' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+rg: buildSrc: No such file or directory (os error 2)
+rg: src: No such file or directory (os error 2)
+docs/DEVELOPING.md:108:In GitHub Actions, this task also writes a space-separated list to the GITHUB_OUTPUT key "coordinates".
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java:39:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:91:    @Option(option = "coordinates", description = "GAV coordinates of the library")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:98:        String coordinates = (String) getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:430:            else if (lines.get(i).startsWith("library.coordinates")) lines.set(i, "library.coordinates = " + group + ":" + artifact + ":" + newVersion);
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:37:        Object coordsProp = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java:49:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:59:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java:66:        String prop = (String) getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:62:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ContributionTask.java:140:        ContributingQuestion question = questions.get("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/TestInvocationTask.java:52:        String coordinateFilter = Objects.toString(getProject().findProperty("coordinates"), "");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:68:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch)")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:82:        Object prop = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AllCoordinatesExecTask.java:74:            String filter = Objects.toString(getProject().findProperty("coordinates"), "");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java:96:        Object prop = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AbstractLibraryStatsTask.java:49:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch)")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AbstractLibraryStatsTask.java:59:        Object property = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AnalyzeExternalLibraryDynamicAccessTask.java:58:    @Option(option = "coordinates", description = "External Maven coordinate in group:artifact:version form")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/AnalyzeExternalLibraryDynamicAccessTask.java:160:        Object property = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ComputeAndPullAllowedDockerImagesTask.java:52:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch)")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ComputeAndPullAllowedDockerImagesTask.java:66:        Object prop = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:56:    @Option(option = "coordinates", description = "Coordinate filter (group[:artifact[:version]] or k/n fractional batch).")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:206:        Object prop = getProject().findProperty("coordinates");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CoordinatesAwareTask.java:60:            String coordinateFilter = Objects.toString(getProject().findProperty("coordinates"), "");
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:49:    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:172:                - Set "coordinates" to "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/TckExtension.java:278:                        "coordinates", coordinates + ":" + metadataVersion,
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/TckExtension.java:469:                batch.put("coordinates", coordinates);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:109:                List.of(Map.of("coordinates", "1/2")),
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:121:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:127:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:133:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:139:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:150:                List.of(Map.of("coordinates", "1/2")),
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:162:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:168:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/utils/NativeImageConfigUtilsTests.java:174:                        "coordinates", "1/2",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:58:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:71:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:148:                                "coordinates", "com.example:demo:1.0.0",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:153:                                "coordinates", "com.example:demo:1.0.0",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/TckExtensionTests.java:158:                                "coordinates", "com.example:demo:1.0.0",
+tests/src/org.apache.maven/maven-api-di/4.0.0-rc-5/src/test/java/org_apache_maven/maven_api_di/Maven_api_diTest.java:371:        ArtifactResolver(SessionState sessionState, @Named("coordinates") String coordinates) {
+tests/src/org.apache.maven.resolver/maven-resolver-api/1.9.25/src/test/java/org_apache_maven_resolver/maven_resolver_api/Maven_resolver_apiTest.java:101:        assertThatIllegalArgumentException().isThrownBy(() -> new DefaultArtifact("bad coordinates"));
+tests/src/org.apache.maven/maven-model/2.0.6/src/test/java/org_apache_maven/maven_model/Maven_modelTest.java:125:        assertThat(distributionManagement.getRelocation().getMessage()).isEqualTo("Use the new coordinates");
+tests/src/org.apache.maven.resolver/maven-resolver-api/2.0.0/src/test/java/org_apache_maven_resolver/maven_resolver_api/Maven_resolver_apiTest.java:101:        assertThatIllegalArgumentException().isThrownBy(() -> new DefaultArtifact("bad coordinates"));
+tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:141:                .hasMessageContaining("Bad artifact coordinates");
+tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:142:                .hasMessageContaining("Bad artifact coordinates");
+tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:142:                .hasMessageContaining("Bad artifact coordinates");
+
+exec
+/usr/bin/bash -lc "sed -n '130,230p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+                throw new GradleException("Discovered metadata file " + discoveryFile + " has unexpected coordinates: " + metadata.coordinates());
+            }
+            success = true;
+        } finally {
+            if (!success) {
+                Files.deleteIfExists(discoveryFile);
+            }
+        }
+    }
+
+    private String effectiveAgentCommand() {
+        if (hasText(agentCommand)) {
+            return agentCommand.trim();
+        }
+        Object prop = getProject().findProperty("codingAgentCommand");
+        if (prop == null) {
+            prop = getProject().findProperty("agentCommand");
+        }
+        return prop == null ? null : prop.toString().trim();
+    }
+
+    private String buildPrompt(Coordinates parsedCoordinates, Path discoveryFile) {
+        return """
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s
+                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+                - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+                - { "name": "scala", "version": "2" } for Scala 2 libraries
+                - { "name": "scala", "version": "3" } for Scala 3 libraries
+                If the library is not language-specific, leave the "language" field absent.
+                Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+                The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "%s" when "$version$" is replaced with "%s".
+                The source, test suite, and documentation URLs should point to the right tag of the library.
+                If we have these source of these artifacts on maven, that should be prefered.
+                If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
+
+                Update this file directly:
+                - File: %s
+                - Set "coordinates" to "%s".
+                - Set "repository-url" to the discovered repository root URL.
+                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+                - Set "description" to the selected two-sentence explanation.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+                - Keep the JSON valid and consistently formatted.
+                """.formatted(
+                parsedCoordinates.toString(),
+                parsedCoordinates.version(),
+                parsedCoordinates.version(),
+                discoveryFile.toString().replace('\\', '/'),
+                parsedCoordinates.toString(),
+                parsedCoordinates.version()
+        ).strip();
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+        boolean replaced = false;
+        for (String token : commandTokens) {
+            if (token.contains(PROMPT_PLACEHOLDER)) {
+                invocation.add(token.replace(PROMPT_PLACEHOLDER, prompt));
+                replaced = true;
+            } else {
+                invocation.add(token);
+            }
+        }
+        if (!replaced) {
+            invocation.add(prompt);
+        }
+        return invocation;
+    }
+
+    private int runAndLogInvocation(List<String> invocation, File logFile) throws IOException, InterruptedException {
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT).format(new Date());
+        String header = "==== [" + timestamp + "] " + coordinates + System.lineSeparator() +
+                "COMMAND: " + String.join(" ", invocation) + System.lineSeparator();
+        Files.writeString(logFile.toPath(), header, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+        ProcessBuilder processBuilder = new ProcessBuilder(invocation);
+        processBuilder.directory(getProject().getProjectDir());
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+        process.getOutputStream().close();
+        try (OutputStream logOutput = Files.newOutputStream(logFile.toPath(), StandardOpenOption.APPEND)) {
+            TeeOutputStream teeOutputStream = new TeeOutputStream(logOutput, System.out);
+            process.getInputStream().transferTo(teeOutputStream);
+            teeOutputStream.flush();
+        }
+        int exit = process.waitFor();
+
+        String footer = System.lineSeparator() + "EXIT_CODE: " + exit + System.lineSeparator();
+        Files.writeString(logFile.toPath(), footer, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        getLogger().lifecycle("Ran agent for {} (exit {}). Log: {}", coordinates, exit, logFile);
+        return exit;
+    }
+
+    private static List<String> tokenizeCommand(String command) {
+
+exec
+/usr/bin/bash -lc "rg -n 'record ArtifactMetadata|class ArtifactMetadata|coordinates\\(\\)' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks tests/tck-build-logic/src/main/java -g '*.java' -g '*.groovy'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:23:public final class ArtifactMetadataDiscoveryUtils {
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:129:            if (!coordinates.equals(metadata.coordinates())) {
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:130:                throw new GradleException("Discovered metadata file " + discoveryFile + " has unexpected coordinates: " + metadata.coordinates());
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:312:        if (!coordinates.toString().equals(metadata.coordinates())) {
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java:313:            throw new IllegalStateException("Discovery file " + discoveryFile + " has unexpected coordinates " + metadata.coordinates());
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java && sed -n '260,350p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.utils;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+import org.gradle.api.file.ProjectLayout;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/**
+ * Utilities for build-local artifact metadata discovery files.
+ */
+public final class ArtifactMetadataDiscoveryUtils {
+    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+    private ArtifactMetadataDiscoveryUtils() {
+    }
+
+    public static Path discoveryFile(ProjectLayout layout, String coordinates) {
+        return layout.getBuildDirectory().dir(DISCOVERY_DIR).get().getAsFile().toPath().resolve(sanitizeCoordinate(coordinates) + ".json");
+    }
+
+    public static void initializeDiscoveryFile(Path discoveryFile, String coordinates) throws IOException {
+        if (Files.exists(discoveryFile)) {
+            return;
+        }
+        Files.createDirectories(discoveryFile.getParent());
+        writeDiscoveryFile(discoveryFile, new DiscoveredArtifactMetadata(
+                coordinates,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        ));
+    }
+
+    public static void writeDiscoveryFile(Path discoveryFile, DiscoveredArtifactMetadata metadata) throws IOException {
+        Files.createDirectories(discoveryFile.getParent());
+        String json = OBJECT_MAPPER.writeValueAsString(metadata);
+        if (!json.endsWith(System.lineSeparator())) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(discoveryFile, json, StandardCharsets.UTF_8);
+    }
+
+    public static DiscoveredArtifactMetadata readDiscoveryFile(Path discoveryFile) throws IOException {
+        return OBJECT_MAPPER.readValue(discoveryFile.toFile(), DiscoveredArtifactMetadata.class);
+    }
+
+    public static String sanitizeCoordinate(String coordinate) {
+        return coordinate.replace(":", "-").replace("/", "-");
+    }
+}
+            if (latestVersion.compareTo(nextVersion) < 0) {
+                latestVersion = nextVersion;
+                latestIndex = i;
+            }
+        }
+
+        for (int i = 0; i < entries.size(); i++) {
+            setLatest(entries, i, i == latestIndex ? true : null);
+        }
+    }
+
+    /// Builds user-code-filter.json content with an excludeClasses rule and one includeClasses per root.
+    private String buildUserCodeFilter(List<String> packageRoots) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\n");
+        sb.append("  \"rules\": [\n");
+        sb.append("    {\n");
+        sb.append("      \"excludeClasses\": \"**\"\n");
+        sb.append("    }");
+        for (String root : packageRoots) {
+            sb.append(",\n    {\n");
+            sb.append("      \"includeClasses\": \"").append(root).append(".**\"\n");
+            sb.append("    }");
+        }
+        sb.append("\n  ]\n");
+        sb.append("}\n");
+        return sb.toString();
+    }
+
+    private String loadResource(String name) throws IOException {
+        try (InputStream stream = ScaffoldTask.class.getResourceAsStream(name)) {
+            if (stream == null) {
+                throw new IOException("Resource '%s' not found".formatted(name));
+            }
+            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+
+    private void writeToFile(Path path, String content) throws IOException {
+        if (getLogger().isEnabled(LogLevel.DEBUG)) {
+            getLogger().debug("Writing to file {}", path.toAbsolutePath());
+        }
+        Files.createDirectories(path.getParent());
+        Files.writeString(path, content, StandardCharsets.UTF_8);
+    }
+
+    private DiscoveredArtifactMetadata loadDiscoveredArtifactMetadata(Coordinates coordinates) throws IOException {
+        Path discoveryFile = ArtifactMetadataDiscoveryUtils.discoveryFile(getProject().getLayout(), coordinates.toString());
+        if (!Files.exists(discoveryFile)) {
+            return null;
+        }
+        DiscoveredArtifactMetadata metadata = ArtifactMetadataDiscoveryUtils.readDiscoveryFile(discoveryFile);
+        if (!coordinates.toString().equals(metadata.coordinates())) {
+            throw new IllegalStateException("Discovery file " + discoveryFile + " has unexpected coordinates " + metadata.coordinates());
+        }
+        return metadata;
+    }
+
+    private LibraryLanguage resolveEntryLanguage(DiscoveredArtifactMetadata discoveredMetadata, List<MetadataVersionsIndexEntry> existingEntries) {
+        if (discoveredMetadata != null && discoveredMetadata.language() != null) {
+            return discoveredMetadata.language();
+        }
+        return existingEntries.stream()
+                .filter(MetadataVersionsIndexEntry::isSupportedMetadataEntry)
+                .filter(entry -> entry.language() != null)
+                .max(Comparator.comparing(e -> VersionNumber.parse(e.metadataVersion())))
+                .map(MetadataVersionsIndexEntry::language)
+                .orElse(null);
+    }
+
+    private MetadataVersionsIndexEntry createIndexEntry(Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language, boolean latest) {
+        return new MetadataVersionsIndexEntry(
+                latest ? Boolean.TRUE : null,
+                null, // override
+                null, // default-for
+                coordinates.version(), // metadata-version
+                null, // test-version
+                discoveredMetadata == null ? null : discoveredMetadata.sourceCodeUrl(),
+                discoveredMetadata == null ? null : discoveredMetadata.repositoryUrl(),
+                discoveredMetadata == null ? null : discoveredMetadata.testCodeUrl(),
+                discoveredMetadata == null ? null : discoveredMetadata.documentationUrl(),
+                discoveredMetadata == null ? null : discoveredMetadata.description(),
+                language,
+                List.of(coordinates.version()),
+                null, // skipped-versions
+                packageRoots,
+                null, // requires
+                null, // not-for-native-image
+                null, // reason
+                null // replacement
+        );
+
+exec
+/usr/bin/bash -lc "rg -n 'record DiscoveredArtifactMetadata|class DiscoveredArtifactMetadata' tests/tck-build-logic/src/main -g '*.java' -g '*.groovy' && sed -n '1,120p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:14:public record DiscoveredArtifactMetadata(
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
+) {}
+
+codex
+I’m updating the discovery file with Maven source/javadoc URLs, the tagged GitHub test tree, and leaving language and `not-for-native-image` out because this is a Java/JVM Jetty module.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+index ebd00fbff70b273f87c85b85f15acefa084954b7..4729fa4e22c0477114c087eb3e1b6e3cca983d77
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24"
++  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http2/http2-server/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-javadoc.jar",
++  "description" : "Jetty HTTP2 Server provides Eclipse Jetty's server-side HTTP/2 transport and connection factories for accepting HTTP/2 and clear-text HTTP/2 connections. It integrates Jetty's HTTP/2 session, stream, and transport handling with Jetty Server so embedded servers and connectors can process HTTP/2 requests and responses."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+index ebd00fbff70b273f87c85b85f15acefa084954b7..4729fa4e22c0477114c087eb3e1b6e3cca983d77
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24"
++  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http2/http2-server/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-javadoc.jar",
++  "description" : "Jetty HTTP2 Server provides Eclipse Jetty's server-side HTTP/2 transport and connection factories for accepting HTTP/2 and clear-text HTTP/2 connections. It integrates Jetty's HTTP/2 session, stream, and transport handling with Jetty Server so embedded servers and connectors can process HTTP/2 requests and responses."
+ }
+
+exec
+/usr/bin/bash -lc "jq . build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json >/dev/null && sed -n '1,120p' build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+{
+  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-sources.jar",
+  "repository-url" : "https://github.com/jetty/jetty.project",
+  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http2/http2-server/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-javadoc.jar",
+  "description" : "Jetty HTTP2 Server provides Eclipse Jetty's server-side HTTP/2 transport and connection factories for accepting HTTP/2 and clear-text HTTP/2 connections. It integrates Jetty's HTTP/2 session, stream, and transport handling with Jetty Server so embedded servers and connectors can process HTTP/2 requests and responses."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/http2-server-11.0.24-sources.jar \\
+  https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/http2-server-11.0.24-javadoc.jar \\
+  https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-http2/http2-server/src/test; do \\
+  code="'$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+index ebd00fbff70b273f87c85b85f15acefa084954b7..4729fa4e22c0477114c087eb3e1b6e3cca983d77
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24"
++  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http2/http2-server/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-javadoc.jar",
++  "description" : "Jetty HTTP2 Server provides Eclipse Jetty's server-side HTTP/2 transport and connection factories for accepting HTTP/2 and clear-text HTTP/2 connections. It integrates Jetty's HTTP/2 session, stream, and transport handling with Jetty Server so embedded servers and connectors can process HTTP/2 requests and responses."
+ }
+
+ succeeded in 835ms:
+200 https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/http2-server-11.0.24-javadoc.jar
+200 https://github.com/jetty/jetty.project/tree/jetty-11.0.24/jetty-http2/http2-server/src/test
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+index ebd00fbff70b273f87c85b85f15acefa084954b7..4729fa4e22c0477114c087eb3e1b6e3cca983d77
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24"
++  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http2/http2-server/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-javadoc.jar",
++  "description" : "Jetty HTTP2 Server provides Eclipse Jetty's server-side HTTP/2 transport and connection factories for accepting HTTP/2 and clear-text HTTP/2 connections. It integrates Jetty's HTTP/2 session, stream, and transport handling with Jetty Server so embedded servers and connectors can process HTTP/2 requests and responses."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2
+ succeeded in 256ms:
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+index ebd00fbff70b273f87c85b85f15acefa084954b7..4729fa4e22c0477114c087eb3e1b6e3cca983d77
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24"
++  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http2/http2-server/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-javadoc.jar",
++  "description" : "Jetty HTTP2 Server provides Eclipse Jetty's server-side HTTP/2 transport and connection factories for accepting HTTP/2 and clear-text HTTP/2 connections. It integrates Jetty's HTTP/2 session, stream, and transport handling with Jetty Server so embedded servers and connectors can process HTTP/2 requests and responses."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/
+codex
+Updated [org.eclipse.jetty.http2-http2-server-11.0.24.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json).
+
+I used Maven Central for the source and javadoc JARs, and the Jetty `jetty-11.0.24` GitHub tag for the test tree because no Maven test artifact was published for this version. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/)) The repository root is `jetty/jetty.project`, and the artifact remains a JVM Native Image metadata target, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([github.com](https://github.com/jetty/jetty.project))
+
+Validated JSON with `jq` and confirmed all substituted URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+index ebd00fbff70b273f87c85b85f15acefa084954b7..4729fa4e22c0477114c087eb3e1b6e3cca983d77
+--- a/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
++++ b/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24"
++  "coordinates" : "org.eclipse.jetty.http2:http2-server:11.0.24",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-sources.jar",
++  "repository-url" : "https://github.com/jetty/jetty.project",
++  "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http2/http2-server/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/$version$/http2-server-$version$-javadoc.jar",
++  "description" : "Jetty HTTP2 Server provides Eclipse Jetty's server-side HTTP/2 transport and connection factories for accepting HTTP/2 and clear-text HTTP/2 connections. It integrates Jetty's HTTP/2 session, stream, and transport handling with Jetty Server so embedded servers and connectors can process HTTP/2 requests and responses."
+ }
+
+tokens used
+75,869
+Updated [org.eclipse.jetty.http2-http2-server-11.0.24.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2/build/discovered-artifact-metadata/org.eclipse.jetty.http2-http2-server-11.0.24.json).
+
+I used Maven Central for the source and javadoc JARs, and the Jetty `jetty-11.0.24` GitHub tag for the test tree because no Maven test artifact was published for this version. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/jetty/http2/http2-server/11.0.24/)) The repository root is `jetty/jetty.project`, and the artifact remains a JVM Native Image metadata target, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([github.com](https://github.com/jetty/jetty.project))
+
+Validated JSON with `jq` and confirmed all substituted URLs return HTTP 200.
+Ran agent for org.eclipse.jetty.http2:http2-server:11.0.24 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2/build/agent-artifact-discovery-logs/org.eclipse.jetty.http2-http2-server-11.0.24.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2795-25b82ff2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 27s
+9 actionable tasks: 9 executed
