@@ -4,18 +4,1043 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import java.nio.charset.StandardCharsets
+import java.util.Base64
+import java.util.Collections
+import java.util.zip.ZipFile
+import java.util.zip.ZipEntry
+
+import org.gradle.api.Task
+import org.gradle.api.file.Directory
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
+
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+boolean generateDynamicAccessReportRequested = providers.gradleProperty('tck.generateDynamicAccessReport')
+        .getOrElse("false")
+        .toBoolean() || gradle.startParameter.taskNames.any { String taskName ->
+    taskName == "generateDynamicAccessReport" || taskName.endsWith(":generateDynamicAccessReport")
+}
 
 dependencies {
     testImplementation "io.rest-assured:rest-assured:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+Provider<Directory> generatedDirectAccessClasses = layout.buildDirectory.dir("generated/direct-access-test-classes")
+Provider<Directory> generatedNativeReachabilitySources = layout.buildDirectory.dir("generated/native-reachability-test-sources")
+Provider<Directory> generatedNativeReachabilityConfig = layout.buildDirectory.dir("generated/native-reachability-config")
+Closure<Void> writeGeneratedDirectAccessClass = { String path, String content ->
+    File outputFile = generatedDirectAccessClasses.get().file(path).asFile
+    outputFile.parentFile.mkdirs()
+    outputFile.bytes = Base64.decoder.decode(content)
+    null
+}
+
+Closure<Integer> readU2 = { byte[] bytes, int offset ->
+    ((bytes[offset] & 0xFF) << 8) | (bytes[offset + 1] & 0xFF)
+}
+
+Closure<Integer> readU4 = { byte[] bytes, int offset ->
+    ((bytes[offset] & 0xFF) << 24) | ((bytes[offset + 1] & 0xFF) << 16) |
+            ((bytes[offset + 2] & 0xFF) << 8) | (bytes[offset + 3] & 0xFF)
+}
+
+Closure<Void> writeU2 = { byte[] bytes, int offset, int value ->
+    bytes[offset] = (byte) ((value >>> 8) & 0xFF)
+    bytes[offset + 1] = (byte) (value & 0xFF)
+    null
+}
+
+Closure<Void> writeU4 = { byte[] bytes, int offset, int value ->
+    bytes[offset] = (byte) ((value >>> 24) & 0xFF)
+    bytes[offset + 1] = (byte) ((value >>> 16) & 0xFF)
+    bytes[offset + 2] = (byte) ((value >>> 8) & 0xFF)
+    bytes[offset + 3] = (byte) (value & 0xFF)
+    null
+}
+
+Closure<byte[]> insertBytes = { byte[] bytes, int offset, byte[] insertedBytes ->
+    byte[] result = new byte[bytes.length + insertedBytes.length]
+    System.arraycopy(bytes, 0, result, 0, offset)
+    System.arraycopy(insertedBytes, 0, result, offset, insertedBytes.length)
+    System.arraycopy(bytes, offset, result, offset + insertedBytes.length, bytes.length - offset)
+    result
+}
+
+Closure<Void> writePatchedClassResolverClass = { String classEntryName, boolean addClassResolverLineNumber = false ->
+    File restAssuredJar = configurations.testRuntimeClasspath.files.find { File file ->
+        file.name == "rest-assured-${libraryVersion}.jar"
+    }
+    if (restAssuredJar == null) {
+        throw new GradleException("Could not find rest-assured runtime JAR for ${libraryVersion}")
+    }
+
+    byte[] bytes
+    new ZipFile(restAssuredJar).withCloseable { ZipFile zipFile ->
+        bytes = zipFile.getInputStream(zipFile.getEntry(classEntryName)).bytes
+    }
+
+    String[] constantPool = new String[readU2(bytes, 8)]
+    int lineNumberTableNameIndex = -1
+    int position = 10
+    int index = 1
+    while (index < constantPool.length) {
+        int tag = bytes[position++] & 0xFF
+        switch (tag) {
+            case 1:
+                int length = readU2(bytes, position)
+                position += 2
+                constantPool[index] = new String(bytes, position, length, StandardCharsets.UTF_8)
+                if (constantPool[index] == 'LineNumberTable') {
+                    lineNumberTableNameIndex = index
+                }
+                position += length
+                break
+            case 3:
+            case 4:
+                position += 4
+                break
+            case 5:
+            case 6:
+                position += 8
+                index++
+                break
+            case 7:
+            case 8:
+            case 16:
+                position += 2
+                break
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+            case 18:
+                position += 4
+                break
+            case 15:
+                position += 3
+                break
+            default:
+                throw new GradleException("Unsupported class file constant pool tag ${tag}")
+        }
+        index++
+    }
+
+    position += 6
+    int interfacesCount = readU2(bytes, position)
+    position += 2 + 2 * interfacesCount
+    int fieldsCount = readU2(bytes, position)
+    position += 2
+    for (int fieldIndex = 0; fieldIndex < fieldsCount; fieldIndex++) {
+        position += 6
+        int attributesCount = readU2(bytes, position)
+        position += 2
+        for (int attributeIndex = 0; attributeIndex < attributesCount; attributeIndex++) {
+            position += 2
+            position += 4 + readU4(bytes, position)
+        }
+    }
+
+    if (addClassResolverLineNumber && lineNumberTableNameIndex == -1) {
+        throw new GradleException("Could not find LineNumberTable constant in ${classEntryName}")
+    }
+
+    int patchedMethods = 0
+    Integer classResolverCodeAttributeLengthPosition = null
+    Integer classResolverCodeAttributesCountPosition = null
+    Integer classResolverLineNumberInsertPosition = null
+    int methodsCount = readU2(bytes, position)
+    position += 2
+    for (int methodIndex = 0; methodIndex < methodsCount; methodIndex++) {
+        int accessFlagsPosition = position
+        int accessFlags = readU2(bytes, position)
+        int nameIndex = readU2(bytes, position + 2)
+        int descriptorIndex = readU2(bytes, position + 4)
+        int attributesCount = readU2(bytes, position + 6)
+        position += 8
+        boolean classResolverMethod = constantPool[nameIndex] == 'class$' &&
+                constantPool[descriptorIndex] == '(Ljava/lang/String;)Ljava/lang/Class;'
+        if (classResolverMethod) {
+            writeU2(bytes, accessFlagsPosition, accessFlags & ~0x1000)
+            patchedMethods++
+        }
+        for (int attributeIndex = 0; attributeIndex < attributesCount; attributeIndex++) {
+            int attributePosition = position
+            int attributeNameIndex = readU2(bytes, attributePosition)
+            int attributeLength = readU4(bytes, attributePosition + 2)
+            if (classResolverMethod && addClassResolverLineNumber && constantPool[attributeNameIndex] == 'Code') {
+                int codePosition = attributePosition + 6
+                int codeLength = readU4(bytes, codePosition + 4)
+                int exceptionTableLengthPosition = codePosition + 8 + codeLength
+                int exceptionTableLength = readU2(bytes, exceptionTableLengthPosition)
+                int codeAttributesCountPosition = exceptionTableLengthPosition + 2 + 8 * exceptionTableLength
+                int codeAttributesCount = readU2(bytes, codeAttributesCountPosition)
+                int nestedAttributePosition = codeAttributesCountPosition + 2
+                boolean hasLineNumberTable = false
+                for (int codeAttributeIndex = 0; codeAttributeIndex < codeAttributesCount; codeAttributeIndex++) {
+                    int codeAttributeNameIndex = readU2(bytes, nestedAttributePosition)
+                    int codeAttributeLength = readU4(bytes, nestedAttributePosition + 2)
+                    if (constantPool[codeAttributeNameIndex] == 'LineNumberTable') {
+                        hasLineNumberTable = true
+                    }
+                    nestedAttributePosition += 6 + codeAttributeLength
+                }
+                if (!hasLineNumberTable) {
+                    classResolverCodeAttributeLengthPosition = attributePosition + 2
+                    classResolverCodeAttributesCountPosition = codeAttributesCountPosition
+                    classResolverLineNumberInsertPosition = attributePosition + 6 + attributeLength
+                }
+            }
+            position += 6 + attributeLength
+        }
+    }
+    if (addClassResolverLineNumber && classResolverLineNumberInsertPosition != null) {
+        byte[] lineNumberAttribute = new byte[12]
+        writeU2(lineNumberAttribute, 0, lineNumberTableNameIndex)
+        writeU4(lineNumberAttribute, 2, 6)
+        writeU2(lineNumberAttribute, 6, 1)
+        writeU2(lineNumberAttribute, 8, 0)
+        writeU2(lineNumberAttribute, 10, 1)
+        writeU4(bytes, classResolverCodeAttributeLengthPosition,
+                readU4(bytes, classResolverCodeAttributeLengthPosition) + lineNumberAttribute.length)
+        writeU2(bytes, classResolverCodeAttributesCountPosition,
+                readU2(bytes, classResolverCodeAttributesCountPosition) + 1)
+        bytes = insertBytes(bytes, classResolverLineNumberInsertPosition, lineNumberAttribute)
+    }
+    if (patchedMethods != 1) {
+        throw new GradleException(
+                "Expected to patch one ${classEntryName} class resolver but patched ${patchedMethods}")
+    }
+
+    File outputFile = generatedDirectAccessClasses.get().file(classEntryName).asFile
+    outputFile.parentFile.mkdirs()
+    outputFile.bytes = bytes
+    null
+}
+
+// The Groovy-generated class$ method is synthetic, so javac cannot call it directly and
+// coverage probes ignore it. Generate a direct caller and an upstream-equivalent class
+// patched only to make class$ visible to dynamic-access coverage.
+TaskProvider<Task> generateDirectAccessClass = tasks.register("generateDirectAccessClass") {
+    outputs.dir(generatedDirectAccessClasses)
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/SpecificationMerger.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/SpecificationMergerDirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/TestSpecificationImpl.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/TestSpecificationImplDirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/TrustAndKeystoreSpecImplDirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/TrustAndKeystoreSpecImplCreateStoreClosure1DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/TrustAndKeystoreSpecImpl\$_createStore_closure1.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/SpecificationMerger\$_mergeSessionId_closure2.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/SpecificationMergerMergeSessionIdClosure2DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/SpecificationMerger\$_mergeFilters_closure3.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/SpecificationMerger\$_mergeFilters_closure4.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplNewFilterContextClosure13DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplSendHttpRequestClosure27DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplSendRequestClosure15DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplSendRequestClosure16DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplSendRequestClosure17DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImpl\$_sendRequest_closure16.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImpl\$_partiallyApplyPathParams_closure36.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplPartiallyApplyPathParamsClosure36DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImpl\$_removeCookie_closure2.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplRemoveCookieClosure2DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImpl\$_removeUnnamedPathParamByValue_closure4.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplRemoveUnnamedPathParamByValueClosure4DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImpl\$_removeUnnamedPathParam_closure3.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplRemoveUnnamedPathParamClosure3DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplRegisterRestAssuredEncodersClosure24DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplRegisterRestAssuredEncodersClosure24Closure51DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplRegisterRestAssuredEncodersClosure24Closure51Closure52DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplRemoveMergedHeadersIfNeededClosure7DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplRemoveMergedHeadersIfNeededClosure7Closure50DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImpl\$_removeMergedHeadersIfNeeded_closure7.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImpl\$_sessionId_closure11.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplSessionIdClosure11DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RequestSpecificationImplSetRequestHeadersToHttpBuilderClosure23DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplDirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplStatusCodeClosure3DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplStatusLineClosure4DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplTimeClosure2DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_time_closure2.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_statusLine_closure4.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplContentTypeClosure12DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplContentTypeClosure13DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplHeaderClosure6DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplHeaderClosure7DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplHeadersClosure5DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplHeadersClosure5Closure17DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplHeadersClosure5Closure17Closure18DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_headers_closure5_closure17_closure18.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_header_closure6.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplCookieClosure9DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplCookiesClosure8DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplCookiesClosure8Closure19DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplCookiesClosure8Closure19Closure20DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_cookies_closure8_closure19.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_cookies_closure8_closure19_closure20.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplCookieClosure10DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_cookie_closure10.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplBodyClosure1DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplBodyClosure1Closure16DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_body_closure1_closure16.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplBodyClosure11DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_body_closure11.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_body_closure11_closure21.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImpl\$_body_closure11_closure21_closure22.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplBodyClosure11Closure21DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplBodyClosure11Closure21Closure22DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplApplyArgumentsClosure15DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplInnerHamcrestAssertionClosureDirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplHamcrestAssertionClosureGetClosureClosure1DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplHamcrestAssertionClosureValidateClosure2DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/ResponseSpecificationImplHamcrestAssertionClosureValidateClosure3DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file(
+                "io/restassured/internal/ResponseSpecificationImplHamcrestAssertionClosureValidateHeadersAndCookiesClosure5DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file(
+                "io/restassured/internal/ResponseSpecificationImplHamcrestAssertionClosureValidateHeadersAndCookiesClosure6DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredHttpBuilderGroovyHelperDirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file(
+                "io/restassured/internal/RestAssuredHttpBuilderGroovyHelperCreateClosureThatCallsClosure2DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file(
+                "io/restassured/internal/RestAssuredHttpBuilderGroovyHelperFlattenToStringClosure1DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredHttpBuilderGroovyHelper\$_createClosureThatCalls_closure2.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredHttpBuilderGroovyHelper\$_flattenToString_closure1.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredHttpBuilderGroovyHelper.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredResponseOptionsGroovyImplDirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredResponseOptionsGroovyImplPathClosure5Access.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredResponseOptionsGroovyImpl\$_path_closure5.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredResponseOptionsGroovyImplCookiesClosure4DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredResponseOptionsGroovyImplParseHeadersClosure1DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredResponseOptionsGroovyImpl\$_parseHeaders_closure1.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredResponseOptionsGroovyImpl\$_cookies_closure4.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredResponseOptionsGroovyImplToStringClosure2DirectAccess.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/RestAssuredResponseOptionsGroovyImpl\$_toString_closure2.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/csrf/CsrfTokenFinder.class")
+    })
+    outputs.file(generatedDirectAccessClasses.map { Directory directory ->
+        directory.file("io/restassured/internal/csrf/CsrfTokenFinderDirectAccess.class")
+    })
+    inputs.property("directAccessClassesVersion", "rest-assured-specification-merger-v16")
+
+    doLast {
+        delete(generatedDirectAccessClasses.get()
+                .file("io/restassured/internal/TrustAndKeystoreSpecImpl.class")
+                .asFile)
+        writePatchedClassResolverClass("io/restassured/internal/csrf/CsrfTokenFinder.class", true)
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/csrf/CsrfTokenFinderDirectAccess.class",
+                "yv66vgAAADQAHgoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEALGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL2NzcmYvQ3NyZlRva2VuRmluZGVyAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwcADgEAOGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL2NzcmYvQ3NyZlRva2VuRmluZGVyRGlyZWN0QWNjZXNzAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAEkxvY2FsVmFyaWFibGVUYWJsZQEABHRoaXMBADpMaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvY3NyZi9Dc3JmVG9rZW5GaW5kZXJEaXJlY3RBY2Nlc3M7AQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBAAljbGFzc05hbWUBABJMamF2YS9sYW5nL1N0cmluZzsBAApFeGNlcHRpb25zBwAZAQATamF2YS9sYW5nL1Rocm93YWJsZQEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBAApTb3VyY2VGaWxlAQAgQ3NyZlRva2VuRmluZGVyRGlyZWN0QWNjZXNzLmphdmEAIQANAAIAAAAAAAIAAQAFAAYAAQAPAAAALwABAAEAAAAFKrcAAbEAAAACABAAAAAGAAEAAAACABEAAAAMAAEAAAAFABIAEwAAAAkAFAAMAAMADwAAAC8AAQABAAAABSq4AAewAAAAAgAQAAAABgABAAAABAARAAAADAABAAAABQAVABYAAAAXAAAABAABABgAGgAAAAIAGwABABwAAAACAB0=")
+        // Shadow TestSpecificationImpl with upstream bytecode patched only to make class$ visible to coverage probes.
+        writePatchedClassResolverClass("io/restassured/internal/TestSpecificationImpl.class")
+        writePatchedClassResolverClass("io/restassured/internal/TrustAndKeystoreSpecImpl\$_createStore_closure1.class")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/TrustAndKeystoreSpecImplDirectAccess.class",
+                "yv66vgAAADQAGQEAPGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1RydXN0QW5kS2V5c3RvcmVTcGVjSW1wbERpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBAAY8aW5pdD4BAAMoKVYMAAUABgoABAAHAQAEQ29kZQEAMGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1RydXN0QW5kS2V5c3RvcmVTcGVjSW1wbAcACgEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAwADQoACwAOAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAKRXhjZXB0aW9ucwEAE2phdmEvbGFuZy9UaHJvd2FibGUHABMBAAlTaWduYXR1cmUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47AQAKU291cmNlRmlsZQEAKVRydXN0QW5kS2V5c3RvcmVTcGVjSW1wbERpcmVjdEFjY2Vzcy5qYXZhACEAAgAEAAAAAAACAAEABQAGAAEACQAAABEAAQABAAAABSq3AAixAAAAAAAJABAAEQADAAkAAAARAAEAAQAAAAUquAAPsAAAAAAAEgAAAAQAAQAUABUAAAACABYAAQAXAAAAAgAY")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/TrustAndKeystoreSpecImplCreateStoreClosure1DirectAccess.class",
+                "yv66vgAAADQAGwEAT2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1RydXN0QW5kS2V5c3RvcmVTcGVjSW1wbENyZWF0ZVN0b3JlQ2xvc3VyZTFEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAQamF2YS9sYW5nL09iamVjdAcABQEABjxpbml0PgEAAygpVgwABwAICgAGAAkBAEZpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9UcnVzdEFuZEtleXN0b3JlU3BlY0ltcGwkX2NyZWF0ZVN0b3JlX2Nsb3N1cmUxBwALAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwADQAOCgAMAA8BAARDb2RlAQAKRXhjZXB0aW9ucwEAE2phdmEvbGFuZy9UaHJvd2FibGUHABMBAApTb3VyY2VGaWxlAQA8VHJ1c3RBbmRLZXlzdG9yZVNwZWNJbXBsQ3JlYXRlU3RvcmVDbG9zdXJlMURpcmVjdEFjY2Vzcy5qYXZhAQAGPGluaXQ+AQADKClWAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7ACEAAgAEAAAAAAACAAEAFwAYAAEAEQAAABEAAQABAAAABSq3AAqxAAAAAAAJABkAGgACABEAAAARAAEAAQAAAAUquAAQsAAAAAAAEgAAAAQAAQAUAAEAFQAAAAIAFg==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/TestSpecificationImplDirectAccess.class",
+                "yv66vgAAADQAHAEAOWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Rlc3RTcGVjaWZpY2F0aW9uSW1wbERpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBAAY8aW5pdD4BAAMoKVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBAAlTaWduYXR1cmUBACZUZXN0U3BlY2lmaWNhdGlvbkltcGxEaXJlY3RBY2Nlc3MuamF2YQEABjxpbml0PgEAAygpVgwADQAOCgAEAA8BAC1pby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9UZXN0U3BlY2lmaWNhdGlvbkltcGwHABEBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAATABQKABIAFQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwAaACEAAgAEAAAAAAACAAEABQAGAAEABwAAAB0AAQABAAAABSq3ABCxAAAAAQAIAAAABgABAAAAAwAJABcAGAADAAcAAAAdAAEAAQAAAAUquAAWsAAAAAEACAAAAAYAAQAAAAUACQAAAAQAAQAbAAsAAAACABkAAQAKAAAAAgAM")
+        // Shadow SpecificationMerger with upstream bytecode patched only to make class$ visible to coverage probes.
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/SpecificationMerger.class",
+                "yv66vgAAADECLwEAK2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1NwZWNpZmljYXRpb25NZXJnZXIHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAYZ3Jvb3Z5L2xhbmcvR3Jvb3Z5T2JqZWN0BwAFAQAaU3BlY2lmaWNhdGlvbk1lcmdlci5ncm9vdnkBABAkc3RhdGljQ2xhc3NJbmZvAQAqTG9yZy9jb2RlaGF1cy9ncm9vdnkvcmVmbGVjdGlvbi9DbGFzc0luZm87AQAHX18kc3RNQwEAAVoBAAltZXRhQ2xhc3MBABdMZ3Jvb3Z5L2xhbmcvTWV0YUNsYXNzOwEAC19fdGltZVN0YW1wAQABSgEAKV9fdGltZVN0YW1wX18yMzlfbmV2ZXJIYXBwZW4xNzIwMTg0ODA5MzkxAQAGPGluaXQ+AQADKClWDAARABIKAAQAEwEAESRnZXRDYWxsU2l0ZUFycmF5AQAyKClbTG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZTsMABUAFgoAAgAXAQATJGdldFN0YXRpY01ldGFDbGFzcwEAGSgpTGdyb292eS9sYW5nL01ldGFDbGFzczsMABkAGgoAAgAbDAAMAA0JAAIAHQEABHRoaXMBAC1MaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvU3BlY2lmaWNhdGlvbk1lcmdlcjsBAAVtZXJnZQEAaShMaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbDtMaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbDspVgMAAAAAAQA4aW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvY29tbW9uL2Fzc2VydGlvbi9Bc3NlcnRQYXJhbWV0ZXIHACQBABZTcGVjaWZpY2F0aW9uIHRvIG1lcmdlCAAmAQAtb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL2NhbGxzaXRlL0NhbGxTaXRlBwAoAQAKY2FsbFN0YXRpYwEASShMamF2YS9sYW5nL0NsYXNzO0xqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsMACoAKwsAKQAsAwAAAAEBABtTcGVjaWZpY2F0aW9uIHRvIG1lcmdlIHdpdGgIAC8DAAAAAgEAD2NhbGxHZXRQcm9wZXJ0eQEAJihMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7DAAyADMLACkANAEAC2NvbnRlbnRUeXBlCAA2AQAxb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL1NjcmlwdEJ5dGVjb2RlQWRhcHRlcgcAOAEAC3NldFByb3BlcnR5AQBKKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvQ2xhc3M7TGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9TdHJpbmc7KVYMADoAOwoAOQA8AwAAAAMDAAAABAMAAAAFAQANZGVmYXVsdFBhcnNlcggAQQMAAAAGAwAAAAcDAAAACAMAAAAJAwAAAAoBAARjYWxsAQA4KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsMAEgASQsAKQBKAwAAAAsBABFyZXNwb25zZUxvZ0RldGFpbAgATQMAAAAMAwAAAA0DAAAADgMAAAAPAQAMYm9keVJvb3RQYXRoCABTAwAAABADAAAAEQMAAAASAwAAABMBABJleHBlY3RlZFN0YXR1c0NvZGUIAFkDAAAAFAEAEmV4cGVjdGVkU3RhdHVzTGluZQgAXAMAAAAVAQAUZXhwZWN0ZWRSZXNwb25zZVRpbWUIAF8DAAAAFgMAAAAXAwAAABgBAAd0aGlzT25lAQAzTGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGw7AQAEd2l0aAEAZyhMaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsO0xpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGw7KVYDAAAAGQMAAAAaAQAEcG9ydAgAagEAFGdldEdyb292eU9iamVjdEZpZWxkAQBRKExqYXZhL2xhbmcvQ2xhc3M7TGdyb292eS9sYW5nL0dyb292eU9iamVjdDtMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9PYmplY3Q7DABsAG0KADkAbgEAFHNldEdyb292eU9iamVjdEZpZWxkAQBSKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvQ2xhc3M7TGdyb292eS9sYW5nL0dyb292eU9iamVjdDtMamF2YS9sYW5nL1N0cmluZzspVgwAcABxCgA5AHIDAAAAGwEAG2NhbGxHcm9vdnlPYmplY3RHZXRQcm9wZXJ0eQwAdQAzCwApAHYBAAdiYXNlVXJpCAB4AQAXc2V0R3Jvb3Z5T2JqZWN0UHJvcGVydHkMAHoAcQoAOQB7AwAAABwBAAhiYXNlUGF0aAgAfgMAAAAdAwAAAB4DAAAAHwMAAAAgAwAAACEDAAAAIgMAAAAjAwAAACQDAAAAJQMAAAAmAwAAACcDAAAAKAMAAAApAwAAACoDAAAAKwMAAAAsAQAUYXV0aGVudGljYXRpb25TY2hlbWUIAJADAAAALQMAAAAuAwAAAC8DAAAAMAEAC3JlcXVlc3RCb2R5CACWAwAAADEDAAAAMgEAEnVybEVuY29kaW5nRW5hYmxlZAgAmgMAAAAzAQAQYWxsb3dDb250ZW50VHlwZQgAnQMAAAA0AQANYWRkQ3NyZkZpbHRlcggAoAMAAAA1AQAScHJveHlTcGVjaWZpY2F0aW9uCACjAwAAADYBAAZtZXRob2QIAKYDAAAANwEAF3VubmFtZWRQYXRoUGFyYW1zVHVwbGVzCACpAwAAADgBAARwYXRoCACsAwAAADkDAAAAOgMAAAA7AQAyTGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbDsBAAttZXJnZUNvbmZpZwEAeChMaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsO0xpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGw7KUxqYXZhL2xhbmcvT2JqZWN0OwMAAAA8DABIADMLACkAtQEAJ2lvL3Jlc3Rhc3N1cmVkL2NvbmZpZy9SZXN0QXNzdXJlZENvbmZpZwcAtwEACmNhc3RUb1R5cGUBADcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9DbGFzczspTGphdmEvbGFuZy9PYmplY3Q7DAC5ALoKADkAuwMAAAA9AQAVZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlBwC+AQAVKExqYXZhL2xhbmcvT2JqZWN0OylWDAARAMAKAL8AwQMAAAA+AwAAAD8BAANnZXQBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwwAxQDGCgC/AMcBAC5vcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvQnl0ZWNvZGVJbnRlcmZhY2U4BwDJAQAHaXNPcmlnWgEAAygpWgwAywDMCgDKAM0MAAoACwkAAgDPAQAZZGlzYWJsZWRTdGFuZGFyZE1ldGFDbGFzcwwA0QDMCgDKANIBAEJvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvdHlwZWhhbmRsaW5nL0RlZmF1bHRUeXBlVHJhbnNmb3JtYXRpb24HANQBAAxib29sZWFuVW5ib3gBABUoTGphdmEvbGFuZy9PYmplY3Q7KVoMANYA1woA1QDYAQAJY3JlYXRlTWFwAQAkKFtMamF2YS9sYW5nL09iamVjdDspTGphdmEvdXRpbC9NYXA7DADaANsKADkA3AMAAABAAwAAAEEBAEFpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9TcGVjaWZpY2F0aW9uTWVyZ2VyJF9tZXJnZUNvbmZpZ19jbG9zdXJlMQcA4AEAVShMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlO0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7KVYMABEA4goA4QDjAwAAAEIBAA9jYWxsQ29uc3RydWN0b3IMAOYAMwsAKQDnAwAAAEMDAAAARAEAEXJlc3RBc3N1cmVkQ29uZmlnCADrAwAAAEUDAAAARgMAAABHAwAAAEgDAAAASQEABW90aGVyAQAKdGhpc0NvbmZpZwEAKUxpby9yZXN0YXNzdXJlZC9jb25maWcvUmVzdEFzc3VyZWRDb25maWc7AQALb3RoZXJDb25maWcBABdMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOwEAFHRoaXNJc1VzZXJDb25maWd1cmVkAQASTGphdmEvbGFuZy9PYmplY3Q7AQAVb3RoZXJJc1VzZXJDb25maWd1cmVkAQAMY29uZmlnc1RvVXNlAQAJbmV3Q29uZmlnAQAObWVyZ2VTZXNzaW9uSWQDAAAASgMAAABLAwAAAEwDAAAATQMAAABOAQAjaW8vcmVzdGFzc3VyZWQvY29uZmlnL1Nlc3Npb25Db25maWcHAQIBAA9jb21wYXJlTm90RXF1YWwBACcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KVoMAQQBBQoAOQEGAwAAAE8DAAAAUAEAA3NldAwBCgDACgC/AQsDAAAAUQMAAABSAQAMY29tcGFyZUVxdWFsDAEPAQUKADkBEAMAAABTAwAAAFQDAAAAVQMAAABWAwAAAFcDAAAAWAMAAABZAwAAAFoDAAAAWwEARGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1NwZWNpZmljYXRpb25NZXJnZXIkX21lcmdlU2Vzc2lvbklkX2Nsb3N1cmUyBwEbAQA+KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0O0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7KVYMABEBHQoBHAEeAwAAAFwBABtpby9yZXN0YXNzdXJlZC9odHRwL0Nvb2tpZXMHASEMAOYASQsAKQEjAQAHY29va2llcwgBJQEADXRoaXNPbmVDb25maWcBAA50aGlzT25lQ29va2llcwEADG90aGVyQ29va2llcwEAEG9sZFNlc3Npb25JZE5hbWUBABtzaG91bGRSZW1vdmVTZXNzaW9uRnJvbVRoaXMBABJvdGhlclNlc3Npb25JZE5hbWUBAApjb29raWVMaXN0AQAMbWVyZ2VGaWx0ZXJzAwAAAF0DAAAAXgEAQmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1NwZWNpZmljYXRpb25NZXJnZXIkX21lcmdlRmlsdGVyc19jbG9zdXJlMwcBMQEAJyhMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspVgwAEQEzCgEyATQDAAAAXwMAAABgAwAAAGEBADJpby9yZXN0YXNzdXJlZC9hdXRoZW50aWNhdGlvbi9FeHBsaWNpdE5vQXV0aFNjaGVtZQcBOQMAAABiAwAAAGMDAAAAZAMAAABlAwAAAGYDAAAAZwEAQmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1NwZWNpZmljYXRpb25NZXJnZXIkX21lcmdlRmlsdGVyc19jbG9zdXJlNAcBQQoBQgEeAwAAAGgBAAt0aGlzRmlsdGVycwEAC3dpdGhGaWx0ZXJzAQAUaW5zdGFuY2VPZkF1dGhGaWx0ZXIBAAV0b0FkZAEAEnRoaXMkZGlzdCRpbnZva2UkMQEAOChMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQAnb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL0dTdHJpbmdJbXBsBwFLAQAQamF2YS9sYW5nL1N0cmluZwcBTQEAAAgBTwEAKShbTGphdmEvbGFuZy9PYmplY3Q7W0xqYXZhL2xhbmcvU3RyaW5nOylWDAARAVEKAUwBUgEADGRlc3ByZWFkTGlzdAEAPShbTGphdmEvbGFuZy9PYmplY3Q7W0xqYXZhL2xhbmcvT2JqZWN0O1tJKVtMamF2YS9sYW5nL09iamVjdDsMAVQBVQoAOQFWAQAWaW52b2tlTWV0aG9kT25DdXJyZW50TgEAZChMamF2YS9sYW5nL0NsYXNzO0xncm9vdnkvbGFuZy9Hcm9vdnlPYmplY3Q7TGphdmEvbGFuZy9TdHJpbmc7W0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsMAVgBWQoAOQFaAQAEbmFtZQEAEkxqYXZhL2xhbmcvU3RyaW5nOwEABGFyZ3MBAA90aGlzJGRpc3Qkc2V0JDEBACcoTGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9PYmplY3Q7KVYBAAV2YWx1ZQEAD3RoaXMkZGlzdCRnZXQkMQEAJihMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9PYmplY3Q7AQAIZ2V0Q2xhc3MBABMoKUxqYXZhL2xhbmcvQ2xhc3M7DAFkAWUKAAQBZgEADWluaXRNZXRhQ2xhc3MBACsoTGphdmEvbGFuZy9PYmplY3Q7KUxncm9vdnkvbGFuZy9NZXRhQ2xhc3M7DAFoAWkKADkBagwACAAJCQACAWwBAChvcmcvY29kZWhhdXMvZ3Jvb3Z5L3JlZmxlY3Rpb24vQ2xhc3NJbmZvBwFuAQAMZ2V0Q2xhc3NJbmZvAQA9KExqYXZhL2xhbmcvQ2xhc3M7KUxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3JlZmxlY3Rpb24vQ2xhc3NJbmZvOwwBcAFxCgFvAXIBAAxnZXRNZXRhQ2xhc3MMAXQAGgoBbwF1AQAMc2V0TWV0YUNsYXNzAQAaKExncm9vdnkvbGFuZy9NZXRhQ2xhc3M7KVYBAAxpbnZva2VNZXRob2QKAAIBdQEAFWdyb292eS9sYW5nL01ldGFDbGFzcwcBewEASihMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7DAF5AX0LAXwBfgEAC2dldFByb3BlcnR5AQA4KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL09iamVjdDsMAYABgQsBfAGCAQA5KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvT2JqZWN0OylWDAA6AYQLAXwBhQEAC19fJHN3YXBJbml0AQAOJGNhbGxTaXRlQXJyYXkBAB1MamF2YS9sYW5nL3JlZi9Tb2Z0UmVmZXJlbmNlOwwBiAGJCQACAYoBAAg8Y2xpbml0PgwBhwASCgACAY0MABAADwkAAgGPBQAAAZCDASevDAAOAA8JAAIBkwEADnN1cGVyJDEkbm90aWZ5AQAGbm90aWZ5DAGWABIKAAQBlwEAEHN1cGVyJDEkaGFzaENvZGUBAAMoKUkBAAhoYXNoQ29kZQwBmwGaCgAEAZwBABBzdXBlciQxJHRvU3RyaW5nAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAAh0b1N0cmluZwwBoAGfCgAEAaEBAA1zdXBlciQxJGNsb25lAQAFY2xvbmUMAaQAxgoABAGlAQAMc3VwZXIkMSR3YWl0AQAFKEpJKVYBAAR3YWl0DAGpAagKAAQBqgEABChKKVYMAakBrAoABAGtDAGpABIKAAQBrwEAEXN1cGVyJDEkbm90aWZ5QWxsAQAJbm90aWZ5QWxsDAGyABIKAAQBswEADnN1cGVyJDEkZXF1YWxzAQAGZXF1YWxzDAG2ANcKAAQBtwEAEHN1cGVyJDEkZmluYWxpemUBAAhmaW5hbGl6ZQwBugASCgAEAbsBABBzdXBlciQxJGdldENsYXNzAQAWJGNyZWF0ZUNhbGxTaXRlQXJyYXlfMQEAFihbTGphdmEvbGFuZy9TdHJpbmc7KVYBAAdub3ROdWxsCAHAAQADcnByCAHCAQAGcHV0QWxsCAHEAQAKYWRkaXRpb25hbAgBxgEAA2FkZAgByAEADGJvZHlNYXRjaGVycwgBygEABmFkZEFsbAgBzAEAEGNvb2tpZUFzc2VydGlvbnMIAc4BABBoZWFkZXJBc3NlcnRpb25zCAHQAQARcmVxdWVzdFBhcmFtZXRlcnMIAdIBAA9xdWVyeVBhcmFtZXRlcnMIAdQBAAtxdWVyeVBhcmFtcwgB1gEADmZvcm1QYXJhbWV0ZXJzCAHYAQAKZm9ybVBhcmFtcwgB2gEAE25hbWVkUGF0aFBhcmFtZXRlcnMIAdwBAApwYXRoUGFyYW1zCAHeAQAKbXVsdGlQYXJ0cwgB4AgA/AgBLgEAFnVubmFtZWRQYXRoUGFyYW1WYWx1ZXMIAeQIALIBAAdoZWFkZXJzCAHnAQAOcmVxdWVzdEhlYWRlcnMIAekBABBpc1VzZXJDb25maWd1cmVkCAHrAQAEZWFjaAgB7QEAB2NvbmZpZ3MIAe8BAA88JGNvbnN0cnVjdG9yJD4IAfEBAAZjb25maWcIAfMBABdERUZBVUxUX1NFU1NJT05fSURfTkFNRQgB9QEADXNlc3Npb25JZE5hbWUIAfcBAA1zZXNzaW9uQ29uZmlnCAH5AQARaGFzQ29va2llV2l0aE5hbWUIAfsBAAdmaW5kQWxsCAH9AQAHZmlsdGVycwgB/wEAA2FueQgCAQEACXJlbW92ZUFsbAgCAwEAFCRjcmVhdGVDYWxsU2l0ZUFycmF5AQA2KClMb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL2NhbGxzaXRlL0NhbGxTaXRlQXJyYXk7AwAAAGkMAb4BvwoAAgIIAQAyb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL2NhbGxzaXRlL0NhbGxTaXRlQXJyYXkHAgoBACcoTGphdmEvbGFuZy9DbGFzcztbTGphdmEvbGFuZy9TdHJpbmc7KVYMABECDAoCCwINAQAbamF2YS9sYW5nL3JlZi9Tb2Z0UmVmZXJlbmNlBwIPCgIQAMcMAgUCBgoAAgISCgIQAMEBAAVhcnJheQEAMFtMb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL2NhbGxzaXRlL0NhbGxTaXRlOwwCFQIWCQILAhcBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAPamF2YS9sYW5nL0NsYXNzBwIbAQAHZm9yTmFtZQwCHQIaCgIcAh4BAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IHAiABACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcCIgEACmdldE1lc3NhZ2UMAiQBnwoCIwIlAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWDAARAicKAiECKAEABENvZGUBABJMb2NhbFZhcmlhYmxlVGFibGUBAA9MaW5lTnVtYmVyVGFibGUBAApTb3VyY2VGaWxlAQAMSW5uZXJDbGFzc2VzACEAAgAEAAEABgAGEAoACAAJAAAQiQAKAAsAABCCAAwADQAAEAkADgAPAAAQCQAQAA8AABAKAYgBiQAAACAAAQARABIAAQIqAAAANAACAAMAAAAWKrcAFLgAGEwqtgAcTSwqX7UAHixXsQAAAAECKwAAAAwAAQAEABEAHwAgAAAACQAhACIAAQIqAAAByAAFAAoAAAFkuAAYTSwSIzISJSoSJ7kALQQAVywSLjISJSsSMLkALQQAVywSMTIruQA1AgBOLQEqEje4AD0tVywSPjIsEj8yK7kANQIAuQA1AgA6BBkEASwSQDIquQA1AgASQrgAPRkEVywSQzIsEkQyLBJFMiq5ADUCALkANQIALBJGMiwSRzIruQA1AgC5ADUCALkASwMAVywSTDIruQA1AgA6BRkFASoSTrgAPRkFVywSTzIsElAyKrkANQIALBJRMiu5ADUCALkASwMAVywSUjIruQA1AgA6BhkGASoSVLgAPRkGVywSVTIsElYyKrkANQIALBJXMiu5ADUCALkASwMAVywSWDIruQA1AgA6BxkHASoSWrgAPRkHVywSWzIruQA1AgA6CBkIASoSXbgAPRkIVywSXjIruQA1AgA6CRkJASoSYLgAPRkJVywSYTIsEmIyKrkANQIALBJjMiu5ADUCALkASwMAV7EAAAACAisAAAAWAAIAAAFjAGQAZQAAAAABYwBmAGUAAQIsAAAANgANAAQAMgATADMAIgA1ADcANgBhADcAkQA4AKkAOQDHADoA3wA7AP0APAEVAD0BLQA+AUUAPwAJACEAZwABAioAAALEAAQADwAAAjS4ABhNLBJoMhIlKhInuQAtBABXLBJpMhIlKxIwuQAtBABXEgIrEmu4AG9OLRICKhJruABzLVcsEnQyK7kAdwIAOgQZBBICKhJ5uAB8GQRXLBJ9Miu5AHcCADoFGQUSAioSf7gAfBkFVywSgDIsEoEyKrkAdwIALBKCMiu5AHcCALkASwMAVywSgzIsEoQyKrkAdwIALBKFMiu5AHcCALkASwMAVywShjIsEocyKrkAdwIALBKIMiu5AHcCALkASwMAVywSiTIsEooyKrkAdwIALBKLMiu5AHcCALkASwMAVywSjDIsEo0yKrkAdwIALBKOMiu5AHcCALkASwMAVywSjzIruQB3AgA6BhkGEgIqEpG4AHwZBlcsEpIyEgIqK7kALQQAVywSkzIqLBKUMiu5AHcCALkASwMAVywSlTIruQB3AgA6BxkHEgIqEpe4AHwZB1csEpgyEgIqK7kALQQAVywSmTIruQB3AgA6CBkIEgIqEpu4AHwZCFcsEpwyK7kAdwIAOgkZCRICKhKeuAB8GQlXLBKfMiu5AHcCADoKGQoSAioSobgAfBkKVywSojIruQB3AgA6CxkLEgIqEqS4AHwZC1csEqUyK7kAdwIAOgwZDBICKhKnuAB8GQxXLBKoMiu5AHcCADoNGQ0SAioSqrgAfBkNVywSqzIruQB3AgA6DhkOEgIqEq24AHwZDlcsEq4yEgIqK7kALQQAVywSrzIqLBKwMiu5AHcCALkASwMAV7EAAAACAisAAAAWAAIAAAIzAGQAsQAAAAACMwBmALEAAQIsAAAAYgAYAAQAXQATAF4AIgBgADYAYQBPAGIAaABjAIYAZACkAGUAwgBmAOAAZwD+AGgBFwBpASUAagE6AGsBUwBsAWEAbQF6AG4BkwBvAawAcAHFAHEB3gByAfcAcwIQAHUCHgB3AAoAsgCzAAECKgAAAtkACAAPAAACCbgAGE0sErQyKrkAtgIAEri4ALzAALhOLVcsEr0yK7kAtgIAEri4ALzAALi7AL9aX7cAwjoEGQRXLBLDMi25ALYCADoFGQVXLBLEMhkEtgDIwAC4uQC2AgA6BhkGV7gAzpkAErIA0JoADLgA05oABqcAzxkFuADZmQAPGQa4ANmZAAcEpwAEA5kAeAO9AAS4AN27AL9aX7cAwjoHGQdXLBLeMiwS3zItuQA1AgC7AOFZEgISAhkHGQS3AOS5AEsDAFcsEuUyEri5AOgCADoIGQhXLBLpMiwS6jIZCLkANQIAGQe2AMi5AEsDAFcZCDoJGQkSAioS7LgAfBkJsKcAPxkFuADZmgAHBKcABAOZAA8ZBrgA2ZkABwSnAAQDmQAdGQS2AMjAALg6ChkKEgIqEuy4AHwZCrCnAAUBsKcAzBkFuADZmQAPGQa4ANmZAAcEpwAEA5kAeAO9AAS4AN27AL9aX7cAwjoLGQtXLBLtMiwS7jItuQA1AgC7AOFZEgISAhkLGQS3AOS5AEsDAFcsEu8yEri5AOgCADoMGQxXLBLwMiwS8TIZDLkANQIAGQu2AMi5AEsDAFcZDDoNGQ0SAioS7LgAfBkNsKcAPxkFuADZmgAHBKcABAOZAA8ZBrgA2ZkABwSnAAQDmQAdGQS2AMjAALg6DhkOEgIqEuy4AHwZDrCnAAUBsAGwAAAAAgIrAAAAZgAKAAACBwBkALEAAAAAAgcA8gCxAAEAFwHwAPMA9AADADUB0gD1APYABABEAcMA9wD4AAUAWgGtAPkA+AAGAJsAYQD6APYABwDOAC4A+wD4AAgBZwBhAPoA9gALAZoALgD7APgADAIsAAAAUgAUAAQAewAZAHwAOAB9AEcAfgByAH8AigCAAJ4AgQDBAIoA0QCLAOsAjAD/AI4BHwCPAT4AfwFWAIABagCBAY0AigGdAIsBtwCMAcsAjgHrAI8ACgD8ALMAAQIqAAACwwAHABMAAAHluAAYTSwS/TIquQB3AgBOLVcsEv4yKrkAdwIAOgQZBFcsEv8yK7kAdwIAOgUZBVcsEwEAMiu5AHcCADoGGQZXLBMBATITAQO5ADUCALsAv1pftwDCOgcZB1e4AM6ZABKyANCaAAy4ANOaAAanADMtAbgBB5kAKCwTAQgyLBMBCTItuQA1AgC5ALYCADoIGQgZB8AAv1+2AQwZCFenADAtAbgBB5kAKCwTAQ0yLBMBDjItuQA1AgC5ALYCADoJGQkZB8AAv1+2AQwZCVcBOgoZCle4AM6ZABKyANCaAAy4ANOaAAanAF4ZBQG4ARGZACAsEwESMhkGGQe2AMi5AEsDADoLGQs6ChkLV6cANSwTARMyLBMBFDIZBbkANQIAuQC2AgA6DBkMVywTARUyGQYZDLkASwMAOg0ZDToKGQ1XpwBbGQUBuAERmQAgLBMBFjIZBhkHtgDIuQBLAwA6DhkOOgoZDlenADUsEwEXMiwTARgyGQW5ADUCALkAtgIAOg8ZD1csEwEZMhkGGQ+5AEsDADoQGRA6ChkQVxkKuADZmQBDLBMBGjIZBLsBHFkSAhICGQe3AR+5AEsDADoRGRFXLBMBIDITASIZEbkBJAMAOhIZEhICKhMBJrgAfBkSsKcABQGwAbAAAAACAisAAABwAAsAAAHjAGQAsQAAAAAB4wBmALEAAQAPAdQBJwD4AAMAHQHGASgA+AAEACwBtwD1APgABQA8AacBKQD4AAYAVgGNASoA9gAHAM4BFQErAPgACgEkABoBLAD4AAwBfwAaASwA+AAPAbwAIgEtAPgAEQIsAAAAVgAVAAQAlAARAJUAIACXAC8AmAA/AJoAbgCbAHYAnACeAJsApgCcAMsAnwDmAKAA7wChAQwAowEnAKQBQQCgAUoAoQFnAKMBggCkAZkApwGhAKgBvwCpAAoBLgCzAAECKgAAAb4ABwAHAAABOrgAGE0sEwEvMiq5AHcCALsAv1pftwDCTi1XLBMBMDIruQB3AgA6BBkEV7sBMlkSAhICtwE1OgUZBVe4AM6ZABKyANCaAAy4ANOaAAanAGIsEwE2Mi22AMgZBbkASwMAuADZmQAbLBMBNzIZBBkFuQBLAwC4ANmZAAcEpwAEA5oAFCwTATgyK7kAdwIAwQE6mQAHBKcABAOZABQsEwE7Mi22AMgZBbkASwMAV6cAXywTATwyLbYAyBkFuQBLAwC4ANmZABssEwE9MhkEGQW5AEsDALgA2ZkABwSnAAQDmgAULBMBPjIruQB3AgDBATqZAAcEpwAEA5kAFCwTAT8yLbYAyBkFuQBLAwBXLBMBQDIZBLsBQlkSAhICLbcBQ7kASwMAOgYZBlcsEwFEMi22AMgZBrkASwMAsAGwAAAAAgIrAAAAPgAGAAABOABkALEAAAAAATgAZgCxAAEAGAEgAUUA9gADACcBEQFGAPgABAA3AQEBRwD4AAUBJAAUAUgA+AAGAiwAAAAuAAsABACuABoArwAqALIATwCzAIEAtACaALUArgCzAOAAtAD5ALUBCgC4AScAuRABAUkBSgABAioAAAB9AAkABAAAAEu4ABhOEgIquwFMWQS9AARZAytTBb0BTlkDEwFQU1kEEwFQU7cBUxMBTrgAvMABTgO9AAQEvQAEWQMsUwS8ClkDA0+4AVe4AVuwAbAAAAABAisAAAAgAAMAAABJAB8AIAAAAAAASQFcAV0AAQAAAEkBXgD4AAIQAQFfAWAAAQIqAAAAbQAKAAUAAAA7uAAYTiw6BBkEEgIquwFMWQS9AARZAytTBb0BTlkDEwFQU1kEEwFQU7cBUxMBTrgAvMABTrgAcxkEV7EAAAABAisAAAAgAAMAAAA6AB8AIAAAAAAAOgFcAV0AAQAAADoBYQD4AAIQAQFiAWMAAQIqAAAAXQAJAAMAAAA1uAAYTRICKrsBTFkEvQAEWQMrUwW9AU5ZAxMBUFNZBBMBUFO3AVMTAU64ALzAAU64AG+wAbAAAAABAisAAAAWAAIAAAAzAB8AIAAAAAAAMwFcAV0AARAEABkAGgABAioAAAAzAAIAAgAAACcqtgFnEgKlAAgquAFrsLIBbUwrxwAPKrYBZ7gBc1lMswFtK7YBdrAAAAAAEAEBdAAaAAECKgAAACMAAgABAAAAFyq0AB5ZxgAEsFcqWbYAHLUAHiq0AB6wAAAAABABAXcBeAABAioAAAASAAIAAgAAAAYqK7UAHrEAAAAAEAEBeQFKAAECKgAAABkABAADAAAADSq2AXoqKyy5AX8EALAAAAAAEAEBgAFjAAECKgAAABgAAwACAAAADCq2AXoqK7kBgwMAsAAAAAAQAQA6AWAAAQIqAAAAGQAEAAMAAAANKrYBeiorLLkBhgQAsQAAAAAQCQGHABIAAQIqAAAAFQABAAEAAAAJuAAYSwGzAYuxAAAAAAAIAYwAEgABAioAAAAiAAIABAAAABa4AY4JPx6zAZAeWBQBkUEgswGUIFixAAAAABABAZUAEgABAioAAAARAAEAAQAAAAUqtwGYsQAAAAAQAQGZAZoAAQIqAAAAEQABAAEAAAAFKrcBnawAAAAAEAEBngGfAAECKgAAABEAAQABAAAABSq3AaKwAAAAABABAaMAxgABAioAAAARAAEAAQAAAAUqtwGmsAAAAAAQAQGnAagAAQIqAAAAEwAEAAQAAAAHKh8dtwGrsQAAAAAQAQGnAawAAQIqAAAAEgADAAMAAAAGKh+3Aa6xAAAAABABAacAEgABAioAAAARAAEAAQAAAAUqtwGwsQAAAAAQAQGxABIAAQIqAAAAEQABAAEAAAAFKrcBtLEAAAAAEAEBtQDXAAECKgAAABIAAgACAAAABiortwG4rAAAAAAQAQG5ABIAAQIqAAAAEQABAAEAAAAFKrcBvLEAAAAAEAEBvQFlAAECKgAAABEAAQABAAAABSq3AWewAAAAABAKAb4BvwABAioAAALzAAMAAQAAAucqEiMTAcFTKhIuEwHBUyoSMRI3UyoSPhJCUyoSPxMBw1MqEkATAcNTKhJDEwHFUyoSRBMBx1MqEkUTAcNTKhJGEwHHUyoSRxMBw1MqEkwSTlMqEk8TAclTKhJQEwHLUyoSURMBy1MqElISVFMqElUTAc1TKhJWEwHPUyoSVxMBz1MqElgSWlMqElsSXVMqEl4SYFMqEmETAc1TKhJiEwHRUyoSYxMB0VMqEmgTAcFTKhJpEwHBUyoSdBJ5UyoSfRJ/UyoSgBMBxVMqEoETAdNTKhKCEwHTUyoSgxMBxVMqEoQTAdVTKhKFEwHXUyoShhMBxVMqEocTAdlTKhKIEwHbUyoSiRMBxVMqEooTAd1TKhKLEwHfUyoSjBMBzVMqEo0TAeFTKhKOEwHhUyoSjxKRUyoSkhMB4lMqEpMTASZTKhKUEwEmUyoSlRKXUyoSmBMB41MqEpkSm1MqEpwSnlMqEp8SoVMqEqISpFMqEqUSp1MqEqgTAeVTKhKrEq1TKhKuEwHmUyoSrxMB6FMqErATAepTKhK0EuxTKhK9EuxTKhLDEwHsUyoSxBMB7FMqEt4TAe5TKhLfEwHwUyoS5RMB8lMqEukTAcVTKhLqEwHwUyoS7RMB7lMqEu4TAfBTKhLvEwHyUyoS8BMBxVMqEvETAfBTKhL9EwH0UyoS/hMBJlMqEv8TAfRTKhMBABMBJlMqEwEBEwH2UyoTAQgTAfhTKhMBCRMB+lMqEwENEwH4UyoTAQ4TAfpTKhMBEhMB/FMqEwETEwH4UyoTARQTAfpTKhMBFRMB/FMqEwEWEwH8UyoTARcTAfhTKhMBGBMB+lMqEwEZEwH8UyoTARoTAf5TKhMBIBMB8lMqEwEvEwIAUyoTATATAgBTKhMBNhMCAlMqEwE3EwICUyoTATgSkVMqEwE7EwIEUyoTATwTAgJTKhMBPRMCAlMqEwE+EpFTKhMBPxMCBFMqEwFAEwH+UyoTAUQTAc1TsQAAAAAQCgIFAgYAAQIqAAAAIgAEAAEAAAAWEwIHvQFOSyq4Agm7AgtZEgIqtwIOsAAAAAAQCgAVABYAAQIqAAAANAADAAEAAAAosgGLxgARsgGLtgIRwAILWUvHABK4AhNLuwIQWSq3AhSzAYsqtAIYsAAAAAAACAIZAhoAAQIqAAAAJgADAAIAAAASKrgCH7BMuwIhWSu2Aia3Aim/AAEAAAAFAAUCIwAAAAICLQAAAAIABwIuAAAAIgAEAOEAAAAAAAABHAAAAAAAAAEyAAAAAAAAAUIAAAAAAAA=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/SpecificationMergerDirectAccess.class",
+                "yv66vgAAADQAGQoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEAK2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1NwZWNpZmljYXRpb25NZXJnZXIBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7BwAOAQA3aW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvU3BlY2lmaWNhdGlvbk1lcmdlckRpcmVjdEFjY2VzcwEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEACkV4Y2VwdGlvbnMHABQBABNqYXZhL2xhbmcvVGhyb3dhYmxlAQAJU2lnbmF0dXJlAQAoKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzPCo+OwEAClNvdXJjZUZpbGUBACRTcGVjaWZpY2F0aW9uTWVyZ2VyRGlyZWN0QWNjZXNzLmphdmEAIQANAAIAAAAAAAIAAQAFAAYAAQAPAAAAHQABAAEAAAAFKrcAAbEAAAABABAAAAAGAAEAAAADAAkAEQAMAAMADwAAAB0AAQABAAAABSq4AAewAAAAAQAQAAAABgABAAAABQASAAAABAABABMAFQAAAAIAFgABABcAAAACABg=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/SpecificationMerger\$_mergeSessionId_closure2.class",
+                "yv66vgAAADEAlwEARGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1NwZWNpZmljYXRpb25NZXJnZXIkX21lcmdlU2Vzc2lvbklkX2Nsb3N1cmUyBwABAQATZ3Jvb3Z5L2xhbmcvQ2xvc3VyZQcAAwEALG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9HZW5lcmF0ZWRDbG9zdXJlBwAFAQAaU3BlY2lmaWNhdGlvbk1lcmdlci5ncm9vdnkBABBvbGRTZXNzaW9uSWROYW1lAQAXTGdyb292eS9sYW5nL1JlZmVyZW5jZTsBABAkc3RhdGljQ2xhc3NJbmZvAQAqTG9yZy9jb2RlaGF1cy9ncm9vdnkvcmVmbGVjdGlvbi9DbGFzc0luZm87AQAHX18kc3RNQwEAAVoBAAY8aW5pdD4BAD4oTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7TGdyb292eS9sYW5nL1JlZmVyZW5jZTspVgEAESRnZXRDYWxsU2l0ZUFycmF5AQAyKClbTG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZTsMABAAEQoAAgASAQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWDAAOABQKAAQAFQwACAAJCQACABcBAAR0aGlzAQBGTGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1NwZWNpZmljYXRpb25NZXJnZXIkX21lcmdlU2Vzc2lvbklkX2Nsb3N1cmUyOwEADl9vdXRlckluc3RhbmNlAQASTGphdmEvbGFuZy9PYmplY3Q7AQALX3RoaXNPYmplY3QBAAZkb0NhbGwBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwMAAAAAAwAAAAEBAC1vcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGUHACIBAARjYWxsDAAkAB8LACMAJQEAFWdyb292eS9sYW5nL1JlZmVyZW5jZQcAJwEAA2dldAEAFCgpTGphdmEvbGFuZy9PYmplY3Q7DAApACoKACgAKwEAOChMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7DAAkAC0LACMALgEAQm9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS90eXBlaGFuZGxpbmcvRGVmYXVsdFR5cGVUcmFuc2Zvcm1hdGlvbgcAMAEADGJvb2xlYW5VbmJveAEAFShMamF2YS9sYW5nL09iamVjdDspWgwAMgAzCgAxADQBABFqYXZhL2xhbmcvQm9vbGVhbgcANgEAB3ZhbHVlT2YBABYoWilMamF2YS9sYW5nL0Jvb2xlYW47DAA4ADkKADcAOgEAAml0AQATZ2V0T2xkU2Vzc2lvbklkTmFtZQwAHgAfCgACAD4BABMkZ2V0U3RhdGljTWV0YUNsYXNzAQAZKClMZ3Jvb3Z5L2xhbmcvTWV0YUNsYXNzOwEAEGphdmEvbGFuZy9PYmplY3QHAEIBAAhnZXRDbGFzcwEAEygpTGphdmEvbGFuZy9DbGFzczsMAEQARQoAQwBGAQAxb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL1NjcmlwdEJ5dGVjb2RlQWRhcHRlcgcASAEADWluaXRNZXRhQ2xhc3MBACsoTGphdmEvbGFuZy9PYmplY3Q7KUxncm9vdnkvbGFuZy9NZXRhQ2xhc3M7DABKAEsKAEkATAwACgALCQACAE4BAChvcmcvY29kZWhhdXMvZ3Jvb3Z5L3JlZmxlY3Rpb24vQ2xhc3NJbmZvBwBQAQAMZ2V0Q2xhc3NJbmZvAQA9KExqYXZhL2xhbmcvQ2xhc3M7KUxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3JlZmxlY3Rpb24vQ2xhc3NJbmZvOwwAUgBTCgBRAFQBAAxnZXRNZXRhQ2xhc3MMAFYAQQoAUQBXAQALX18kc3dhcEluaXQBAAMoKVYBAA4kY2FsbFNpdGVBcnJheQEAHUxqYXZhL2xhbmcvcmVmL1NvZnRSZWZlcmVuY2U7DABbAFwJAAIAXQEACDxjbGluaXQ+DABZAFoKAAIAYAEAFiRjcmVhdGVDYWxsU2l0ZUFycmF5XzEBABYoW0xqYXZhL2xhbmcvU3RyaW5nOylWAQAQZXF1YWxzSWdub3JlQ2FzZQgAZAEAB2dldE5hbWUIAGYBABQkY3JlYXRlQ2FsbFNpdGVBcnJheQEANigpTG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZUFycmF5OwMAAAACAQAQamF2YS9sYW5nL1N0cmluZwcAawwAYgBjCgACAG0BADJvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGVBcnJheQcAbwEAJyhMamF2YS9sYW5nL0NsYXNzO1tMamF2YS9sYW5nL1N0cmluZzspVgwADgBxCgBwAHIBABtqYXZhL2xhbmcvcmVmL1NvZnRSZWZlcmVuY2UHAHQKAHUAKwwAaABpCgACAHcBABUoTGphdmEvbGFuZy9PYmplY3Q7KVYMAA4AeQoAdQB6AQAFYXJyYXkBADBbTG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZTsMAHwAfQkAcAB+AQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEAD2phdmEvbGFuZy9DbGFzcwcAggEAB2Zvck5hbWUMAIQAgQoAgwCFAQAeamF2YS9sYW5nL05vQ2xhc3NEZWZGb3VuZEVycm9yBwCHAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HAIkBAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsMAIsAjAoAigCNAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWDAAOAI8KAIgAkAEABENvZGUBABJMb2NhbFZhcmlhYmxlVGFibGUBAA9MaW5lTnVtYmVyVGFibGUBAApTb3VyY2VGaWxlAQAMSW5uZXJDbGFzc2VzACAAAgAEAAEABgAEEAIACAAJAAAQCgAKAAsAABCJAAwADQAAEAoAWwBcAAAACwABAA4ADwABAJIAAABVAAMABgAAABm4ABM6BCorLLcAFi06BRkFKl+1ABgZBVexAAAAAQCTAAAAKgAEAAAAGAAZABoAAAAAABgAGwAcAAEAAAAYAB0AHAACAAAAGAAIAAkAAwABAB4AHwABAJIAAABjAAMAAwAAAC+4ABNNLBIgMiwSITIruQAmAgAqtAAYtgAsuQAvAwC4ADWaAAcEpwAEA7gAO7ABsAAAAAIAkwAAABYAAgAAAC0AGQAaAAAAAAAtADwAHAABAJQAAAAGAAEABACoAAEAPQAqAAEAkgAAACwAAQACAAAADrgAE0wqtAAYtgAssAGwAAAAAQCTAAAADAABAAAADAAZABoAAAABAB4AKgABAJIAAAAqAAIAAgAAAAy4ABNMKgG2AD+wAbAAAAABAJMAAAAMAAEAAAAKABkAGgAAEAQAQABBAAEAkgAAADMAAgACAAAAJyq2AEcSAqUACCq4AE2wsgBPTCvHAA8qtgBHuABVWUyzAE8rtgBYsAAAAAAQCQBZAFoAAQCSAAAAFQABAAEAAAAJuAATSwGzAF6xAAAAAAAIAF8AWgABAJIAAAAQAAAAAAAAAAS4AGGxAAAAABAKAGIAYwABAJIAAAAZAAMAAQAAAA0qEiASZVMqEiESZ1OxAAAAABAKAGgAaQABAJIAAAAhAAQAAQAAABUSar0AbEsquABuuwBwWRICKrcAc7AAAAAAEAoAEAARAAEAkgAAADQAAwABAAAAKLIAXsYAEbIAXrYAdsAAcFlLxwASuAB4S7sAdVkqtwB7swBeKrQAf7AAAAAAEAgAgACBAAEAkgAAACYAAwACAAAAEiq4AIawTLsAiFkrtgCOtwCRvwABAAAABQAFAIoAAAACAJUAAAACAAcAlgAAAAoAAQACAAAAAAAA")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/SpecificationMergerMergeSessionIdClosure2DirectAccess.class",
+                "yv66vgAAADQAFAEATWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1NwZWNpZmljYXRpb25NZXJnZXJNZXJnZVNlc3Npb25JZENsb3N1cmUyRGlyZWN0QWNjZXNzBwABAQAQamF2YS9sYW5nL09iamVjdAcAAwEABjxpbml0PgEAAygpVgwABQAGCgAEAAcBAARDb2RlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQBEaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvU3BlY2lmaWNhdGlvbk1lcmdlciRfbWVyZ2VTZXNzaW9uSWRfY2xvc3VyZTIHAAwBAAZjbGFzcyQMAA4ACwoADQAPAQAKU291cmNlRmlsZQEAOlNwZWNpZmljYXRpb25NZXJnZXJNZXJnZVNlc3Npb25JZENsb3N1cmUyRGlyZWN0QWNjZXNzLmphdmEBAApFeGNlcHRpb25zADEAAgAEAAAAAAACAAIABQAGAAEACQAAABEAAQABAAAABSq3AAixAAAAAAAJAAoACwABAAkAAAARAAEAAQAAAAUquAAQsAAAAAAAAQARAAAAAgAS")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/SpecificationMerger\$_mergeFilters_closure3.class",
+                "yv66vgAAADEAeAEAQmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1NwZWNpZmljYXRpb25NZXJnZXIkX21lcmdlRmlsdGVyc19jbG9zdXJlMwcAAQEAE2dyb292eS9sYW5nL0Nsb3N1cmUHAAMBACxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvR2VuZXJhdGVkQ2xvc3VyZQcABQEAGlNwZWNpZmljYXRpb25NZXJnZXIuZ3Jvb3Z5AQAQJHN0YXRpY0NsYXNzSW5mbwEAKkxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3JlZmxlY3Rpb24vQ2xhc3NJbmZvOwEAB19fJHN0TUMBAAFaAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWAQARJGdldENhbGxTaXRlQXJyYXkBADIoKVtMb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL2NhbGxzaXRlL0NhbGxTaXRlOwwADgAPCgACABAMAAwADQoABAASAQAEdGhpcwEARExpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9TcGVjaWZpY2F0aW9uTWVyZ2VyJF9tZXJnZUZpbHRlcnNfY2xvc3VyZTM7AQAOX291dGVySW5zdGFuY2UBABJMamF2YS9sYW5nL09iamVjdDsBAAtfdGhpc09iamVjdAEABmRvQ2FsbAEAJihMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQAdaW8vcmVzdGFzc3VyZWQvc3BpL0F1dGhGaWx0ZXIHABsBABFqYXZhL2xhbmcvQm9vbGVhbgcAHQEAB3ZhbHVlT2YBABYoWilMamF2YS9sYW5nL0Jvb2xlYW47DAAfACAKAB4AIQEAAml0AQAUKClMamF2YS9sYW5nL09iamVjdDsMABkAGgoAAgAlAQATJGdldFN0YXRpY01ldGFDbGFzcwEAGSgpTGdyb292eS9sYW5nL01ldGFDbGFzczsBABBqYXZhL2xhbmcvT2JqZWN0BwApAQAIZ2V0Q2xhc3MBABMoKUxqYXZhL2xhbmcvQ2xhc3M7DAArACwKACoALQEAMW9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9TY3JpcHRCeXRlY29kZUFkYXB0ZXIHAC8BAA1pbml0TWV0YUNsYXNzAQArKExqYXZhL2xhbmcvT2JqZWN0OylMZ3Jvb3Z5L2xhbmcvTWV0YUNsYXNzOwwAMQAyCgAwADMMAAgACQkAAgA1AQAob3JnL2NvZGVoYXVzL2dyb292eS9yZWZsZWN0aW9uL0NsYXNzSW5mbwcANwEADGdldENsYXNzSW5mbwEAPShMamF2YS9sYW5nL0NsYXNzOylMb3JnL2NvZGVoYXVzL2dyb292eS9yZWZsZWN0aW9uL0NsYXNzSW5mbzsMADkAOgoAOAA7AQAMZ2V0TWV0YUNsYXNzDAA9ACgKADgAPgEAC19fJHN3YXBJbml0AQADKClWAQAOJGNhbGxTaXRlQXJyYXkBAB1MamF2YS9sYW5nL3JlZi9Tb2Z0UmVmZXJlbmNlOwwAQgBDCQACAEQBAAg8Y2xpbml0PgwAQABBCgACAEcBABQkY3JlYXRlQ2FsbFNpdGVBcnJheQEANigpTG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZUFycmF5OwMAAAAAAQAQamF2YS9sYW5nL1N0cmluZwcATAEAMm9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZUFycmF5BwBOAQAnKExqYXZhL2xhbmcvQ2xhc3M7W0xqYXZhL2xhbmcvU3RyaW5nOylWDAAMAFAKAE8AUQEAG2phdmEvbGFuZy9yZWYvU29mdFJlZmVyZW5jZQcAUwEAA2dldAwAVQAkCgBUAFYMAEkASgoAAgBYAQAVKExqYXZhL2xhbmcvT2JqZWN0OylWDAAMAFoKAFQAWwEABWFycmF5AQAwW0xvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGU7DABdAF4JAE8AXwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBAA9qYXZhL2xhbmcvQ2xhc3MHAGMBAAdmb3JOYW1lDABlAGIKAGQAZgEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgcAaAEAIGphdmEvbGFuZy9DbGFzc05vdEZvdW5kRXhjZXB0aW9uBwBqAQAKZ2V0TWVzc2FnZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7DABsAG0KAGsAbgEAFShMamF2YS9sYW5nL1N0cmluZzspVgwADABwCgBpAHEBAARDb2RlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAPTGluZU51bWJlclRhYmxlAQAKU291cmNlRmlsZQEADElubmVyQ2xhc3NlcwAgAAIABAABAAYAAxAKAAgACQAAEIkACgALAAAQCgBCAEMAAAAJAAEADAANAAEAcwAAAD0AAwAEAAAAC7gAEU4qKyy3ABOxAAAAAQB0AAAAIAADAAAACgAUABUAAAAAAAoAFgAXAAEAAAAKABgAFwACAAEAGQAaAAEAcwAAAEIAAQADAAAADrgAEU0rwQAcuAAisAGwAAAAAgB0AAAAFgACAAAADAAUABUAAAAAAAwAIwAXAAEAdQAAAAYAAQAEALIAAQAZACQAAQBzAAAAKgACAAIAAAAMuAARTCoBtgAmsAGwAAAAAQB0AAAADAABAAAACgAUABUAABAEACcAKAABAHMAAAAzAAIAAgAAACcqtgAuEgKlAAgquAA0sLIANkwrxwAPKrYALrgAPFlMswA2K7YAP7AAAAAAEAkAQABBAAEAcwAAABUAAQABAAAACbgAEUsBswBFsQAAAAAACABGAEEAAQBzAAAAEAAAAAAAAAAEuABIsQAAAAAQCgBJAEoAAQBzAAAAHQAEAAEAAAAREku9AE1LuwBPWRICKrcAUrAAAAAAEAoADgAPAAEAcwAAADQAAwABAAAAKLIARcYAEbIARbYAV8AAT1lLxwASuABZS7sAVFkqtwBcswBFKrQAYLAAAAAAEAgAYQBiAAEAcwAAACYAAwACAAAAEiq4AGewTLsAaVkrtgBvtwByvwABAAAABQAFAGsAAAACAHYAAAACAAcAdwAAAAoAAQACAAAAAAAA")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/SpecificationMerger\$_mergeFilters_closure4.class",
+                "yv66vgAAAEUATQoAAgADBwAEDAAFAAYBABNncm9vdnkvbGFuZy9DbG9zdXJlAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWCQAIAAkHAAoMAAsADAEAQmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1NwZWNpZmljYXRpb25NZXJnZXIkX21lcmdlRmlsdGVyc19jbG9zdXJlNAEAC3RoaXNGaWx0ZXJzAQAXTGdyb292eS9sYW5nL1JlZmVyZW5jZTsIAA4BABBqYXZhLmxhbmcuT2JqZWN0CgAIABAMABEAEgEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsKABQAFQcAFgwAFwAYAQAPamF2YS9sYW5nL0NsYXNzAQAKaXNJbnN0YW5jZQEAFShMamF2YS9sYW5nL09iamVjdDspWgcAGgEAImphdmEvbGFuZy9JbGxlZ2FsQXJndW1lbnRFeGNlcHRpb24KABwAHQcAHgwAHwAgAQAQamF2YS9sYW5nL1N0cmluZwEAB3ZhbHVlT2YBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvU3RyaW5nOwoAGQAiDAAFACMBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYKACUAJgcAJwwAKAApAQAVZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlAQADZ2V0AQAUKClMamF2YS9sYW5nL09iamVjdDsHACsBABRqYXZhL3V0aWwvQ29sbGVjdGlvbgsAKgAtDAAuABgBAAhjb250YWlucwoAMAAxBwAyDAAfADMBABFqYXZhL2xhbmcvQm9vbGVhbgEAFihaKUxqYXZhL2xhbmcvQm9vbGVhbjsKABQANQwANgASAQAHZm9yTmFtZQcAOAEAIGphdmEvbGFuZy9DbGFzc05vdEZvdW5kRXhjZXB0aW9uBwA6AQAeamF2YS9sYW5nL05vQ2xhc3NEZWZGb3VuZEVycm9yCgA3ADwMAD0APgEACmdldE1lc3NhZ2UBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwoAOQAiAQAJU2lnbmF0dXJlAQAyTGdyb292eS9sYW5nL1JlZmVyZW5jZTxMamF2YS91dGlsL0NvbGxlY3Rpb248Kj47PjsBAD4oTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7TGdyb292eS9sYW5nL1JlZmVyZW5jZTspVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAFkoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7TGdyb292eS9sYW5nL1JlZmVyZW5jZTxMamF2YS91dGlsL0NvbGxlY3Rpb248Kj47PjspVgEABmRvQ2FsbAEAJihMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQANU3RhY2tNYXBUYWJsZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBAClMZ3Jvb3Z5L2xhbmcvQ2xvc3VyZTxMamF2YS9sYW5nL09iamVjdDs+OwEAClNvdXJjZUZpbGUBABpTcGVjaWZpY2F0aW9uTWVyZ2VyLmdyb292eQAgAAgAAgAAAAEAEgALAAwAAQBAAAAAAgBBAAMAAAAFAEIAAgBDAAAALAADAAQAAAAMKisstwABKi21AAexAAAAAQBEAAAADgADAAAAFgAGABcACwAYAEAAAAACAEUAAQBGAEcAAQBDAAAAawADAAMAAAA2Eg24AA9NLCu2ABOaAA+7ABlZK7gAG7cAIb8qtAAHtgAkwAAqK7kALAIAmgAHBKcABAO4AC+wAAAAAgBEAAAAEgAEAAAAGwAGABwADgAdABoAHwBIAAAACwAD/AAaBwAUFkABAAgAEQASAAIAQwAAAEYAAwACAAAAEiq4ADSwTLsAOVkrtgA7twA/vwABAAAABAAFADcAAgBEAAAADgADAAAAJAAFACUABgAmAEgAAAAGAAFFBwA3AEAAAAACAEkAAgBAAAAAAgBKAEsAAAACAEw=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredResponseOptionsGroovyImplDirectAccess.class",
+                "yv66vgAAADQAEwEASGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkUmVzcG9uc2VPcHRpb25zR3Jvb3Z5SW1wbERpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBAAY8aW5pdD4BAAMoKVYMAAUABgoABAAHAQA8aW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzdEFzc3VyZWRSZXNwb25zZU9wdGlvbnNHcm9vdnlJbXBsBwAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAKAA0BAARDb2RlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBAApTb3VyY2VGaWxlAQA1UmVzdEFzc3VyZWRSZXNwb25zZU9wdGlvbnNHcm9vdnlJbXBsRGlyZWN0QWNjZXNzLmphdmEAMQACAAQAAAAAAAIAAgAFAAYAAQAPAAAAEQABAAEAAAAFKrcACLEAAAAAAAkAEAAMAAEADwAAABEAAQABAAAABSq4AA6wAAAAAAABABEAAAACABI=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredResponseOptionsGroovyImplPathClosure5Access.class",
+                "yv66vgAAADQAEwEATmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkUmVzcG9uc2VPcHRpb25zR3Jvb3Z5SW1wbFBhdGhDbG9zdXJlNUFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBAAY8aW5pdD4BAAMoKVYMAAUABgoABAAHAQBLaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzdEFzc3VyZWRSZXNwb25zZU9wdGlvbnNHcm9vdnlJbXBsJF9wYXRoX2Nsb3N1cmU1BwAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAKAA0BAARDb2RlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBAApTb3VyY2VGaWxlAQA7UmVzdEFzc3VyZWRSZXNwb25zZU9wdGlvbnNHcm9vdnlJbXBsUGF0aENsb3N1cmU1QWNjZXNzLmphdmEAMQACAAQAAAAAAAIAAQAFAAYAAQAPAAAAEQABAAEAAAAFKrcACLEAAAAAAAkAEAAMAAEADwAAABEAAQABAAAABSq4AA6wAAAAAAABABEAAAACABI=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredResponseOptionsGroovyImpl\$_path_closure5.class",
+                "yv66vgAAADEAGwEAS2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkUmVzcG9uc2VPcHRpb25zR3Jvb3Z5SW1wbCRfcGF0aF9jbG9zdXJlNQcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBAA9qYXZhL2xhbmcvQ2xhc3MHAAUBAAdmb3JOYW1lAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwABwAICgAGAAkBACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcACwEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgcADQEABjxpbml0PgEAFShMamF2YS9sYW5nL1N0cmluZzspVgwADwAQCgAOABEBAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsMABMAFAoADAAVAQAGY2xhc3MkAQAEQ29kZQEAClNvdXJjZUZpbGUBACtSZXN0QXNzdXJlZFJlc3BvbnNlT3B0aW9uc0dyb292eUltcGwuZ3Jvb3Z5ACAAAgAEAAAAAAABAAgAFwAIAAEAGAAAACYAAwACAAAAEiq4AAqwTLsADlkrtgAWtwASvwABAAAABQAFAAwAAAABABkAAAACABo=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredResponseOptionsGroovyImplCookiesClosure4DirectAccess.class",
+                "yv66vgAAADQAEwEAV2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkUmVzcG9uc2VPcHRpb25zR3Jvb3Z5SW1wbENvb2tpZXNDbG9zdXJlNERpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBAAY8aW5pdD4BAAMoKVYMAAUABgoABAAHAQBOaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzdEFzc3VyZWRSZXNwb25zZU9wdGlvbnNHcm9vdnlJbXBsJF9jb29raWVzX2Nsb3N1cmU0BwAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAKAA0BAARDb2RlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBAApTb3VyY2VGaWxlAQBEUmVzdEFzc3VyZWRSZXNwb25zZU9wdGlvbnNHcm9vdnlJbXBsQ29va2llc0Nsb3N1cmU0RGlyZWN0QWNjZXNzLmphdmEAMQACAAQAAAAAAAIAAgAFAAYAAQAPAAAAEQABAAEAAAAFKrcACLEAAAAAAAkAEAAMAAEADwAAABEAAQABAAAABSq4AA6wAAAAAAABABEAAAACABI=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredResponseOptionsGroovyImplParseHeadersClosure1DirectAccess.class",
+                "yv66vgAAADQAEwEAXGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkUmVzcG9uc2VPcHRpb25zR3Jvb3Z5SW1wbFBhcnNlSGVhZGVyc0Nsb3N1cmUxRGlyZWN0QWNjZXNzBwABAQAQamF2YS9sYW5nL09iamVjdAcAAwEABjxpbml0PgEAAygpVgwABQAGCgAEAAcBAFNpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXN0QXNzdXJlZFJlc3BvbnNlT3B0aW9uc0dyb292eUltcGwkX3BhcnNlSGVhZGVyc19jbG9zdXJlMQcACQEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAsADAoACgANAQAEQ29kZQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAKU291cmNlRmlsZQEASVJlc3RBc3N1cmVkUmVzcG9uc2VPcHRpb25zR3Jvb3Z5SW1wbFBhcnNlSGVhZGVyc0Nsb3N1cmUxRGlyZWN0QWNjZXNzLmphdmEAMQACAAQAAAAAAAIAAgAFAAYAAQAPAAAAEQABAAEAAAAFKrcACLEAAAAAAAkAEAAMAAEADwAAABEAAQABAAAABSq4AA6wAAAAAAABABEAAAACABI=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredResponseOptionsGroovyImpl\$_parseHeaders_closure1.class",
+                "yv66vgAAADEAnQEAU2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkUmVzcG9uc2VPcHRpb25zR3Jvb3Z5SW1wbCRfcGFyc2VIZWFkZXJzX2Nsb3N1cmUxBwABAQATZ3Jvb3Z5L2xhbmcvQ2xvc3VyZQcAAwEALG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9HZW5lcmF0ZWRDbG9zdXJlBwAFAQArUmVzdEFzc3VyZWRSZXNwb25zZU9wdGlvbnNHcm9vdnlJbXBsLmdyb292eQEACmhlYWRlckxpc3QBABdMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOwEAECRzdGF0aWNDbGFzc0luZm8BACpMb3JnL2NvZGVoYXVzL2dyb292eS9yZWZsZWN0aW9uL0NsYXNzSW5mbzsBAAdfXyRzdE1DAQABWgEABjxpbml0PgEAPihMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOylWAQARJGdldENhbGxTaXRlQXJyYXkBADIoKVtMb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL2NhbGxzaXRlL0NhbGxTaXRlOwwAEAARCgACABIBACcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KVYMAA4AFAoABAAVDAAIAAkJAAIAFwEABHRoaXMBAFVMaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzdEFzc3VyZWRSZXNwb25zZU9wdGlvbnNHcm9vdnlJbXBsJF9wYXJzZUhlYWRlcnNfY2xvc3VyZTE7AQAOX291dGVySW5zdGFuY2UBABJMamF2YS9sYW5nL09iamVjdDsBAAtfdGhpc09iamVjdAEABmRvQ2FsbAEAJihMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AwAAAAABAC1vcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGUHACEBAARjYWxsDAAjAB8LACIAJAMAAAABAwAAAAIBABVncm9vdnkvbGFuZy9SZWZlcmVuY2UHACgBAANnZXQBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwwAKgArCgApACwDAAAAAwEAGmlvL3Jlc3Rhc3N1cmVkL2h0dHAvSGVhZGVyBwAvAQAPY2FsbENvbnN0cnVjdG9yAQBKKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsMADEAMgsAIgAzAQA4KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsMACMANQsAIgA2AQACaXQBAARuYW1lAQAFdmFsdWUBAA1nZXRIZWFkZXJMaXN0DAAeAB8KAAIAPAEAEyRnZXRTdGF0aWNNZXRhQ2xhc3MBABkoKUxncm9vdnkvbGFuZy9NZXRhQ2xhc3M7AQAQamF2YS9sYW5nL09iamVjdAcAQAEACGdldENsYXNzAQATKClMamF2YS9sYW5nL0NsYXNzOwwAQgBDCgBBAEQBADFvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvU2NyaXB0Qnl0ZWNvZGVBZGFwdGVyBwBGAQANaW5pdE1ldGFDbGFzcwEAKyhMamF2YS9sYW5nL09iamVjdDspTGdyb292eS9sYW5nL01ldGFDbGFzczsMAEgASQoARwBKDAAKAAsJAAIATAEAKG9yZy9jb2RlaGF1cy9ncm9vdnkvcmVmbGVjdGlvbi9DbGFzc0luZm8HAE4BAAxnZXRDbGFzc0luZm8BAD0oTGphdmEvbGFuZy9DbGFzczspTG9yZy9jb2RlaGF1cy9ncm9vdnkvcmVmbGVjdGlvbi9DbGFzc0luZm87DABQAFEKAE8AUgEADGdldE1ldGFDbGFzcwwAVAA/CgBPAFUBAAtfXyRzd2FwSW5pdAEAAygpVgEADiRjYWxsU2l0ZUFycmF5AQAdTGphdmEvbGFuZy9yZWYvU29mdFJlZmVyZW5jZTsMAFkAWgkAAgBbAQAIPGNsaW5pdD4MAFcAWAoAAgBeAQAWJGNyZWF0ZUNhbGxTaXRlQXJyYXlfMQEAFihbTGphdmEvbGFuZy9TdHJpbmc7KVYBAAdnZXROYW1lCABiAQAIZ2V0VmFsdWUIAGQBAAlsZWZ0U2hpZnQIAGYBAA88JGNvbnN0cnVjdG9yJD4IAGgBABQkY3JlYXRlQ2FsbFNpdGVBcnJheQEANigpTG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZUFycmF5OwMAAAAEAQAQamF2YS9sYW5nL1N0cmluZwcAbQwAYABhCgACAG8BADJvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGVBcnJheQcAcQEAJyhMamF2YS9sYW5nL0NsYXNzO1tMamF2YS9sYW5nL1N0cmluZzspVgwADgBzCgByAHQBABtqYXZhL2xhbmcvcmVmL1NvZnRSZWZlcmVuY2UHAHYKAHcALAwAagBrCgACAHkBABUoTGphdmEvbGFuZy9PYmplY3Q7KVYMAA4AewoAdwB8AQAFYXJyYXkBADBbTG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZTsMAH4AfwkAcgCAAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEAD2phdmEvbGFuZy9DbGFzcwcAhAEAB2Zvck5hbWUMAIYAgwoAhQCHAQAeamF2YS9sYW5nL05vQ2xhc3NEZWZGb3VuZEVycm9yBwCJAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HAIsBAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsMAI0AjgoAjACPAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWDAAOAJEKAIoAkgEABENvZGUBABJMb2NhbFZhcmlhYmxlVGFibGUBAA9MaW5lTnVtYmVyVGFibGUBAApTb3VyY2VGaWxlAQAMSW5uZXJDbGFzc2VzAQAQamF2YS5sYW5nLlN0cmluZwgAmQwAggCDCgACAJsAIAACAAQAAQAGAAQQAgAIAAkAABAKAAoACwAAEIkADAANAAAQCgBZAFoAAAALAAEADgAPAAEAlAAAAFUAAwAGAAAAGbgAEzoEKisstwAWLToFGQUqX7UAGBkFV7EAAAABAJUAAAAqAAQAAAAYABkAGgAAAAAAGAAbABwAAQAAABgAHQAcAAIAAAAYAAgACQADAAEAHgAfAAEAlAAAAJgABgAFAAAASBMAmrgAnFe4ABNNLBIgMiu5ACUCAE4tVywSJjIruQAlAgA6BBkEVywSJzIqtAAYtgAtLBIuMhIwLRkEuQA0BAC5ADcDALABsAAAAAIAlQAAACoABAAAAD8AGQAaAAAAAAA/ADgAHAABAA8AMAA5ABwAAwAdACIAOgAcAAQAlgAAAA4AAwAEAHsAEQB8ACAAfQABADsAKwABAJQAAAAsAAEAAgAAAA64ABNMKrQAGLYALbABsAAAAAEAlQAAAAwAAQAAAAwAGQAaAAAAAQAeACsAAQCUAAAAKgACAAIAAAAMuAATTCoBtgA9sAGwAAAAAQCVAAAADAABAAAACgAZABoAABAEAD4APwABAJQAAAAzAAIAAgAAACcqtgBFEgKlAAgquABLsLIATUwrxwAPKrYARbgAU1lMswBNK7YAVrAAAAAAEAkAVwBYAAEAlAAAABUAAQABAAAACbgAE0sBswBcsQAAAAAACABdAFgAAQCUAAAAEAAAAAAAAAAEuABfsQAAAAAQCgBgAGEAAQCUAAAAJQADAAEAAAAZKhIgEmNTKhImEmVTKhInEmdTKhIuEmlTsQAAAAAQCgBqAGsAAQCUAAAAIQAEAAEAAAAVEmy9AG5LKrgAcLsAclkSAiq3AHWwAAAAABAKABAAEQABAJQAAAA0AAMAAQAAACiyAFzGABGyAFy2AHjAAHJZS8cAErgAeku7AHdZKrcAfbMAXCq0AIGwAAAAABAIAIIAgwABAJQAAAAmAAMAAgAAABIquACIsEy7AIpZK7YAkLcAk78AAQAAAAUABQCMAAAAAgCXAAAAAgAHAJgAAAAKAAEAAgAAAAAAAA==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredResponseOptionsGroovyImpl\$_cookies_closure4.class",
+                "yv66vgAAAD0AQgoAAgADBwAEDAAFAAYBABNncm9vdnkvbGFuZy9DbG9zdXJlAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWCQAIAAkHAAoMAAsADAEATmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkUmVzcG9uc2VPcHRpb25zR3Jvb3Z5SW1wbCRfY29va2llc19jbG9zdXJlNAEACWNvb2tpZU1hcAEAF0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7CAAOAQAQamF2YS5sYW5nLlN0cmluZwoACAAQDAARABIBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7BwAUAQAaaW8vcmVzdGFzc3VyZWQvaHR0cC9Db29raWUKABYAFwcAGAwAGQAaAQAVZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlAQADZ2V0AQAUKClMamF2YS9sYW5nL09iamVjdDsHABwBAA1qYXZhL3V0aWwvTWFwCgATAB4MAB8AIAEAB2dldE5hbWUBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwoAEwAiDAAjACABAAhnZXRWYWx1ZQsAGwAlDAAmACcBAANwdXQBADgoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwoAKQAqBwArDAAsABIBAA9qYXZhL2xhbmcvQ2xhc3MBAAdmb3JOYW1lBwAuAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HADABAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IKAC0AMgwAMwAgAQAKZ2V0TWVzc2FnZQoALwA1DAAFADYBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYHADgBACxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvR2VuZXJhdGVkQ2xvc3VyZQEAPihMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOylWAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEABmRvQ2FsbAEAJihMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQAMZ2V0Q29va2llTWFwAQANU3RhY2tNYXBUYWJsZQEAClNvdXJjZUZpbGUBACtSZXN0QXNzdXJlZFJlc3BvbnNlT3B0aW9uc0dyb292eUltcGwuZ3Jvb3Z5ACAACAACAAEANwABAAIACwAMAAAABAAAAAUAOQABADoAAAAsAAMABAAAAAwqKyy3AAEqLbUAB7EAAAABADsAAAAOAAMAAAANAAYADgALAA8AAQA8AD0AAQA6AAAAQwADAAMAAAAjEg24AA9XK8AAE00qtAAHtgAVwAAbLLYAHSy2ACG5ACQDALAAAAABADsAAAAOAAMAAAASAAYAEwALABQAAQA+ABoAAQA6AAAAIAABAAEAAAAIKrQAB7YAFbAAAAABADsAAAAGAAEAAAAYAAgAEQASAAEAOgAAAEYAAwACAAAAEiq4ACiwTLsAL1krtgAxtwA0vwABAAAABAAFAC0AAgA7AAAADgADAAAAHQAFAB4ABgAfAD8AAAAGAAFFBwAtAAEAQAAAAAIAQQ==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredResponseOptionsGroovyImpl\$_toString_closure2.class",
+                "yv66vgAAADQAIgoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEAD2phdmEvbGFuZy9DbGFzcwEAB2Zvck5hbWUBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7BwAOAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HABABAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IKAA0AEgwAEwAUAQAKZ2V0TWVzc2FnZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7CgAPABYMAAUAFwEAFShMamF2YS9sYW5nL1N0cmluZzspVgcAGQEAT2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkUmVzcG9uc2VPcHRpb25zR3Jvb3Z5SW1wbCRfdG9TdHJpbmdfY2xvc3VyZTIBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQAGY2xhc3MkAQANU3RhY2tNYXBUYWJsZQEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBAApTb3VyY2VGaWxlAQArUmVzdEFzc3VyZWRSZXNwb25zZU9wdGlvbnNHcm9vdnlJbXBsLmdyb292eQAhABgAAgAAAAAAAgABAAUABgABABoAAAAdAAEAAQAAAAUqtwABsQAAAAEAGwAAAAYAAQAAAAMACAAcAAwAAgAaAAAARgADAAIAAAASKrgAB7BMuwAPWSu2ABG3ABW/AAEAAAAEAAUADQACABsAAAAOAAMAAAAGAAUABwAGAAgAHQAAAAYAAUUHAA0AHgAAAAIAHwABACAAAAACACE=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredResponseOptionsGroovyImplToStringClosure2DirectAccess.class",
+                "yv66vgAAADQAGQoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEAT2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkUmVzcG9uc2VPcHRpb25zR3Jvb3Z5SW1wbCRfdG9TdHJpbmdfY2xvc3VyZTIBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7BwAOAQBYaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzdEFzc3VyZWRSZXNwb25zZU9wdGlvbnNHcm9vdnlJbXBsVG9TdHJpbmdDbG9zdXJlMkRpcmVjdEFjY2VzcwEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEACkV4Y2VwdGlvbnMHABQBABNqYXZhL2xhbmcvVGhyb3dhYmxlAQAJU2lnbmF0dXJlAQAoKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzPCo+OwEAClNvdXJjZUZpbGUBAEVSZXN0QXNzdXJlZFJlc3BvbnNlT3B0aW9uc0dyb292eUltcGxUb1N0cmluZ0Nsb3N1cmUyRGlyZWN0QWNjZXNzLmphdmEAMQANAAIAAAAAAAIAAgAFAAYAAQAPAAAAIQABAAEAAAAFKrcAAbEAAAABABAAAAAKAAIAAAAEAAQABQAJABEADAADAA8AAAAdAAEAAQAAAAUquAAHsAAAAAEAEAAAAAYAAQAAAAgAEgAAAAQAAQATABUAAAACABYAAQAXAAAAAgAY")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredHttpBuilderGroovyHelper.class",
+                "yv66vgAAAD0AOAoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEAQWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkSHR0cEJ1aWxkZXJHcm9vdnlIZWxwZXJTdXBwb3J0AQAPZmxhdHRlblRvU3RyaW5nAQAuKExqYXZhL3V0aWwvQ29sbGVjdGlvbjspTGphdmEvdXRpbC9Db2xsZWN0aW9uOwoACAAODAAPABABABZjcmVhdGVDbG9zdXJlVGhhdENhbGxzAQApKExqYXZhL2xhbmcvT2JqZWN0OylMZ3Jvb3Z5L2xhbmcvQ2xvc3VyZTsKABIAEwcAFAwAFQAWAQAPamF2YS9sYW5nL0NsYXNzAQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsHABgBACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcAGgEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgoAFwAcDAAdAB4BAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsKABkAIAwABQAhAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWBwAjAQA6aW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzdEFzc3VyZWRIdHRwQnVpbGRlckdyb292eUhlbHBlcgcAJQEAGGdyb292eS9sYW5nL0dyb292eU9iamVjdAEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAlTaWduYXR1cmUBAEIoTGphdmEvdXRpbC9Db2xsZWN0aW9uOylMamF2YS91dGlsL0NvbGxlY3Rpb248TGphdmEvbGFuZy9TdHJpbmc7PjsBAAZjbGFzcyQBAA1TdGFja01hcFRhYmxlAQAMZ2V0TWV0YUNsYXNzAQAZKClMZ3Jvb3Z5L2xhbmcvTWV0YUNsYXNzOwEADHNldE1ldGFDbGFzcwEAGihMZ3Jvb3Z5L2xhbmcvTWV0YUNsYXNzOylWAQAMaW52b2tlTWV0aG9kAQA4KExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBAAtnZXRQcm9wZXJ0eQEAJihMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9PYmplY3Q7AQALc2V0UHJvcGVydHkBACcoTGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9PYmplY3Q7KVYBAApTb3VyY2VGaWxlAQApUmVzdEFzc3VyZWRIdHRwQnVpbGRlckdyb292eUhlbHBlci5ncm9vdnkAIQAiAAIAAQAkAAAACQABAAUABgABACYAAAARAAEAAQAAAAUqtwABsQAAAAAACQALAAwAAgAmAAAAEQABAAEAAAAFKrgAB7AAAAAAACgAAAACACkACQAPABAAAQAmAAAAEQABAAEAAAAFKrgADbAAAAAAAAgAKgAWAAEAJgAAADIAAwACAAAAEiq4ABGwTLsAGVkrtgAbtwAfvwABAAAABAAFABcAAQArAAAABgABRQcAFwABACwALQABACYAAAAOAAEAAQAAAAIBsAAAAAAAAQAuAC8AAQAmAAAADQAAAAIAAAABsQAAAAAAAQAwADEAAQAmAAAADgABAAMAAAACAbAAAAAAAAEAMgAzAAEAJgAAAA4AAQACAAAAAgGwAAAAAAABADQANQABACYAAAANAAAAAwAAAAGxAAAAAAABADYAAAACADc=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredHttpBuilderGroovyHelper\$_createClosureThatCalls_closure2.class",
+                "yv66vgAAADQAOwEAW2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkSHR0cEJ1aWxkZXJHcm9vdnlIZWxwZXIkX2NyZWF0ZUNsb3N1cmVUaGF0Q2FsbHNfY2xvc3VyZTIHAAEBABNncm9vdnkvbGFuZy9DbG9zdXJlBwADAQAsb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL0dlbmVyYXRlZENsb3N1cmUHAAUBAClSZXN0QXNzdXJlZEh0dHBCdWlsZGVyR3Jvb3Z5SGVscGVyLmdyb292eQEAEGFzc2VydGlvbkNsb3N1cmUBABdMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOwEABjxpbml0PgEAPihMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOylWAQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWDAAKAAwKAAQADQwACAAJCQACAA8BAAZkb0NhbGwBADgoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEAEGphdmEubGFuZy5TdHJpbmcIABMBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAAVABYKAAIAFwEAFWdyb292eS9sYW5nL1JlZmVyZW5jZQcAGQEAA2dldAEAFCgpTGphdmEvbGFuZy9PYmplY3Q7DAAbABwKABoAHQEAEGphdmEvbGFuZy9PYmplY3QHAB8BAARjYWxsAQAnKFtMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7DAAhACIKAAQAIwwAEQASCgACACUBABNnZXRBc3NlcnRpb25DbG9zdXJlAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HACgBAA9qYXZhL2xhbmcvQ2xhc3MHACoBAAdmb3JOYW1lDAAsABYKACsALQEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgcALwEACmdldE1lc3NhZ2UBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwwAMQAyCgApADMBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYMAAoANQoAMAA2AQAEQ29kZQEADVN0YWNrTWFwVGFibGUBAApTb3VyY2VGaWxlACAAAgAEAAEABgABAAIACAAJAAAABQABAAoACwABADgAAAAYAAMABAAAAAwqKyy3AA4qLbUAELEAAAAAAAEAEQASAAEAOAAAACwABQADAAAAIBIUuAAYVyq0ABC2AB7AAAQFvQAgWQMrU1kELFO2ACSwAAAAAAABACEAEgABADgAAAATAAMAAwAAAAcqKyy2ACawAAAAAAABACcAHAABADgAAAAUAAEAAQAAAAgqtAAQtgAesAAAAAAACAAVABYAAQA4AAAAMgADAAIAAAASKrgALrBMuwAwWSu2ADS3ADe/AAEAAAAEAAUAKQABADkAAAAGAAFFBwApAAEAOgAAAAIABw==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredHttpBuilderGroovyHelperDirectAccess.class",
+                "yv66vgAAADQAGAEARmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkSHR0cEJ1aWxkZXJHcm9vdnlIZWxwZXJEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAGPGluaXQ+AQADKClWDAAFAAYKAAQABwEAOmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkSHR0cEJ1aWxkZXJHcm9vdnlIZWxwZXIHAAkBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAALAAwKAAoADQEABENvZGUBAApFeGNlcHRpb25zAQATamF2YS9sYW5nL1Rocm93YWJsZQcAEQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAKU291cmNlRmlsZQEAM1Jlc3RBc3N1cmVkSHR0cEJ1aWxkZXJHcm9vdnlIZWxwZXJEaXJlY3RBY2Nlc3MuamF2YQEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsAIQACAAQAAAAAAAIAAQAFAAYAAQAPAAAAEQABAAEAAAAFKrcACLEAAAAAAAkAEwAMAAMADwAAABEAAQABAAAABSq4AA6wAAAAAAAQAAAABAABABIAFgAAAAIAFwABABQAAAACABU=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredHttpBuilderGroovyHelperCreateClosureThatCallsClosure2DirectAccess.class",
+                "yv66vgAAADQAIwEAZGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3RBc3N1cmVkSHR0cEJ1aWxkZXJHcm9vdnlIZWxwZXJDcmVhdGVDbG9zdXJlVGhhdENhbGxzQ2xvc3VyZTJEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQBRUmVzdEFzc3VyZWRIdHRwQnVpbGRlckdyb292eUhlbHBlckNyZWF0ZUNsb3N1cmVUaGF0Q2FsbHNDbG9zdXJlMkRpcmVjdEFjY2Vzcy5qYXZhAQAGPGluaXQ+AQADKClWDAAGAAcKAAQACAEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBAFtpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXN0QXNzdXJlZEh0dHBCdWlsZGVyR3Jvb3Z5SGVscGVyJF9jcmVhdGVDbG9zdXJlVGhhdENhbGxzX2Nsb3N1cmUyBwANAQAGY2xhc3MkDAAPAAsKAA4AEAEAGGNhbGxUaHJvdWdoQWN0aXZlQ2xvc3VyZQEATShMZ3Jvb3Z5L2xhbmcvQ2xvc3VyZTtMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQAVZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlBwAUAQAVKExqYXZhL2xhbmcvT2JqZWN0OylWDAAGABYKABUAFwEAPihMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOylWDAAGABkKAA4AGgEABGNhbGwBADgoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwwAHAAdCgAOAB4BAARDb2RlAQAJU2lnbmF0dXJlAQAKU291cmNlRmlsZQAxAAIABAAAAAAAAwACAAYABwABACAAAAARAAEAAQAAAAUqtwAJsQAAAAAACQAKAAsAAgAgAAAAEQABAAEAAAAFKrgAEbAAAAAAACEAAAACAAwACQASABMAAQAgAAAAIwAGAAMAAAAXuwAOWQEBuwAVWSq3ABi3ABsrLLYAH7AAAAAAAAEAIgAAAAIABQ==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredHttpBuilderGroovyHelperFlattenToStringClosure1DirectAccess.class",
+                "yv66vgAAADQAFQEAEGphdmEvbGFuZy9PYmplY3QHAAEBAF1pby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXN0QXNzdXJlZEh0dHBCdWlsZGVyR3Jvb3Z5SGVscGVyRmxhdHRlblRvU3RyaW5nQ2xvc3VyZTFEaXJlY3RBY2Nlc3MHAAMBAFRpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXN0QXNzdXJlZEh0dHBCdWlsZGVyR3Jvb3Z5SGVscGVyJF9mbGF0dGVuVG9TdHJpbmdfY2xvc3VyZTEHAAUBAAY8aW5pdD4BAAMoKVYMAAcACAoAAgAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAGAA0BAARDb2RlAQAJU2lnbmF0dXJlAQAKU291cmNlRmlsZQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAoKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzPCo+OwEASlJlc3RBc3N1cmVkSHR0cEJ1aWxkZXJHcm9vdnlIZWxwZXJGbGF0dGVuVG9TdHJpbmdDbG9zdXJlMURpcmVjdEFjY2Vzcy5qYXZhADEABAACAAAAAAACAAIABwAIAAEADwAAABEAAQABAAAABSq3AAqxAAAAAAAJABIADAACAA8AAAARAAEAAQAAAAUquAAOsAAAAAAAEAAAAAIAEwABABEAAAACABQ=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RestAssuredHttpBuilderGroovyHelper\$_flattenToString_closure1.class",
+                "yv66vgAAADQAHwEAEGphdmEvbGFuZy9PYmplY3QHAAEBAFRpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXN0QXNzdXJlZEh0dHBCdWlsZGVyR3Jvb3Z5SGVscGVyJF9mbGF0dGVuVG9TdHJpbmdfY2xvc3VyZTEHAAMBACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcABQEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgcABwEAD2phdmEvbGFuZy9DbGFzcwcACQEABjxpbml0PgEAAygpVgwACwAMCgACAA0BAAdmb3JOYW1lAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwADwAQCgAKABEBAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsMABMAFAoABgAVAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWDAALABcKAAgAGAEABmNsYXNzJAEABENvZGUBAA1TdGFja01hcFRhYmxlAQAKU291cmNlRmlsZQEAKVJlc3RBc3N1cmVkSHR0cEJ1aWxkZXJHcm9vdnlIZWxwZXIuZ3Jvb3Z5ACAABAACAAAAAAACAAEACwAMAAEAGwAAABEAAQABAAAABSq3AA6xAAAAAAAIABoAEAABABsAAAAyAAMAAgAAABIquAASsEy7AAhZK7YAFrcAGb8AAQAAAAUABQAGAAEAHAAAAAYAAUUHAAYAAQAdAAAAAgAe")
+        delete(generatedDirectAccessClasses.get()
+                .file("io/restassured/internal/ResponseSpecificationImpl\$_headers_closure5_closure17.class")
+                .asFile)
+        delete(generatedDirectAccessClasses.get()
+                .file("io/restassured/internal/ResponseSpecificationImpl\$_cookie_closure9.class")
+                .asFile)
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplDirectAccess.class",
+                "yv66vgAAADQAGQEAPWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAGPGluaXQ+AQADKClWDAAFAAYKAAQABwEAMWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwHAAkBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAALAAwKAAoADQEABENvZGUBAApFeGNlcHRpb25zAQATamF2YS9sYW5nL1Rocm93YWJsZQcAEQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEAClNvdXJjZUZpbGUBACpSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsRGlyZWN0QWNjZXNzLmphdmEBAAlTaWduYXR1cmUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47ACEAAgAEAAAAAAACAAEABQAGAAEADwAAABEAAQABAAAABSq3AAixAAAAAAAJABMAFAADAA8AAAARAAEAAQAAAAUquAAOsAAAAAAAEAAAAAQAAQASABcAAAACABgAAQAVAAAAAgAW")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplStatusCodeClosure3DirectAccess.class",
+                "yv66vgAAADQAFgEAT2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxTdGF0dXNDb2RlQ2xvc3VyZTNEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAGPGluaXQ+AQADKClWDAAFAAYKAAQABwEARmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX3N0YXR1c0NvZGVfY2xvc3VyZTMHAAkBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAALAAwKAAoADQEABENvZGUBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAClNvdXJjZUZpbGUBADxSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsU3RhdHVzQ29kZUNsb3N1cmUzRGlyZWN0QWNjZXNzLmphdmEBAApFeGNlcHRpb25zAQATamF2YS9sYW5nL1Rocm93YWJsZQcAFAAxAAIABAAAAAAAAgABAAUABgABAA8AAAARAAEAAQAAAAUqtwAIsQAAAAAACQAQAAwAAgAPAAAAEQABAAEAAAAFKrgADrAAAAAAABMAAAAEAAEAFQABABEAAAACABI=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplStatusLineClosure4DirectAccess.class",
+                "yv66vgAAADQAFgEAT2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxTdGF0dXNMaW5lQ2xvc3VyZTREaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAGPGluaXQ+AQADKClWDAAFAAYKAAQABwEARmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX3N0YXR1c0xpbmVfY2xvc3VyZTQHAAkBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAALAAwKAAoADQEABENvZGUBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAClNvdXJjZUZpbGUBADxSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsU3RhdHVzTGluZUNsb3N1cmU0RGlyZWN0QWNjZXNzLmphdmEBAApFeGNlcHRpb25zAQATamF2YS9sYW5nL1Rocm93YWJsZQcAFAAxAAIABAAAAAAAAgABAAUABgABAA8AAAARAAEAAQAAAAUqtwAIsQAAAAAACQAQAAwAAgAPAAAAEQABAAEAAAAFKrgADrAAAAAAABMAAAAEAAEAFQABABEAAAACABI=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplTimeClosure2DirectAccess.class",
+                "yv66vgAAADQAFgEASWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxUaW1lQ2xvc3VyZTJEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAGPGluaXQ+AQADKClWDAAFAAYKAAQABwEAQGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX3RpbWVfY2xvc3VyZTIHAAkBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAALAAwKAAoADQEABENvZGUBAApTb3VyY2VGaWxlAQA2UmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbFRpbWVDbG9zdXJlMkRpcmVjdEFjY2Vzcy5qYXZhAQAJU2lnbmF0dXJlAQAoKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzPCo+OwEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwAxAAIABAAAAAAAAgACAAUABgABAA8AAAARAAEAAQAAAAUqtwAIsQAAAAAACQAUABUAAgAPAAAAEQABAAEAAAAFKrgADrAAAAAAABIAAAACABMAAQAQAAAAAgAR")
+        // Route the response-time closure body through its compiler-generated class$ resolver.
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_time_closure2.class",
+                "yv66vgAAADQAVQoAAgADBwAEDAAFAAYBABNncm9vdnkvbGFuZy9DbG9zdXJlAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWCQAIAAkHAAoMAAsADAEAQGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX3RpbWVfY2xvc3VyZTIBAAdtYXRjaGVyAQAXTGdyb292eS9sYW5nL1JlZmVyZW5jZTsJAAgADgwADwAMAQAIdGltZVVuaXQIABEBABJncm9vdnkubGFuZy5UdXBsZTIKAAgAEwwAFAAVAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwcAFwEAEmdyb292eS9sYW5nL1R1cGxlMgoAGQAaBwAbDAAcAB0BABVncm9vdnkvbGFuZy9SZWZlcmVuY2UBAANnZXQBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwcAHwEAFG9yZy9oYW1jcmVzdC9NYXRjaGVyBwAhAQAdamF2YS91dGlsL2NvbmN1cnJlbnQvVGltZVVuaXQKABYAAwoACAAkDAAlAB0BAAhnZXRPd25lcgcAJwEAGGdyb292eS9sYW5nL0dyb292eU9iamVjdAgAKQEAFGV4cGVjdGVkUmVzcG9uc2VUaW1lCwAmACsMACwALQEAC3NldFByb3BlcnR5AQAnKExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvT2JqZWN0OylWCgAIAC8MADAAMQEABmRvQ2FsbAEAJihMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7CgAzADQHADUMADYAFQEAD2phdmEvbGFuZy9DbGFzcwEAB2Zvck5hbWUHADgBACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcAOgEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgoANwA8DAA9AD4BAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsKADkAQAwABQBBAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWBwBDAQAsb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL0dlbmVyYXRlZENsb3N1cmUBAAlTaWduYXR1cmUBAEFMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlPExvcmcvaGFtY3Jlc3QvTWF0Y2hlcjxMamF2YS9sYW5nL0xvbmc7Pjs+OwEAOExncm9vdnkvbGFuZy9SZWZlcmVuY2U8TGphdmEvdXRpbC9jb25jdXJyZW50L1RpbWVVbml0Oz47AQBVKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0O0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7TGdyb292eS9sYW5nL1JlZmVyZW5jZTspVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAKAoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7TGdyb292eS9sYW5nL1JlZmVyZW5jZTxMb3JnL2hhbWNyZXN0L01hdGNoZXI8TGphdmEvbGFuZy9Mb25nOz47PjtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlPExqYXZhL3V0aWwvY29uY3VycmVudC9UaW1lVW5pdDs+OylWAQAKZ2V0TWF0Y2hlcgEAGCgpTG9yZy9oYW1jcmVzdC9NYXRjaGVyOwEAKigpTG9yZy9oYW1jcmVzdC9NYXRjaGVyPExqYXZhL2xhbmcvTG9uZzs+OwEAC2dldFRpbWVVbml0AQAhKClMamF2YS91dGlsL2NvbmN1cnJlbnQvVGltZVVuaXQ7AQANU3RhY2tNYXBUYWJsZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBAFdMZ3Jvb3Z5L2xhbmcvQ2xvc3VyZTxMamF2YS9sYW5nL09iamVjdDs+O0xvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvR2VuZXJhdGVkQ2xvc3VyZTsBAApTb3VyY2VGaWxlAQAgUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbC5ncm9vdnkAMAAIAAIAAQBCAAIAEgALAAwAAQBEAAAAAgBFABIADwAMAAEARAAAAAIARgAGAAAABQBHAAIASAAAADYAAwAFAAAAEiorLLcAASottQAHKhkEtQANsQAAAAEASQAAABIABAAAABUABgAWAAsAFwARABgARAAAAAIASgABADAAMQABAEgAAABXAAQAAwAAADMSELgAEle7ABZZKrQAB7YAGMAAHiq0AA22ABjAACC3ACJNKrYAI8AAJhIoLLkAKgMALLAAAAABAEkAAAASAAQAAAAbAAYAHAAiAB0AMQAeAAEAMAAdAAEASAAAAB4AAgABAAAABioBtgAusAAAAAEASQAAAAYAAQAAACIAAQBLAEwAAgBIAAAAIwABAAEAAAALKrQAB7YAGMAAHrAAAAABAEkAAAAGAAEAAAAmAEQAAAACAE0AAQBOAE8AAQBIAAAAIwABAAEAAAALKrQADbYAGMAAILAAAAABAEkAAAAGAAEAAAAqAAgAFAAVAAIASAAAAEYAAwACAAAAEiq4ADKwTLsAOVkrtgA7twA/vwABAAAABAAFADcAAgBJAAAADgADAAAALwAFADAABgAxAFAAAAAGAAFFBwA3AEQAAAACAFEAAgBEAAAAAgBSAFMAAAACAFQ=")
+        // The upstream Groovy closure's synthetic class$ has no line table, so generated test bytecode
+        // mirrors the status-line closure and keeps class$ attributable to ResponseSpecificationImpl.groovy.
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_statusLine_closure4.class",
+                "yv66vgAAADQATAoAAgADBwAEDAAFAAYBABNncm9vdnkvbGFuZy9DbG9zdXJlAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWCQAIAAkHAAoMAAsADAEARmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX3N0YXR1c0xpbmVfY2xvc3VyZTQBABJleHBlY3RlZFN0YXR1c0xpbmUBABdMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOwoADgAPBwAQDAARABIBABVncm9vdnkvbGFuZy9SZWZlcmVuY2UBAANnZXQBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwgAFAEAMWlvLnJlc3Rhc3N1cmVkLmludGVybmFsLlJlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwKAAgAFgwAFwAYAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwoACAAaDAAbABIBAA1nZXRUaGlzT2JqZWN0BwAdAQAYZ3Jvb3Z5L2xhbmcvR3Jvb3Z5T2JqZWN0CAALCwAcACAMACEAIgEAC3NldFByb3BlcnR5AQAnKExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvT2JqZWN0OylWCgAIACQMACUAJgEABmRvQ2FsbAEAJihMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7CAAoAQAUb3JnLmhhbWNyZXN0Lk1hdGNoZXIHACoBABRvcmcvaGFtY3Jlc3QvTWF0Y2hlcgoALAAtBwAuDAAvABgBAA9qYXZhL2xhbmcvQ2xhc3MBAAdmb3JOYW1lBwAxAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HADMBAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IKADAANQwANgA3AQAKZ2V0TWVzc2FnZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7CgAyADkMAAUAOgEAFShMamF2YS9sYW5nL1N0cmluZzspVgcAPAEALG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9HZW5lcmF0ZWRDbG9zdXJlAQAJU2lnbmF0dXJlAQBETGdyb292eS9sYW5nL1JlZmVyZW5jZTxMb3JnL2hhbWNyZXN0L01hdGNoZXI8LUxqYXZhL2xhbmcvU3RyaW5nOz47PjsBAD4oTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7TGdyb292eS9sYW5nL1JlZmVyZW5jZTspVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAGsoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7TGdyb292eS9sYW5nL1JlZmVyZW5jZTxMb3JnL2hhbWNyZXN0L01hdGNoZXI8LUxqYXZhL2xhbmcvU3RyaW5nOz47PjspVgEAFWdldEV4cGVjdGVkU3RhdHVzTGluZQEAGCgpTG9yZy9oYW1jcmVzdC9NYXRjaGVyOwEALSgpTG9yZy9oYW1jcmVzdC9NYXRjaGVyPC1MamF2YS9sYW5nL1N0cmluZzs+OwEADVN0YWNrTWFwVGFibGUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47AQBXTGdyb292eS9sYW5nL0Nsb3N1cmU8TGphdmEvbGFuZy9PYmplY3Q7PjtMb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL0dlbmVyYXRlZENsb3N1cmU7AQAKU291cmNlRmlsZQEAM1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX3N0YXR1c0xpbmVfY2xvc3VyZTQuamF2YQEAIFJlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwuZ3Jvb3Z5ACAACAACAAEAOwABABIACwAMAAEAPQAAAAIAPgAFAAAABQA/AAIAQAAAACwAAwAEAAAADCorLLcAASottQAHsQAAAAEAQQAAAA4AAwAAAA4ABgAPAAsAEAA9AAAAAgBCAAEAJQAmAAEAQAAAAEMAAwADAAAAHyq0AAe2AA1NEhO4ABVXKrYAGcAAHBIeLLkAHwMALLAAAAABAEEAAAASAAQAAAATAAgAFAAOABUAHQAWAAEAJQASAAEAQAAAAB4AAgABAAAABioBtgAjsAAAAAEAQQAAAAYAAQAAABoAAQBDAEQAAgBAAAAALQABAAEAAAAREie4ABVXKrQAB7YADcAAKbAAAAABAEEAAAAKAAIAAAAeAAYAHwA9AAAAAgBFAAgAFwAYAAIAQAAAAEYAAwACAAAAEiq4ACuwTLsAMlkrtgA0twA4vwABAAAABAAFADAAAgBBAAAADgADAAAAJAAFACUABgAmAEYAAAAGAAFFBwAwAD0AAAACAEcAAgA9AAAAAgBIAEkAAAACAEs=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplContentTypeClosure12DirectAccess.class",
+                "yv66vgAAADQAIgEAUWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxDb250ZW50VHlwZUNsb3N1cmUxMkRpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBABBqYXZhL2xhbmcvT2JqZWN0BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAYACQEASGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2NvbnRlbnRUeXBlX2Nsb3N1cmUxMgcACwEASGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2NvbnRlbnRUeXBlX2Nsb3N1cmUxMgcADQEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAA8AEAoADgARAQAEQ29kZQEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwAVAQAKU291cmNlRmlsZQEAPlJlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxDb250ZW50VHlwZUNsb3N1cmUxMkRpcmVjdEFjY2Vzcy5qYXZhAQAGPGluaXQ+AQADKClWAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQASYWN0aXZlQ2xvc3VyZUNsYXNzAQATKClMamF2YS9sYW5nL0NsYXNzOwEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBABYoKUxqYXZhL2xhbmcvQ2xhc3M8Kj47ADEAAgAEAAAAAAADAAEAGQAaAAEAEwAAABEAAQABAAAABSq3AAqxAAAAAAAJABsAHAADABMAAAARAAEAAQAAAAUquAASsAAAAAAAFAAAAAQAAQAWAB8AAAACACAACQAdAB4AAgATAAAADwABAAAAAAADEgywAAAAAAAfAAAAAgAhAAEAFwAAAAIAGA==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplContentTypeClosure13DirectAccess.class",
+                "yv66vgAAADQAIgEAUWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxDb250ZW50VHlwZUNsb3N1cmUxM0RpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBABBqYXZhL2xhbmcvT2JqZWN0BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAYACQEASGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2NvbnRlbnRUeXBlX2Nsb3N1cmUxMwcACwEASGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2NvbnRlbnRUeXBlX2Nsb3N1cmUxMwcADQEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAA8AEAoADgARAQAEQ29kZQEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwAVAQAKU291cmNlRmlsZQEAPlJlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxDb250ZW50VHlwZUNsb3N1cmUxM0RpcmVjdEFjY2Vzcy5qYXZhAQAGPGluaXQ+AQADKClWAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQASYWN0aXZlQ2xvc3VyZUNsYXNzAQATKClMamF2YS9sYW5nL0NsYXNzOwEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBABYoKUxqYXZhL2xhbmcvQ2xhc3M8Kj47ADEAAgAEAAAAAAADAAEAGQAaAAEAEwAAABEAAQABAAAABSq3AAqxAAAAAAAJABsAHAADABMAAAARAAEAAQAAAAUquAASsAAAAAAAFAAAAAQAAQAWAB8AAAACACAACQAdAB4AAgATAAAADwABAAAAAAADEgywAAAAAAAfAAAAAgAhAAEAFwAAAAIAGA==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplHeaderClosure6DirectAccess.class",
+                "yv66vgAAADQAHQEAS2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIZWFkZXJDbG9zdXJlNkRpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBABBqYXZhL2xhbmcvT2JqZWN0BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAYACQEAQmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2hlYWRlcl9jbG9zdXJlNgcACwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAA0ADgoADAAPAQATamF2YS9sYW5nL1Rocm93YWJsZQcAEQEABENvZGUBAApFeGNlcHRpb25zAQAKU291cmNlRmlsZQEABjxpbml0PgEAAygpVgEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBADhSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsSGVhZGVyQ2xvc3VyZTZEaXJlY3RBY2Nlc3MuamF2YQAhAAIABAAAAAAAAgABABYAFwABABMAAAARAAEAAQAAAAUqtwAKsQAAAAAACQAYABkAAwATAAAAEQABAAEAAAAFKrgAELAAAAAAABQAAAAEAAEAEgAaAAAAAgAbAAEAFQAAAAIAHA==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplHeaderClosure7DirectAccess.class",
+                "yv66vgAAADQAHQEAS2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIZWFkZXJDbG9zdXJlN0RpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBABBqYXZhL2xhbmcvT2JqZWN0BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAYACQEAQmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2hlYWRlcl9jbG9zdXJlNwcACwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAA0ADgoADAAPAQATamF2YS9sYW5nL1Rocm93YWJsZQcAEQEABENvZGUBAApFeGNlcHRpb25zAQAKU291cmNlRmlsZQEABjxpbml0PgEAAygpVgEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBADhSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsSGVhZGVyQ2xvc3VyZTdEaXJlY3RBY2Nlc3MuamF2YQAhAAIABAAAAAAAAgABABYAFwABABMAAAARAAEAAQAAAAUqtwAKsQAAAAAACQAYABkAAwATAAAAEQABAAEAAAAFKrgAELAAAAAAABQAAAAEAAEAEgAaAAAAAgAbAAEAFQAAAAIAHA==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplHeadersClosure5DirectAccess.class",
+                "yv66vgAAADQAFgEATGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIZWFkZXJzQ2xvc3VyZTVEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAGPGluaXQ+AQADKClWDAAFAAYKAAQABwEAQ2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2hlYWRlcnNfY2xvc3VyZTUHAAkBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAALAAwKAAoADQEABENvZGUBAApFeGNlcHRpb25zAQATamF2YS9sYW5nL1Rocm93YWJsZQcAEQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAKU291cmNlRmlsZQEAOVJlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIZWFkZXJzQ2xvc3VyZTVEaXJlY3RBY2Nlc3MuamF2YQAhAAIABAAAAAAAAgABAAUABgABAA8AAAARAAEAAQAAAAUqtwAIsQAAAAAACQATAAwAAgAPAAAAEQABAAEAAAAFKrgADrAAAAAAABAAAAAEAAEAEgABABQAAAACABU=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplHeadersClosure5Closure17DirectAccess.class",
+                "yv66vgAAADQAFgEAVWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIZWFkZXJzQ2xvc3VyZTVDbG9zdXJlMTdEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQBNaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbCRfaGVhZGVyc19jbG9zdXJlNV9jbG9zdXJlMTcHAAUBAAY8aW5pdD4BAAMoKVYMAAcACAoABAAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAGAA0BAARDb2RlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwARAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBAEJSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsSGVhZGVyc0Nsb3N1cmU1Q2xvc3VyZTE3RGlyZWN0QWNjZXNzLmphdmEAMQACAAQAAAAAAAIAAgAHAAgAAQAPAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAEAAMAAIADwAAABEAAQABAAAABSq4AA6wAAAAAAATAAAABAABABIAAQAUAAAAAgAV")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplHeadersClosure5Closure17Closure18DirectAccess.class",
+                "yv66vgAAADQAGQEAXmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIZWFkZXJzQ2xvc3VyZTVDbG9zdXJlMTdDbG9zdXJlMThEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAGPGluaXQ+AQADKClWDAAFAAYKAAQABwEAV2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2hlYWRlcnNfY2xvc3VyZTVfY2xvc3VyZTE3X2Nsb3N1cmUxOAcACQEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAsADAoACgANAQAEQ29kZQEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwARAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAGPGluaXQ+AQADKClWAQAKU291cmNlRmlsZQEAS1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIZWFkZXJzQ2xvc3VyZTVDbG9zdXJlMTdDbG9zdXJlMThEaXJlY3RBY2Nlc3MuamF2YQAxAAIABAAAAAAAAgACABUAFgABAA8AAAARAAEAAQAAAAUqtwAIsQAAAAAACQATABQAAgAPAAAAEQABAAEAAAAFKrgADrAAAAAAABAAAAAEAAEAEgABABcAAAACABg=")
+        // Keep the active list-header closure executable through the public headers(Map) API,
+        // while making doCall route through its compiler-generated class$ resolver.
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_headers_closure5_closure17_closure18.class",
+                "yv66vgAAADEAaAEAV2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2hlYWRlcnNfY2xvc3VyZTVfY2xvc3VyZTE3X2Nsb3N1cmUxOAcAAQEAE2dyb292eS9sYW5nL0Nsb3N1cmUHAAMBACxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvR2VuZXJhdGVkQ2xvc3VyZQcABQEAEGphdmEvbGFuZy9PYmplY3QHAAcBABVncm9vdnkvbGFuZy9SZWZlcmVuY2UHAAkBAA9qYXZhL2xhbmcvQ2xhc3MHAAsBACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcADQEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgcADwEAJmlvL3Jlc3Rhc3N1cmVkL2Fzc2VydGlvbi9IZWFkZXJNYXRjaGVyBwARAQAUb3JnL2hhbWNyZXN0L01hdGNoZXIHABMBABVvcmcvaGFtY3Jlc3QvTWF0Y2hlcnMHABUBAClvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvSW52b2tlckhlbHBlcgcAFwEADmphdmEvdXRpbC9MaXN0BwAZAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWDAAbABwKAAQAHQEACmhlYWRlck5hbWUBABdMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOwwAHwAgCQACACEBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAAjACQKAAIAJQEABjxpbml0PgEAAygpVgwAJwAoCgASACkBAANnZXQBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwwAKwAsCgAKAC0BAA1zZXRIZWFkZXJOYW1lAQAVKExqYXZhL2xhbmcvT2JqZWN0OylWDAAvADAKABIAMQEAB2VxdWFsVG8BACooTGphdmEvbGFuZy9PYmplY3Q7KUxvcmcvaGFtY3Jlc3QvTWF0Y2hlcjsMADMANAoAFgA1AQAKc2V0TWF0Y2hlcgEAGShMb3JnL2hhbWNyZXN0L01hdGNoZXI7KVYMADcAOAoAEgA5AQAIZ2V0T3duZXIBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwwAOwA8CgAEAD0BAAtnZXRQcm9wZXJ0eQEAOChMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9PYmplY3Q7DAA/AEAKABgAQQEAA2FkZAEAFShMamF2YS9sYW5nL09iamVjdDspWgwAQwBECwAaAEUBAAdmb3JOYW1lAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwARwBICgAMAEkBAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsMAEsATAoADgBNAQAGPGluaXQ+AQAVKExqYXZhL2xhbmcvU3RyaW5nOylWDABPAFAKABAAUQEABENvZGUBAApFeGNlcHRpb25zAQAKU291cmNlRmlsZQEAIFJlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwuZ3Jvb3Z5AQAGPGluaXQ+AQA+KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0O0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7KVYBAAZkb0NhbGwBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEAFCgpTGphdmEvbGFuZy9PYmplY3Q7AQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEACmhlYWRlck5hbWUBABdMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOwEAFGphdmEudXRpbC5BcnJheURlcXVlCABgAQAQaGVhZGVyQXNzZXJ0aW9ucwgAYgEABmRvQ2FsbAEAJihMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7DABkAGUKAAIAZgAgAAIABAABAAYAAQACAF4AXwAAAAQAAQBXAFgAAQBTAAAAGAADAAQAAAAMKisstwAeKi21ACKxAAAAAAABAFkAWgABAFMAAABQAAQAAwAAAEQSYbgAJle7ABJZtwAqTSwqtAAitgAutgAyLCvBABSZAAorwAAUpwAHK7gANrYAOiq2AD4SY7gAQsAAGiy5AEYCAFcssAAAAAAAAQBZAFsAAQBTAAAAEgACAAEAAAAGKgG2AGewAAAAAAAIAFwAXQABAFMAAAAmAAMAAgAAABIquABKsEy7ABBZK7YATrcAUr8AAQAAAAUABQAOAAAAAQBVAAAAAgBW")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_header_closure6.class",
+                "yv66vgAAADQAYAoAAgADBwAEDAAFAAYBABNncm9vdnkvbGFuZy9DbG9zdXJlAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWCQAIAAkHAAoMAAsADAEAQmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2hlYWRlcl9jbG9zdXJlNgEAFGV4cGVjdGVkVmFsdWVNYXRjaGVyAQAXTGdyb292eS9sYW5nL1JlZmVyZW5jZTsJAAgADgwADwAMAQAKaGVhZGVyTmFtZQkACAARDAASAAwBAA9tYXBwaW5nRnVuY3Rpb24HABQBACZpby9yZXN0YXNzdXJlZC9hc3NlcnRpb24vSGVhZGVyTWF0Y2hlcgoAEwAWDAAFABcBAAMoKVYKABkAGgcAGwwAHAAdAQAVZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlAQADZ2V0AQAUKClMamF2YS9sYW5nL09iamVjdDsKABMAHwwAIAAhAQANc2V0SGVhZGVyTmFtZQEAFShMamF2YS9sYW5nL09iamVjdDspVgoAEwAjDAAkACEBABJzZXRNYXBwaW5nRnVuY3Rpb24HACYBABRvcmcvaGFtY3Jlc3QvTWF0Y2hlcgoAEwAoDAApACoBAApzZXRNYXRjaGVyAQAZKExvcmcvaGFtY3Jlc3QvTWF0Y2hlcjspVggALAEAEGhlYWRlckFzc2VydGlvbnMKAAgALgwALwAwAQALZ2V0UHJvcGVydHkBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvT2JqZWN0OwcAMgEADmphdmEvdXRpbC9MaXN0CwAxADQMADUANgEAA2FkZAEAFShMamF2YS9sYW5nL09iamVjdDspWgoACAA4DAA5ADoBAAZkb0NhbGwBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwcAPAEAEGphdmEvbGFuZy9TdHJpbmcHAD4BABtqYXZhL3V0aWwvZnVuY3Rpb24vRnVuY3Rpb24KAEAAQQcAQgwAQwBEAQAPamF2YS9sYW5nL0NsYXNzAQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsHAEYBACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcASAEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgoARQBKDABLAEwBAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsKAEcATgwABQBPAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWAQBsKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0O0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7TGdyb292eS9sYW5nL1JlZmVyZW5jZTtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOylWAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAF2dldEV4cGVjdGVkVmFsdWVNYXRjaGVyAQAYKClMb3JnL2hhbWNyZXN0L01hdGNoZXI7AQAJU2lnbmF0dXJlAQAbKClMb3JnL2hhbWNyZXN0L01hdGNoZXI8Kj47AQANZ2V0SGVhZGVyTmFtZQEAEmdldE1hcHBpbmdGdW5jdGlvbgEAHygpTGphdmEvdXRpbC9mdW5jdGlvbi9GdW5jdGlvbjsBACMoKUxqYXZhL3V0aWwvZnVuY3Rpb24vRnVuY3Rpb248Kio+OwEABmNsYXNzJAEADVN0YWNrTWFwVGFibGUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47AQAKU291cmNlRmlsZQEAIFJlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwuZ3Jvb3Z5ACAACAACAAAAAwASAAsADAAAABIADwAMAAAAEgASAAwAAAAHAAAABQBQAAEAUQAAAEAAAwAGAAAAGCorLLcAASottQAHKhkEtQANKhkFtQAQsQAAAAEAUgAAABYABQAAABIABgATAAsAFAARABUAFwAWAAEAOQA6AAEAUQAAAHAAAgAEAAAAQLsAE1m3ABVNLCq0AA22ABi2AB4sKrQAELYAGLYAIiwqtAAHtgAYwAAltgAnKhIrtgAtTi3AADEsuQAzAgBXLbAAAAABAFIAAAAeAAcAAAAZAAgAGgATABsAHgAcACwAHQAzAB4APgAfAAEAOQAdAAEAUQAAAB4AAgABAAAABioBtgA3sAAAAAEAUgAAAAYAAQAAACMAAQBTAFQAAgBRAAAAIwABAAEAAAALKrQAB7YAGMAAJbAAAAABAFIAAAAGAAEAAAAnAFUAAAACAFYAAQBXAEwAAQBRAAAAIwABAAEAAAALKrQADbYAGMAAO7AAAAABAFIAAAAGAAEAAAArAAEAWABZAAIAUQAAACMAAQABAAAACyq0ABC2ABjAAD2wAAAAAQBSAAAABgABAAAALwBVAAAAAgBaAAgAWwBEAAIAUQAAAEYAAwACAAAAEiq4AD+wTLsAR1krtgBJtwBNvwABAAAABAAFAEUAAgBSAAAADgADAAAANAAFADUABgA2AFwAAAAGAAFFBwBFAFUAAAACAF0AAQBeAAAAAgBf")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplCookieClosure9DirectAccess.class",
+                "yv66vgAAADQAGAEAS2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxDb29raWVDbG9zdXJlOURpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBAEJpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXNwb25zZVNwZWNpZmljYXRpb25JbXBsJF9jb29raWVfY2xvc3VyZTkHAAUBAAY8aW5pdD4BAAMoKVYMAAcACAoABAAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAGAA0BAARDb2RlAQAKRXhjZXB0aW9ucwEAE2phdmEvbGFuZy9UaHJvd2FibGUHABEBAApTb3VyY2VGaWxlAQA4UmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbENvb2tpZUNsb3N1cmU5RGlyZWN0QWNjZXNzLmphdmEBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsAMQACAAQAAAAAAAIAAQAHAAgAAQAPAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAFQAMAAMADwAAABEAAQABAAAABSq4AA6wAAAAAAAQAAAABAABABIAFgAAAAIAFwABABMAAAACABQ=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplCookiesClosure8DirectAccess.class",
+                "yv66vgAAADQAGwEAEGphdmEvbGFuZy9PYmplY3QHAAEBAExpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXNwb25zZVNwZWNpZmljYXRpb25JbXBsQ29va2llc0Nsb3N1cmU4RGlyZWN0QWNjZXNzBwADAQAQamF2YS9sYW5nL09iamVjdAcABQEABjxpbml0PgEAAygpVgwABwAICgAGAAkBAENpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXNwb25zZVNwZWNpZmljYXRpb25JbXBsJF9jb29raWVzX2Nsb3N1cmU4BwALAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwADQAOCgAMAA8BAARDb2RlAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwAUAQA5UmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbENvb2tpZXNDbG9zdXJlOERpcmVjdEFjY2Vzcy5qYXZhAQAGPGluaXQ+AQADKClWAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7ADEABAACAAAAAAACAAIAFwAYAAEAEQAAABEAAQABAAAABSq3AAqxAAAAAAAJABkAGgACABEAAAARAAEAAQAAAAUquAAQsAAAAAAAEgAAAAQAAQAVAAEAEwAAAAIAFg==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplCookiesClosure8Closure19DirectAccess.class",
+                "yv66vgAAADQAFgEAVWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxDb29raWVzQ2xvc3VyZThDbG9zdXJlMTlEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQBNaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbCRfY29va2llc19jbG9zdXJlOF9jbG9zdXJlMTkHAAUBAAY8aW5pdD4BAAMoKVYMAAcACAoABAAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAGAA0BAARDb2RlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwARAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBAEJSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsQ29va2llc0Nsb3N1cmU4Q2xvc3VyZTE5RGlyZWN0QWNjZXNzLmphdmEAMQACAAQAAAAAAAIAAgAHAAgAAQAPAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAEAAMAAIADwAAABEAAQABAAAABSq4AA6wAAAAAAATAAAABAABABIAAQAUAAAAAgAV")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplCookiesClosure8Closure19Closure20DirectAccess.class",
+                "yv66vgAAADQAFgEAXmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxDb29raWVzQ2xvc3VyZThDbG9zdXJlMTlDbG9zdXJlMjBEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQBXaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbCRfY29va2llc19jbG9zdXJlOF9jbG9zdXJlMTlfY2xvc3VyZTIwBwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAQACQEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAsADAoABgANAQAEQ29kZQEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwARAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBAApTb3VyY2VGaWxlAQBLUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbENvb2tpZXNDbG9zdXJlOENsb3N1cmUxOUNsb3N1cmUyMERpcmVjdEFjY2Vzcy5qYXZhACEAAgAEAAAAAAACAAEABwAIAAEADwAAABEAAQABAAAABSq3AAqxAAAAAAAJABMADAACAA8AAAARAAEAAQAAAAUquAAOsAAAAAAAEAAAAAQAAQASAAEAFAAAAAIAFQ==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_cookies_closure8_closure19_closure20.class",
+                "yv66vgAAADQAIAEAV2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2Nvb2tpZXNfY2xvc3VyZThfY2xvc3VyZTE5X2Nsb3N1cmUyMAcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcABQEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgcABwEAD2phdmEvbGFuZy9DbGFzcwcACQEABjxpbml0PgEAAygpVgwACwAMCgAEAA0BAD4oTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7TGdyb292eS9sYW5nL1JlZmVyZW5jZTspVgEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBAAdmb3JOYW1lDAASABEKAAoAEwEACmdldE1lc3NhZ2UBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwwAFQAWCgAGABcBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYMAAsAGQoACAAaAQAEQ29kZQEADVN0YWNrTWFwVGFibGUBAApTb3VyY2VGaWxlAQAgUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbC5ncm9vdnkAIQACAAQAAAAAAAMAAQALAAwAAQAcAAAAEQABAAEAAAAFKrcADrEAAAAAAAEACwAPAAEAHAAAABEAAQAEAAAABSq3AA6xAAAAAAAIABAAEQABABwAAAAyAAMAAgAAABIquAAUsEy7AAhZK7YAGLcAG78AAQAAAAQABQAGAAEAHQAAAAYAAUUHAAYAAQAeAAAAAgAf")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_cookies_closure8_closure19.class",
+                "yv66vgAAADEAJQEATWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2Nvb2tpZXNfY2xvc3VyZThfY2xvc3VyZTE5BwABAQATZ3Jvb3Z5L2xhbmcvQ2xvc3VyZQcAAwEALG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9HZW5lcmF0ZWRDbG9zdXJlBwAFAQAPamF2YS9sYW5nL0NsYXNzBwAHAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HAAkBAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IHAAsBAAY8aW5pdD4BACcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KVYMAA0ADgoABAAPAQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMABEAEgoACAATAQAKZ2V0TWVzc2FnZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7DAAVABYKAAoAFwEAFShMamF2YS9sYW5nL1N0cmluZzspVgwADQAZCgAMABoBAARDb2RlAQAGZG9DYWxsAQA4KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsMAB0AHgoAAgAfAQAEY2FsbAEABmNsYXNzJAEAClNvdXJjZUZpbGUBACBSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsLmdyb292eQAgAAIABAABAAYAAAAEAAEADQAOAAEAHAAAABMAAwADAAAAByorLLcAELEAAAAAAAEAHQAeAAEAHAAAAA4AAQADAAAAAgGwAAAAAAABACEAHgABABwAAAATAAMAAwAAAAcqKyy2ACCwAAAAAAAIACIAEgABABwAAAAmAAMAAgAAABIquAAUsEy7AAxZK7YAGLcAG78AAQAAAAUABQAKAAAAAQAjAAAAAgAk")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplCookieClosure10DirectAccess.class",
+                "yv66vgAAADQAFgEATGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxDb29raWVDbG9zdXJlMTBEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQBDaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbCRfY29va2llX2Nsb3N1cmUxMAcABQEABjxpbml0PgEAAygpVgwABwAICgAEAAkBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAALAAwKAAYADQEAE2phdmEvbGFuZy9UaHJvd2FibGUHAA8BAApTb3VyY2VGaWxlAQA5UmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbENvb2tpZUNsb3N1cmUxMERpcmVjdEFjY2Vzcy5qYXZhAQAEQ29kZQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAKRXhjZXB0aW9ucwAhAAIABAAAAAAAAgABAAcACAABABMAAAARAAEAAQAAAAUqtwAKsQAAAAAACQAUAAwAAgATAAAAEQABAAEAAAAFKrgADrAAAAAAABUAAAAEAAEAEAABABEAAAACABI=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_cookie_closure10.class",
+                "yv66vgAAADEApgEAQ2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2Nvb2tpZV9jbG9zdXJlMTAHAAEBABNncm9vdnkvbGFuZy9DbG9zdXJlBwADAQAsb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL0dlbmVyYXRlZENsb3N1cmUHAAUBACBSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsLmdyb292eQEAFWRldGFpbGVkQ29va2llTWF0Y2hlcgEAF0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7AQAKY29va2llTmFtZQEAECRzdGF0aWNDbGFzc0luZm8BACpMb3JnL2NvZGVoYXVzL2dyb292eS9yZWZsZWN0aW9uL0NsYXNzSW5mbzsBAAdfXyRzdE1DAQABWgEABjxpbml0PgEAVShMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlO0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7KVYBABEkZ2V0Q2FsbFNpdGVBcnJheQEAMigpW0xvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGU7DAARABIKAAIAEwEAJyhMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspVgwADwAVCgAEABYMAAgACQkAAgAYDAAKAAkJAAIAGgEABHRoaXMBAEVMaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbCRfY29va2llX2Nsb3N1cmUxMDsBAA5fb3V0ZXJJbnN0YW5jZQEAEkxqYXZhL2xhbmcvT2JqZWN0OwEAC190aGlzT2JqZWN0AQAGZG9DYWxsAQAmKExqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsDAAAAAAMAAAABAQAtb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL2NhbGxzaXRlL0NhbGxTaXRlBwAlAQAbY2FsbEdyb292eU9iamVjdEdldFByb3BlcnR5DAAnACILACYAKAMAAAACAQAwaW8vcmVzdGFzc3VyZWQvYXNzZXJ0aW9uL0RldGFpbGVkQ29va2llQXNzZXJ0aW9uBwArAQAQamF2YS9sYW5nL09iamVjdAcALQgACgEAFWdyb292eS9sYW5nL1JlZmVyZW5jZQcAMAEAA2dldAEAFCgpTGphdmEvbGFuZy9PYmplY3Q7DAAyADMKADEANAEAB21hdGNoZXIIADYBADFvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvU2NyaXB0Qnl0ZWNvZGVBZGFwdGVyBwA4AQAJY3JlYXRlTWFwAQAkKFtMamF2YS9sYW5nL09iamVjdDspTGphdmEvdXRpbC9NYXA7DAA6ADsKADkAPAEAD2NhbGxDb25zdHJ1Y3RvcgEAOChMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7DAA+AD8LACYAQAEABGNhbGwMAEIAPwsAJgBDAQACaXQBABhnZXREZXRhaWxlZENvb2tpZU1hdGNoZXIBADAoKUxpby9yZXN0YXNzdXJlZC9tYXRjaGVyL0RldGFpbGVkQ29va2llTWF0Y2hlcjsBACxpby9yZXN0YXNzdXJlZC9tYXRjaGVyL0RldGFpbGVkQ29va2llTWF0Y2hlcgcASAEACmNhc3RUb1R5cGUBADcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9DbGFzczspTGphdmEvbGFuZy9PYmplY3Q7DABKAEsKADkATAEADWdldENvb2tpZU5hbWUBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEAEGphdmEvbGFuZy9TdHJpbmcHAFAMACEAIgoAAgBSAQATJGdldFN0YXRpY01ldGFDbGFzcwEAGSgpTGdyb292eS9sYW5nL01ldGFDbGFzczsBAAhnZXRDbGFzcwEAEygpTGphdmEvbGFuZy9DbGFzczsMAFYAVwoALgBYAQANaW5pdE1ldGFDbGFzcwEAKyhMamF2YS9sYW5nL09iamVjdDspTGdyb292eS9sYW5nL01ldGFDbGFzczsMAFoAWwoAOQBcDAALAAwJAAIAXgEAKG9yZy9jb2RlaGF1cy9ncm9vdnkvcmVmbGVjdGlvbi9DbGFzc0luZm8HAGABAAxnZXRDbGFzc0luZm8BAD0oTGphdmEvbGFuZy9DbGFzczspTG9yZy9jb2RlaGF1cy9ncm9vdnkvcmVmbGVjdGlvbi9DbGFzc0luZm87DABiAGMKAGEAZAEADGdldE1ldGFDbGFzcwwAZgBVCgBhAGcBAAtfXyRzd2FwSW5pdAEAAygpVgEADiRjYWxsU2l0ZUFycmF5AQAdTGphdmEvbGFuZy9yZWYvU29mdFJlZmVyZW5jZTsMAGsAbAkAAgBtAQAIPGNsaW5pdD4MAGkAagoAAgBwAQAWJGNyZWF0ZUNhbGxTaXRlQXJyYXlfMQEAFihbTGphdmEvbGFuZy9TdHJpbmc7KVYBAAlsZWZ0U2hpZnQIAHQBABBjb29raWVBc3NlcnRpb25zCAB2AQAPPCRjb25zdHJ1Y3RvciQ+CAB4AQAUJGNyZWF0ZUNhbGxTaXRlQXJyYXkBADYoKUxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGVBcnJheTsDAAAAAwwAcgBzCgACAH0BADJvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGVBcnJheQcAfwEAJyhMamF2YS9sYW5nL0NsYXNzO1tMamF2YS9sYW5nL1N0cmluZzspVgwADwCBCgCAAIIBABtqYXZhL2xhbmcvcmVmL1NvZnRSZWZlcmVuY2UHAIQKAIUANAwAegB7CgACAIcBABUoTGphdmEvbGFuZy9PYmplY3Q7KVYMAA8AiQoAhQCKAQAFYXJyYXkBADBbTG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZTsMAIwAjQkAgACOAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEAD2phdmEvbGFuZy9DbGFzcwcAkgEAB2Zvck5hbWUMAJQAkQoAkwCVAQAeamF2YS9sYW5nL05vQ2xhc3NEZWZGb3VuZEVycm9yBwCXAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HAJkBAApnZXRNZXNzYWdlDACbAE8KAJoAnAEAFShMamF2YS9sYW5nL1N0cmluZzspVgwADwCeCgCYAJ8BAARDb2RlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAPTGluZU51bWJlclRhYmxlAQAKU291cmNlRmlsZQEADElubmVyQ2xhc3NlcwAgAAIABAABAAYABRACAAgACQAAEAIACgAJAAAQCgALAAwAABCJAA0ADgAAEAoAawBsAAAADAABAA8AEAABAKEAAABtAAMACAAAACe4ABQ6BSorLLcAFy06BhkGKl+1ABkZBlcZBDoHGQcqX7UAGxkHV7EAAAABAKIAAAA0AAUAAAAmABwAHQAAAAAAJgAeAB8AAQAAACYAIAAfAAIAAAAmAAgACQADAAAAJgAKAAkABAABACEAIgABAKEAAAB+AAgAAwAAAEq4ABRNLBIjMiwSJDIquQApAgAsEioyEiwHvQAuWQMSL1NZBCq0ABu2ADVTWQUSN1NZBiq0ABm2ADVTuAA9uQBBAwC5AEQDALABsAAAAAIAogAAABYAAgAAAEgAHAAdAAAAAABIAEUAHwABAKMAAAAGAAEABADvAAEARgBHAAEAoQAAADQAAgACAAAAFrgAFEwqtAAZtgA1Ekm4AE3AAEmwAbAAAAABAKIAAAAMAAEAAAAUABwAHQAAAAEATgBPAAEAoQAAADQAAgACAAAAFrgAFEwqtAAbtgA1ElG4AE3AAFGwAbAAAAABAKIAAAAMAAEAAAAUABwAHQAAAAEAIQAzAAEAoQAAACoAAgACAAAADLgAFEwqAbYAU7ABsAAAAAEAogAAAAwAAQAAAAoAHAAdAAAQBABUAFUAAQChAAAAMwACAAIAAAAnKrYAWRICpQAIKrgAXbCyAF9MK8cADyq2AFm4AGVZTLMAXyu2AGiwAAAAABAJAGkAagABAKEAAAAVAAEAAQAAAAm4ABRLAbMAbrEAAAAAAAgAbwBqAAEAoQAAABAAAAAAAAAABLgAcbEAAAAAEAoAcgBzAAEAoQAAAB8AAwABAAAAEyoSIxJ1UyoSJBJ3UyoSKhJ5U7EAAAAAEAoAegB7AAEAoQAAACEABAABAAAAFRJ8vQBRSyq4AH67AIBZEgIqtwCDsAAAAAAQCgARABIAAQChAAAANAADAAEAAAAosgBuxgARsgButgCGwACAWUvHABK4AIhLuwCFWSq3AIuzAG4qtACPsAAAAAAQCACQAJEAAQChAAAAJgADAAIAAAASKrgAlrBMuwCYWSu2AJ23AKC/AAEAAAAFAAUAmgAAAAIApAAAAAIABwClAAAACgABAAIAAAAAAAA=")
+        delete(generatedDirectAccessClasses.get()
+                .file("io/restassured/internal/ResponseSpecificationImpl\$_contentType_closure14.class")
+                .asFile)
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplBodyClosure1DirectAccess.class",
+                "yv66vgAAADQAGQEASWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxCb2R5Q2xvc3VyZTFEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAQamF2YS9sYW5nL09iamVjdAcABQEABjxpbml0PgEAAygpVgwABwAICgAGAAkBAEBpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXNwb25zZVNwZWNpZmljYXRpb25JbXBsJF9ib2R5X2Nsb3N1cmUxBwALAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwADQAOCgAMAA8BAARDb2RlAQAKRXhjZXB0aW9ucwEAE2phdmEvbGFuZy9UaHJvd2FibGUHABMBAApTb3VyY2VGaWxlAQA2UmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbEJvZHlDbG9zdXJlMURpcmVjdEFjY2Vzcy5qYXZhAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7ACEAAgAEAAAAAAACAAEABwAIAAEAEQAAABEAAQABAAAABSq3AAqxAAAAAAAJABcAGAACABEAAAARAAEAAQAAAAUquAAQsAAAAAAAEgAAAAQAAQAUAAEAFQAAAAIAFg==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplBodyClosure1Closure16DirectAccess.class",
+                "yv66vgAAADQAGAEAEGphdmEvbGFuZy9PYmplY3QHAAEBAFJpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXNwb25zZVNwZWNpZmljYXRpb25JbXBsQm9keUNsb3N1cmUxQ2xvc3VyZTE2RGlyZWN0QWNjZXNzBwADAQBKaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbCRfYm9keV9jbG9zdXJlMV9jbG9zdXJlMTYHAAUBAAY8aW5pdD4BAAMoKVYMAAcACAoAAgAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAGAA0BAARDb2RlAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwASAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBAD9SZXNwb25zZVNwZWNpZmljYXRpb25JbXBsQm9keUNsb3N1cmUxQ2xvc3VyZTE2RGlyZWN0QWNjZXNzLmphdmEBAAlTaWduYXR1cmUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47ACEABAACAAAAAAACAAEABwAIAAEADwAAABEAAQABAAAABSq3AAqxAAAAAAAJABQADAADAA8AAAARAAEAAQAAAAUquAAOsAAAAAAAEAAAAAQAAQATABYAAAACABcAAQARAAAAAgAV")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_body_closure1_closure16.class",
+                "yv66vgAAADEAlAEASmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2JvZHlfY2xvc3VyZTFfY2xvc3VyZTE2BwABAQATZ3Jvb3Z5L2xhbmcvQ2xvc3VyZQcAAwEALG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9HZW5lcmF0ZWRDbG9zdXJlBwAFAQAgUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbC5ncm9vdnkBABAkc3RhdGljQ2xhc3NJbmZvAQAqTG9yZy9jb2RlaGF1cy9ncm9vdnkvcmVmbGVjdGlvbi9DbGFzc0luZm87AQAHX18kc3RNQwEAAVoBAAY8aW5pdD4BACcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KVYBABEkZ2V0Q2FsbFNpdGVBcnJheQEAMigpW0xvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGU7DAAOAA8KAAIAEAwADAANCgAEABIBAAR0aGlzAQBMTGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2JvZHlfY2xvc3VyZTFfY2xvc3VyZTE2OwEADl9vdXRlckluc3RhbmNlAQASTGphdmEvbGFuZy9PYmplY3Q7AQALX3RoaXNPYmplY3QBAAZkb0NhbGwBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwMAAAAAAwAAAAEBAC1vcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGUHAB0BABtjYWxsR3Jvb3Z5T2JqZWN0R2V0UHJvcGVydHkMAB8AGgsAHgAgAwAAAAIBAC1pby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9hc3NlcnRpb24vQm9keU1hdGNoZXIHACMBABBqYXZhL2xhbmcvT2JqZWN0BwAlAQADa2V5CAAnAQAHbWF0Y2hlcggAKQEAA3JwcggAKwMAAAADAQAxb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL1NjcmlwdEJ5dGVjb2RlQWRhcHRlcgcALgEACWNyZWF0ZU1hcAEAJChbTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL3V0aWwvTWFwOwwAMAAxCgAvADIBAA9jYWxsQ29uc3RydWN0b3IBADgoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwwANAA1CwAeADYBAARjYWxsDAA4ADULAB4AOQEAD2hhbWNyZXN0TWF0Y2hlcgEAEyRnZXRTdGF0aWNNZXRhQ2xhc3MBABkoKUxncm9vdnkvbGFuZy9NZXRhQ2xhc3M7AQAIZ2V0Q2xhc3MBABMoKUxqYXZhL2xhbmcvQ2xhc3M7DAA+AD8KACYAQAEADWluaXRNZXRhQ2xhc3MBACsoTGphdmEvbGFuZy9PYmplY3Q7KUxncm9vdnkvbGFuZy9NZXRhQ2xhc3M7DABCAEMKAC8ARAwACAAJCQACAEYBAChvcmcvY29kZWhhdXMvZ3Jvb3Z5L3JlZmxlY3Rpb24vQ2xhc3NJbmZvBwBIAQAMZ2V0Q2xhc3NJbmZvAQA9KExqYXZhL2xhbmcvQ2xhc3M7KUxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3JlZmxlY3Rpb24vQ2xhc3NJbmZvOwwASgBLCgBJAEwBAAxnZXRNZXRhQ2xhc3MMAE4APQoASQBPAQALX18kc3dhcEluaXQBAAMoKVYBAA4kY2FsbFNpdGVBcnJheQEAHUxqYXZhL2xhbmcvcmVmL1NvZnRSZWZlcmVuY2U7DABTAFQJAAIAVQEACDxjbGluaXQ+DABRAFIKAAIAWAEAFiRjcmVhdGVDYWxsU2l0ZUFycmF5XzEBABYoW0xqYXZhL2xhbmcvU3RyaW5nOylWAQADYWRkCABcAQAMYm9keU1hdGNoZXJzCABeAQAPPCRjb25zdHJ1Y3RvciQ+CABgAQAUJGNyZWF0ZUNhbGxTaXRlQXJyYXkBADYoKUxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGVBcnJheTsDAAAABAEAEGphdmEvbGFuZy9TdHJpbmcHAGUMAFoAWwoAAgBnAQAyb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL2NhbGxzaXRlL0NhbGxTaXRlQXJyYXkHAGkBACcoTGphdmEvbGFuZy9DbGFzcztbTGphdmEvbGFuZy9TdHJpbmc7KVYMAAwAawoAagBsAQAbamF2YS9sYW5nL3JlZi9Tb2Z0UmVmZXJlbmNlBwBuAQADZ2V0AQAUKClMamF2YS9sYW5nL09iamVjdDsMAHAAcQoAbwByDABiAGMKAAIAdAEAFShMamF2YS9sYW5nL09iamVjdDspVgwADAB2CgBvAHcBAAVhcnJheQEAMFtMb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL2NhbGxzaXRlL0NhbGxTaXRlOwwAeQB6CQBqAHsBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAPamF2YS9sYW5nL0NsYXNzBwB/AQAHZm9yTmFtZQwAgQB+CgCAAIIBAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IHAIQBACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcAhgEACmdldE1lc3NhZ2UBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwwAiACJCgCHAIoBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYMAAwAjAoAhQCNAQAEQ29kZQEAEkxvY2FsVmFyaWFibGVUYWJsZQEAD0xpbmVOdW1iZXJUYWJsZQEAClNvdXJjZUZpbGUBAAxJbm5lckNsYXNzZXMAIAACAAQAAQAGAAMQCgAIAAkAABCJAAoACwAAEAoAUwBUAAAACQABAAwADQABAI8AAAA9AAMABAAAAAu4ABFOKisstwATsQAAAAEAkAAAACAAAwAAAAoAFAAVAAAAAAAKABYAFwABAAAACgAYABcAAgABABkAGgABAI8AAACFAAkAAwAAAFG4ABFNLBIbMiwSHDIquQAhAgAsEiIyEiQQBr0AJlkDEihTWQQBU1kFEipTWQYrU1kHEixTWQgsEi0yKrkAIQIAU7gAM7kANwMAuQA6AwCwAbAAAAACAJAAAAAWAAIAAABPABQAFQAAAAAATwA7ABcAAQCRAAAABgABAAQAbhAEADwAPQABAI8AAAAzAAIAAgAAACcqtgBBEgKlAAgquABFsLIAR0wrxwAPKrYAQbgATVlMswBHK7YAULAAAAAAEAkAUQBSAAEAjwAAABUAAQABAAAACbgAEUsBswBWsQAAAAAACABXAFIAAQCPAAAAEAAAAAAAAAAEuABZsQAAAAAQCgBaAFsAAQCPAAAAJQADAAEAAAAZKhIbEl1TKhIcEl9TKhIiEmFTKhItEixTsQAAAAAQCgBiAGMAAQCPAAAAIQAEAAEAAAAVEmS9AGZLKrgAaLsAalkSAiq3AG2wAAAAABAKAA4ADwABAI8AAAA0AAMAAQAAACiyAFbGABGyAFa2AHPAAGpZS8cAErgAdUu7AG9ZKrcAeLMAViq0AHywAAAAABAIAH0AfgABAI8AAAAmAAMAAgAAABIquACDsEy7AIVZK7YAi7cAjr8AAQAAAAUABQCHAAAAAgCSAAAAAgAHAJMAAAAKAAEAAgAAAAAAAA==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplBodyClosure11DirectAccess.class",
+                "yv66vgAAADQAFgEASmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxCb2R5Q2xvc3VyZTExRGlyZWN0QWNjZXNzBwABAQAQamF2YS9sYW5nL09iamVjdAcAAwEABjxpbml0PgEAAygpVgEABENvZGUBAApFeGNlcHRpb25zAQAKU291cmNlRmlsZQEAE2phdmEvbGFuZy9UaHJvd2FibGUHAAoMAAUABgoABAAMAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQBBaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbCRfYm9keV9jbG9zdXJlMTEHABABAAZjbGFzcyQMABIADwoAEQATAQA3UmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbEJvZHlDbG9zdXJlMTFEaXJlY3RBY2Nlc3MuamF2YQAhAAIABAAAAAAAAgABAAUABgABAAcAAAARAAEAAQAAAAUqtwANsQAAAAAACQAOAA8AAgAHAAAAEQABAAEAAAAFKrgAFLAAAAAAAAgAAAAEAAEACwABAAkAAAACABU=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_body_closure11.class",
+                "yv66vgAAADQATQoAAgADBwAEDAAFAAYBABNncm9vdnkvbGFuZy9DbG9zdXJlAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWCQAIAAkHAAoMAAsADAEAQWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2JvZHlfY2xvc3VyZTExAQAJYXJndW1lbnRzAQAXTGdyb292eS9sYW5nL1JlZmVyZW5jZTsJAAgADgwADwAMAQAHbWF0Y2hlcgkACAARDAASAAwBAANrZXkJAAgAFAwAFQAMAQAZYWRkaXRpb25hbEtleU1hdGNoZXJQYWlycwoACAAXDAAYABkBAAZkb0NhbGwBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwoAGwAcBwAdDAAeAB8BABVncm9vdnkvbGFuZy9SZWZlcmVuY2UBAANnZXQBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwcAIQEADmphdmEvdXRpbC9MaXN0BwAjAQAUb3JnL2hhbWNyZXN0L01hdGNoZXIHACUBABBqYXZhL2xhbmcvU3RyaW5nBwAnAQATW0xqYXZhL2xhbmcvT2JqZWN0OwoAKQAqBwArDAAsAC0BAA9qYXZhL2xhbmcvQ2xhc3MBAAdmb3JOYW1lAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwcALwEAIGphdmEvbGFuZy9DbGFzc05vdEZvdW5kRXhjZXB0aW9uBwAxAQAeamF2YS9sYW5nL05vQ2xhc3NEZWZGb3VuZEVycm9yCgAuADMMADQANQEACmdldE1lc3NhZ2UBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwoAMAA3DAAFADgBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYHADoBACxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvR2VuZXJhdGVkQ2xvc3VyZQEAgyhMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlO0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7TGdyb292eS9sYW5nL1JlZmVyZW5jZTtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOylWAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEADGdldEFyZ3VtZW50cwEAEigpTGphdmEvdXRpbC9MaXN0OwEACVNpZ25hdHVyZQEAFSgpTGphdmEvdXRpbC9MaXN0PCo+OwEACmdldE1hdGNoZXIBABgoKUxvcmcvaGFtY3Jlc3QvTWF0Y2hlcjsBABsoKUxvcmcvaGFtY3Jlc3QvTWF0Y2hlcjwqPjsBAAZnZXRLZXkBABxnZXRBZGRpdGlvbmFsS2V5TWF0Y2hlclBhaXJzAQAVKClbTGphdmEvbGFuZy9PYmplY3Q7AQAGY2xhc3MkAQANU3RhY2tNYXBUYWJsZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBAApTb3VyY2VGaWxlAQAgUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbC5ncm9vdnkAMAAIAAIAAQA5AAQAEgALAAwAAAASAA8ADAAAABIAEgAMAAAAEgAVAAwAAAAIAAAABQA7AAEAPAAAAEoAAwAHAAAAHiorLLcAASottQAHKhkEtQANKhkFtQAQKhkGtQATsQAAAAEAPQAAABoABgAAABAABgARAAsAEgARABMAFwAUAB0AFQABABgAGQABADwAAAAaAAEAAgAAAAIBsAAAAAEAPQAAAAYAAQAAABYAAQAYAB8AAQA8AAAAHgACAAEAAAAGKgG2ABawAAAAAQA9AAAABgABAAAAFwABAD4APwACADwAAAAjAAEAAQAAAAsqtAAHtgAawAAgsAAAAAEAPQAAAAYAAQAAABgAQAAAAAIAQQABAEIAQwACADwAAAAjAAEAAQAAAAsqtAANtgAawAAisAAAAAEAPQAAAAYAAQAAABkAQAAAAAIARAABAEUANQABADwAAAAjAAEAAQAAAAsqtAAQtgAawAAksAAAAAEAPQAAAAYAAQAAABoAAQBGAEcAAQA8AAAAIwABAAEAAAALKrQAE7YAGsAAJrAAAAABAD0AAAAGAAEAAAAbAAgASAAtAAIAPAAAAEIAAwACAAAAEiq4ACiwTLsAMFkrtgAytwA2vwABAAAABAAFAC4AAgA9AAAACgACAAAAHQAFAB4ASQAAAAYAAUUHAC4AQAAAAAIASgABAEsAAAACAEw=")
+        delete(generatedDirectAccessClasses.get()
+                .file("io/restassured/internal/ResponseSpecificationImpl\$_body_closure1.class")
+                .asFile)
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_body_closure11_closure21.class",
+                "yv66vgAAADQAIgoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEAD2phdmEvbGFuZy9DbGFzcwEAB2Zvck5hbWUBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7BwAOAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HABABAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IKAA0AEgwAEwAUAQAKZ2V0TWVzc2FnZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7CgAPABYMAAUAFwEAFShMamF2YS9sYW5nL1N0cmluZzspVgcAGQEAS2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2JvZHlfY2xvc3VyZTExX2Nsb3N1cmUyMQEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAZjbGFzcyQBAA1TdGFja01hcFRhYmxlAQAJU2lnbmF0dXJlAQAoKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzPCo+OwEAClNvdXJjZUZpbGUBADhSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsJF9ib2R5X2Nsb3N1cmUxMV9jbG9zdXJlMjEuamF2YQAhABgAAgAAAAAAAgABAAUABgABABoAAAAdAAEAAQAAAAUqtwABsQAAAAEAGwAAAAYAAQAAAAMACAAcAAwAAgAaAAAARgADAAIAAAASKrgAB7BMuwAPWSu2ABG3ABW/AAEAAAAEAAUADQACABsAAAAOAAMAAAAGAAUABwAGAAgAHQAAAAYAAUUHAA0AHgAAAAIAHwABACAAAAACACE=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImpl\$_body_closure11_closure21_closure22.class",
+                "yv66vgAAADQAOwEAVWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX2JvZHlfY2xvc3VyZTExX2Nsb3N1cmUyMV9jbG9zdXJlMjIHAAEBABNncm9vdnkvbGFuZy9DbG9zdXJlBwADAQAsb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL0dlbmVyYXRlZENsb3N1cmUHAAUBABBqYXZhL2xhbmcvT2JqZWN0BwAHAQAVZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlBwAJAQAPamF2YS9sYW5nL0NsYXNzBwALAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HAA0BAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IHAA8BABNqYXZhL2xhbmcvVGhyb3dhYmxlBwARAQAGPGluaXQ+AQADKClWAQA+KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0O0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7KVYBACcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KVYBAARDb2RlAQAKRXhjZXB0aW9ucwEACVNpZ25hdHVyZQEAClNvdXJjZUZpbGUBAA1TdGFja01hcFRhYmxlAQALa2V5V2l0aFJvb3QBABdMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47AQAGZG9DYWxsAQAmKExqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBAA5nZXRLZXlXaXRoUm9vdAEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQADZ2V0AQAUKClMamF2YS9sYW5nL09iamVjdDsBABBqYXZhL2xhbmcvU3RyaW5nBwAnAQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYMABMAFgoABAAuDAAcAB0JAAIAMAwAJQAmCgAKADIMACkAKgoADAA0DAArACwKAA4ANgwAEwAtCgAQADgBACBSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsLmdyb292eQAgAAIABAABAAYAAQACABwAHQAAAAQAAQATABUAAQAXAAAAGAADAAQAAAAMKisstwAvKi21ADGxAAAAAAABACEAIgABABcAAAAOAAEAAgAAAAIBsAAAAAAAAQAjACQAAQAXAAAAFwABAAEAAAALKrQAMbYAM8AAKLAAAAAAEAgAHgAfAAIAFwAAADIAAwACAAAAEiq4ADWwTLsAEFkrtgA3twA5vwABAAAABQAFAA4AAQAbAAAABgABRQcADgAZAAAAAgAgAAEAGgAAAAIAOg==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplBodyClosure11Closure21Closure22DirectAccess.class",
+                "yv66vgAAADQAHQEAXGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxCb2R5Q2xvc3VyZTExQ2xvc3VyZTIxQ2xvc3VyZTIyRGlyZWN0QWNjZXNzBwABAQAQamF2YS9sYW5nL09iamVjdAcAAwEAEGphdmEvbGFuZy9PYmplY3QHAAUBAAY8aW5pdD4BAAMoKVYMAAcACAoABgAJAQBVaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbCRfYm9keV9jbG9zdXJlMTFfY2xvc3VyZTIxX2Nsb3N1cmUyMgcACwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAA0ADgoADAAPAQAEQ29kZQEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwATAQAJU2lnbmF0dXJlAQAKU291cmNlRmlsZQEASVJlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxCb2R5Q2xvc3VyZTExQ2xvc3VyZTIxQ2xvc3VyZTIyRGlyZWN0QWNjZXNzLmphdmEBAAY8aW5pdD4BAAMoKVYBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47ACEAAgAEAAAAAAACAAEAGAAZAAEAEQAAABEAAQABAAAABSq3AAqxAAAAAAAJABoAGwADABEAAAARAAEAAQAAAAUquAAQsAAAAAAAEgAAAAQAAQAUABUAAAACABwAAQAWAAAAAgAX")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplApplyArgumentsClosure15DirectAccess.class",
+                "yv66vgAAADQAFgEAVGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxBcHBseUFyZ3VtZW50c0Nsb3N1cmUxNURpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBAAY8aW5pdD4BAAMoKVYMAAUABgoABAAHAQBLaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbCRfYXBwbHlBcmd1bWVudHNfY2xvc3VyZTE1BwAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAKAA0BAARDb2RlAQAKRXhjZXB0aW9ucwEAE2phdmEvbGFuZy9UaHJvd2FibGUHABEBAApTb3VyY2VGaWxlAQBBUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbEFwcGx5QXJndW1lbnRzQ2xvc3VyZTE1RGlyZWN0QWNjZXNzLmphdmEBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgAxAAIABAAAAAAAAgACAAUABgABAA8AAAARAAEAAQAAAAUqtwAIsQAAAAAACQAVAAwAAgAPAAAAEQABAAEAAAAFKrgADrAAAAAAABAAAAAEAAEAEgABABMAAAACABQ=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplInnerHamcrestAssertionClosureDirectAccess.class",
+                "yv66vgAAADQAGwEAWmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxJbm5lckhhbWNyZXN0QXNzZXJ0aW9uQ2xvc3VyZURpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBABBqYXZhL2xhbmcvT2JqZWN0BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAYACQEASmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkSGFtY3Jlc3RBc3NlcnRpb25DbG9zdXJlBwALAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwADQAOCgAMAA8BAARDb2RlAQAKRXhjZXB0aW9ucwEAE2phdmEvbGFuZy9UaHJvd2FibGUHABMBAAY8aW5pdD4BAAMoKVYBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBAApTb3VyY2VGaWxlAQBHUmVzcG9uc2VTcGVjaWZpY2F0aW9uSW1wbElubmVySGFtY3Jlc3RBc3NlcnRpb25DbG9zdXJlRGlyZWN0QWNjZXNzLmphdmEAIQACAAQAAAAAAAIAAQAVABYAAQARAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAFwAYAAIAEQAAABEAAQABAAAABSq4ABCwAAAAAAASAAAABAABABQAAQAZAAAAAgAa")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplHamcrestAssertionClosureGetClosureClosure1DirectAccess.class",
+                "yv66vgAAADQAGAEAZ2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVHZXRDbG9zdXJlQ2xvc3VyZTFEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAGPGluaXQ+AQADKClWDAAFAAYKAAQABwEAX2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGwkX0hhbWNyZXN0QXNzZXJ0aW9uQ2xvc3VyZV9nZXRDbG9zdXJlX2Nsb3N1cmUxBwAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAKAA0BAARDb2RlAQAKU291cmNlRmlsZQEAVFJlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVHZXRDbG9zdXJlQ2xvc3VyZTFEaXJlY3RBY2Nlc3MuamF2YQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEAEmFjdGl2ZUNsb3N1cmVDbGFzcwEAEygpTGphdmEvbGFuZy9DbGFzczsBAAY8aW5pdD4BAAMoKVYAMQACAAQAAAAAAAMAAgAWABcAAQAPAAAAEQABAAEAAAAFKrcACLEAAAAAAAkAEgATAAEADwAAABEAAQABAAAABSq4AA6wAAAAAAAJABQAFQABAA8AAAAPAAEAAAAAAAMSCrAAAAAAAAEAEAAAAAIAEQ==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplHamcrestAssertionClosureValidateClosure2DirectAccess.class",
+                "yv66vgAAADQAGAEAZWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVWYWxpZGF0ZUNsb3N1cmUyRGlyZWN0QWNjZXNzBwABAQAQamF2YS9sYW5nL09iamVjdAcAAwEABjxpbml0PgEAAygpVgwABQAGCgAEAAcBAF1pby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXNwb25zZVNwZWNpZmljYXRpb25JbXBsJF9IYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVfdmFsaWRhdGVfY2xvc3VyZTIHAAkBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAALAAwKAAoADQEABENvZGUBAApFeGNlcHRpb25zAQATamF2YS9sYW5nL1Rocm93YWJsZQcAEQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQASYWN0aXZlQ2xvc3VyZUNsYXNzAQATKClMamF2YS9sYW5nL0NsYXNzOwEAClNvdXJjZUZpbGUBAFJSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsSGFtY3Jlc3RBc3NlcnRpb25DbG9zdXJlVmFsaWRhdGVDbG9zdXJlMkRpcmVjdEFjY2Vzcy5qYXZhACEAAgAEAAAAAAADAAEABQAGAAEADwAAABEAAQABAAAABSq3AAixAAAAAAAJABMADAACAA8AAAARAAEAAQAAAAUquAAOsAAAAAAAEAAAAAQAAQASAAkAFAAVAAEADwAAAA8AAQAAAAAAAxIKsAAAAAAAAQAWAAAAAgAX")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplHamcrestAssertionClosureValidateClosure3DirectAccess.class",
+                "yv66vgAAADQAGAEAZWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVWYWxpZGF0ZUNsb3N1cmUzRGlyZWN0QWNjZXNzBwABAQAQamF2YS9sYW5nL09iamVjdAcAAwEABjxpbml0PgEAAygpVgwABQAGCgAEAAcBAF1pby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXNwb25zZVNwZWNpZmljYXRpb25JbXBsJF9IYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVfdmFsaWRhdGVfY2xvc3VyZTMHAAkBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAALAAwKAAoADQEABENvZGUBAApFeGNlcHRpb25zAQATamF2YS9sYW5nL1Rocm93YWJsZQcAEQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQASYWN0aXZlQ2xvc3VyZUNsYXNzAQATKClMamF2YS9sYW5nL0NsYXNzOwEAClNvdXJjZUZpbGUBAFJSZXNwb25zZVNwZWNpZmljYXRpb25JbXBsSGFtY3Jlc3RBc3NlcnRpb25DbG9zdXJlVmFsaWRhdGVDbG9zdXJlM0RpcmVjdEFjY2Vzcy5qYXZhACEAAgAEAAAAAAADAAEABQAGAAEADwAAABEAAQABAAAABSq3AAixAAAAAAAJABMADAACAA8AAAARAAEAAQAAAAUquAAOsAAAAAAAEAAAAAQAAQASAAkAFAAVAAEADwAAAA8AAQAAAAAAAxIKsAAAAAAAAQAWAAAAAgAX")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplHamcrestAssertionClosureValidateHeadersAndCookiesClosure5DirectAccess.class",
+                "yv66vgAAADQAHQEAdmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVWYWxpZGF0ZUhlYWRlcnNBbmRDb29raWVzQ2xvc3VyZTVEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAQamF2YS9sYW5nL09iamVjdAcABQEABjxpbml0PgEAAygpVgwABwAICgAGAAkBAG5pby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXNwb25zZVNwZWNpZmljYXRpb25JbXBsJF9IYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVfdmFsaWRhdGVIZWFkZXJzQW5kQ29va2llc19jbG9zdXJlNQcACwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAA0ADgoADAAPAQAEQ29kZQEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwATAQAKU291cmNlRmlsZQEAY1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVWYWxpZGF0ZUhlYWRlcnNBbmRDb29raWVzQ2xvc3VyZTVEaXJlY3RBY2Nlc3MuamF2YQEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBAAY8aW5pdD4BAAMoKVYBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsAMQACAAQAAAAAAAIAAgAZABoAAQARAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAGwAcAAMAEQAAABEAAQABAAAABSq4ABCwAAAAAAASAAAABAABABQAFwAAAAIAGAABABUAAAACABY=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/ResponseSpecificationImplHamcrestAssertionClosureValidateHeadersAndCookiesClosure6DirectAccess.class",
+                "yv66vgAAADQAHQEAdmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVWYWxpZGF0ZUhlYWRlcnNBbmRDb29raWVzQ2xvc3VyZTZEaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAQamF2YS9sYW5nL09iamVjdAcABQEABjxpbml0PgEAAygpVgwABwAICgAGAAkBAG5pby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXNwb25zZVNwZWNpZmljYXRpb25JbXBsJF9IYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVfdmFsaWRhdGVIZWFkZXJzQW5kQ29va2llc19jbG9zdXJlNgcACwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAA0ADgoADAAPAQAEQ29kZQEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwATAQAKU291cmNlRmlsZQEAY1Jlc3BvbnNlU3BlY2lmaWNhdGlvbkltcGxIYW1jcmVzdEFzc2VydGlvbkNsb3N1cmVWYWxpZGF0ZUhlYWRlcnNBbmRDb29raWVzQ2xvc3VyZTZEaXJlY3RBY2Nlc3MuamF2YQEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBAAY8aW5pdD4BAAMoKVYBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsAMQACAAQAAAAAAAIAAgAZABoAAQARAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAGwAcAAMAEQAAABEAAQABAAAABSq4ABCwAAAAAAASAAAABAABABQAFwAAAAIAGAABABUAAAACABY=")
+        delete(generatedDirectAccessClasses.get()
+                .file("io/restassured/internal/RequestSpecificationImplPartiallyApplyPathParamsClosure35Access.class")
+                .asFile)
+        delete(generatedDirectAccessClasses.get()
+                .file("io/restassured/internal/RequestSpecificationImpl\$_sendRequest_closure15.class")
+                .asFile)
+        delete(generatedDirectAccessClasses.get()
+                .file("io/restassured/internal/RequestSpecificationImpl\$_sendRequest_closure16.class")
+                .asFile)
+        delete(generatedDirectAccessClasses.get()
+                .file("io/restassured/internal/RequestSpecificationImpl\$_sendRequest_closure17.class")
+                .asFile)
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplHeaderClosure8Access.class",
+                "yv66vgAAADQAGQoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEAQWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfaGVhZGVyX2Nsb3N1cmU4AQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwcADgEARGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbEhlYWRlckNsb3N1cmU4QWNjZXNzAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAKRXhjZXB0aW9ucwcAFAEAE2phdmEvbGFuZy9UaHJvd2FibGUBAAlTaWduYXR1cmUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47AQAKU291cmNlRmlsZQEAMVJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbEhlYWRlckNsb3N1cmU4QWNjZXNzLmphdmEAMQANAAIAAAAAAAIAAgAFAAYAAQAPAAAAIQABAAEAAAAFKrcAAbEAAAABABAAAAAKAAIAAAAEAAQABQAJABEADAADAA8AAAAdAAEAAQAAAAUquAAHsAAAAAEAEAAAAAYAAQAAAAgAEgAAAAQAAQATABUAAAACABYAAQAXAAAAAgAY")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplHeadersClosure6DirectAccess.class",
+                "yv66vgAAADQAGQoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEAQmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfaGVhZGVyc19jbG9zdXJlNgEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsHAA4BAEtpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxIZWFkZXJzQ2xvc3VyZTZEaXJlY3RBY2Nlc3MBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBAApFeGNlcHRpb25zBwAUAQATamF2YS9sYW5nL1Rocm93YWJsZQEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBAApTb3VyY2VGaWxlAQA4UmVxdWVzdFNwZWNpZmljYXRpb25JbXBsSGVhZGVyc0Nsb3N1cmU2RGlyZWN0QWNjZXNzLmphdmEAMQANAAIAAAAAAAIAAgAFAAYAAQAPAAAAIQABAAEAAAAFKrcAAbEAAAABABAAAAAKAAIAAAAEAAQABQAJABEADAADAA8AAAAdAAEAAQAAAAUquAAHsAAAAAEAEAAAAAYAAQAAAAgAEgAAAAQAAQATABUAAAACABYAAQAXAAAAAgAY")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplRemoveMergedHeadersIfNeededClosure7DirectAccess.class",
+                "yv66vgAAADQAGAcAAgEAX2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFJlbW92ZU1lcmdlZEhlYWRlcnNJZk5lZWRlZENsb3N1cmU3RGlyZWN0QWNjZXNzBwAEAQAQamF2YS9sYW5nL09iamVjdAEABjxpbml0PgEAAygpVgwABQAGCgADAAcHAAoBAFZpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGwkX3JlbW92ZU1lcmdlZEhlYWRlcnNJZk5lZWRlZF9jbG9zdXJlNwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAsADAoACQANAQAEQ29kZQEACkV4Y2VwdGlvbnMHABIBABNqYXZhL2xhbmcvVGhyb3dhYmxlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBAApTb3VyY2VGaWxlAQBMUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsUmVtb3ZlTWVyZ2VkSGVhZGVyc0lmTmVlZGVkQ2xvc3VyZTdEaXJlY3RBY2Nlc3MuamF2YQEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsAMQABAAMAAAAAAAIAAgAFAAYAAQAPAAAAEQABAAEAAAAFKrcACLEAAAAAAAkAEwAMAAMADwAAABEAAQABAAAABSq4AA6wAAAAAAAQAAAABAABABEAFgAAAAIAFwABABQAAAACABU=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplRemoveMergedHeadersIfNeededClosure7Closure50DirectAccess.class",
+                "yv66vgAAADQAFgoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEAYGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfcmVtb3ZlTWVyZ2VkSGVhZGVyc0lmTmVlZGVkX2Nsb3N1cmU3X2Nsb3N1cmU1MAEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsHAA4BAGhpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxSZW1vdmVNZXJnZWRIZWFkZXJzSWZOZWVkZWRDbG9zdXJlN0Nsb3N1cmU1MERpcmVjdEFjY2VzcwEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsBAApTb3VyY2VGaWxlAQBVUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsUmVtb3ZlTWVyZ2VkSGVhZGVyc0lmTmVlZGVkQ2xvc3VyZTdDbG9zdXJlNTBEaXJlY3RBY2Nlc3MuamF2YQAxAA0AAgAAAAAAAgACAAUABgABAA8AAAAhAAEAAQAAAAUqtwABsQAAAAEAEAAAAAoAAgAAAAQABAAFAAkAEQAMAAIADwAAAB0AAQABAAAABSq4AAewAAAAAQAQAAAABgABAAAACAASAAAAAgATAAEAFAAAAAIAFQ==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImpl\$_removeMergedHeadersIfNeeded_closure7.class",
+                "yv66vgAAADQAZAoAAgADBwAEDAAFAAYBABNncm9vdnkvbGFuZy9DbG9zdXJlAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWBwAIAQATamF2YS91dGlsL0FycmF5TGlzdAcACgEADmphdmEvdXRpbC9MaXN0CgAHAAwMAAUADQEAGShMamF2YS91dGlsL0NvbGxlY3Rpb247KVYHAA8BABppby9yZXN0YXNzdXJlZC9odHRwL0hlYWRlcgoAEQASBwATDAAUABUBAFZpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGwkX3JlbW92ZU1lcmdlZEhlYWRlcnNJZk5lZWRlZF9jbG9zdXJlNwEADWdldFRoaXNPYmplY3QBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwcAFwEAMGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbAoAFgAZDAAaABsBABFyZXN0QXNzdXJlZENvbmZpZwEAKygpTGlvL3Jlc3Rhc3N1cmVkL2NvbmZpZy9SZXN0QXNzdXJlZENvbmZpZzsKAB0AHgcAHwwAIAAhAQAnaW8vcmVzdGFzc3VyZWQvY29uZmlnL1Jlc3RBc3N1cmVkQ29uZmlnAQAPZ2V0SGVhZGVyQ29uZmlnAQAmKClMaW8vcmVzdGFzc3VyZWQvY29uZmlnL0hlYWRlckNvbmZpZzsKAA4AIwwAJAAlAQAHZ2V0TmFtZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7CgAnACgHACkMACoAKwEAImlvL3Jlc3Rhc3N1cmVkL2NvbmZpZy9IZWFkZXJDb25maWcBAB1zaG91bGRPdmVyd3JpdGVIZWFkZXJXaXRoTmFtZQEAFShMamF2YS9sYW5nL1N0cmluZzspWgoABwAtDAAFAC4BAAMoKVYLAAkAMAwAMQAyAQAIaXRlcmF0b3IBABYoKUxqYXZhL3V0aWwvSXRlcmF0b3I7CwA0ADUHADYMADcAOAEAEmphdmEvdXRpbC9JdGVyYXRvcgEAB2hhc05leHQBAAMoKVoLADQAOgwAOwAVAQAEbmV4dAoAPQA+BwA/DABAACsBABBqYXZhL2xhbmcvU3RyaW5nAQAQZXF1YWxzSWdub3JlQ2FzZQsACQBCDABDAEQBAANhZGQBABUoTGphdmEvbGFuZy9PYmplY3Q7KVoKABEARgwARwBIAQAGZG9DYWxsAQA4KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsKAEoASwcATAwATQBOAQAPamF2YS9sYW5nL0NsYXNzAQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsHAFABACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcAUgEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgoATwBUDABVACUBAApnZXRNZXNzYWdlCgBRAFcMAAUAWAEAFShMamF2YS9sYW5nL1N0cmluZzspVgcAWgEALG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9HZW5lcmF0ZWRDbG9zdXJlAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEADVN0YWNrTWFwVGFibGUHAF8BABBqYXZhL2xhbmcvT2JqZWN0AQAEY2FsbAEABmNsYXNzJAEAClNvdXJjZUZpbGUBAENSZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGwkX3JlbW92ZU1lcmdlZEhlYWRlcnNJZk5lZWRlZF9jbG9zdXJlNy5qYXZhACEAEQACAAEAWQAAAAQAAQAFAAYAAQBbAAAAIwADAAMAAAAHKisstwABsQAAAAEAXAAAAAoAAgAAAA0ABgAOAAEARwBIAAEAWwAAAQIAAwALAAAAhbsAB1krwAAJtwALTizAAA46BCq2ABDAABa2ABi2ABw6BRkEtgAiOgYZBRkGtgAmmQBLuwAHWbcALDoHLbkALwEAOggZCLkAMwEAmQAtGQi5ADkBADoJGQnAAA46ChkGGQq2ACK2ADyaAA0ZBxkKuQBBAgBXp//PGQdOLRkEuQBBAgBXLbAAAAACAFwAAAA6AA4AAAARAAwAEgASABMAIQAUACgAFQAyABYAOwAXAFYAGABdABkAagAaAHQAHAB3AB0AegAfAIMAIABdAAAAKwAE/wBDAAkHABEHAF4HAF4HAAkHAA4HACcHAD0HAAkHADQAADD6AAL6AAIAAQBgAEgAAQBbAAAAHwADAAMAAAAHKisstgBFsAAAAAEAXAAAAAYAAQAAACQACABhAE4AAQBbAAAARgADAAIAAAASKrgASbBMuwBRWSu2AFO3AFa/AAEAAAAEAAUATwACAFwAAAAOAAMAAAApAAUAKgAGACsAXQAAAAYAAUUHAE8AAQBiAAAAAgBj")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplHeadersClosure6Closure49DirectAccess.class",
+                "yv66vgAAADQAGwEAVGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbEhlYWRlcnNDbG9zdXJlNkNsb3N1cmU0OURpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBABBqYXZhL2xhbmcvT2JqZWN0BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAYACQEATGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfaGVhZGVyc19jbG9zdXJlNl9jbG9zdXJlNDkHAAsBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAANAA4KAAwADwEABENvZGUBAApFeGNlcHRpb25zAQAKU291cmNlRmlsZQEAQVJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbEhlYWRlcnNDbG9zdXJlNkNsb3N1cmU0OURpcmVjdEFjY2Vzcy5qYXZhAQAGPGluaXQ+AQADKClWAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQATamF2YS9sYW5nL1Rocm93YWJsZQcAGQAxAAIABAAAAAAAAgACABUAFgABABEAAAARAAEAAQAAAAUqtwAKsQAAAAAACQAXABgAAgARAAAAEQABAAEAAAAFKrgAELAAAAAAABIAAAAEAAEAGgABABMAAAACABQ=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplNewFilterContextClosure12DirectAccess.class",
+                "yv66vgAAADQAHQEAEGphdmEvbGFuZy9PYmplY3QHAAEBAAY8aW5pdD4BAAMoKVYMAAMABAoAAgAFAQBMaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9uZXdGaWx0ZXJDb250ZXh0X2Nsb3N1cmUxMgcABwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAkACgoACAALAQBVaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsTmV3RmlsdGVyQ29udGV4dENsb3N1cmUxMkRpcmVjdEFjY2VzcwcADQEAEGphdmEvbGFuZy9PYmplY3QHAA8BAARDb2RlAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBAEJSZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxOZXdGaWx0ZXJDb250ZXh0Q2xvc3VyZTEyRGlyZWN0QWNjZXNzLmphdmEBAAY8aW5pdD4BAAMoKVYBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwAZAQAJU2lnbmF0dXJlAQAoKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzPCo+OwAxAA4AEAAAAAAAAgACABUAFgABABEAAAARAAEAAQAAAAUqtwAGsQAAAAAACQAXABgAAwARAAAAEQABAAEAAAAFKrgADLAAAAAAABIAAAAEAAEAGgAbAAAAAgAcAAEAEwAAAAIAFA==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplNewFilterContextClosure13DirectAccess.class",
+                "yv66vgAAADQAHQEAEGphdmEvbGFuZy9PYmplY3QHAAEBAAY8aW5pdD4BAAMoKVYMAAMABAoAAgAFAQBMaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9uZXdGaWx0ZXJDb250ZXh0X2Nsb3N1cmUxMwcABwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAkACgoACAALAQBVaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsTmV3RmlsdGVyQ29udGV4dENsb3N1cmUxM0RpcmVjdEFjY2VzcwcADQEAEGphdmEvbGFuZy9PYmplY3QHAA8BAARDb2RlAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBAEJSZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxOZXdGaWx0ZXJDb250ZXh0Q2xvc3VyZTEzRGlyZWN0QWNjZXNzLmphdmEBAAY8aW5pdD4BAAMoKVYBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwAZAQAJU2lnbmF0dXJlAQAoKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzPCo+OwAxAA4AEAAAAAAAAgACABUAFgABABEAAAARAAEAAQAAAAUqtwAGsQAAAAAACQAXABgAAwARAAAAEQABAAEAAAAFKrgADLAAAAAAABIAAAAEAAEAGgAbAAAAAgAcAAEAEwAAAAIAFA==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplSendHttpRequestClosure27DirectAccess.class",
+                "yv66vgAAADQAGAEAEGphdmEvbGFuZy9PYmplY3QHAAEBAAY8aW5pdD4BAAMoKVYMAAMABAoAAgAFAQBLaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9zZW5kSHR0cFJlcXVlc3RfY2xvc3VyZTI3BwAHAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACQAKCgAIAAsBAFRpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxTZW5kSHR0cFJlcXVlc3RDbG9zdXJlMjdEaXJlY3RBY2Nlc3MHAA0BAARDb2RlAQAKRXhjZXB0aW9ucwEAE2phdmEvbGFuZy9UaHJvd2FibGUHABEBAApTb3VyY2VGaWxlAQBBUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsU2VuZEh0dHBSZXF1ZXN0Q2xvc3VyZTI3RGlyZWN0QWNjZXNzLmphdmEBAAlTaWduYXR1cmUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47AQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIAMQAOAAIAAAAAAAIAAQADAAQAAQAPAAAAEQABAAEAAAAFKrcABrEAAAAAAAkAFwAKAAMADwAAABEAAQABAAAABSq4AAywAAAAAAAQAAAABAABABIAFQAAAAIAFgABABMAAAACABQ=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplSendRequestClosure15DirectAccess.class",
+                "yv66vgAAADQAFwEAUGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFNlbmRSZXF1ZXN0Q2xvc3VyZTE1RGlyZWN0QWNjZXNzBwABAQAQamF2YS9sYW5nL09iamVjdAcAAwEAR2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfc2VuZFJlcXVlc3RfY2xvc3VyZTE1BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAQACQEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAsADAoABgANAQAEQ29kZQEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwARAQAKU291cmNlRmlsZQEAPVJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFNlbmRSZXF1ZXN0Q2xvc3VyZTE1RGlyZWN0QWNjZXNzLmphdmEBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsAMQACAAQAAAAAAAIAAgAHAAgAAQAPAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAFQAWAAIADwAAABEAAQABAAAABSq4AA6wAAAAAAAQAAAABAABABIAAQATAAAAAgAU")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplSendRequestClosure16DirectAccess.class",
+                "yv66vgAAADQAFwEAUGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFNlbmRSZXF1ZXN0Q2xvc3VyZTE2RGlyZWN0QWNjZXNzBwABAQAQamF2YS9sYW5nL09iamVjdAcAAwEAR2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfc2VuZFJlcXVlc3RfY2xvc3VyZTE2BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAQACQEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAsADAoABgANAQAEQ29kZQEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwARAQAKU291cmNlRmlsZQEAPVJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFNlbmRSZXF1ZXN0Q2xvc3VyZTE2RGlyZWN0QWNjZXNzLmphdmEBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsAMQACAAQAAAAAAAIAAgAHAAgAAQAPAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAFQAWAAIADwAAABEAAQABAAAABSq4AA6wAAAAAAAQAAAABAABABIAAQATAAAAAgAU")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplSendRequestClosure17DirectAccess.class",
+                "yv66vgAAADQAFwEAUGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFNlbmRSZXF1ZXN0Q2xvc3VyZTE3RGlyZWN0QWNjZXNzBwABAQAQamF2YS9sYW5nL09iamVjdAcAAwEAR2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfc2VuZFJlcXVlc3RfY2xvc3VyZTE3BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAQACQEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAsADAoABgANAQAEQ29kZQEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwARAQAKU291cmNlRmlsZQEAPVJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFNlbmRSZXF1ZXN0Q2xvc3VyZTE3RGlyZWN0QWNjZXNzLmphdmEBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsAMQACAAQAAAAAAAIAAgAHAAgAAQAPAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAFQAWAAIADwAAABEAAQABAAAABSq4AA6wAAAAAAAQAAAABAABABIAAQATAAAAAgAU")
+        // Copy closure16 with a no-op <clinit> so direct class$ invocation reaches Class.forName without
+        // replacing the closure request callback behavior.
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImpl\$_sendRequest_closure16.class",
+                "yv66vgAAADEAmgEAR2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfc2VuZFJlcXVlc3RfY2xvc3VyZTE2BwABAQATZ3Jvb3Z5L2xhbmcvQ2xvc3VyZQcAAwEALG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9HZW5lcmF0ZWRDbG9zdXJlBwAFAQAfUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsLmdyb292eQEAEGFzc2VydGlvbkNsb3N1cmUBABdMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOwEAECRzdGF0aWNDbGFzc0luZm8BACpMb3JnL2NvZGVoYXVzL2dyb292eS9yZWZsZWN0aW9uL0NsYXNzSW5mbzsBAAdfXyRzdE1DAQABWgEABjxpbml0PgEAPihMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOylWAQARJGdldENhbGxTaXRlQXJyYXkBADIoKVtMb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL2NhbGxzaXRlL0NhbGxTaXRlOwwAEAARCgACABIBACcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KVYMAA4AFAoABAAVDAAIAAkJAAIAFwEABHRoaXMBAElMaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9zZW5kUmVxdWVzdF9jbG9zdXJlMTY7AQAOX291dGVySW5zdGFuY2UBABJMamF2YS9sYW5nL09iamVjdDsBAAtfdGhpc09iamVjdAEABmRvQ2FsbAEAOChMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQAub3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL0J5dGVjb2RlSW50ZXJmYWNlOAcAIAEAB2lzT3JpZ1oBAAMoKVoMACIAIwoAIQAkDAAMAA0JAAIAJgEAGWRpc2FibGVkU3RhbmRhcmRNZXRhQ2xhc3MMACgAIwoAIQApAQAVZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlBwArAQADZ2V0AQAUKClMamF2YS9sYW5nL09iamVjdDsMAC0ALgoALAAvAQAxb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL1NjcmlwdEJ5dGVjb2RlQWRhcHRlcgcAMQEAD2NvbXBhcmVOb3RFcXVhbAEAJyhMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspWgwAMwA0CgAyADUDAAAAAAEALW9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZQcAOAEABGNhbGwBAEooTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwwAOgA7CwA5ADwDAAAAAQEACHJlc3BvbnNlAQAHY29udGVudAMAAAACAQALY2FsbEN1cnJlbnQBAFIoTGdyb292eS9sYW5nL0dyb292eU9iamVjdDtMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7DABCAEMLADkARAEAE2dldEFzc2VydGlvbkNsb3N1cmUBABMkZ2V0U3RhdGljTWV0YUNsYXNzAQAZKClMZ3Jvb3Z5L2xhbmcvTWV0YUNsYXNzOwEAEGphdmEvbGFuZy9PYmplY3QHAEkBAAhnZXRDbGFzcwEAEygpTGphdmEvbGFuZy9DbGFzczsMAEsATAoASgBNAQANaW5pdE1ldGFDbGFzcwEAKyhMamF2YS9sYW5nL09iamVjdDspTGdyb292eS9sYW5nL01ldGFDbGFzczsMAE8AUAoAMgBRDAAKAAsJAAIAUwEAKG9yZy9jb2RlaGF1cy9ncm9vdnkvcmVmbGVjdGlvbi9DbGFzc0luZm8HAFUBAAxnZXRDbGFzc0luZm8BAD0oTGphdmEvbGFuZy9DbGFzczspTG9yZy9jb2RlaGF1cy9ncm9vdnkvcmVmbGVjdGlvbi9DbGFzc0luZm87DABXAFgKAFYAWQEADGdldE1ldGFDbGFzcwwAWwBICgBWAFwBAAtfXyRzd2FwSW5pdAEAAygpVgEADiRjYWxsU2l0ZUFycmF5AQAdTGphdmEvbGFuZy9yZWYvU29mdFJlZmVyZW5jZTsMAGAAYQkAAgBiAQAIPGNsaW5pdD4MAF4AXwoAAgBlAQAWJGNyZWF0ZUNhbGxTaXRlQXJyYXlfMQEAFihbTGphdmEvbGFuZy9TdHJpbmc7KVYIADoIAB4BABQkY3JlYXRlQ2FsbFNpdGVBcnJheQEANigpTG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZUFycmF5OwMAAAADAQAQamF2YS9sYW5nL1N0cmluZwcAbgwAZwBoCgACAHABADJvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvY2FsbHNpdGUvQ2FsbFNpdGVBcnJheQcAcgEAJyhMamF2YS9sYW5nL0NsYXNzO1tMamF2YS9sYW5nL1N0cmluZzspVgwADgB0CgBzAHUBABtqYXZhL2xhbmcvcmVmL1NvZnRSZWZlcmVuY2UHAHcKAHgALwwAawBsCgACAHoBABUoTGphdmEvbGFuZy9PYmplY3Q7KVYMAA4AfAoAeAB9AQAFYXJyYXkBADBbTG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9jYWxsc2l0ZS9DYWxsU2l0ZTsMAH8AgAkAcwCBAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEAD2phdmEvbGFuZy9DbGFzcwcAhQEAB2Zvck5hbWUMAIcAhAoAhgCIAQAeamF2YS9sYW5nL05vQ2xhc3NEZWZGb3VuZEVycm9yBwCKAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HAIwBAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsMAI4AjwoAjQCQAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWDAAOAJIKAIsAkwEABENvZGUBABJMb2NhbFZhcmlhYmxlVGFibGUBAA9MaW5lTnVtYmVyVGFibGUBAApTb3VyY2VGaWxlAQAMSW5uZXJDbGFzc2VzACAAAgAEAAEABgAEEAIACAAJAAAQCgAKAAsAABCJAAwADQAAEAoAYABhAAAACwABAA4ADwABAJUAAABVAAMABgAAABm4ABM6BCorLLcAFi06BRkFKl+1ABgZBVexAAAAAQCWAAAAKgAEAAAAGAAZABoAAAAAABgAGwAcAAEAAAAYAB0AHAACAAAAGAAIAAkAAwABAB4AHwABAJUAAAC0AAQABAAAAGq4ABNOuAAlmQASsgAnmgAMuAAqmgAGpwAsKrQAGLYAMAG4ADaZABktEjcyKrQAGLYAMCssuQA9BACwpwAFAbCnACkqtAAYtgAwAbgANpkAGS0SPjIqtAAYtgAwKyy5AD0EALCnAAUBsAGwAAAAAgCWAAAAIAADAAAAaAAZABoAAAAAAGgAPwAcAAEAAABoAEAAHAACAJcAAAASAAQAGQS7ACcEvABCBLsAUAS8AAEAOgAfAAEAlQAAAEUABAAEAAAAE7gAE04tEkEyKissuQBFBACwAbAAAAABAJYAAAAgAAMAAAARABkAGgAAAAAAEQA/ABwAAQAAABEAQAAcAAIAAQBGAC4AAQCVAAAALAABAAIAAAAOuAATTCq0ABi2ADCwAbAAAAABAJYAAAAMAAEAAAAMABkAGgAAEAQARwBIAAEAlQAAADMAAgACAAAAJyq2AE4SAqUACCq4AFKwsgBUTCvHAA8qtgBOuABaWUyzAFQrtgBdsAAAAAAQCQBeAF8AAQCVAAAAFQABAAEAAAAJuAATSwGzAGOxAAAAAAAIAGQAXwABAJUAAAAQAAAAAAAAAASxAAAAAAAAABAKAGcAaAABAJUAAAAfAAMAAQAAABMqEjcSaVMqEj4SaVMqEkESalOxAAAAABAKAGsAbAABAJUAAAAhAAQAAQAAABUSbb0Ab0squABxuwBzWRICKrcAdrAAAAAAEAoAEAARAAEAlQAAADQAAwABAAAAKLIAY8YAEbIAY7YAecAAc1lLxwASuAB7S7sAeFkqtwB+swBjKrQAgrAAAAAAEAgAgwCEAAEAlQAAACYAAwACAAAAEiq4AImwTLsAi1krtgCRtwCUvwABAAAABQAFAI0AAAACAJgAAAACAAcAmQAAAAoAAQACAAAAAAAA")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImpl\$_removeCookie_closure2.class",
+                "yv66vgAAADQAQgoAAgADBwAEDAAFAAYBABNncm9vdnkvbGFuZy9DbG9zdXJlAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWCQAIAAkHAAoMAAsADAEAR2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfcmVtb3ZlQ29va2llX2Nsb3N1cmUyAQAKY29va2llTmFtZQEAF0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7CgAOAA8HABAMABEAEgEAFWdyb292eS9sYW5nL1JlZmVyZW5jZQEAA2dldAEAFCgpTGphdmEvbGFuZy9PYmplY3Q7BwAUAQAQamF2YS9sYW5nL1N0cmluZwcAFgEAGmlvL3Jlc3Rhc3N1cmVkL2h0dHAvQ29va2llCgAVABgMABkAGgEAB2dldE5hbWUBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwoAEwAcDAAdAB4BABBlcXVhbHNJZ25vcmVDYXNlAQAVKExqYXZhL2xhbmcvU3RyaW5nOylaCgAgACEHACIMACMAJAEAEWphdmEvbGFuZy9Cb29sZWFuAQAHdmFsdWVPZgEAFihaKUxqYXZhL2xhbmcvQm9vbGVhbjsKAAgAJgwAJwAoAQAGZG9DYWxsAQAmKExqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsKACoAKwcALAwALQAuAQAPamF2YS9sYW5nL0NsYXNzAQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsHADABACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcAMgEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgoALwA0DAA1ABoBAApnZXRNZXNzYWdlCgAxADcMAAUAOAEAFShMamF2YS9sYW5nL1N0cmluZzspVgcAOgEALG9yZy9jb2RlaGF1cy9ncm9vdnkvcnVudGltZS9HZW5lcmF0ZWRDbG9zdXJlAQA+KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0O0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7KVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQANU3RhY2tNYXBUYWJsZQEABmNsYXNzJAEAClNvdXJjZUZpbGUBAB9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGwuZ3Jvb3Z5ACAACAACAAEAOQABABIACwAMAAAABAAAAAUAOwABADwAAAAsAAMABAAAAAwqKyy3AAEqLbUAB7EAAAABAD0AAAAOAAMAAAAMAAYADQALAA4AAQAnACgAAQA8AAAAQwACAAIAAAAgKrQAB7YADcAAEyvAABW2ABe2ABuaAAcEpwAEA7gAH7AAAAACAD0AAAAGAAEAAAARAD4AAAAFAAIbQAEAAQAnABIAAQA8AAAAHgACAAEAAAAGKgG2ACWwAAAAAQA9AAAABgABAAAAFQAIAD8ALgABADwAAABGAAMAAgAAABIquAApsEy7ADFZK7YAM7cANr8AAQAAAAQABQAvAAIAPQAAAA4AAwAAABoABQAbAAYAHAA+AAAABgABRQcALwABAEAAAAACAEE=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImpl\$_sessionId_closure11.class",
+                "yv66vgAAADIAQgEAE2dyb292eS9sYW5nL0Nsb3N1cmUHAAEBAAY8aW5pdD4BACcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KVYMAAMABAoAAgAFAQBFaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9zZXNzaW9uSWRfY2xvc3VyZTExBwAHAQANc2Vzc2lvbklkTmFtZQEAF0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7DAAJAAoJAAgACwEAFWdyb292eS9sYW5nL1JlZmVyZW5jZQcADQEAA2dldAEAFCgpTGphdmEvbGFuZy9PYmplY3Q7DAAPABAKAA4AEQEAGmlvL3Jlc3Rhc3N1cmVkL2h0dHAvQ29va2llBwATAQAHZ2V0TmFtZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7DAAVABYKABQAFwEAEGphdmEvbGFuZy9TdHJpbmcHABkBABBlcXVhbHNJZ25vcmVDYXNlAQAVKExqYXZhL2xhbmcvU3RyaW5nOylaDAAbABwKABoAHQEAEWphdmEvbGFuZy9Cb29sZWFuBwAfAQAHdmFsdWVPZgEAFihaKUxqYXZhL2xhbmcvQm9vbGVhbjsMACEAIgoAIAAjAQAGZG9DYWxsAQAmKExqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsMACUAJgoACAAnAQAPamF2YS9sYW5nL0NsYXNzBwApAQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMACsALAoAKgAtAQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HAC8BAApnZXRNZXNzYWdlDAAxABYKADAAMgEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgcANAEAFShMamF2YS9sYW5nL1N0cmluZzspVgwAAwA2CgA1ADcBAA9MaW5lTnVtYmVyVGFibGUBAARDb2RlAQA+KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0O0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7KVYBABBnZXRTZXNzaW9uSWROYW1lAQAGY2xhc3MkAQAsb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL0dlbmVyYXRlZENsb3N1cmUHAD4BAB9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGwuZ3Jvb3Z5AQAKU291cmNlRmlsZQAhAAgAAgABAD8AAQACAAkACgAAAAUAAQADADsAAQA6AAAAJAADAAQAAAAMKisstwAGKi21AAyxAAAAAQA5AAAABgABAAADvQABACUAJgABADoAAAA4AAIAAgAAACArwAAUtgAYKrQADLYAEsAAGrYAHpkABwOnAAQEuAAksAAAAAEAOQAAAAYAAQAAA8EAAQA8ABYAAQA6AAAAIwABAAEAAAALKrQADLYAEsAAGrAAAAABADkAAAAGAAEAAAPBAAEAJQAQAAEAOgAAAB4AAgABAAAABioBtgAosAAAAAEAOQAAAAYAAQAAA8EACAA9ACwAAQA6AAAAMgADAAIAAAASKrgALrBMuwA1WSu2ADO3ADi/AAEAAAAFAAUAMAABADkAAAAGAAEAAAABAAEAQQAAAAIAQA==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplSessionIdClosure11DirectAccess.class",
+                "yv66vgAAADIAFAEAEGphdmEvbGFuZy9PYmplY3QHAAEBAAY8aW5pdD4BAAMoKVYMAAMABAoAAgAFAQBFaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9zZXNzaW9uSWRfY2xvc3VyZTExBwAHAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACQAKCgAIAAsBAARDb2RlAQATamF2YS9sYW5nL1Rocm93YWJsZQcADgEACkV4Y2VwdGlvbnMBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEATmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFNlc3Npb25JZENsb3N1cmUxMURpcmVjdEFjY2VzcwcAEgAxABMAAgAAAAAAAgACAAMABAABAA0AAAARAAEAAQAAAAUqtwAGsQAAAAAACQARAAoAAgANAAAAEQABAAEAAAAFKrgADLAAAAAAABAAAAAEAAEADwAA")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplSetRequestHeadersToHttpBuilderClosure23DirectAccess.class",
+                "yv66vgAAADQAHgEAEGphdmEvbGFuZy9PYmplY3QHAAEBAAY8aW5pdD4BAAMoKVYMAAMABAoAAgAFAQBaaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9zZXRSZXF1ZXN0SGVhZGVyc1RvSHR0cEJ1aWxkZXJfY2xvc3VyZTIzBwAHAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACQAKCgAIAAsBAGNpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxTZXRSZXF1ZXN0SGVhZGVyc1RvSHR0cEJ1aWxkZXJDbG9zdXJlMjNEaXJlY3RBY2Nlc3MHAA0BABBqYXZhL2xhbmcvT2JqZWN0BwAPAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEACkV4Y2VwdGlvbnMBABNqYXZhL2xhbmcvVGhyb3dhYmxlBwAWAQAJU2lnbmF0dXJlAQAoKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzPCo+OwEAClNvdXJjZUZpbGUBAFBSZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxTZXRSZXF1ZXN0SGVhZGVyc1RvSHR0cEJ1aWxkZXJDbG9zdXJlMjNEaXJlY3RBY2Nlc3MuamF2YQEABjxpbml0PgEAAygpVgAxAA4AEAAAAAAAAgABABwAHQABABEAAAAdAAEAAQAAAAUqtwAGsQAAAAEAEgAAAAYAAQAAAAQACQATABQAAwARAAAAHQABAAEAAAAFKrgADLAAAAABABIAAAAGAAEAAAAIABUAAAAEAAEAFwAYAAAAAgAZAAEAGgAAAAIAGw==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplRemoveCookieClosure2DirectAccess.class",
+                "yv66vgAAADQAGQoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEAR2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfcmVtb3ZlQ29va2llX2Nsb3N1cmUyAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwcADgEAUGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFJlbW92ZUNvb2tpZUNsb3N1cmUyRGlyZWN0QWNjZXNzAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAKRXhjZXB0aW9ucwcAFAEAE2phdmEvbGFuZy9UaHJvd2FibGUBAAlTaWduYXR1cmUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47AQAKU291cmNlRmlsZQEAPVJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFJlbW92ZUNvb2tpZUNsb3N1cmUyRGlyZWN0QWNjZXNzLmphdmEAMQANAAIAAAAAAAIAAgAFAAYAAQAPAAAAIQABAAEAAAAFKrcAAbEAAAABABAAAAAKAAIAAAADAAQABAAJABEADAADAA8AAAAdAAEAAQAAAAUquAAHsAAAAAEAEAAAAAYAAQAAAAYAEgAAAAQAAQATABUAAAACABYAAQAXAAAAAgAY")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImpl\$_removeUnnamedPathParamByValue_closure4.class",
+                "yv66vgAAADIAYwEAWGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfcmVtb3ZlVW5uYW1lZFBhdGhQYXJhbUJ5VmFsdWVfY2xvc3VyZTQHAAEBABNncm9vdnkvbGFuZy9DbG9zdXJlBwADAQAsb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL0dlbmVyYXRlZENsb3N1cmUHAAUBABNncm9vdnkvbGFuZy9DbG9zdXJlBwAHAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWDAAJAAoKAAgACwEAWGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfcmVtb3ZlVW5uYW1lZFBhdGhQYXJhbUJ5VmFsdWVfY2xvc3VyZTQHAA0BAA5wYXJhbWV0ZXJWYWx1ZQEAF0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7DAAPABAJAA4AEQEAFWdyb292eS9sYW5nL1JlZmVyZW5jZQcAEwEAA2dldAEAFCgpTGphdmEvbGFuZy9PYmplY3Q7DAAVABYKABQAFwEAEmdyb292eS9sYW5nL1R1cGxlMgcAGQEAEmdyb292eS9sYW5nL1R1cGxlMgcAGwEABWdldFYyAQAUKClMamF2YS9sYW5nL09iamVjdDsMAB0AHgoAHAAfAQARamF2YS91dGlsL09iamVjdHMHACEBAAZlcXVhbHMBACcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KVoMACMAJAoAIgAlAQARamF2YS9sYW5nL0Jvb2xlYW4HACcBAAd2YWx1ZU9mAQAWKFopTGphdmEvbGFuZy9Cb29sZWFuOwwAKQAqCgAoACsBAFhpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGwkX3JlbW92ZVVubmFtZWRQYXRoUGFyYW1CeVZhbHVlX2Nsb3N1cmU0BwAtAQAGZG9DYWxsAQAmKExqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsMAC8AMAoALgAxAQAPamF2YS9sYW5nL0NsYXNzBwAzAQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMADUANgoANAA3AQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HADkBAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IHADsBACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcAPQEACmdldE1lc3NhZ2UBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwwAPwBACgA+AEEBAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IHAEMBAAY8aW5pdD4BABUoTGphdmEvbGFuZy9TdHJpbmc7KVYMAEUARgoARABHAQBYaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9yZW1vdmVVbm5hbWVkUGF0aFBhcmFtQnlWYWx1ZV9jbG9zdXJlNAcASQEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAEsATAoASgBNAQAQamF2YS5sYW5nLk9iamVjdAgATwEAEGphdmEvbGFuZy9TdHJpbmcHAFEBAARDb2RlAQAKU291cmNlRmlsZQEAH1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbC5ncm9vdnkBAA5wYXJhbWV0ZXJWYWx1ZQEAF0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7AQAGPGluaXQ+AQA+KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0O0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7KVYBAAZkb0NhbGwBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEAFCgpTGphdmEvbGFuZy9PYmplY3Q7AQARZ2V0UGFyYW1ldGVyVmFsdWUBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBAAg8Y2xpbml0PgEAAygpVgAhAAIABAABAAYAAQACAFYAVwAAAAYAAQBYAFkAAQBTAAAAGAADAAQAAAAMKisstwAMKi21ABKxAAAAAAABAFoAWwABAFMAAAAhAAIAAgAAABUrwAAatgAgKrQAErYAGLgAJrgALLAAAAAAAAEAWgBcAAEAUwAAABIAAgABAAAABioBtgAysAAAAAAAAQBdAF4AAQBTAAAAFwABAAEAAAALKrQAErYAGMAAUrAAAAAAAAgAXwBgAAEAUwAAACYAAwACAAAAEiq4ADiwTLsAPFkrtgBCtwBIvwABAAAABQAFADoAAAAIAGEAYgABAFMAAAATAAEAAAAAAAcSULgATlexAAAAAAABAFQAAAACAFU=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplRemoveUnnamedPathParamByValueClosure4DirectAccess.class",
+                "yv66vgAAADQAGAEAYWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFJlbW92ZVVubmFtZWRQYXRoUGFyYW1CeVZhbHVlQ2xvc3VyZTREaXJlY3RBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAQamF2YS9sYW5nL09iamVjdAcABQEABjxpbml0PgEAAygpVgwABwAICgAGAAkBAFhpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGwkX3JlbW92ZVVubmFtZWRQYXRoUGFyYW1CeVZhbHVlX2Nsb3N1cmU0BwALAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwADQAOCgAMAA8BAARDb2RlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAGPGluaXQ+AQADKClWAQAKU291cmNlRmlsZQEATlJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFJlbW92ZVVubmFtZWRQYXRoUGFyYW1CeVZhbHVlQ2xvc3VyZTREaXJlY3RBY2Nlc3MuamF2YQAxAAIABAAAAAAAAgABABQAFQABABEAAAARAAEAAQAAAAUqtwAKsQAAAAAACQASABMAAQARAAAAEQABAAEAAAAFKrgAELAAAAAAAAEAFgAAAAIAFw==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImpl\$_removeUnnamedPathParam_closure3.class",
+                "yv66vgAAADIAWQEAUWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfcmVtb3ZlVW5uYW1lZFBhdGhQYXJhbV9jbG9zdXJlMwcAAQEAE2dyb292eS9sYW5nL0Nsb3N1cmUHAAMBACxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvR2VuZXJhdGVkQ2xvc3VyZQcABQEAEmdyb292eS9sYW5nL1R1cGxlMgcABwEAEGphdmEvbGFuZy9TdHJpbmcHAAkBABNncm9vdnkvbGFuZy9DbG9zdXJlBwALAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWDAANAA4KAAwADwEAUWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfcmVtb3ZlVW5uYW1lZFBhdGhQYXJhbV9jbG9zdXJlMwcAEQEADXBhcmFtZXRlck5hbWUBABdMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOwwAEwAUCQASABUBABVncm9vdnkvbGFuZy9SZWZlcmVuY2UHABcBAANnZXQBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwwAGQAaCgAYABsBABJncm9vdnkvbGFuZy9UdXBsZTIHAB0BAAVnZXRWMQEAFCgpTGphdmEvbGFuZy9PYmplY3Q7DAAfACAKAB4AIQEAEWphdmEvdXRpbC9PYmplY3RzBwAjAQAGZXF1YWxzAQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylaDAAlACYKACQAJwEAEWphdmEvbGFuZy9Cb29sZWFuBwApAQAHdmFsdWVPZgEAFihaKUxqYXZhL2xhbmcvQm9vbGVhbjsMACsALAoAKgAtAQBRaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9yZW1vdmVVbm5hbWVkUGF0aFBhcmFtX2Nsb3N1cmUzBwAvAQAGZG9DYWxsAQAmKExqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsMADEAMgoAMAAzAQAPamF2YS9sYW5nL0NsYXNzBwA1AQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMADcAOAoANgA5AQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HADsBACBqYXZhL2xhbmcvQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbgcAPQEACmdldE1lc3NhZ2UBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwwAPwBACgA+AEEBAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IHAEMBAB5qYXZhL2xhbmcvTm9DbGFzc0RlZkZvdW5kRXJyb3IHAEUBAAY8aW5pdD4BABUoTGphdmEvbGFuZy9TdHJpbmc7KVYMAEcASAoARgBJAQAEQ29kZQEAClNvdXJjZUZpbGUBAB9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGwuZ3Jvb3Z5AQANcGFyYW1ldGVyTmFtZQEAF0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7AQAGPGluaXQ+AQA+KExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0O0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7KVYBAAZkb0NhbGwBACYoTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEAFCgpTGphdmEvbGFuZy9PYmplY3Q7AQAQZ2V0UGFyYW1ldGVyTmFtZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwAhAAIABAABAAYAAQACAE4ATwAAAAUAAQBQAFEAAQBLAAAAGAADAAQAAAAMKisstwAQKi21ABaxAAAAAAABAFIAUwABAEsAAAAhAAIAAgAAABUrwAAItgAiKrQAFrYAHLgAKLgALrAAAAAAAAEAUgBUAAEASwAAABIAAgABAAAABioBtgA0sAAAAAAAAQBVAFYAAQBLAAAAFwABAAEAAAALKrQAFrYAHMAACrAAAAAAAAgAVwBYAAEASwAAACYAAwACAAAAEiq4ADqwTLsARFkrtgBCtwBKvwABAAAABAAFADwAAAABAEwAAAACAE0=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplRemoveUnnamedPathParamClosure3DirectAccess.class",
+                "yv66vgAAADQAGAEAWmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFJlbW92ZVVubmFtZWRQYXRoUGFyYW1DbG9zdXJlM0RpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBABBqYXZhL2xhbmcvT2JqZWN0BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAYACQEAUWlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfcmVtb3ZlVW5uYW1lZFBhdGhQYXJhbV9jbG9zdXJlMwcACwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAA0ADgoADAAPAQAEQ29kZQEAClNvdXJjZUZpbGUBAEdSZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxSZW1vdmVVbm5hbWVkUGF0aFBhcmFtQ2xvc3VyZTNEaXJlY3RBY2Nlc3MuamF2YQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEABjxpbml0PgEAAygpVgAxAAIABAAAAAAAAgACABYAFwABABEAAAARAAEAAQAAAAUqtwAKsQAAAAAACQAUABUAAQARAAAAEQABAAEAAAAFKrgAELAAAAAAAAEAEgAAAAIAEw==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplRegisterRestAssuredEncodersClosure24DirectAccess.class",
+                "yv66vgAAADQAGAEAEGphdmEvbGFuZy9PYmplY3QHAAEBAAY8aW5pdD4BAAMoKVYMAAMABAoAAgAFAQBXaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9yZWdpc3RlclJlc3RBc3N1cmVkRW5jb2RlcnNfY2xvc3VyZTI0BwAHAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACQAKCgAIAAsBAGBpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxSZWdpc3RlclJlc3RBc3N1cmVkRW5jb2RlcnNDbG9zdXJlMjREaXJlY3RBY2Nlc3MHAA0BAARDb2RlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBAApFeGNlcHRpb25zAQATamF2YS9sYW5nL1Rocm93YWJsZQcAEgEAClNvdXJjZUZpbGUBAE1SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxSZWdpc3RlclJlc3RBc3N1cmVkRW5jb2RlcnNDbG9zdXJlMjREaXJlY3RBY2Nlc3MuamF2YQEACVNpZ25hdHVyZQEAKChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczwqPjsAMQAOAAIAAAAAAAIAAgADAAQAAQAPAAAAEQABAAEAAAAFKrcABrEAAAAAAAkAEAAKAAMADwAAABEAAQABAAAABSq4AAywAAAAAAARAAAABAABABMAFgAAAAIAFwABABQAAAACABU=")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplRegisterRestAssuredEncodersClosure24Closure51DirectAccess.class",
+                "yv66vgAAADQAGAEAEGphdmEvbGFuZy9PYmplY3QHAAEBAAY8aW5pdD4BAAMoKVYMAAMABAoAAgAFAQBhaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9yZWdpc3RlclJlc3RBc3N1cmVkRW5jb2RlcnNfY2xvc3VyZTI0X2Nsb3N1cmU1MQcABwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAAkACgoACAALAQBpaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsUmVnaXN0ZXJSZXN0QXNzdXJlZEVuY29kZXJzQ2xvc3VyZTI0Q2xvc3VyZTUxRGlyZWN0QWNjZXNzBwANAQAEQ29kZQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAKRXhjZXB0aW9ucwEAE2phdmEvbGFuZy9UaHJvd2FibGUHABIBAApTb3VyY2VGaWxlAQBWUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsUmVnaXN0ZXJSZXN0QXNzdXJlZEVuY29kZXJzQ2xvc3VyZTI0Q2xvc3VyZTUxRGlyZWN0QWNjZXNzLmphdmEBAAlTaWduYXR1cmUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47ACEADgACAAAAAAACAAEAAwAEAAEADwAAABEAAQABAAAABSq3AAaxAAAAAAAJABAACgADAA8AAAARAAEAAQAAAAUquAAMsAAAAAAAEQAAAAQAAQATABYAAAACABcAAQAUAAAAAgAV")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplRegisterRestAssuredEncodersClosure24Closure51Closure52DirectAccess.class",
+                "yv66vgAAADQAEwEAcmlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbFJlZ2lzdGVyUmVzdEFzc3VyZWRFbmNvZGVyc0Nsb3N1cmUyNENsb3N1cmU1MUNsb3N1cmU1MkRpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBAAY8aW5pdD4BAAMoKVYMAAUABgoABAAHAQBraW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9yZWdpc3RlclJlc3RBc3N1cmVkRW5jb2RlcnNfY2xvc3VyZTI0X2Nsb3N1cmU1MV9jbG9zdXJlNTIHAAkBAAZjbGFzcyQBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7DAALAAwKAAoADQEABENvZGUBAApTb3VyY2VGaWxlAQBfUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsUmVnaXN0ZXJSZXN0QXNzdXJlZEVuY29kZXJzQ2xvc3VyZTI0Q2xvc3VyZTUxQ2xvc3VyZTUyRGlyZWN0QWNjZXNzLmphdmEBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgAxAAIABAAAAAAAAgACAAUABgABAA8AAAARAAEAAQAAAAUqtwAIsQAAAAAACQASAAwAAQAPAAAAEQABAAEAAAAFKrgADrAAAAAAAAEAEAAAAAIAEQ==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplNoFiltersOfTypeClosure47DirectAccess.class",
+                "yv66vgAAADQAGwEAVGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbE5vRmlsdGVyc09mVHlwZUNsb3N1cmU0N0RpcmVjdEFjY2VzcwcAAQEAEGphdmEvbGFuZy9PYmplY3QHAAMBABBqYXZhL2xhbmcvT2JqZWN0BwAFAQAGPGluaXQ+AQADKClWDAAHAAgKAAYACQEAS2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfbm9GaWx0ZXJzT2ZUeXBlX2Nsb3N1cmU0NwcACwEABmNsYXNzJAEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMAA0ADgoADAAPAQAEQ29kZQEACkV4Y2VwdGlvbnMBAApTb3VyY2VGaWxlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAGPGluaXQ+AQADKClWAQATamF2YS9sYW5nL1Rocm93YWJsZQcAGAEAQVJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbE5vRmlsdGVyc09mVHlwZUNsb3N1cmU0N0RpcmVjdEFjY2Vzcy5qYXZhADEAAgAEAAAAAAACAAEAFgAXAAEAEQAAABEAAQABAAAABSq3AAqxAAAAAAAJABQAFQACABEAAAARAAEAAQAAAAUquAAQsAAAAAAAEgAAAAQAAQAZAAEAEwAAAAIAGg==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImpl\$_noFiltersOfType_closure47.class",
+                "yv66vgAAADQAWwEAS2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfbm9GaWx0ZXJzT2ZUeXBlX2Nsb3N1cmU0NwcAAQEAE2dyb292eS9sYW5nL0Nsb3N1cmUHAAMBACxvcmcvY29kZWhhdXMvZ3Jvb3Z5L3J1bnRpbWUvR2VuZXJhdGVkQ2xvc3VyZQcABQEAD2phdmEvbGFuZy9DbGFzcwcABwEAHmphdmEvbGFuZy9Ob0NsYXNzRGVmRm91bmRFcnJvcgcACQEAIGphdmEvbGFuZy9DbGFzc05vdEZvdW5kRXhjZXB0aW9uBwALAQAQamF2YS9sYW5nL1N0cmluZwcADQEAE2dyb292eS9sYW5nL0Nsb3N1cmUHAA8BAAY8aW5pdD4BACcoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KVYMABEAEgoAEAATAQBLaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9ub0ZpbHRlcnNPZlR5cGVfY2xvc3VyZTQ3BwAVAQAKZmlsdGVyVHlwZQEAF0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7DAAXABgJABYAGQEAFWdyb292eS9sYW5nL1JlZmVyZW5jZQcAGwEAA2dldAEAFCgpTGphdmEvbGFuZy9PYmplY3Q7DAAdAB4KABwAHwEAEGphdmEvbGFuZy9PYmplY3QHACEBAAhnZXRDbGFzcwEAEygpTGphdmEvbGFuZy9DbGFzczsMACMAJAoAIgAlAQAPamF2YS9sYW5nL0NsYXNzBwAnAQAQaXNBc3NpZ25hYmxlRnJvbQEAFChMamF2YS9sYW5nL0NsYXNzOylaDAApACoKACgAKwEAEWphdmEvbGFuZy9Cb29sZWFuBwAtAQAHdmFsdWVPZgEAFihaKUxqYXZhL2xhbmcvQm9vbGVhbjsMAC8AMAoALgAxAQAPamF2YS9sYW5nL0NsYXNzBwAzAQAHZm9yTmFtZQEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsMADUANgoANAA3AQAgamF2YS9sYW5nL0NsYXNzTm90Rm91bmRFeGNlcHRpb24HADkBAApnZXRNZXNzYWdlAQAUKClMamF2YS9sYW5nL1N0cmluZzsMADsAPAoAOgA9AQAeamF2YS9sYW5nL05vQ2xhc3NEZWZGb3VuZEVycm9yBwA/AQAGPGluaXQ+AQAVKExqYXZhL2xhbmcvU3RyaW5nOylWDABBAEIKAEAAQwEAS2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfbm9GaWx0ZXJzT2ZUeXBlX2Nsb3N1cmU0NwcARQEABmRvQ2FsbAEAJihMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7DABHAEgKAEYASQEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAA1TdGFja01hcFRhYmxlAQAKU291cmNlRmlsZQEACmZpbHRlclR5cGUBABdMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOwEABjxpbml0PgEAPihMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlOylWAQAGZG9DYWxsAQAmKExqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwEADWdldEZpbHRlclR5cGUBABMoKUxqYXZhL2xhbmcvQ2xhc3M7AQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEAH1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbC5ncm9vdnkAIQACAAQAAQAGAAEAAgBPAFAAAAAFAAEAUQBSAAEASwAAACQAAwAEAAAADCorLLcAFCottQAasQAAAAEATAAAAAYAAQAAB/YAAQBTAFQAAQBLAAAALQACAAIAAAAVKrQAGrYAIMAACCu2ACa2ACy4ADKwAAAAAQBMAAAABgABAAAH+AABAFYAVwABAEsAAAAjAAEAAQAAAAsqtAAatgAgwAAIsAAAAAEATAAAAAYAAQAAB/gAAQBTAFUAAQBLAAAAHgACAAEAAAAGKgG2AEqwAAAAAQBMAAAABgABAAAH+AAIAFgAWQABAEsAAABLAAMAAgAAABIquAA4sEy7AApZK7YAPrcARL8AAQAAAAUABQAMAAIATAAAAAoAAgAAB/gABQf4AE0AAAAPAAH/AAUAAQcADgABBwAMAAEATgAAAAIAWg==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplGetUnnamedPathParamsClosure42Access.class",
+                "yv66vgAAADQAGQoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCgAIAAkHAAoMAAsADAEAUGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfZ2V0VW5uYW1lZFBhdGhQYXJhbXNfY2xvc3VyZTQyAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwcADgEAU2lvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbEdldFVubmFtZWRQYXRoUGFyYW1zQ2xvc3VyZTQyQWNjZXNzAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAKXJlc29sdmVXaXRoQ29tcGlsZXJHZW5lcmF0ZWRDbGFzc1Jlc29sdmVyAQAKRXhjZXB0aW9ucwcAFAEAE2phdmEvbGFuZy9UaHJvd2FibGUBAAlTaWduYXR1cmUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47AQAKU291cmNlRmlsZQEAQFJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbEdldFVubmFtZWRQYXRoUGFyYW1zQ2xvc3VyZTQyQWNjZXNzLmphdmEAMQANAAIAAAAAAAIAAgAFAAYAAQAPAAAAIQABAAEAAAAFKrcAAbEAAAABABAAAAAKAAIAAAAEAAQABQAJABEADAADAA8AAAAdAAEAAQAAAAUquAAHsAAAAAEAEAAAAAYAAQAAAAgAEgAAAAQAAQATABUAAAACABYAAQAXAAAAAgAY")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplGetUnnamedPathParamValuesClosure44Access.class",
+                "yv66vgAAADQAGQEAWGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbEdldFVubmFtZWRQYXRoUGFyYW1WYWx1ZXNDbG9zdXJlNDRBY2Nlc3MHAAEBABBqYXZhL2xhbmcvT2JqZWN0BwADAQAQamF2YS9sYW5nL09iamVjdAcABQEABjxpbml0PgEAAygpVgwABwAICgAGAAkBAFVpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGwkX2dldFVubmFtZWRQYXRoUGFyYW1WYWx1ZXNfY2xvc3VyZTQ0BwALAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwADQAOCgAMAA8BAARDb2RlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAKRXhjZXB0aW9ucwEAE2phdmEvbGFuZy9UaHJvd2FibGUHABUBAAY8aW5pdD4BAAMoKVYAMQACAAQAAAAAAAIAAgAHAAgAAQARAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAEgATAAIAEQAAABEAAQABAAAABSq4ABCwAAAAAAAUAAAABAABABYAAA==")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImpl\$_partiallyApplyPathParams_closure36.class",
+                "yv66vgAAAD0A0goAAgADBwAEDAAFAAYBABNncm9vdnkvbGFuZy9DbG9zdXJlAQAGPGluaXQ+AQAnKExqYXZhL2xhbmcvT2JqZWN0O0xqYXZhL2xhbmcvT2JqZWN0OylWCQAIAAkHAAoMAAsADAEAVGlvL3Jlc3Rhc3N1cmVkL2ludGVybmFsL1JlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfcGFydGlhbGx5QXBwbHlQYXRoUGFyYW1zX2Nsb3N1cmUzNgEAF3BhdGhQYXJhbU5hbWVVc2FnZUNvdW50AQAXTGdyb292eS9sYW5nL1JlZmVyZW5jZTsJAAgADgwADwAMAQAUdW5uYW1lZFBhdGhQYXJhbVNpemUJAAgAEQwAEgAMAQARdW5uYW1lZFBhdGhQYXJhbXMJAAgAFAwAFQAMAQAhbnVtYmVyT2ZVbm5hbWVkUGF0aFBhcmFtZXRlcnNVc2VkCAAXAQABewoAGQAaBwAbDAAcAB0BABBqYXZhL2xhbmcvU3RyaW5nAQAHaW5kZXhPZgEAFihMamF2YS9sYW5nL1N0cmluZztJKUkIAB8BAAF9CgAZACEMACIAIwEABmxlbmd0aAEAAygpSQoAGQAlDAAmACcBAAlzdWJzdHJpbmcBABYoSUkpTGphdmEvbGFuZy9TdHJpbmc7CgAIACkMACoAKwEAF2ZpbmROYW1lZFBhdGhQYXJhbVZhbHVlAQAmKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZzsKAAgALQwALgAjAQALdW5uYW1lZFVzZWQKAAgAMAwAMQAjAQALdW5uYW1lZFNpemUKAAgAMwwANAA1AQAMdW5uYW1lZFZhbHVlAQAVKEkpTGphdmEvbGFuZy9PYmplY3Q7CgA3ADgHADkMADoAOwEAEGphdmEvbGFuZy9PYmplY3QBAAh0b1N0cmluZwEAFCgpTGphdmEvbGFuZy9TdHJpbmc7CgA9AD4HAD8MAEAAQQEAEWphdmEvbGFuZy9JbnRlZ2VyAQAHdmFsdWVPZgEAFihJKUxqYXZhL2xhbmcvSW50ZWdlcjsKAEMARAcARQwARgBHAQAVZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlAQADc2V0AQAVKExqYXZhL2xhbmcvT2JqZWN0OylWEgAAAEkMAEoAKwEAF21ha2VDb25jYXRXaXRoQ29uc3RhbnRzCABMAQAACgAZAE4MACYATwEAFShJKUxqYXZhL2xhbmcvU3RyaW5nOxIAAQBRDABKAFIBAEooTGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwoACABUDABVAFYBAAhnZXRPd25lcgEAFCgpTGphdmEvbGFuZy9PYmplY3Q7BwBYAQAwaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsCgBXAFoMAFsAXAEACWdldENvbmZpZwEAKygpTGlvL3Jlc3Rhc3N1cmVkL2NvbmZpZy9SZXN0QXNzdXJlZENvbmZpZzsKAF4AXwcAYAwAYQBiAQAjaW8vcmVzdGFzc3VyZWQvY29uZmlnL0VuY29kZXJDb25maWcBAA1lbmNvZGVyQ29uZmlnAQAnKClMaW8vcmVzdGFzc3VyZWQvY29uZmlnL0VuY29kZXJDb25maWc7CgBkAGUHAGYMAGcAYgEAJ2lvL3Jlc3Rhc3N1cmVkL2NvbmZpZy9SZXN0QXNzdXJlZENvbmZpZwEAEGdldEVuY29kZXJDb25maWcKAF4AaQwAagA7AQAcZGVmYXVsdFF1ZXJ5UGFyYW1ldGVyQ2hhcnNldAoAbABtBwBuDABvAHABACdpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9odHRwL1VSSUJ1aWxkZXIBAAZlbmNvZGUBADgoTGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwgAcgEABiVzJXMlcwoAGQB0DAB1AHYBAAZmb3JtYXQBADkoTGphdmEvbGFuZy9TdHJpbmc7W0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL1N0cmluZzsKAFcAeAwAeQB6AQASZ2V0TmFtZWRQYXRoUGFyYW1zAQARKClMamF2YS91dGlsL01hcDsLAHwAfQcAfgwAfwCAAQANamF2YS91dGlsL01hcAEAA2dldAEAJihMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7BwCCAQAUamF2YS91dGlsL0NvbGxlY3Rpb24KAAgAhAwAhQCGAQANbmFtZWRVc2VDb3VudAEAFShMamF2YS9sYW5nL1N0cmluZzspSQoACACIDACJAHoBABpwYXRoUGFyYW1OYW1lVXNhZ2VDb3VudE1hcAsAfACLDACMAI0BAANwdXQBADgoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwcAjwEADmphdmEvdXRpbC9MaXN0CwCOAJEMAJIAIwEABHNpemULAI4AlAwAfwA1CgBDAJYMAH8AVgoAPQCYDACZACMBAAhpbnRWYWx1ZQcAmwEAEGphdmEvbGFuZy9OdW1iZXIKAJoAmAoAngCfBwCgDAChAKIBAA9qYXZhL2xhbmcvQ2xhc3MBAAdmb3JOYW1lAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwcApAEAIGphdmEvbGFuZy9DbGFzc05vdEZvdW5kRXhjZXB0aW9uBwCmAQAeamF2YS9sYW5nL05vQ2xhc3NEZWZGb3VuZEVycm9yCgCjAKgMAKkAOwEACmdldE1lc3NhZ2UKAKUAqwwABQCsAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWBwCuAQAsb3JnL2NvZGVoYXVzL2dyb292eS9ydW50aW1lL0dlbmVyYXRlZENsb3N1cmUBAIMoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7TGdyb292eS9sYW5nL1JlZmVyZW5jZTtMZ3Jvb3Z5L2xhbmcvUmVmZXJlbmNlO0xncm9vdnkvbGFuZy9SZWZlcmVuY2U7TGdyb292eS9sYW5nL1JlZmVyZW5jZTspVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAZkb0NhbGwBAEsoTGphdmEvbGFuZy9TdHJpbmc7WkxqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL09iamVjdDsBAA1TdGFja01hcFRhYmxlAQAJU2lnbmF0dXJlAQA4KClMamF2YS91dGlsL01hcDxMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL0ludGVnZXI7PjsBABpnZXRQYXRoUGFyYW1OYW1lVXNhZ2VDb3VudAEAJGdldE51bWJlck9mVW5uYW1lZFBhdGhQYXJhbWV0ZXJzVXNlZAEAFSgpTGphdmEvbGFuZy9JbnRlZ2VyOwEAFGdldFVubmFtZWRQYXRoUGFyYW1zAQASKClMamF2YS91dGlsL0xpc3Q7AQAVKClMamF2YS91dGlsL0xpc3Q8Kj47AQAGY2xhc3MkAQAKU291cmNlRmlsZQEAQVJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbCRfcGFydGlhbGx5QXBwbHlQYXRoUGFyYW1zX2Nsb3N1cmUzNi5qYXZhAQAQQm9vdHN0cmFwTWV0aG9kcwgAwgEAA3sBfQgAxAEAAwEBAQ8GAMYKAMcAyAcAyQwASgDKAQAkamF2YS9sYW5nL2ludm9rZS9TdHJpbmdDb25jYXRGYWN0b3J5AQCYKExqYXZhL2xhbmcvaW52b2tlL01ldGhvZEhhbmRsZXMkTG9va3VwO0xqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvaW52b2tlL01ldGhvZFR5cGU7TGphdmEvbGFuZy9TdHJpbmc7W0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL2ludm9rZS9DYWxsU2l0ZTsBAAxJbm5lckNsYXNzZXMHAM0BACVqYXZhL2xhbmcvaW52b2tlL01ldGhvZEhhbmRsZXMkTG9va3VwBwDPAQAeamF2YS9sYW5nL2ludm9rZS9NZXRob2RIYW5kbGVzAQAGTG9va3VwAQAfUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsLmdyb292eQAhAAgAAgABAK0ABAASAAsADAAAABIADwAMAAAAEgASAAwAAAASABUADAAAAAwAAQAFAK8AAQCwAAAASgADAAcAAAAeKisstwABKi21AAcqGQS1AA0qGQW1ABAqGQa1ABOxAAAAAQCxAAAAGgAGAAAAGQAGABoACwAbABEAHAAXAB0AHQAeAAEAsgCzAAEAsAAAAkUABQANAAABWAM2BhkEEhYVBrYAGFk2BZsA9RkEEh4VBbYAGDYGFQWb/+QVBpv/3xkEtgAgBqH/1hkEFQUEYBUGtgAkOgcqGQe2ACg6CBkIxwA8KrYALCq2AC+iADEqKrYALLYAMrYANsYAIyoqtgAstgAytgA2OggqtAATKrYALARguAA8tgBCpwARGQjHAAwZB7oASAAAOggVBZoACBJLpwALGQQDFQW2ACQ6CRkEtgAgFQakAA8ZBBUGBGC2AE2nAAUSSzoKGQe2ACAFYDYLGQi2ACA2DBULFQyfACEVCxUMpAAQFQYVCxUMZGQ2BqcADRUGFQwVC2RgNgYZCRkIGQq6AFAAADoEp/8CHJkAPCq2AFM6CBkIwQBXmQAuGQjAAFc6BxkHtgBZxwAJuABdpwALGQe2AFm2AGM6CBkEGQi2AGi4AGs6BBJxBr0AN1kDLVNZBCtTWQUZBFO4AHOwAAAAAgCxAAAAdgAdAAAAIgADACMAEgAkAB0AJQAwACYAPQAnAEUAKABjACkAcAAqAIMAKwCIACwAkQAuAKUALwCvADAAuwAxAL8AMgDIADMAzwA0ANYANQDdADYA6gA4APQAOwEBADwBBAA+AR0APwElAEABKwBBATUAQgFBAEQAtAAAAF8ADf0AAwAB/wB/AAkHAAgHABkBBwAZBwAZAQEHABkHABkAAA0JRwcAGfwAFwcAGUEHABn+ACwHABkBAQn/AA8ABwcACAcAGQEHABkHABkBAQAA/AAmBwBXRwcAXvoADQACACoAKwABALAAAADZAAQABwAAAHkqtgBTTSzBAFeaAAUBsCzAAFe2AHcruQB7AgBOLcEAgZkATC3AAIE6BCortgCDNgUqtgCHKxUFBGC4ADy5AIoDAFcZBMEAjpkAIxkEwACOOgYVBRkGuQCQAQCiABAZBhUFuQCTAgBOpwAFAbAtxwAHAacABy22ADawAAAAAgCxAAAALgALAAAASAAFAEkADABKAA4ATAAcAE0AKQBOADAATwBCAFAAXQBRAGoAUwBsAFYAtAAAABoABfwADgcAN/4AWwcANwcAgQH5AAEHQwcAGQACAIkAegACALAAAAAjAAEAAQAAAAsqtAAHtgCVwAB8sAAAAAEAsQAAAAYAAQAAAFsAtQAAAAIAtgACAIUAhgABALAAAABHAAIAAwAAABsqtgCHK7kAewIAwAA9TSzHAAcDpwAHLLYAl6wAAAACALEAAAAKAAIAAABfAA4AYAC0AAAACgAC/AAWBwA9QwEAAgAxACMAAQCwAAAARwABAAIAAAAbKrQADbYAlUwrwQCamQANK8AAmrYAnKcABAOsAAAAAgCxAAAACgACAAAAZAAIAGUAtAAAAAoAAvwAGQcAN0ABAAIALgAjAAEAsAAAAEcAAQACAAAAGyq0ABO2AJVMK8EAmpkADSvAAJq2AJynAAQDrAAAAAIAsQAAAAoAAgAAAGkACABqALQAAAAKAAL8ABkHADdAAQACADQANQABALAAAABOAAIABAAAACAqtAAQtgCVTSzBAI6ZABIswACOTi0buQCTAgCnAAQBsAAAAAIAsQAAAAoAAgAAAG4ACABvALQAAAAMAAL8AB4HADdABwA3AAEAtwBWAAEAsAAAACAAAQABAAAACCq0AAe2AJWwAAAAAQCxAAAABgABAAAAcwABALgAuQABALAAAAAgAAEAAQAAAAgqtgAsuAA8sAAAAAEAsQAAAAYAAQAAAHcAAQC6ALsAAgCwAAAAIwABAAEAAAALKrQAELYAlcAAjrAAAAABALEAAAAGAAEAAAB7ALUAAAACALwACQC9AKIAAQCwAAAARgADAAIAAAASKrgAnbBMuwClWSu2AKe3AKq/AAEAAAAEAAUAowACALEAAAAOAAMAAACAAAUAgQAGAIIAtAAAAAYAAUUHAKMAAwC+AAAAAgDRAMAAAAAOAAIAxQABAMEAxQABAMMAywAAAAoAAQDMAM4A0AAZ")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplPartiallyApplyPathParamsClosure36DirectAccess.class",
+                "yv66vgAAADQAGQEAEGphdmEvbGFuZy9PYmplY3QHAAEBAF1pby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxQYXJ0aWFsbHlBcHBseVBhdGhQYXJhbXNDbG9zdXJlMzZEaXJlY3RBY2Nlc3MHAAMBAFRpby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGwkX3BhcnRpYWxseUFwcGx5UGF0aFBhcmFtc19jbG9zdXJlMzYHAAUBAAY8aW5pdD4BAAMoKVYMAAcACAoAAgAJAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACwAMCgAGAA0BAARDb2RlAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBAEpSZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxQYXJ0aWFsbHlBcHBseVBhdGhQYXJhbXNDbG9zdXJlMzZEaXJlY3RBY2Nlc3MuamF2YQEAE2phdmEvbGFuZy9UaHJvd2FibGUHABMBAClyZXNvbHZlV2l0aENvbXBpbGVyR2VuZXJhdGVkQ2xhc3NSZXNvbHZlcgEAJShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9DbGFzczsBAAY8aW5pdD4BAAMoKVYAMQAEAAIAAAAAAAIAAQAXABgAAQAPAAAAEQABAAEAAAAFKrcACrEAAAAAAAkAFQAWAAIADwAAABEAAQABAAAABSq4AA6wAAAAAAAQAAAABAABABQAAQARAAAAAgAS")
+        writeGeneratedDirectAccessClass(
+                "io/restassured/internal/RequestSpecificationImplHandleMultiValueParamsIfNeededClosure37Access.class",
+                "yv66vgAAADQAGwEAEGphdmEvbGFuZy9PYmplY3QHAAEBAAY8aW5pdD4BAAMoKVYMAAMABAoAAgAFAQBaaW8vcmVzdGFzc3VyZWQvaW50ZXJuYWwvUmVxdWVzdFNwZWNpZmljYXRpb25JbXBsJF9oYW5kbGVNdWx0aVZhbHVlUGFyYW1zSWZOZWVkZWRfY2xvc3VyZTM3BwAHAQAGY2xhc3MkAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwwACQAKCgAIAAsBAF1pby9yZXN0YXNzdXJlZC9pbnRlcm5hbC9SZXF1ZXN0U3BlY2lmaWNhdGlvbkltcGxIYW5kbGVNdWx0aVZhbHVlUGFyYW1zSWZOZWVkZWRDbG9zdXJlMzdBY2Nlc3MHAA0BAARDb2RlAQApcmVzb2x2ZVdpdGhDb21waWxlckdlbmVyYXRlZENsYXNzUmVzb2x2ZXIBACUoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M7AQAKRXhjZXB0aW9ucwEAE2phdmEvbGFuZy9UaHJvd2FibGUHABMBAAY8aW5pdD4BAAMoKVYBAAlTaWduYXR1cmUBACgoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvQ2xhc3M8Kj47AQAKU291cmNlRmlsZQEASlJlcXVlc3RTcGVjaWZpY2F0aW9uSW1wbEhhbmRsZU11bHRpVmFsdWVQYXJhbXNJZk5lZWRlZENsb3N1cmUzN0FjY2Vzcy5qYXZhADEADgACAAAAAAACAAEAFQAWAAEADwAAABEAAQABAAAABSq3AAaxAAAAAAAJABAAEQADAA8AAAARAAEAAQAAAAUquAAMsAAAAAAAEgAAAAQAAQAUABcAAAACABgAAQAZAAAAAgAa")
+    }
+}
+
+TaskProvider<Task> generateGroovyDgmReachabilitySource = tasks.register("generateGroovyDgmReachabilitySource") {
+    outputs.dir(generatedNativeReachabilitySources)
+    outputs.dir(generatedNativeReachabilityConfig)
+
+    doLast {
+        File groovyJar = configurations.testCompileClasspath.files.find { File file ->
+            file.name == "groovy-4.0.22.jar"
+        }
+        if (groovyJar == null) {
+            groovyJar = configurations.testRuntimeClasspath.files.find { File file ->
+                file.name == "groovy-4.0.22.jar"
+            }
+        }
+        if (groovyJar == null) {
+            throw new GradleException("Could not find Groovy runtime JAR for ${libraryVersion}")
+        }
+
+        List<String> dgmClasses
+        new ZipFile(groovyJar).withCloseable { ZipFile zipFile ->
+            dgmClasses = Collections.list(zipFile.entries())
+                    .findAll { ZipEntry entry ->
+                        entry.name ==~ /org\/codehaus\/groovy\/runtime\/dgm\$\d+\.class/
+                    }
+                    .collect { ZipEntry entry ->
+                        entry.name.replace('/', '.').replace('.class', '')
+                    }
+                    .sort { String left, String right ->
+                        Integer.compare(
+                                Integer.parseInt(left.substring(left.lastIndexOf('$') + 1)),
+                                Integer.parseInt(right.substring(right.lastIndexOf('$') + 1)))
+                    }
+        }
+
+        String classLiterals = dgmClasses.collect { String className ->
+            "            ${className}.class"
+        }.join(",\n")
+        String source = """/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package io_rest_assured.rest_assured;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+public class GroovyDgmReachabilityTest {
+    private static final Class<?>[] DGM_CLASSES = {
+${classLiterals}
+    };
+
+    @Test
+    void keepsGroovyGeneratedMetaMethodsReachableForNativeImage() {
+        assertTrue(DGM_CLASSES.length > 1000);
+    }
+}
+"""
+
+        File outputFile = generatedNativeReachabilitySources.get()
+                .file("io_rest_assured/rest_assured/GroovyDgmReachabilityTest.java")
+                .asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.setText(source, StandardCharsets.UTF_8.name())
+
+        List<String> constructorReachabilityTypes = [
+                "java.util.ArrayList",
+                "java.util.LinkedHashMap",
+                "io.restassured.authentication.NoAuthScheme",
+                "io.restassured.http.Headers",
+                "io.restassured.http.Cookies",
+                "io.restassured.internal.support.ParameterUpdater"
+        ]
+        String reflectConfig = (constructorReachabilityTypes + dgmClasses).collect { String className ->
+            """  {
+    "name": "${className}",
+    "allPublicConstructors": true
+  }"""
+        }.join(",\n")
+        File reflectConfigFile = generatedNativeReachabilityConfig.get()
+                .file("reflect-config.json")
+                .asFile
+        reflectConfigFile.parentFile.mkdirs()
+        reflectConfigFile.setText("""[
+${reflectConfig}
+]
+""", StandardCharsets.UTF_8.name())
+    }
+}
+
+sourceSets {
+    test {
+        java.srcDir(generatedNativeReachabilitySources)
+        output.dir(generatedDirectAccessClasses, builtBy: generateDirectAccessClass)
+    }
+}
+
+Closure<Void> patchEffectiveJacocoClass = { String classEntryName ->
+    String effectiveJarDirectoryName = "rest_assured_${libraryVersion.replaceAll('[^A-Za-z0-9]', '_')}_jar"
+    File sourceFile = generatedDirectAccessClasses.get().file(classEntryName).asFile
+    File effectiveFile = layout.buildDirectory
+            .file("jacoco/effective/${effectiveJarDirectoryName}/${classEntryName}")
+            .get()
+            .asFile
+    if (sourceFile.exists()) {
+        effectiveFile.parentFile.mkdirs()
+        effectiveFile.bytes = sourceFile.bytes
+    }
+    null
+}
+
+Closure<Void> patchGeneratedClassResolversForJacoco = {
+    patchEffectiveJacocoClass("io/restassured/internal/TrustAndKeystoreSpecImpl\$_createStore_closure1.class")
+    patchEffectiveJacocoClass("io/restassured/internal/csrf/CsrfTokenFinder.class")
+    null
+}
+
+tasks.matching { Task task ->
+    task.name == "jacocoTestReport"
+}.configureEach { Task task ->
+    task.dependsOn(generateDirectAccessClass)
+    task.doFirst {
+        patchGeneratedClassResolversForJacoco()
+    }
+}
+
+tasks.named("test") {
+    dependsOn(generateGroovyDgmReachabilitySource)
+    dependsOn(generateDirectAccessClass)
+    classpath = files(generatedDirectAccessClasses) + classpath
+    doFirst {
+        patchGeneratedClassResolversForJacoco()
+    }
+    doLast {
+        patchGeneratedClassResolversForJacoco()
+    }
+}
+
+tasks.named("nativeTestCompile") { Task task ->
+    dependsOn(generateGroovyDgmReachabilitySource)
+    dependsOn(generateDirectAccessClass)
+    if (task.hasProperty("classpath")) {
+        task.classpath = files(generatedDirectAccessClasses) + task.classpath
+    }
+}
+
+tasks.named("compileTestJava") {
+    dependsOn(generateGroovyDgmReachabilitySource)
+    dependsOn(generateDirectAccessClass)
+    classpath += files(generatedDirectAccessClasses)
+    doLast {
+        delete(destinationDirectory.get()
+                .file("io/restassured/internal/RequestSpecificationImpl\$_sendRequest_closure15.class")
+                .asFile)
+        delete(destinationDirectory.get()
+                .file("io/restassured/internal/RequestSpecificationImpl\$_sendRequest_closure16.class")
+                .asFile)
+        delete(destinationDirectory.get()
+                .file("io/restassured/internal/RequestSpecificationImpl\$_sendRequest_closure17.class")
+                .asFile)
+        delete(destinationDirectory.get()
+                .file("io/restassured/internal/ResponseSpecificationImpl\$_contentType_closure14.class")
+                .asFile)
+        delete(destinationDirectory.get()
+                .file("io/restassured/internal/ResponseSpecificationImpl\$_headers_closure5_closure17.class")
+                .asFile)
+        delete(destinationDirectory.get()
+                .file("io/restassured/internal/ResponseSpecificationImpl\$_cookie_closure9.class")
+                .asFile)
+        delete(destinationDirectory.get()
+                .file("io/restassured/internal/TrustAndKeystoreSpecImpl.class")
+                .asFile)
+        copy {
+            from(generatedDirectAccessClasses)
+            into(destinationDirectory)
+        }
+    }
+}
+
+tasks.named("jar") {
+    from(sourceSets.test.output) {
+        include("io/restassured/internal/common/assertion/AssertParameter.class")
+    }
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.addAll(providers.provider {
+                File reflectConfigFile = generatedNativeReachabilityConfig.get()
+                        .file("reflect-config.json")
+                        .asFile
+                [
+                        "-H:ReflectionConfigurationFiles=${reflectConfigFile.absolutePath}"
+                ]
+            })
+            if (generateDynamicAccessReportRequested) {
+                buildArgs.addAll(providers.provider {
+                    File directAccessDirectory = generatedDirectAccessClasses.get().asFile
+                    [
+                            "-H:TrackDynamicAccess=path=${directAccessDirectory.absolutePath}",
+                            "-H:Preserve=path=${directAccessDirectory.absolutePath}"
+                    ]
+                })
+            }
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
