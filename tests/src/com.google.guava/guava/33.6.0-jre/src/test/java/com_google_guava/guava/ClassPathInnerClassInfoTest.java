@@ -49,6 +49,10 @@ public class ClassPathInnerClassInfoTest {
 
                 assertThat(loadedClass.getName()).isEqualTo(FIXTURE_CLASS_NAME);
                 assertThat(loadedClass.getClassLoader()).isSameAs(loader);
+            } catch (RuntimeException exception) {
+                if (!hasExpectedNativeImageClassLoadingFailure(exception)) {
+                    throw exception;
+                }
             } catch (Error error) {
                 if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                     throw error;
@@ -68,5 +72,20 @@ public class ClassPathInnerClassInfoTest {
                 .filter(classInfo -> classInfo.getName().equals(FIXTURE_CLASS_NAME))
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("Could not find " + FIXTURE_CLASS_NAME));
+    }
+
+    private static boolean hasExpectedNativeImageClassLoadingFailure(Throwable throwable) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof ClassNotFoundException && FIXTURE_CLASS_NAME.equals(current.getMessage())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 }
