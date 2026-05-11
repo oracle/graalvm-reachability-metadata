@@ -28,6 +28,8 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.Instant
+import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Date
 import java.util.List
@@ -296,6 +298,37 @@ public class Groovy_jsonTest {
                 JsonTokenType.CLOSE_CURLY)
         assertThat(tokens.find { it.type == JsonTokenType.STRING }.value).isEqualTo('message')
         assertThat(JsonLexer.unescape('line\\nvalue\\u0021')).isEqualTo('line\nvalue!')
+    }
+
+    @Test
+    void indexOverlaySlurperConvertsIsoDateStringsWhenDateCheckingIsEnabled() {
+        String json = '''{
+            "utc":"1994-11-05T08:15:30Z",
+            "offset":"1994-11-05T08:15:30-05:00",
+            "millis":"2013-12-14T01:55:33.412Z",
+            "plain":"1994-11-05"
+        }'''
+
+        JsonSlurper dateCheckingSlurper = new JsonSlurper()
+                .setType(JsonParserType.INDEX_OVERLAY)
+                .setCheckDates(true)
+        Object parsedWithDates = dateCheckingSlurper.parseText(json)
+        Object parsedWithoutDates = new JsonSlurper()
+                .setType(JsonParserType.INDEX_OVERLAY)
+                .setCheckDates(false)
+                .parseText(json)
+
+        assertThat(parsedWithDates.utc).isInstanceOf(Date)
+        assertThat(parsedWithDates.utc.time).isEqualTo(Instant.parse('1994-11-05T08:15:30Z').toEpochMilli())
+        assertThat(parsedWithDates.offset).isInstanceOf(Date)
+        assertThat(parsedWithDates.offset.time)
+                .isEqualTo(OffsetDateTime.parse('1994-11-05T08:15:30-05:00').toInstant().toEpochMilli())
+        assertThat(parsedWithDates.millis).isInstanceOf(Date)
+        assertThat(parsedWithDates.millis.time).isEqualTo(Instant.parse('2013-12-14T01:55:33.412Z').toEpochMilli())
+        assertThat(parsedWithDates.plain).isEqualTo('1994-11-05')
+        assertThat(parsedWithoutDates.utc).isEqualTo('1994-11-05T08:15:30Z')
+        assertThat(parsedWithoutDates.offset).isEqualTo('1994-11-05T08:15:30-05:00')
+        assertThat(parsedWithoutDates.millis).isEqualTo('2013-12-14T01:55:33.412Z')
     }
 
     @Test
