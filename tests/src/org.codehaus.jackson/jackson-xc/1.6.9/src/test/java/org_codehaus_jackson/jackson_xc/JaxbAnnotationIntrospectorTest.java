@@ -9,6 +9,7 @@ package org_codehaus_jackson.jackson_xc;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnumValue;
 
+import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,9 @@ public class JaxbAnnotationIntrospectorTest {
 
     private ObjectMapper newMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector());
+        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
+        mapper.getSerializationConfig().setAnnotationIntrospector(introspector);
+        mapper.getDeserializationConfig().setAnnotationIntrospector(introspector);
         return mapper;
     }
 
