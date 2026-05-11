@@ -8,7 +8,7 @@ package org_glassfish_hk2.osgi_resource_locator;
 
 import org.junit.jupiter.api.Test;
 
-class Osgi_resource_locatorTest {
+public class Osgi_resource_locatorTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
