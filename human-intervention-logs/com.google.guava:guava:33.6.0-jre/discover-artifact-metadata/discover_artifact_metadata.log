@@ -1,0 +1,841 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.129.0 (research preview)
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e172f-b804-74e1-91eb-096a1d4a8628
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.guava:guava:33.6.0-jre
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "33.6.0-jre" when "$version$" is replaced with "33.6.0-jre".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+- Set "coordinates" to "com.google.guava:guava:33.6.0-jre".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "33.6.0-jre".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the Guava artifact metadata against authoritative sources, then update the JSON in place using the repo’s existing formatting.
+exec
+/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.google\\.guava|guava|discovered-artifact' | head -50" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+
+exec
+/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.guava:guava:33.6.0-jre"
+}
+
+exec
+/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 0ms:
+codex
+The target file currently only has `coordinates`, so this is a straightforward metadata fill. I’m checking Maven and upstream tags now so the three versioned URLs resolve for `33.6.0-jre`.
+web search: 
+web search: Maven Central com.google.guava guava 33.6.0-jre sources jar javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/com.google.guava/guava/33.6.0-jre
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/com/google/guava/guava/33.6.0-jre/ guava-33.6.0-jre-sources.jar guava-33.6.0-jre-tests.jar
+codex
+Maven Central confirms this is the JRE Guava artifact and publishes the source classifier. I’m checking whether a test classifier exists for this exact artifact before falling back to the upstream tagged test tree.
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/google/guava/guava/33.6.0-jre/ | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/guava/guava/33.6.0-jre</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/guava/guava/33.6.0-jre</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="guava-33.6.0-jre-javadoc.jar" title="guava-33.6.0-jre-javadoc.jar">guava-33.6.0-jre-javadoc.jar</a>                      2026-04-14 18:13   8227247      
+<a href="guava-33.6.0-jre-javadoc.jar.asc" title="guava-33.6.0-jre-javadoc.jar.asc">guava-33.6.0-jre-javadoc.jar.asc</a>                  2026-04-14 18:13       488      
+<a href="guava-33.6.0-jre-javadoc.jar.md5" title="guava-33.6.0-jre-javadoc.jar.md5">guava-33.6.0-jre-javadoc.jar.md5</a>                  2026-04-14 18:13        32      
+<a href="guava-33.6.0-jre-javadoc.jar.sha1" title="guava-33.6.0-jre-javadoc.jar.sha1">guava-33.6.0-jre-javadoc.jar.sha1</a>                 2026-04-14 18:13        40      
+<a href="guava-33.6.0-jre-javadoc.jar.sha256" title="guava-33.6.0-jre-javadoc.jar.sha256">guava-33.6.0-jre-javadoc.jar.sha256</a>               2026-04-14 18:13        64      
+<a href="guava-33.6.0-jre-javadoc.jar.sha512" title="guava-33.6.0-jre-javadoc.jar.sha512">guava-33.6.0-jre-javadoc.jar.sha512</a>               2026-04-14 18:13       128      
+<a href="guava-33.6.0-jre-sources.jar" title="guava-33.6.0-jre-sources.jar">guava-33.6.0-jre-sources.jar</a>                      2026-04-14 18:13   1888934      
+<a href="guava-33.6.0-jre-sources.jar.asc" title="guava-33.6.0-jre-sources.jar.asc">guava-33.6.0-jre-sources.jar.asc</a>                  2026-04-14 18:13       488      
+<a href="guava-33.6.0-jre-sources.jar.md5" title="guava-33.6.0-jre-sources.jar.md5">guava-33.6.0-jre-sources.jar.md5</a>                  2026-04-14 18:13        32      
+<a href="guava-33.6.0-jre-sources.jar.sha1" title="guava-33.6.0-jre-sources.jar.sha1">guava-33.6.0-jre-sources.jar.sha1</a>                 2026-04-14 18:13        40      
+<a href="guava-33.6.0-jre-sources.jar.sha256" title="guava-33.6.0-jre-sources.jar.sha256">guava-33.6.0-jre-sources.jar.sha256</a>               2026-04-14 18:13        64      
+<a href="guava-33.6.0-jre-sources.jar.sha512" title="guava-33.6.0-jre-sources.jar.sha512">guava-33.6.0-jre-sources.jar.sha512</a>               2026-04-14 18:13       128      
+<a href="guava-33.6.0-jre.jar" title="guava-33.6.0-jre.jar">guava-33.6.0-jre.jar</a>                              2026-04-14 18:13   3064793      
+<a href="guava-33.6.0-jre.jar.asc" title="guava-33.6.0-jre.jar.asc">guava-33.6.0-jre.jar.asc</a>                          2026-04-14 18:13       488      
+<a href="guava-33.6.0-jre.jar.md5" title="guava-33.6.0-jre.jar.md5">guava-33.6.0-jre.jar.md5</a>                          2026-04-14 18:13        32      
+<a href="guava-33.6.0-jre.jar.sha1" title="guava-33.6.0-jre.jar.sha1">guava-33.6.0-jre.jar.sha1</a>                         2026-04-14 18:13        40      
+<a href="guava-33.6.0-jre.jar.sha256" title="guava-33.6.0-jre.jar.sha256">guava-33.6.0-jre.jar.sha256</a>                       2026-04-14 18:13        64      
+<a href="guava-33.6.0-jre.jar.sha512" title="guava-33.6.0-jre.jar.sha512">guava-33.6.0-jre.jar.sha512</a>                       2026-04-14 18:13       128      
+<a href="guava-33.6.0-jre.module" title="guava-33.6.0-jre.module">guava-33.6.0-jre.module</a>                           2026-04-14 18:13      7121      
+<a href="guava-33.6.0-jre.module.asc" title="guava-33.6.0-jre.module.asc">guava-33.6.0-jre.module.asc</a>                       2026-04-14 18:13       488      
+<a href="guava-33.6.0-jre.module.md5" title="guava-33.6.0-jre.module.md5">guava-33.6.0-jre.module.md5</a>                       2026-04-14 18:13        32      
+<a href="guava-33.6.0-jre.module.sha1" title="guava-33.6.0-jre.module.sha1">guava-33.6.0-jre.module.sha1</a>                      2026-04-14 18:13        40      
+<a href="guava-33.6.0-jre.module.sha256" title="guava-33.6.0-jre.module.sha256">guava-33.6.0-jre.module.sha256</a>                    2026-04-14 18:13        64      
+<a href="guava-33.6.0-jre.module.sha512" title="guava-33.6.0-jre.module.sha512">guava-33.6.0-jre.module.sha512</a>                    2026-04-14 18:13       128      
+<a href="guava-33.6.0-jre.pom" title="guava-33.6.0-jre.pom">guava-33.6.0-jre.pom</a>                              2026-04-14 18:13      9792      
+<a href="guava-33.6.0-jre.pom.asc" title="guava-33.6.0-jre.pom.asc">guava-33.6.0-jre.pom.asc</a>                          2026-04-14 18:13       488      
+<a href="guava-33.6.0-jre.pom.md5" title="guava-33.6.0-jre.pom.md5">guava-33.6.0-jre.pom.md5</a>                          2026-04-14 18:13        32      
+<a href="guava-33.6.0-jre.pom.sha1" title="guava-33.6.0-jre.pom.sha1">guava-33.6.0-jre.pom.sha1</a>                         2026-04-14 18:13        40      
+<a href="guava-33.6.0-jre.pom.sha256" title="guava-33.6.0-jre.pom.sha256">guava-33.6.0-jre.pom.sha256</a>                       2026-04-14 18:13        64      
+<a href="guava-33.6.0-jre.pom.sha512" title="guava-33.6.0-jre.pom.sha512">guava-33.6.0-jre.pom.sha512</a>                       2026-04-14 18:13       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/google/guava/guava/33.6.0-jre/guava-33.6.0-jre.pom | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava-parent</artifactId>
+    <version>33.6.0-jre</version>
+  </parent>
+  <artifactId>guava</artifactId>
+  <packaging>bundle</packaging>
+  <name>Guava: Google Core Libraries for Java</name>
+  <description>
+    Guava is a suite of core and expanded libraries that include
+    utility classes, Google's collections, I/O classes, and
+    much more.
+  </description>
+  <url>https://github.com/google/guava</url>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>failureaccess</artifactId>
+      <version>${failureaccess.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>listenablefuture</artifactId>
+      <version>${listenablefuture.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.j2objc</groupId>
+      <artifactId>j2objc-annotations</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>..</directory>
+        <includes>
+          <include>LICENSE</include> <!-- copied from the parent pom because I couldn't figure out a way to make combine.children="append" work -->
+          <include>proguard/*</include>
+        </includes>
+        <targetPath>META-INF</targetPath>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.mvnsearch</groupId>
+        <artifactId>toolchains-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-toolchains-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <extensions>true</extensions>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${maven-bundle-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <!-- Silence a warning that claims that META-INF/versions/9/... is the "wrong directory" for our classes. -->
+            <_fixupmessages>^Classes found in the wrong directory: .*</_fixupmessages>
+            <Export-Package>
+              !com.google.common.base.internal,
+              !com.google.common.util.concurrent.internal,
+              !META-INF.*,
+              com.google.common.*
+            </Export-Package>
+            <Import-Package>
+              com.google.common.util.concurrent.internal,
+              org.jspecify.annotations;resolution:=optional,
+              javax.crypto.*;resolution:=optional,
+              sun.misc.*;resolution:=optional
+            </Import-Package>
+            <Bundle-DocURL>https://github.com/google/guava/</Bundle-DocURL>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <configuration>
+              <compilerArgs combine.children="append" combine.self="append">
+                <arg>-XDignore.symbol.file</arg>
+              </compilerArgs>
+            </configuration>
+          </execution>
+          <execution>
+            <id>compile-java9</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <release>9</release>
+              <compileSourceRoots>
+                <compileSourceRoot>${project.basedir}/src</compileSourceRoot>
+              </compileSourceRoots>
+              <includes>
+                <include>module-info.java</include>
+              </includes>
+
+              <!--
+                JPMS needs access to the module sources to complete a modular Java build. We also need to override the
+                base compile settings (in the root `pom.xml`) to enable MRJAR output.
+              -->
+              <compilerArgs combine.self="override">
+                <arg>-sourcepath</arg>
+                <arg>${project.basedir}/src</arg>
+                <arg>--add-reads=com.google.common=ALL-UNNAMED</arg>
+                <!-- https://errorprone.info/docs/installation#maven -->
+                <arg>-XDcompilePolicy=simple</arg>
+              </compilerArgs>
+              <multiReleaseOutput>true</multiReleaseOutput>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <!-- Passing `-subpackages com.google.common` breaks things, so we explicitly exclude everything else instead. -->
+          <!-- excludePackageNames requires specification of packages separately from "all subpackages".
+               https://issues.apache.org/jira/browse/MJAVADOC-584 -->
+          <excludePackageNames>
+            com.azul.tooling.in,com.google.common.base.internal,com.google.common.base.internal.*,com.google.thirdparty.publicsuffix,com.google.thirdparty.publicsuffix.*,com.oracle.*,com.sun.*,java.*,javax.*,jdk,jdk.*,org.*,sun.*
+          </excludePackageNames>
+          <!-- Ignore some tags that are found in Java 11 sources but not recognized... under -source 8, I think it was? I can no longer reproduce the failure. -->
+          <tags>
+            <tag>
+              <name>apiNote</name>
+              <placement>X</placement>
+            </tag>
+            <tag>
+              <name>implNote</name>
+              <placement>X</placement>
+            </tag>
+            <tag>
+              <name>implSpec</name>
+              <placement>X</placement>
+            </tag>
+            <tag>
+              <name>jls</name>
+              <placement>X</placement>
+            </tag>
+            <tag>
+              <name>revised</name>
+              <placement>X</placement>
+            </tag>
+            <tag>
+              <name>spec</name>
+              <placement>X</placement>
+            </tag>
+          </tags>
+
+          <!-- TODO(cpovirk): Move this to the parent after making the package-list files available there. -->
+          <!-- We add the link ourselves so that we can choose Java 26 over the version that -source suggests. -->
+          <detectJavaApiLink>false</detectJavaApiLink>
+          <offlineLinks>
+            <!-- We need local copies of some of these for 2 reasons: a User-Agent problem (https://stackoverflow.com/a/47891403/28465) and an SSL problem (https://issues.apache.org/jira/browse/MJAVADOC-507). If we choose to work around the User-Agent problem, we can go back to <links>, sidestepping the SSL problem. -->
+            <offlineLink>
+              <url>https://javadoc.io/doc/com.google.j2objc/j2objc-annotations/latest/</url>
+              <location>${project.basedir}/javadoc-link/j2objc-annotations</location>
+            </offlineLink>
+            <offlineLink>
+              <url>https://errorprone.info/api/latest/</url>
+              <location>${project.basedir}/javadoc-link/error_prone_annotations</location>
+            </offlineLink>
+          </offlineLinks>
+          <links>
+            <link>https://docs.oracle.com/en/java/javase/26/docs/api/</link>
+            <link>https://jspecify.dev/docs/api/</link>
+          </links>
+          <overview>../overview.html</overview>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>gradle-module-metadata</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/publish</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>.</directory>
+
+exec
+/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/google/guava/guava/33.6.0-jre/guava-33.6.0-jre-test-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/com/google/guava/guava/33.6.0-jre/guava-33.6.0-jre-tests.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ exited 22 in 269ms:
+HTTP/2 404 
+date: Mon, 11 May 2026 13:18:06 GMT
+content-type: text/html
+cf-ray: 9fa177bb1d8ee294-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/google/guava/guava/33.6.0-jre/guava-33.6.0-jre-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://github.com/google/guava/releases/tag/v33.6.0
+web search: 
+web search: https://github.com/google/guava/tree/v33.6.0
+exec
+/bin/bash -lc "rg -n 'javadoc\\.io/doc|repo\\.maven\\.apache\\.org.*/sources|source-code-url|test-code-url|documentation-url' metadata build/discovered-artifact-metadata | head -120" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 0ms:
+metadata/jakarta.el/jakarta.el-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/el/jakarta.el-api/$version$/jakarta.el-api-$version$-sources.jar",
+metadata/jakarta.el/jakarta.el-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RI-COMB-RELEASE/src/test",
+metadata/jakarta.el/jakarta.el-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/el/jakarta.el-api/$version$/jakarta.el-api-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-javadoc.jar",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/scala-logging/scala-logging_3/$version$/scala-logging_3-$version$-sources.jar",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:7:    "test-code-url" : "https://github.com/lightbend-labs/scala-logging/tree/v$version$/src/test",
+metadata/com.typesafe.scala-logging/scala-logging_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/scala-logging/scala-logging_3/$version$/scala-logging_3-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-javadoc.jar",
+metadata/xml-apis/xml-apis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xml-apis/xml-apis/$version$/xml-apis-$version$-sources.jar",
+metadata/xml-apis/xml-apis/index.json:7:    "test-code-url" : "N/A",
+metadata/xml-apis/xml-apis/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/me.tongfei/progressbar/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/me/tongfei/progressbar/$version$/progressbar-$version$-sources.jar",
+metadata/me.tongfei/progressbar/index.json:7:    "test-code-url" : "https://github.com/ctongfei/progressbar/tree/$version$/src/test/java",
+metadata/me.tongfei/progressbar/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/me/tongfei/progressbar/$version$/progressbar-$version$-javadoc.jar",
+metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/bundles/repackaged/jersey-guava/$version$/jersey-guava-$version$-sources.jar",
+metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/jersey-documentation/$version$/jersey-documentation-$version$-user-guide.pdf",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api/$version$/opentelemetry-instrumentation-api-$version$-sources.jar",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/v$version$/instrumentation-api/src/test",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api/$version$/opentelemetry-instrumentation-api-$version$-javadoc.jar",
+metadata/xmlpull/xmlpull/index.json:5:    "source-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:7:    "test-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:8:    "documentation-url" : "N/A",
+metadata/com.ongres.stringprep/stringprep/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
+metadata/com.ongres.stringprep/stringprep/index.json:7:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
+metadata/com.ongres.stringprep/stringprep/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api-incubator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api-incubator/$version$/opentelemetry-instrumentation-api-incubator-$version$-sources.jar",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api-incubator/index.json:7:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/v2.1.0/instrumentation-api-incubator/src/test",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api-incubator/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/instrumentation/opentelemetry-instrumentation-api-incubator/$version$/opentelemetry-instrumentation-api-incubator-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:37:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-$version$/activemq-client/src/test",
+metadata/org.apache.activemq/activemq-client/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-javadoc.jar",
+metadata/findbugs/annotations/index.json:5:    "source-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/findbugs/annotations/index.json:7:    "test-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/findbugs/annotations/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/com.univocity/univocity-parsers/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/$version$/univocity-parsers-$version$-sources.jar",
+metadata/com.univocity/univocity-parsers/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/$version$/univocity-parsers-$version$-tests.jar",
+metadata/com.univocity/univocity-parsers/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/$version$/univocity-parsers-$version$-javadoc.jar",
+metadata/com.ongres.stringprep/saslprep/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/ongres/stringprep/saslprep/$version$/saslprep-$version$-sources.jar",
+metadata/com.ongres.stringprep/saslprep/index.json:7:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/saslprep/src/test",
+metadata/com.ongres.stringprep/saslprep/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/ongres/stringprep/saslprep/$version$/saslprep-$version$-javadoc.jar",
+metadata/com.googlecode.juniversalchardet/juniversalchardet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/$version$/juniversalchardet-$version$-sources.jar",
+metadata/com.googlecode.juniversalchardet/juniversalchardet/index.json:7:    "test-code-url" : "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/juniversalchardet/juniversalchardet-$version$.tar.gz",
+metadata/com.googlecode.juniversalchardet/juniversalchardet/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/$version$/juniversalchardet-$version$-javadoc.jar",
+metadata/org.hibernate.validator/hibernate-validator/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/validator/hibernate-validator/$version$/hibernate-validator-$version$-sources.jar",
+metadata/org.hibernate.validator/hibernate-validator/index.json:11:    "test-code-url": "https://github.com/hibernate/hibernate-validator/tree/$version$/engine/src/test",
+metadata/org.hibernate.validator/hibernate-validator/index.json:12:    "documentation-url": "https://github.com/hibernate/hibernate-validator/tree/$version$/documentation",
+metadata/org.springframework.security/spring-security-crypto/index.json:48:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:50:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:100:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:102:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:103:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.codehaus.jettison/jettison/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-sources.jar",
+metadata/org.codehaus.jettison/jettison/index.json:7:    "test-code-url" : "https://github.com/jettison-json/jettison/tree/jettison-$version$/src/test/java",
+metadata/org.codehaus.jettison/jettison/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-javadoc.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/$version$/opengauss-jdbc-$version$-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:10:    "test-code-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+metadata/org.opengauss/opengauss-jdbc/index.json:11:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:29:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:30:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:43:    "test-code-url" : "https://github.com/apache/activemq-artemis/tree/$version$/artemis-log-annotation-processor/src/test",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:44:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:54:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:56:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:57:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:68:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:70:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:71:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:84:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:85:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:96:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:98:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:99:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_2.13/$version$/parboiled_2.13-$version$-sources.jar",
+metadata/org.parboiled/parboiled_2.13/index.json:7:    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+metadata/org.parboiled/parboiled_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_2.13/$version$/parboiled_2.13-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-core-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-core-model/$version$/camel-core-model-$version$-sources.jar",
+metadata/org.apache.camel/camel-core-model/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-core-model/src/test",
+metadata/org.apache.camel/camel-core-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-core-model/$version$/camel-core-model-$version$-javadoc.jar",
+
+exec
+/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/google/guava/guava/33.6.0-jre/guava-33.6.0-jre-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/com/google/guava/guava/33.6.0-jre/guava-33.6.0-jre-javadoc.jar && curl -fsI https://github.com/google/guava/tree/v33.6.0/guava-tests/test && curl -fsI https://guava.dev/releases/33.6.0-jre/api/docs/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 1163ms:
+HTTP/2 200 
+date: Mon, 11 May 2026 13:18:17 GMT
+content-type: application/java-archive
+content-length: 8227247
+cf-ray: 9fa178007a2c0380-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2311441
+etag: "2dbe5c28f80968cdd85c7cc6518971de"
+last-modified: Tue, 14 Apr 2026 18:13:38 GMT
+x-checksum-md5: 2dbe5c28f80968cdd85c7cc6518971de
+x-checksum-sha1: bdff8e14d3fc7b1d3f348b807bfb3455c8c6a12b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Mon, 11 May 2026 13:18:18 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6cdda3fd38f53fe4e32c5b58fb02621f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=yE4LHtJ65hiAdBRUzvlDSExV2zJOHTtCPIcwmnMFOwu7rLxzTTzCMYZs9E491EL%2FimbeWaAcFf3mHNvUVS5QBXm1gqV9GMcFKwEmjX86ZRxXcpgxeEjhfGBwxyc7OjyDIWQd1YyWPNm3yEwN2cGPcbWbPiAztPIQX7kBPVMZ94o0X3xklmikweEmBppR9RBleJzI2Z4S0IEngrKbcUs3GcjDg7ghcr5QuZ2bjkjmEm%2FRLf4%2Bm4UXHYRYqjHCE%2F1jgpRMixziHdxENTGFo28mdA%3D%3D--wZPu%2BvfTROdYyr2U--lsbnmVVibPZWhvKw3Abrgg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2003225490.1778505497; expires=Tue, 11 May 2027 13:18:17 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 11 May 2027 13:18:17 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: ED90:3142F0:1288EC5B:E1E69AB:6A01D719
+
+HTTP/2 200 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+last-modified: Fri, 08 May 2026 17:42:10 GMT
+access-control-allow-origin: *
+etag: "69fe2072-2756"
+expires: Mon, 11 May 2026 13:28:18 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: 2B72:29EE5F:5284089:5358406:6A01D71A
+accept-ranges: bytes
+age: 0
+date: Mon, 11 May 2026 13:18:18 GMT
+via: 1.1 varnish
+x-served-by: cache-vie6332-VIE
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1778505499.605540,VS0,VE118
+vary: Accept-Encoding
+x-fastly-request-id: d24b8404bca6c6ac7a53109ce941e0c8cb02aba1
+content-length: 10070
+
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/google/guava/git/ref/tags/v33.6.0 | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+exec
+/bin/bash -lc 'curl -fsI https://github.com/google/guava/tree/v33.6.0-jre/guava-tests/test' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/google/guava/git/ref/tags/v33.6.0-jre | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 267ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 296ms:
+{
+  "ref": "refs/tags/v33.6.0",
+  "node_id": "MDM6UmVmMjAzMDAxNzc6cmVmcy90YWdzL3YzMy42LjA=",
+  "url": "https://api.github.com/repos/google/guava/git/refs/tags/v33.6.0",
+  "object": {
+    "sha": "de1d87eabff93cb4a7fa8e52df5fc46802c95b17",
+    "type": "commit",
+    "url": "https://api.github.com/repos/google/guava/git/commits/de1d87eabff93cb4a7fa8e52df5fc46802c95b17"
+  }
+}
+
+ exited 22 in 597ms:
+HTTP/2 404 
+date: Mon, 11 May 2026 13:18:31 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=6enP89zCwiSZQBiLLfTKoeheV93CHNH7rBQEQ7eHYqjzzB5d1MCtNz9UQ1oageHiFp0nBltD%2Fw313u0ZxSu1PCEIlDTbQXmA%2FNIHgfZu2SZylwTqr5W2zYnBcaKYOnix5Xl3slviDn5RtX4kGPKB%2BI1N9C6MYAq0en4u5wk2cItUPUTzarM9zYwAgU34aYNSQNWPBZ7Z6CUqL2T8UG1MoIRmYzRkElcBiwjo%2B9NAk%2F%2Fcoz%2F4%2B5ZKgpKfhkCfowhZpRrdwEBE7HbK2yr5bFvTmA%3D%3D--9wU5RyKiOzFm2IC7--qMUxc%2BVdknud2H%2F9HkXkyw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.505228008.1778505510; expires=Tue, 11 May 2027 13:18:30 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 11 May 2027 13:18:30 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 9240:3F5672:12639067:DFA58CE:6A01D726
+
+
+exec
+/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22com.google.guava%22%20AND%20a:%22guava-tests%22&rows=20&wt=json' | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+exec
+/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22com.google.guava%22%20AND%20guava%20tests&rows=50&wt=json' | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/google/guava/ | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/guava</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/guava</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="failureaccess/" title="failureaccess/">failureaccess/</a>                                                   -         -      
+<a href="guava/" title="guava/">guava/</a>                                                           -         -      
+<a href="guava-annotations/" title="guava-annotations/">guava-annotations/</a>                                               -         -      
+<a href="guava-base/" title="guava-base/">guava-base/</a>                                                      -         -      
+<a href="guava-beta-checker/" title="guava-beta-checker/">guava-beta-checker/</a>                                              -         -      
+<a href="guava-bom/" title="guava-bom/">guava-bom/</a>                                                       -         -      
+<a href="guava-bootstrap/" title="guava-bootstrap/">guava-bootstrap/</a>                                                 -         -      
+<a href="guava-bootstrap-jdk5/" title="guava-bootstrap-jdk5/">guava-bootstrap-jdk5/</a>                                            -         -      
+<a href="guava-collections/" title="guava-collections/">guava-collections/</a>                                               -         -      
+<a href="guava-concurrent/" title="guava-concurrent/">guava-concurrent/</a>                                                -         -      
+<a href="guava-gwt/" title="guava-gwt/">guava-gwt/</a>                                                       -         -      
+<a href="guava-io/" title="guava-io/">guava-io/</a>                                                        -         -      
+<a href="guava-jdk5/" title="guava-jdk5/">guava-jdk5/</a>                                                      -         -      
+<a href="guava-parent/" title="guava-parent/">guava-parent/</a>                                                    -         -      
+<a href="guava-parent-jdk5/" title="guava-parent-jdk5/">guava-parent-jdk5/</a>                                               -         -      
+<a href="guava-primitives/" title="guava-primitives/">guava-primitives/</a>                                                -         -      
+<a href="guava-testlib/" title="guava-testlib/">guava-testlib/</a>                                                   -         -      
+<a href="guava-testlib-jdk5/" title="guava-testlib-jdk5/">guava-testlib-jdk5/</a>                                              -         -      
+<a href="guava-tests/" title="guava-tests/">guava-tests/</a>                                                     -         -      
+<a href="guava-tests-jdk5/" title="guava-tests-jdk5/">guava-tests-jdk5/</a>                                                -         -      
+<a href="listenablefuture/" title="listenablefuture/">listenablefuture/</a>                                                -         -      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 286ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"com.google.guava\" AND a:\"guava-tests\"","core":"","indent":"off","spellcheck":"true","fl":"id,g,a,latestVersion,p,ec,repositoryId,text,timestamp,versionCount","start":"","spellcheck.count":"5","sort":"score desc,timestamp desc,g asc,a asc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"com.google.guava:guava-tests","g":"com.google.guava","a":"guava-tests","latestVersion":"23.3-jre","repositoryId":"central","p":"jar","timestamp":1509048840000,"versionCount":57,"text":["com.google.guava","guava-tests","-test-sources.jar",".jar","-tests.jar",".pom"],"ec":["-test-sources.jar",".jar","-tests.jar",".pom"]}]},"spellcheck":{"suggestions":[]}}
+ succeeded in 286ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"com.google.guava\" AND guava tests","core":"","indent":"off","spellcheck":"true","fl":"id,g,a,latestVersion,p,ec,repositoryId,text,timestamp,versionCount","start":"","spellcheck.count":"5","sort":"score desc,timestamp desc,g asc,a asc","rows":"50","wt":"json","version":"2.2"}},"response":{"numFound":4,"start":0,"docs":[{"id":"com.google.guava:guava-tests","g":"com.google.guava","a":"guava-tests","latestVersion":"23.3-jre","repositoryId":"central","p":"jar","timestamp":1509048840000,"versionCount":57,"text":["com.google.guava","guava-tests","-test-sources.jar",".jar","-tests.jar",".pom"],"ec":["-test-sources.jar",".jar","-tests.jar",".pom"]},{"id":"com.google.guava:guava-tests-jdk5","g":"com.google.guava","a":"guava-tests-jdk5","latestVersion":"17.0","repositoryId":"central","p":"jar","timestamp":1398201214000,"versionCount":8,"text":["com.google.guava","guava-tests-jdk5","-test-sources.jar",".jar","-tests.jar","-site.jar",".pom"],"ec":["-test-sources.jar",".jar","-tests.jar","-site.jar",".pom"]},{"id":"com.google.guava:guava-testlib","g":"com.google.guava","a":"guava-testlib","latestVersion":"33.4.8-jre","repositoryId":"central","p":"jar","timestamp":1744651668186,"versionCount":145,"text":["com.google.guava","guava-testlib","-sources.jar",".pom","-test-sources.jar","-javadoc.jar","-tests.jar",".jar"],"ec":["-sources.jar",".pom","-test-sources.jar","-javadoc.jar","-tests.jar",".jar"]},{"id":"com.google.guava:guava-testlib-jdk5","g":"com.google.guava","a":"guava-testlib-jdk5","latestVersion":"17.0","repositoryId":"central","p":"jar","timestamp":1398200982000,"versionCount":8,"text":["com.google.guava","guava-testlib-jdk5","-sources.jar","-javadoc.jar","-test-sources.jar","-tests.jar",".jar","-site.jar",".pom"],"ec":["-sources.jar","-javadoc.jar","-test-sources.jar","-tests.jar",".jar","-site.jar",".pom"]}]},"spellcheck":{"suggestions":[]}}
+codex
+Guava does not publish a 33.6.0-jre test classifier for `com.google.guava:guava`, so I’m using the upstream `v33.6.0` test tree. The artifact itself is a JVM JAR, not Kotlin/Groovy/Scala-specific and not excluded from Native Image metadata.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+diff --git a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json b/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+index 5d3830cee4197a84604c8968210f1eeb7d98b94b..d80fc6eef1e876777b0be148fffc9beac6b7d469
+--- a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
++++ b/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.guava:guava:33.6.0-jre"
++  "coordinates" : "com.google.guava:guava:33.6.0-jre",
++  "repository-url" : "https://github.com/google/guava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/google/guava/tree/v33.6.0/guava-tests/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-javadoc.jar",
++  "description" : "Guava is Google's core Java libraries project, providing utilities for collections, caching, primitives, concurrency, I/O, hashing, strings, and more. The guava JRE artifact packages these APIs for use by Java applications and libraries on the JVM."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json b/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+index 5d3830cee4197a84604c8968210f1eeb7d98b94b..d80fc6eef1e876777b0be148fffc9beac6b7d469
+--- a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
++++ b/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.guava:guava:33.6.0-jre"
++  "coordinates" : "com.google.guava:guava:33.6.0-jre",
++  "repository-url" : "https://github.com/google/guava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/google/guava/tree/v33.6.0/guava-tests/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-javadoc.jar",
++  "description" : "Guava is Google's core Java libraries project, providing utilities for collections, caching, primitives, concurrency, I/O, hashing, strings, and more. The guava JRE artifact packages these APIs for use by Java applications and libraries on the JVM."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 0ms:
+{
+  "coordinates": "com.google.guava:guava:33.6.0-jre",
+  "repository-url": "https://github.com/google/guava",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-sources.jar",
+  "test-code-url": "https://github.com/google/guava/tree/v33.6.0/guava-tests/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-javadoc.jar",
+  "description": "Guava is Google's core Java libraries project, providing utilities for collections, caching, primitives, concurrency, I/O, hashing, strings, and more. The guava JRE artifact packages these APIs for use by Java applications and libraries on the JVM."
+}
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json b/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+index 5d3830cee4197a84604c8968210f1eeb7d98b94b..d80fc6eef1e876777b0be148fffc9beac6b7d469
+--- a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
++++ b/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.guava:guava:33.6.0-jre"
++  "coordinates" : "com.google.guava:guava:33.6.0-jre",
++  "repository-url" : "https://github.com/google/guava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/google/guava/tree/v33.6.0/guava-tests/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-javadoc.jar",
++  "description" : "Guava is Google's core Java libraries project, providing utilities for collections, caching, primitives, concurrency, I/O, hashing, strings, and more. The guava JRE artifact packages these APIs for use by Java applications and libraries on the JVM."
+ }
+
+codex
+The file is valid JSON after the edit. I’m doing one last status check because this path appears to be under `build/`, so it may not show in a normal tracked-file diff.
+exec
+/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.guava:guava:33.6.0-jre",
+  "repository-url" : "https://github.com/google/guava",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-sources.jar",
+  "test-code-url" : "https://github.com/google/guava/tree/v33.6.0/guava-tests/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-javadoc.jar",
+  "description" : "Guava is Google's core Java libraries project, providing utilities for collections, caching, primitives, concurrency, I/O, hashing, strings, and more. The guava JRE artifact packages these APIs for use by Java applications and libraries on the JVM."
+}
+
+exec
+/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+exec
+/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/com/google/guava/guava/33.6.0-jre/guava-33.6.0-jre-sources.jar >/dev/null && curl -fsI https://repo.maven.apache.org/maven2/com/google/guava/guava/33.6.0-jre/guava-33.6.0-jre-javadoc.jar >/dev/null && curl -fsI https://github.com/google/guava/tree/v33.6.0/guava-tests/test >/dev/null && printf 'URL checks passed\\n'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a
+ succeeded in 251ms:
+diff --git a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json b/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+index 5d3830cee4197a84604c8968210f1eeb7d98b94b..d80fc6eef1e876777b0be148fffc9beac6b7d469
+--- a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
++++ b/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.guava:guava:33.6.0-jre"
++  "coordinates" : "com.google.guava:guava:33.6.0-jre",
++  "repository-url" : "https://github.com/google/guava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/google/guava/tree/v33.6.0/guava-tests/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-javadoc.jar",
++  "description" : "Guava is Google's core Java libraries project, providing utilities for collections, caching, primitives, concurrency, I/O, hashing, strings, and more. The guava JRE artifact packages these APIs for use by Java applications and libraries on the JVM."
+ }
+
+ succeeded in 997ms:
+URL checks passed
+
+web search: 
+web search: https://github.com/google/guava/tree/v33.6.0/guava-tests/test
+web search: 
+web search: repo.maven.apache.org maven2 com/google/guava/guava/33.6.0-jre guava-33.6.0-jre-sources.jar javadoc.jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/google/guava/guava
+web search: 
+web search: 
+codex
+Updated [com.google.guava-guava-33.6.0-jre.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json) with repository, Maven source/Javadoc URLs, upstream test URL, and a two-sentence description.
+
+I left `language` absent and did not add `not-for-native-image`; this is the JRE Guava JVM artifact, with Maven Central listing it as `com.google.guava:guava@33.6.0-jre` and packaging `bundle`. The test URL uses Guava’s `v33.6.0` tag because there is no `v33.6.0-jre` upstream tag and no 33.6.0-jre test classifier for the `guava` artifact. ([central.sonatype.com](https://central.sonatype.com/artifact/com.google.guava/guava))
+
+Validation done: `jq` parsed the JSON successfully, and the source, Javadoc, and test URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json b/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+index 5d3830cee4197a84604c8968210f1eeb7d98b94b..d80fc6eef1e876777b0be148fffc9beac6b7d469
+--- a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
++++ b/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.guava:guava:33.6.0-jre"
++  "coordinates" : "com.google.guava:guava:33.6.0-jre",
++  "repository-url" : "https://github.com/google/guava",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-sources.jar",
++  "test-code-url" : "https://github.com/google/guava/tree/v33.6.0/guava-tests/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-javadoc.jar",
++  "description" : "Guava is Google's core Java libraries project, providing utilities for collections, caching, primitives, concurrency, I/O, hashing, strings, and more. The guava JRE artifact packages these APIs for use by Java applications and libraries on the JVM."
+ }
+
+tokens used
+76,440
+Updated [com.google.guava-guava-33.6.0-jre.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a/build/discovered-artifact-metadata/com.google.guava-guava-33.6.0-jre.json) with repository, Maven source/Javadoc URLs, upstream test URL, and a two-sentence description.
+
+I left `language` absent and did not add `not-for-native-image`; this is the JRE Guava JVM artifact, with Maven Central listing it as `com.google.guava:guava@33.6.0-jre` and packaging `bundle`. The test URL uses Guava’s `v33.6.0` tag because there is no `v33.6.0-jre` upstream tag and no 33.6.0-jre test classifier for the `guava` artifact. ([central.sonatype.com](https://central.sonatype.com/artifact/com.google.guava/guava))
+
+Validation done: `jq` parsed the JSON successfully, and the source, Javadoc, and test URLs returned HTTP 200.
+Ran agent for com.google.guava:guava:33.6.0-jre (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a/build/agent-artifact-discovery-logs/com.google.guava-guava-33.6.0-jre.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6704-4a1c6a1a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 27s
+9 actionable tasks: 9 executed
