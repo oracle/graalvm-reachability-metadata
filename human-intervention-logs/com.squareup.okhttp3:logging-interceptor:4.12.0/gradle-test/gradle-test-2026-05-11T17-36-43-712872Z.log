@@ -1,0 +1,138 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.squareup.okhttp3:logging-interceptor:4.12.0
+Command: `/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2613-8dc6c41a/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileKotlin NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :compileTestKotlin
+> Task :compileTestJava NO-SOURCE
+> Task :testClasses UP-TO-DATE
+
+> Task :test
+
+Logging_interceptorTest > networkBodyLoggerOmitsGzipEncodedResponseBody() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      "--> GET http://127.0.0.1:44371/gzip http/1.1
+    Host: 127.0.0.1:44371
+    Connection: Keep-Alive
+    Accept-Encoding: gzip
+    User-Agent: okhttp/4.12.0
+    --> END GET
+    <-- 200 OK http://127.0.0.1:44371/gzip (1ms)
+    Content-Type: text/plain; charset=utf-8
+    Content-Encoding: gzip
+    Content-Length: 45
+    Connection: close
+
+    compressed response payload
+    <-- END HTTP (27-byte, 45-gzipped-byte body)"
+    to contain:
+      "<-- END HTTP (encoded body omitted)" 
+        at com_squareup_okhttp3.logging_interceptor.Logging_interceptorTest.networkBodyLoggerOmitsGzipEncodedResponseBody(Logging_interceptorTest.kt:221)
+
+Logging_interceptorTest > eventListenerFactoryLogsConnectionRequestResponseAndCallEvents() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      "[0 ms] callStart: Request{method=GET, url=http://127.0.0.1:41077/events}
+    [2 ms] proxySelectStart: http://127.0.0.1:41077/
+    [4 ms] proxySelectEnd: [DIRECT]
+    [4 ms] connectStart: /127.0.0.1:41077 DIRECT
+    [4 ms] connectEnd: http/1.1
+    [4 ms] connectionAcquired: Connection{127.0.0.1:41077, proxy=DIRECT hostAddress=/127.0.0.1:41077 cipherSuite=none protocol=http/1.1}
+    [4 ms] requestHeadersStart
+    [4 ms] requestHeadersEnd
+    [10 ms] responseHeadersStart
+    [10 ms] responseHeadersEnd: Response{protocol=http/1.1, code=200, message=OK, url=http://127.0.0.1:41077/events}
+    [10 ms] responseBodyStart
+    [10 ms] responseBodyEnd: byteCount=6
+    [10 ms] connectionReleased
+    [10 ms] callEnd"
+    to contain:
+      "requestHeadersEnd: Request{method=GET" 
+        at com_squareup_okhttp3.logging_interceptor.Logging_interceptorTest.eventListenerFactoryLogsConnectionRequestResponseAndCallEvents(Logging_interceptorTest.kt:256)
+
+> Task :test
+ FAILED
+6 tests completed, 2 failed
+
+
+FAILURE: Build failed with an exception.
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2613-8dc6c41a/tests/src/com.squareup.okhttp3/logging-interceptor/4.12.0/build/reports/problems/problems-report.html
+
+
+* What went wrong:
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+Execution failed for task ':test'.
+
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2613-8dc6c41a/tests/src/com.squareup.okhttp3/logging-interceptor/4.12.0/build/reports/tests/test/index.html
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 34s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2613-8dc6c41a/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.squareup.okhttp3:logging-interceptor:4.12.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 36s
+9 actionable tasks: 1 executed, 8 up-to-date
