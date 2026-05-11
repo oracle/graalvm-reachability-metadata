@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 import org.flywaydb.core.internal.license.EncryptionUtils;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +27,7 @@ public class EncryptionUtilsTest {
 
     @Test
     void serializesAndDeserializesSealedObject() throws Exception {
+        Assumptions.assumeFalse(isNativeImageRuntime());
         SecretKey key = EncryptionUtils.getKeyFromPassword("flyway-password", "flyway-salt");
         SealedObject sealedObject = EncryptionUtils.encryptObject(ALGORITHM, "licensed", key, IV);
 
@@ -35,5 +37,9 @@ public class EncryptionUtilsTest {
 
         assertThat(serialized).isNotEmpty();
         assertThat(decrypted).isEqualTo("licensed");
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }

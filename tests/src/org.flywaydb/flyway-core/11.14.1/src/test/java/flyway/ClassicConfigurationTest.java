@@ -6,6 +6,7 @@
  */
 package flyway;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClassicConfigurationTest {
 
     @Test
-    void configuresNestedExtensionProperties() {
+    void configuresNestedExtensionProperties() throws ReflectiveOperationException {
         TestConfigurationExtension extension = new TestConfigurationExtension();
         ClassicConfiguration configuration = new ClassicConfiguration();
-        configuration.setPluginRegister(new SingleExtensionPluginRegister(extension));
+        configuration.setPluginRegister(singleExtensionPluginRegister(extension));
 
         configuration.configure(Map.of("flyway.test.nested.child.name", "configured"));
 
@@ -32,20 +33,23 @@ public class ClassicConfigurationTest {
         assertThat(extension.getNested().getChild().getName()).isEqualTo("configured");
     }
 
-    public static class SingleExtensionPluginRegister extends PluginRegister {
-        private final ConfigurationExtension extension;
+    private PluginRegister singleExtensionPluginRegister(final ConfigurationExtension extension) throws ReflectiveOperationException {
+        PluginRegister pluginRegister = new PluginRegister();
+        registeredPluginsField().set(pluginRegister, List.of(extension));
+        hasRegisteredPluginsField().setBoolean(pluginRegister, true);
+        return pluginRegister;
+    }
 
-        public SingleExtensionPluginRegister(final ConfigurationExtension extension) {
-            this.extension = extension;
-        }
+    private Field registeredPluginsField() throws NoSuchFieldException {
+        Field registeredPluginsField = PluginRegister.class.getDeclaredField("REGISTERED_PLUGINS");
+        registeredPluginsField.setAccessible(true);
+        return registeredPluginsField;
+    }
 
-        @Override
-        public <T extends Plugin> List<T> getInstancesOf(final Class<T> clazz) {
-            if (clazz == ConfigurationExtension.class) {
-                return List.of(clazz.cast(extension));
-            }
-            return List.of();
-        }
+    private Field hasRegisteredPluginsField() throws NoSuchFieldException {
+        Field hasRegisteredPluginsField = PluginRegister.class.getDeclaredField("hasRegisteredPlugins");
+        hasRegisteredPluginsField.setAccessible(true);
+        return hasRegisteredPluginsField;
     }
 
     public static class TestConfigurationExtension implements ConfigurationExtension {

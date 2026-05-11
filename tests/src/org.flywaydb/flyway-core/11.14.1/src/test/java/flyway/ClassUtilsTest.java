@@ -12,6 +12,7 @@ import java.util.Map;
 import org.flywaydb.core.api.logging.LogCreator;
 import org.flywaydb.core.api.output.MigrateResult;
 import org.flywaydb.core.internal.util.ClassUtils;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,6 +59,7 @@ public class ClassUtilsTest {
 
     @Test
     void readsPublicStaticStringFieldsByName() {
+        Assumptions.assumeFalse(isNativeImageRuntime());
         ClassLoader classLoader = ClassUtilsTest.class.getClassLoader();
 
         String value = ClassUtils.getStaticFieldValue(MigrateResult.class.getName(), "COMMAND", classLoader);
@@ -67,6 +69,7 @@ public class ClassUtilsTest {
 
     @Test
     void readsAndWritesDeclaredFields() {
+        Assumptions.assumeFalse(isNativeImageRuntime());
         MigrateResult migrateResult = new MigrateResult();
         migrateResult.database = "initial";
 
@@ -80,6 +83,7 @@ public class ClassUtilsTest {
 
     @Test
     void listsGettableFieldsFromClassHierarchy() {
+        Assumptions.assumeFalse(isNativeImageRuntime());
         MigrateResult migrateResult = new MigrateResult();
 
         List<String> fields = ClassUtils.getGettableField(migrateResult, "flyway.");
@@ -96,6 +100,7 @@ public class ClassUtilsTest {
 
     @Test
     void readsGettableFieldValuesFromClassHierarchy() {
+        Assumptions.assumeFalse(isNativeImageRuntime());
         MigrateResult migrateResult = new MigrateResult();
 
         Map<String, String> fieldValues = ClassUtils.getGettableFieldValues(migrateResult, "flyway.");
@@ -105,5 +110,9 @@ public class ClassUtilsTest {
                 .containsEntry("flyway.successfulMigrations", "[]")
                 .containsEntry("flyway.failedMigrations", "[]")
                 .containsEntry("flyway.totalMigrationTime", "0");
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
