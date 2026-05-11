@@ -136,6 +136,34 @@ public class Jetty_alpn_java_clientTest {
                 .withMessage("No ALPNProcessor for " + sslEngine);
     }
 
+    @Test
+    void selectedProtocolUpgradesEndPointToNegotiatedClientConnection() throws Exception {
+        ByteArrayEndPoint endPoint = new ByteArrayEndPoint();
+        SSLEngine sslEngine = newClientEngine();
+        Map<String, Object> context = new HashMap<>();
+        CapturingClientConnectionFactory connectionFactory = new CapturingClientConnectionFactory();
+        ALPNClientConnection alpnConnection = new ALPNClientConnection(
+                endPoint,
+                DIRECT_EXECUTOR,
+                connectionFactory,
+                sslEngine,
+                context,
+                PROTOCOLS);
+        endPoint.setConnection(alpnConnection);
+
+        try {
+            alpnConnection.selected("h2");
+            alpnConnection.onOpen();
+
+            assertThat(alpnConnection.getProtocol()).isEqualTo("h2");
+            assertThat(connectionFactory.endPoints).containsExactly(endPoint);
+            assertThat(connectionFactory.contexts).containsExactly(context);
+            assertThat(endPoint.getConnection()).isInstanceOf(RecordingConnection.class);
+        } finally {
+            endPoint.close();
+        }
+    }
+
     private static ALPNTestContext newALPNTestContext(TestSslEngine sslEngine) {
         RecordingSslConnection sslConnection = new RecordingSslConnection(sslEngine);
         RecordingALPNClientConnection alpnConnection = new RecordingALPNClientConnection(
@@ -204,6 +232,18 @@ public class Jetty_alpn_java_clientTest {
     private static final class TestClientConnectionFactory implements ClientConnectionFactory {
         @Override
         public Connection newConnection(EndPoint endPoint, Map<String, Object> context) {
+            return new RecordingConnection(endPoint);
+        }
+    }
+
+    private static final class CapturingClientConnectionFactory implements ClientConnectionFactory {
+        private final List<EndPoint> endPoints = new ArrayList<>();
+        private final List<Map<String, Object>> contexts = new ArrayList<>();
+
+        @Override
+        public Connection newConnection(EndPoint endPoint, Map<String, Object> context) {
+            endPoints.add(endPoint);
+            contexts.add(context);
             return new RecordingConnection(endPoint);
         }
     }
