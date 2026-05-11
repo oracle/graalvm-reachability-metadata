@@ -9,6 +9,7 @@ package org_specs2.specs2_matcher_3
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.specs2.concurrent.ExecutionEnv
 import org.specs2.execute.Error
 import org.specs2.execute.Failure as SpecsFailure
 import org.specs2.execute.Pending
@@ -21,6 +22,8 @@ import org.specs2.matcher.Matcher
 import org.specs2.matcher.MustMatchers
 import org.specs2.matcher.ResultMatchers
 
+import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
@@ -113,6 +116,21 @@ class Specs2_matcher_3Test extends MustMatchers with DataTables {
     assertFailed((5 must be_>(10)) or (5 must be_<(0)))
     assertSuccessful(describedResult)
     assertTrue(describedResult.message.contains("artifact name"), describedResult.message)
+  }
+
+  @Test
+  def futureMatchersAwaitValuesAndResultsWithinBoundedTimeouts(): Unit = {
+    given executionEnv: ExecutionEnv = ExecutionEnv.fromGlobalExecutionContext
+
+    val successfulValue: Future[Int] = Future.successful(42)
+    val wrongValue: Future[Int] = Future.successful(41)
+    val computedResult: Future[MatchResult[Int]] = Future {
+      6 * 7 must be_==(42)
+    }(executionEnv.executionContext)
+
+    assertSuccessful(successfulValue must be_==(42).awaitFor(1.second))
+    assertFailed(wrongValue must be_==(42).awaitFor(1.second))
+    assertSuccessfulResult(computedResult.awaitFor(1.second))
   }
 
   @Test
