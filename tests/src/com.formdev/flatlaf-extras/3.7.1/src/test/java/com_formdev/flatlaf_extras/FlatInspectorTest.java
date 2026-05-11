@@ -104,7 +104,7 @@ public class FlatInspectorTest {
     }
 
     private static void rethrowIfNotNativeImageDynamicClassLoadingFailure(Throwable throwable) throws Exception {
-        if (hasUnsupportedFeatureError(throwable) || hasUnsupportedIsolatedClassLoadingFailure(throwable)) {
+        if (hasUnsupportedFeatureError(throwable)) {
             return;
         }
 
@@ -122,25 +122,6 @@ public class FlatInspectorTest {
         while (current != null) {
             if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
                 return true;
-            }
-            current = current.getCause();
-        }
-        return false;
-    }
-
-    private static boolean hasUnsupportedIsolatedClassLoadingFailure(Throwable throwable) {
-        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
-            return false;
-        }
-
-        Throwable current = throwable;
-        while (current != null) {
-            if (current instanceof ClassNotFoundException || current instanceof NoClassDefFoundError) {
-                String message = current.getMessage();
-                if (message != null && (message.startsWith("com.formdev.flatlaf.extras.")
-                        || message.startsWith("com/formdev/flatlaf/extras/"))) {
-                    return true;
-                }
             }
             current = current.getCause();
         }

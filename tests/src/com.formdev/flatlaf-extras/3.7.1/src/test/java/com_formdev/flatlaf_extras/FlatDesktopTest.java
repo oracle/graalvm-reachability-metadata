@@ -11,23 +11,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.apple.eawt.Application;
 import com.apple.eawt.QuitResponse;
 import com.formdev.flatlaf.extras.FlatDesktop;
+import com.formdev.flatlaf.util.SystemInfo;
 import java.awt.EventQueue;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
+@ResourceLock("com.formdev.flatlaf.util.SystemInfo")
 public class FlatDesktopTest {
     @Test
     void installsLegacyMacDesktopHandlersThroughPublicApi() throws Exception {
-        String originalOsName = System.getProperty("os.name");
-        String originalJavaVersion = System.getProperty("java.version");
         Application.resetHandlers();
 
-        try {
-            System.setProperty("os.name", "Mac OS X");
-            System.setProperty("java.version", "1.8.0_392");
-
+        try (SystemInfoOverride ignored = SystemInfoOverride.legacyMacJava8()) {
             boolean[] aboutInvoked = new boolean[1];
             boolean[] quitInvoked = new boolean[1];
 
+            assertLegacyMacJava8();
             FlatDesktop.setAboutHandler(() -> aboutInvoked[0] = true);
             FlatDesktop.setQuitHandler(response -> quitInvoked[0] = true);
 
@@ -41,17 +40,13 @@ public class FlatDesktopTest {
             assertThat(aboutInvoked[0]).isTrue();
             assertThat(quitInvoked[0]).isTrue();
         } finally {
-            restoreProperty("os.name", originalOsName);
-            restoreProperty("java.version", originalJavaVersion);
+            Application.resetHandlers();
         }
     }
 
-    private static void restoreProperty(String key, String value) {
-        if (value != null) {
-            System.setProperty(key, value);
-        } else {
-            System.clearProperty(key);
-        }
+    private static void assertLegacyMacJava8() {
+        assertThat(SystemInfo.isMacOS).isTrue();
+        assertThat(SystemInfo.isJava_9_orLater).isFalse();
     }
 
     private static final class NoOpQuitResponse implements QuitResponse {

@@ -11,19 +11,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.apple.eawt.Application;
 import com.apple.eawt.QuitResponse;
 import com.formdev.flatlaf.extras.FlatDesktop;
+import com.formdev.flatlaf.util.SystemInfo;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
+@ResourceLock("com.formdev.flatlaf.util.SystemInfo")
 public class FlatDesktopAnonymous1Test {
     @Test
-    void delegatesPerformAndCancelQuitThroughLegacyMacQuitResponse() {
-        String originalOsName = System.getProperty("os.name");
-        String originalJavaVersion = System.getProperty("java.version");
+    void delegatesPerformAndCancelQuitThroughLegacyMacQuitResponse() throws Exception {
         Application.resetHandlers();
 
-        try {
-            System.setProperty("os.name", "Mac OS X");
-            System.setProperty("java.version", "1.8.0_392");
-
+        try (SystemInfoOverride ignored = SystemInfoOverride.legacyMacJava8()) {
+            assertLegacyMacJava8();
             FlatDesktop.setQuitHandler(response -> {
                 response.performQuit();
                 response.cancelQuit();
@@ -37,17 +36,13 @@ public class FlatDesktopAnonymous1Test {
             assertThat(nativeResponse.performQuitCount).isEqualTo(1);
             assertThat(nativeResponse.cancelQuitCount).isEqualTo(1);
         } finally {
-            restoreProperty("os.name", originalOsName);
-            restoreProperty("java.version", originalJavaVersion);
+            Application.resetHandlers();
         }
     }
 
-    private static void restoreProperty(String key, String value) {
-        if (value != null) {
-            System.setProperty(key, value);
-        } else {
-            System.clearProperty(key);
-        }
+    private static void assertLegacyMacJava8() {
+        assertThat(SystemInfo.isMacOS).isTrue();
+        assertThat(SystemInfo.isJava_9_orLater).isFalse();
     }
 
     private static final class CountingQuitResponse implements QuitResponse {
