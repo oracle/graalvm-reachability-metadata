@@ -9,7 +9,7 @@ package sun.misc;
 public final class SharedSecrets {
     private static final JavaLangAccess JAVA_LANG_ACCESS = new StackTraceJavaLangAccess();
 
-    private SharedSecrets() {}
+    private SharedSecrets() { }
 
     public static JavaLangAccess getJavaLangAccess() {
         return JAVA_LANG_ACCESS;

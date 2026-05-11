@@ -23,7 +23,7 @@ public class EnumsTest {
 
         assertThat(field.getName()).isEqualTo("RUNNING");
         assertThat(field.getDeclaringClass()).isSameAs(TaskState.class);
-        assertThat(field.getAnnotation(DisplayName.class).value()).isEqualTo("running task");
+        assertThat(field.getDeclaredAnnotationsByType(DisplayName.class)[0].value()).isEqualTo("running task");
     }
 
     private enum TaskState {
