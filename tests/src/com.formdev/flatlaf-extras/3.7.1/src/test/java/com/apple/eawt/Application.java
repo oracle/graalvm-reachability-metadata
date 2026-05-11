@@ -38,6 +38,15 @@ public class Application {
         return true;
     }
 
+    public boolean dispatchAbout() {
+        if (aboutHandler == null) {
+            return false;
+        }
+
+        aboutHandler.handleAbout(new AppEvent.AboutEvent());
+        return true;
+    }
+
     public boolean hasAboutHandler() {
         return aboutHandler != null;
     }

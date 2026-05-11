@@ -32,13 +32,10 @@ public class FlatDesktopAnonymous1Test {
             CountingQuitResponse nativeResponse = new CountingQuitResponse();
             boolean dispatched = Application.getApplication().dispatchQuitRequest(nativeResponse);
 
-            if (dispatched) {
-                assertThat(nativeResponse.performQuitCount).isEqualTo(1);
-                assertThat(nativeResponse.cancelQuitCount).isEqualTo(1);
-            } else {
-                assertThat(nativeResponse.performQuitCount).isZero();
-                assertThat(nativeResponse.cancelQuitCount).isZero();
-            }
+            assertThat(Application.getApplication().hasQuitHandler()).isTrue();
+            assertThat(dispatched).isTrue();
+            assertThat(nativeResponse.performQuitCount).isEqualTo(1);
+            assertThat(nativeResponse.cancelQuitCount).isEqualTo(1);
         } finally {
             restoreProperty("os.name", originalOsName);
             restoreProperty("java.version", originalJavaVersion);

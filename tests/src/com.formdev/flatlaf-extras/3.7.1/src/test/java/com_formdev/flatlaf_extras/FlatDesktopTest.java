@@ -9,12 +9,14 @@ package com_formdev.flatlaf_extras;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.apple.eawt.Application;
+import com.apple.eawt.QuitResponse;
 import com.formdev.flatlaf.extras.FlatDesktop;
+import java.awt.EventQueue;
 import org.junit.jupiter.api.Test;
 
 public class FlatDesktopTest {
     @Test
-    void installsLegacyMacDesktopHandlersThroughPublicApi() {
+    void installsLegacyMacDesktopHandlersThroughPublicApi() throws Exception {
         String originalOsName = System.getProperty("os.name");
         String originalJavaVersion = System.getProperty("java.version");
         Application.resetHandlers();
@@ -23,11 +25,21 @@ public class FlatDesktopTest {
             System.setProperty("os.name", "Mac OS X");
             System.setProperty("java.version", "1.8.0_392");
 
-            FlatDesktop.setAboutHandler(() -> { });
-            FlatDesktop.setQuitHandler(response -> { });
+            boolean[] aboutInvoked = new boolean[1];
+            boolean[] quitInvoked = new boolean[1];
 
-            assertThat(Application.getApplication().hasAboutHandler())
-                    .isEqualTo(Application.getApplication().hasQuitHandler());
+            FlatDesktop.setAboutHandler(() -> aboutInvoked[0] = true);
+            FlatDesktop.setQuitHandler(response -> quitInvoked[0] = true);
+
+            Application application = Application.getApplication();
+
+            assertThat(application.hasAboutHandler()).isTrue();
+            assertThat(application.hasQuitHandler()).isTrue();
+            assertThat(application.dispatchAbout()).isTrue();
+            EventQueue.invokeAndWait(() -> { });
+            assertThat(application.dispatchQuitRequest(new NoOpQuitResponse())).isTrue();
+            assertThat(aboutInvoked[0]).isTrue();
+            assertThat(quitInvoked[0]).isTrue();
         } finally {
             restoreProperty("os.name", originalOsName);
             restoreProperty("java.version", originalJavaVersion);
@@ -39,6 +51,16 @@ public class FlatDesktopTest {
             System.setProperty(key, value);
         } else {
             System.clearProperty(key);
+        }
+    }
+
+    private static final class NoOpQuitResponse implements QuitResponse {
+        @Override
+        public void performQuit() {
+        }
+
+        @Override
+        public void cancelQuit() {
         }
     }
 }
