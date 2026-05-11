@@ -1,0 +1,617 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e13f3-6ada-7872-9a8b-fd4371bb9830
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.logging.log4j:log4j-1.2-api:2.18.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.18.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+- Entry selector: "metadata-version" = "2.18.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.18.0
+- Entry metadata-version: 2.18.0
+- Entry test-version: 2.18.0
+- Entry tested-versions: [2.18.0]
+codex
+I’ll verify the artifact’s Maven and upstream project URLs first, then patch only the missing fields in the selected metadata entry. After that I’ll validate the JSON and check the rendered URLs for `2.18.0`.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions' metadata/org.apache.logging.log4j/log4j-1.2-api/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+4:    "metadata-version" : "2.18.0",
+5:    "tested-versions" : [
+14:    "metadata-version" : "2.17.2",
+15:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
+16:    "repository-url" : "https://github.com/apache/logging-log4j2",
+17:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
+18:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
+19:    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+20:    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.logging.log4j/log4j-1.2-api/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.18.0",
+    "tested-versions" : [
+      "2.18.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.log4j",
+      "org.apache.logging.log4j"
+    ]
+  },
+  {
+    "metadata-version" : "2.17.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/logging-log4j2",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
+    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+    "tested-versions" : [
+      "2.17.2"
+    ],
+    "allowed-packages" : [
+      "org.apache.log4j",
+      "org.apache.logging.log4j"
+    ]
+  }
+]
+
+web search: 
+web search: Maven Central org.apache.logging.log4j log4j-1.2-api 2.18.0 sources test-sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0/
+web search: 
+web search: 'log4j-1.2-api' in https://logging.apache.org/log4j/2.x/components.html
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0/
+web search: 
+web search: 
+codex
+The existing `2.17.2` entry already uses Maven Central templates, and Maven Central lists the `2.18.0` sources, test-sources, and javadoc jars. I’m going to mirror that validated pattern for the `2.18.0` entry, keep `language` absent because this is a Java/JVM Log4j module rather than Kotlin/Groovy/Scala-specific, and leave unrelated fields untouched.
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0/log4j-1.2-api-2.18.0-sources.jar' \\
+  'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0/log4j-1.2-api-2.18.0-test-sources.jar' \\
+  'https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0/log4j-1.2-api-2.18.0-javadoc.jar' \\
+  'https://github.com/apache/logging-log4j2'; do
+  printf '%s -> ' \""'$url"
+  curl -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+ succeeded in 2253ms:
+200
+https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0/log4j-1.2-api-2.18.0-test-sources.jar -> 200
+https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0/log4j-1.2-api-2.18.0-javadoc.jar -> 200
+https://github.com/apache/logging-log4j2 -> 200
+
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+diff --git a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+index c3739b9de57ad7e3ac9908bce87511b50ed29790..e5453479162d30c270392d938b667279da803841
+--- a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
++++ b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.18.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/logging-log4j2",
++    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
++    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+     "tested-versions" : [
+       "2.18.0"
+     ],
+
+diff --git a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+index c3739b9de57ad7e3ac9908bce87511b50ed29790..e5453479162d30c270392d938b667279da803841
+--- a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
++++ b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.18.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/logging-log4j2",
++    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
++    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+     "tested-versions" : [
+       "2.18.0"
+     ],
+
+codex
+The metadata entry is patched. I’m doing a quick JSON parse and a targeted Gradle metadata check for the coordinate so formatting and repository rules are caught before I wrap up.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.18.0\")' metadata/org.apache.logging.log4j/log4j-1.2-api/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "2.18.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/logging-log4j2",
+  "test-code-url": "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
+  "description": "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+  "tested-versions": [
+    "2.18.0"
+  ],
+  "allowed-packages": [
+    "org.apache.log4j",
+    "org.apache.logging.log4j"
+  ]
+}
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.logging.log4j:log4j-1.2-api:2.18.0 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+diff --git a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+index c3739b9de57ad7e3ac9908bce87511b50ed29790..e5453479162d30c270392d938b667279da803841
+--- a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
++++ b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.18.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/logging-log4j2",
++    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
++    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+     "tested-versions" : [
+       "2.18.0"
+     ],
+
+diff --git a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+index c3739b9de57ad7e3ac9908bce87511b50ed29790..e5453479162d30c270392d938b667279da803841
+--- a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
++++ b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.18.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/logging-log4j2",
++    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
++    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+     "tested-versions" : [
+       "2.18.0"
+     ],
+
+ exited 1 in 3936ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.apache.logging.log4j:log4j-1.2-api:2.18.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b/metadata/org.apache.logging.log4j/log4j-1.2-api/2.18.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.logging.log4j:log4j-1.2-api:2.18.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b/metadata/org.apache.logging.log4j/log4j-1.2-api/2.18.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.apache.logging.log4j:log4j-1.2-api:2.18.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b/metadata/org.apache.logging.log4j/log4j-1.2-api/2.18.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: Maven Central log4j-1.2-api 2.18.0 sources.jar test-sources.jar javadoc.jar
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.logging.log4j/log4j-1.2-api/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json w/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+index c3739b9de5..e545347916 100644
+--- i/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
++++ w/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.18.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/logging-log4j2",
++    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
++    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+     "tested-versions" : [
+       "2.18.0"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.apache.logging.log4j/log4j-1.2-api/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+ succeeded in 0ms:
+ M metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+
+diff --git a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+index c3739b9de57ad7e3ac9908bce87511b50ed29790..e5453479162d30c270392d938b667279da803841
+--- a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
++++ b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.18.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/logging-log4j2",
++    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
++    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+     "tested-versions" : [
+       "2.18.0"
+     ],
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0/
+web search: 
+web search: 'log4j-1.2-api' in https://logging.apache.org/log4j/2.x/manual/migration.html
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.apache.logging.log4j/log4j-1.2-api/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/org.apache.logging.log4j/log4j-1.2-api/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+ succeeded in 0ms:
+diff --git a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+index c3739b9de57ad7e3ac9908bce87511b50ed29790..e5453479162d30c270392d938b667279da803841
+--- a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
++++ b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.18.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/logging-log4j2",
++    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
++    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+     "tested-versions" : [
+       "2.18.0"
+     ],
+
+web search: 
+web search: site:repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0 log4j-1.2-api-2.18.0-sources.jar
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.apache.logging.log4j/log4j-1.2-api/index.json | sed -n '1,18p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.18.0",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/apache/logging-log4j2",
+     7	    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
+     9	    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+    10	    "tested-versions" : [
+    11	      "2.18.0"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.apache.log4j",
+    15	      "org.apache.logging.log4j"
+    16	    ]
+    17	  },
+    18	  {
+
+diff --git a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+index c3739b9de57ad7e3ac9908bce87511b50ed29790..e5453479162d30c270392d938b667279da803841
+--- a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
++++ b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.18.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/logging-log4j2",
++    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
++    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+     "tested-versions" : [
+       "2.18.0"
+     ],
+
+web search: 
+web search: Maven Central org.apache.logging.log4j log4j-1.2-api 2.18.0
+web search: 
+web search: apache logging-log4j2 GitHub repository
+web search: 
+web search: site:logging.apache.org/log4j/2.x manual migration Log4j 1.2 API bridge log4j-1.2-api
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json:5) for `metadata-version` `2.18.0`.
+
+Set the missing Maven Central templates for `source-code-url`, `test-code-url`, and `documentation-url`; the rendered `2.18.0` sources, test-sources, and javadoc jars all exist on Maven Central. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0/?utm_source=openai)) Set `repository-url` to the canonical `apache/logging-log4j2` GitHub repository root. ([github.com](https://github.com/apache/logging-log4j2?utm_source=openai)) Added the two-sentence description based on the Log4j 1 to Log4j 2 bridge behavior, and left `language` absent because this artifact is not Kotlin/Groovy/Scala-specific. ([logging.apache.org](https://logging.apache.org/log4j/2.x/manual/migration.html?utm_source=openai))
+
+Validation:
+- `jq empty metadata/org.apache.logging.log4j/log4j-1.2-api/index.json` passed.
+- `git diff --check` passed.
+- Rendered URL checks returned HTTP `200`.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.logging.log4j:log4j-1.2-api:2.18.0 --stacktrace` failed because `metadata/.../log4j-1.2-api/2.18.0/reachability-metadata.json` is missing, unrelated to the URL/description edit.
+diff --git a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+index c3739b9de57ad7e3ac9908bce87511b50ed29790..e5453479162d30c270392d938b667279da803841
+--- a/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
++++ b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.18.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/logging-log4j2",
++    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-javadoc.jar",
++    "description" : "Apache Log4j 1.2 API provides a compatibility layer that implements the legacy Log4j 1.x API on top of Log4j 2. It lets applications and libraries compiled against Log4j 1.x continue to run with Log4j 2 while routing logging through the Log4j 2 API and core implementation.",
+     "tested-versions" : [
+       "2.18.0"
+     ],
+
+tokens used
+89,249
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b/metadata/org.apache.logging.log4j/log4j-1.2-api/index.json:5) for `metadata-version` `2.18.0`.
+
+Set the missing Maven Central templates for `source-code-url`, `test-code-url`, and `documentation-url`; the rendered `2.18.0` sources, test-sources, and javadoc jars all exist on Maven Central. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.18.0/?utm_source=openai)) Set `repository-url` to the canonical `apache/logging-log4j2` GitHub repository root. ([github.com](https://github.com/apache/logging-log4j2?utm_source=openai)) Added the two-sentence description based on the Log4j 1 to Log4j 2 bridge behavior, and left `language` absent because this artifact is not Kotlin/Groovy/Scala-specific. ([logging.apache.org](https://logging.apache.org/log4j/2.x/manual/migration.html?utm_source=openai))
+
+Validation:
+- `jq empty metadata/org.apache.logging.log4j/log4j-1.2-api/index.json` passed.
+- `git diff --check` passed.
+- Rendered URL checks returned HTTP `200`.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.logging.log4j:log4j-1.2-api:2.18.0 --stacktrace` failed because `metadata/.../log4j-1.2-api/2.18.0/reachability-metadata.json` is missing, unrelated to the URL/description edit.
+Ran agent for org.apache.logging.log4j:log4j-1.2-api:2.18.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b/build/agent-url-discovery-logs/org.apache.logging.log4j-log4j-1.2-api-2.18.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6772-68d0259b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 24s
+9 actionable tasks: 1 executed, 8 up-to-date
