@@ -7,9 +7,11 @@
 package org_apache_groovy.groovy_groovysh
 
 import org.apache.groovy.groovysh.BufferManager
+import org.apache.groovy.groovysh.util.CommandArgumentParser
 import org.junit.jupiter.api.Test
 
 import static org.assertj.core.api.Assertions.assertThat
+import static org.assertj.core.api.Assertions.assertThatThrownBy
 
 public class Groovy_groovyshTest {
     @Test
@@ -71,5 +73,24 @@ public class Groovy_groovyshTest {
         assertThat(manager.size()).isEqualTo(1)
         assertThat(manager.selected).isZero()
         assertThat(manager.current()).containsExactly('initial buffer line')
+    }
+
+    @Test
+    void parsesCommandArgumentsWithQuotesAndEscapedBlanks() {
+        List<String> arguments = CommandArgumentParser.parseLine(
+                '  load "two words" \'single quoted\' escaped\\ space tail  ')
+
+        assertThat(arguments).containsExactly('load', 'two words', 'single quoted', 'escaped space', 'tail')
+    }
+
+    @Test
+    void limitsParsedCommandArgumentsAndRejectsUnclosedQuotes() {
+        List<String> arguments = CommandArgumentParser.parseLine('command first second third', 2)
+
+        assertThat(arguments).containsExactly('command', 'first')
+
+        assertThatThrownBy { CommandArgumentParser.parseLine('command "unfinished') }
+                .isInstanceOf(IllegalArgumentException)
+                .hasMessageContaining('Missing closing "')
     }
 }
