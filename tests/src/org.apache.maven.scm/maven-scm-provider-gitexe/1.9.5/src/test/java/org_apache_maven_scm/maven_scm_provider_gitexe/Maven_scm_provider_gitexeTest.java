@@ -33,6 +33,7 @@ import org.apache.maven.scm.command.info.InfoItem;
 import org.apache.maven.scm.command.remoteinfo.RemoteInfoScmResult;
 import org.apache.maven.scm.log.ScmLogger;
 import org.apache.maven.scm.provider.git.gitexe.GitExeScmProvider;
+import org.apache.maven.scm.provider.git.gitexe.command.AnonymousCommandLine;
 import org.apache.maven.scm.provider.git.gitexe.command.GitCommandLineUtils;
 import org.apache.maven.scm.provider.git.gitexe.command.add.GitAddCommand;
 import org.apache.maven.scm.provider.git.gitexe.command.blame.GitBlameConsumer;
@@ -248,6 +249,18 @@ public class Maven_scm_provider_gitexeTest {
         GitExeScmProvider provider = new GitExeScmProvider();
 
         assertThat(provider.getInfoCommand()).isInstanceOf(GitInfoCommand.class);
+    }
+
+    @Test
+    void anonymousCommandLineRedactsPasswordsInUrls() {
+        AnonymousCommandLine commandline = new AnonymousCommandLine();
+        commandline.setExecutable("git");
+        commandline.createArg().setValue("push");
+        commandline.createArg().setValue("https://user:secret@example.test/repository.git");
+
+        assertThat(commandline.toString())
+                .contains("https://user:********@example.test/repository.git")
+                .doesNotContain("secret");
     }
 
     @Test
