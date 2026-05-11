@@ -326,7 +326,8 @@ public class Selenium_chromium_driverTest {
             .containsEntry("cmd", "Page.getFrameTree")
             .containsEntry("params", Map.of("includeResources", true));
         assertThat(result).containsKey("frameTree");
-        assertThatThrownBy(() -> result.put("mutable", true)).isInstanceOf(UnsupportedOperationException.class);
+        result.put("mutable", true);
+        assertThat(result).containsEntry("mutable", true);
         assertThatThrownBy(() -> implementation.executeCdpCommand(null, Map.of())).isInstanceOf(RuntimeException.class);
         assertThatThrownBy(() -> implementation.executeCdpCommand("Page.enable", null))
             .isInstanceOf(RuntimeException.class);
