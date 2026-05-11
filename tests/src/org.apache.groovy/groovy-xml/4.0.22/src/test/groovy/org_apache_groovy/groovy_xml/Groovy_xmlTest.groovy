@@ -124,6 +124,18 @@ public class Groovy_xmlTest {
     }
 
     @Test
+    void xmlUtilEscapesXmlTextAndControlCharacters() {
+        String xmlText = 'Tom & Jerry <Cartoon> "Best" \'Classic\''
+        String escapedText = XmlUtil.escapeXml(xmlText)
+
+        assertThat(escapedText).isEqualTo('Tom &amp; Jerry &lt;Cartoon&gt; &quot;Best&quot; &apos;Classic&apos;')
+
+        String escapedControls = XmlUtil.escapeControlCharacters("line\n tab\t zero${(char) 0}")
+
+        assertThat(escapedControls).isEqualTo('line&#10; tab&#9; zero&#0;')
+    }
+
+    @Test
     void domBuilderCreatesStandardDomDocuments() {
         String xml = '''
                 <inventory>
