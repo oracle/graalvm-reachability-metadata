@@ -27,11 +27,13 @@ import org.apache.logging.slf4j.Log4jMarkerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.ILoggerFactory;
+import org.slf4j.IMarkerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+import org.slf4j.helpers.BasicMarkerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 import org.slf4j.spi.LocationAwareLogger;
 
@@ -131,6 +133,28 @@ public class Log4j_slf4j_implTest {
                     .contains("accepted parent marker")
                     .doesNotContain("rejected unrelated marker")
                     .doesNotContain("rejected unmarked message");
+        }
+    }
+
+    @Test
+    void convertsForeignSlf4jMarkersForLog4jMarkerFilters() {
+        try (CapturedLogger capturedLogger = CapturedLogger.create(
+                "convertsForeignSlf4jMarkersForLog4jMarkerFilters",
+                Level.TRACE,
+                "%message%n",
+                MarkerFilter.createFilter("FOREIGN_PARENT", Filter.Result.ACCEPT, Filter.Result.DENY))) {
+            Logger logger = LoggerFactory.getLogger(capturedLogger.getLoggerName());
+            IMarkerFactory markerFactory = new BasicMarkerFactory();
+            Marker parentMarker = markerFactory.getMarker("FOREIGN_PARENT");
+            Marker childMarker = markerFactory.getMarker("FOREIGN_CHILD");
+            childMarker.add(parentMarker);
+
+            logger.info(childMarker, "accepted converted child marker");
+            logger.info(markerFactory.getMarker("FOREIGN_OTHER"), "rejected converted unrelated marker");
+
+            assertThat(capturedLogger.getOutput())
+                    .contains("accepted converted child marker")
+                    .doesNotContain("rejected converted unrelated marker");
         }
     }
 
