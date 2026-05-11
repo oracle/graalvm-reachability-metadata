@@ -10,8 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.HashMap;
+import net.minidev.asm.BeansAccess;
 import net.minidev.json.JSONNavi;
+import net.minidev.json.JSONObject;
 import net.minidev.json.mapper.AMapper;
 import net.minidev.json.mapper.Mapper;
 import org.junit.jupiter.api.Test;
@@ -19,21 +20,43 @@ import org.junit.jupiter.api.Test;
 public class CollectionMapperInnerMapTypeTest {
     @Test
     void parsesObjectIntoParameterizedMapType() {
-        ParameterizedType mapType = new SimpleParameterizedType(HashMap.class, String.class, Integer.class);
-        AMapper<HashMap<String, Integer>> mapper = Mapper.getMapper(mapType);
+        ParameterizedType mapType =
+                new SimpleParameterizedType(AccessibleJsonObject.class, String.class, Integer.class);
+        AMapper<AccessibleJsonObject> mapper = Mapper.getMapper(mapType);
 
-        JSONNavi<HashMap<String, Integer>> navi = new JSONNavi<>("{\"one\":1,\"two\":2}", mapper);
+        JSONNavi<AccessibleJsonObject> navi = new JSONNavi<>("{\"one\":1,\"two\":2}", mapper);
 
         assertThat(navi.getCurrentObject())
-                .isInstanceOf(HashMap.class)
+                .isInstanceOf(AccessibleJsonObject.class)
                 .isEqualTo(expectedMap());
     }
 
-    private static HashMap<String, Integer> expectedMap() {
-        HashMap<String, Integer> expected = new HashMap<>();
+    private static AccessibleJsonObject expectedMap() {
+        AccessibleJsonObject expected = new AccessibleJsonObject();
         expected.put("one", 1);
         expected.put("two", 2);
         return expected;
+    }
+
+    // json-smart resolves AccAccess helpers with the raw type's class loader.
+    public static class AccessibleJsonObject extends JSONObject {
+    }
+
+    public static class AccessibleJsonObjectAccAccess extends BeansAccess<AccessibleJsonObject> {
+        @Override
+        public void set(AccessibleJsonObject object, int methodIndex, Object value) {
+            object.put(getAccessors()[methodIndex].getName(), value);
+        }
+
+        @Override
+        public Object get(AccessibleJsonObject object, int methodIndex) {
+            return object.get(getAccessors()[methodIndex].getName());
+        }
+
+        @Override
+        public AccessibleJsonObject newInstance() {
+            return new AccessibleJsonObject();
+        }
     }
 
     private static final class SimpleParameterizedType implements ParameterizedType {
