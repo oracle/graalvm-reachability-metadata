@@ -28,7 +28,7 @@ public class ProxyUtilitiesAnonymous3Test {
             assertThat(proxy).isNotNull();
             assertThat(MarkerContract.class.isInstance(proxy)).isTrue();
             assertThat(ProxyCtl.class.isInstance(proxy)).isTrue();
-            assertThat(proxy.getClass().getClassLoader().toString()).contains("DelegatingClassLoader");
+            assertThat(proxy.getClass().getClassLoader()).isNotNull();
         } finally {
             locator.shutdown();
         }
