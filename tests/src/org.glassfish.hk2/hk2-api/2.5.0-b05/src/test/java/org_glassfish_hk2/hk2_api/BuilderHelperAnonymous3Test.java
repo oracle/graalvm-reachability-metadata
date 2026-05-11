@@ -23,7 +23,8 @@ import org.junit.jupiter.api.Test;
 public class BuilderHelperAnonymous3Test {
     @Test
     void getMetadataValuesReadsMetadataAnnotatedAnnotationMethods() {
-        final ServiceMetadata annotation = AnnotatedService.class.getAnnotation(ServiceMetadata.class);
+        final Class<AnnotatedService> annotatedServiceAnnotationAccess = AnnotatedService.class;
+        final ServiceMetadata annotation = annotatedServiceAnnotationAccess.getAnnotation(ServiceMetadata.class);
         final Map<String, List<String>> metadata = new HashMap<>();
 
         BuilderHelper.getMetadataValues(annotation, metadata);
