@@ -11,6 +11,7 @@ import groovy.console.TextTreeNodeMaker
 import groovy.console.ui.AstNodeToScriptAdapter
 import groovy.console.ui.CompilePhaseAdapter
 import groovy.console.ui.HistoryRecord
+import groovy.console.ui.OutputTransforms
 import groovy.console.ui.ScriptToTreeNodeAdapter
 import groovy.console.ui.SystemOutputInterceptor
 import groovy.console.ui.TreeNodeWithProperties
@@ -20,10 +21,14 @@ import org.codehaus.groovy.control.CompilePhase
 import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 
+import javax.swing.ImageIcon
 import javax.swing.JTextPane
 import javax.swing.text.AbstractDocument
 import javax.swing.text.DefaultStyledDocument
 import javax.swing.text.StyleConstants
+import java.awt.image.BufferedImage
+import java.nio.file.Files
+import java.nio.file.Path
 import static org.assertj.core.api.Assertions.assertThat
 
 public class Groovy_consoleTest {
@@ -229,6 +234,39 @@ assert new Calculator<Integer>().twice(21) == 42
         assertThat(editor.actionMap.get('TextEditor-shiftTabAction')).isNotNull()
         assertThat(editor.getPageFormat(0)).isNotNull()
         assertThat(editor.getPrintable(0)).isSameAs(editor)
+    }
+
+    @Test
+    void transformsConsoleResultsIntoDisplayableValues() {
+        String originalUserHome = System.getProperty('user.home')
+        Path tempHome = Files.createTempDirectory('groovy-console-output-transforms')
+
+        try {
+            System.setProperty('user.home', tempHome.toString())
+            List<Closure> transforms = OutputTransforms.loadOutputTransforms()
+
+            BufferedImage image = new BufferedImage(2, 3, BufferedImage.TYPE_INT_ARGB)
+            ImageIcon icon = OutputTransforms.transformResult(image, transforms) as ImageIcon
+            assertThat(icon.iconWidth).isEqualTo(2)
+            assertThat(icon.iconHeight).isEqualTo(3)
+
+            String inspected = OutputTransforms.transformResult([answer: 42], transforms) as String
+            assertThat(inspected).contains('answer', '42')
+            assertThat(OutputTransforms.transformResult(null, transforms)).isNull()
+
+            List<Closure> customTransforms = [
+                    { Object value -> value instanceof Number ? null : 'not-a-number' },
+                    { Object value -> value instanceof Number ? value * 2 : null }
+            ]
+            assertThat(OutputTransforms.transformResult(21, customTransforms)).isEqualTo(42)
+        } finally {
+            if (originalUserHome == null) {
+                System.clearProperty('user.home')
+            } else {
+                System.setProperty('user.home', originalUserHome)
+            }
+            Files.deleteIfExists(tempHome)
+        }
     }
 
     @Test
