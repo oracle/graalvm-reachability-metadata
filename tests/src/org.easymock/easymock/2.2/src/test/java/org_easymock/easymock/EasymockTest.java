@@ -8,7 +8,7 @@ package org_easymock.easymock;
 
 import org.junit.jupiter.api.Test;
 
-class EasymockTest {
+public class EasymockTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
