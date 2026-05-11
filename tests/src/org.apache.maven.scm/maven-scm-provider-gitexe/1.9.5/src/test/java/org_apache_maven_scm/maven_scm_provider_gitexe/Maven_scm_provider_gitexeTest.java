@@ -11,12 +11,15 @@ import static org.assertj.core.groups.Tuple.tuple;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.scm.ChangeFile;
 import org.apache.maven.scm.ChangeSet;
@@ -29,6 +32,7 @@ import org.apache.maven.scm.ScmFileStatus;
 import org.apache.maven.scm.ScmRevision;
 import org.apache.maven.scm.ScmTag;
 import org.apache.maven.scm.command.blame.BlameLine;
+import org.apache.maven.scm.command.checkout.CheckOutScmResult;
 import org.apache.maven.scm.command.info.InfoItem;
 import org.apache.maven.scm.command.remoteinfo.RemoteInfoScmResult;
 import org.apache.maven.scm.log.ScmLogger;
@@ -59,6 +63,7 @@ import org.apache.maven.scm.provider.git.gitexe.command.tag.GitTagCommand;
 import org.apache.maven.scm.provider.git.gitexe.command.update.GitLatestRevisionCommandConsumer;
 import org.apache.maven.scm.provider.git.gitexe.command.update.GitUpdateCommand;
 import org.apache.maven.scm.provider.git.repository.GitScmProviderRepository;
+import org.apache.maven.scm.repository.ScmRepository;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -252,6 +257,38 @@ public class Maven_scm_provider_gitexeTest {
     }
 
     @Test
+    void providerChecksOutLocalGitRepositoryAndReportsTrackedFiles() throws Exception {
+        Path sourceRepository = Files.createDirectory(temporaryDirectory.resolve("source-repository"));
+        git(sourceRepository, "init");
+        git(sourceRepository, "symbolic-ref", "HEAD", "refs/heads/master");
+        git(sourceRepository, "config", "user.email", "scm@example.test");
+        git(sourceRepository, "config", "user.name", "SCM Test");
+        git(sourceRepository, "config", "commit.gpgsign", "false");
+        Files.write(sourceRepository.resolve("README.md"), Collections.singletonList("checkout content"));
+        Files.createDirectories(sourceRepository.resolve("src"));
+        Files.write(sourceRepository.resolve("src/App.txt"), Collections.singletonList("nested content"));
+        git(sourceRepository, "add", ".");
+        git(sourceRepository, "commit", "-m", "initial commit");
+
+        GitExeScmProvider provider = new GitExeScmProvider();
+        provider.addListener(LOGGER);
+        ScmRepository repository = new ScmRepository(
+                "git", new GitScmProviderRepository(sourceRepository.toUri().toString()));
+        Path checkoutDirectory = temporaryDirectory.resolve("checkout");
+
+        CheckOutScmResult result = provider.checkOut(repository, new ScmFileSet(checkoutDirectory.toFile()));
+
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getCheckedOutFiles())
+                .extracting(ScmFile::getPath, ScmFile::getStatus)
+                .contains(
+                        tuple("README.md", ScmFileStatus.CHECKED_IN),
+                        tuple("src/App.txt", ScmFileStatus.CHECKED_IN));
+        assertThat(Files.readString(checkoutDirectory.resolve("README.md"))).contains("checkout content");
+        assertThat(Files.readString(checkoutDirectory.resolve("src/App.txt"))).contains("nested content");
+    }
+
+    @Test
     void anonymousCommandLineRedactsPasswordsInUrls() {
         AnonymousCommandLine commandline = new AnonymousCommandLine();
         commandline.setExecutable("git");
@@ -380,6 +417,30 @@ public class Maven_scm_provider_gitexeTest {
 
     private static List<String> arguments(Commandline commandline) {
         return Arrays.asList(commandline.getArguments());
+    }
+
+    private static void git(Path workingDirectory, String... arguments) throws Exception {
+        List<String> command = new ArrayList<String>();
+        command.add("git");
+        command.addAll(Arrays.asList(arguments));
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.directory(workingDirectory.toFile());
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+        boolean completed = process.waitFor(10, TimeUnit.SECONDS);
+        if (!completed) {
+            process.destroyForcibly();
+            process.waitFor(5, TimeUnit.SECONDS);
+        }
+        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+
+        assertThat(completed)
+                .describedAs("git command timed out: %s%n%s", String.join(" ", command), output)
+                .isTrue();
+        assertThat(process.exitValue())
+                .describedAs("git command failed: %s%n%s", String.join(" ", command), output)
+                .isZero();
     }
 
     private static final class NoOpScmLogger implements ScmLogger {
