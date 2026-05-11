@@ -8,7 +8,7 @@ package org_xmlunit.xmlunit_legacy;
 
 import org.junit.jupiter.api.Test;
 
-class Xmlunit_legacyTest {
+public class Xmlunit_legacyTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
