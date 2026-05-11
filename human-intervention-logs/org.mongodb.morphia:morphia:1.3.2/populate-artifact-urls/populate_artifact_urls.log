@@ -1,0 +1,225 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2797-21ddcfac
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e193e-5b44-7b33-9a6c-eed34dc9b3ba
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mongodb.morphia:morphia:1.3.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.3.2].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2797-21ddcfac/metadata/org.mongodb.morphia/morphia/index.json
+- Entry selector: "metadata-version" = "1.3.2"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/mongodb/morphia/morphia/$version$/morphia-$version$-sources.jar
+- repository-url: https://github.com/MorphiaOrg/morphia
+- test-code-url: https://github.com/MorphiaOrg/morphia/tree/r$version$/morphia/src/test
+- documentation-url: https://repo1.maven.org/maven2/org/mongodb/morphia/morphia/$version$/morphia-$version$-javadoc.jar
+- description: Morphia is a Java object-document mapper for MongoDB that maps annotated domain objects to and from BSON documents. It builds on the MongoDB Java driver to provide datastore, query, update, and validation APIs for persistence-focused JVM applications.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.3.2
+- Entry metadata-version: 1.3.2
+- Entry test-version: 1.3.2
+- Entry tested-versions: [1.3.2]
+codex
+I’ll verify the existing URL templates against the 1.3.2 artifacts/tag, then inspect the JSON before making only the permitted missing-field change.
+web search: 
+web search: org.mongodb.morphia morphia 1.3.2 maven sources javadoc
+codex
+The Maven Central entry confirms the source and javadoc jars exist for 1.3.2, and the GitHub tag pattern is the right candidate for tests. I’m checking the local metadata now so I can avoid touching any populated fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.mongodb.morphia/morphia/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2797-21ddcfac
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.3.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/morphia/morphia/$version$/morphia-$version$-sources.jar",
+    "repository-url" : "https://github.com/MorphiaOrg/morphia",
+    "test-code-url" : "https://github.com/MorphiaOrg/morphia/tree/r$version$/morphia/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/morphia/morphia/$version$/morphia-$version$-javadoc.jar",
+    "description" : "Morphia is a Java object-document mapper for MongoDB that maps annotated domain objects to and from BSON documents. It builds on the MongoDB Java driver to provide datastore, query, update, and validation APIs for persistence-focused JVM applications.",
+    "tested-versions" : [
+      "1.3.2"
+    ],
+    "allowed-packages" : [
+      "org.mongodb.morphia",
+      "relocated.morphia.org.apache.commons.collections"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo1.maven.org/maven2/org/mongodb/morphia/morphia/1.3.2/morphia-1.3.2-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2797-21ddcfac
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Mon, 11 May 2026 22:53:09 GMT
+content-type: application/java-archive
+content-length: 1044551
+cf-ray: 9fa4c217aee7bac0-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 23877
+etag: "7a9a59ceb89f6352f582620f86976f71"
+last-modified: Tue, 31 Jan 2017 15:25:32 GMT
+x-checksum-md5: 7a9a59ceb89f6352f582620f86976f71
+x-checksum-sha1: 3d96a8d2cbfb5b74b7d0f55d1db091f6d3237e56
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0 1020k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo1.maven.org/maven2/org/mongodb/morphia/morphia/1.3.2/morphia-1.3.2-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2797-21ddcfac
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Mon, 11 May 2026 22:53:09 GMT
+content-type: application/java-archive
+content-length: 305825
+cf-ray: 9fa4c217a896bb0c-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 232337
+etag: "c0db73bf979b01223ac8ae87a67ced7f"
+last-modified: Tue, 31 Jan 2017 15:25:30 GMT
+x-checksum-md5: c0db73bf979b01223ac8ae87a67ced7f
+x-checksum-sha1: 47fb190483c8d5515c93cf2732ec7b136915d55f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  298k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/MorphiaOrg/morphia/tree/r1.3.2/morphia/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2797-21ddcfac
+ succeeded in 751ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Mon, 11 May 2026 22:53:10 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"d9c4cd636e173f71377f2fd3bc9cf328"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=WvfbeZLEEYo6EqR3t2n71itE%2BhxtOjG5MqPSufRlKNONNaN%2BnuJqjD2VrA5w1Oxfy5%2FdqIn3YrKDDNhwQX8a9lxzdVAWhDINpQP6YCFFgJ%2BMPHuOITADqIvrWWTSuz4luJZQQ7xPszoVTgUtU7qYtP5%2BkpS16%2F1k1m4kyTjpzIELXUSvRsUckbRR6Yzy1HDT5qwMmCDxk3Fw3oz9AwqKvd77mI2ylIFyy5n3FOHzV7mqULNztwnCaE0g%2Fmrr20c1dJLXSk%2FnM%2BamPI5RJ3X24Q%3D%3D--wtf%2BXfQzEcrO7OYs--TKKXJhPjlwTyCmjx07j%2F%2Fg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1171624889.1778539989; expires=Tue, 11 May 2027 22:53:09 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 11 May 2027 22:53:09 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5114:1810FF:2F23FB7:23A98DF:6A025DD5
+
+
+web search: 
+web search: 
+web search: 
+web search: org.mongodb.morphia morphia 1.3.2 Maven Central sources javadoc
+web search: 
+web search: https://github.com/MorphiaOrg/morphia/tree/r1.3.2/morphia/src/test
+codex
+The target entry already has non-blank source, repository, test, documentation, and description fields. Since Morphia is a Java library rather than a Kotlin/Groovy/Scala-specific artifact, the missing `language` field should stay absent under the provided rules.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.mongodb.morphia/morphia/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2797-21ddcfac
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.mongodb.morphia/morphia/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2797-21ddcfac
+ succeeded in 0ms:
+web search: 
+web search: org.mongodb.morphia morphia 1.3.2 Maven Central
+web search: 
+web search: https://repo1.maven.org/maven2/org/mongodb/morphia/morphia/1.3.2/
+codex
+Verified the entry and left it unchanged. All requested URL and description fields were already non-blank, and the current templates render correctly for `1.3.2`: Maven Central lists both the `sources.jar` and `javadoc.jar`, and the GitHub test URL resolves under tag `r1.3.2`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mongodb/morphia/morphia/1.3.2/))
+
+Morphia is a Java MongoDB object-document mapper, not a Kotlin, Groovy, or Scala-specific library, so I left `language` absent. ([github.com](https://github.com/MorphiaOrg/morphia))
+
+Validation run: `jq empty metadata/org.mongodb.morphia/morphia/index.json`. `git diff` shows no changes.
+tokens used
+32,125
+Verified the entry and left it unchanged. All requested URL and description fields were already non-blank, and the current templates render correctly for `1.3.2`: Maven Central lists both the `sources.jar` and `javadoc.jar`, and the GitHub test URL resolves under tag `r1.3.2`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mongodb/morphia/morphia/1.3.2/))
+
+Morphia is a Java MongoDB object-document mapper, not a Kotlin, Groovy, or Scala-specific library, so I left `language` absent. ([github.com](https://github.com/MorphiaOrg/morphia))
+
+Validation run: `jq empty metadata/org.mongodb.morphia/morphia/index.json`. `git diff` shows no changes.
+Ran agent for org.mongodb.morphia:morphia:1.3.2 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2797-21ddcfac/build/agent-url-discovery-logs/org.mongodb.morphia-morphia-1.3.2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2797-21ddcfac/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 42s
+9 actionable tasks: 1 executed, 8 up-to-date
