@@ -17,7 +17,9 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +48,7 @@ import org.eclipse.jetty.http2.server.HTTP2ServerConnectionFactory;
 import org.eclipse.jetty.http2.server.RawHTTP2ServerConnectionFactory;
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -226,6 +229,45 @@ public class Http2_serverTest {
     }
 
     @Test
+    void clearTextHttp2ServerSupportsHttp1UpgradeToH2c() throws Exception {
+        HttpConfiguration configuration = new HttpConfiguration();
+        HTTP2CServerConnectionFactory http2Factory = new HTTP2CServerConnectionFactory(configuration);
+        http2Factory.setMaxConcurrentStreams(3);
+
+        Server server = newServer(new HttpConnectionFactory(configuration), http2Factory);
+        server.setHandler(new AbstractHandler() {
+            @Override
+            public void handle(
+                    String target,
+                    Request baseRequest,
+                    HttpServletRequest request,
+                    HttpServletResponse response) throws IOException, ServletException {
+                baseRequest.setHandled(true);
+                if (!"/upgraded".equals(target)) {
+                    response.sendError(HttpStatus.NOT_FOUND_404);
+                    return;
+                }
+
+                response.setStatus(HttpStatus.OK_200);
+                response.setContentType("text/plain;charset=utf-8");
+                response.setHeader("x-served-after-upgrade", "true");
+                response.getOutputStream().write("response after h2c upgrade".getBytes(StandardCharsets.UTF_8));
+            }
+        });
+
+        try (StartedServer startedServer = start(server);
+             Http2SocketClient client = Http2SocketClient.upgrade(startedServer.port(), "/upgraded")) {
+            assertThat(client.getServerSettings()).containsEntry(SettingsFrame.MAX_CONCURRENT_STREAMS, 3);
+
+            Http2Response response = client.readResponse(1);
+            assertThat(response.status()).isEqualTo(HttpStatus.OK_200);
+            assertThat(response.headers().get("x-served-after-upgrade")).isEqualTo("true");
+            assertThat(response.trailers().size()).isZero();
+            assertThat(response.bodyAsString()).isEqualTo("response after h2c upgrade");
+        }
+    }
+
+    @Test
     void rawHttp2ServerConnectionFactoryDispatchesRequestsToSessionListener() throws Exception {
         CountDownLatch accepted = new CountDownLatch(1);
         CountDownLatch prefaced = new CountDownLatch(1);
@@ -282,10 +324,10 @@ public class Http2_serverTest {
         }
     }
 
-    private static Server newServer(ConnectionFactory connectionFactory) {
+    private static Server newServer(ConnectionFactory... connectionFactories) {
         Server server = new Server();
         server.setStopTimeout(5000);
-        ServerConnector connector = new ServerConnector(server, connectionFactory);
+        ServerConnector connector = new ServerConnector(server, connectionFactories);
         connector.setHost("127.0.0.1");
         connector.setIdleTimeout(5000);
         server.addConnector(connector);
@@ -332,28 +374,67 @@ public class Http2_serverTest {
         private final Map<Integer, Integer> serverSettings;
 
         private Http2SocketClient(Socket socket) throws Exception {
+            this(socket, Http2SocketClient::sendPrefaceAndReadSettings);
+        }
+
+        private Http2SocketClient(Socket socket, Initializer initializer) throws Exception {
             this.socket = socket;
             this.input = socket.getInputStream();
             this.output = socket.getOutputStream();
-            this.serverSettings = sendPrefaceAndReadSettings();
+            this.serverSettings = initializer.initialize(this);
         }
 
         private static Http2SocketClient connect(int port) throws Exception {
+            Socket socket = connectSocket(port);
+            return new Http2SocketClient(socket);
+        }
+
+        private static Http2SocketClient upgrade(int port, String path) throws Exception {
+            Socket socket = connectSocket(port);
+            return new Http2SocketClient(socket, client -> client.upgradeToHttp2(port, path));
+        }
+
+        private static Socket connectSocket(int port) throws IOException {
             Socket socket = new Socket();
             socket.connect(new InetSocketAddress("127.0.0.1", port), 5000);
             socket.setSoTimeout(5000);
-            return new Http2SocketClient(socket);
+            return socket;
         }
 
         private Map<Integer, Integer> getServerSettings() {
             return serverSettings;
         }
 
+        private Map<Integer, Integer> upgradeToHttp2(int port, String path) throws Exception {
+            byte[] settings = createHttp2Settings(SettingsFrame.INITIAL_WINDOW_SIZE, 65_535);
+            String http2Settings = Base64.getUrlEncoder().withoutPadding().encodeToString(settings);
+            String request = "GET " + path + " HTTP/1.1\r\n"
+                    + "Host: localhost:" + port + "\r\n"
+                    + "Connection: Upgrade, HTTP2-Settings\r\n"
+                    + "Upgrade: h2c\r\n"
+                    + "HTTP2-Settings: " + http2Settings + "\r\n"
+                    + "\r\n";
+            output.write(request.getBytes(StandardCharsets.US_ASCII));
+            output.flush();
+
+            String response = readHttp1Headers();
+            assertThat(response).startsWith("HTTP/1.1 101 ");
+            assertThat(response.toLowerCase(Locale.ROOT)).contains("upgrade: h2c");
+
+            output.write(CLIENT_PREFACE);
+            writeFrame(FRAME_TYPE_SETTINGS, 0, 0, new byte[0]);
+            output.flush();
+            return readSettingsAndAck();
+        }
+
         private Map<Integer, Integer> sendPrefaceAndReadSettings() throws Exception {
             output.write(CLIENT_PREFACE);
             writeFrame(FRAME_TYPE_SETTINGS, 0, 0, new byte[0]);
             output.flush();
+            return readSettingsAndAck();
+        }
 
+        private Map<Integer, Integer> readSettingsAndAck() throws Exception {
             while (true) {
                 Http2Frame frame = readFrame();
                 if (frame.type() == FRAME_TYPE_SETTINGS && (frame.flags() & FLAG_ACK) == 0) {
@@ -472,6 +553,35 @@ public class Http2_serverTest {
             output.write(payload);
         }
 
+        private String readHttp1Headers() throws IOException {
+            ByteArrayOutputStream headers = new ByteArrayOutputStream();
+            byte[] delimiter = "\r\n\r\n".getBytes(StandardCharsets.US_ASCII);
+            int matched = 0;
+            while (matched < delimiter.length) {
+                int read = input.read();
+                if (read < 0) {
+                    throw new EOFException("Unexpected end of HTTP/1.1 upgrade response");
+                }
+                headers.write(read);
+                matched = read == delimiter[matched] ? matched + 1 : 0;
+                if (headers.size() > 8192) {
+                    throw new IOException("HTTP/1.1 upgrade response headers too large");
+                }
+            }
+            return new String(headers.toByteArray(), StandardCharsets.US_ASCII);
+        }
+
+        private byte[] createHttp2Settings(int key, int value) {
+            return new byte[] {
+                    (byte) ((key >>> 8) & 0xFF),
+                    (byte) (key & 0xFF),
+                    (byte) ((value >>> 24) & 0xFF),
+                    (byte) ((value >>> 16) & 0xFF),
+                    (byte) ((value >>> 8) & 0xFF),
+                    (byte) (value & 0xFF)
+            };
+        }
+
         private Map<Integer, Integer> parseSettings(byte[] payload) {
             assertThat(payload.length % 6).isZero();
             Map<Integer, Integer> settings = new LinkedHashMap<>();
@@ -487,6 +597,11 @@ public class Http2_serverTest {
         @Override
         public void close() throws IOException {
             socket.close();
+        }
+
+        @FunctionalInterface
+        private interface Initializer {
+            Map<Integer, Integer> initialize(Http2SocketClient client) throws Exception;
         }
     }
 
