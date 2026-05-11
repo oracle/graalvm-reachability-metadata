@@ -6,12 +6,14 @@
  */
 package org_apache_groovy.groovy_xml
 
+import groovy.lang.Writable
 import groovy.namespace.QName
 import groovy.util.Node
 import groovy.util.NodeList
 import groovy.xml.DOMBuilder
 import groovy.xml.MarkupBuilder
 import groovy.xml.Namespace
+import groovy.xml.StreamingMarkupBuilder
 import groovy.xml.XmlNodePrinter
 import groovy.xml.XmlParser
 import groovy.xml.XmlSlurper
@@ -121,6 +123,37 @@ public class Groovy_xmlTest {
         assertThat((item.getProperty('name') as GPathResult).text()).isEqualTo('Tom & Jerry')
         assertThat((item.getProperty('tags') as GPathResult).getProperty('tag').collect { tag -> tag.text() })
                 .containsExactly('xml', 'groovy')
+    }
+
+    @Test
+    void streamingMarkupBuilderBindsWritableXmlWithNamespacesEscapingAndRawMarkup() {
+        Namespace catalogNamespace = new Namespace('urn:catalog', 'cat')
+        QName itemName = catalogNamespace.get('item')
+        QName nameName = catalogNamespace.get('name')
+        StreamingMarkupBuilder builder = new StreamingMarkupBuilder()
+        builder.encoding = 'UTF-8'
+
+        Writable writable = builder.bind {
+            mkp.xmlDeclaration()
+            mkp.declareNamespace(cat: 'urn:catalog')
+            'cat:catalog' {
+                'cat:item'(id: 'i1') {
+                    'cat:name'('Tom & Jerry')
+                }
+                mkp.yieldUnescaped('<cat:item id="i2"><cat:name>Raw insert</cat:name></cat:item>')
+            }
+        }
+
+        String xml = writable.toString()
+        Node catalog = new XmlParser(false, true).parseText(xml)
+        NodeList items = catalog.getAt(itemName)
+
+        assertThat(xml).startsWith('<?xml')
+        assertThat(catalog.name()).isEqualTo(catalogNamespace.get('catalog'))
+        assertThat(items).hasSize(2)
+        assertThat((items.get(0) as Node).getAt(nameName).get(0).text()).isEqualTo('Tom & Jerry')
+        assertThat((items.get(1) as Node).attributes()).containsEntry('id', 'i2')
+        assertThat((items.get(1) as Node).getAt(nameName).get(0).text()).isEqualTo('Raw insert')
     }
 
     @Test
