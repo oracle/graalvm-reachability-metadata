@@ -33,6 +33,7 @@ import org.springframework.boot.actuate.endpoint.web.EndpointMediaTypes;
 import org.springframework.boot.actuate.endpoint.web.Link;
 import org.springframework.boot.actuate.endpoint.web.PathMappedEndpoint;
 import org.springframework.boot.actuate.endpoint.web.WebEndpointResponse;
+import org.springframework.boot.actuate.env.EnvironmentEndpoint;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.PingHealthIndicator;
 import org.springframework.boot.actuate.health.SimpleHttpCodeStatusMapper;
@@ -43,6 +44,8 @@ import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.boot.actuate.info.JavaInfoContributor;
 import org.springframework.boot.actuate.info.MapInfoContributor;
 import org.springframework.boot.actuate.system.DiskSpaceHealthIndicator;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.util.MimeType;
 import org.springframework.util.unit.DataSize;
 
@@ -143,6 +146,41 @@ public class Spring_boot_actuatorTest {
         assertThat(endpoint.info())
                 .containsKeys("app", "build", "java");
         assertThat(endpoint.info().get("build")).isEqualTo(Map.of("number", "42"));
+    }
+
+    @Test
+    void environmentEndpointDescribesProfilesFiltersPropertiesAndSanitizesValues() {
+        StandardEnvironment environment = new StandardEnvironment();
+        environment.setActiveProfiles("test");
+        environment.getPropertySources().addFirst(new MapPropertySource("applicationConfig", Map.of(
+                "demo.name", "actuator",
+                "demo.message", "Hello ${demo.name}",
+                "demo.password", "secret",
+                "other.value", "ignored")));
+
+        EnvironmentEndpoint endpoint = new EnvironmentEndpoint(environment);
+        EnvironmentEndpoint.EnvironmentDescriptor descriptor = endpoint.environment("demo\\..*");
+        assertThat(descriptor.getActiveProfiles()).containsExactly("test");
+        assertThat(descriptor.getPropertySources())
+                .anySatisfy((source) -> {
+                    assertThat(source.getName()).isEqualTo("applicationConfig");
+                    assertThat(source.getProperties()).containsOnlyKeys("demo.name", "demo.message", "demo.password");
+                    assertThat(source.getProperties().get("demo.name").getValue()).isEqualTo("actuator");
+                    assertThat(source.getProperties().get("demo.message").getValue()).isEqualTo("Hello actuator");
+                    assertThat(source.getProperties().get("demo.password").getValue())
+                            .isEqualTo(SanitizableData.SANITIZED_VALUE);
+                });
+
+        EnvironmentEndpoint.EnvironmentEntryDescriptor passwordEntry = endpoint.environmentEntry("demo.password");
+        assertThat(passwordEntry.getProperty().getSource()).isEqualTo("applicationConfig");
+        assertThat(passwordEntry.getProperty().getValue()).isEqualTo(SanitizableData.SANITIZED_VALUE);
+        assertThat(passwordEntry.getPropertySources())
+                .filteredOn((source) -> "applicationConfig".equals(source.getName()))
+                .singleElement()
+                .satisfies((source) -> assertThat(source.getProperty().getValue())
+                        .isEqualTo(SanitizableData.SANITIZED_VALUE));
+
+        assertThat(endpoint.environmentEntry("does.not.exist").getProperty()).isNull();
     }
 
     @Test
