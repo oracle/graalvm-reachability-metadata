@@ -187,6 +187,45 @@ public class Http2_serverTest {
     }
 
     @Test
+    void clearTextHttp2ServerSendsResponseTrailers() throws Exception {
+        Server server = newServer(new HTTP2CServerConnectionFactory(new HttpConfiguration()));
+        server.setHandler(new AbstractHandler() {
+            @Override
+            public void handle(
+                    String target,
+                    Request baseRequest,
+                    HttpServletRequest request,
+                    HttpServletResponse response) throws IOException, ServletException {
+                baseRequest.setHandled(true);
+                if (!"/trailers".equals(target)) {
+                    response.sendError(HttpStatus.NOT_FOUND_404);
+                    return;
+                }
+
+                byte[] body = "body with trailers".getBytes(StandardCharsets.UTF_8);
+                response.setStatus(HttpStatus.OK_200);
+                response.setContentType("text/plain;charset=utf-8");
+                response.setTrailerFields(() -> Map.of(
+                        "x-response-trailer", "trailers-supported",
+                        "x-body-length", String.valueOf(body.length)));
+                response.getOutputStream().write(body);
+            }
+        });
+
+        try (StartedServer startedServer = start(server);
+             Http2SocketClient client = Http2SocketClient.connect(startedServer.port())) {
+            client.sendHeaders(1, "GET", startedServer.port(), "/trailers", HttpFields.EMPTY, 0, true);
+            Http2Response response = client.readResponse(1);
+
+            assertThat(response.status()).isEqualTo(HttpStatus.OK_200);
+            assertThat(response.bodyAsString()).isEqualTo("body with trailers");
+            assertThat(response.headers().get("x-response-trailer")).isNull();
+            assertThat(response.trailers().get("x-response-trailer")).isEqualTo("trailers-supported");
+            assertThat(response.trailers().get("x-body-length")).isEqualTo(String.valueOf(response.body().length));
+        }
+    }
+
+    @Test
     void rawHttp2ServerConnectionFactoryDispatchesRequestsToSessionListener() throws Exception {
         CountDownLatch accepted = new CountDownLatch(1);
         CountDownLatch prefaced = new CountDownLatch(1);
