@@ -76,6 +76,24 @@ public class Jetty_alpn_java_clientTest {
     }
 
     @Test
+    void configurePreservesExistingSslParametersWhenAddingApplicationProtocols() throws Exception {
+        JDK9ClientALPNProcessor processor = new JDK9ClientALPNProcessor();
+        SSLEngine sslEngine = newClientEngine();
+        SSLParameters sslParameters = sslEngine.getSSLParameters();
+        sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+        sslParameters.setUseCipherSuitesOrder(true);
+        sslEngine.setSSLParameters(sslParameters);
+        ALPNTestContext context = newALPNTestContext(sslEngine);
+
+        processor.configure(context.sslEngine, context.alpnConnection);
+
+        SSLParameters configuredParameters = sslEngine.getSSLParameters();
+        assertThat(configuredParameters.getApplicationProtocols()).containsExactly("h2", "http/1.1");
+        assertThat(configuredParameters.getEndpointIdentificationAlgorithm()).isEqualTo("HTTPS");
+        assertThat(configuredParameters.getUseCipherSuitesOrder()).isTrue();
+    }
+
+    @Test
     void handshakeSucceededRecordsNegotiatedApplicationProtocol() throws Exception {
         JDK9ClientALPNProcessor processor = new JDK9ClientALPNProcessor();
         ALPNTestContext context = newALPNTestContext(new TestSslEngine("h2"));
@@ -164,7 +182,7 @@ public class Jetty_alpn_java_clientTest {
         }
     }
 
-    private static ALPNTestContext newALPNTestContext(TestSslEngine sslEngine) {
+    private static ALPNTestContext newALPNTestContext(SSLEngine sslEngine) {
         RecordingSslConnection sslConnection = new RecordingSslConnection(sslEngine);
         RecordingALPNClientConnection alpnConnection = new RecordingALPNClientConnection(
                 sslConnection.getDecryptedEndPoint(),
@@ -180,12 +198,12 @@ public class Jetty_alpn_java_clientTest {
     }
 
     private static final class ALPNTestContext {
-        private final TestSslEngine sslEngine;
+        private final SSLEngine sslEngine;
         private final RecordingSslConnection sslConnection;
         private final RecordingALPNClientConnection alpnConnection;
 
         private ALPNTestContext(
-                TestSslEngine sslEngine,
+                SSLEngine sslEngine,
                 RecordingSslConnection sslConnection,
                 RecordingALPNClientConnection alpnConnection) {
             this.sslEngine = sslEngine;
