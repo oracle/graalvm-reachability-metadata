@@ -16,7 +16,9 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.support.StaticListableBeanFactory;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
@@ -24,6 +26,7 @@ import org.springframework.security.config.annotation.AbstractConfiguredSecurity
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.authentication.AuthenticationManagerFactoryBean;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.core.userdetails.UserDetailsMapFactoryBean;
@@ -190,6 +193,46 @@ public class Spring_security_configTest {
 
         assertThat(values).containsExactly("original", "customized");
         assertThat(authorityDefaults.getRolePrefix()).isEqualTo("APP_");
+    }
+
+    @Test
+    void authenticationConfigurationUsesAuthenticationProviderBean() throws Exception {
+        AuthenticationProvider provider = new AuthenticationProvider() {
+            @Override
+            public Authentication authenticate(Authentication authentication) {
+                if ("api-client".equals(authentication.getName()) && "token".equals(authentication.getCredentials())) {
+                    return UsernamePasswordAuthenticationToken.authenticated(authentication.getPrincipal(),
+                            authentication.getCredentials(), List.of(new SimpleGrantedAuthority("ROLE_API")));
+                }
+                return null;
+            }
+
+            @Override
+            public boolean supports(Class<?> authentication) {
+                return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+            }
+        };
+        ObjectPostProcessor<Object> objectPostProcessor = new RecordingObjectPostProcessor(new ArrayList<>());
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            context.registerBean(AuthenticationProvider.class, () -> provider);
+            context.registerBean(AuthenticationManagerBuilder.class,
+                    () -> new AuthenticationManagerBuilder(objectPostProcessor));
+            context.refresh();
+            AuthenticationConfiguration configuration = new AuthenticationConfiguration();
+            configuration.setApplicationContext(context);
+            configuration.setObjectPostProcessor(objectPostProcessor);
+            configuration.setGlobalAuthenticationConfigurers(new ArrayList<>(
+                    List.of(AuthenticationConfiguration.initializeAuthenticationProviderBeanManagerConfigurer(context))));
+
+            AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
+            Authentication authentication = authenticationManager.authenticate(
+                    UsernamePasswordAuthenticationToken.unauthenticated("api-client", "token"));
+
+            assertThat(authentication.isAuthenticated()).isTrue();
+            assertThat(authentication.getAuthorities())
+                    .extracting(GrantedAuthority::getAuthority)
+                    .containsExactly("ROLE_API");
+        }
     }
 
     private static UserDetails userNamed(Collection<UserDetails> users, String username) {
