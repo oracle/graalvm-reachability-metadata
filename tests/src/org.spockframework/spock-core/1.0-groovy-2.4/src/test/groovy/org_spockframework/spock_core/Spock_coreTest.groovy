@@ -6,6 +6,7 @@
  */
 package org_spockframework.spock_core
 
+import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
 import org.junit.runner.JUnitCore
 import org.junit.runner.Result
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 import static org.assertj.core.api.Assertions.assertThat
+import static spock.util.matcher.HamcrestSupport.that
 
 public class Spock_coreTest {
     private static final String RESTORE_PROPERTY_KEY = 'spock.core.tck.restore.property'
@@ -142,6 +144,14 @@ public class Spock_coreTest {
             executor.shutdownNow()
             executor.awaitTermination(1, TimeUnit.SECONDS)
         }
+    }
+
+    @Test
+    void evaluatesHamcrestMatchersInsideSpockConditions() {
+        Result result = JUnitCore.runClasses(HamcrestMatcherSpecification)
+
+        assertThat(result.failures).isEmpty()
+        assertThat(result.runCount).isEqualTo(1)
     }
 
     public static class LifecycleSpecification extends Specification {
@@ -318,6 +328,20 @@ public class Spock_coreTest {
 
             expect:
             framework == module
+        }
+    }
+
+    public static class HamcrestMatcherSpecification extends Specification {
+        def 'accepts hamcrest matchers as feature conditions'() {
+            given:
+            String greeting = 'Hello Spock'
+            List<Integer> scores = [2, 4, 6]
+
+            expect:
+            that greeting, CoreMatchers.allOf(
+                    CoreMatchers.startsWith('Hello'),
+                    CoreMatchers.containsString('Spock'))
+            that scores, CoreMatchers.hasItems(2, 6)
         }
     }
 }
