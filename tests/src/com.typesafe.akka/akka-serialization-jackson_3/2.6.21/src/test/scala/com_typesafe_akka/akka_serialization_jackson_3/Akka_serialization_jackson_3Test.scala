@@ -176,6 +176,15 @@ object Akka_serialization_jackson_3Test {
 
   val TestConfig: Config = ConfigFactory
     .parseString(s"""
+      akka.loggers = []
+      akka.stdout-loglevel = "OFF"
+      akka.loglevel = "OFF"
+      akka.actor.deployment."/IO-DNS/inet-address" {
+        router = from-code
+      }
+      akka.actor.deployment."/IO-DNS/async-dns" {
+        router = from-code
+      }
       akka.actor.serialization-bindings {
         "$JsonPayloadClassName" = jackson-json
         "$CborPayloadClassName" = jackson-cbor

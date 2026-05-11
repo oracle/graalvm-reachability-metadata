@@ -1,0 +1,1928 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1737-03b7-7082-b7a9-78fb86372c5f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.poi:poi-ooxml:4.1.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.1.2" when "$version$" is replaced with "4.1.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+- Set "coordinates" to "org.apache.poi:poi-ooxml:4.1.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.1.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream Apache POI tags, then patch the JSON directly with version-templated URLs.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+-rw-rw-r-- 1 vjovanov vjovanov 55 May 11 15:25 build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+{
+  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.apache\\.poi:poi-ooxml|poi-ooxml' metadata tests build/discovered-artifact-metadata || true" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json:2:  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2"
+
+codex
+The local file only has coordinates, and there isn’t an existing POI entry to mirror. I’m checking the published POM and source/test artifacts next so the URLs are grounded in upstream metadata.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi-ooxml</artifactId>
+	<version>4.1.2</version>
+	<packaging>jar</packaging>
+	<name>Apache POI</name>
+	<url>http://poi.apache.org/</url>
+	<description>Apache POI - Java API To Access Microsoft Format Files</description>
+
+  <mailingLists>
+    <mailingList>
+      <name>POI Users List</name>
+      <subscribe>user-subscribe@poi.apache.org</subscribe>
+      <unsubscribe>user-unsubscribe@poi.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/poi-user/</archive>
+    </mailingList>
+    <mailingList>
+      <name>POI Developer List</name>
+      <subscribe>dev-subscribe@poi.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@poi.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/poi-dev/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>http://www.apache.org/</url>
+  </organization>
+
+  <dependencies>
+    <dependency>
+       <groupId>org.apache.poi</groupId>
+       <artifactId>poi</artifactId>
+       <version>4.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml-schemas</artifactId>
+      <version>4.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.19</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.virtuald</groupId>
+      <artifactId>curvesapi</artifactId>
+      <version>1.06</version>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-test-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-tests.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ exited 22 in 311ms:
+HTTP/2 404 
+date: Mon, 11 May 2026 13:25:53 GMT
+content-type: text/html
+cf-ray: 9fa1832219a4ed1c-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 2637ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/poi/poi-ooxml/4.1.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/poi/poi-ooxml/4.1.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="poi-ooxml-4.1.2-javadoc.jar" title="poi-ooxml-4.1.2-javadoc.jar">poi-ooxml-4.1.2-javadoc.jar</a>                       2020-02-10 19:44   2850195      
+<a href="poi-ooxml-4.1.2-javadoc.jar.asc" title="poi-ooxml-4.1.2-javadoc.jar.asc">poi-ooxml-4.1.2-javadoc.jar.asc</a>                   2020-02-10 19:44       475      
+<a href="poi-ooxml-4.1.2-javadoc.jar.md5" title="poi-ooxml-4.1.2-javadoc.jar.md5">poi-ooxml-4.1.2-javadoc.jar.md5</a>                   2020-02-10 19:44        62      
+<a href="poi-ooxml-4.1.2-javadoc.jar.sha1" title="poi-ooxml-4.1.2-javadoc.jar.sha1">poi-ooxml-4.1.2-javadoc.jar.sha1</a>                  2020-02-10 19:44        70      
+<a href="poi-ooxml-4.1.2-sources.jar" title="poi-ooxml-4.1.2-sources.jar">poi-ooxml-4.1.2-sources.jar</a>                       2020-02-10 19:44   1312171      
+<a href="poi-ooxml-4.1.2-sources.jar.asc" title="poi-ooxml-4.1.2-sources.jar.asc">poi-ooxml-4.1.2-sources.jar.asc</a>                   2020-02-10 19:44       475      
+<a href="poi-ooxml-4.1.2-sources.jar.md5" title="poi-ooxml-4.1.2-sources.jar.md5">poi-ooxml-4.1.2-sources.jar.md5</a>                   2020-02-10 19:44        62      
+<a href="poi-ooxml-4.1.2-sources.jar.sha1" title="poi-ooxml-4.1.2-sources.jar.sha1">poi-ooxml-4.1.2-sources.jar.sha1</a>                  2020-02-10 19:44        70      
+<a href="poi-ooxml-4.1.2.jar" title="poi-ooxml-4.1.2.jar">poi-ooxml-4.1.2.jar</a>                               2020-02-10 19:44   1888231      
+<a href="poi-ooxml-4.1.2.jar.asc" title="poi-ooxml-4.1.2.jar.asc">poi-ooxml-4.1.2.jar.asc</a>                           2020-02-10 19:44       475      
+<a href="poi-ooxml-4.1.2.jar.md5" title="poi-ooxml-4.1.2.jar.md5">poi-ooxml-4.1.2.jar.md5</a>                           2020-02-10 19:44        54      
+<a href="poi-ooxml-4.1.2.jar.sha1" title="poi-ooxml-4.1.2.jar.sha1">poi-ooxml-4.1.2.jar.sha1</a>                          2020-02-10 19:44        62      
+<a href="poi-ooxml-4.1.2.pom" title="poi-ooxml-4.1.2.pom">poi-ooxml-4.1.2.pom</a>                               2020-02-10 19:44      2869      
+<a href="poi-ooxml-4.1.2.pom.asc" title="poi-ooxml-4.1.2.pom.asc">poi-ooxml-4.1.2.pom.asc</a>                           2020-02-10 19:44       475      
+<a href="poi-ooxml-4.1.2.pom.md5" title="poi-ooxml-4.1.2.pom.md5">poi-ooxml-4.1.2.pom.md5</a>                           2020-02-10 19:44        54      
+<a href="poi-ooxml-4.1.2.pom.sha1" title="poi-ooxml-4.1.2.pom.sha1">poi-ooxml-4.1.2.pom.sha1</a>                          2020-02-10 19:44        62      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url|not-for-native-image|language' build/discovered-artifact-metadata metadata -g '*.json' | head -n 120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:66:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:117:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:120:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:56:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:57:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:58:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:59:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:71:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:72:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:73:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:74:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-security/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-security/$version$/jetty-security-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-security/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-security/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-security/src/test",
+metadata/org.eclipse.jetty/jetty-security/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-security/$version$/jetty-security-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:91:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:112:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:26:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:27:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:28:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:29:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:56:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:57:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:58:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:59:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-sources.jar",
+metadata/org.datanucleus/javax.jdo/index.json:6:    "repository-url" : "https://github.com/datanucleus/javax.jdo",
+metadata/org.datanucleus/javax.jdo/index.json:7:    "test-code-url" : "https://github.com/datanucleus/javax.jdo/tree/javax.jdo-$version$/src/test",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:7:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:25:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:63:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:64:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:66:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/charleskorn/kaml/kaml-jvm/$version$/kaml-jvm-$version$-sources.jar",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:6:    "repository-url" : "https://github.com/charleskorn/kaml",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:7:    "test-code-url" : "https://github.com/charleskorn/kaml/tree/$version$/src",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:8:    "documentation-url" : "https://github.com/charleskorn/kaml/blob/$version$/README.md",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:6:    "repository-url" : "https://github.com/mwiede/jsch",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/jsonp-api",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-sources.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:6:    "repository-url" : "N/A",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:7:    "test-code-url" : "N/A",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:9:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v$version$/jctools-core/src/test",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-ee/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/$version$/jetty-ee-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-ee/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-ee/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-ee/src/test",
+metadata/org.eclipse.jetty/jetty-ee/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/$version$/jetty-ee-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/clikt",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:5:    "repository-url" : "https://github.com/apache/commons-compress",
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/poi.git | rg '4_1_2|4\\.1\\.2|REL' | head -n 40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc 'for classifier in sources test-sources tests javadoc; do url="https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-${classifier}.jar"; code=$(curl -fsS -o /dev/null -w '"'%{http_code}' \""'$url" || true); printf '"'%s %s %s\\n' \""'$code" "$classifier" "$url"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 324ms:
+e32f1eff156dd6df1835add78d16e1c0c95ee864	refs/tags/REL_1_10
+3f3a78d5c56121f64b4db1db80e862082bf0d8f8	refs/tags/REL_1_10^{}
+4cebff0c7f45e8898f608981b36e22f49bd202d9	refs/tags/REL_1_5_0
+bc6cda626b9e7358e91839c60310031aafaa5bc4	refs/tags/REL_1_5_0^{}
+a7a1d54f23ee3f940b709cf4819d763c17e05e5a	refs/tags/REL_1_5_1
+5024098bed4e64fccf87abfe5956e8e73a95a65b	refs/tags/REL_1_5_1^{}
+645874f4fc7d0b8ab2ea77400ec5d0cf80ca9d54	refs/tags/REL_1_5_BRANCH_MERGE1
+88bd5f3f0b12ac02a9179bec99143bd1a044b7ed	refs/tags/REL_1_5_BRANCH_MERGE1^{}
+527fc3586da1dc3b98d28857c8f980e3fcaf23e3	refs/tags/REL_1_5_BRANCH_MERGE2
+c4ae5d3e5662f8da263cca2446cfdf6362274c69	refs/tags/REL_1_5_BRANCH_MERGE2^{}
+e6b2acfd0e1725a90acc1e881fe3e6f84457baf4	refs/tags/REL_1_5_BRANCH_MERGE3
+4a00feacf50923850795a4e40a73f2da10be109c	refs/tags/REL_1_5_BRANCH_MERGE3^{}
+97eb044a7551fb230efc9b71f66cb06948497695	refs/tags/REL_1_5_BRANCH_MERGE4
+ae237fbcdfea8d0e77539144cd5420f1ce292582	refs/tags/REL_1_5_BRANCH_MERGE4^{}
+74335ba84a01ae38a0232894ae71ab7a389bee79	refs/tags/REL_1_5_BRANCH_MERGE5
+b3f4bb1cdb832b3b7a0de1cf89ca0b3cdbe3a388	refs/tags/REL_1_5_BRANCH_MERGE5^{}
+6cb19d37ef566cd011ea31f7f93ac031f6749ed0	refs/tags/REL_2_0_PRE1
+d49a6d16696db26fd2593d22c257068c71139415	refs/tags/REL_2_0_PRE1^{}
+b05ea8abd4da1b040413bd31e1a34a5bce63b3ed	refs/tags/REL_2_0_PRE3
+7c6c2ecf5b8c7f3ee0e8828741fe350375daf289	refs/tags/REL_2_0_PRE3^{}
+52af2655c725183391ab2003c45eb6156e761a08	refs/tags/REL_2_0_RC1
+0dd67eac90ac556235d5bfa1ec9e4e1265f30931	refs/tags/REL_2_0_RC1^{}
+4a20299bf12a568c46899f919376ba2d351f5c25	refs/tags/REL_2_5_1
+fb276c61dc654e9572471c4a403146153d3670d5	refs/tags/REL_2_5_1^{}
+60469bac9c84a4d1de446901c740c592add9558c	refs/tags/REL_3_0
+2e335762bd306da833514d3a584c5f28ef8eb184	refs/tags/REL_3_0^{}
+7a8c1ba59b009d5c19c331d0074f228e0c49317d	refs/tags/REL_3_0_1_RC1
+68b0ed27356c7d5fb549c695dca182c51127e7b8	refs/tags/REL_3_0_1_RC1^{}
+d5f25a1091ebae1508f4d566c96ad31300e850cc	refs/tags/REL_3_0_1_RC2
+614f5225f3a509fa28705e4ed2ff050cb3e9fdb3	refs/tags/REL_3_0_1_RC2^{}
+79b35637ff5addf9a0ce23af10ffd7639ad1828c	refs/tags/REL_3_0_1_RC3
+f957997c235454061481aa2b0644715a047ff00b	refs/tags/REL_3_0_1_RC3^{}
+09f02461d13906e7561381250c5c308a413d6cd2	refs/tags/REL_3_0_2_BETA1
+d2ecc6bbf1cb8f06f6b5326ffa41b7cc3bb5b60b	refs/tags/REL_3_0_2_BETA1^{}
+c766b3670ee97a5f4887a7533152feae058fc461	refs/tags/REL_3_0_2_BETA2
+ce32b7c036323c2b722ee129ac8a428abd4fe5ce	refs/tags/REL_3_0_2_BETA2^{}
+1cf031f219b51c823af2b4644556658f85c490a0	refs/tags/REL_3_0_2_BETA3
+610148d24a173bd4381def623866bca62c637f05	refs/tags/REL_3_0_2_BETA3^{}
+d6e37dcf6894b6d1313e8afa51aecbd99373e3b6	refs/tags/REL_3_0_3_BETA1
+a434728fa851293ba2ff4fef4dd0d038113f80f0	refs/tags/REL_3_0_3_BETA1^{}
+
+ succeeded in 824ms:
+200 sources https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-sources.jar
+curl: (22) The requested URL returned error: 404
+404 test-sources https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-test-sources.jar
+curl: (22) The requested URL returned error: 404
+404 tests https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-tests.jar
+200 javadoc https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-javadoc.jar
+
+codex
+Maven Central has the source and Javadoc jars for `poi-ooxml` 4.1.2, but no published test jar. I’m using the Apache POI release tag for the test suite URL.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/poi.git 'refs/tags/REL_4_1_2*'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/poi/REL_4_1_2/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/poi/contents?ref=REL_4_1_2 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 178ms:
+[
+  {
+    "name": ".classpath",
+    "path": ".classpath",
+    "sha": "3ec3aa21326409c6208b223f9d16746a4ac77836",
+    "size": 3279,
+    "url": "https://api.github.com/repos/apache/poi/contents/.classpath?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/.classpath",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/3ec3aa21326409c6208b223f9d16746a4ac77836",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/.classpath",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/.classpath?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/3ec3aa21326409c6208b223f9d16746a4ac77836",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/.classpath"
+    }
+  },
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "7bb2eb10e277126c545e217efaacdd0a5b8c21dd",
+    "size": 53,
+    "url": "https://api.github.com/repos/apache/poi/contents/.gitattributes?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/.gitattributes",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/7bb2eb10e277126c545e217efaacdd0a5b8c21dd",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/.gitattributes?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/7bb2eb10e277126c545e217efaacdd0a5b8c21dd",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/.gitattributes"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "ffb9ae397fbed37a2626a600bfeefe451ee22e46",
+    "size": 493,
+    "url": "https://api.github.com/repos/apache/poi/contents/.gitignore?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/.gitignore",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/ffb9ae397fbed37a2626a600bfeefe451ee22e46",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/.gitignore?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/ffb9ae397fbed37a2626a600bfeefe451ee22e46",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/.gitignore"
+    }
+  },
+  {
+    "name": ".project",
+    "path": ".project",
+    "sha": "274051f30a2f52337a304b42d9ca2c21a980fe7b",
+    "size": 426,
+    "url": "https://api.github.com/repos/apache/poi/contents/.project?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/.project",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/274051f30a2f52337a304b42d9ca2c21a980fe7b",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/.project",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/.project?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/274051f30a2f52337a304b42d9ca2c21a980fe7b",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/.project"
+    }
+  },
+  {
+    "name": ".settings",
+    "path": ".settings",
+    "sha": "5245dfb6b2d3496bbea55f5ee175f3628aac3727",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/poi/contents/.settings?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/tree/REL_4_1_2/.settings",
+    "git_url": "https://api.github.com/repos/apache/poi/git/trees/5245dfb6b2d3496bbea55f5ee175f3628aac3727",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/.settings?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/trees/5245dfb6b2d3496bbea55f5ee175f3628aac3727",
+      "html": "https://github.com/apache/poi/tree/REL_4_1_2/.settings"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "9df6fb615c979e0e72ca0435c115dfa4e59390f9",
+    "size": 136,
+    "url": "https://api.github.com/repos/apache/poi/contents/.travis.yml?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/.travis.yml",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/9df6fb615c979e0e72ca0435c115dfa4e59390f9",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/.travis.yml?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/9df6fb615c979e0e72ca0435c115dfa4e59390f9",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/.travis.yml"
+    }
+  },
+  {
+    "name": "KEYS",
+    "path": "KEYS",
+    "sha": "6fd2156dbc1a6bd9a6990836651ac098d1c2c892",
+    "size": 166411,
+    "url": "https://api.github.com/repos/apache/poi/contents/KEYS?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/KEYS",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/6fd2156dbc1a6bd9a6990836651ac098d1c2c892",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/KEYS",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/KEYS?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/6fd2156dbc1a6bd9a6990836651ac098d1c2c892",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/KEYS"
+    }
+  },
+  {
+    "name": "README.rst",
+    "path": "README.rst",
+    "sha": "4ca5391d369df618d04c514c402184f52c75b229",
+    "size": 4280,
+    "url": "https://api.github.com/repos/apache/poi/contents/README.rst?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/README.rst",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/4ca5391d369df618d04c514c402184f52c75b229",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/README.rst",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/README.rst?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/4ca5391d369df618d04c514c402184f52c75b229",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/README.rst"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "5c9487d40b162d2823d2f8702e851d5b57556050",
+    "size": 11306,
+    "url": "https://api.github.com/repos/apache/poi/contents/build.gradle?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/build.gradle",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/5c9487d40b162d2823d2f8702e851d5b57556050",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/build.gradle?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/5c9487d40b162d2823d2f8702e851d5b57556050",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/build.gradle"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "build.xml",
+    "sha": "e858ad7c150d4ce65bd3c3c3f217c4ad75df47c5",
+    "size": 143497,
+    "url": "https://api.github.com/repos/apache/poi/contents/build.xml?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/build.xml",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/e858ad7c150d4ce65bd3c3c3f217c4ad75df47c5",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/build.xml?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/e858ad7c150d4ce65bd3c3c3f217c4ad75df47c5",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/build.xml"
+    }
+  },
+  {
+    "name": "doap_POI.rdf",
+    "path": "doap_POI.rdf",
+    "sha": "79bbd86bb737ea18c1d44c53061e43cb71c90c3b",
+    "size": 5987,
+    "url": "https://api.github.com/repos/apache/poi/contents/doap_POI.rdf?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/doap_POI.rdf",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/79bbd86bb737ea18c1d44c53061e43cb71c90c3b",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/doap_POI.rdf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/doap_POI.rdf?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/79bbd86bb737ea18c1d44c53061e43cb71c90c3b",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/doap_POI.rdf"
+    }
+  },
+  {
+    "name": "file-leak-detector.exclude",
+    "path": "file-leak-detector.exclude",
+    "sha": "ea3c02948600fa313a401321649128e5f2460c63",
+    "size": 2795,
+    "url": "https://api.github.com/repos/apache/poi/contents/file-leak-detector.exclude?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/file-leak-detector.exclude",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/ea3c02948600fa313a401321649128e5f2460c63",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/file-leak-detector.exclude",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/file-leak-detector.exclude?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/blobs/ea3c02948600fa313a401321649128e5f2460c63",
+      "html": "https://github.com/apache/poi/blob/REL_4_1_2/file-leak-detector.exclude"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "c926bd0958fb959d55950cafa33f061c71c171ab",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/poi/contents/gradle?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/tree/REL_4_1_2/gradle",
+    "git_url": "https://api.github.com/repos/apache/poi/git/trees/c926bd0958fb959d55950cafa33f061c71c171ab",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/poi/contents/gradle?ref=REL_4_1_2",
+      "git": "https://api.github.com/repos/apache/poi/git/trees/c926bd0958fb959d55950cafa33f061c71c171ab",
+      "html": "https://github.com/apache/poi/tree/REL_4_1_2/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "8e25e6c19d5748190b8cc39e98c2b56e496a5717",
+    "size": 5917,
+    "url": "https://api.github.com/repos/apache/poi/contents/gradlew?ref=REL_4_1_2",
+    "html_url": "https://github.com/apache/poi/blob/REL_4_1_2/gradlew",
+    "git_url": "https://api.github.com/repos/apache/poi/git/blobs/8e25e6c19d5748190b8cc39e98c2b56e496a5717",
+    "download_url": "https://raw.githubusercontent.com/apache/poi/REL_4_1_2/gradlew",
+    "type": "file",
+    "_links": {
+
+ succeeded in 191ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 352ms:
+6bdc11423b3a3aac1cee973f70758ad823b5ed76	refs/tags/REL_4_1_2
+30388294ec80ee4f5c914a916631bb77b5d5f86b	refs/tags/REL_4_1_2^{}
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/poi/git/trees/REL_4_1_2?recursive=1' | jq -r '.tree[].path' | rg '("'^|/)src/(ooxml|test)|ooxml.*(test|java)|testcases|examples|main/java'"' | head -n 120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/poi/git/trees/REL_4_1_2?recursive=1' | jq -r '.tree[].path' | rg '("'^src/documentation|docs|site|documentation)'"' | head -n 80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/poi/git/trees/REL_4_1_2?recursive=1' | jq -r '.tree[].path' | rg '"'^src/ooxml'"' | head -n 120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 679ms:
+src/ooxml
+src/ooxml/java
+src/ooxml/java/org
+src/ooxml/java/org/apache
+src/ooxml/java/org/apache/poi
+src/ooxml/java/org/apache/poi/ooxml
+src/ooxml/java/org/apache/poi/ooxml/POIXMLDocument.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLDocumentPart.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLException.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLFactory.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLProperties.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLRelation.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLTypeLoader.java
+src/ooxml/java/org/apache/poi/ooxml/dev
+src/ooxml/java/org/apache/poi/ooxml/dev/OOXMLLister.java
+src/ooxml/java/org/apache/poi/ooxml/dev/OOXMLPrettyPrint.java
+src/ooxml/java/org/apache/poi/ooxml/extractor
+src/ooxml/java/org/apache/poi/ooxml/extractor/CommandLineTextExtractor.java
+src/ooxml/java/org/apache/poi/ooxml/extractor/ExtractorFactory.java
+src/ooxml/java/org/apache/poi/ooxml/extractor/POIXMLPropertiesTextExtractor.java
+src/ooxml/java/org/apache/poi/ooxml/extractor/POIXMLTextExtractor.java
+src/ooxml/java/org/apache/poi/ooxml/util
+src/ooxml/java/org/apache/poi/ooxml/util/DocumentHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/IdentifierManager.java
+src/ooxml/java/org/apache/poi/ooxml/util/PackageHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/SAXHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/TransformerHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/XPathHelper.java
+src/ooxml/java/org/apache/poi/openxml4j
+src/ooxml/java/org/apache/poi/openxml4j/exceptions
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/InvalidFormatException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/InvalidOperationException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/NotOfficeXmlFileException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/ODFNotOfficeXmlFileException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/OLE2NotOfficeXmlFileException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/OpenXML4JException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/OpenXML4JRuntimeException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/PartAlreadyExistsException.java
+src/ooxml/java/org/apache/poi/openxml4j/opc
+src/ooxml/java/org/apache/poi/openxml4j/opc/CertificateEmbeddingOption.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/ContentTypes.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/OPCPackage.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageAccess.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageNamespaces.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagePart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagePartCollection.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagePartName.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageProperties.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageRelationship.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageRelationshipCollection.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageRelationshipTypes.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagingURIHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/RelationshipSource.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/StreamHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/TargetMode.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/ZipPackage.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/ZipPackagePart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ContentType.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ContentTypeManager.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/FileHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/MemoryPackagePart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/MemoryPackagePartOutputStream.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/PackagePropertiesPart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/PartMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/PartUnmarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ZipContentTypeManager.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ZipHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/DefaultMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/PackagePropertiesMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/ZipPackagePropertiesMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/ZipPartMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/unmarshallers
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/unmarshallers/PackagePropertiesUnmarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/unmarshallers/UnmarshallContext.java
+src/ooxml/java/org/apache/poi/openxml4j/util
+src/ooxml/java/org/apache/poi/openxml4j/util/Nullable.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipArchiveFakeEntry.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipArchiveThresholdInputStream.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipEntrySource.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipFileZipEntrySource.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipInputStreamZipEntrySource.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipSecureFile.java
+src/ooxml/java/org/apache/poi/poifs
+src/ooxml/java/org/apache/poi/poifs/crypt
+src/ooxml/java/org/apache/poi/poifs/crypt/agile
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileDecryptor.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptionHeader.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptionInfoBuilder.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptionVerifier.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptor.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/CertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/DSigRelation.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/DigestOutputStream.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/ExpiredCertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/KeyInfoKeySelector.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/OOXMLURIDereferencer.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/RevokedCertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureConfig.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureInfo.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureMarshalListener.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureOutputStream.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignaturePart.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/TrustCertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/EnvelopedSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/KeyInfoSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/OOXMLSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/Office2010SignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/SignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/XAdESSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/XAdESXLSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/RelationshipTransformService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/RevocationData.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/RevocationDataService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/SignaturePolicyService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/TSPTimeStampService.java
+
+ succeeded in 693ms:
+maven/poi-examples.pom
+osgi/src/main/java
+osgi/src/main/java/org
+osgi/src/main/java/org/apache
+osgi/src/main/java/org/apache/poi
+osgi/src/main/java/org/apache/poi/osgi
+osgi/src/main/java/org/apache/poi/osgi/Activator.java
+osgi/src/test
+osgi/src/test/java
+osgi/src/test/java/org
+osgi/src/test/java/org/apache
+osgi/src/test/java/org/apache/poi
+osgi/src/test/java/org/apache/poi/osgi
+osgi/src/test/java/org/apache/poi/osgi/TestOSGiBundle.java
+sonar/examples
+sonar/examples/pom.xml
+src/contrib/testcases
+src/contrib/testcases/dummy.txt
+src/examples
+src/examples/clojure
+src/examples/clojure/SpreadSheetDemo.clj
+src/examples/groovy
+src/examples/groovy/SpreadSheetDemo.groovy
+src/examples/groovy/build.gradle
+src/examples/jsp
+src/examples/jsp/HSSFExample.jsp
+src/examples/lib
+src/examples/lib/dummy.txt
+src/examples/scala
+src/examples/scala/XSSFMain.scala
+src/examples/scala/build.sbt
+src/examples/src
+src/examples/src/org
+src/examples/src/org/apache
+src/examples/src/org/apache/poi
+src/examples/src/org/apache/poi/crypt
+src/examples/src/org/apache/poi/crypt/examples
+src/examples/src/org/apache/poi/crypt/examples/EncryptionUtils.java
+src/examples/src/org/apache/poi/crypt/examples/OOXMLPasswordsTry.java
+src/examples/src/org/apache/poi/examples
+src/examples/src/org/apache/poi/examples/util
+src/examples/src/org/apache/poi/examples/util/TempFileUtils.java
+src/examples/src/org/apache/poi/hpsf
+src/examples/src/org/apache/poi/hpsf/examples
+src/examples/src/org/apache/poi/hpsf/examples/CopyCompare.java
+src/examples/src/org/apache/poi/hpsf/examples/ModifyDocumentSummaryInformation.java
+src/examples/src/org/apache/poi/hpsf/examples/ReadCustomPropertySets.java
+src/examples/src/org/apache/poi/hpsf/examples/ReadTitle.java
+src/examples/src/org/apache/poi/hpsf/examples/WriteAuthorAndTitle.java
+src/examples/src/org/apache/poi/hpsf/examples/WriteTitle.java
+src/examples/src/org/apache/poi/hslf
+src/examples/src/org/apache/poi/hslf/examples
+src/examples/src/org/apache/poi/hslf/examples/ApacheconEU08.java
+src/examples/src/org/apache/poi/hslf/examples/BulletsDemo.java
+src/examples/src/org/apache/poi/hslf/examples/CreateHyperlink.java
+src/examples/src/org/apache/poi/hslf/examples/DataExtraction.java
+src/examples/src/org/apache/poi/hslf/examples/Graphics2DDemo.java
+src/examples/src/org/apache/poi/hslf/examples/HeadersFootersDemo.java
+src/examples/src/org/apache/poi/hslf/examples/Hyperlinks.java
+src/examples/src/org/apache/poi/hslf/examples/SoundFinder.java
+src/examples/src/org/apache/poi/hslf/examples/TableDemo.java
+src/examples/src/org/apache/poi/hsmf
+src/examples/src/org/apache/poi/hsmf/examples
+src/examples/src/org/apache/poi/hsmf/examples/Msg2txt.java
+src/examples/src/org/apache/poi/hssf
+src/examples/src/org/apache/poi/hssf/eventusermodel
+src/examples/src/org/apache/poi/hssf/eventusermodel/examples
+src/examples/src/org/apache/poi/hssf/eventusermodel/examples/XLS2CSVmra.java
+src/examples/src/org/apache/poi/hssf/usermodel
+src/examples/src/org/apache/poi/hssf/usermodel/examples
+src/examples/src/org/apache/poi/hssf/usermodel/examples/AddDimensionedImage.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/Alignment.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/BigExample.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/Borders.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/CellComments.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/CellTypes.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/CreateCells.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/CreateDateCells.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/EmbeddedObjects.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/EventExample.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/FrillsAndFills.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/HSSFReadWrite.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/HyperlinkFormula.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/Hyperlinks.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/InCellLists.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/MergedCells.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/NewLinesInCells.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/NewSheet.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/NewWorkbook.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/OfficeDrawing.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/OfficeDrawingWithGraphics.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/Outlines.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/ReadWriteWorkbook.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/RepeatingRowsAndColumns.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/SplitAndFreezePanes.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/WorkingWithFonts.java
+src/examples/src/org/apache/poi/hssf/usermodel/examples/ZoomSheet.java
+src/examples/src/org/apache/poi/hwpf
+src/examples/src/org/apache/poi/hwpf/Word2Forrest.java
+src/examples/src/org/apache/poi/ss
+src/examples/src/org/apache/poi/ss/examples
+src/examples/src/org/apache/poi/ss/examples/AddDimensionedImage.java
+src/examples/src/org/apache/poi/ss/examples/AligningCells.java
+src/examples/src/org/apache/poi/ss/examples/BusinessPlan.java
+src/examples/src/org/apache/poi/ss/examples/CalendarDemo.java
+src/examples/src/org/apache/poi/ss/examples/CellStyleDetails.java
+src/examples/src/org/apache/poi/ss/examples/ConditionalFormats.java
+src/examples/src/org/apache/poi/ss/examples/DrawingBorders.java
+src/examples/src/org/apache/poi/ss/examples/ExcelComparator.java
+src/examples/src/org/apache/poi/ss/examples/LinkedDropDownLists.java
+src/examples/src/org/apache/poi/ss/examples/LoadEmbedded.java
+src/examples/src/org/apache/poi/ss/examples/LoanCalculator.java
+src/examples/src/org/apache/poi/ss/examples/SSPerformanceTest.java
+src/examples/src/org/apache/poi/ss/examples/TimesheetDemo.java
+src/examples/src/org/apache/poi/ss/examples/ToCSV.java
+src/examples/src/org/apache/poi/ss/examples/formula
+src/examples/src/org/apache/poi/ss/examples/formula/CalculateMortgage.java
+src/examples/src/org/apache/poi/ss/examples/formula/CheckFunctionsSupported.java
+src/examples/src/org/apache/poi/ss/examples/formula/SettingExternalFunction.java
+src/examples/src/org/apache/poi/ss/examples/formula/UserDefinedFunctionExample.java
+
+ succeeded in 759ms:
+test-data/spreadsheet/61045_govdocs1_626534.xls
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/poi/git/trees/REL_4_1_2?recursive=1' | jq -r '.tree[].path' | rg '"'^src/ooxml/(test|testcases|java)'"' | head -n 200" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/apache/poi/git/trees/REL_4_1_2?recursive=1' | jq -r '.tree[].path' | rg 'ooxml.*test|testcases.*ooxml|"'^src/test|''^src/ooxml'"' | head -n 200" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/apache/poi/REL_4_1_2/build.gradle | rg -n "ooxml|sourceSets|srcDir|test" -C 2 | head -n 180' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 197ms:
+115-    }
+116-
+117:    test {
+118:        // Exclude some tests that are not actually tests or do not run cleanly on purpose
+119-        exclude '**/BaseTestBorderStyle.class'
+120-        exclude '**/BaseTestCellUtil.class'
+--
+126-        exclude '**/HSSFTests.class'
+127-
+128:        // set heap size for the test JVM(s)
+129-        minHeapSize = "128m"
+130-        maxHeapSize = "768m"
+--
+133-        jvmArgs '-Duser.language=en -Duser.country=US'
+134-  
+135:        // show standard out and standard error of the test JVM(s) on the console
+136:        //testLogging.showStandardStreams = true
+137-
+138-        // http://forums.gradle.org/gradle/topics/jacoco_related_failure_in_multiproject_build
+139-        systemProperties['user.dir'] = workingDir
+140-        
+141:        systemProperties['POI.testdata.path'] = '../../test-data'
+142-        
+143-        // this is necessary for JDK 9+ to keep formatting dates the same way as in previous JDK-versions
+--
+173-
+174-project('main') {
+175:    sourceSets.main.java.srcDirs = ['../../src/java']
+176:    sourceSets.main.resources.srcDirs = ['../../src/resources/main']
+177:    sourceSets.test.java.srcDirs = ['../../src/testcases']
+178-
+179-    dependencies {
+--
+188-        compile 'com.zaxxer:SparseBitSet:1.2'
+189-
+190:        testCompile 'junit:junit:4.12'
+191:        testCompile 'org.mockito:mockito-core:3.0.0'
+192:        testCompile 'org.reflections:reflections:0.9.11'
+193-    }
+194-
+--
+199-    }
+200-
+201:    // Create a separate jar for test-code to depend on it in other projects
+202:    // See http://stackoverflow.com/questions/5144325/gradle-test-dependency
+203:    task testJar(type: Jar, dependsOn: testClasses) {
+204:        baseName = "test-${project.archivesBaseName}"
+205:        from sourceSets.test.output
+206-    }
+207-
+208-    configurations {
+209:        tests
+210-    }
+211-
+212-    artifacts {
+213:        tests testJar
+214-    }
+215-
+--
+217-}
+218-
+219:project('ooxml') {
+220-    
+221:    sourceSets.main.java.srcDirs = ['../../src/ooxml/java']
+222:    sourceSets.main.resources.srcDirs = ['../../src/ooxml/resources', '../../src/resources/ooxml']
+223:    sourceSets.test.java.srcDirs = ['../../src/ooxml/testcases']
+224-
+225-    // for now import the ant-task for building the jars from build.xml
+226:    // we need to rename the tasks as e.g. task "jar" conflicts with :ooxml:jar
+227-    ant.importBuild('../../build.xml') { antTargetName ->
+228-        'ant-' + antTargetName
+229-    }
+230:    compileJava.dependsOn 'ant-compile-ooxml-xsds'
+231-
+232-    dependencies {
+--
+245-        compile 'org.apache.xmlgraphics:xmlgraphics-commons:2.3'
+246-
+247:        // for ooxml-lite, should we move this somewhere else?
+248-        compile 'junit:junit:4.12'
+249-
+250-        compile project(':main')
+251-        compile project(':scratchpad')		// TODO: get rid of this dependency!
+252:        compile files('../../ooxml-lib/ooxml-schemas-1.4.jar')
+253:        compile files('../../ooxml-lib/ooxml-security-1.1.jar')
+254-
+255:        testCompile 'junit:junit:4.12'
+256:        testCompile 'org.mockito:mockito-core:3.0.0'
+257:        testCompile 'org.xmlunit:xmlunit-core:2.5.1'
+258:        testCompile 'org.reflections:reflections:0.9.11'
+259:        testCompile project(path: ':main', configuration: 'tests')
+260:        testCompile 'org.openjdk.jmh:jmh-core:1.19'
+261:        testCompile 'org.openjdk.jmh:jmh-generator-annprocess:1.19'
+262-    }
+263-
+264-    jar {
+265-        manifest {
+266:            attributes 'Automatic-Module-Name': 'org.apache.poi.ooxml'
+267-        }
+268-    }
+269-
+270:    japicmp.baseline = 'org.apache.poi:poi-ooxml:' + japicmpversion + '@jar'
+271-}
+272-
+273-project('examples') {
+274:    sourceSets.main.java.srcDirs = ['../../src/examples/src']
+275-
+276-    dependencies {
+277-        compile project(':main')
+278:        compile project(':ooxml')
+279-    }
+280-
+--
+284-
+285-project('excelant') {
+286:    sourceSets.main.java.srcDirs = ['../../src/excelant/java']
+287:    sourceSets.main.resources.srcDirs = ['../../src/excelant/resources']
+288:    sourceSets.test.java.srcDirs = ['../../src/excelant/testcases']
+289-
+290-    dependencies {
+--
+292-
+293-        compile project(':main')
+294:        compile project(':ooxml')
+295-
+296:        testCompile project(path: ':main', configuration: 'tests')
+297-    }
+298-
+--
+306-}
+307-
+308:project('integrationtest') {
+309:    sourceSets.test.java.srcDirs = ['../../src/integrationtest']
+310-
+311-    dependencies {
+--
+313-
+314-        compile project(':main')
+315:        compile project(':ooxml')
+316-        compile project(':scratchpad')
+317-        compile project(':examples')
+318-
+319:        testCompile 'junit:junit:4.12'
+320-    }
+321-
+322-	jar {
+323-		manifest {
+324:			attributes 'Automatic-Module-Name': 'org.apache.poi.integrationtest'
+325-		}
+326-	}
+327-
+328:	test {
+329:        // exclude these from the normal test-run
+330-        exclude '**/TestAllFiles.class'
+331-        exclude '**/*FileHandler.class'
+--
+334-
+335-    task integrationTest(type: Test) {
+336:        // these are just tests used during development of more test-code
+337-        exclude '**/*FileHandler.class'
+338-        exclude '**/RecordStresser.class'
+--
+343-
+344-project('scratchpad') {
+345:    sourceSets.main.java.srcDirs = ['../../src/scratchpad/src']
+346:    sourceSets.main.resources.srcDirs = ['../../src/resources/scratchpad']
+347:    sourceSets.test.java.srcDirs = ['../../src/scratchpad/testcases']
+348-
+349-    dependencies {
+350-        compile project(':main')
+351:        // cyclic-dependency here: compile project(':ooxml')
+352-
+353:        testCompile 'junit:junit:4.12'
+354:        testCompile project(path: ':main', configuration: 'tests')
+355-    }
+356-
+
+ succeeded in 346ms:
+src/ooxml/java
+src/ooxml/java/org
+src/ooxml/java/org/apache
+src/ooxml/java/org/apache/poi
+src/ooxml/java/org/apache/poi/ooxml
+src/ooxml/java/org/apache/poi/ooxml/POIXMLDocument.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLDocumentPart.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLException.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLFactory.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLProperties.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLRelation.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLTypeLoader.java
+src/ooxml/java/org/apache/poi/ooxml/dev
+src/ooxml/java/org/apache/poi/ooxml/dev/OOXMLLister.java
+src/ooxml/java/org/apache/poi/ooxml/dev/OOXMLPrettyPrint.java
+src/ooxml/java/org/apache/poi/ooxml/extractor
+src/ooxml/java/org/apache/poi/ooxml/extractor/CommandLineTextExtractor.java
+src/ooxml/java/org/apache/poi/ooxml/extractor/ExtractorFactory.java
+src/ooxml/java/org/apache/poi/ooxml/extractor/POIXMLPropertiesTextExtractor.java
+src/ooxml/java/org/apache/poi/ooxml/extractor/POIXMLTextExtractor.java
+src/ooxml/java/org/apache/poi/ooxml/util
+src/ooxml/java/org/apache/poi/ooxml/util/DocumentHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/IdentifierManager.java
+src/ooxml/java/org/apache/poi/ooxml/util/PackageHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/SAXHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/TransformerHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/XPathHelper.java
+src/ooxml/java/org/apache/poi/openxml4j
+src/ooxml/java/org/apache/poi/openxml4j/exceptions
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/InvalidFormatException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/InvalidOperationException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/NotOfficeXmlFileException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/ODFNotOfficeXmlFileException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/OLE2NotOfficeXmlFileException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/OpenXML4JException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/OpenXML4JRuntimeException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/PartAlreadyExistsException.java
+src/ooxml/java/org/apache/poi/openxml4j/opc
+src/ooxml/java/org/apache/poi/openxml4j/opc/CertificateEmbeddingOption.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/ContentTypes.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/OPCPackage.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageAccess.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageNamespaces.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagePart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagePartCollection.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagePartName.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageProperties.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageRelationship.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageRelationshipCollection.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageRelationshipTypes.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagingURIHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/RelationshipSource.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/StreamHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/TargetMode.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/ZipPackage.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/ZipPackagePart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ContentType.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ContentTypeManager.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/FileHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/MemoryPackagePart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/MemoryPackagePartOutputStream.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/PackagePropertiesPart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/PartMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/PartUnmarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ZipContentTypeManager.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ZipHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/DefaultMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/PackagePropertiesMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/ZipPackagePropertiesMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/ZipPartMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/unmarshallers
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/unmarshallers/PackagePropertiesUnmarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/unmarshallers/UnmarshallContext.java
+src/ooxml/java/org/apache/poi/openxml4j/util
+src/ooxml/java/org/apache/poi/openxml4j/util/Nullable.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipArchiveFakeEntry.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipArchiveThresholdInputStream.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipEntrySource.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipFileZipEntrySource.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipInputStreamZipEntrySource.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipSecureFile.java
+src/ooxml/java/org/apache/poi/poifs
+src/ooxml/java/org/apache/poi/poifs/crypt
+src/ooxml/java/org/apache/poi/poifs/crypt/agile
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileDecryptor.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptionHeader.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptionInfoBuilder.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptionVerifier.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptor.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/CertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/DSigRelation.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/DigestOutputStream.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/ExpiredCertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/KeyInfoKeySelector.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/OOXMLURIDereferencer.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/RevokedCertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureConfig.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureInfo.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureMarshalListener.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureOutputStream.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignaturePart.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/TrustCertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/EnvelopedSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/KeyInfoSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/OOXMLSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/Office2010SignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/SignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/XAdESSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/XAdESXLSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/RelationshipTransformService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/RevocationData.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/RevocationDataService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/SignaturePolicyService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/TSPTimeStampService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/TimeStampService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/TimeStampServiceValidator.java
+src/ooxml/java/org/apache/poi/poifs/crypt/temp
+src/ooxml/java/org/apache/poi/poifs/crypt/temp/AesZipFileZipEntrySource.java
+src/ooxml/java/org/apache/poi/poifs/crypt/temp/EncryptedTempData.java
+src/ooxml/java/org/apache/poi/poifs/crypt/temp/SXSSFWorkbookWithCustomZipEntrySource.java
+src/ooxml/java/org/apache/poi/poifs/crypt/temp/SheetDataWriterWithDecorator.java
+src/ooxml/java/org/apache/poi/xddf
+src/ooxml/java/org/apache/poi/xddf/usermodel
+src/ooxml/java/org/apache/poi/xddf/usermodel/Angles.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/BlackWhiteMode.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/CompoundLine.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/HasShapeProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/LineCap.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/LineEndLength.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/LineEndType.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/LineEndWidth.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PathShadeType.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PenAlignment.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PresetColor.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PresetGeometry.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PresetLineDash.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PresetPattern.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/RectangleAlignment.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/SchemeColor.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/SystemColor.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/TileFlipMode.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFAdjustHandlePolar.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFAdjustHandleXY.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColor.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorHsl.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorPreset.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorRgbBinary.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorRgbPercent.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorSchemeBased.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorSystemDefined.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFConnectionSite.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFCustomGeometry2D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFDashStop.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFEffectContainer.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFEffectList.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFExtensionList.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFGeometryGuide.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFGeometryRectangle.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFGradientFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFGradientStop.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFGroupFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineEndProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineJoinBevelProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineJoinMiterProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineJoinProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineJoinRoundProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLinearShadeProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFNoFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPath.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPathShadeProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPatternFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPicture.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPictureFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPoint2D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPositiveSize2D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPresetGeometry2D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPresetLineDash.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFRelativeRectangle.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFScene3D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFShape3D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFShapeProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFSolidFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFStretchInfoProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFTileInfoProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFTransform2D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisCrossBetween.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisCrosses.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisLabelAlignment.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisOrientation.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisPosition.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisTickLabelPosition.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisTickMark.java
+
+ succeeded in 358ms:
+src/ooxml
+src/ooxml/java
+src/ooxml/java/org
+src/ooxml/java/org/apache
+src/ooxml/java/org/apache/poi
+src/ooxml/java/org/apache/poi/ooxml
+src/ooxml/java/org/apache/poi/ooxml/POIXMLDocument.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLDocumentPart.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLException.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLFactory.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLProperties.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLRelation.java
+src/ooxml/java/org/apache/poi/ooxml/POIXMLTypeLoader.java
+src/ooxml/java/org/apache/poi/ooxml/dev
+src/ooxml/java/org/apache/poi/ooxml/dev/OOXMLLister.java
+src/ooxml/java/org/apache/poi/ooxml/dev/OOXMLPrettyPrint.java
+src/ooxml/java/org/apache/poi/ooxml/extractor
+src/ooxml/java/org/apache/poi/ooxml/extractor/CommandLineTextExtractor.java
+src/ooxml/java/org/apache/poi/ooxml/extractor/ExtractorFactory.java
+src/ooxml/java/org/apache/poi/ooxml/extractor/POIXMLPropertiesTextExtractor.java
+src/ooxml/java/org/apache/poi/ooxml/extractor/POIXMLTextExtractor.java
+src/ooxml/java/org/apache/poi/ooxml/util
+src/ooxml/java/org/apache/poi/ooxml/util/DocumentHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/IdentifierManager.java
+src/ooxml/java/org/apache/poi/ooxml/util/PackageHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/SAXHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/TransformerHelper.java
+src/ooxml/java/org/apache/poi/ooxml/util/XPathHelper.java
+src/ooxml/java/org/apache/poi/openxml4j
+src/ooxml/java/org/apache/poi/openxml4j/exceptions
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/InvalidFormatException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/InvalidOperationException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/NotOfficeXmlFileException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/ODFNotOfficeXmlFileException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/OLE2NotOfficeXmlFileException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/OpenXML4JException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/OpenXML4JRuntimeException.java
+src/ooxml/java/org/apache/poi/openxml4j/exceptions/PartAlreadyExistsException.java
+src/ooxml/java/org/apache/poi/openxml4j/opc
+src/ooxml/java/org/apache/poi/openxml4j/opc/CertificateEmbeddingOption.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/ContentTypes.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/OPCPackage.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageAccess.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageNamespaces.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagePart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagePartCollection.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagePartName.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageProperties.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageRelationship.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageRelationshipCollection.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackageRelationshipTypes.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/PackagingURIHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/RelationshipSource.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/StreamHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/TargetMode.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/ZipPackage.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/ZipPackagePart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ContentType.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ContentTypeManager.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/FileHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/MemoryPackagePart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/MemoryPackagePartOutputStream.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/PackagePropertiesPart.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/PartMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/PartUnmarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ZipContentTypeManager.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/ZipHelper.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/DefaultMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/PackagePropertiesMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/ZipPackagePropertiesMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/marshallers/ZipPartMarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/unmarshallers
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/unmarshallers/PackagePropertiesUnmarshaller.java
+src/ooxml/java/org/apache/poi/openxml4j/opc/internal/unmarshallers/UnmarshallContext.java
+src/ooxml/java/org/apache/poi/openxml4j/util
+src/ooxml/java/org/apache/poi/openxml4j/util/Nullable.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipArchiveFakeEntry.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipArchiveThresholdInputStream.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipEntrySource.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipFileZipEntrySource.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipInputStreamZipEntrySource.java
+src/ooxml/java/org/apache/poi/openxml4j/util/ZipSecureFile.java
+src/ooxml/java/org/apache/poi/poifs
+src/ooxml/java/org/apache/poi/poifs/crypt
+src/ooxml/java/org/apache/poi/poifs/crypt/agile
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileDecryptor.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptionHeader.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptionInfoBuilder.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptionVerifier.java
+src/ooxml/java/org/apache/poi/poifs/crypt/agile/AgileEncryptor.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/CertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/DSigRelation.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/DigestOutputStream.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/ExpiredCertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/KeyInfoKeySelector.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/OOXMLURIDereferencer.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/RevokedCertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureConfig.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureInfo.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureMarshalListener.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignatureOutputStream.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/SignaturePart.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/TrustCertificateSecurityException.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/EnvelopedSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/KeyInfoSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/OOXMLSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/Office2010SignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/SignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/XAdESSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/facets/XAdESXLSignatureFacet.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/RelationshipTransformService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/RevocationData.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/RevocationDataService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/SignaturePolicyService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/TSPTimeStampService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/TimeStampService.java
+src/ooxml/java/org/apache/poi/poifs/crypt/dsig/services/TimeStampServiceValidator.java
+src/ooxml/java/org/apache/poi/poifs/crypt/temp
+src/ooxml/java/org/apache/poi/poifs/crypt/temp/AesZipFileZipEntrySource.java
+src/ooxml/java/org/apache/poi/poifs/crypt/temp/EncryptedTempData.java
+src/ooxml/java/org/apache/poi/poifs/crypt/temp/SXSSFWorkbookWithCustomZipEntrySource.java
+src/ooxml/java/org/apache/poi/poifs/crypt/temp/SheetDataWriterWithDecorator.java
+src/ooxml/java/org/apache/poi/xddf
+src/ooxml/java/org/apache/poi/xddf/usermodel
+src/ooxml/java/org/apache/poi/xddf/usermodel/Angles.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/BlackWhiteMode.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/CompoundLine.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/HasShapeProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/LineCap.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/LineEndLength.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/LineEndType.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/LineEndWidth.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PathShadeType.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PenAlignment.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PresetColor.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PresetGeometry.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PresetLineDash.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/PresetPattern.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/RectangleAlignment.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/SchemeColor.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/SystemColor.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/TileFlipMode.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFAdjustHandlePolar.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFAdjustHandleXY.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColor.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorHsl.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorPreset.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorRgbBinary.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorRgbPercent.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorSchemeBased.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFColorSystemDefined.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFConnectionSite.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFCustomGeometry2D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFDashStop.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFEffectContainer.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFEffectList.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFExtensionList.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFGeometryGuide.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFGeometryRectangle.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFGradientFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFGradientStop.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFGroupFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineEndProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineJoinBevelProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineJoinMiterProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineJoinProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineJoinRoundProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLineProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFLinearShadeProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFNoFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPath.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPathShadeProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPatternFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPicture.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPictureFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPoint2D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPositiveSize2D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPresetGeometry2D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFPresetLineDash.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFRelativeRectangle.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFScene3D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFShape3D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFShapeProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFSolidFillProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFStretchInfoProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFTileInfoProperties.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/XDDFTransform2D.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisCrossBetween.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisCrosses.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisLabelAlignment.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisOrientation.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisPosition.java
+src/ooxml/java/org/apache/poi/xddf/usermodel/chart/AxisTickLabelPosition.java
+
+web search: 
+web search: Apache POI 4.1.2 source archive poi-src-4.1.2
+web search: 
+web search: https://archive.apache.org/dist/poi/release/src/
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases \\
+  https://github.com/apache/poi/tree/REL_4.1.2/src/ooxml/testcases \\
+  https://archive.apache.org/dist/poi/release/src/poi-src-4.1.2-20200217.zip \\
+  https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-javadoc.jar; do
+  code="'$(curl -LsS -o /dev/null -w '"'%{http_code}' \""'$url" || true)
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi-ooxml</artifactId>
+	<version>4.1.2</version>
+	<packaging>jar</packaging>
+	<name>Apache POI</name>
+	<url>http://poi.apache.org/</url>
+	<description>Apache POI - Java API To Access Microsoft Format Files</description>
+
+  <mailingLists>
+    <mailingList>
+      <name>POI Users List</name>
+      <subscribe>user-subscribe@poi.apache.org</subscribe>
+      <unsubscribe>user-unsubscribe@poi.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/poi-user/</archive>
+    </mailingList>
+    <mailingList>
+      <name>POI Developer List</name>
+      <subscribe>dev-subscribe@poi.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@poi.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/poi-dev/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>http://www.apache.org/</url>
+  </organization>
+
+  <dependencies>
+    <dependency>
+       <groupId>org.apache.poi</groupId>
+       <artifactId>poi</artifactId>
+       <version>4.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml-schemas</artifactId>
+      <version>4.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.19</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.virtuald</groupId>
+      <artifactId>curvesapi</artifactId>
+      <version>1.06</version>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/poi/REL_4_1_2/README.rst | sed -n '1,140p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 201ms:
+
+Apache POI
+======================
+
+A Java library for reading and writing Microsoft Office binary and OOXML file formats.
+
+The Apache POI Project's mission is to create and maintain Java APIs for manipulating various file formats based upon the Office Open XML standards (OOXML) and Microsoft's OLE 2 Compound Document format (OLE2). In short, you can read and write MS Excel files using Java. In addition, you can read and write MS Word and MS PowerPoint files using Java. Apache POI is your Java Excel solution (for Excel 97-2008). We have a complete API for porting other OOXML and OLE2 formats and welcome others to participate.
+
+OLE2 files include most Microsoft Office files such as XLS, DOC, and PPT as well as MFC serialization API based file formats. The project provides APIs for the OLE2 Filesystem (POIFS) and OLE2 Document Properties (HPSF).
+
+Office OpenXML Format is the new standards based XML file format found in Microsoft Office 2007 and 2008. This includes XLSX, DOCX and PPTX. The project provides a low level API to support the Open Packaging Conventions using openxml4j.
+
+For each MS Office application there exists a component module that attempts to provide a common high level Java api to both OLE2 and OOXML document formats. This is most developed for Excel workbooks (SS=HSSF+XSSF). Work is progressing for Word documents (WP=HWPF+XWPF) and PowerPoint presentations (SL=HSLF+XSLF).
+
+The project has some support for Outlook (HSMF). Microsoft opened the specifications to this format in October 2007. We would welcome contributions.
+
+There are also projects for Visio (HDGF and XDGF), TNEF (HMEF), and Publisher (HPBF).
+
+This library includes the following components, roughly in descending order of maturity:
+
+* Excel spreadsheets (Common SS = HSSF, XSSF, and SXSSF)
+* PowerPoint slideshows (Common SL = HSLF and XSLF)
+* Word processing documents (Common WP = HWPF and XWPF)
+* Outlook email (HSMF and HMEF)
+* Visio diagrams (HDGF and XDGF)
+* Publisher (HPBF)
+
+And lower-level, supporting components:
+
+* OLE2 Filesystem (POIFS)
+* OLE2 Document Properties (HPSF)
+* TNEF (HMEF) for Outlook winmail.dat files
+* OpenXML4J (OOXML)
+
+| Components named H??F are for reading or writing OLE2 binary formats.
+| Components named X??F are for reading or writing OpenOffice XML (OOXML) formats.
+
+Getting started
+------------------
+
+Website: https://poi.apache.org/
+
+`Mailing lists`_:
+
+* `Developers`_
+* `Users`_
+* `General`_ (release announcements)
+
+Bug tracker:
+
+* `Bugzilla`_
+* `GitHub pull requests`_
+
+Source code:
+
+* Official `Apache Subversion repo`_ at apache.org
+* `ViewVC repo browser`_ at apache.org
+* Official `Apache git mirror`_ at apache.org
+* Unofficial `GitHub git mirror`_ at github.com
+
+Requires Java 1.8 or later.
+
+Contributing
+------------------
+
+* Download and install svn or git, Java JDK 1.8+, and Apache Ant 1.8+ or Gradle
+
+* Check out the code from svn or git
+
+* Import the project into Eclipse or your favorite IDE
+
+* Write a unit test:
+
+  * Binary formats and Common APIs: src/testcases/org/apache/poi/
+  * OOXML APIs only: src/ooxml/testcases/org/apache/poi/
+  * Scratchpad (Binary formats): src/scratchpad/testcases/org/apache/poi/
+  * test files: test-data/
+
+* Navigate the source, make changes, and run unit tests to verify
+
+  * Binary formats and Common APIs: src/java/org/apache/poi/
+  * OOXML APIs only: src/ooxml/java/org/apache/poi/
+  * Scratchpad (Binary formats): src/scratchpad/src/org/apache/poi/
+  * Examples: src/examples/src/org/apache/poi/
+
+
+Building jar files
+------------------
+
+To build the jar files for poi, poi-ooxml, poi-ooxml-schemas, and poi-examples::
+
+    ant jar
+
+
+.. _Mailing lists: https://poi.apache.org/mailinglists.html
+.. _Developers: https://lists.apache.org/list.html?dev@poi.apache.org
+.. _Users: https://lists.apache.org/list.html?user@poi.apache.org
+.. _General: https://lists.apache.org/list.html?general@poi.apache.org
+.. _Bugzilla: https://bz.apache.org/bugzilla/buglist.cgi?product=POI
+.. _GitHub pull requests: https://github.com/apache/poi/pulls
+
+.. _Apache Subversion repo: https://svn.apache.org/repos/asf/poi/trunk
+.. _ViewVC repo browser: https://svn.apache.org/viewvc/poi/trunk
+.. _Apache git mirror: https://git.apache.org/poi.git/
+.. _GitHub git mirror: https://github.com/apache/poi
+
+
+
+2026-05-11T13:27:14.816740Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+exec
+/usr/bin/bash -lc "pkill -f 'archive.apache.org/dist/poi/release/src/poi-src-4.1.2' || true" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ exited -1 in 0ms:
+ exited -1 in 32566ms:
+200 https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases
+404 https://github.com/apache/poi/tree/REL_4.1.2/src/ooxml/testcases
+
+exec
+/usr/bin/bash -lc "curl -fsIL https://archive.apache.org/dist/poi/release/src/poi-src-4.1.2-20200217.zip | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/poi/release/src/ | rg '4\\.1\\.2'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases | sed -n '1,40p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 150ms:
+HTTP/1.1 200 OK
+Date: Mon, 11 May 2026 13:27:35 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Mon, 06 Jul 2020 14:19:27 GMT
+ETag: "65b8b72-5a9c68ff092fa"
+Accept-Ranges: bytes
+Content-Length: 106662770
+Content-Type: application/zip
+
+
+ succeeded in 704ms:
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="poi-src-4.1.2-20200217.tar.gz">poi-src-4.1.2-20200217.tar.gz</a>            2020-07-06 14:19   97M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="poi-src-4.1.2-20200217.tar.gz.asc">poi-src-4.1.2-20200217.tar.gz.asc</a>        2020-07-06 14:19  475   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="poi-src-4.1.2-20200217.tar.gz.sha256">poi-src-4.1.2-20200217.tar.gz.sha256</a>     2020-07-06 14:19   96   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="poi-src-4.1.2-20200217.tar.gz.sha512">poi-src-4.1.2-20200217.tar.gz.sha512</a>     2020-07-06 14:19  160   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="poi-src-4.1.2-20200217.zip">poi-src-4.1.2-20200217.zip</a>               2020-07-06 14:19  102M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="poi-src-4.1.2-20200217.zip.asc">poi-src-4.1.2-20200217.zip.asc</a>           2020-07-06 14:19  475   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="poi-src-4.1.2-20200217.zip.sha256">poi-src-4.1.2-20200217.zip.sha256</a>        2020-07-06 14:19   93   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="poi-src-4.1.2-20200217.zip.sha512">poi-src-4.1.2-20200217.zip.sha512</a>        2020-07-06 14:19  157   
+
+ succeeded in 737ms:
+HTTP/2 200 
+date: Mon, 11 May 2026 13:27:35 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c54e7282f92ef38567904d9424486a27"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=xtN6AKqxuPijWJJN1iQg3yCiPuCONNDcCYQvdL9ECAAplvq%2BJLU%2Bs3ytfXKczG8wZEmGw9o0j3%2FRPkskyb7ZUnxCysDMCcpYMoa0ZU8z7pFP5yoI2%2FDsh%2FDar6DlbXNbGhuyXadArBi0iEPrqyM3zcYyEWSnSOkAuwLJT0bNZTNuSkfR%2B%2FCvzbUYFugSKj%2Fb6H7Akkm1DL0X2mw%2FQfobhE7Nw2L6mF7VHJo9zpBzsRoZAsOUzPzMBg2XMRKSJeS2EgAOjyTPIEnW%2F%2BZB0gvIaQ%3D%3D--KVfZG57JjsSpokzG--5yEmhbaupWpB6G1Q7jXa%2Bw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1563022094.1778506055; expires=Tue, 11 May 2027 13:27:35 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 11 May 2027 13:27:35 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 511C:D7BE5:137D209B:ED34ABD:6A01D947
+
+
+web search: 
+web search: https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases
+codex
+I’ve got enough signal: this is a normal JVM `jar`, not a Kotlin/Groovy/Scala-specific artifact, and not an excluded Native Image target. I’m going to keep source and Javadoc URLs on Maven Central, and use the Apache release source archive for the test-suite field because Maven Central does not publish a `tests` or `test-sources` jar for this artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+diff --git a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+index c954c8f8d5eddb8d853a32aa45852363f5cd07ba..36eeba48bc55d5fe5d8d40d4b7e6d3220f36c944
+--- a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
++++ b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2"
++  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/poi",
++  "test-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-javadoc.jar",
++  "description" : "Apache POI OOXML provides Java APIs for reading, writing, and manipulating Office Open XML documents such as XLSX, DOCX, and PPTX. It supplies the POI components needed for OOXML package handling, document models, extraction, and related utilities on the JVM."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+index c954c8f8d5eddb8d853a32aa45852363f5cd07ba..36eeba48bc55d5fe5d8d40d4b7e6d3220f36c944
+--- a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
++++ b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2"
++  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/poi",
++  "test-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-javadoc.jar",
++  "description" : "Apache POI OOXML provides Java APIs for reading, writing, and manipulating Office Open XML documents such as XLSX, DOCX, and PPTX. It supplies the POI components needed for OOXML package handling, document models, extraction, and related utilities on the JVM."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.poi:poi-ooxml:4.1.2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/poi",
+  "test-code-url": "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-javadoc.jar",
+  "description": "Apache POI OOXML provides Java APIs for reading, writing, and manipulating Office Open XML documents such as XLSX, DOCX, and PPTX. It supplies the POI components needed for OOXML package handling, document models, extraction, and related utilities on the JVM."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-sources.jar \\
+  https://archive.apache.org/dist/poi/release/src/poi-src-4.1.2-20200217.zip \\
+  https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-javadoc.jar; do
+  code="'$(curl -fsSI -o /dev/null -w '"'%{http_code}' \""'$url" || true)
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+diff --git a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+index c954c8f8d5eddb8d853a32aa45852363f5cd07ba..36eeba48bc55d5fe5d8d40d4b7e6d3220f36c944
+--- a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
++++ b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2"
++  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/poi",
++  "test-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-javadoc.jar",
++  "description" : "Apache POI OOXML provides Java APIs for reading, writing, and manipulating Office Open XML documents such as XLSX, DOCX, and PPTX. It supplies the POI components needed for OOXML package handling, document models, extraction, and related utilities on the JVM."
+ }
+
+ succeeded in 353ms:
+200 https://archive.apache.org/dist/poi/release/src/poi-src-4.1.2-20200217.zip
+200 https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/4.1.2/poi-ooxml-4.1.2-javadoc.jar
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+diff --git a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+index c954c8f8d5eddb8d853a32aa45852363f5cd07ba..36eeba48bc55d5fe5d8d40d4b7e6d3220f36c944
+--- a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
++++ b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2"
++  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/poi",
++  "test-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-javadoc.jar",
++  "description" : "Apache POI OOXML provides Java APIs for reading, writing, and manipulating Office Open XML documents such as XLSX, DOCX, and PPTX. It supplies the POI components needed for OOXML package handling, document models, extraction, and related utilities on the JVM."
+ }
+
+ succeeded in 253ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-sources.jar",
+  "repository-url" : "https://github.com/apache/poi",
+  "test-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-javadoc.jar",
+  "description" : "Apache POI OOXML provides Java APIs for reading, writing, and manipulating Office Open XML documents such as XLSX, DOCX, and PPTX. It supplies the POI components needed for OOXML package handling, document models, extraction, and related utilities on the JVM."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+index c954c8f8d5eddb8d853a32aa45852363f5cd07ba..36eeba48bc55d5fe5d8d40d4b7e6d3220f36c944
+--- a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
++++ b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2"
++  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/poi",
++  "test-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-javadoc.jar",
++  "description" : "Apache POI OOXML provides Java APIs for reading, writing, and manipulating Office Open XML documents such as XLSX, DOCX, and PPTX. It supplies the POI components needed for OOXML package handling, document models, extraction, and related utilities on the JVM."
+ }
+
+codex
+Updated [org.apache.poi-poi-ooxml-4.1.2.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json:1).
+
+I left `language` absent and did not set `not-for-native-image`, since `poi-ooxml` is a JVM `jar` artifact. Validation done: `jq` accepts the JSON, and the `$version$ -> 4.1.2` source, test archive, and Javadoc URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+index c954c8f8d5eddb8d853a32aa45852363f5cd07ba..36eeba48bc55d5fe5d8d40d4b7e6d3220f36c944
+--- a/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
++++ b/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2"
++  "coordinates" : "org.apache.poi:poi-ooxml:4.1.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-sources.jar",
++  "repository-url" : "https://github.com/apache/poi",
++  "test-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/$version$/poi-ooxml-$version$-javadoc.jar",
++  "description" : "Apache POI OOXML provides Java APIs for reading, writing, and manipulating Office Open XML documents such as XLSX, DOCX, and PPTX. It supplies the POI components needed for OOXML package handling, document models, extraction, and related utilities on the JVM."
+ }
+
+tokens used
+75,915
+Updated [org.apache.poi-poi-ooxml-4.1.2.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9/build/discovered-artifact-metadata/org.apache.poi-poi-ooxml-4.1.2.json:1).
+
+I left `language` absent and did not set `not-for-native-image`, since `poi-ooxml` is a JVM `jar` artifact. Validation done: `jq` accepts the JSON, and the `$version$ -> 4.1.2` source, test archive, and Javadoc URLs all returned HTTP 200.
+Ran agent for org.apache.poi:poi-ooxml:4.1.2 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9/build/agent-artifact-discovery-logs/org.apache.poi-poi-ooxml-4.1.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2653-3d0233e9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 13s
+9 actionable tasks: 9 executed
