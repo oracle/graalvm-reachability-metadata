@@ -176,6 +176,30 @@ object Akka_serialization_jackson_3Test {
 
   val TestConfig: Config = ConfigFactory
     .parseString(s"""
+      akka.loggers = ["akka.event.Logging$$DefaultLogger"]
+      akka.logging-filter = "akka.event.DefaultLoggingFilter"
+      akka.loggers-dispatcher = "akka.actor.default-dispatcher"
+      akka.logger-startup-timeout = 5s
+      akka.loglevel = "INFO"
+      akka.stdout-loglevel = "WARNING"
+      akka.version = "2.6.21"
+      akka.library-extensions = ["akka.serialization.SerializationExtension$$"]
+      akka.extensions = []
+      akka.daemonic = off
+      akka.jvm-exit-on-fatal-error = on
+      akka.jvm-shutdown-hooks = on
+      akka.fail-mixed-versions = on
+      akka.actor.provider = "local"
+      akka.actor.guardian-supervisor-strategy = "akka.actor.DefaultSupervisorStrategy"
+      akka.actor.creation-timeout = 20s
+      akka.actor.serialize-messages = off
+      akka.actor.serialize-creators = off
+      akka.actor.no-serialization-verification-needed-class-prefix = ["akka."]
+      akka.actor.unstarted-push-timeout = 10s
+      akka.actor.serializers {
+        jackson-json = "akka.serialization.jackson.JacksonJsonSerializer"
+        jackson-cbor = "akka.serialization.jackson.JacksonCborSerializer"
+      }
       akka.actor.serialization-bindings {
         "$JsonPayloadClassName" = jackson-json
         "$CborPayloadClassName" = jackson-cbor
@@ -203,7 +227,7 @@ object Akka_serialization_jackson_3Test {
         }
       }
       """)
-    .withFallback(ConfigFactory.load())
+    .withFallback(ConfigFactory.load(Akka_serialization_jackson_3Test.getClass.getClassLoader))
 }
 
 final case class MapperEnvelope(
