@@ -29,8 +29,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import sun.misc.Unsafe;
 
 public class ServiceLoaderImplInnerDefaultFactoryTest {
     private static final String SERVICE_LOADER_CLASS_NAME = "org.glassfish.hk2.osgiresourcelocator.ServiceLoader";
@@ -78,7 +81,7 @@ public class ServiceLoaderImplInnerDefaultFactoryTest {
         try (OsgiBundleClassLoader bundleClassLoader = new OsgiBundleClassLoader(providerBundle)) {
             final Class<?> serviceLoaderClass = bundleClassLoader.loadClass(SERVICE_LOADER_CLASS_NAME);
             final Class<?> serviceLoaderImplClass = bundleClassLoader.loadClass(SERVICE_LOADER_IMPL_CLASS_NAME);
-            final Object serviceLoader = serviceLoaderImplClass.getConstructor().newInstance();
+            final Object serviceLoader = newServiceLoaderInstance(serviceLoaderImplClass, providerBundle);
             boolean initialized = false;
 
             try {
@@ -102,6 +105,44 @@ public class ServiceLoaderImplInnerDefaultFactoryTest {
                 }
             }
         }
+    }
+
+    private static Object newServiceLoaderInstance(Class<?> serviceLoaderImplClass, Bundle providerBundle) throws Exception {
+        if (!isNativeImageRuntime()) {
+            return serviceLoaderImplClass.getConstructor().newInstance();
+        }
+
+        // Native image runtime can load the HK2 classes with a system loader instead of the BundleReference loader
+        // used on the JVM, so populate the constructor-initialized state explicitly.
+        final Object serviceLoader = unsafe().allocateInstance(serviceLoaderImplClass);
+        writeDeclaredField(serviceLoaderImplClass, serviceLoader, "rwLock", new ReentrantReadWriteLock());
+        writeDeclaredField(serviceLoaderImplClass, serviceLoader, "bundleContext", providerBundle.getBundleContext());
+        writeDeclaredField(serviceLoaderImplClass, serviceLoader, "providersList",
+                newProvidersList(serviceLoaderImplClass));
+        return serviceLoader;
+    }
+
+    private static Object newProvidersList(Class<?> serviceLoaderImplClass) throws Exception {
+        final Class<?> providersListClass = Class.forName(
+                serviceLoaderImplClass.getName() + "$ProvidersList",
+                false,
+                serviceLoaderImplClass.getClassLoader());
+        final Constructor<?> constructor = providersListClass.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        return constructor.newInstance();
+    }
+
+    private static void writeDeclaredField(Class<?> declaringClass, Object target, String fieldName, Object value)
+            throws Exception {
+        final java.lang.reflect.Field field = declaringClass.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(target, value);
+    }
+
+    private static Unsafe unsafe() throws Exception {
+        final java.lang.reflect.Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
+        theUnsafe.setAccessible(true);
+        return (Unsafe) theUnsafe.get(null);
     }
 
     private static Bundle providerBundle() throws MalformedURLException {
@@ -230,6 +271,10 @@ public class ServiceLoaderImplInnerDefaultFactoryTest {
         return false;
     }
 
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
+    }
+
     public interface TestService {
         String name();
     }
@@ -258,6 +303,9 @@ public class ServiceLoaderImplInnerDefaultFactoryTest {
         @Override
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
             if (name.startsWith("org.glassfish.hk2.osgiresourcelocator.")) {
+                if (isNativeImageRuntime()) {
+                    return super.loadClass(name, resolve);
+                }
                 synchronized (getClassLoadingLock(name)) {
                     Class<?> loadedClass = findLoadedClass(name);
                     if (loadedClass == null) {
