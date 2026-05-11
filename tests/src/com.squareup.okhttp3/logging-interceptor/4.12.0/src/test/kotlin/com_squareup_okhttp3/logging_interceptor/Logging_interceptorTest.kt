@@ -187,6 +187,44 @@ public class Logging_interceptorTest {
     }
 
     @Test
+    fun bodyLevelOmitsBinaryRequestAndResponseBodies() {
+        val logs = mutableListOf<String>()
+        val interceptor = HttpLoggingInterceptor { message: String -> logs += message }.apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        val client = httpClient {
+            addInterceptor(interceptor)
+        }
+        val binaryRequest = byteArrayOf(0x00, 0x01, 0x02, 0x03, 0x04)
+        val binaryResponse = byteArrayOf(0x05, 0x06, 0x07, 0x08, 0x09)
+
+        OneShotHttpServer(
+            body = binaryResponse,
+        ).use { server ->
+            server.start()
+            try {
+                val request = Request.Builder()
+                    .url(server.url("/binary"))
+                    .post(binaryRequest.toRequestBody())
+                    .build()
+
+                client.newCall(request).execute().use { response ->
+                    assertThat(response.code).isEqualTo(200)
+                    assertThat(response.body!!.bytes()).isEqualTo(binaryResponse)
+                }
+            } finally {
+                client.closeResources()
+            }
+        }
+
+        val transcript = logs.joinToString("\n")
+        assertThat(transcript).contains("--> POST", "/binary")
+        assertThat(transcript).contains("--> END POST (binary ${binaryRequest.size}-byte body omitted)")
+        assertThat(transcript).contains("<-- 200 OK")
+        assertThat(transcript).contains("<-- END HTTP (binary ${binaryResponse.size}-byte body omitted)")
+    }
+
+    @Test
     fun networkBodyLoggerReportsGzipEncodedResponseBodySizes() {
         val logs = mutableListOf<String>()
         val interceptor = HttpLoggingInterceptor { message: String -> logs += message }.apply {
