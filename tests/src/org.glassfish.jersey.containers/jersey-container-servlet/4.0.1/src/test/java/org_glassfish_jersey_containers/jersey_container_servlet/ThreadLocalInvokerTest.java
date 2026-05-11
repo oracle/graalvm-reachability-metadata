@@ -30,7 +30,7 @@ public class ThreadLocalInvokerTest {
             final ThreadLocalInvoker<Function<String, String>> invoker) {
         return (Function<String, String>) Proxy.newProxyInstance(
                 ThreadLocalInvokerTest.class.getClassLoader(),
-                new Class<?>[] { Function.class },
+                new Class<?>[] {Function.class},
                 invoker);
     }
 }
