@@ -14,10 +14,12 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.WriterAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.filter.MarkerFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.slf4j.Log4jLoggerFactory;
 import org.apache.logging.slf4j.Log4jMDCAdapter;
@@ -108,6 +110,31 @@ public class Log4j_slf4j_implTest {
     }
 
     @Test
+    void routesSlf4jMarkerHierarchyToLog4jMarkerFilters() {
+        try (CapturedLogger capturedLogger = CapturedLogger.create(
+                "routesSlf4jMarkerHierarchyToLog4jMarkerFilters",
+                Level.TRACE,
+                "%message%n",
+                MarkerFilter.createFilter("SECURITY", Filter.Result.ACCEPT, Filter.Result.DENY))) {
+            Logger logger = LoggerFactory.getLogger(capturedLogger.getLoggerName());
+            Marker securityMarker = MarkerFactory.getDetachedMarker("SECURITY");
+            Marker loginMarker = MarkerFactory.getDetachedMarker("LOGIN");
+            loginMarker.add(securityMarker);
+
+            logger.info(loginMarker, "accepted child marker");
+            logger.info(securityMarker, "accepted parent marker");
+            logger.info(MarkerFactory.getDetachedMarker("AUDIT"), "rejected unrelated marker");
+            logger.info("rejected unmarked message");
+
+            assertThat(capturedLogger.getOutput())
+                    .contains("accepted child marker")
+                    .contains("accepted parent marker")
+                    .doesNotContain("rejected unrelated marker")
+                    .doesNotContain("rejected unmarked message");
+        }
+    }
+
+    @Test
     void supportsSlf4jLocationAwareLoggerCalls() {
         try (CapturedLogger capturedLogger = CapturedLogger.create(
                 "supportsSlf4jLocationAwareLoggerCalls",
@@ -177,6 +204,10 @@ public class Log4j_slf4j_implTest {
         }
 
         static CapturedLogger create(String testName, Level level, String pattern) {
+            return create(testName, level, pattern, null);
+        }
+
+        static CapturedLogger create(String testName, Level level, String pattern, Filter filter) {
             LoggerContext context = (LoggerContext) LogManager.getContext(false);
             Configuration configuration = context.getConfiguration();
             String loggerName = Log4j_slf4j_implTest.class.getName() + "." + testName;
@@ -194,7 +225,7 @@ public class Log4j_slf4j_implTest {
             appender.start();
 
             LoggerConfig loggerConfig = new LoggerConfig(loggerName, level, false);
-            loggerConfig.addAppender(appender, level, null);
+            loggerConfig.addAppender(appender, level, filter);
             configuration.addLogger(loggerName, loggerConfig);
             context.updateLoggers();
 
