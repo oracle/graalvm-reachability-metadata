@@ -13,7 +13,6 @@ import com.formdev.flatlaf.util.SystemInfo;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import javax.swing.JComponent;
@@ -92,7 +91,6 @@ public class FlatInspectorTest {
             setUI(new TestComponentUi());
             setBackground(Color.WHITE);
             setForeground(Color.BLACK);
-            setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
             setMinimumSize(new Dimension(16, 8));
             setPreferredSize(new Dimension(64, 24));
             setMaximumSize(new Dimension(128, 48));
