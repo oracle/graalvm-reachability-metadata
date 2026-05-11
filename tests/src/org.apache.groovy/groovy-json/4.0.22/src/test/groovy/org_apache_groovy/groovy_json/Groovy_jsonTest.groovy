@@ -71,6 +71,35 @@ public class Groovy_jsonTest {
     }
 
     @Test
+    void laxSlurperParsesRelaxedJsonSyntax() {
+        String relaxedJson = '''
+            // LAX mode accepts comments, unquoted object keys, and single-quoted strings.
+            {
+                name: 'Groovy',
+                enabled: true,
+                nested: {
+                    description: 'relaxed syntax',
+                    count: 3
+                },
+                tags: [
+                    'json',
+                    'lax'
+                ]
+            }
+        '''
+
+        Object parsed = new JsonSlurper()
+                .setType(JsonParserType.LAX)
+                .parseText(relaxedJson)
+
+        assertThat(parsed.name).isEqualTo('Groovy')
+        assertThat(parsed.enabled).isTrue()
+        assertThat(parsed.nested.description).isEqualTo('relaxed syntax')
+        assertThat(parsed.nested.count).isEqualTo(3)
+        assertThat(parsed.tags).containsExactly('json', 'lax')
+    }
+
+    @Test
     void parsesJsonFromReadersStreamsArraysFilesPathsAndUrls() {
         String json = '{"greeting":"héllo","values":[1,2,3],"nested":{"ok":true}}'
         JsonSlurper slurper = new JsonSlurper()
