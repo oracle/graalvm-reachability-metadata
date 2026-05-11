@@ -15,6 +15,7 @@ import org.apache.tools.ant.types.FileSet
 import org.apache.tools.ant.types.Path as AntPath
 import org.codehaus.groovy.ant.AntProjectPropertiesDelegate
 import org.codehaus.groovy.ant.FileScanner
+import org.codehaus.groovy.ant.GenerateStubsTask
 import org.codehaus.groovy.ant.Groovy
 import org.codehaus.groovy.ant.Groovyc
 import org.codehaus.groovy.ant.Groovydoc
@@ -166,6 +167,37 @@ public class Groovy_antTest {
         assertThat(compiler.taskSuccess).isTrue()
         assertThat(destinationDirectory.toPath().resolve('example/Greeter.class')).exists()
 
+    }
+
+    @Test
+    void generateStubsTaskCreatesJavaStubsForGroovySources() {
+        Project project = newProject()
+        File sourceDirectory = temporaryDirectory.resolve('stubs-src').toFile()
+        File stubDirectory = temporaryDirectory.resolve('stubs-out').toFile()
+        Files.createDirectories(stubDirectory.toPath())
+        writeFile('stubs-src/example/StubbedService.groovy', '''
+            package example
+
+            class StubbedService {
+                int answer() {
+                    42
+                }
+            }
+        ''')
+        GenerateStubsTask stubs = new GenerateStubsTask()
+        stubs.setProject(project)
+        stubs.setTaskName('generatestubs')
+        stubs.setSrcdir(new AntPath(project, sourceDirectory.absolutePath))
+        stubs.setDestdir(stubDirectory)
+        stubs.setFailonerror(true)
+
+        stubs.execute()
+
+        NioPath stubFile = stubDirectory.toPath().resolve('example/StubbedService.java')
+        assertThat(stubFile).exists()
+        String stubSource = Files.readString(stubFile, StandardCharsets.UTF_8)
+        assertThat(stubSource).contains('public class StubbedService')
+        assertThat(stubSource).containsPattern(/public\s+int\s+answer\(\)/)
     }
 
     @Test
