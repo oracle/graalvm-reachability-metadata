@@ -6,6 +6,10 @@
  */
 package org_glassfish_expressly.expressly;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import org.glassfish.expressly.ExpressionFactoryImpl;
@@ -65,6 +69,21 @@ public class ReflectionUtilTest {
         assertThat(result).isEqualTo("hello:native:image");
     }
 
+    @Test
+    void findsPublicSuperclassConstructorForPackagePrivateSubclass() throws Throwable {
+        Constructor<?> hiddenConstructor = HiddenConstructed.class.getDeclaredConstructor(String.class);
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(ReflectionUtil.class, MethodHandles.lookup());
+        MethodHandle getConstructor = lookup.findStatic(
+                ReflectionUtil.class,
+                "getConstructor",
+                MethodType.methodType(Constructor.class, Class.class, Constructor.class));
+
+        Constructor<?> constructor = (Constructor<?>) getConstructor.invoke(HiddenConstructed.class, hiddenConstructor);
+
+        assertThat(constructor).isNotNull();
+        assertThat(constructor.getDeclaringClass()).isEqualTo(BaseConstructed.class);
+    }
+
     public interface Greeting {
         String greet(String name);
     }
@@ -88,6 +107,17 @@ public class ReflectionUtilTest {
     public static class VarArgsTarget {
         public String join(String prefix, String... values) {
             return prefix + ":" + String.join(":", values);
+        }
+    }
+
+    public static class BaseConstructed {
+        public BaseConstructed(String value) {
+        }
+    }
+
+    static class HiddenConstructed extends BaseConstructed {
+        HiddenConstructed(String value) {
+            super(value);
         }
     }
 }
