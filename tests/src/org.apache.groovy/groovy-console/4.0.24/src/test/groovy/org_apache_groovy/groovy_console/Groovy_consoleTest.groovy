@@ -16,6 +16,8 @@ import groovy.console.ui.ScriptToTreeNodeAdapter
 import groovy.console.ui.SystemOutputInterceptor
 import groovy.console.ui.TreeNodeWithProperties
 import groovy.console.ui.text.GroovyFilter
+import groovy.console.ui.text.MatchingHighlighter
+import groovy.console.ui.text.SmartDocumentFilter
 import groovy.console.ui.text.TextEditor
 import org.codehaus.groovy.control.CompilePhase
 import org.graalvm.internal.tck.NativeImageSupport
@@ -23,12 +25,17 @@ import org.junit.jupiter.api.Test
 
 import javax.swing.ImageIcon
 import javax.swing.JTextPane
+import javax.swing.SwingUtilities
 import javax.swing.text.AbstractDocument
+import javax.swing.text.AttributeSet
 import javax.swing.text.DefaultStyledDocument
 import javax.swing.text.StyleConstants
+import java.awt.Color
 import java.awt.image.BufferedImage
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import static org.assertj.core.api.Assertions.assertThat
 
 public class Groovy_consoleTest {
@@ -209,6 +216,33 @@ assert new Calculator<Integer>().twice(21) == 42
     }
 
     @Test
+    void highlightsMatchingDelimitersAndClearsStaleHighlights() {
+        DefaultStyledDocument document = new DefaultStyledDocument()
+        SmartDocumentFilter filter = new SmartDocumentFilter(document)
+        ((AbstractDocument) document).documentFilter = filter
+        String source = 'def values = [1, (2 + 3)]\n'
+        document.insertString(0, source, null)
+        JTextPane pane = new JTextPane(document)
+        MatchingHighlighter highlighter = new MatchingHighlighter(filter, pane)
+
+        int openParen = source.indexOf('(')
+        int closeParen = source.indexOf(')')
+        pane.caretPosition = openParen + 1
+        highlighter.highlight()
+        waitForPendingSwingEvents()
+
+        assertHighlightedDelimiter(document, openParen)
+        assertHighlightedDelimiter(document, closeParen)
+
+        pane.caretPosition = source.length()
+        highlighter.highlight()
+        waitForPendingSwingEvents()
+
+        assertPlainDelimiter(document, openParen)
+        assertPlainDelimiter(document, closeParen)
+    }
+
+    @Test
     void editsTextWithTextEditorPublicApi() {
         TextEditor editor = new TextEditor(true, true, true)
         editor.text = 'alpha\nbeta'
@@ -325,8 +359,29 @@ assert new Calculator<Integer>().twice(21) == 42
         result
     }
 
-    private static javax.swing.text.AttributeSet attributesAt(DefaultStyledDocument document, int offset) {
+    private static AttributeSet attributesAt(DefaultStyledDocument document, int offset) {
         document.getCharacterElement(offset).attributes
+    }
+
+    private static void assertHighlightedDelimiter(DefaultStyledDocument document, int offset) {
+        AttributeSet attributes = attributesAt(document, offset)
+        assertThat(StyleConstants.isBold(attributes)).isTrue()
+        assertThat(StyleConstants.getForeground(attributes)).isEqualTo(Color.YELLOW.darker())
+    }
+
+    private static void assertPlainDelimiter(DefaultStyledDocument document, int offset) {
+        AttributeSet attributes = attributesAt(document, offset)
+        assertThat(StyleConstants.isBold(attributes)).isFalse()
+        assertThat(StyleConstants.getForeground(attributes)).isNotEqualTo(Color.YELLOW.darker())
+    }
+
+    private static void waitForPendingSwingEvents() {
+        if (SwingUtilities.isEventDispatchThread()) {
+            return
+        }
+        CountDownLatch latch = new CountDownLatch(1)
+        SwingUtilities.invokeLater({ latch.countDown() } as Runnable)
+        assertThat(latch.await(5, TimeUnit.SECONDS)).isTrue()
     }
 
     private static void verifyUnsupportedDynamicCompilation(Error e) {
