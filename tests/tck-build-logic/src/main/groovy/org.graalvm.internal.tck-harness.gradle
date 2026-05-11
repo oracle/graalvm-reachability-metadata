@@ -551,8 +551,7 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
-// gradle generateChangedMetadataTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
-Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChangedMetadataTestMatrix", DefaultTask) { task ->
+def configureChangedMetadataTestMatrixTask = { Task task ->
     task.setDescription("Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files")
     task.setGroup(METADATA_GROUP)
     task.doFirst {
@@ -580,6 +579,16 @@ Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChang
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
         writeGithubOutput("none-found", noneFound.toString())
     }
+}
+
+// gradle generateChangedMetadataTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChangedMetadataTestMatrix", DefaultTask) { task ->
+    configureChangedMetadataTestMatrixTask(task)
+}
+
+// Backward-compatible alias for older local CI callers.
+tasks.register("generateChangedTestedVersionsMatrix", DefaultTask) { task ->
+    configureChangedMetadataTestMatrixTask(task)
 }
 
 // gradle generateChangedCoordinatesOnlyMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
