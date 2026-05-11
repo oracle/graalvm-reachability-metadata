@@ -6,11 +6,15 @@
  */
 package com_squareup_okhttp3.logging_interceptor
 
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.LoggingEventListener
+import okio.BufferedSink
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
@@ -225,6 +229,58 @@ public class Logging_interceptorTest {
     }
 
     @Test
+    fun bodyLevelOmitsOneShotRequestBodyWithoutConsumingIt() {
+        val logs = mutableListOf<String>()
+        val interceptor = HttpLoggingInterceptor { message: String -> logs += message }.apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        val client = httpClient {
+            addInterceptor(interceptor)
+        }
+        val payload = "single-use request payload"
+        val payloadBytes = payload.toByteArray(StandardCharsets.UTF_8)
+        val responseBody = "accepted"
+        val requestBody = object : RequestBody() {
+            override fun contentType(): MediaType = "text/plain; charset=utf-8".toMediaType()
+
+            override fun contentLength(): Long = payloadBytes.size.toLong()
+
+            override fun isOneShot(): Boolean = true
+
+            override fun writeTo(sink: BufferedSink) {
+                sink.write(payloadBytes)
+            }
+        }
+
+        OneShotHttpServer(
+            body = responseBody.toByteArray(StandardCharsets.UTF_8),
+        ).use { server ->
+            server.start()
+            try {
+                val request = Request.Builder()
+                    .url(server.url("/one-shot"))
+                    .post(requestBody)
+                    .build()
+
+                client.newCall(request).execute().use { response ->
+                    assertThat(response.code).isEqualTo(200)
+                    assertThat(response.body!!.string()).isEqualTo(responseBody)
+                }
+
+                assertThat(server.recordedRequestBody).isEqualTo(payloadBytes)
+            } finally {
+                client.closeResources()
+            }
+        }
+
+        val transcript = logs.joinToString("\n")
+        assertThat(transcript).contains("--> POST", "/one-shot")
+        assertThat(transcript).contains("--> END POST (one-shot body omitted)")
+        assertThat(transcript).doesNotContain(payload)
+        assertThat(transcript).contains("<-- 200 OK")
+    }
+
+    @Test
     fun networkBodyLoggerReportsGzipEncodedResponseBodySizes() {
         val logs = mutableListOf<String>()
         val interceptor = HttpLoggingInterceptor { message: String -> logs += message }.apply {
@@ -333,6 +389,11 @@ public class Logging_interceptorTest {
         }
         private val executor = Executors.newSingleThreadExecutor()
         private val handled = CountDownLatch(1)
+        @Volatile
+        private var requestBody = ByteArray(0)
+
+        val recordedRequestBody: ByteArray
+            get() = requestBody.copyOf()
 
         fun start() {
             executor.execute {
@@ -389,14 +450,18 @@ public class Logging_interceptorTest {
 
             val headerText = String(headerBytes.toByteArray(), StandardCharsets.ISO_8859_1)
             val contentLength = CONTENT_LENGTH.find(headerText)?.groupValues?.get(1)?.toInt() ?: 0
+            val bodyBytes = ByteArrayOutputStream()
+            val buffer = ByteArray(8_192)
             var remaining = contentLength
             while (remaining > 0) {
-                val skipped = input.skip(remaining.toLong())
-                if (skipped <= 0L && input.read() == -1) {
+                val read = input.read(buffer, 0, minOf(buffer.size, remaining))
+                if (read == -1) {
                     return
                 }
-                remaining -= skipped.coerceAtLeast(1L).toInt()
+                bodyBytes.write(buffer, 0, read)
+                remaining -= read
             }
+            requestBody = bodyBytes.toByteArray()
         }
 
         private companion object {
