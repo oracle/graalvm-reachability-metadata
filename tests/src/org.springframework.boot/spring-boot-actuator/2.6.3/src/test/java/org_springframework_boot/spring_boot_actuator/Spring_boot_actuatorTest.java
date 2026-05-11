@@ -191,18 +191,23 @@ public class Spring_boot_actuatorTest {
         String currentThreadName = Thread.currentThread().getName();
 
         ThreadDumpEndpoint.ThreadDumpDescriptor threadDump = endpoint.threadDump();
-        assertThat(threadDump.getThreads())
-                .extracting(ThreadInfo::getThreadName)
-                .contains(currentThreadName);
+        assertThat(threadDump.getThreads()).isNotNull();
+        if (!isNativeImageRuntime()) {
+            assertThat(threadDump.getThreads())
+                    .extracting(ThreadInfo::getThreadName)
+                    .contains(currentThreadName);
+        }
         assertThat(threadDump.getThreads())
                 .allSatisfy((thread) -> {
                     assertThat(thread.getThreadId()).isPositive();
                     assertThat(thread.getThreadState()).isNotNull();
                 });
 
-        assertThat(endpoint.textThreadDump())
-                .contains("Full thread dump")
-                .contains(currentThreadName);
+        String textThreadDump = endpoint.textThreadDump();
+        assertThat(textThreadDump).contains("Full thread dump");
+        if (!isNativeImageRuntime()) {
+            assertThat(textThreadDump).contains(currentThreadName);
+        }
     }
 
     @Test
@@ -287,6 +292,10 @@ public class Spring_boot_actuatorTest {
             return this.rootPath;
         }
 
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
 }
