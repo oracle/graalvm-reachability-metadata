@@ -1,0 +1,844 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e17a3-b3c2-7ed2-9b39-e1109db6e555
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-starter-security:2.7.18
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.7.18" when "$version$" is replaced with "2.7.18".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+- Set "coordinates" to "org.springframework.boot:spring-boot-starter-security:2.7.18".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.7.18".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll check the existing metadata shape and nearby Spring Boot entries first, then verify the artifact’s Maven/source/doc locations before editing the JSON.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'spring|boot|security' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'spring-boot-starter-security|spring-boot-starter-web|org.springframework.boot:spring-boot' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json:2:  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18"
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/library-and-framework-list.json:2007:    "artifact": "org.springframework.boot:spring-boot-starter-actuator",
+metadata/library-and-framework-list.json:2023:    "artifact": "org.springframework.boot:spring-boot-starter-amqp",
+metadata/library-and-framework-list.json:2039:    "artifact": "org.springframework.boot:spring-boot-starter-cache",
+metadata/library-and-framework-list.json:2055:    "artifact": "org.springframework.boot:spring-boot-starter-data-jdbc",
+metadata/library-and-framework-list.json:2071:    "artifact": "org.springframework.boot:spring-boot-starter-data-jpa",
+metadata/library-and-framework-list.json:2089:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb",
+metadata/library-and-framework-list.json:2108:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb-reactive",
+metadata/library-and-framework-list.json:2127:    "artifact": "org.springframework.boot:spring-boot-starter-data-r2dbc",
+metadata/library-and-framework-list.json:2143:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis",
+metadata/library-and-framework-list.json:2160:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis-reactive",
+metadata/library-and-framework-list.json:2177:    "artifact": "org.springframework.boot:spring-boot-starter-data-rest",
+metadata/library-and-framework-list.json:2194:    "artifact": "org.springframework.boot:spring-boot-starter-freemarker",
+metadata/library-and-framework-list.json:2210:    "artifact": "org.springframework.boot:spring-boot-starter-graphql",
+metadata/library-and-framework-list.json:2227:    "artifact": "org.springframework.boot:spring-boot-starter-hateoas",
+metadata/library-and-framework-list.json:2246:    "artifact": "org.springframework.boot:spring-boot-starter-integration",
+metadata/library-and-framework-list.json:2266:    "artifact": "org.springframework.boot:spring-boot-starter-jdbc",
+metadata/library-and-framework-list.json:2282:    "artifact": "org.springframework.boot:spring-boot-starter-jetty",
+metadata/library-and-framework-list.json:2298:    "artifact": "org.springframework.boot:spring-boot-starter-json",
+metadata/library-and-framework-list.json:2315:    "artifact": "org.springframework.boot:spring-boot-starter-logging",
+metadata/library-and-framework-list.json:2332:    "artifact": "org.springframework.boot:spring-boot-starter-mail",
+metadata/library-and-framework-list.json:2348:    "artifact": "org.springframework.boot:spring-boot-starter-mustache",
+metadata/library-and-framework-list.json:2364:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-client",
+metadata/library-and-framework-list.json:2380:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
+metadata/library-and-framework-list.json:2396:    "artifact": "org.springframework.boot:spring-boot-starter-quartz",
+metadata/library-and-framework-list.json:2412:    "artifact": "org.springframework.boot:spring-boot-starter-reactor-netty",
+metadata/library-and-framework-list.json:2429:    "artifact": "org.springframework.boot:spring-boot-starter-rsocket",
+metadata/library-and-framework-list.json:2446:    "artifact": "org.springframework.boot:spring-boot-starter-security",
+metadata/library-and-framework-list.json:2463:    "artifact": "org.springframework.boot:spring-boot-starter-test",
+metadata/library-and-framework-list.json:2479:    "artifact": "org.springframework.boot:spring-boot-starter-thymeleaf",
+metadata/library-and-framework-list.json:2495:    "artifact": "org.springframework.boot:spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2496:    "description": "Starter for using Tomcat as the embedded servlet container. Default servlet container starter used by spring-boot-starter-web",
+metadata/library-and-framework-list.json:2511:    "artifact": "org.springframework.boot:spring-boot-starter-undertow",
+metadata/library-and-framework-list.json:2527:    "artifact": "org.springframework.boot:spring-boot-starter-validation",
+metadata/library-and-framework-list.json:2543:    "artifact": "org.springframework.boot:spring-boot-starter-web",
+metadata/library-and-framework-list.json:2562:    "artifact": "org.springframework.boot:spring-boot-starter-webflux",
+metadata/library-and-framework-list.json:2580:    "artifact": "org.springframework.boot:spring-boot-starter-websocket",
+
+codex
+The target file is currently just the coordinates. I also found an existing `spring-boot-starter` entry that treats starter-only JARs as not Native Image metadata targets, so I’m checking whether this specific starter has the same no-class-file shape before deciding that field.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.springframework.boot/spring-boot-starter/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+[
+  {
+    "not-for-native-image": true,
+    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '2438,2458p' metadata/library-and-framework-list.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+        "tests_locations": [
+          "https://github.com/spring-projects/spring-aot-smoke-tests/tree/main/framework"
+        ],
+        "test_level": "fully-tested"
+      }
+    ]
+  },
+  {
+    "artifact": "org.springframework.boot:spring-boot-starter-security",
+    "description": "Starter for using Spring Security",
+    "details": [
+      {
+        "minimum_version": "3.0.0",
+        "metadata_locations": [
+          "https://github.com/spring-projects/spring-security/blob/main/core/src/main/java/org/springframework/security/aot/hint/CoreSecurityRuntimeHints.java",
+          "https://github.com/spring-projects/spring-security/blob/main/web/src/main/java/org/springframework/security/web/aot/hint/WebMvcSecurityRuntimeHints.java"
+        ],
+        "tests_locations": [
+          "https://github.com/spring-projects/spring-aot-smoke-tests/tree/main/security"
+        ],
+        "test_level": "fully-tested"
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' metadata/org.springframework.boot build/discovered-artifact-metadata -g '*.json' | head -100" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-boot/v2.7.18/spring-boot-project/spring-boot-starters/spring-boot-starter-security/build.gradle | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-boot/v2.7.18/spring-boot-project/spring-boot-starters/spring-boot-starter-security/pom.xml | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-starter-security/2.7.18</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-starter-security/2.7.18</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-starter-security-2.7.18-javadoc.jar" title="spring-boot-starter-security-2.7.18-javadoc.jar">spring-boot-starter-security-2.7.18-javadoc.j...</a>  2023-11-23 08:05      4748      
+<a href="spring-boot-starter-security-2.7.18-javadoc.jar.asc" title="spring-boot-starter-security-2.7.18-javadoc.jar.asc">spring-boot-starter-security-2.7.18-javadoc.j...</a>  2023-11-23 08:05       833      
+<a href="spring-boot-starter-security-2.7.18-javadoc.jar.md5" title="spring-boot-starter-security-2.7.18-javadoc.jar.md5">spring-boot-starter-security-2.7.18-javadoc.j...</a>  2023-11-23 08:05        32      
+<a href="spring-boot-starter-security-2.7.18-javadoc.jar.sha1" title="spring-boot-starter-security-2.7.18-javadoc.jar.sha1">spring-boot-starter-security-2.7.18-javadoc.j...</a>  2023-11-23 08:05        40      
+<a href="spring-boot-starter-security-2.7.18-sources.jar" title="spring-boot-starter-security-2.7.18-sources.jar">spring-boot-starter-security-2.7.18-sources.j...</a>  2023-11-23 08:05      4746      
+<a href="spring-boot-starter-security-2.7.18-sources.jar.asc" title="spring-boot-starter-security-2.7.18-sources.jar.asc">spring-boot-starter-security-2.7.18-sources.j...</a>  2023-11-23 08:05       833      
+<a href="spring-boot-starter-security-2.7.18-sources.jar.md5" title="spring-boot-starter-security-2.7.18-sources.jar.md5">spring-boot-starter-security-2.7.18-sources.j...</a>  2023-11-23 08:05        32      
+<a href="spring-boot-starter-security-2.7.18-sources.jar.sha1" title="spring-boot-starter-security-2.7.18-sources.jar.sha1">spring-boot-starter-security-2.7.18-sources.j...</a>  2023-11-23 08:05        40      
+<a href="spring-boot-starter-security-2.7.18.jar" title="spring-boot-starter-security-2.7.18.jar">spring-boot-starter-security-2.7.18.jar</a>           2023-11-23 08:05      4743      
+<a href="spring-boot-starter-security-2.7.18.jar.asc" title="spring-boot-starter-security-2.7.18.jar.asc">spring-boot-starter-security-2.7.18.jar.asc</a>       2023-11-23 08:05       833      
+<a href="spring-boot-starter-security-2.7.18.jar.md5" title="spring-boot-starter-security-2.7.18.jar.md5">spring-boot-starter-security-2.7.18.jar.md5</a>       2023-11-23 08:05        32      
+<a href="spring-boot-starter-security-2.7.18.jar.sha1" title="spring-boot-starter-security-2.7.18.jar.sha1">spring-boot-starter-security-2.7.18.jar.sha1</a>      2023-11-23 08:05        40      
+<a href="spring-boot-starter-security-2.7.18.module" title="spring-boot-starter-security-2.7.18.module">spring-boot-starter-security-2.7.18.module</a>        2023-11-23 08:05      7221      
+<a href="spring-boot-starter-security-2.7.18.module.asc" title="spring-boot-starter-security-2.7.18.module.asc">spring-boot-starter-security-2.7.18.module.as...</a>  2023-11-23 08:05       833      
+<a href="spring-boot-starter-security-2.7.18.module.md5" title="spring-boot-starter-security-2.7.18.module.md5">spring-boot-starter-security-2.7.18.module.md...</a>  2023-11-23 08:05        32      
+<a href="spring-boot-starter-security-2.7.18.module.sha1" title="spring-boot-starter-security-2.7.18.module.sha1">spring-boot-starter-security-2.7.18.module.sh...</a>  2023-11-23 08:05        40      
+<a href="spring-boot-starter-security-2.7.18.pom" title="spring-boot-starter-security-2.7.18.pom">spring-boot-starter-security-2.7.18.pom</a>           2023-11-23 08:05      2672      
+<a href="spring-boot-starter-security-2.7.18.pom.asc" title="spring-boot-starter-security-2.7.18.pom.asc">spring-boot-starter-security-2.7.18.pom.asc</a>       2023-11-23 08:05       833      
+<a href="spring-boot-starter-security-2.7.18.pom.md5" title="spring-boot-starter-security-2.7.18.pom.md5">spring-boot-starter-security-2.7.18.pom.md5</a>       2023-11-23 08:05        32      
+<a href="spring-boot-starter-security-2.7.18.pom.sha1" title="spring-boot-starter-security-2.7.18.pom.sha1">spring-boot-starter-security-2.7.18.pom.sha1</a>      2023-11-23 08:05        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 212ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 279ms:
+plugins {
+	id "org.springframework.boot.starter"
+}
+
+description = "Starter for using Spring Security"
+
+dependencies {
+	api(project(":spring-boot-project:spring-boot-starters:spring-boot-starter"))
+	api("org.springframework:spring-aop")
+	api("org.springframework.security:spring-security-config")
+	api("org.springframework.security:spring-security-web")
+}
+
+codex
+Maven Central publishes source and javadoc JARs for this exact artifact/version, so those are the strongest source/documentation URLs. I’m now checking the published JAR contents and whether any Maven test classifier exists; that determines the Native Image fields and the test URL choice.
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/artifact.jar" https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/spring-boot-starter-security-2.7.18.jar; unzip -l "$tmpdir/artifact.jar"; rm -rf "$tmpdir"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+Archive:  /tmp/tmp.GgwSzuE8Vn/artifact.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2023-11-23 07:19   META-INF/
+      250  2023-11-23 07:19   META-INF/MANIFEST.MF
+    11359  2023-11-23 07:16   META-INF/LICENSE.txt
+      211  2023-11-23 07:16   META-INF/NOTICE.txt
+---------                     -------
+    11820                     4 files
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/spring-boot-starter-security-2.7.18.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-security</artifactId>
+  <version>2.7.18</version>
+  <name>spring-boot-starter-security</name>
+  <description>Starter for using Spring Security</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <version>2.7.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>5.3.31</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>5.7.11</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>5.7.11</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'for suffix in test-sources.jar tests.jar test-jar.jar; do url="https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/spring-boot-starter-security-2.7.18-$suffix"; code=$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 862ms:
+404 https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/spring-boot-starter-security-2.7.18-test-sources.jar
+404 https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/spring-boot-starter-security-2.7.18-tests.jar
+404 https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/spring-boot-starter-security-2.7.18-test-jar.jar
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-starters/spring-boot-starter-security?ref=v2.7.18 | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+exec
+/usr/bin/bash -lc "for path in \\
+  spring-boot-project/spring-boot-starters/spring-boot-starter-security/src/test \\
+  spring-boot-project/spring-boot-starters/spring-boot-starter-security \\
+  spring-boot-project/spring-boot-tests/spring-boot-smoke-tests/spring-boot-smoke-test-security \\
+  spring-boot-project/spring-boot-tests/spring-boot-smoke-tests/spring-boot-smoke-test-web-secure \\
+  spring-boot-tests/spring-boot-smoke-tests/spring-boot-smoke-test-security; do \\
+  url=\"https://github.com/spring-projects/spring-boot/tree/v2.7.18/"'$path"; '"\\
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); '"\\
+  printf '%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/git/trees/v2.7.18?recursive=1 | rg 'spring-boot-starter-security|security' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 171ms:
+[
+  {
+    "name": "build.gradle",
+    "path": "spring-boot-project/spring-boot-starters/spring-boot-starter-security/build.gradle",
+    "sha": "c6e63f44efa369c53f1b9ee44b71379f6c6bd3ba",
+    "size": 355,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-starters/spring-boot-starter-security/build.gradle?ref=v2.7.18",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v2.7.18/spring-boot-project/spring-boot-starters/spring-boot-starter-security/build.gradle",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/c6e63f44efa369c53f1b9ee44b71379f6c6bd3ba",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v2.7.18/spring-boot-project/spring-boot-starters/spring-boot-starter-security/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-starters/spring-boot-starter-security/build.gradle?ref=v2.7.18",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/c6e63f44efa369c53f1b9ee44b71379f6c6bd3ba",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v2.7.18/spring-boot-project/spring-boot-starters/spring-boot-starter-security/build.gradle"
+    }
+  }
+]
+
+ succeeded in 1002ms:
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/security",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/security/reactive",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/security/reactive/EndpointRequest.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/security/reactive/ReactiveManagementWebSecurityAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/security/reactive/package-info.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/security/servlet",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/security/servlet/EndpointRequest.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/security/servlet/ManagementWebSecurityAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/security/servlet/SecurityRequestMatchersManagementContextConfiguration.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java/org/springframework/boot/actuate/autoconfigure/security/servlet/package-info.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security/reactive",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security/reactive/EndpointRequestTests.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security/reactive/ReactiveManagementWebSecurityAutoConfigurationTests.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security/servlet",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security/servlet/AbstractEndpointRequestIntegrationTests.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security/servlet/EndpointRequestTests.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security/servlet/JerseyEndpointRequestIntegrationTests.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security/servlet/ManagementWebSecurityAutoConfigurationTests.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security/servlet/MvcEndpointRequestIntegrationTests.java",
+      "path": "spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/security/servlet/SecurityRequestMatchersManagementContextConfigurationTests.java",
+      "path": "spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/security",
+      "path": "spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/security/AbstractAuthenticationAuditListener.java",
+      "path": "spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/security/AbstractAuthorizationAuditListener.java",
+      "path": "spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/security/AuthenticationAuditListener.java",
+      "path": "spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/security/AuthorizationAuditListener.java",
+      "path": "spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/security/package-info.java",
+      "path": "spring-boot-project/spring-boot-actuator/src/test/java/org/springframework/boot/actuate/security",
+      "path": "spring-boot-project/spring-boot-actuator/src/test/java/org/springframework/boot/actuate/security/AuthenticationAuditListenerTests.java",
+      "path": "spring-boot-project/spring-boot-actuator/src/test/java/org/springframework/boot/actuate/security/AuthorizationAuditListenerTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/graphql/security",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/graphql/security/GraphQlWebFluxSecurityAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/graphql/security/GraphQlWebMvcSecurityAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/graphql/security/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/ConditionalOnDefaultWebSecurity.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/DefaultWebSecurityCondition.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityDataConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityProperties.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/StaticResourceLocation.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/ClientsConfiguredCondition.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/OAuth2ClientProperties.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/OAuth2ClientPropertiesRegistrationAdapter.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/reactive",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/reactive/ReactiveOAuth2ClientAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/reactive/ReactiveOAuth2ClientConfigurations.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/reactive/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/servlet",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/servlet/OAuth2ClientAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/servlet/OAuth2ClientRegistrationRepositoryConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/servlet/OAuth2WebSecurityConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/client/servlet/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/IssuerUriCondition.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/KeyValueCondition.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/OAuth2ResourceServerProperties.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/reactive",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/reactive/ReactiveOAuth2ResourceServerAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/reactive/ReactiveOAuth2ResourceServerConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/reactive/ReactiveOAuth2ResourceServerJwkConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/reactive/ReactiveOAuth2ResourceServerOpaqueTokenConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/reactive/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/servlet",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/servlet/OAuth2ResourceServerAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/servlet/OAuth2ResourceServerJwtConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/servlet/OAuth2ResourceServerOpaqueTokenConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/servlet/Oauth2ResourceServerConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/oauth2/resource/servlet/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/reactive",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/reactive/PathRequest.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/reactive/ReactiveSecurityAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/reactive/ReactiveUserDetailsServiceAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/reactive/StaticResourceRequest.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/reactive/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/rsocket",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/rsocket/RSocketSecurityAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/rsocket/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/saml2",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/saml2/RegistrationConfiguredCondition.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/saml2/Saml2LoginConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/saml2/Saml2RelyingPartyAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/saml2/Saml2RelyingPartyProperties.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/saml2/Saml2RelyingPartyRegistrationConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/saml2/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/servlet",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/servlet/AntPathRequestMatcherProvider.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/servlet/PathRequest.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/servlet/RequestMatcherProvider.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/servlet/SecurityAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/servlet/SecurityFilterAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/servlet/SpringBootWebSecurityConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/servlet/StaticResourceRequest.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/servlet/UserDetailsServiceAutoConfiguration.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/servlet/package-info.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/graphql/security",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/graphql/security/GraphQlWebFluxSecurityAutoConfigurationTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/graphql/security/GraphQlWebMvcSecurityAutoConfigurationTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/SecurityPropertiesTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/jpa",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/jpa/JpaUserDetailsTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/client",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/client/OAuth2ClientPropertiesRegistrationAdapterTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/client/OAuth2ClientPropertiesTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/client/reactive",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/client/reactive/ReactiveOAuth2ClientAutoConfigurationTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/client/servlet",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/client/servlet/OAuth2ClientRegistrationRepositoryConfigurationTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/client/servlet/OAuth2WebSecurityConfigurationTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/resource",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/resource/reactive",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/resource/reactive/ReactiveOAuth2ResourceServerAutoConfigurationTests.java",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/resource/servlet",
+      "path": "spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/security/oauth2/resource/servlet/OAuth2ResourceServerAutoConfigurationTests.java",
+curl: (23) Failure writing output to destination
+
+ succeeded in 4874ms:
+404 https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-starters/spring-boot-starter-security/src/test
+200 https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-starters/spring-boot-starter-security
+404 https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-tests/spring-boot-smoke-tests/spring-boot-smoke-test-security
+404 https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-tests/spring-boot-smoke-tests/spring-boot-smoke-test-web-secure
+404 https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-tests/spring-boot-smoke-tests/spring-boot-smoke-test-security
+
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"|\"reason\"|\"replacement\"|\"description\"' build/discovered-artifact-metadata metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+metadata/org.apache.thrift/libthrift/index.json:9:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/org.apache.thrift/libthrift/index.json:29:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:9:    "description" : "JUnit Jupiter Engine is the runtime test engine that discovers and executes tests written with the JUnit Jupiter programming model on the JUnit Platform. It integrates Jupiter APIs with the platform engine SPI, enabling build tools and IDEs to run JUnit 5 tests.",
+metadata/org.junit.jupiter/junit-jupiter/index.json:3:    "not-for-native-image": true,
+metadata/org.junit.jupiter/junit-jupiter/index.json:4:    "reason": "Artifact JAR contains no application/library JVM class files beyond module-info.class, so there is no library code for native-image metadata."
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:9:    "description" : "JUnit Jupiter Params provides parameterized test support for JUnit Jupiter, including argument source annotations, built-in arguments providers, converters, aggregators, and extension support used to execute test templates with multiple argument sets.",
+metadata/com.typesafe.slick/slick_2.13/index.json:9:    "description" : "Slick is a Scala database access library that provides strongly typed, composable APIs for working with relational databases. It lets applications express queries in Scala, generate SQL for multiple database engines, and use asynchronous or reactive-streaming database actions.",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:9:    "description" : "Slick is a Scala database query and access library with strongly typed, composable APIs for relational databases. The slick-hikaricp module integrates Slick with HikariCP so Slick databases can use a HikariCP JDBC connection pool.",
+metadata/org.awaitility/awaitility/index.json:9:    "description" : "Awaitility is a Java DSL for waiting on asynchronous operations in tests without manual sleeps or polling loops. It lets assertions poll until conditions are satisfied or time out, making concurrent and eventually consistent behavior easier to verify.",
+metadata/org.awaitility/awaitility/index.json:25:    "description" : "Awaitility is a Java DSL for waiting on asynchronous operations in tests without manual sleeps or polling loops. It lets assertions poll until conditions are satisfied or time out, making concurrent and eventually consistent behavior easier to verify.",
+metadata/org.scalatest/scalatest_2.13/index.json:3:    "not-for-native-image": true,
+metadata/org.scalatest/scalatest_2.13/index.json:4:    "reason": "The published scalatest_2.13-3.2.19 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the implementation classes are supplied by its class-bearing module dependencies.",
+metadata/org.scalatest/scalatest_2.13/index.json:5:    "replacement": "Use the class-bearing ScalaTest module artifacts such as org.scalatest:scalatest-core_2.13:3.2.19, org.scalatest:scalatest-funsuite_2.13:3.2.19, and org.scalatest:scalatest-matchers-core_2.13:3.2.19 as needed."
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:9:    "description": "ScalaTest WordSpec provides the WordSpec style for writing behavior-driven ScalaTest suites using nested words and sentences to describe a system under test. It includes synchronous, asynchronous, and fixture-based suite classes that integrate with ScalaTest assertions, matchers, tagging, and test lifecycle features.",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:9:    "description": "ScalaTest RefSpec provides the RefSpec testing style for ScalaTest on the JVM, where tests are represented by methods and discovered via reflection. It integrates with ScalaTest's core assertions, tagging, fixtures, and reporting so Scala projects can define and run method-oriented test suites.",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:9:    "description" : "ScalaTest Must Matchers provides the must-style matcher syntax for ScalaTest assertions on the JVM. It supplies the org.scalatest.matchers.must.Matchers API, allowing tests to express expectations such as values must equal, include, contain, start with, or satisfy custom matchers.",
+metadata/org.jline/jline-terminal-jni/index.json:9:    "description" : "JLine JNI Terminal provides the JLine terminal provider implementation that uses JLine's JNI native library for low-level terminal and pseudoterminal access. It plugs into the JLine terminal API to support native console operations across supported platforms without relying on JNA or external process execution.",
+metadata/org.jline/jline-terminal-jni/index.json:44:    "description" : "JLine JNI Terminal provides the JLine terminal provider implementation that uses JLine's JNI native library for low-level terminal and pseudoterminal access. It plugs into the JLine terminal API to support native console operations across supported platforms without relying on JNA or external process execution.",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:9:    "description": "ScalaTest Should Matchers provides the should matcher syntax for expressing assertions in ScalaTest suites. It lets tests compare values, inspect collections and properties, and build readable expectations using ScalaTest's matcher DSL.",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:9:    "description": "ScalaTest Matchers Core provides the shared matcher result types, matcher abstractions, and DSL words used by ScalaTest's should and must matcher APIs. It lets Scala tests express type-safe assertions about equality, containment, ordering, patterns, properties, and custom matchers on the JVM.",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:9:    "description" : "Brotli4j provides Java bindings for Brotli compression and decompression using platform-specific native libraries. It exposes encoder and decoder APIs for working with Brotli-compressed data from JVM applications.",
+metadata/org.jline/jline-terminal-jna/index.json:9:    "description" : "This module adds a JNA-backed terminal provider for JLine. It uses native platform APIs to manage terminals and pseudoterminals on supported operating systems.",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:9:    "description": "ScalaTest FeatureSpec provides the FeatureSpec and AsyncFeatureSpec testing style for organizing ScalaTest suites around named features and scenarios. It supplies synchronous, asynchronous, and fixture-based specs for behavior-driven Scala tests while integrating with ScalaTest's assertions, matchers, reporting, and runner infrastructure.",
+metadata/org.tpolecat/doobie-free_3/index.json:9:    "description" : "doobie-free_3 provides doobie's low-level free-algebra layer for representing JDBC operations as pure Scala 3 programs. It exposes direct mappings for JDBC objects such as connections, statements, result sets, and metadata so higher-level doobie modules and advanced users can interpret or compose database actions functionally.",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:9:    "description" : "Arquillian JUnit Container integrates Arquillian's container test runtime with JUnit. It supplies the JUnit-side container extension and runner support needed to execute Arquillian tests against managed, remote, or embedded containers.",
+metadata/com.aayushatharva.brotli4j/service/index.json:9:    "description" : "Brotli4j provides Brotli compression and decompression bindings for Java backed by native libraries. The service artifact contains the BrotliNativeProvider service interface used by Brotli4j native-provider JARs to advertise which platform-specific Brotli library they contain.",
+metadata/com.google.guava/listenablefuture/index.json:10:    "description": "This artifact is an empty compatibility placeholder that Guava depends on so build tools prefer it over the standalone ListenableFuture artifact. It avoids duplicate ListenableFuture classes when applications depend on Guava and the older standalone coordinate at the same time.",
+metadata/org.scalatest/scalatest-compatible/index.json:9:    "description" : "scalatest-compatible provides the org.scalatest.compatible.Assertion marker interface used by ScalaTest-compatible assertion types. It lets third-party libraries define assertion results that can appear as the final expression in ScalaTest test bodies while avoiding Scala binary compatibility concerns.",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:9:    "description" : "Arquillian JUnit Core provides the core JUnit integration for Arquillian, wiring JUnit test execution into Arquillian's test lifecycle. It supplies the Arquillian JUnit runner, ordering annotations, and extension hooks used by JUnit-based Arquillian tests.",
+metadata/com.github.docker-java/docker-java-transport/index.json:9:    "description" : "docker-java-transport provides the core transport abstractions and shared utilities used by docker-java clients to communicate with the Docker Remote API. It defines common request and response plumbing that concrete transport implementations build on.",
+metadata/org.tpolecat/typename_3/index.json:9:    "description" : "TypeName is a Scala micro-library that provides a typeName[A] method for producing a string representation of a Scala type and a TypeName[A] typeclass for requiring that a type has a name. It offers a lighter alternative to TypeTag-style machinery for diagnostics, error reporting, and similar code that needs readable type names.",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:9:    "description" : "ScalaTest FunSuite provides the FunSuite testing style for ScalaTest on the JVM, where tests are registered as named functions rather than discovered as methods. It integrates with ScalaTest's assertions, fixtures, tagging, asynchronous suites, and reporting so Scala projects can write function-oriented unit tests.",
+metadata/org.jline/jline-console/index.json:9:    "description" : "JLine Console provides higher-level console framework APIs for building interactive command-line applications on top of JLine. It includes command registry, console engine, system registry, printer, widget, and built-in command support for managing command execution, scripting, completion, and terminal output.",
+metadata/org.jline/jline-console/index.json:56:    "description" : "JLine Console provides higher-level console framework APIs for building interactive command-line applications on top of JLine. It includes command registry, console engine, system registry, printer, widget, and built-in command support for managing command execution, scripting, completion, and terminal output.",
+metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:12:    "description": "Microsoft JDBC Driver for SQL Server provides a Type 4 JDBC driver for connecting Java applications to Microsoft SQL Server and Azure SQL databases. It implements the JDBC API and supports SQL Server-specific connectivity features such as authentication, encryption, and data access.",
+metadata/com.google.guava/failureaccess/index.json:17:    "description" : "failureaccess provides Guava's internal classes for optionally exposing the cause of a failed Future through a fast path. It includes InternalFutureFailureAccess and InternalFutures for lightweight failure-cause access used by Guava concurrency utilities."
+metadata/ch.qos.logback/logback-core/index.json:8:    "description" : "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules.",
+metadata/ch.qos.logback/logback-core/index.json:22:    "description" : "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules.",
+metadata/ch.qos.logback/logback-core/index.json:37:    "description" : "Logback Core is the foundational module of the Logback logging framework for Java. It provides appenders, encoders, layouts, rolling policies, filters, and support classes used by higher-level Logback modules.",
+metadata/org.mongodb/mongo-java-driver/index.json:9:    "description" : "MongoDB Java Driver provides Java APIs for connecting applications to MongoDB and performing database, collection, query, and write operations. The 3.9.0 uber-artifact bundles the legacy driver, mongodb-driver, mongodb-driver-core, and bson, including client APIs, protocol support, and BSON encoding and decoding.",
+metadata/org.mongodb/mongo-java-driver/index.json:47:    "description" : "MongoDB Java Driver provides Java APIs for connecting applications to MongoDB and performing database, collection, query, and write operations. The 3.4.0 uber-artifact bundles mongodb-driver, mongodb-driver-core, and bson, including client APIs, protocol support, and BSON encoding and decoding.",
+metadata/org.tpolecat/sourcepos_3/index.json:9:    "description" : "SourcePos is a Scala micro-library that provides a SourcePos value containing the source file path and line number for a call site. Its inline macro supplies an implicit SourcePos automatically when one is not already available, making it useful for diagnostics, logging, and error reporting.",
+metadata/com.google.jsinterop/jsinterop-annotations/index.json:9:    "description" : "JsInterop Annotations provides Java annotations such as @JsType, @JsMethod, and @JsProperty that describe the JavaScript-facing API of Java code. GWT and related Java-to-JavaScript compilers use these annotations to control generated JavaScript names, namespaces, native bindings, overlays, and ignored members.",
+metadata/org.mongodb/bson/index.json:9:    "description" : "The BSON library provides standalone support for MongoDB's Binary JSON document format. It includes codecs and value types for encoding, decoding, and working with BSON documents in JVM applications.",
+metadata/com.google.guava/guava-bootstrap/index.json:9:    "description" : "Guava Bootstrap provides a JDK 6-like java.util.concurrent.ExecutorService interface compiled with JDK 5 settings for use during Guava's build. It is used on Guava's bootstrap class path so Guava can compile invokeAll and invokeAny signatures consistently across JDK 5 and JDK 6.",
+metadata/org.scalacheck/scalacheck_2.13/index.json:9:    "description" : "ScalaCheck is a Scala property-based testing library for generating test data and checking properties over many randomized cases. It can be used standalone or with Scala test frameworks to exercise Scala and Java code and shrink failing examples.",
+metadata/org.scalacheck/scalacheck_2.13/index.json:27:    "description" : "ScalaCheck is a Scala property-based testing library for generating test data and checking properties over many randomized cases. It can be used standalone or with Scala test frameworks to exercise Scala and Java code and shrink failing examples.",
+metadata/com.google.guava/guava/index.json:9:    "description" : "Guava is a Java utility library that provides collections, caching, primitives support, string handling, I/O helpers, and concurrency utilities. The r06 artifact packages the Guava libraries into a single JVM jar for use by Java applications.",
+metadata/com.googlecode.concurrent-trees/concurrent-trees/index.json:9:    "description" : "Concurrent-Trees provides high-concurrency radix, reversed radix, inverted radix, and suffix tree implementations for Java. It supports fast prefix, suffix, contains, autocomplete, keyword-scanning, and longest-common-substring lookup workloads while keeping reads lock-free and consistent during writes.",
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:9:    "description" : "Akka Parsing provides Akka HTTP's internal parsing toolkit, including the parboiled2-based parser DSL and supporting parser input, rule, and error-formatting utilities. It underpins Akka HTTP's HTTP message parsing so higher-level modules can parse requests, responses, headers, and related protocol data efficiently.",
+metadata/com.mysql/mysql-connector-j/index.json:9:    "description" : "MySQL Connector/J is the JDBC Type 4 driver for connecting Java applications to MySQL databases. It implements the JDBC API and provides connection, authentication, and data access support for MySQL servers.",
+metadata/commons-io/commons-io/index.json:9:    "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, paths, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, and convenience methods for common I/O tasks such as copying, reading, writing, and deleting.",
+metadata/commons-io/commons-io/index.json:28:    "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, directories, paths, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, monitors, and convenience methods for common I/O operations such as copying, reading, writing, and deleting.",
+metadata/ch.qos.logback/logback-classic/index.json:9:    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+metadata/ch.qos.logback/logback-classic/index.json:46:    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+metadata/ch.qos.logback/logback-classic/index.json:74:    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+metadata/ch.qos.logback/logback-classic/index.json:89:    "description" : "Logback Classic is the native SLF4J implementation for the Logback logging framework in Java applications. It provides logger configuration, appenders, layouts, and filtering for routing and formatting log events.",
+metadata/org.hibernate.reactive/hibernate-reactive-core/index.json:12:    "description": "Hibernate Reactive Core is the core module of Hibernate Reactive. It adds a reactive API to Hibernate ORM for non-blocking interaction with databases using reactive drivers.",
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:9:    "description" : "akka-protobuf-v3 is Akka's shaded copy of the Google Protocol Buffers v3 Java runtime, relocated under akka.protobufv3.internal for Akka internals. It lets Akka modules parse, build, and serialize protobuf messages without exposing or conflicting with an application's own protobuf-java dependency.",
+metadata/org.crac/crac/index.json:9:    "description" : "org.crac provides a compatibility wrapper for the OpenJDK CRaC API so applications can compile and run across JDKs with jdk.crac, javax.crac, or no CRaC implementation. At runtime it detects an available CRaC implementation and delegates to it, otherwise it uses a dummy implementation that lets applications run while checkpoint requests fail.",
+metadata/com.typesafe.akka/akka-serialization-jackson_3/index.json:9:    "description" : "Akka Serialization Jackson provides Jackson-based JSON and CBOR serializers for Akka messages, events, and other payloads. It supplies Akka-specific Jackson modules, serializer bindings, object mapper configuration, compression, and schema migration support for Java and Scala applications.",
+metadata/org.tpolecat/skunk-core_3/index.json:9:    "description" : "skunk-core_3 is Skunk's core tagless, non-blocking PostgreSQL data access library for Scala, built on Cats Effect and FS2. It provides the session, query, command, codec, transaction, cursor, channel, and protocol abstractions used to communicate with PostgreSQL in a type-safe functional style.",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:9:    "description" : "This artifact provides Java utility APIs used by bnd, including class-file parsing, functional exception wrappers, memoization, result types, signatures, stream helpers, and immutable collection helpers. It is a compile-time support library for bnd and OSGi tooling, packaging reusable utilities that other bnd components can statically link or consume on the JVM.",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:9:    "description" : "ScalaTest FunSpec provides the FunSpec style for writing behavior-driven ScalaTest suites with nested describe and it clauses. It includes synchronous, asynchronous, fixture-based, and path-based suite classes that integrate with ScalaTest assertions, tagging, and test lifecycle features.",
+metadata/io.undertow/undertow-parser-generator/index.json:9:    "description" : "Undertow Parser Generator is an annotation processor that generates Undertow HTTP parser classes at build time. It is used by the Undertow web server to produce efficient request and response parsing code.",
+metadata/io.undertow/undertow-parser-generator/index.json:26:    "description" : "Undertow Parser Generator is an annotation processor that generates Undertow's HTTP parser classes. It supports build-time parser code generation for the Undertow web server.",
+metadata/org.jetbrains.compose.foundation/foundation/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.foundation/foundation/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM desktop variants to org.jetbrains.compose.foundation:foundation-desktop:1.7.3.",
+metadata/org.jetbrains.compose.foundation/foundation/index.json:5:    "replacement": "org.jetbrains.compose.foundation:foundation-desktop:1.7.3"
+metadata/org.jline/jline-reader/index.json:10:    "description" : "JLine Reader provides the line-editing, history, completion, key binding, and prompt-reading APIs used to build interactive command-line interfaces on the JVM. It sits on top of JLine terminal abstractions so Java applications can implement shell-like input behavior across supported consoles and terminal backends.",
+metadata/org.jline/jline-reader/index.json:51:    "description" : "JLine Reader provides the line-editing, history, completion, key binding, and prompt-reading APIs used to build interactive command-line interfaces on the JVM. It sits on top of JLine terminal abstractions so Java applications can implement shell-like input behavior across supported consoles and terminal backends.",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:9:    "description" : "ScalaTest FreeSpec provides ScalaTest's FreeSpec style, letting tests be written as nested, descriptive phrases that define a tree of behavior-focused examples. The artifact supplies the synchronous, asynchronous, fixture, and path-oriented FreeSpec classes for Scala 2.13 test suites.",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:9:    "description" : "The biz.aQute.bnd.annotation artifact provides bnd-specific Java annotations for OSGi bundle metadata, package versioning, capabilities, service metadata, JPMS hints, licenses, and plugin declarations. These annotations are consumed by bnd and related tooling to generate or validate bundle headers and metadata without hard-coding that information in build instructions.",
+metadata/com.typesafe.netty/netty-reactive-streams/index.json:9:    "description" : "Netty Reactive Streams provides Reactive Streams Publisher and Subscriber channel handlers for Netty pipelines. It bridges Netty inbound and outbound messages with backpressure-aware reactive streams so applications can stream data through channels safely.",
+metadata/commons-logging/commons-logging-api/index.json:9:    "description" : "Commons Logging API provides the public interfaces and factory classes used by Java code to log through an implementation-neutral abstraction. It lets libraries avoid depending directly on Log4J, JDK logging, LogKit, or another backend while allowing the application to choose the actual logging system at runtime.",
+metadata/commons-logging/commons-logging/index.json:10:    "description": "Apache Commons Logging is a thin logging bridge for Java that provides a simple wrapper API over multiple logging implementations. It lets libraries use a common logging API while deferring the choice of concrete logging backend to runtime.",
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:9:    "description" : "Arrow AutoCloseable provides a Kotlin DSL for acquiring AutoCloseable resources and registering finalizers that run when the scope exits. It closes resources in reverse order, propagates failures with suppressed exceptions, and avoids closing on fatal JVM errors.",
+metadata/org.apache.httpcomponents/httpclient/index.json:8:    "description" : "Apache HttpClient is a client-side HTTP library for sending requests and handling responses in Java applications. It provides APIs for connection management, authentication, cookies, redirects, and other common HTTP features.",
+metadata/org.apache.httpcomponents/httpclient/index.json:23:    "description" : "Apache HttpClient is a client-side HTTP library for sending requests and handling responses in Java applications. It provides APIs for connection management, authentication, cookies, redirects, and other common HTTP features.",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:9:    "description" : "kotlin-logging-jvm provides an idiomatic Kotlin logging facade for JVM applications with lazy message evaluation, marker support, MDC helpers, and integrations for SLF4J, java.util.logging, and Logback. It lets Kotlin code write concise logger declarations and structured log statements while delegating actual output to the underlying JVM logging framework.",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:9:    "description" : "akka-protobuf-v3 is Akka's shaded copy of the Google Protocol Buffers v3 Java runtime, relocated under akka.protobufv3.internal for Akka internals. It lets Akka modules parse, build, and serialize protobuf messages without exposing or conflicting with an application's own protobuf-java dependency.",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:27:    "description" : "akka-protobuf-v3 is Akka's shaded copy of the Google Protocol Buffers v3 Java runtime, relocated under akka.protobufv3.internal for Akka internals. It lets Akka modules parse, build, and serialize protobuf messages without exposing or conflicting with an application's own protobuf-java dependency.",
+metadata/org.hibernate.common/hibernate-commons-annotations/index.json:9:    "description" : "Hibernate Commons Annotations is a utility library used by Hibernate projects to provide shared reflection code for annotation processing. It supports Java generics type discovery and annotation overrides via XML files, and is mainly intended for internal use by Hibernate libraries.",
+metadata/io.undertow/undertow-core/index.json:9:    "description" : "Undertow Core is a high-performance Java web server library built on non-blocking I/O. It provides the core HTTP server and protocol handling used to build embedded servers and web applications.",
+metadata/io.undertow/undertow-core/index.json:47:    "description" : "Undertow Core is a high-performance Java web server library built on non-blocking I/O. It provides the core HTTP server and protocol handling used to build embedded servers and web applications.",
+metadata/software.amazon.eventstream/eventstream/index.json:9:    "description" : "AWS EventStream for Java implements Amazon's event stream binary message format for Java applications. It provides message, header, checksum, and decoder utilities for encoding and decoding framed event stream payloads.",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:9:    "description" : "HtmlUnit CSS Parser is a Java library that parses CSS for the HtmlUnit browser automation project. It provides CSS syntax parsing components used to read and process stylesheets in Java applications.",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:17:    "description": "JGit is a pure Java implementation of Git that lets Java applications read, write, and manage Git repositories and working trees. It provides APIs for repository access, object storage, transport protocols, and common Git operations without requiring native Git binaries."
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:32:    "description": "JGit is a pure Java implementation of Git that lets applications read, write, and manage Git repositories and working trees. It provides APIs for repository access, object storage, transport protocols, and common Git operations in Java applications."
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:9:    "description" : "Jetty ALPN Java Server provides the JDK 9+ server-side ALPN processor used by Eclipse Jetty to negotiate application protocols during TLS handshakes. It integrates Jetty's Java ALPN implementation with server connections so secure sessions can select HTTP/1.1, HTTP/2, or other supported protocols.",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:67:    "description" : "Jetty ALPN Java Server provides the JDK 9+ server-side ALPN processor used by Eclipse Jetty to negotiate application protocols during TLS handshakes. It registers Jetty's Java ALPN implementation with the server connector layer so secure connections can select HTTP/1.1, HTTP/2, or other supported protocols.",
+metadata/io.nats/jnats/index.json:12:    "description": "jnats is the Java client for NATS, providing APIs to connect to NATS servers and publish, subscribe, and request messages. It also supports JetStream features such as streaming, key-value, and object store access for Java applications.",
+metadata/org.jline/jline/index.json:13:    "description": "JLine is a Java library for building interactive command-line applications with terminal abstraction, line editing, history, and completion support. The jline bundle packages the core JLine modules, including terminal, reader, builtins, console, style, and remote shell components.",
+metadata/net.sf.proguard/proguard-base/index.json:9:    "description" : "ProGuard Base provides the core ProGuard engine for shrinking, optimizing, obfuscating, and pre-verifying Java bytecode. It includes the command-line processing logic and class-file manipulation APIs used to analyze and transform Java applications and libraries.",
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:9:    "description" : "Arrow Atomic provides Kotlin multiplatform atomic reference, boolean, int, and long wrappers with compare-and-set, get-and-set, and update helpers. The JVM artifact supplies the standard-JVM implementation so Arrow and Kotlin applications can use consistent atomic primitives across platforms.",
+metadata/org.jline/jline-native/index.json:9:    "description" : "JLine Native Library packages JNI bindings and platform-specific native binaries used by JLine to access low-level terminal functionality. It provides Java APIs and native resources for POSIX and Windows console operations, including metadata needed when the library is used in GraalVM Native Image builds.",
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:9:    "description" : "Arrow Exception Utilities provides Kotlin helpers for classifying fatal and non-fatal Throwable values and rethrowing fatal exceptions. It also includes small Throwable utilities for throwing nullable errors and merging suppressed exceptions.",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:9:    "description" : "NekoHtmlUnit is HtmlUnit's adaptation of NekoHTML, a tolerant HTML parser for Java. It preserves NekoHTML-style parsing while exposing HTML element classes in a way HtmlUnit can override and integrate into its browser simulation stack.",
+metadata/org.jboss.narayana.jta/jta/index.json:9:    "description" : "Narayana JTA provides a Java Transaction API implementation built on the Narayana transaction manager. It coordinates transactional work and recovery across local resources, application servers, and XA-capable systems.",
+metadata/org.jboss.narayana.jta/jta/index.json:26:    "description" : "Narayana JTA provides a Java Transaction API implementation built on the Narayana transaction manager. It coordinates transactional work and recovery across local resources, application servers, and XA-capable systems.",
+metadata/com.google.android/annotations/index.json:10:    "description": "This library provides the Android platform annotation types used by tools and code, including annotations such as @SuppressLint and @TargetApi. It supplies compile-time metadata for Android APIs without adding runtime implementation behavior.",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:10:    "description": "Duct Tape is a Java 8 fault-tolerance library for code that calls external APIs and other unreliable components. It provides resilience utilities such as circuit breakers, retries, timeouts, rate limiters, and handling for inconsistent results.",
+metadata/org.cache2k/cache2k-core/index.json:9:    "description" : "cache2k-core provides the core implementation of cache2k, a lightweight high-performance caching library for Java applications. It implements cache storage, expiry, loading, and event behavior behind the stable cache2k API while keeping implementation classes internal to the release.",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:9:    "description" : "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like document structures. It is a maintained fork of Apache Xalan's XPath functionality with nonessential Xalan components removed and unit tests and Maven-based build support added.",
+metadata/com.ning/compress-lzf/index.json:9:    "description" : "Compress-LZF is a Java codec for reading and writing data encoded with the LZF compression format. It provides streaming and block-oriented compression/decompression utilities based on a Lempel-Ziv algorithm without Huffman or statistical post-encoding.",
+metadata/org.apache.httpcomponents/httpcore/index.json:9:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:23:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:37:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:51:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:65:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:79:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with classic blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:93:    "description" : "Apache HttpCore provides the low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:107:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.apache.httpcomponents/httpcore/index.json:121:    "description" : "Apache HttpCore provides low-level components for building HTTP clients and servers with blocking I/O. It implements core HTTP message parsing, transport, and connection management primitives used by higher-level HttpComponents libraries.",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:9:    "description" : "TagSoup is a SAX-compliant Java parser for handling malformed real-world HTML through standard XML processing APIs. It also includes a command-line processor that can turn HTML input into clean HTML or well-formed XML approximating XHTML.",
+metadata/io.arrow-kt/arrow-resilience-jvm/index.json:9:    "description" : "Arrow Resilience provides Kotlin APIs for building fault-tolerant workflows with retry schedules, circuit breakers, and sagas. It helps coroutine-based applications model recovery, compensation, and repeated execution policies declaratively.",
+metadata/org.apache.httpcomponents/httpmime/index.json:21:    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+metadata/org.apache.yetus/audience-annotations/index.json:9:    "description" : "Apache Yetus Audience Annotations provides Java annotations for declaring intended API audience and stability, such as public, limited-private, private, stable, evolving, and unstable. It also includes doclet tooling that can include or exclude annotated elements when generating audience-specific Javadocs.",
+metadata/org.apache.yetus/audience-annotations/index.json:26:    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:9:    "description" : "ApacheDS I18n provides the internationalization message bundle used by Apache Directory Server for localized errors and other messages. It exposes Java constants and resource bundles for server messages, including default, German, and French translations in the org.apache.directory.server.i18n package.",
+
+exec
+/usr/bin/bash -lc "rg -n 'spring-boot-starter.*not-for-native-image|dependency starter|contains only META-INF' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.sangria-graphql/sangria_3/index.json:4:    "reason": "The published sangria_3 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the JVM implementation classes are in sangria-core_3 and sangria-derivation_3.",
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:4:    "reason": "The published mordant-jvm JAR contains only META-INF/MANIFEST.MF and a Kotlin module file and no JVM class files; implementation classes are provided by its JVM dependencies.",
+metadata/org.scalatest/scalatest_2.13/index.json:4:    "reason": "The published scalatest_2.13-3.2.19 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the implementation classes are supplied by its class-bearing module dependencies.",
+
+exec
+/usr/bin/bash -lc "rg -n 'spring-boot-starter-security' -S . | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+./metadata/library-and-framework-list.json:2446:    "artifact": "org.springframework.boot:spring-boot-starter-security",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://docs.spring.io|\"documentation-url\" : \"https://repo1.maven.org/maven2/org/springframework' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:103:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+
+codex
+I found no Maven test-sources/tests classifier and the tagged Spring Boot starter module has no `src/test` directory, so the test suite field should be `N/A` rather than pointing at unrelated Spring Security or Boot auto-configuration tests. I’m going to write the metadata with Maven source/javadoc URLs, the Spring Boot repository root, and mark it not-for-native-image because the published JAR contains only `META-INF` files and no `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+index 664124e7c017fcbf0bb4802bd66135ab4df86085..90efea5969e1c6cd843e5ae90302307d6089e2d8
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+@@ -1,3 +1,11 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-javadoc.jar",
++  "description" : "Spring Boot Starter Security is a dependency starter that pulls in Spring Security and the Spring components needed to secure Spring Boot applications. It simplifies adding authentication, authorization, web security filters, and related Spring Security configuration support through managed transitive dependencies.",
++  "not-for-native-image" : true,
++  "reason" : "The published JAR for org.springframework.boot:spring-boot-starter-security:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
++  "replacement" : "Use the class-bearing dependencies declared by the starter, such as org.springframework.security:spring-security-config:5.7.11, org.springframework.security:spring-security-web:5.7.11, and org.springframework:spring-aop:5.3.31."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+index 664124e7c017fcbf0bb4802bd66135ab4df86085..90efea5969e1c6cd843e5ae90302307d6089e2d8
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+@@ -1,3 +1,11 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-javadoc.jar",
++  "description" : "Spring Boot Starter Security is a dependency starter that pulls in Spring Security and the Spring components needed to secure Spring Boot applications. It simplifies adding authentication, authorization, web security filters, and related Spring Security configuration support through managed transitive dependencies.",
++  "not-for-native-image" : true,
++  "reason" : "The published JAR for org.springframework.boot:spring-boot-starter-security:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
++  "replacement" : "Use the class-bearing dependencies declared by the starter, such as org.springframework.security:spring-security-config:5.7.11, org.springframework.security:spring-security-web:5.7.11, and org.springframework:spring-aop:5.3.31."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot-starter-security:2.7.18",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-javadoc.jar",
+  "description": "Spring Boot Starter Security is a dependency starter that pulls in Spring Security and the Spring components needed to secure Spring Boot applications. It simplifies adding authentication, authorization, web security filters, and related Spring Security configuration support through managed transitive dependencies.",
+  "not-for-native-image": true,
+  "reason": "The published JAR for org.springframework.boot:spring-boot-starter-security:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+  "replacement": "Use the class-bearing dependencies declared by the starter, such as org.springframework.security:spring-security-config:5.7.11, org.springframework.security:spring-security-web:5.7.11, and org.springframework:spring-aop:5.3.31."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/spring-boot-starter-security-2.7.18-sources.jar \\
+  https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/spring-boot-starter-security-2.7.18-javadoc.jar \\
+  https://github.com/spring-projects/spring-boot; do \\
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); '"\\
+  printf '%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+index 664124e7c017fcbf0bb4802bd66135ab4df86085..90efea5969e1c6cd843e5ae90302307d6089e2d8
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+@@ -1,3 +1,11 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-javadoc.jar",
++  "description" : "Spring Boot Starter Security is a dependency starter that pulls in Spring Security and the Spring components needed to secure Spring Boot applications. It simplifies adding authentication, authorization, web security filters, and related Spring Security configuration support through managed transitive dependencies.",
++  "not-for-native-image" : true,
++  "reason" : "The published JAR for org.springframework.boot:spring-boot-starter-security:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
++  "replacement" : "Use the class-bearing dependencies declared by the starter, such as org.springframework.security:spring-security-config:5.7.11, org.springframework.security:spring-security-web:5.7.11, and org.springframework:spring-aop:5.3.31."
+ }
+
+ succeeded in 1256ms:
+200 https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/spring-boot-starter-security-2.7.18-javadoc.jar
+200 https://github.com/spring-projects/spring-boot
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+index 664124e7c017fcbf0bb4802bd66135ab4df86085..90efea5969e1c6cd843e5ae90302307d6089e2d8
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+@@ -1,3 +1,11 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-javadoc.jar",
++  "description" : "Spring Boot Starter Security is a dependency starter that pulls in Spring Security and the Spring components needed to secure Spring Boot applications. It simplifies adding authentication, authorization, web security filters, and related Spring Security configuration support through managed transitive dependencies.",
++  "not-for-native-image" : true,
++  "reason" : "The published JAR for org.springframework.boot:spring-boot-starter-security:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
++  "replacement" : "Use the class-bearing dependencies declared by the starter, such as org.springframework.security:spring-security-config:5.7.11, org.springframework.security:spring-security-web:5.7.11, and org.springframework:spring-aop:5.3.31."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/
+web search: 
+web search: site:github.com/spring-projects/spring-boot spring-boot-starter-security v2.7.18 build.gradle
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 256ms:
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+index 664124e7c017fcbf0bb4802bd66135ab4df86085..90efea5969e1c6cd843e5ae90302307d6089e2d8
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+@@ -1,3 +1,11 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-javadoc.jar",
++  "description" : "Spring Boot Starter Security is a dependency starter that pulls in Spring Security and the Spring components needed to secure Spring Boot applications. It simplifies adding authentication, authorization, web security filters, and related Spring Security configuration support through managed transitive dependencies.",
++  "not-for-native-image" : true,
++  "reason" : "The published JAR for org.springframework.boot:spring-boot-starter-security:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
++  "replacement" : "Use the class-bearing dependencies declared by the starter, such as org.springframework.security:spring-security-config:5.7.11, org.springframework.security:spring-security-web:5.7.11, and org.springframework:spring-aop:5.3.31."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-starter-security 2.7.18 sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.springframework.boot/spring-boot-starter-security/2.7.18
+codex
+Updated [org.springframework.boot-spring-boot-starter-security-2.7.18.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json:1).
+
+Set the Spring Boot GitHub repository root from the artifact SCM, Maven Central source and javadoc URLs, `test-code-url` as `N/A`, and no `language` field. Maven Central publishes the 2.7.18 sources and javadoc JARs, and the POM identifies the artifact as “Starter for using Spring Security” with class-bearing dependencies supplied transitively. ([repo1.maven.org](https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/?utm_source=openai))
+
+I marked `not-for-native-image: true` because the published artifact JAR contains only `META-INF` files and no JVM class files. Validation done: `jq` parsed the JSON, and the repository/source/javadoc URLs returned `200`.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+index 664124e7c017fcbf0bb4802bd66135ab4df86085..90efea5969e1c6cd843e5ae90302307d6089e2d8
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json
+@@ -1,3 +1,11 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-starter-security:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/$version$/spring-boot-starter-security-$version$-javadoc.jar",
++  "description" : "Spring Boot Starter Security is a dependency starter that pulls in Spring Security and the Spring components needed to secure Spring Boot applications. It simplifies adding authentication, authorization, web security filters, and related Spring Security configuration support through managed transitive dependencies.",
++  "not-for-native-image" : true,
++  "reason" : "The published JAR for org.springframework.boot:spring-boot-starter-security:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
++  "replacement" : "Use the class-bearing dependencies declared by the starter, such as org.springframework.security:spring-security-config:5.7.11, org.springframework.security:spring-security-web:5.7.11, and org.springframework:spring-aop:5.3.31."
+ }
+
+tokens used
+58,283
+Updated [org.springframework.boot-spring-boot-starter-security-2.7.18.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-starter-security-2.7.18.json:1).
+
+Set the Spring Boot GitHub repository root from the artifact SCM, Maven Central source and javadoc URLs, `test-code-url` as `N/A`, and no `language` field. Maven Central publishes the 2.7.18 sources and javadoc JARs, and the POM identifies the artifact as “Starter for using Spring Security” with class-bearing dependencies supplied transitively. ([repo1.maven.org](https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-starter-security/2.7.18/?utm_source=openai))
+
+I marked `not-for-native-image: true` because the published artifact JAR contains only `META-INF` files and no JVM class files. Validation done: `jq` parsed the JSON, and the repository/source/javadoc URLs returned `200`.
+Ran agent for org.springframework.boot:spring-boot-starter-security:2.7.18 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-starter-security-2.7.18.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2656-ed631bfc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 41s
+9 actionable tasks: 9 executed
