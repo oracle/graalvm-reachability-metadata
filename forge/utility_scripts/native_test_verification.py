@@ -23,6 +23,7 @@ import os
 import re
 import shutil
 import subprocess
+import tempfile
 from dataclasses import dataclass, field
 
 from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
@@ -102,10 +103,14 @@ def verify_native_test_passes(
         raise ValueError("max_iterations must be >= 1")
     if not os.path.isabs(output_dir):
         raise ValueError("output_dir must be an absolute path")
+    command_env = gradle_command_environment(reachability_repo_path)
+    required_graalvm_home = command_env.get("GRAALVM_HOME")
 
     runs_dir = os.path.normpath(os.path.join(output_dir, "..", "runs"))
     _reset_directory(output_dir)
     _reset_directory(runs_dir)
+    agent_metadata_dir = os.path.join(output_dir, "agent")
+    trace_metadata_dir = os.path.join(output_dir, "trace")
     condition_packages = condition_packages or _default_condition_packages(coordinate)
 
     log_stage(
@@ -145,6 +150,8 @@ def verify_native_test_passes(
             reachability_repo_path,
             coordinate,
             reproduction_command=reproduction_command,
+            graalvm_home=required_graalvm_home,
+            base_env=command_env,
         )
         intervention_records.append(
             InterventionRecord(
@@ -167,9 +174,12 @@ def verify_native_test_passes(
     generate_metadata_rc = _run_generate_metadata(
         reachability_repo_path=reachability_repo_path,
         coordinate=coordinate,
+        output_dir=agent_metadata_dir,
         log_path=generate_metadata_log_path,
+        env=command_env,
     )
     last_log_path = generate_metadata_log_path
+    agent_metadata_dirs = [agent_metadata_dir] if generate_metadata_rc == 0 else []
     if generate_metadata_rc != 0:
         failure_reason = _summarize_gradle_failure_reason(generate_metadata_log_path)
         log_stage(
@@ -182,19 +192,28 @@ def verify_native_test_passes(
         test_rc, failed_task = _run_coordinate_test(
             reachability_repo_path=reachability_repo_path,
             coordinate=coordinate,
+            metadata_config_dirs=[agent_metadata_dir],
             log_path=test_log_path,
             timeout_seconds=cycle_timeout_seconds,
+            env=command_env,
         )
         last_log_path = test_log_path
         if test_rc == 0:
             log_stage(_GATE_STAGE, "JVM-agent metadata made native tests pass")
+            if not _finalize_staged_metadata(
+                reachability_repo_path=reachability_repo_path,
+                coordinate=coordinate,
+                metadata_dirs=[agent_metadata_dir],
+                env=command_env,
+            ):
+                return _make_result(STATUS_FAILED, 0)
             return _make_result(STATUS_PASSED, 0)
         if failed_task != "nativeTest":
             failed_task_display = failed_task or "unknown"
             return _route_to_codex(
                 stage="test",
                 reason=f"test failed before native trace fallback (failed_task={failed_task_display}, exit={test_rc})",
-                reproduction_command=_coordinate_test_command(coordinate),
+                reproduction_command=_coordinate_test_command(coordinate, [agent_metadata_dir]),
                 iterations_used=0,
             )
 
@@ -211,9 +230,10 @@ def verify_native_test_passes(
             coordinate=coordinate,
             run_dir=run_dir,
             condition_packages=condition_packages,
-            metadata_config_dirs=accepted_run_dirs,
+            metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
             log_path=log_path,
             timeout_seconds=cycle_timeout_seconds,
+            env=command_env,
         )
         last_log_path = log_path
         last_binary_rc = binary_rc if binary_rc is not None else gradle_rc
@@ -232,13 +252,15 @@ def verify_native_test_passes(
             if not _merge_into_output(
                 reachability_repo_path=reachability_repo_path,
                 run_dirs=run_dirs_to_merge,
-                output_dir=output_dir,
+                output_dir=trace_metadata_dir,
+                env=command_env,
             ):
                 return _make_result(STATUS_FAILED, cycle + 1)
-            if not _aggregate_trace_metadata(
+            if not _finalize_staged_metadata(
                 reachability_repo_path=reachability_repo_path,
                 coordinate=coordinate,
-                output_dir=output_dir,
+                metadata_dirs=agent_metadata_dirs + [trace_metadata_dir],
+                env=command_env,
             ):
                 return _make_result(STATUS_FAILED, cycle + 1)
             return _make_result(STATUS_PASSED, cycle + 1)
@@ -257,7 +279,7 @@ def verify_native_test_passes(
                         coordinate=coordinate,
                         run_dir=run_dir,
                         condition_packages=condition_packages,
-                        metadata_config_dirs=accepted_run_dirs,
+                        metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
                     ),
                     iterations_used=cycle + 1,
                 )
@@ -278,7 +300,7 @@ def verify_native_test_passes(
                         coordinate=coordinate,
                         run_dir=run_dir,
                         condition_packages=condition_packages,
-                        metadata_config_dirs=accepted_run_dirs,
+                        metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
                     ),
                     iterations_used=cycle + 1,
                 )
@@ -301,7 +323,7 @@ def verify_native_test_passes(
                 coordinate=coordinate,
                 run_dir=run_dir,
                 condition_packages=condition_packages,
-                metadata_config_dirs=accepted_run_dirs,
+                metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
             ),
             iterations_used=cycle + 1,
         )
@@ -318,14 +340,17 @@ def verify_native_test_passes(
             coordinate=coordinate,
             run_dir=os.path.join(runs_dir, "codex-repro-metadata-gap-exhausted"),
             condition_packages=condition_packages,
-            metadata_config_dirs=accepted_run_dirs,
+            metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
         ),
         iterations_used=max_iterations,
     )
 
 
-def _coordinate_test_command(coordinate: str) -> str:
-    return f"./gradlew test -Pcoordinates={coordinate}"
+def _coordinate_test_command(coordinate: str, metadata_config_dirs: list[str] | None = None) -> str:
+    parts = ["./gradlew test", f"-Pcoordinates={coordinate}"]
+    if metadata_config_dirs:
+        parts.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
+    return " ".join(parts)
 
 
 def _default_condition_packages(coordinate: str) -> list[str]:
@@ -335,37 +360,54 @@ def _default_condition_packages(coordinate: str) -> list[str]:
 def _run_generate_metadata(
         reachability_repo_path: str,
         coordinate: str,
+        output_dir: str,
         log_path: str,
+        env: dict[str, str],
 ) -> int:
-    """Run JVM-agent metadata generation for the coordinate."""
+    """Run JVM-agent metadata generation for the coordinate into a staging dir."""
     cmd = [
         "./gradlew",
         "generateMetadata",
         f"-Pcoordinates={coordinate}",
         "--agentAllowedPackages=fromJar",
+        f"--metadataOutputDir={output_dir}",
     ]
     return _run_logged_gradle_command(
         reachability_repo_path=reachability_repo_path,
         cmd=cmd,
         log_path=log_path,
+        env=env,
     ).returncode
 
 
 def _run_coordinate_test(
         reachability_repo_path: str,
         coordinate: str,
+        metadata_config_dirs: list[str],
         log_path: str,
         timeout_seconds: int,
+        env: dict[str, str],
 ) -> tuple[int, str | None]:
     """Run normal coordinate tests and return the first failed Gradle task."""
     cmd = ["./gradlew", "test", f"-Pcoordinates={coordinate}"]
+    if metadata_config_dirs:
+        cmd.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
     result = _run_logged_gradle_command(
         reachability_repo_path=reachability_repo_path,
         cmd=cmd,
         log_path=log_path,
         timeout_seconds=timeout_seconds,
+        env=env,
     )
     return result.returncode, _parse_first_failed_task(log_path)
+
+
+def _existing_metadata_dirs(paths: list[str]) -> list[str]:
+    return [
+        path
+        for path in paths
+        if os.path.isfile(os.path.join(path, _AGGREGATED_METADATA_FILE_NAME))
+    ]
 
 
 def _run_logged_gradle_command(
@@ -373,6 +415,7 @@ def _run_logged_gradle_command(
         cmd: list[str],
         log_path: str,
         timeout_seconds: int | None = None,
+        env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess:
     """Run a Gradle command and write stdout/stderr to ``log_path``."""
     log_stage(
@@ -385,7 +428,7 @@ def _run_logged_gradle_command(
             return subprocess.run(
                 cmd,
                 cwd=reachability_repo_path,
-                env=gradle_command_environment(reachability_repo_path),
+                env=env or gradle_command_environment(reachability_repo_path),
                 stdout=log_file,
                 stderr=subprocess.STDOUT,
                 check=False,
@@ -489,6 +532,7 @@ def _run_native_trace_image(
         metadata_config_dirs: list[str],
         log_path: str,
         timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
+        env: dict[str, str] | None = None,
 ) -> tuple[int, int | None]:
     """Run ``runNativeTraceImage`` and surface the binary's exit code.
 
@@ -521,7 +565,7 @@ def _run_native_trace_image(
             result = subprocess.run(
                 cmd,
                 cwd=reachability_repo_path,
-                env=gradle_command_environment(reachability_repo_path),
+                env=env or gradle_command_environment(reachability_repo_path),
                 stdout=log_file,
                 stderr=subprocess.STDOUT,
                 check=False,
@@ -777,14 +821,32 @@ def _merge_into_output(
         reachability_repo_path: str,
         run_dirs: list[str],
         output_dir: str,
+        env: dict[str, str] | None = None,
 ) -> bool:
     """Merge accepted per-cycle trace dirs into the caller's ``output_dir``."""
-    if not run_dirs:
+    return _merge_metadata_dirs(
+        reachability_repo_path,
+        run_dirs,
+        output_dir,
+        print_output_path=True,
+        env=env,
+    )
+
+
+def _merge_metadata_dirs(
+        reachability_repo_path: str,
+        input_dirs: list[str],
+        output_dir: str,
+        print_output_path: bool = False,
+        env: dict[str, str] | None = None,
+) -> bool:
+    """Merge metadata directories through native-image-utils."""
+    if not input_dirs:
         return True
     cmd = [
         "./gradlew",
         "mergeNativeTraceMetadata",
-        f"-PinputDirs={','.join(run_dirs)}",
+        f"-PinputDirs={','.join(input_dirs)}",
         f"-PoutputDir={output_dir}",
     ]
     log_stage(_GATE_STAGE, f"$ {' '.join(cmd)}", indent_level=1)
@@ -792,7 +854,7 @@ def _merge_into_output(
         result = subprocess.run(
             cmd,
             cwd=reachability_repo_path,
-            env=gradle_command_environment(reachability_repo_path),
+            env=env or gradle_command_environment(reachability_repo_path),
             check=False,
             timeout=_MERGE_TIMEOUT_SECONDS,
         )
@@ -803,7 +865,8 @@ def _merge_into_output(
                 indent_level=1,
             )
             return False
-        _print_aggregated_metadata_path(output_dir)
+        if print_output_path:
+            _print_aggregated_metadata_path(output_dir)
         return True
     except subprocess.TimeoutExpired:
         log_stage(
@@ -823,15 +886,16 @@ def _print_aggregated_metadata_path(output_dir: str) -> None:
     )
 
 
-def _aggregate_trace_metadata(
+def _finalize_staged_metadata(
         reachability_repo_path: str,
         coordinate: str,
-        output_dir: str,
+        metadata_dirs: list[str],
+        env: dict[str, str] | None = None,
 ) -> bool:
-    """Merge trace-backed metadata into the durable library metadata file."""
-    trace_metadata_path = os.path.join(output_dir, _AGGREGATED_METADATA_FILE_NAME)
-    if not os.path.isfile(trace_metadata_path):
-        log_stage(_GATE_STAGE, "native trace produced no reachability-metadata.json to aggregate")
+    """Merge staged agent/trace metadata into the durable library metadata file."""
+    staged_metadata_dirs = _existing_metadata_dirs(metadata_dirs)
+    if not staged_metadata_dirs:
+        log_stage(_GATE_STAGE, "no staged reachability-metadata.json to finalize")
         return True
 
     try:
@@ -842,94 +906,61 @@ def _aggregate_trace_metadata(
             artifact,
             library_version,
         )
-        durable_metadata_path = os.path.join(
-            reachability_repo_path,
-            "metadata",
-            group,
-            artifact,
-            metadata_version,
-            _AGGREGATED_METADATA_FILE_NAME,
-        )
-        durable_metadata = _read_metadata_json(durable_metadata_path)
-        trace_metadata = _read_metadata_json(trace_metadata_path)
-        merged_metadata = _merge_metadata(durable_metadata, trace_metadata)
-    except (OSError, ValueError, json.JSONDecodeError) as exc:
-        log_stage(_GATE_STAGE, f"failed to aggregate native trace metadata: {exc}", indent_level=1)
+    except (OSError, ValueError) as exc:
+        log_stage(_GATE_STAGE, f"failed to resolve durable metadata path: {exc}", indent_level=1)
         return False
 
-    if merged_metadata == durable_metadata:
-        log_stage(_GATE_STAGE, "native trace metadata already present in durable metadata")
-        return True
+    durable_metadata_dir = os.path.join(
+        reachability_repo_path,
+        "metadata",
+        group,
+        artifact,
+        metadata_version,
+    )
+    durable_metadata_path = os.path.join(
+        durable_metadata_dir,
+        _AGGREGATED_METADATA_FILE_NAME,
+    )
+    input_dirs = []
+    if os.path.isfile(durable_metadata_path):
+        input_dirs.append(durable_metadata_dir)
+    input_dirs.extend(staged_metadata_dirs)
 
-    os.makedirs(os.path.dirname(durable_metadata_path), exist_ok=True)
-    with open(durable_metadata_path, "w", encoding="utf-8") as metadata_file:
-        json.dump(merged_metadata, metadata_file, indent=2)
-        metadata_file.write("\n")
+    try:
+        with tempfile.TemporaryDirectory(prefix="native-trace-durable-") as temp_dir:
+            merged_output_dir = os.path.join(temp_dir, "merged")
+            if not _merge_metadata_dirs(reachability_repo_path, input_dirs, merged_output_dir, env=env):
+                return False
+            merged_metadata_path = os.path.join(merged_output_dir, _AGGREGATED_METADATA_FILE_NAME)
+            if not os.path.isfile(merged_metadata_path):
+                log_stage(
+                    _GATE_STAGE,
+                    "native-image-utils produced no reachability-metadata.json for durable aggregation",
+                    indent_level=1,
+                )
+                return False
+            if os.path.isfile(durable_metadata_path) and _same_file_contents(
+                    durable_metadata_path,
+                    merged_metadata_path,
+            ):
+                log_stage(_GATE_STAGE, "native trace metadata already present in durable metadata")
+                return True
+
+            os.makedirs(durable_metadata_dir, exist_ok=True)
+            shutil.copyfile(merged_metadata_path, durable_metadata_path)
+    except OSError as exc:
+        log_stage(_GATE_STAGE, f"failed to aggregate native trace metadata: {exc}", indent_level=1)
+        return False
     log_stage(
         _GATE_STAGE,
-        f"aggregated native trace metadata into {os.path.relpath(durable_metadata_path, reachability_repo_path)}",
+        f"finalized staged metadata into {os.path.relpath(durable_metadata_path, reachability_repo_path)}",
     )
     return True
 
 
-def _read_metadata_json(path: str) -> dict:
-    if not os.path.isfile(path):
-        return {}
-    with open(path, "r", encoding="utf-8") as metadata_file:
-        data = json.load(metadata_file)
-    if not isinstance(data, dict):
-        raise ValueError(f"Reachability metadata must be a JSON object: {path}")
-    return data
-
-
-def _merge_metadata(base: dict, addition: dict) -> dict:
-    merged = dict(base)
-    for key, value in addition.items():
-        if key not in merged:
-            merged[key] = value
-            continue
-        merged[key] = _merge_metadata_value(merged[key], value)
-    return merged
-
-
-def _merge_metadata_value(base_value: object, addition_value: object) -> object:
-    if isinstance(base_value, list) and isinstance(addition_value, list):
-        merged = list(base_value)
-        seen_entries = {_canonical_metadata_key(entry) for entry in merged}
-        for entry in addition_value:
-            entry_key = _canonical_metadata_key(entry)
-            if entry_key not in seen_entries:
-                merged.append(entry)
-                seen_entries.add(entry_key)
-        return merged
-    if isinstance(base_value, dict) and isinstance(addition_value, dict):
-        return _merge_metadata(base_value, addition_value)
-    if base_value == addition_value:
-        return base_value
-    return addition_value
-
-
-def _canonical_metadata_key(value: object) -> str:
-    """Stable string key for an entry, treating nested arrays as unordered sets.
-
-    Reachability metadata leaf arrays (`methods`, `fields`, `queriedMethods`, …)
-    are semantic sets, so two entries that differ only in inner-array order
-    must dedup as one. Sorting recursively makes the JSON dump invariant under
-    those reorderings.
-    """
-    return json.dumps(_canonicalize(value), sort_keys=True, separators=(",", ":"))
-
-
-def _canonicalize(value: object) -> object:
-    if isinstance(value, list):
-        canonical_items = [_canonicalize(item) for item in value]
-        return sorted(
-            canonical_items,
-            key=lambda item: json.dumps(item, sort_keys=True, separators=(",", ":")),
-        )
-    if isinstance(value, dict):
-        return {key: _canonicalize(val) for key, val in value.items()}
-    return value
+def _same_file_contents(left_path: str, right_path: str) -> bool:
+    with open(left_path, "rb") as left_file, open(right_path, "rb") as right_file:
+        return left_file.read() == right_file.read()
 
 
 def _reset_directory(path: str) -> None:

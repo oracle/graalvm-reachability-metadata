@@ -23,6 +23,56 @@ class ForgeRevisionSectionTests(unittest.TestCase):
         self.assertIn("- Forge commit hash: `abc123`", section)
 
 
+class IssueLookupTests(unittest.TestCase):
+    def test_find_issue_for_coordinates_uses_exact_coordinate_match(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout=(
+                "["
+                "{\"number\": 5405, \"title\": "
+                "\"Support for com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2\", \"body\": \"\"},"
+                "{\"number\": 5329, \"title\": "
+                "\"Support for com.github.ajalt.mordant:mordant-jvm:3.0.2\", \"body\": \"\"}"
+                "]"
+            ),
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", return_value=completed_process) as run:
+            issue_number = common_git.find_issue_for_coordinates(
+                "com.github.ajalt.mordant:mordant-jvm:3.0.2",
+                "oracle/graalvm-reachability-metadata",
+            )
+
+        self.assertEqual(issue_number, 5329)
+        command = run.call_args.args[0]
+        self.assertIn("--limit", command)
+        self.assertIn("50", command)
+        self.assertIn("number,title,body", command)
+
+    def test_find_issue_for_coordinates_picks_oldest_duplicate_exact_match(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout=(
+                "["
+                "{\"number\": 2, \"title\": \"Retry org.example:demo:1.0.0\", \"body\": \"\"},"
+                "{\"number\": 1, \"title\": \"Support for org.example:demo:1.0.0\", \"body\": \"\"}"
+                "]"
+            ),
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", return_value=completed_process):
+            issue_number = common_git.find_issue_for_coordinates(
+                "org.example:demo:1.0.0",
+                "oracle/graalvm-reachability-metadata",
+            )
+
+        self.assertEqual(issue_number, 1)
+
+
 class DynamicAccessCategoryRegressionTests(unittest.TestCase):
     def test_reports_fully_covered_category_that_becomes_uncovered(self) -> None:
         old_stats = {
@@ -286,6 +336,52 @@ class GitHubRateLimitTests(unittest.TestCase):
         with patch.object(common_git.subprocess, "run", return_value=completed_process):
             with self.assertRaises(common_git.GitHubRateLimitExceeded):
                 common_git.gh("api", "graphql")
+
+    def test_common_gh_retries_transient_failure(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr="gh: HTTP 502",
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="",
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", side_effect=[failed_process, successful_process]) as run, \
+                patch.object(common_git.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO) as stderr:
+            common_git.gh("issue", "comment", "1412", "--body", "body")
+
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
+        self.assertIn("GitHub API transient failure", stderr.getvalue())
+
+    def test_common_gh_retries_transient_failure_with_check_false(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr='Get "https://api.github.com/repos/example/repo": context deadline exceeded',
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="{}",
+            stderr="",
+        )
+
+        with patch.object(common_git.subprocess, "run", side_effect=[failed_process, successful_process]) as run, \
+                patch.object(common_git.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO):
+            result = common_git.gh("pr", "view", "--repo", "example/repo", check=False)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
 
     def test_common_gh_json_raises_typed_rate_limit_error_from_graphql_payload(self) -> None:
         completed_process = subprocess.CompletedProcess(

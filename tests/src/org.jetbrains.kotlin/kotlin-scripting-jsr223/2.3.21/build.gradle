@@ -1,0 +1,79 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+Provider<Directory> generatedTestRuntimePropertiesDir = layout.buildDirectory.dir("generated/test-runtime-properties")
+
+dependencies {
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-jsr223:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+kotlin {
+    jvmToolchain(21)
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "21"
+}
+
+String findRuntimeClasspathJar(String prefix) {
+    File match = sourceSets.test.runtimeClasspath.files.find { File candidate ->
+        candidate.name.startsWith(prefix) && candidate.name.endsWith(".jar")
+    }
+    return match?.absolutePath ?: ""
+}
+
+tasks.register("generateNativeRuntimeProperties") {
+    outputs.dir(generatedTestRuntimePropertiesDir)
+    doLast {
+        File outputDir = generatedTestRuntimePropertiesDir.get().asFile
+        outputDir.mkdirs()
+
+        Properties properties = new Properties()
+        properties.setProperty("java.home", System.getenv("JAVA_HOME") ?: "")
+        properties.setProperty("java.class.path", sourceSets.test.runtimeClasspath.asPath)
+        properties.setProperty("kotlin.java.stdlib.jar", findRuntimeClasspathJar("kotlin-stdlib-"))
+
+        File outputFile = new File(outputDir, "native-runtime.properties")
+        outputFile.withOutputStream { OutputStream outputStream ->
+            properties.store(outputStream, "Generated runtime properties for native Kotlin scripting tests")
+        }
+    }
+}
+
+processTestResources {
+    dependsOn(tasks.named("generateNativeRuntimeProperties"))
+    from(generatedTestRuntimePropertiesDir)
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs(
+                    "--exclude-config",
+                    ".*kotlin-compiler-embeddable.*",
+                    ".*META-INF/native-image/org\\.jline/.*")
+            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
+            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+            runtimeArgs("-Dkotlin.java.stdlib.jar=${findRuntimeClasspathJar('kotlin-stdlib-')}")
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

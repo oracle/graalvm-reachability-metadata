@@ -57,7 +57,6 @@ Repo-root skill links are committed as direct directory symlinks:
 - `.codex/skills -> ../skills`
 - `.claude/skills -> ../skills`
 - `.pi/skills -> ../skills`
-- `.antigravity/skills -> ../skills`
 
 The `forge/` sub-workspace also carries links for agents launched from that
 directory:
@@ -66,6 +65,5 @@ directory:
 - `forge/.codex/skills -> ../../skills`
 - `forge/.claude/skills -> ../../skills`
 - `forge/.pi/skills -> ../../skills`
-- `forge/.antigravity/skills -> ../../skills`
 
 Any other agent-local state remains ignored by Git.

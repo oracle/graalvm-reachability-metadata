@@ -71,6 +71,27 @@ def _search_issue(number: int, label_names: list[str] | None = None) -> dict:
     }
 
 
+def _pull_request(
+        number: int,
+        label_names: list[str] | None = None,
+        author: str = "contributor",
+) -> dict:
+    return {
+        "number": number,
+        "title": f"Pull request {number}",
+        "url": f"https://github.com/oracle/graalvm-reachability-metadata/pull/{number}",
+        "author": {"login": author},
+        "labels": [
+            {"name": label_name}
+            for label_name in (label_names or [])
+        ],
+    }
+
+
+def _completed_status_check_rollup() -> list[dict]:
+    return [{"status": "COMPLETED"}]
+
+
 def _preflight(
         *,
         issue_number: int = 1412,
@@ -125,6 +146,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
 
         make_pr.assert_called_once_with([
             "--coordinates", "org.example:lib:1.0.0",
+            "--issue-number", "1412",
             "--reachability-metadata-path", "/tmp/reachability-worktree",
             "--metrics-repo-path", "/tmp/metrics-worktree",
         ])
@@ -192,6 +214,60 @@ class IssueClaimPreflightTests(unittest.TestCase):
         with patch.object(forge_metadata.subprocess, "run", return_value=completed_process):
             with self.assertRaises(forge_metadata.GitHubRateLimitExceeded):
                 forge_metadata.gh("issue", "view", "2099")
+
+    def test_gh_retries_direct_transient_failure(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr="gh: HTTP 503",
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="",
+            stderr="",
+        )
+
+        with patch.object(
+                forge_metadata.subprocess,
+                "run",
+                side_effect=[failed_process, successful_process],
+        ) as run, \
+                patch.object(forge_metadata.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO) as stderr:
+            forge_metadata.gh("issue", "edit", "2099", "--add-label", "human-intervention")
+
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
+        self.assertIn("GitHub API transient failure", stderr.getvalue())
+
+    def test_gh_retries_direct_transient_failure_with_check_false(self) -> None:
+        failed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr="gh: HTTP 504",
+        )
+        successful_process = subprocess.CompletedProcess(
+            ["gh"],
+            0,
+            stdout="{}",
+            stderr="",
+        )
+
+        with patch.object(
+                forge_metadata.subprocess,
+                "run",
+                side_effect=[failed_process, successful_process],
+        ) as run, \
+                patch.object(forge_metadata.time, "sleep") as sleep, \
+                patch("sys.stderr", new_callable=io.StringIO):
+            result = forge_metadata.gh("api", "/repos/example/repo/labels/demo", check=False)
+
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
 
     def test_gh_json_raises_typed_rate_limit_error_from_graphql_payload(self) -> None:
         completed_process = subprocess.CompletedProcess(
@@ -1313,6 +1389,74 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         validate_environment.assert_not_called()
         process_issues.assert_not_called()
         process_reviews.assert_not_called()
+
+
+class PullRequestReviewSelectionTests(unittest.TestCase):
+    def test_bulk_pull_request_list_omits_status_check_rollup(self) -> None:
+        with patch.object(forge_metadata, "gh_json", return_value=[]) as gh_json:
+            self.assertEqual(
+                [],
+                forge_metadata.get_pull_requests_with_label(forge_metadata.LABEL_LIBRARY_NEW, 20),
+            )
+
+        args = gh_json.call_args.args
+        self.assertEqual("number,title,url,author,labels", args[-1])
+        self.assertNotIn("statusCheckRollup", args)
+
+    def test_process_pull_requests_fetches_ci_only_after_cheap_filters(self) -> None:
+        buried_pull_requests = [
+            _pull_request(
+                number,
+                [
+                    forge_metadata.LABEL_LIBRARY_NEW,
+                    forge_metadata.LABEL_HUMAN_INTERVENTION,
+                ],
+            )
+            for number in range(1, 21)
+        ]
+        eligible_pull_request = _pull_request(100, [forge_metadata.LABEL_LIBRARY_NEW])
+
+        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
+                patch.object(
+                    forge_metadata,
+                    "get_pull_requests_with_label",
+                    side_effect=[
+                        buried_pull_requests,
+                        [*buried_pull_requests, eligible_pull_request],
+                    ],
+                ) as get_pull_requests, \
+                patch.object(
+                    forge_metadata,
+                    "get_pull_request_status_check_rollup",
+                    return_value=_completed_status_check_rollup(),
+                ) as get_status_checks, \
+                patch.object(forge_metadata, "review_pull_request", return_value=True) as review_pull_request, \
+                patch.object(
+                    forge_metadata,
+                    "reconcile_reviewed_pull_request",
+                    return_value=True,
+                ) as reconcile_reviewed_pull_request:
+            forge_metadata.process_pull_requests_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                1,
+                "/tmp/reachability",
+                "automation-user",
+                "review-model",
+            )
+
+        get_pull_requests.assert_has_calls([
+            call(forge_metadata.LABEL_LIBRARY_NEW, 20),
+            call(forge_metadata.LABEL_LIBRARY_NEW, 40),
+        ])
+        get_status_checks.assert_called_once_with(100)
+        review_pull_request.assert_called_once_with(
+            100,
+            "/tmp/reachability",
+            "review-model",
+            "https://github.com/oracle/graalvm-reachability-metadata/pull/100",
+            None,
+        )
+        reconcile_reviewed_pull_request.assert_called_once_with(100)
 
 
 class IssueClaimCacheTests(unittest.TestCase):

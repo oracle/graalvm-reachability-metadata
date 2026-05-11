@@ -145,6 +145,7 @@ def create_pull_request(
         new_version: str,
         metrics_repo_root: str,
         repo_path: str,
+        issue_number: int | None = None,
 ):
     """
     Create a GitHub pull request for the current branch with an auto-generated body,
@@ -166,7 +167,7 @@ def create_pull_request(
 
     assert_no_dynamic_access_category_regressions(repo_path, old_coordinates, new_coordinates)
 
-    issue_no = find_issue_common(new_coordinates, REPO)
+    issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
     metrics_entry = load_fix_javac_metrics(
         metrics_repo_root=metrics_repo_root,
         old_coordinates=old_coordinates,
@@ -312,6 +313,7 @@ def build_parser():
             "If omitted, the forge directory in the selected worktree is used."
         ),
     )
+    parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
     return parser
 
 
@@ -323,7 +325,7 @@ def parse_flags(argv_list):
         explicit_repo_path=flags.reachability_metadata_path,
         explicit_metrics_repo_path=flags.metrics_repo_path,
     )
-    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path
+    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.issue_number
 
 
 def push_current_branch_to_origin(
@@ -378,7 +380,7 @@ def push_current_branch_to_origin(
 def main(argv=None):
     ensure_gh_authenticated()
 
-    old_coordinates, new_version, repo_path, metrics_repo_path = parse_flags(
+    old_coordinates, new_version, repo_path, metrics_repo_path, issue_number = parse_flags(
         argv if argv is not None else sys.argv[1:]
     )
 
@@ -398,6 +400,7 @@ def main(argv=None):
         new_version=new_version,
         metrics_repo_root=metrics_repo_path,
         repo_path=repo_path,
+        issue_number=issue_number,
     )
 
 if __name__ == "__main__":

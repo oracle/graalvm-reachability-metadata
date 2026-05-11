@@ -56,11 +56,15 @@ from ai_workflows.improve_library_coverage import (
 )
 from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE
 from git_scripts.common_git import (
+    GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubRateLimitExceeded,
+    _github_retry_delay_seconds,
+    _log_github_transient_retry,
     ensure_gh_authenticated,
     get_issue_project_item_status,
     get_origin_owner,
     is_github_rate_limit_text,
+    is_github_transient_failure_text,
     log_github_query,
     run_github_command_with_retries,
     run_github_json_with_retries,
@@ -398,28 +402,41 @@ def gh(
         input_text: str | None = None,
         cwd: str | None = None,
         quiet: bool = False,
+        max_attempts: int = GITHUB_TRANSIENT_RETRY_ATTEMPTS,
 ) -> subprocess.CompletedProcess:
     """Run a gh CLI command and return the completed process."""
+    if max_attempts < 1:
+        raise ValueError("max_attempts must be at least 1")
     cmd = ["gh", *args]
     env = {**os.environ, "GH_PROMPT_DISABLED": "1", "GH_PAGER": ""}
     if not quiet:
         log_github_query(args)
-    result = subprocess.run(
-        cmd,
-        capture_output=True,
-        text=True,
-        env=env,
-        input=input_text,
-        cwd=cwd,
-    )
-    if check and result.returncode != 0:
+    for attempt in range(1, max_attempts + 1):
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            env=env,
+            input=input_text,
+            cwd=cwd,
+        )
+        if result.returncode == 0:
+            return result
+
         error_text = "\n".join(part for part in (result.stderr, result.stdout) if part)
-        if is_github_rate_limit_text(error_text):
+        if check and is_github_rate_limit_text(error_text):
             raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
-        if not quiet:
-            print(f"ERROR: {' '.join(cmd)}\n{result.stderr}", file=sys.stderr)
-        result.check_returncode()
-    return result
+        if attempt < max_attempts and is_github_transient_failure_text(error_text):
+            _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+            time.sleep(_github_retry_delay_seconds(attempt))
+            continue
+        if check:
+            if not quiet:
+                print(f"ERROR: {' '.join(cmd)}\n{result.stderr}", file=sys.stderr)
+            result.check_returncode()
+        return result
+
+    raise RuntimeError("GitHub command exhausted retries")
 
 
 def gh_json(*args: str, quiet: bool = False) -> any:
@@ -645,9 +662,39 @@ def get_pull_requests_with_labels(labels: list[str], fetch_limit: int) -> list[d
         *label_args,
         "--state", "open",
         "--limit", str(fetch_limit),
-        "--json", "number,title,url,author,labels,statusCheckRollup",
+        "--json", "number,title,url,author,labels",
     )
     return data
+
+
+def get_pull_request_status_check_rollup(pr_number: int) -> list[dict]:
+    """Fetch status check details for one pull request."""
+    data = gh_json(
+        "pr", "view",
+        str(pr_number),
+        "--repo", REPO,
+        "--json", "statusCheckRollup",
+    )
+    status_checks = data.get("statusCheckRollup")
+    return status_checks if isinstance(status_checks, list) else []
+
+
+def attach_pull_request_status_check_rollup(
+        pull_request: dict,
+        status_check_cache: dict[int, list[dict]],
+) -> dict:
+    """Return a pull request payload enriched with status check details."""
+    pr_number = pull_request.get("number")
+    if not isinstance(pr_number, int):
+        print("ERROR: Missing pull request number while fetching status checks.", file=sys.stderr)
+        raise RuntimeError("Missing pull request number while fetching status checks")
+
+    if pr_number not in status_check_cache:
+        status_check_cache[pr_number] = get_pull_request_status_check_rollup(pr_number)
+
+    enriched_pull_request = dict(pull_request)
+    enriched_pull_request["statusCheckRollup"] = status_check_cache[pr_number]
+    return enriched_pull_request
 
 
 def issue_has_label(issue: dict, label_name: str) -> bool:
@@ -1889,13 +1936,54 @@ def reconcile_reviewed_pull_request(pr_number: int) -> bool:
         return False
 
 
-def is_review_pull_request_eligible(pull_request: dict, authenticated_user: str) -> bool:
-    """Return True when the review queue may process the pull request."""
+def is_review_pull_request_base_eligible(
+        pull_request: dict,
+        authenticated_user: str,
+        excluded_labels: tuple[str, ...] = (),
+) -> bool:
+    """Return True when cheap pull request fields do not exclude review processing."""
     return (
         not is_authored_by_user(pull_request, authenticated_user)
         and not pull_request_has_label(pull_request, LABEL_HUMAN_INTERVENTION)
+        and not any(pull_request_has_label(pull_request, label) for label in excluded_labels)
+    )
+
+
+def is_review_pull_request_eligible(pull_request: dict, authenticated_user: str) -> bool:
+    """Return True when the review queue may process the pull request."""
+    return (
+        is_review_pull_request_base_eligible(pull_request, authenticated_user)
         and has_completed_ci_tasks(pull_request)
     )
+
+
+def select_ci_complete_review_pull_requests(
+        pull_requests: list[dict],
+        authenticated_user: str,
+        limit: int,
+        status_check_cache: dict[int, list[dict]],
+        excluded_labels: tuple[str, ...] = (),
+) -> tuple[list[dict], int]:
+    """Select review candidates, fetching CI details only after cheap filters pass."""
+    selected_pull_requests: list[dict] = []
+    incomplete_ci_count = 0
+
+    for pull_request in pull_requests:
+        if len(selected_pull_requests) >= limit:
+            break
+        if not is_review_pull_request_base_eligible(pull_request, authenticated_user, excluded_labels):
+            continue
+
+        enriched_pull_request = attach_pull_request_status_check_rollup(
+            pull_request,
+            status_check_cache,
+        )
+        if has_completed_ci_tasks(enriched_pull_request):
+            selected_pull_requests.append(enriched_pull_request)
+        else:
+            incomplete_ci_count += 1
+
+    return selected_pull_requests, incomplete_ci_count
 
 
 def get_review_log_path(pr_number: int, coordinates: str | None = None) -> str:
@@ -2121,15 +2209,18 @@ def process_pull_requests_with_label(
         review_model: str,
 ) -> None:
     """Review labeled pull requests that are CI-complete, not self-authored, and need no human intervention."""
+    status_check_cache: dict[int, list[dict]] = {}
     fetch_limit = max(limit, 20)
     fixed_pull_requests = get_pull_requests_with_labels(
         [label, LABEL_HUMAN_INTERVENTION_FIXED],
         fetch_limit,
     )
-    fixed_candidate_pull_requests = [
-        pull_request for pull_request in fixed_pull_requests
-        if is_review_pull_request_eligible(pull_request, authenticated_user)
-    ]
+    fixed_candidate_pull_requests, fixed_incomplete_ci_count = select_ci_complete_review_pull_requests(
+        fixed_pull_requests,
+        authenticated_user,
+        limit,
+        status_check_cache,
+    )
     while len(fixed_candidate_pull_requests) < limit and len(fixed_pull_requests) == fetch_limit:
         print(
             f"[Found {len(fixed_candidate_pull_requests)} eligible "
@@ -2142,13 +2233,20 @@ def process_pull_requests_with_label(
             [label, LABEL_HUMAN_INTERVENTION_FIXED],
             fetch_limit,
         )
-        fixed_candidate_pull_requests = [
-            pull_request for pull_request in fixed_pull_requests
-            if is_review_pull_request_eligible(pull_request, authenticated_user)
-        ]
+        fixed_candidate_pull_requests, fixed_incomplete_ci_count = select_ci_complete_review_pull_requests(
+            fixed_pull_requests,
+            authenticated_user,
+            limit,
+            status_check_cache,
+        )
 
     failed_reviews: list[int] = []
     fixed_pull_requests_to_merge = fixed_candidate_pull_requests[:limit]
+    if fixed_incomplete_ci_count:
+        print(
+            f"[Skipping {fixed_incomplete_ci_count} '{LABEL_HUMAN_INTERVENTION_FIXED}' "
+            "candidate PR(s) without completed CI tasks.]"
+        )
     for pull_request in fixed_pull_requests_to_merge:
         pr_number = pull_request["number"]
         print(
@@ -2190,11 +2288,13 @@ def process_pull_requests_with_label(
 
     fetch_limit = max(remaining_limit, 20)
     pull_requests = get_pull_requests_with_label(label, fetch_limit)
-    candidate_pull_requests = [
-        pull_request for pull_request in pull_requests
-        if is_review_pull_request_eligible(pull_request, authenticated_user)
-        and not pull_request_has_label(pull_request, LABEL_HUMAN_INTERVENTION_FIXED)
-    ]
+    candidate_pull_requests, incomplete_ci_count = select_ci_complete_review_pull_requests(
+        pull_requests,
+        authenticated_user,
+        remaining_limit,
+        status_check_cache,
+        excluded_labels=(LABEL_HUMAN_INTERVENTION_FIXED,),
+    )
     while len(candidate_pull_requests) < remaining_limit and len(pull_requests) == fetch_limit:
         print(
             f"[Found {len(candidate_pull_requests)} eligible PR(s) after filtering "
@@ -2202,11 +2302,13 @@ def process_pull_requests_with_label(
         )
         fetch_limit *= 2
         pull_requests = get_pull_requests_with_label(label, fetch_limit)
-        candidate_pull_requests = [
-            pull_request for pull_request in pull_requests
-            if is_review_pull_request_eligible(pull_request, authenticated_user)
-            and not pull_request_has_label(pull_request, LABEL_HUMAN_INTERVENTION_FIXED)
-        ]
+        candidate_pull_requests, incomplete_ci_count = select_ci_complete_review_pull_requests(
+            pull_requests,
+            authenticated_user,
+            remaining_limit,
+            status_check_cache,
+            excluded_labels=(LABEL_HUMAN_INTERVENTION_FIXED,),
+        )
 
     authored_pull_requests = [
         pull_request for pull_request in pull_requests
@@ -2215,10 +2317,6 @@ def process_pull_requests_with_label(
     human_intervention_pull_requests = [
         pull_request for pull_request in pull_requests
         if pull_request_has_label(pull_request, LABEL_HUMAN_INTERVENTION)
-    ]
-    incomplete_ci_pull_requests = [
-        pull_request for pull_request in pull_requests
-        if not has_completed_ci_tasks(pull_request)
     ]
     filtered_pull_requests = candidate_pull_requests[:remaining_limit]
 
@@ -2229,8 +2327,8 @@ def process_pull_requests_with_label(
             f"[Skipping {len(human_intervention_pull_requests)} PR(s) labeled "
             f"'{LABEL_HUMAN_INTERVENTION}'.]"
         )
-    if incomplete_ci_pull_requests:
-        print(f"[Skipping {len(incomplete_ci_pull_requests)} PR(s) without completed CI tasks.]")
+    if incomplete_ci_count:
+        print(f"[Skipping {incomplete_ci_count} candidate PR(s) without completed CI tasks.]")
 
     if not filtered_pull_requests and not fixed_pull_requests_to_merge:
         print(
@@ -4214,7 +4312,6 @@ def build_large_library_pr_args(
     if large_library_state is None:
         return []
     args = [
-        "--issue-number", str(claimed_issue.issue["number"]),
         "--large-library-part", str(large_library_state.part),
         "--series-id", large_library_state.series_id,
         "--large-library-state-path", large_library_state_path or "",
@@ -4255,6 +4352,8 @@ def finalize_successful_issue(
         ensure_large_library_labels_exist_if_needed(claimed_issue)
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     workflow_status = None if run_metrics is None else run_metrics.get("status")
+    issue_number = claimed_issue.issue["number"]
+    issue_number_args = ["--issue-number", str(issue_number)]
     large_library_pr_args = build_large_library_pr_args(
         claimed_issue,
         large_library_state,
@@ -4267,6 +4366,7 @@ def finalize_successful_issue(
             run_make_pr_not_for_native_image(
                 [
                     "--coordinates", claimed_issue.issue_coordinates,
+                    *issue_number_args,
                     "--reachability-metadata-path", claimed_issue.worktree_path,
                     "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
                 ]
@@ -4275,6 +4375,7 @@ def finalize_successful_issue(
         run_make_pr_new_library_support(
             [
                 "--coordinates", claimed_issue.issue_coordinates,
+                *issue_number_args,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
                 *large_library_pr_args,
@@ -4287,6 +4388,7 @@ def finalize_successful_issue(
             [
                 "--coordinates", claimed_issue.current_coordinates,
                 "--new-version", claimed_issue.new_version,
+                "--issue-number", str(issue_number),
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
@@ -4298,6 +4400,7 @@ def finalize_successful_issue(
             [
                 "--coordinates", claimed_issue.current_coordinates,
                 "--new-version", claimed_issue.new_version,
+                "--issue-number", str(issue_number),
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
@@ -4309,6 +4412,7 @@ def finalize_successful_issue(
             [
                 "--coordinates", claimed_issue.current_coordinates,
                 "--new-version", claimed_issue.new_version,
+                "--issue-number", str(issue_number),
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
@@ -4319,6 +4423,7 @@ def finalize_successful_issue(
         run_make_pr_improve_coverage(
             [
                 "--coordinates", claimed_issue.issue_coordinates,
+                *issue_number_args,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
                 *large_library_pr_args,

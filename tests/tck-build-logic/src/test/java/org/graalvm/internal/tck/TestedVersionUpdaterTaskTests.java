@@ -326,6 +326,29 @@ class TestedVersionUpdaterTaskTests {
         }
     }
 
+    @Test
+    void runDoesNotAddExistingTestedVersionAgain() throws IOException {
+        String group = "com.example";
+        String artifact = "demo";
+        String oldVersion = "1.0.0";
+        String newVersion = "1.1.0";
+
+        writeIndex(group, artifact, oldVersion);
+        Path indexFile = tempDir.resolve("metadata/" + group + "/" + artifact + "/index.json");
+
+        TestTestedVersionUpdaterTask task = createTask();
+        task.setCoordinates(group + ":" + artifact + ":" + newVersion);
+        task.getLastSupportedVersion().set(oldVersion);
+
+        task.run();
+        String indexAfterFirstRun = Files.readString(indexFile);
+        task.run();
+
+        List<Map<String, Object>> indexEntries = readIndex(group, artifact);
+        assertThat(indexEntries.get(0)).containsEntry("tested-versions", List.of(oldVersion, newVersion));
+        assertThat(Files.readString(indexFile)).isEqualTo(indexAfterFirstRun);
+    }
+
     private TestTestedVersionUpdaterTask createTask() {
         return ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())

@@ -138,7 +138,9 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         for (int i = 0; i < entries.size(); i++) {
             MetadataVersionsIndexEntry entry = entries.get(i);
 
-            if (entry.testedVersions() != null && entry.testedVersions().contains(getLastSupportedVersion().get())) {
+            if (entry.testedVersions() != null
+                    && entry.testedVersions().contains(getLastSupportedVersion().get())
+                    && !entry.testedVersions().contains(newVersion)) {
                 entry.testedVersions().add(newVersion);
                 entry.testedVersions().sort(Comparator.comparing(VersionNumber::parse));
 

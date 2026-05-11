@@ -12,9 +12,12 @@ import liquibase.parser.core.ParsedNode;
 import liquibase.serializer.AbstractLiquibaseSerializable;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,6 +58,35 @@ public class AbstractLiquibaseSerializableTest {
     }
 
     @Test
+    void loadsCollectionFieldDeclaredBySerializableFieldName() throws Exception {
+        CollectionHolder holder = new CollectionHolder();
+        ParsedNode root = new ParsedNode(null, "holder")
+                .addChild(new ParsedNode(null, "children")
+                        .addChild(childNode("wrapped-child")));
+
+        holder.load(root, null);
+
+        assertThat(holder.getChildren())
+                .singleElement()
+                .extracting(SerializableChild::getValue)
+                .isEqualTo("wrapped-child");
+    }
+
+    @Test
+    void loadsCollectionFieldDeclaredByElementName() throws Exception {
+        CollectionHolder holder = new CollectionHolder();
+        ParsedNode root = new ParsedNode(null, "holder")
+                .addChild(childNode("direct-child"));
+
+        holder.load(root, null);
+
+        assertThat(holder.getChildren())
+                .singleElement()
+                .extracting(SerializableChild::getValue)
+                .isEqualTo("direct-child");
+    }
+
+    @Test
     void loadsConcreteSerializableField() throws Exception {
         ColumnHolder holder = new ColumnHolder();
         ParsedNode root = new ParsedNode(null, "holder")
@@ -83,6 +115,76 @@ public class AbstractLiquibaseSerializableTest {
         return new ParsedNode(null, "column")
                 .addChild(null, "name", name)
                 .addChild(null, "type", type);
+    }
+
+    private static ParsedNode childNode(String value) throws Exception {
+        return new ParsedNode(null, "serializableChild")
+                .addChild(null, "value", value);
+    }
+
+    public static final class CollectionHolder extends AbstractLiquibaseSerializable {
+        private final List<SerializableChild> children = new ArrayList<>();
+
+        @Override
+        public String getSerializedObjectName() {
+            return "holder";
+        }
+
+        @Override
+        public Set<String> getSerializableFields() {
+            return Collections.singleton("children");
+        }
+
+        @Override
+        public Object getSerializableFieldValue(String field) {
+            return children;
+        }
+
+        @Override
+        protected Class getSerializableFieldDataTypeClass(String field) {
+            return List.class;
+        }
+
+        @Override
+        protected Type[] getSerializableFieldDataTypeClassParameters(String field) {
+            return new Type[] {SerializableChild.class};
+        }
+
+        @Override
+        public String getSerializedObjectNamespace() {
+            return STANDARD_CHANGELOG_NAMESPACE;
+        }
+
+        private List<SerializableChild> getChildren() {
+            return children;
+        }
+    }
+
+    public static final class SerializableChild extends AbstractLiquibaseSerializable {
+        private String value;
+
+        @Override
+        public String getSerializedObjectName() {
+            return "serializableChild";
+        }
+
+        @Override
+        public Set<String> getSerializableFields() {
+            return Collections.singleton("value");
+        }
+
+        @Override
+        public String getSerializedObjectNamespace() {
+            return STANDARD_CHANGELOG_NAMESPACE;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
     }
 
     private static final class ColumnHolder extends AbstractLiquibaseSerializable {

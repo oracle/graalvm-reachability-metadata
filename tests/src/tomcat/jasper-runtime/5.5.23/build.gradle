@@ -1,0 +1,49 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "tomcat:jasper-runtime:$libraryVersion"
+    testImplementation 'javax.servlet:jsp-api:2.0'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.named("test") {
+    systemProperty "package.definition", "true"
+    if ((JavaVersion.current().majorVersion as int) < 24) {
+        jvmArgs += ["-Djava.security.manager=allow"]
+    }
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dpackage.definition=true")
+    if ((JavaVersion.current().majorVersion as int) < 24) {
+        runtimeArgs.add("-Djava.security.manager=allow")
+    }
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Dpackage.definition=true")
+            buildArgs.add("--initialize-at-run-time=org.apache.jasper.security.SecurityClassLoad")
+        }
+    }
+
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

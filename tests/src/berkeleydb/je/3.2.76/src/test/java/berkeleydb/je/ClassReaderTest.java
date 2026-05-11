@@ -1,0 +1,33 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package berkeleydb.je;
+
+import com.sleepycat.asm.ClassReader;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class ClassReaderTest {
+
+    @Test
+    void readsClassBytesFromSystemClassLoaderResource() throws IOException {
+        ClassReader reader = new ClassReader("com.sleepycat.asm.ClassReader");
+
+        assertThat(reader.b).hasSizeGreaterThan(10);
+        assertThat(unsignedByte(reader.b[0])).isEqualTo(0xCA);
+        assertThat(unsignedByte(reader.b[1])).isEqualTo(0xFE);
+        assertThat(unsignedByte(reader.b[2])).isEqualTo(0xBA);
+        assertThat(unsignedByte(reader.b[3])).isEqualTo(0xBE);
+        assertThat(reader.header).isPositive();
+    }
+
+    private static int unsignedByte(byte value) {
+        return value & 0xFF;
+    }
+}
