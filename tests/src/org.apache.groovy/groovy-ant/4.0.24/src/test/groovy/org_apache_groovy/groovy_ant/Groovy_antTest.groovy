@@ -8,9 +8,12 @@ package org_apache_groovy.groovy_ant
 
 import groovy.ant.AntBuilder
 import groovy.ant.FileNameFinder
+import org.apache.tools.ant.BuildEvent
+import org.apache.tools.ant.BuildListener
 import org.apache.tools.ant.Location
 import org.apache.tools.ant.Project
 import org.apache.tools.ant.Target
+import org.apache.tools.ant.taskdefs.Echo
 import org.apache.tools.ant.types.FileSet
 import org.apache.tools.ant.types.Path as AntPath
 import org.codehaus.groovy.ant.AntProjectPropertiesDelegate
@@ -19,6 +22,7 @@ import org.codehaus.groovy.ant.GenerateStubsTask
 import org.codehaus.groovy.ant.Groovy
 import org.codehaus.groovy.ant.Groovyc
 import org.codehaus.groovy.ant.Groovydoc
+import org.codehaus.groovy.ant.LoggingHelper
 import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -233,6 +237,33 @@ public class Groovy_antTest {
         assertThat(documentationDirectory.toPath().resolve('example/DocumentedGreeter.html')).exists()
     }
 
+    @Test
+    void loggingHelperEmitsAntMessagesAtRequestedPriorities() {
+        Project project = newProject()
+        CapturingBuildListener listener = new CapturingBuildListener()
+        project.addBuildListener(listener)
+        Echo task = new Echo()
+        task.setProject(project)
+        task.setTaskName('sample-task')
+        LoggingHelper logging = new LoggingHelper(task)
+        IllegalStateException cause = new IllegalStateException('broken state')
+
+        logging.error('error message')
+        logging.error('error with cause', cause)
+        logging.warn('warning message')
+        logging.info('info message')
+        logging.verbose('verbose message')
+        logging.debug('debug message')
+
+        assertThat(listener.prioritiesByMessage).containsEntry('error message', Project.MSG_ERR)
+        assertThat(listener.prioritiesByMessage).containsEntry('error with cause', Project.MSG_ERR)
+        assertThat(listener.exceptionsByMessage).containsEntry('error with cause', cause)
+        assertThat(listener.prioritiesByMessage).containsEntry('warning message', Project.MSG_WARN)
+        assertThat(listener.prioritiesByMessage).containsEntry('info message', Project.MSG_INFO)
+        assertThat(listener.prioritiesByMessage).containsEntry('verbose message', Project.MSG_VERBOSE)
+        assertThat(listener.prioritiesByMessage).containsEntry('debug message', Project.MSG_DEBUG)
+    }
+
     private static Project newProject() {
         Project project = new Project()
         project.init()
@@ -267,6 +298,43 @@ public class Groovy_antTest {
                 throw error
             }
             return false
+        }
+    }
+
+    private static final class CapturingBuildListener implements BuildListener {
+        final Map<String, Integer> prioritiesByMessage = [:]
+        final Map<String, Throwable> exceptionsByMessage = [:]
+
+        @Override
+        void buildStarted(BuildEvent event) {
+        }
+
+        @Override
+        void buildFinished(BuildEvent event) {
+        }
+
+        @Override
+        void targetStarted(BuildEvent event) {
+        }
+
+        @Override
+        void targetFinished(BuildEvent event) {
+        }
+
+        @Override
+        void taskStarted(BuildEvent event) {
+        }
+
+        @Override
+        void taskFinished(BuildEvent event) {
+        }
+
+        @Override
+        void messageLogged(BuildEvent event) {
+            prioritiesByMessage[event.message] = event.priority
+            if (event.exception) {
+                exceptionsByMessage[event.message] = event.exception
+            }
         }
     }
 }
