@@ -7,6 +7,7 @@
 package org_springframework_boot.spring_boot_actuator;
 
 import java.io.File;
+import java.lang.management.ThreadInfo;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -43,6 +44,7 @@ import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.boot.actuate.info.JavaInfoContributor;
 import org.springframework.boot.actuate.info.MapInfoContributor;
+import org.springframework.boot.actuate.management.ThreadDumpEndpoint;
 import org.springframework.boot.actuate.system.DiskSpaceHealthIndicator;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
@@ -181,6 +183,26 @@ public class Spring_boot_actuatorTest {
                         .isEqualTo(SanitizableData.SANITIZED_VALUE));
 
         assertThat(endpoint.environmentEntry("does.not.exist").getProperty()).isNull();
+    }
+
+    @Test
+    void threadDumpEndpointDescribesLiveThreadsAsStructuredAndTextReports() {
+        ThreadDumpEndpoint endpoint = new ThreadDumpEndpoint();
+        String currentThreadName = Thread.currentThread().getName();
+
+        ThreadDumpEndpoint.ThreadDumpDescriptor threadDump = endpoint.threadDump();
+        assertThat(threadDump.getThreads())
+                .extracting(ThreadInfo::getThreadName)
+                .contains(currentThreadName);
+        assertThat(threadDump.getThreads())
+                .allSatisfy((thread) -> {
+                    assertThat(thread.getThreadId()).isPositive();
+                    assertThat(thread.getThreadState()).isNotNull();
+                });
+
+        assertThat(endpoint.textThreadDump())
+                .contains("Full thread dump")
+                .contains(currentThreadName);
     }
 
     @Test
