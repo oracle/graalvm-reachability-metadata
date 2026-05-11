@@ -35,16 +35,14 @@ public class SupplierUtilInnerConstructorSupplierInnerSerializedFormTest {
     @SuppressWarnings("unchecked")
     private static Supplier<SerializableSuppliedValue> roundTrip(
         Supplier<SerializableSuppliedValue> supplier)
-        throws IOException, ClassNotFoundException
-    {
+        throws IOException, ClassNotFoundException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
             output.writeObject(supplier);
         }
 
         try (ObjectInputStream input = new ObjectInputStream(
-            new ByteArrayInputStream(bytes.toByteArray())))
-        {
+            new ByteArrayInputStream(bytes.toByteArray()))) {
             return (Supplier<SerializableSuppliedValue>) input.readObject();
         }
     }

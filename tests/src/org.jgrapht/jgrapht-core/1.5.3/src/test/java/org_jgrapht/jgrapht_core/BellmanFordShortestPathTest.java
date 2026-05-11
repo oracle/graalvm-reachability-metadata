@@ -43,8 +43,7 @@ public class BellmanFordShortestPathTest {
     }
 
     private static DefaultWeightedEdge addWeightedEdge(
-        Graph<String, DefaultWeightedEdge> graph, String source, String target, double weight)
-    {
+        Graph<String, DefaultWeightedEdge> graph, String source, String target, double weight) {
         graph.addVertex(source);
         graph.addVertex(target);
         DefaultWeightedEdge edge = graph.addEdge(source, target);

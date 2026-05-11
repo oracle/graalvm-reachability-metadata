@@ -37,8 +37,7 @@ public class PushRelabelMFImplTest {
     }
 
     private static DefaultWeightedEdge addEdge(
-        Graph<String, DefaultWeightedEdge> graph, String source, String target, double capacity)
-    {
+        Graph<String, DefaultWeightedEdge> graph, String source, String target, double capacity) {
         graph.addVertex(source);
         graph.addVertex(target);
         DefaultWeightedEdge edge = graph.addEdge(source, target);

@@ -60,8 +60,7 @@ public class IntVertexDijkstraShortestPathInnerAlgorithmTest {
     }
 
     private static DefaultWeightedEdge addWeightedEdge(
-        Graph<Integer, DefaultWeightedEdge> graph, Integer source, Integer target, double weight)
-    {
+        Graph<Integer, DefaultWeightedEdge> graph, Integer source, Integer target, double weight) {
         graph.addVertex(source);
         graph.addVertex(target);
         DefaultWeightedEdge edge = graph.addEdge(source, target);
