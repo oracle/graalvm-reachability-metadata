@@ -1,0 +1,1212 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1cd2-5488-71e1-9242-102b466b94b9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.alibaba.fastjson2:fastjson2:2.0.53
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0.53" when "$version$" is replaced with "2.0.53".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+- Set "coordinates" to "com.alibaba.fastjson2:fastjson2:2.0.53".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.53".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream project, then update the JSON directly with version-templated URLs where they resolve for `2.0.53`.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+{
+  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.alibaba\\.fastjson2-fastjson2-2\\.0\\.53\\.json"'$'"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+
+web search: 
+web search: Maven com.alibaba.fastjson2 fastjson2 2.0.53 scm url sources jar tests jar javadoc
+codex
+The artifact exists in Maven Central and points at the `alibaba/fastjson2` GitHub project. I’m checking whether Maven Central carries source and test artifacts for this exact release before falling back to GitHub tag URLs.
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url|repository-url|language|not-for-native-image' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.alibaba.fastjson2</groupId>
+        <artifactId>fastjson2-parent</artifactId>
+        <version>2.0.53</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>fastjson2</artifactId>
+    <name>fastjson2</name>
+    <description>Fastjson is a JSON processor (JSON parser + JSON generator) written in Java</description>
+    <packaging>jar</packaging>
+    <url>https://github.com/alibaba/fastjson2</url>
+    <inceptionYear>2022</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/alibaba/fastjson2</url>
+        <connection>scm:git:https://git@github.com/alibaba/fastjson2.git</connection>
+    </scm>
+
+    <organization>
+        <name>Alibaba Group</name>
+        <url>https://github.com/alibaba</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>wenshao</id>
+            <name>wenshao</name>
+            <email>shaojin.wensj(at)alibaba-inc.com</email>
+            <roles>
+                <role>Developer</role>
+                <role>Tech Leader</role>
+            </roles>
+            <timezone>+8</timezone>
+            <url>https://github.com/wenshao</url>
+        </developer>
+        <developer>
+            <id>oldratlee</id>
+            <name>Jerry Lee</name>
+            <email>oldratlee(at)gmail.com</email>
+            <roles>
+                <role>Developer</role>
+                <role>CI/SCM Engineer</role>
+            </roles>
+            <timezone>+8</timezone>
+            <url>https://github.com/oldratlee</url>
+        </developer>
+        <developer>
+            <id>VictorZeng</id>
+            <name>Victor Zeng</name>
+            <email>Victor.Zxy(at)outlook.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+            <url>https://github.com/VictorZeng</url>
+        </developer>
+        <developer>
+            <id>kraity</id>
+            <name>陆之岇</name>
+            <email>kat(at)krait.cn</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+            <url>https://github.com/kraity</url>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-reflect</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson1x.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>alibaba-dingtalk-service-sdk</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.odps</groupId>
+            <artifactId>odps-sdk-udf</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus</artifactId>
+            <version>3.5.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.carrotsearch</groupId>
+            <artifactId>hppc</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dameng</groupId>
+            <artifactId>DmJdbcDriver18</artifactId>
+            <version>8.1.3.62</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java-util</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.ojdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-spring-web</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>2.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.money</groupId>
+            <artifactId>money-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.arrow</groupId>
+
+ succeeded in 353ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/alibaba/fastjson2/fastjson2/2.0.53</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/alibaba/fastjson2/fastjson2/2.0.53</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="fastjson2-2.0.53-javadoc.jar" title="fastjson2-2.0.53-javadoc.jar">fastjson2-2.0.53-javadoc.jar</a>                      2024-09-16 14:58   1656728      
+<a href="fastjson2-2.0.53-javadoc.jar.asc" title="fastjson2-2.0.53-javadoc.jar.asc">fastjson2-2.0.53-javadoc.jar.asc</a>                  2024-09-16 14:58       488      
+<a href="fastjson2-2.0.53-javadoc.jar.md5" title="fastjson2-2.0.53-javadoc.jar.md5">fastjson2-2.0.53-javadoc.jar.md5</a>                  2024-09-16 14:58        32      
+<a href="fastjson2-2.0.53-javadoc.jar.sha1" title="fastjson2-2.0.53-javadoc.jar.sha1">fastjson2-2.0.53-javadoc.jar.sha1</a>                 2024-09-16 14:58        40      
+<a href="fastjson2-2.0.53-sources.jar" title="fastjson2-2.0.53-sources.jar">fastjson2-2.0.53-sources.jar</a>                      2024-09-16 14:58    978440      
+<a href="fastjson2-2.0.53-sources.jar.asc" title="fastjson2-2.0.53-sources.jar.asc">fastjson2-2.0.53-sources.jar.asc</a>                  2024-09-16 14:58       488      
+<a href="fastjson2-2.0.53-sources.jar.md5" title="fastjson2-2.0.53-sources.jar.md5">fastjson2-2.0.53-sources.jar.md5</a>                  2024-09-16 14:58        32      
+<a href="fastjson2-2.0.53-sources.jar.sha1" title="fastjson2-2.0.53-sources.jar.sha1">fastjson2-2.0.53-sources.jar.sha1</a>                 2024-09-16 14:58        40      
+<a href="fastjson2-2.0.53.jar" title="fastjson2-2.0.53.jar">fastjson2-2.0.53.jar</a>                              2024-09-16 14:58   2081425      
+<a href="fastjson2-2.0.53.jar.asc" title="fastjson2-2.0.53.jar.asc">fastjson2-2.0.53.jar.asc</a>                          2024-09-16 14:58       488      
+<a href="fastjson2-2.0.53.jar.md5" title="fastjson2-2.0.53.jar.md5">fastjson2-2.0.53.jar.md5</a>                          2024-09-16 14:58        32      
+<a href="fastjson2-2.0.53.jar.sha1" title="fastjson2-2.0.53.jar.sha1">fastjson2-2.0.53.jar.sha1</a>                         2024-09-16 14:58        40      
+<a href="fastjson2-2.0.53.pom" title="fastjson2-2.0.53.pom">fastjson2-2.0.53.pom</a>                              2024-09-16 14:58     11053      
+<a href="fastjson2-2.0.53.pom.asc" title="fastjson2-2.0.53.pom.asc">fastjson2-2.0.53.pom.asc</a>                          2024-09-16 14:58       488      
+<a href="fastjson2-2.0.53.pom.md5" title="fastjson2-2.0.53.pom.md5">fastjson2-2.0.53.pom.md5</a>                          2024-09-16 14:58        32      
+<a href="fastjson2-2.0.53.pom.sha1" title="fastjson2-2.0.53.pom.sha1">fastjson2-2.0.53.pom.sha1</a>                         2024-09-16 14:58        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: Maven com.alibaba.fastjson2 fastjson2 2.0.53 scm url sources jar javadoc
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/alibaba/fastjson2/tree/2.0.53/core/src/test" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/alibaba/fastjson2/tree/2.0.53/core/src/main" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/alibaba/fastjson2/tree/2.0.53/docs" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/alibaba/fastjson2/contents?ref=2.0.53 | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 253ms:
+[
+  {
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "sha": "53a4241f9dfee00ef5797dbfd34e62a908bddf7a",
+    "size": 464,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/.editorconfig?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/blob/2.0.53/.editorconfig",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/53a4241f9dfee00ef5797dbfd34e62a908bddf7a",
+    "download_url": "https://raw.githubusercontent.com/alibaba/fastjson2/2.0.53/.editorconfig",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/.editorconfig?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/53a4241f9dfee00ef5797dbfd34e62a908bddf7a",
+      "html": "https://github.com/alibaba/fastjson2/blob/2.0.53/.editorconfig"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "c39b1a2f8510a3536a24514f665d626ef2a69950",
+    "size": 0,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/.github?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/tree/2.0.53/.github",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/trees/c39b1a2f8510a3536a24514f665d626ef2a69950",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/.github?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/trees/c39b1a2f8510a3536a24514f665d626ef2a69950",
+      "html": "https://github.com/alibaba/fastjson2/tree/2.0.53/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "e09139a191fffdd0d36a2ca33d40c925f648bad2",
+    "size": 3694,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/.gitignore?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/blob/2.0.53/.gitignore",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/e09139a191fffdd0d36a2ca33d40c925f648bad2",
+    "download_url": "https://raw.githubusercontent.com/alibaba/fastjson2/2.0.53/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/.gitignore?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/e09139a191fffdd0d36a2ca33d40c925f648bad2",
+      "html": "https://github.com/alibaba/fastjson2/blob/2.0.53/.gitignore"
+    }
+  },
+  {
+    "name": ".mvn",
+    "path": ".mvn",
+    "sha": "99b07b3515dee888ae061a02cd7087099d9799cf",
+    "size": 0,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/.mvn?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/tree/2.0.53/.mvn",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/trees/99b07b3515dee888ae061a02cd7087099d9799cf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/.mvn?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/trees/99b07b3515dee888ae061a02cd7087099d9799cf",
+      "html": "https://github.com/alibaba/fastjson2/tree/2.0.53/.mvn"
+    }
+  },
+  {
+    "name": "CODE_OF_CONDUCT.md",
+    "path": "CODE_OF_CONDUCT.md",
+    "sha": "390cd26d6633f1388b2757b5ad3fa3fc02205e54",
+    "size": 5494,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/CODE_OF_CONDUCT.md?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/blob/2.0.53/CODE_OF_CONDUCT.md",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/390cd26d6633f1388b2757b5ad3fa3fc02205e54",
+    "download_url": "https://raw.githubusercontent.com/alibaba/fastjson2/2.0.53/CODE_OF_CONDUCT.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/CODE_OF_CONDUCT.md?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/390cd26d6633f1388b2757b5ad3fa3fc02205e54",
+      "html": "https://github.com/alibaba/fastjson2/blob/2.0.53/CODE_OF_CONDUCT.md"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "37ccbbdb650777bdb30cf1b8abc10a50e3237117",
+    "size": 1670,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/CONTRIBUTING.md?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/blob/2.0.53/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/37ccbbdb650777bdb30cf1b8abc10a50e3237117",
+    "download_url": "https://raw.githubusercontent.com/alibaba/fastjson2/2.0.53/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/CONTRIBUTING.md?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/37ccbbdb650777bdb30cf1b8abc10a50e3237117",
+      "html": "https://github.com/alibaba/fastjson2/blob/2.0.53/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+    "size": 11357,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/LICENSE?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/blob/2.0.53/LICENSE",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+    "download_url": "https://raw.githubusercontent.com/alibaba/fastjson2/2.0.53/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/LICENSE?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "html": "https://github.com/alibaba/fastjson2/blob/2.0.53/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "683881f9f52f118b192c461df8aa7177cf439285",
+    "size": 10712,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/README.md?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/blob/2.0.53/README.md",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/683881f9f52f118b192c461df8aa7177cf439285",
+    "download_url": "https://raw.githubusercontent.com/alibaba/fastjson2/2.0.53/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/README.md?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/683881f9f52f118b192c461df8aa7177cf439285",
+      "html": "https://github.com/alibaba/fastjson2/blob/2.0.53/README.md"
+    }
+  },
+  {
+    "name": "README_EN.md",
+    "path": "README_EN.md",
+    "sha": "b2892489d6c996cfa6b6642175f5b0c51ac11e4b",
+    "size": 10113,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/README_EN.md?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/blob/2.0.53/README_EN.md",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/b2892489d6c996cfa6b6642175f5b0c51ac11e4b",
+    "download_url": "https://raw.githubusercontent.com/alibaba/fastjson2/2.0.53/README_EN.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/README_EN.md?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/b2892489d6c996cfa6b6642175f5b0c51ac11e4b",
+      "html": "https://github.com/alibaba/fastjson2/blob/2.0.53/README_EN.md"
+    }
+  },
+  {
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "sha": "a5a04874fa0e539214ad68d37fa9b440a9638f22",
+    "size": 5669,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/SECURITY.md?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/blob/2.0.53/SECURITY.md",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/a5a04874fa0e539214ad68d37fa9b440a9638f22",
+    "download_url": "https://raw.githubusercontent.com/alibaba/fastjson2/2.0.53/SECURITY.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/SECURITY.md?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/blobs/a5a04874fa0e539214ad68d37fa9b440a9638f22",
+      "html": "https://github.com/alibaba/fastjson2/blob/2.0.53/SECURITY.md"
+    }
+  },
+  {
+    "name": "android-test",
+    "path": "android-test",
+    "sha": "bf795a281242ecc1f580cbab1f97f988a8999ae7",
+    "size": 0,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/android-test?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/tree/2.0.53/android-test",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/trees/bf795a281242ecc1f580cbab1f97f988a8999ae7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/android-test?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/trees/bf795a281242ecc1f580cbab1f97f988a8999ae7",
+      "html": "https://github.com/alibaba/fastjson2/tree/2.0.53/android-test"
+    }
+  },
+  {
+    "name": "benchmark",
+    "path": "benchmark",
+    "sha": "23a03351cff9a3b85d709a6ff83f3833f9b9b4e2",
+    "size": 0,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/benchmark?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/tree/2.0.53/benchmark",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/trees/23a03351cff9a3b85d709a6ff83f3833f9b9b4e2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/benchmark?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/trees/23a03351cff9a3b85d709a6ff83f3833f9b9b4e2",
+      "html": "https://github.com/alibaba/fastjson2/tree/2.0.53/benchmark"
+    }
+  },
+  {
+    "name": "codegen-test",
+    "path": "codegen-test",
+    "sha": "a64cddb1ee88ab9330a10f46f0df6530b936105b",
+    "size": 0,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/codegen-test?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/tree/2.0.53/codegen-test",
+
+ succeeded in 808ms:
+200 https://github.com/alibaba/fastjson2/tree/2.0.53/docs
+
+ succeeded in 811ms:
+200 https://github.com/alibaba/fastjson2/tree/2.0.53/core/src/test
+
+ succeeded in 811ms:
+200 https://github.com/alibaba/fastjson2/tree/2.0.53/core/src/main
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f -name '*.json' | head -5 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+{
+  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' . -g '*.json' | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-sources.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-sources.jar",
+./metadata/com.google.re2j/re2j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+./metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+./metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+./metadata/org.jetbrains.exposed/exposed-json/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg 'repo1.maven.org.*sources.jar|javadoc.jar|test-jar|tests.jar' . -g '*.json' | head -60" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-exec/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+./metadata/org.apache.commons/commons-exec/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+./metadata/org.apache.commons/commons-exec/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-exec/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+./metadata/org.apache.commons/commons-exec/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+./metadata/org.apache.commons/commons-exec/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/$version$/commons-dbcp2-$version$-javadoc.jar",
+./metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-javadoc.jar",
+./metadata/org.apache.httpcomponents.core5/httpcore5/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-tests.jar",
+./metadata/org.apache.httpcomponents.core5/httpcore5/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-configuration2/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-text/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-javadoc.jar",
+./metadata/log4j/log4j/index.json:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+./metadata/log4j/log4j/index.json:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-math/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math/$version$/commons-math-$version$-javadoc.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-pool2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/$version$/commons-pool2-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-lang3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/$version$/commons-lang3-$version$-javadoc.jar",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+./metadata/org.apache.commons/commons-math3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-math3/$version$/commons-math3-$version$-javadoc.jar",
+./metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+./metadata/org.apache.commons/commons-collections4/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/$version$/commons-collections4-$version$-javadoc.jar",
+./metadata/io.circe/circe-parser_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-parser_3/$version$/circe-parser_3-$version$-javadoc.jar",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+./metadata/io.circe/circe-numbers_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-javadoc.jar",
+./metadata/io.circe/circe-numbers_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+./metadata/io.circe/circe-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-javadoc.jar",
+./metadata/org.apache.directory.api/api-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+./metadata/org.apache.directory.api/api-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+./metadata/io.swagger/swagger-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' . -g '*.json' | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-common-protos/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-common-protos/$version$/proto-google-common-protos-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta1/$version$/proto-google-cloud-bigquerystorage-v1beta1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-instance-v1/$version$/grpc-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-database-v1/$version$/proto-google-cloud-spanner-admin-database-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-executor-v1/$version$/grpc-google-cloud-spanner-executor-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1alpha/$version$/proto-google-cloud-bigquerystorage-v1alpha-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta/$version$/proto-google-cloud-bigquerystorage-v1beta-$version$-javadoc.jar",
+./metadata/ru.vyarus/generics-resolver/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-javadoc.jar",
+./metadata/dev.zio/zio_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio_3/$version$/zio_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-test_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-test_3/$version$/zio-test_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-config_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53-javadoc.jar" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53-javadoc.jar
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53-test-sources.jar" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53-tests.jar" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53-sources.jar" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 120ms:
+200 https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53-sources.jar
+
+ succeeded in 353ms:
+404 https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53-tests.jar
+
+ succeeded in 367ms:
+404 https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53-test-sources.jar
+
+codex
+Maven Central has the normal JAR, source JAR, and javadoc JAR, but no `tests` or `test-sources` classifier for this version. I’ll use Maven Central for sources and docs, and the tagged GitHub test tree for the test suite.
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/alibaba/fastjson2/2.0.53/core/pom.xml | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/alibaba/fastjson2/2.0.53/README_EN.md | sed -n '1,90p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53.jar -o /tmp/fastjson2-2.0.53.jar && jar tf /tmp/fastjson2-2.0.53.jar | sed -n '1,60p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/alibaba/fastjson2/contents/core/src/test?ref=2.0.53 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 222ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.alibaba.fastjson2</groupId>
+        <artifactId>fastjson2-parent</artifactId>
+        <version>2.0.53</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>fastjson2</artifactId>
+    <name>fastjson2</name>
+    <description>Fastjson is a JSON processor (JSON parser + JSON generator) written in Java</description>
+    <packaging>jar</packaging>
+    <url>https://github.com/alibaba/fastjson2</url>
+    <inceptionYear>2022</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/alibaba/fastjson2</url>
+        <connection>scm:git:https://git@github.com/alibaba/fastjson2.git</connection>
+    </scm>
+
+    <organization>
+        <name>Alibaba Group</name>
+        <url>https://github.com/alibaba</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>wenshao</id>
+            <name>wenshao</name>
+            <email>shaojin.wensj(at)alibaba-inc.com</email>
+            <roles>
+                <role>Developer</role>
+                <role>Tech Leader</role>
+            </roles>
+            <timezone>+8</timezone>
+            <url>https://github.com/wenshao</url>
+        </developer>
+        <developer>
+            <id>oldratlee</id>
+            <name>Jerry Lee</name>
+            <email>oldratlee(at)gmail.com</email>
+            <roles>
+                <role>Developer</role>
+                <role>CI/SCM Engineer</role>
+            </roles>
+            <timezone>+8</timezone>
+            <url>https://github.com/oldratlee</url>
+        </developer>
+        <developer>
+            <id>VictorZeng</id>
+            <name>Victor Zeng</name>
+            <email>Victor.Zxy(at)outlook.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+            <url>https://github.com/VictorZeng</url>
+        </developer>
+        <developer>
+            <id>kraity</id>
+            <name>陆之岇</name>
+            <email>kat(at)krait.cn</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+            <url>https://github.com/kraity</url>
+        </developer>
+    </developers>
+
+ succeeded in 236ms:
+[![Java CI](https://img.shields.io/github/actions/workflow/status/alibaba/fastjson2/ci.yaml?branch=main&logo=github&logoColor=white)](https://github.com/alibaba/fastjson2/actions/workflows/ci.yaml)
+[![Codecov](https://img.shields.io/codecov/c/github/alibaba/fastjson2/main?logo=codecov&logoColor=white)](https://codecov.io/gh/alibaba/fastjson2/branch/main)
+[![Maven Central](https://img.shields.io/maven-central/v/com.alibaba.fastjson2/fastjson2?logo=apache-maven&logoColor=white)](https://search.maven.org/artifact/com.alibaba.fastjson2/fastjson2)
+[![GitHub release](https://img.shields.io/github/release/alibaba/fastjson2)](https://github.com/alibaba/fastjson2/releases)
+[![Java support](https://img.shields.io/badge/Java-8+-green?logo=java&logoColor=white)](https://openjdk.java.net/)
+[![License](https://img.shields.io/github/license/alibaba/fastjson2?color=4D7A97&logo=apache)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-green?label=gitpod&logo=gitpod&logoColor=white)](https://gitpod.io/#https://github.com/alibaba/fastjson2)
+[![Last SNAPSHOT](https://img.shields.io/nexus/snapshots/https/oss.sonatype.org/com.alibaba.fastjson2/fastjson2?label=latest%20snapshot)](https://oss.sonatype.org/content/repositories/snapshots/com/alibaba/fastjson2/)
+[![GitHub Stars](https://img.shields.io/github/stars/alibaba/fastjson2)](https://github.com/alibaba/fastjson2/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/alibaba/fastjson2)](https://github.com/alibaba/fastjson2/fork)
+[![user repos](https://badgen.net/github/dependents-repo/alibaba/fastjson2?label=user%20repos)](https://github.com/alibaba/fastjson2/network/dependents)
+[![GitHub Contributors](https://img.shields.io/github/contributors/alibaba/fastjson2)](https://github.com/alibaba/fastjson2/graphs/contributors)
+
+##### 📖 English Documentation | 📖 [中文文档](README.md)
+#####  The issues of fastjson will be also posted on [Alibaba Cloud Developer Community](https://developer.aliyun.com/ask/)
+
+# FASTJSON v2
+
+`FASTJSON v2` is an upgrade of the `FASTJSON`, with the goal of providing a highly optimized `JSON` library for the next ten years.
+
+- Supports the JSON and JSONB Protocols.
+- Supports full parsing and partial parsing.
+- Supports Java servers and Android Clients, and has big data applications.
+- Supports Kotlin [https://alibaba.github.io/fastjson2/kotlin_en](https://alibaba.github.io/fastjson2/kotlin_en)
+- Supports Android 8+ 
+- Supports `Graal Native-Image` 
+- Supports `JSON Schema` [https://alibaba.github.io/fastjson2/json_schema_cn](https://alibaba.github.io/fastjson2/json_schema_cn)
+
+![fastjson logo](https://user-images.githubusercontent.com/1063891/233821110-0c912009-4de3-4664-a27e-25274f2fa9c1.jpg)
+
+Related Documents:
+
+- `JSONB` format documentation:  
+  [https://alibaba.github.io/fastjson2/jsonb_format_cn](https://alibaba.github.io/fastjson2/jsonb_format_cn)
+- `FASTJSON v2`'s performance has been significantly improved. For the benchmark, see here:  
+  [https://github.com/alibaba/fastjson2/wiki/fastjson_benchmark](https://github.com/alibaba/fastjson2/wiki/fastjson_benchmark)
+
+# 1. Prepare
+
+## 1.1 Download
+
+`FASTJSONv2`'s groupId is different from versions `1.x`, it is instead `com.alibaba.fastjson2`:
+
+`Maven`:
+
+```xml
+<dependency>
+    <groupId>com.alibaba.fastjson2</groupId>
+    <artifactId>fastjson2</artifactId>
+    <version>2.0.53</version>
+</dependency>
+```
+
+`Gradle`:
+
+```groovy
+dependencies {
+    implementation 'com.alibaba.fastjson2:fastjson2:2.0.53'
+}
+```
+
+Find the latest version of `FASTJSONv2` at [maven.org](https://search.maven.org/artifact/com.alibaba.fastjson2/fastjson2).
+
+## 1.2 Other modules
+
+### Compatible dependence of fastjson-v1
+
+If you are using `fastjson 1.2.x`, you can use the compatibility package. The compatibility package cannot guarantee 100% compatibility. Please test  it yourself and report any problems.
+
+`Maven`:
+
+```xml
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>fastjson</artifactId>
+    <version>2.0.53</version>
+</dependency>
+```
+
+`Gradle`:
+
+```groovy
+dependencies {
+    implementation 'com.alibaba:fastjson:2.0.53'
+}
+```
+
+### `Kotlin` integration module `fastjson-kotlin`
+
+If your project uses `kotlin`, you can use the `Fastjson-Kotlin` module, and use the characteristics of `kotlin`.
+
+ succeeded in 241ms:
+[
+  {
+    "name": "java",
+    "path": "core/src/test/java",
+    "sha": "784a9459913ab144e223baf547388eb567403d31",
+    "size": 0,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/core/src/test/java?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/tree/2.0.53/core/src/test/java",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/trees/784a9459913ab144e223baf547388eb567403d31",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/core/src/test/java?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/trees/784a9459913ab144e223baf547388eb567403d31",
+      "html": "https://github.com/alibaba/fastjson2/tree/2.0.53/core/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "core/src/test/resources",
+    "sha": "169a5c72adbcb28c4e3c8104bb93eeeaadb6cd96",
+    "size": 0,
+    "url": "https://api.github.com/repos/alibaba/fastjson2/contents/core/src/test/resources?ref=2.0.53",
+    "html_url": "https://github.com/alibaba/fastjson2/tree/2.0.53/core/src/test/resources",
+    "git_url": "https://api.github.com/repos/alibaba/fastjson2/git/trees/169a5c72adbcb28c4e3c8104bb93eeeaadb6cd96",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/alibaba/fastjson2/contents/core/src/test/resources?ref=2.0.53",
+      "git": "https://api.github.com/repos/alibaba/fastjson2/git/trees/169a5c72adbcb28c4e3c8104bb93eeeaadb6cd96",
+      "html": "https://github.com/alibaba/fastjson2/tree/2.0.53/core/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 444ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/native-image/
+META-INF/native-image/com.alibaba.fastjson2/
+META-INF/native-image/com.alibaba.fastjson2/fastjson2/
+META-INF/proguard/
+META-INF/scm/
+META-INF/scm/com.alibaba.fastjson2/
+META-INF/scm/com.alibaba.fastjson2/fastjson2/
+schema/
+com/
+com/alibaba/
+com/alibaba/fastjson2/
+com/alibaba/fastjson2/reader/
+com/alibaba/fastjson2/util/
+com/alibaba/fastjson2/codec/
+com/alibaba/fastjson2/stream/
+com/alibaba/fastjson2/internal/
+com/alibaba/fastjson2/internal/asm/
+com/alibaba/fastjson2/internal/mixin/
+com/alibaba/fastjson2/internal/mixin/spring/
+com/alibaba/fastjson2/internal/trove/
+com/alibaba/fastjson2/internal/trove/map/
+com/alibaba/fastjson2/internal/trove/map/hash/
+com/alibaba/fastjson2/annotation/
+com/alibaba/fastjson2/function/
+com/alibaba/fastjson2/function/impl/
+com/alibaba/fastjson2/schema/
+com/alibaba/fastjson2/writer/
+com/alibaba/fastjson2/support/
+com/alibaba/fastjson2/support/csv/
+com/alibaba/fastjson2/support/money/
+com/alibaba/fastjson2/filter/
+com/alibaba/fastjson2/modules/
+META-INF/maven/
+META-INF/maven/com.alibaba.fastjson2/
+META-INF/maven/com.alibaba.fastjson2/fastjson2/
+META-INF/native-image/com.alibaba.fastjson2/fastjson2/native-image.properties
+META-INF/proguard/fastjson2.pro
+META-INF/scm/com.alibaba.fastjson2/fastjson2/git.properties
+schema/2020-12.json
+schema/draft-04.json
+com/alibaba/fastjson2/JSONPathCompilerReflect$SingleNamePathTyped.class
+com/alibaba/fastjson2/reader/ObjectReader.class
+com/alibaba/fastjson2/reader/ObjectReaderImplOptional.class
+com/alibaba/fastjson2/reader/FieldReaderInt8Field.class
+com/alibaba/fastjson2/reader/ObjectReaderCreatorASM$FieldReaderInfo.class
+com/alibaba/fastjson2/reader/ObjectReaderNoneDefaultConstructor.class
+com/alibaba/fastjson2/reader/ObjectReaderImplMethod.class
+com/alibaba/fastjson2/reader/FieldReaderObjectParam.class
+com/alibaba/fastjson2/reader/ObjectArrayReaderMultiType.class
+com/alibaba/fastjson2/reader/ObjectReaderCreator.class
+com/alibaba/fastjson2/reader/FieldReaderObjectField.class
+com/alibaba/fastjson2/reader/FieldReaderInt8ValueMethod.class
+com/alibaba/fastjson2/reader/ObjectReader9.class
+com/alibaba/fastjson2/reader/FieldReaderInt8Param.class
+com/alibaba/fastjson2/reader/FieldReaderAtomicIntegerMethodReadOnly.class
+com/alibaba/fastjson2/reader/FieldReaderFloatValueMethod.class
+com/alibaba/fastjson2/reader/FieldReaderStringArray.class
+com/alibaba/fastjson2/reader/ObjectReader11.class
+
+web search: 
+web search: https://github.com/alibaba/fastjson2/tree/2.0.53/core/src/test
+web search: 
+web search: repo.maven.apache.org com.alibaba.fastjson2 fastjson2 2.0.53 sources javadoc pom
+web search: 
+web search: https://central.sonatype.com/artifact/com.alibaba.fastjson2/fastjson2/2.0.53
+codex
+I’m going to write the discovered Maven/GitHub URLs into the JSON now. I’m leaving `language` absent because this artifact is the base Java JAR, and I’m leaving `not-for-native-image` absent because the artifact contains JVM `.class` files and even ships native-image metadata.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+diff --git a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+index 45bbebd569ed88255ede1606843d3b0bba4a83a8..6d0180a3b79ed392e3e4de31778a32fee5f2c24a
+--- a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
++++ b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53"
++  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53",
++  "repository-url" : "https://github.com/alibaba/fastjson2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-sources.jar",
++  "test-code-url" : "https://github.com/alibaba/fastjson2/tree/$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-javadoc.jar",
++  "description" : "Fastjson2 is Alibaba's Java JSON library for parsing and generating JSON and JSONB. It supports full and partial parsing, object serialization/deserialization, JSON Schema, and integrations for Java servers, Android clients, Kotlin, and GraalVM Native Image."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+index 45bbebd569ed88255ede1606843d3b0bba4a83a8..6d0180a3b79ed392e3e4de31778a32fee5f2c24a
+--- a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
++++ b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53"
++  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53",
++  "repository-url" : "https://github.com/alibaba/fastjson2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-sources.jar",
++  "test-code-url" : "https://github.com/alibaba/fastjson2/tree/$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-javadoc.jar",
++  "description" : "Fastjson2 is Alibaba's Java JSON library for parsing and generating JSON and JSONB. It supports full and partial parsing, object serialization/deserialization, JSON Schema, and integrations for Java servers, Android clients, Kotlin, and GraalVM Native Image."
+ }
+
+exec
+/usr/bin/bash -lc "jq . build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json >/dev/null && sed -n '1,120p' build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+{
+  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53",
+  "repository-url" : "https://github.com/alibaba/fastjson2",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-sources.jar",
+  "test-code-url" : "https://github.com/alibaba/fastjson2/tree/$version$/core/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-javadoc.jar",
+  "description" : "Fastjson2 is Alibaba's Java JSON library for parsing and generating JSON and JSONB. It supports full and partial parsing, object serialization/deserialization, JSON Schema, and integrations for Java servers, Android clients, Kotlin, and GraalVM Native Image."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w 'source %{http_code}\\n' https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53-sources.jar && curl -I -L -s -o /dev/null -w 'tests %{http_code}\\n' https://github.com/alibaba/fastjson2/tree/2.0.53/core/src/test && curl -I -L -s -o /dev/null -w 'docs %{http_code}\\n' https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/fastjson2-2.0.53-javadoc.jar" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+diff --git a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+index 45bbebd569ed88255ede1606843d3b0bba4a83a8..6d0180a3b79ed392e3e4de31778a32fee5f2c24a
+--- a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
++++ b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53"
++  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53",
++  "repository-url" : "https://github.com/alibaba/fastjson2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-sources.jar",
++  "test-code-url" : "https://github.com/alibaba/fastjson2/tree/$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-javadoc.jar",
++  "description" : "Fastjson2 is Alibaba's Java JSON library for parsing and generating JSON and JSONB. It supports full and partial parsing, object serialization/deserialization, JSON Schema, and integrations for Java servers, Android clients, Kotlin, and GraalVM Native Image."
+ }
+
+ succeeded in 845ms:
+tests 200
+docs 200
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+index 45bbebd569ed88255ede1606843d3b0bba4a83a8..6d0180a3b79ed392e3e4de31778a32fee5f2c24a
+--- a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
++++ b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53"
++  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53",
++  "repository-url" : "https://github.com/alibaba/fastjson2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-sources.jar",
++  "test-code-url" : "https://github.com/alibaba/fastjson2/tree/$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-javadoc.jar",
++  "description" : "Fastjson2 is Alibaba's Java JSON library for parsing and generating JSON and JSONB. It supports full and partial parsing, object serialization/deserialization, JSON Schema, and integrations for Java servers, Android clients, Kotlin, and GraalVM Native Image."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035
+diff --git a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+index 45bbebd569ed88255ede1606843d3b0bba4a83a8..6d0180a3b79ed392e3e4de31778a32fee5f2c24a
+--- a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
++++ b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53"
++  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53",
++  "repository-url" : "https://github.com/alibaba/fastjson2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-sources.jar",
++  "test-code-url" : "https://github.com/alibaba/fastjson2/tree/$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-javadoc.jar",
++  "description" : "Fastjson2 is Alibaba's Java JSON library for parsing and generating JSON and JSONB. It supports full and partial parsing, object serialization/deserialization, JSON Schema, and integrations for Java servers, Android clients, Kotlin, and GraalVM Native Image."
+ }
+
+ succeeded in 224ms:
+web search: 
+web search: com.alibaba.fastjson2 fastjson2 2.0.53 Maven Central sources javadoc jar GitHub alibaba fastjson2
+web search: 
+web search: GitHub alibaba fastjson2 2.0.53 core src test
+web search: 
+web search: https://repo1.maven.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/
+web search: 
+web search: https://central.sonatype.com/artifact/com.alibaba.fastjson2/fastjson2/2.0.53
+web search: 
+web search: https://github.com/alibaba/fastjson2/releases
+codex
+Updated [com.alibaba.fastjson2-fastjson2-2.0.53.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json:1).
+
+I used Maven Central for the source and javadoc artifacts, and the tagged GitHub `core/src/test` tree for tests because Maven Central has no test/test-sources artifact for this release. Maven Central lists `2.0.53` as a JAR with source and javadoc JARs, and the upstream release links the `2.0.53` code tag. ([repo1.maven.org](https://repo1.maven.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. Verified JSON validity with `jq`, and the substituted source/test/docs URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+index 45bbebd569ed88255ede1606843d3b0bba4a83a8..6d0180a3b79ed392e3e4de31778a32fee5f2c24a
+--- a/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
++++ b/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53"
++  "coordinates" : "com.alibaba.fastjson2:fastjson2:2.0.53",
++  "repository-url" : "https://github.com/alibaba/fastjson2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-sources.jar",
++  "test-code-url" : "https://github.com/alibaba/fastjson2/tree/$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson2/fastjson2/$version$/fastjson2-$version$-javadoc.jar",
++  "description" : "Fastjson2 is Alibaba's Java JSON library for parsing and generating JSON and JSONB. It supports full and partial parsing, object serialization/deserialization, JSON Schema, and integrations for Java servers, Android clients, Kotlin, and GraalVM Native Image."
+ }
+
+tokens used
+86,635
+Updated [com.alibaba.fastjson2-fastjson2-2.0.53.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035/build/discovered-artifact-metadata/com.alibaba.fastjson2-fastjson2-2.0.53.json:1).
+
+I used Maven Central for the source and javadoc artifacts, and the tagged GitHub `core/src/test` tree for tests because Maven Central has no test/test-sources artifact for this release. Maven Central lists `2.0.53` as a JAR with source and javadoc JARs, and the upstream release links the `2.0.53` code tag. ([repo1.maven.org](https://repo1.maven.org/maven2/com/alibaba/fastjson2/fastjson2/2.0.53/))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. Verified JSON validity with `jq`, and the substituted source/test/docs URLs all returned HTTP 200.
+Ran agent for com.alibaba.fastjson2:fastjson2:2.0.53 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035/build/agent-artifact-discovery-logs/com.alibaba.fastjson2-fastjson2-2.0.53.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2192-b2951035/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 41s
+9 actionable tasks: 9 executed
