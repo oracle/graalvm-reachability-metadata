@@ -2,6 +2,9 @@ Task:
 - Analyze the existing test methods in the provided file to determine the current coverage.
 - Identify a new, functional feature of the library `{library}` that is not yet covered by the existing tests, and write tests for it.
 
+Issue-Requested Metadata:
+{issue_requested_metadata_context}
+
 Rules:
 - Do not change any test logic that is already done.
 - Do not re-test classes or logic flows already present in the file.
@@ -14,3 +17,4 @@ Rules:
 - Keep tests version-agnostic. Do not hardcode the artifact version in normal test inputs or assertions.
 - The tests must execute under native image. Do not skip, disable, or short-circuit test logic in native image using assumptions, `@DisabledInNativeImage`, `isNativeImageRuntime()`, `ImageInfo.inImageRuntimeCode()`, or equivalent guards.
 - Every individual test must complete in under 60 seconds. Use bounded waits and close all clients, servers, executors, and other background resources.
+- Reporter snippets identify what is missing; any added or modified reachability metadata must include appropriate conditions, preferably `typeReached`.

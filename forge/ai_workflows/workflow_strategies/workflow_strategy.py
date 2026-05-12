@@ -22,6 +22,7 @@ from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.metadata_index import find_index_entry_for_version, resolve_metadata_version, resolve_test_version
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_persistent_instructions, load_prompt_template
@@ -92,6 +93,10 @@ class WorkflowStrategy(ABC):
         """Initialize the strategy from a configuration dict and context substitutions."""
         self.strategy_obj = strategy_obj or {}
         self.context = context
+        self.context.setdefault(
+            "issue_requested_metadata_context",
+            "No reporter-provided missing metadata context was supplied.",
+        )
         self.model_name = self.strategy_obj.get("model")
         if not isinstance(self.model_name, str) or not self.model_name:
             raise ValueError("Strategy is missing required field: model")
@@ -306,6 +311,15 @@ class WorkflowStrategy(ABC):
 
     def _resolve_index_entry_for_current_version(self, index_entries: list[dict]) -> dict | None:
         """Return the metadata index entry that should receive allowed-package updates."""
+        resolved_entry = find_index_entry_for_version(
+            self.reachability_repo_path,
+            self.group,
+            self.artifact,
+            self.version,
+        )
+        if resolved_entry is not None:
+            return resolved_entry
+
         matching_version_entries = [
             entry for entry in index_entries if str(entry.get("metadata-version") or "") == self.version
         ]
@@ -431,6 +445,14 @@ class WorkflowStrategy(ABC):
 
     def _commit_library_iteration(self) -> bool:
         """Stage and commit generated library files for an iteration."""
+        test_version = str(
+            self.context.get("test_version")
+            or resolve_test_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
+        metadata_version = str(
+            self.context.get("metadata_version")
+            or resolve_metadata_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
         stage_paths = [
             os.path.join(
                 self.reachability_repo_path,
@@ -438,13 +460,21 @@ class WorkflowStrategy(ABC):
                 "src",
                 self.group,
                 self.artifact,
-                self.version,
+                test_version,
             ),
             os.path.join(
                 self.reachability_repo_path,
                 "metadata",
                 self.group,
                 self.artifact,
+                "index.json",
+            ),
+            os.path.join(
+                self.reachability_repo_path,
+                "metadata",
+                self.group,
+                self.artifact,
+                metadata_version,
             ),
             stats_artifact_dir(self.reachability_repo_path, self.group, self.artifact),
         ]

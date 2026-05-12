@@ -8,6 +8,7 @@ import subprocess
 
 from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.dynamic_access_report import format_full_report, load_dynamic_access_coverage_report
+from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.native_test_verification import (
     STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
     global_output_dir,
@@ -33,6 +34,10 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
         self.library = self.context["library"]
         self.reachability_repo_path = self.context["reachability_repo_path"]
         self.group, self.artifact, self.version = self.library.split(":")
+        self.test_version = str(
+            self.context.get("test_version")
+            or resolve_test_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
         self.max_optimistic_iterations = self.parameters["max-optimistic-iterations"]
         self.max_test_iterations = self.parameters["max-test-iterations"]
         self.max_native_test_verification_iterations = self._parameter_int(
@@ -46,7 +51,7 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             "src",
             self.group,
             self.artifact,
-            self.version,
+            self.test_version,
             "build",
             "reports",
             "dynamic-access",
@@ -178,7 +183,7 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
     def _run_native_test_verification_gate(self) -> bool:
         """Run the bulk native-test verification gate; return True if PASSED."""
         output_dir = global_output_dir(
-            self.reachability_repo_path, self.group, self.artifact, self.version,
+            self.reachability_repo_path, self.group, self.artifact, self.test_version,
         )
         self._print_detail(
             f"native-test gate: starting output_dir={output_dir} "

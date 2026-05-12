@@ -7,6 +7,7 @@ import os
 import subprocess
 
 from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
+from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.stage_logger import log_stage
 
 
@@ -94,6 +95,10 @@ class BasicIterativeStrategy(WorkflowStrategy):
         self.max_successful_generations = self.parameters["max-successful-generations"]
         self.reachability_repo_path = self.context["reachability_repo_path"]
         self.group, self.artifact, self.version = self.library.split(":")
+        self.test_version = str(
+            self.context.get("test_version")
+            or resolve_test_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
         self.package = self.library.split(":")[0]
 
     @staticmethod
@@ -111,7 +116,7 @@ class BasicIterativeStrategy(WorkflowStrategy):
             "src",
             self.group,
             self.artifact,
-            self.version,
+            self.test_version,
         )
         subprocess.run(
             ["git", "add", "-A", tests_dir],
