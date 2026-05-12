@@ -6,11 +6,130 @@
  */
 package org_codehaus_plexus.plexus_compiler_manager;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static org.assertj.core.api.Assertions.fail;
 
-class Plexus_compiler_managerTest {
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Enumeration;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.compiler.Compiler;
+import org.codehaus.plexus.compiler.CompilerConfiguration;
+import org.codehaus.plexus.compiler.CompilerOutputStyle;
+import org.codehaus.plexus.compiler.javac.JavacCompiler;
+import org.codehaus.plexus.compiler.manager.CompilerManager;
+import org.codehaus.plexus.compiler.manager.DefaultCompilerManager;
+import org.codehaus.plexus.compiler.manager.NoSuchCompilerException;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+public class Plexus_compiler_managerTest {
+    private static final String COMPONENT_DESCRIPTOR = "META-INF/plexus/components.xml";
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    public void plexusDescriptorAdvertisesCompilerManagerComponent() throws Exception {
+        Element component = findCompilerManagerComponent();
+
+        assertThat(directChildText(component, "role")).isEqualTo(CompilerManager.ROLE);
+        assertThat(directChildText(component, "role-hint")).isEqualTo("default");
+        assertThat(directChildText(component, "implementation"))
+                .isEqualTo(DefaultCompilerManager.class.getName());
+        assertThat(directChildText(component, "isolated-realm")).isEqualTo("false");
+
+        Node requirementNode = directChild(component, "requirements").getElementsByTagName("requirement").item(0);
+        assertThat(requirementNode).isInstanceOf(Element.class);
+        Element requirement = (Element) requirementNode;
+        assertThat(directChildText(requirement, "role")).isEqualTo(Compiler.ROLE);
+        assertThat(directChildText(requirement, "field-name")).isEqualTo("compilers");
+    }
+
+    @Test
+    public void containerLooksUpManagerAndManagerReturnsDiscoveredJavacCompiler() throws Exception {
+        DefaultPlexusContainer container = new DefaultPlexusContainer();
+        try {
+            assertThat(container.hasComponent(CompilerManager.class)).isTrue();
+            assertThat(container.lookup(CompilerManager.ROLE)).isInstanceOf(DefaultCompilerManager.class);
+
+            CompilerManager manager = container.lookup(CompilerManager.class);
+            Compiler compiler = manager.getCompiler("javac");
+
+            assertThat(compiler).isInstanceOf(JavacCompiler.class);
+            assertThat(compiler.getCompilerOutputStyle()).isEqualTo(CompilerOutputStyle.ONE_OUTPUT_FILE_PER_INPUT_FILE);
+
+            CompilerConfiguration configuration = new CompilerConfiguration();
+            assertThat(compiler.getInputFileEnding(configuration)).isEqualTo(".java");
+            assertThat(compiler.getOutputFileEnding(configuration)).isEqualTo(".class");
+            assertThat(compiler.canUpdateTarget(configuration)).isTrue();
+        } finally {
+            container.dispose();
+        }
+    }
+
+    @Test
+    public void managerReportsRequestedHintWhenCompilerIsMissing() throws Exception {
+        DefaultPlexusContainer container = new DefaultPlexusContainer();
+        try {
+            CompilerManager manager = container.lookup(CompilerManager.class);
+            String compilerId = "missing-compiler";
+
+            NoSuchCompilerException exception = catchThrowableOfType(
+                    () -> manager.getCompiler(compilerId), NoSuchCompilerException.class);
+
+            assertThat(exception).isNotNull();
+            assertThat(exception).hasMessage("No such compiler 'missing-compiler'.");
+            assertThat(exception.getCompilerId()).isEqualTo(compilerId);
+        } finally {
+            container.dispose();
+        }
+    }
+
+    private static Element findCompilerManagerComponent() throws Exception {
+        Enumeration<URL> descriptors = Thread.currentThread().getContextClassLoader()
+                .getResources(COMPONENT_DESCRIPTOR);
+        while (descriptors.hasMoreElements()) {
+            URL descriptor = descriptors.nextElement();
+            try (InputStream stream = descriptor.openStream()) {
+                Document document = newDocumentBuilderFactory().newDocumentBuilder().parse(stream);
+                NodeList components = document.getElementsByTagName("component");
+                for (int i = 0; i < components.getLength(); i++) {
+                    Node node = components.item(i);
+                    if (node instanceof Element component
+                            && CompilerManager.ROLE.equals(directChildText(component, "role"))) {
+                        return component;
+                    }
+                }
+            }
+        }
+        return fail("Could not find the compiler manager Plexus component descriptor");
+    }
+
+    private static DocumentBuilderFactory newDocumentBuilderFactory() throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        factory.setNamespaceAware(false);
+        return factory;
+    }
+
+    private static Element directChild(Element element, String name) {
+        NodeList children = element.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child instanceof Element childElement && name.equals(childElement.getTagName())) {
+                return childElement;
+            }
+        }
+        return fail("Could not find child element: " + name);
+    }
+
+    private static String directChildText(Element element, String name) {
+        return directChild(element, name).getTextContent().trim();
     }
 }
