@@ -1,0 +1,764 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1e5c-edb0-76b1-a95a-53b854a96d95
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0-beta-2" when "$version$" is replaced with "1.0-beta-2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+- Set "coordinates" to "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0-beta-2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven Central and the upstream Maven Wagon project tags, then update the JSON in place with the most defensible URLs.
+web search: 
+web search: org.apache.maven.wagon wagon-ssh-external 1.0-beta-2 Maven Central sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/
+web search: 
+web search: 
+codex
+Maven Central confirms this release publishes both a normal JAR and a sources JAR; I’m checking the POM and upstream tags now to avoid pointing the source/test/doc fields at the wrong release.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+{
+  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/wagon-ssh-external-1.0-beta-2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 0ms:
+<?xml version="1.0"?><project>
+  <parent>
+    <artifactId>wagon-providers</artifactId>
+    <groupId>org.apache.maven.wagon</groupId>
+    <version>1.0-beta-2</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>wagon-ssh-external</artifactId>
+  <name>Maven Wagon SSH External Provider</name>
+  <version>1.0-beta-2</version>
+  <description>Wagon that gets and puts artifacts using SSH protocol with a preinstalled SSH client</description>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/WAGONSSH</url>
+  </issueManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/Scp*Test.*</exclude>
+            <exclude>**/SshCommandExecutorTest.*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-ssh-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-ssh-common-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <distributionManagement>
+    <status>deployed</status>
+  </distributionManagement>
+</project>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/maven-wagon.git '*1.0-beta-2*'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 336ms:
+37717070de31c10468df0358de25bc202fcd72bb	refs/tags/wagon-1.0-beta-2
+61f3718a6d371407cc130491029e64a8b4cddbc7	refs/tags/wagon-1.0-beta-2^{}
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/
+exec
+/usr/bin/bash -lc "rg -n 'wagon-ssh-external|wagon-ssh|javadoc.jar|sources.jar|test-code-url' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json:2:  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2"
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:30:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:45:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-providers/1.0-beta-2/wagon-providers-1.0-beta-2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>wagon</artifactId>
+    <groupId>org.apache.maven.wagon</groupId>
+    <version>1.0-beta-2</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>wagon-providers</artifactId>
+  <packaging>pom</packaging>
+  <name>Maven Wagon Providers Parent</name>
+  <modules>
+    <module>wagon-file</module>
+    <module>wagon-ftp</module>
+    <module>wagon-http-lightweight</module>
+    <module>wagon-http</module>
+    <module>wagon-http-shared</module>
+    <module>wagon-ssh-external</module>
+    <module>wagon-ssh-common</module>
+    <module>wagon-ssh-common-test</module>
+    <module>wagon-ssh</module>
+    <module>wagon-ssh-ganymed</module>
+    <module>wagon-webdav</module>
+  </modules>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-common</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-common-test</artifactId>
+        <version>1.0-beta-2</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/wagon-ssh-external-1.0-beta-2-sources.jar -o /tmp/wagon-ssh-external-1.0-beta-2-sources.jar && jar tf /tmp/wagon-ssh-external-1.0-beta-2-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/wagon-ssh-external-1.0-beta-2.jar -o /tmp/wagon-ssh-external-1.0-beta-2.jar && jar tf /tmp/wagon-ssh-external-1.0-beta-2.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 127ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/plexus/
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/wagon/
+org/apache/maven/wagon/providers/
+org/apache/maven/wagon/providers/ssh/
+org/apache/maven/wagon/providers/ssh/external/
+META-INF/plexus/components.xml
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+org/apache/maven/wagon/providers/ssh/external/ScpExternalWagon.class
+META-INF/maven/
+META-INF/maven/org.apache.maven.wagon/
+META-INF/maven/org.apache.maven.wagon/wagon-ssh-external/
+META-INF/maven/org.apache.maven.wagon/wagon-ssh-external/pom.xml
+META-INF/maven/org.apache.maven.wagon/wagon-ssh-external/pom.properties
+
+ succeeded in 194ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/wagon/
+org/apache/maven/wagon/providers/
+org/apache/maven/wagon/providers/ssh/
+org/apache/maven/wagon/providers/ssh/external/
+META-INF/plexus/
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+org/apache/maven/wagon/providers/ssh/external/ScpExternalWagon.java
+META-INF/plexus/components.xml
+
+codex
+The artifact contains JVM `.class` files, so I’m leaving `not-for-native-image` unset. I also found the local metadata convention: Maven Central sources and javadoc jars are used when published, while tests point to the matching source-control tag.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/1.0-beta-2/wagon-1.0-beta-2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>maven-parent</artifactId>
+    <groupId>org.apache.maven</groupId>
+    <version>4</version>
+    <relativePath>../pom/maven/pom.xml</relativePath>
+  </parent>
+  <groupId>org.apache.maven.wagon</groupId>
+  <artifactId>wagon</artifactId>
+  <packaging>pom</packaging>
+  <name>Maven Wagon</name>
+  <version>1.0-beta-2</version>
+  <description>Tools to manage artifacts and deployment</description>
+  <url>http://maven.apache.org/wagon</url>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/WAGON</url>
+  </issueManagement>
+  <inceptionYear>2003</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>Maven Wagon User List</name>
+      <subscribe>wagon-users-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>wagon-users-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-wagon-users/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Maven Wagon Developer List</name>
+      <subscribe>wagon-dev-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>wagon-dev-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-wagon-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Maven Commits List</name>
+      <subscribe>wagon-commits-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>wagon-commits-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-wagon-commits/</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>michal</id>
+      <name>Michal Maczka</name>
+      <email>michal@codehaus.org</email>
+      <organization>Codehaus</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0-beta-2</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0-beta-2</developerConnection>
+    <url>https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0-beta-2</url>
+  </scm>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <tagBase>https://svn.apache.org/repos/asf/maven/wagon/tags</tagBase>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  <modules>
+    <module>wagon-provider-api</module>
+    <module>wagon-provider-test</module>
+    <module>wagon-providers</module>
+  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-api</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-test</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-common-test</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-common</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-interactivity-api</artifactId>
+        <version>1.0-alpha-4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.0-alpha-8</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>1.0.4</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <!-- TODO: point to ref location
+    <distributionManagement>
+      <site>
+        <id>apache.website</id>
+        <url>scp://people.apache.org/www/maven.apache.org/wagon/</url>
+      </site>
+    </distributionManagement>
+  -->
+  <profiles>
+    <profile>
+      <id>sharedResources</id>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>people.apache.org</id>
+          <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-remote-resources-plugin</artifactId>
+            <version>1.0-alpha-1</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>process</goal>
+                </goals>
+                <configuration>
+                  <resourceBundles>
+                    <resourceBundle>org.apache:apache-jar-resource-bundle:1.0</resourceBundle>
+                  </resourceBundles>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/wagon-ssh-external-1.0-beta-2-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/apache/maven-wagon.git | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/apache/maven-wagon/tree/wagon-1.0-beta-2/wagon-providers/wagon-ssh-external/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 330ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 22:44:55 GMT
+content-type: application/java-archive
+content-length: 29968
+cf-ray: 9facf3679a07bb08-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "b76ae9247d03a76cff37da3df0462cac"
+last-modified: Tue, 12 Dec 2006 22:23:51 GMT
+x-checksum-md5: b76ae9247d03a76cff37da3df0462cac
+x-checksum-sha1: fce1cffe50aa41ed11e2a59f4e9ccd21c28f872c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 352ms:
+9434e6f7a2048921883a3f564be475daf2816532	refs/heads/WAGON-491
+241af6e14b412c4a3c7b9db5313a6f81426bbd7c	refs/heads/WAGON-584_streaming
+29d88d37935d6a46431ead49c63acb64e7c2a863	refs/heads/WAGON-584_streaming_no-expect-continue
+508c5c82f3b193c3a7c5887d684677763083ac2b	refs/heads/WAGON-590
+f385d62a862a0465b75b7c8038e773fb02a1a748	refs/heads/WAGON-590-any-auth
+ad99fee3da30ca02c9bb4fe94f9d5d8e37cbef64	refs/heads/WAGON-602
+4e423570d90de0616e42288d7886d191e7354acd	refs/heads/arrays
+1bcf96875f9a3330d6fd961c8f55e502568cde71	refs/heads/comp
+796bd6f952594de6d16a73a0d3bda789d34e684d	refs/heads/dependabot/maven/org.apache.jackrabbit-jackrabbit-webdav-2.22.3
+0abb16ccc8c4844fc71440f5978815d16b05f535	refs/heads/dependabot/maven/org.apache.maven-maven-parent-48
+930a91ee4f178eb3f66ccb01cb17608817455c5a	refs/heads/dependabot/maven/wagon-3.x/org.apache.maven-maven-parent-48
+cfb9d2285a45f94f71ad4da8047af365fe1443f9	refs/heads/junit5-plexus-test
+92286d0925bb2f7c8e8be0a74680c16db33f2945	refs/heads/master
+bb1ce09a51fa5740d13f1345691ceee3cd8274b6	refs/heads/repository
+5c16627d7d70bc8a181da53bd7016765a1ae1701	refs/heads/uri-encoding
+af7133671cf697c7155809e7e3279f88d310ce67	refs/heads/wagon-1.x
+2caa7c4043fde8fefee3580fac3d817912a4b4e0	refs/heads/wagon-3.x
+
+ succeeded in 657ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 22:44:56 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"97c78b8b352d980f1189f6374a87798a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=f8%2FA9wYKpy4F52DGhVFqgpN%2FjZjTAM856gBd%2BcuP87ISIf8apsdPSqhnLCb%2FIEYEASzQUujQk5kd89dzrSVPzLFuT0kCGuhJnwM%2Be2DGgZRmkXQAhKijesiJnT0ZAMERntoCdHqnrKSOlCbn9nueyCojeQxeyjGsKlrEDjUC4stv%2FWuzU8eQx5TMgda6fhet0Acjt19M6xVsFRhyNiVxQaIv67z1ZOyod5QsrfujCcmmWkLFxDhNhA1l191Avly1VXRsJ0cymDFzL5ElcqO5TA%3D%3D--UGo0TgzN8qKHA3WP--SL90aW6Y65xW0nv5cuK7Ag%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1173747298.1778625895; expires=Wed, 12 May 2027 22:44:55 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 12 May 2027 22:44:55 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FF:3983C8:52F8EAA:3DAE383:6A03AD67
+
+
+codex
+I’m going to write the discovered fields now. The source and documentation URLs will use Maven Central artifacts, and the test URL will use the `wagon-$version$` tag in the Apache GitHub mirror.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+index 2cbb5ba0f12064ddda9905e1ae8d4cbe7a9ae0d1..401780bb47344aedb2f707ef9b4f24dced4bd101
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2"
++  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh-external/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-javadoc.jar",
++  "description" : "Maven Wagon SSH External Provider is a Maven Wagon transport provider for transferring artifacts over SSH/SCP. It delegates SSH operations to a preinstalled external SSH client rather than embedding a Java SSH implementation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+index 2cbb5ba0f12064ddda9905e1ae8d4cbe7a9ae0d1..401780bb47344aedb2f707ef9b4f24dced4bd101
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2"
++  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh-external/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-javadoc.jar",
++  "description" : "Maven Wagon SSH External Provider is a Maven Wagon transport provider for transferring artifacts over SSH/SCP. It delegates SSH operations to a preinstalled external SSH client rather than embedding a Java SSH implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2",
+  "repository-url": "https://github.com/apache/maven-wagon",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh-external/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-javadoc.jar",
+  "description": "Maven Wagon SSH External Provider is a Maven Wagon transport provider for transferring artifacts over SSH/SCP. It delegates SSH operations to a preinstalled external SSH client rather than embedding a Java SSH implementation."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/wagon-ssh-external-1.0-beta-2-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 22:45:11 GMT
+content-type: application/java-archive
+content-length: 29968
+cf-ray: 9facf3c81babbc5d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 15
+etag: "b76ae9247d03a76cff37da3df0462cac"
+last-modified: Tue, 12 Dec 2006 22:23:51 GMT
+x-checksum-md5: b76ae9247d03a76cff37da3df0462cac
+x-checksum-sha1: fce1cffe50aa41ed11e2a59f4e9ccd21c28f872c
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/wagon-ssh-external-1.0-beta-2-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 22:45:11 GMT
+content-type: application/java-archive
+content-length: 9605
+cf-ray: 9facf3c81d5c01eb-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 218933
+etag: "a425f7fb72666cf53ddc274c0b9121e0"
+last-modified: Tue, 12 Dec 2006 22:23:55 GMT
+x-checksum-md5: a425f7fb72666cf53ddc274c0b9121e0
+x-checksum-sha1: c8e77f398697416e7f4a74117b4682f0a1ea3bf0
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/apache/maven-wagon/tree/wagon-1.0-beta-2/wagon-providers/wagon-ssh-external/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 22:44:56 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"97c78b8b352d980f1189f6374a87798a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+index 2cbb5ba0f12064ddda9905e1ae8d4cbe7a9ae0d1..401780bb47344aedb2f707ef9b4f24dced4bd101
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2"
++  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh-external/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-javadoc.jar",
++  "description" : "Maven Wagon SSH External Provider is a Maven Wagon transport provider for transferring artifacts over SSH/SCP. It delegates SSH operations to a preinstalled external SSH client rather than embedding a Java SSH implementation."
+ }
+
+web search: 
+web search: Maven Wagon SSH External Provider 1.0-beta-2 wagon-ssh-external
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+index 2cbb5ba0f12064ddda9905e1ae8d4cbe7a9ae0d1..401780bb47344aedb2f707ef9b4f24dced4bd101
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2"
++  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh-external/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-javadoc.jar",
++  "description" : "Maven Wagon SSH External Provider is a Maven Wagon transport provider for transferring artifacts over SSH/SCP. It delegates SSH operations to a preinstalled external SSH client rather than embedding a Java SSH implementation."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json && git status --short --ignored build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+index 2cbb5ba0f12064ddda9905e1ae8d4cbe7a9ae0d1..401780bb47344aedb2f707ef9b4f24dced4bd101
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2"
++  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh-external/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-javadoc.jar",
++  "description" : "Maven Wagon SSH External Provider is a Maven Wagon transport provider for transferring artifacts over SSH/SCP. It delegates SSH operations to a preinstalled external SSH client rather than embedding a Java SSH implementation."
+ }
+
+ succeeded in 272ms:
+!! build/
+
+web search: 
+web search: "wagon-ssh-external" "1.0-beta-2"
+codex
+Updated [org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json) with repository, source, test, documentation, and exactly two description sentences.
+
+I left `language` absent and did not set `not-for-native-image`: the artifact is a JVM JAR, and Maven Central publishes the 1.0-beta-2 JAR, sources JAR, and javadoc JAR. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/?utm_source=openai)) The description matches Apache’s documented purpose for the SSH external Wagon provider. ([maven.apache.org](https://maven.apache.org/wagon/wagon-providers/wagon-ssh-external/?utm_source=openai))
+
+Validation: `jq` passed, and the expanded source, test, and documentation URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+index 2cbb5ba0f12064ddda9905e1ae8d4cbe7a9ae0d1..401780bb47344aedb2f707ef9b4f24dced4bd101
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2"
++  "coordinates" : "org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh-external/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/$version$/wagon-ssh-external-$version$-javadoc.jar",
++  "description" : "Maven Wagon SSH External Provider is a Maven Wagon transport provider for transferring artifacts over SSH/SCP. It delegates SSH operations to a preinstalled external SSH client rather than embedding a Java SSH implementation."
+ }
+
+tokens used
+52,223
+Updated [org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.json) with repository, source, test, documentation, and exactly two description sentences.
+
+I left `language` absent and did not set `not-for-native-image`: the artifact is a JVM JAR, and Maven Central publishes the 1.0-beta-2 JAR, sources JAR, and javadoc JAR. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-external/1.0-beta-2/?utm_source=openai)) The description matches Apache’s documented purpose for the SSH external Wagon provider. ([maven.apache.org](https://maven.apache.org/wagon/wagon-providers/wagon-ssh-external/?utm_source=openai))
+
+Validation: `jq` passed, and the expanded source, test, and documentation URLs returned HTTP 200.
+Ran agent for org.apache.maven.wagon:wagon-ssh-external:1.0-beta-2 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef/build/agent-artifact-discovery-logs/org.apache.maven.wagon-wagon-ssh-external-1.0-beta-2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2354-cb97c4ef/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 53s
+9 actionable tasks: 9 executed
