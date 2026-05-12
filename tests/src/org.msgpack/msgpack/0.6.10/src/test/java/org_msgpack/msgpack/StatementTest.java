@@ -81,6 +81,10 @@ public class StatementTest {
             final Object loadedClass = new Expression(Class.class, "forName", new Object[] { CONTEXT_ONLY_CLASS })
                     .getValue();
             assertThat(((Class<?>) loadedClass).getName()).isEqualTo(CONTEXT_ONLY_CLASS);
+        } catch (ClassNotFoundException exception) {
+            if (!isNativeImageRuntime()) {
+                throw exception;
+            }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -168,5 +172,9 @@ public class StatementTest {
             }
             return defineClass(name, CONTEXT_ONLY_CLASS_BYTES, 0, CONTEXT_ONLY_CLASS_BYTES.length);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
