@@ -6,12 +6,30 @@
  */
 package org_apache_velocity.velocity;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
+import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.util.ExceptionUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExceptionUtilsTest {
+    @Test
+    void resolvesLegacyCompilerClassLiteralHelper() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(ExceptionUtils.class, MethodHandles.lookup());
+        MethodHandle resolver = lookup.findStatic(
+                ExceptionUtils.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class));
+
+        Class<?> resolvedClass = (Class<?>) resolver.invoke(VelocityException.class.getName());
+
+        assertThat(resolvedClass).isSameAs(VelocityException.class);
+    }
+
     @Test
     void createsAndLinksExceptionsUsingPublicExceptionUtilsApi() {
         Throwable rootCause = new IllegalArgumentException("root cause");
