@@ -6,11 +6,41 @@
  */
 package com_alibaba_fastjson2.fastjson2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.alibaba.fastjson2.PropertyNamingStrategy;
 import org.junit.jupiter.api.Test;
 
-class Fastjson2Test {
+public class Fastjson2Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void convertsSnakeCaseNamesToCamelCase() {
+        assertThat(PropertyNamingStrategy.snakeToCamel("customer_id")).isEqualTo("customerId");
+        assertThat(PropertyNamingStrategy.snakeToCamel("order_line_item")).isEqualTo("orderLineItem");
+        assertThat(PropertyNamingStrategy.snakeToCamel("alreadyCamel")).isEqualTo("alreadyCamel");
+        assertThat(PropertyNamingStrategy.snakeToCamel(null)).isNull();
+    }
+
+    @Test
+    void resolvesCommonNamingStrategyAliases() {
+        PropertyNamingStrategy upper = PropertyNamingStrategy.of("Upper");
+        PropertyNamingStrategy lower = PropertyNamingStrategy.of("lower");
+        PropertyNamingStrategy camel = PropertyNamingStrategy.of("Camel");
+
+        assertThat(upper == PropertyNamingStrategy.UpperCase).isTrue();
+        assertThat(lower == PropertyNamingStrategy.LowerCase).isTrue();
+        assertThat(camel == PropertyNamingStrategy.CamelCase).isTrue();
+        assertThat(PropertyNamingStrategy.of("")).isNull();
+        assertThat(PropertyNamingStrategy.of("missing-strategy")).isNull();
+    }
+
+    @Test
+    void resolvesNamingStrategiesByEnumName() {
+        PropertyNamingStrategy snakeCase = PropertyNamingStrategy.of("SnakeCase");
+        PropertyNamingStrategy kebabCase = PropertyNamingStrategy.of("KebabCase");
+        PropertyNamingStrategy lowerCaseWithDots = PropertyNamingStrategy.of("LowerCaseWithDots");
+
+        assertThat(snakeCase == PropertyNamingStrategy.SnakeCase).isTrue();
+        assertThat(kebabCase == PropertyNamingStrategy.KebabCase).isTrue();
+        assertThat(lowerCaseWithDots == PropertyNamingStrategy.LowerCaseWithDots).isTrue();
     }
 }
