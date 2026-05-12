@@ -250,6 +250,30 @@ public class Maven_invokerTest {
     }
 
     @Test
+    void defaultInvokerForwardsInputStreamForInteractiveInvocation() throws Exception {
+        Path mavenHome = createInputEchoingMavenHome();
+        Path projectDirectory = Files.createDirectory(tempDir.resolve("interactive-project"));
+        List<String> outputLines = new ArrayList<>();
+        List<String> errorLines = new ArrayList<>();
+        InvocationRequest request = new DefaultInvocationRequest()
+                .setBaseDirectory(projectDirectory.toFile())
+                .setInteractive(true)
+                .setInputStream(new ByteArrayInputStream("provided-answer\n".getBytes(StandardCharsets.UTF_8)));
+        Invoker invoker = new DefaultInvoker()
+                .setMavenHome(mavenHome.toFile())
+                .setOutputHandler(outputLines::add)
+                .setErrorHandler(errorLines::add)
+                .setLogger(new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream()), InvokerLogger.ERROR));
+
+        InvocationResult result = invoker.execute(request);
+
+        assertThat(result.getExitCode()).isZero();
+        assertThat(result.getExecutionException()).isNull();
+        assertThat(outputLines).contains("STDIN=provided-answer");
+        assertThat(errorLines).isEmpty();
+    }
+
+    @Test
     void defaultInvokerExecutesConfiguredMavenCommandAndCapturesResult() throws Exception {
         Path mavenHome = createFakeMavenHome(7);
         Path projectDirectory = Files.createDirectory(tempDir.resolve("invoked-project"));
@@ -291,6 +315,25 @@ public class Maven_invokerTest {
                 .isInstanceOf(MavenInvocationException.class)
                 .hasMessageContaining("Error configuring command-line")
                 .hasMessageContaining("Maven executable not found");
+    }
+
+    private Path createInputEchoingMavenHome() throws IOException {
+        Path mavenHome = Files.createDirectory(tempDir.resolve("maven-home-input-" + System.nanoTime()));
+        Path binDirectory = Files.createDirectory(mavenHome.resolve("bin"));
+        Path executable = mavenExecutable(mavenHome);
+        String script = isWindows()
+                ? "@echo off\r\n"
+                        + "set /p INVOKER_STDIN=\r\n"
+                        + "echo STDIN=%INVOKER_STDIN%\r\n"
+                        + "exit /B 0\r\n"
+                : "#!/bin/sh\n"
+                        + "IFS= read -r INVOKER_STDIN || true\n"
+                        + "echo STDIN=$INVOKER_STDIN\n"
+                        + "exit 0\n";
+        Files.writeString(executable, script, StandardCharsets.UTF_8);
+        executable.toFile().setExecutable(true);
+        assertThat(binDirectory).isDirectory();
+        return mavenHome;
     }
 
     private Path createFakeMavenHome(int exitCode) throws IOException {
