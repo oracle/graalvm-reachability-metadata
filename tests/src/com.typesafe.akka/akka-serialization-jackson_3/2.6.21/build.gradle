@@ -10,6 +10,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+Provider<Directory> generatedTestResourcesDir = layout.buildDirectory.dir("generated/test-resources")
 
 dependencies {
     testImplementation "com.typesafe.akka:akka-serialization-jackson_3:$libraryVersion"
@@ -22,6 +23,65 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+}
+
+tasks.register("extractAkkaReferenceConfig") {
+    inputs.files(configurations.testRuntimeClasspath)
+    outputs.dir(generatedTestResourcesDir)
+
+    doLast {
+        File outputDir = generatedTestResourcesDir.get().asFile
+        outputDir.mkdirs()
+
+        File actorJar = configurations.testRuntimeClasspath.files.find { File file ->
+            file.name.startsWith("akka-actor_3-") && file.name.endsWith(".jar")
+        }
+        File serializationJar = configurations.testRuntimeClasspath.files.find { File file ->
+            file.name.startsWith("akka-serialization-jackson_3-") && file.name.endsWith(".jar")
+        }
+        assert actorJar != null : "Missing akka-actor_3 runtime JAR"
+        assert serializationJar != null : "Missing akka-serialization-jackson_3 runtime JAR"
+
+        copy {
+            from(zipTree(actorJar)) {
+                include "reference.conf"
+                rename { String ignored -> "akka-actor-reference.conf" }
+            }
+            from(zipTree(actorJar)) {
+                include "version.conf"
+            }
+            from(zipTree(serializationJar)) {
+                include "reference.conf"
+                rename { String ignored -> "akka-serialization-jackson-reference.conf" }
+            }
+            into(outputDir)
+        }
+
+        File nativeImageDir = new File(outputDir, "META-INF/native-image/com.typesafe.akka/akka-serialization-jackson_3")
+        nativeImageDir.mkdirs()
+        new File(nativeImageDir, "resource-config.json").text = """
+                {
+                  "resources": {
+                    "includes": [
+                      { "pattern": "reference[.]conf" },
+                      { "pattern": "version[.]conf" },
+                      { "pattern": "akka-actor-reference[.]conf" },
+                      { "pattern": "akka-serialization-jackson-reference[.]conf" }
+                    ]
+                  }
+                }
+                """.stripIndent()
+    }
+}
+
+sourceSets {
+    test {
+        resources.srcDir(generatedTestResourcesDir)
+    }
+}
+
+tasks.named("processTestResources").configure {
+    dependsOn("extractAkkaReferenceConfig")
 }
 
 graalvmNative {
