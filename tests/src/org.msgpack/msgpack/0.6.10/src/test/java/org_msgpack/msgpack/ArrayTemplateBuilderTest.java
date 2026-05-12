@@ -21,9 +21,9 @@ public class ArrayTemplateBuilderTest {
     void buildsTemplateForTwoDimensionalReferenceArray() throws IOException {
         final Template<String[][]> template = buildTemplate(String[][].class);
         final String[][] source = new String[][] {
-                { "alpha", "beta" },
-                { "gamma" },
-                { "delta", "epsilon", "zeta" }
+                {"alpha", "beta" },
+                {"gamma" },
+                {"delta", "epsilon", "zeta" }
         };
 
         final String[][] unpacked = roundTrip(source, template);
@@ -36,12 +36,12 @@ public class ArrayTemplateBuilderTest {
         final Template<String[][][]> template = buildTemplate(String[][][].class);
         final String[][][] source = new String[][][] {
                 {
-                        { "alpha", "beta" },
-                        { "gamma" }
+                        {"alpha", "beta" },
+                        {"gamma" }
                 },
                 {
-                        { "delta" },
-                        { "epsilon", "zeta" }
+                        {"delta" },
+                        {"epsilon", "zeta" }
                 }
         };
 

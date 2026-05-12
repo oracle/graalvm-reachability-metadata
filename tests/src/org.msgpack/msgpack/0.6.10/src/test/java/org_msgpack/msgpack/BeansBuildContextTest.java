@@ -20,7 +20,7 @@ public class BeansBuildContextTest {
     @Test
     void instantiatesBeansTemplateConstructorWithTargetClassAndNestedTemplates() throws Exception {
         final MarkerTemplate markerTemplate = new MarkerTemplate();
-        final Template<?>[] nestedTemplates = new Template<?>[] { markerTemplate };
+        final Template<?>[] nestedTemplates = new Template<?>[] {markerTemplate };
         final ExposedBeansBuildContext context = new ExposedBeansBuildContext(
                 BeanTarget.class, nestedTemplates);
 

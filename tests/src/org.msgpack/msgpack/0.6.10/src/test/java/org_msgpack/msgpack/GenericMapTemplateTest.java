@@ -27,7 +27,7 @@ public class GenericMapTemplateTest {
 
         @SuppressWarnings("unchecked")
         final Template<Map<String, Integer>> mapTemplate = (Template<Map<String, Integer>>) (Template<?>) genericTemplate
-                .build(new Template<?>[] { Templates.TString, Templates.TInteger });
+                .build(new Template<?>[] {Templates.TString, Templates.TInteger });
 
         final Map<String, Integer> source = new LinkedHashMap<String, Integer>();
         source.put("alpha", 1);

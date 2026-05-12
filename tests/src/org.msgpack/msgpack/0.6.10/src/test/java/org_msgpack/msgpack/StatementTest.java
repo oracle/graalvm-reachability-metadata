@@ -29,28 +29,28 @@ public class StatementTest {
 
     @Test
     void invokesArrayAccessAndArrayFactories() throws Exception {
-        final String[] words = { "alpha", "beta" };
-        final Object arrayElement = new Expression(words, "get", new Object[] { Integer.valueOf(1) }).getValue();
+        final String[] words = {"alpha", "beta" };
+        final Object arrayElement = new Expression(words, "get", new Object[] {Integer.valueOf(1) }).getValue();
         assertThat(arrayElement).isEqualTo("beta");
 
         final Object emptyStringArray = new Expression(Array.class, "newInstance",
-                new Object[] { String.class, Integer.valueOf(2) }).getValue();
+                new Object[] {String.class, Integer.valueOf(2) }).getValue();
         assertThat((String[]) emptyStringArray).containsExactly(null, null);
 
         final Object primitiveArray = new Expression(int.class, "newArray",
-                new Object[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) }).getValue();
+                new Object[] {Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) }).getValue();
         assertThat((int[]) primitiveArray).containsExactly(1, 2, 3);
     }
 
     @Test
     void invokesConstructorsAndMethodsSelectedByStatement() throws Exception {
-        final Object constructed = new Expression(ConstructedValue.class, "new", new Object[] { "created" }).getValue();
+        final Object constructed = new Expression(ConstructedValue.class, "new", new Object[] {"created" }).getValue();
         assertThat(constructed).isEqualTo(new ConstructedValue("created"));
 
         final Object factoryResult = new Expression(new NewInstanceFactory(), "newInstance", new Object[0]).getValue();
         assertThat(factoryResult).isEqualTo(new ConstructedValue("from-factory"));
 
-        final Object staticResult = new Expression(Integer.class, "valueOf", new Object[] { "42" }).getValue();
+        final Object staticResult = new Expression(Integer.class, "valueOf", new Object[] {"42" }).getValue();
         assertThat(staticResult).isEqualTo(Integer.valueOf(42));
 
         final Object classObjectResult = new Expression(String.class, "getName", new Object[0]).getValue();
@@ -60,14 +60,14 @@ public class StatementTest {
                 .getValue();
         assertThat(iteratorResult).isEqualTo("next-value");
 
-        final Object instanceResult = new Expression(new Greeter("Hello"), "greet", new Object[] { "Statement" })
+        final Object instanceResult = new Expression(new Greeter("Hello"), "greet", new Object[] {"Statement" })
                 .getValue();
         assertThat(instanceResult).isEqualTo("Hello, Statement");
     }
 
     @Test
     void loadsClassByNameThroughStatement() throws Exception {
-        final Object loadedClass = new Expression(Class.class, "forName", new Object[] { "java.lang.String" })
+        final Object loadedClass = new Expression(Class.class, "forName", new Object[] {"java.lang.String" })
                 .getValue();
         assertThat(loadedClass).isSameAs(String.class);
     }
@@ -78,7 +78,7 @@ public class StatementTest {
         final ClassLoader previousContextClassLoader = thread.getContextClassLoader();
         thread.setContextClassLoader(new ContextOnlyClassLoader());
         try {
-            final Object loadedClass = new Expression(Class.class, "forName", new Object[] { CONTEXT_ONLY_CLASS })
+            final Object loadedClass = new Expression(Class.class, "forName", new Object[] {CONTEXT_ONLY_CLASS })
                     .getValue();
             assertThat(((Class<?>) loadedClass).getName()).isEqualTo(CONTEXT_ONLY_CLASS);
         } catch (ClassNotFoundException exception) {

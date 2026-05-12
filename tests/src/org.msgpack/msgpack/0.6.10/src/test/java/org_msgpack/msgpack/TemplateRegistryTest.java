@@ -107,7 +107,7 @@ public class TemplateRegistryTest {
         final Template<String[]> template = (Template<String[]>) registry.lookup(stringArrayType);
 
         final MessagePack messagePack = new MessagePack();
-        final String[] source = new String[] { "alpha", "beta", "gamma" };
+        final String[] source = new String[] {"alpha", "beta", "gamma" };
         final byte[] packed = messagePack.write(source, template);
 
         final String[] unpacked = messagePack.read(packed, template);

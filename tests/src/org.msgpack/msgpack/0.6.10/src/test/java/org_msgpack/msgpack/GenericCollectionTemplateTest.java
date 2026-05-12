@@ -27,7 +27,7 @@ public class GenericCollectionTemplateTest {
 
         @SuppressWarnings("unchecked")
         final Template<List<String>> listTemplate =
-                (Template<List<String>>) (Template<?>) genericTemplate.build(new Template<?>[] { Templates.TString });
+                (Template<List<String>>) (Template<?>) genericTemplate.build(new Template<?>[] {Templates.TString });
 
         final MessagePack messagePack = new MessagePack();
         final List<String> source = Arrays.asList("alpha", "beta", "gamma");
