@@ -8,11 +8,60 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 jobs:
+  check-last-test-all:
+    name: "📋 Check last test-all metadata run"
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    outputs:
+      can-release: ${{ steps.check.outputs.can-release }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: "🔎 Check latest completed test-all metadata run"
+        id: check
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "can-release=true" >> "$GITHUB_OUTPUT"
+            echo "Manual release dispatch bypasses the test-all metadata gate."
+            exit 0
+          fi
+
+          LAST_RUN_JSON="$(
+            gh run list \
+              --repo "${{ github.repository }}" \
+              --workflow "test-all-metadata.yml" \
+              --branch "master" \
+              --status "completed" \
+              --limit 1 \
+              --json databaseId,conclusion,url
+          )"
+
+          if [[ "$(printf '%s' "$LAST_RUN_JSON" | jq 'length')" -eq 0 ]]; then
+            echo "can-release=false" >> "$GITHUB_OUTPUT"
+            echo "No completed test-all metadata workflow run was found."
+            exit 0
+          fi
+
+          CONCLUSION="$(printf '%s' "$LAST_RUN_JSON" | jq -r '.[0].conclusion')"
+          RUN_URL="$(printf '%s' "$LAST_RUN_JSON" | jq -r '.[0].url')"
+          echo "Latest completed test-all metadata run: $RUN_URL ($CONCLUSION)"
+
+          if [[ "$CONCLUSION" == "success" ]]; then
+            echo "can-release=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "can-release=false" >> "$GITHUB_OUTPUT"
+          fi
+
   get-changed-metadata:
     name: "📋 Get a list of changed metadata"
-    if: github.repository == 'oracle/graalvm-reachability-metadata'
+    needs: check-last-test-all
+    if: github.repository == 'oracle/graalvm-reachability-metadata' && needs.check-last-test-all.outputs.can-release == 'true'
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
     outputs:
