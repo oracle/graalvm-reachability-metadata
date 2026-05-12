@@ -1,0 +1,85 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_springframework_data.spring_data_commons;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.data.util.ReflectionUtils;
+import org.springframework.data.util.ReflectionUtils.DescribedFieldFilter;
+
+public class ReflectionUtilsTest {
+
+    @Test
+    void findsMatchingDeclaredFieldUsingDescribedFilter() {
+        Field field = ReflectionUtils.findField(ReflectionUtilsSampleDomain.class,
+                new ReflectionUtilsNamedFieldFilter("identifier"), true);
+
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("identifier");
+        assertThat(field.getType()).isEqualTo(String.class);
+    }
+
+    @Test
+    void findsMatchingDeclaredConstructorFromRuntimeArguments() {
+        Optional<Constructor<?>> constructor = ReflectionUtils.findConstructor(ReflectionUtilsSampleDomain.class,
+                "spring-data", 18);
+
+        assertThat(constructor).isPresent();
+        assertThat(constructor.get().getParameterTypes()).containsExactly(String.class, int.class);
+    }
+
+    @Test
+    void findsRequiredInterfaceMethodThroughPublicMethodLookup() {
+        Method method = ReflectionUtils.findRequiredMethod(ReflectionUtilsSampleContract.class, "describe",
+                String.class);
+
+        assertThat(method.getDeclaringClass()).isEqualTo(ReflectionUtilsSampleContract.class);
+        assertThat(method.getReturnType()).isEqualTo(String.class);
+    }
+}
+
+interface ReflectionUtilsSampleContract {
+
+    String describe(String prefix);
+}
+
+final class ReflectionUtilsSampleDomain {
+
+    private final String identifier;
+
+    private final int revision;
+
+    ReflectionUtilsSampleDomain(String identifier, int revision) {
+        this.identifier = identifier;
+        this.revision = revision;
+    }
+}
+
+final class ReflectionUtilsNamedFieldFilter implements DescribedFieldFilter {
+
+    private final String fieldName;
+
+    ReflectionUtilsNamedFieldFilter(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
+    @Override
+    public boolean matches(Field field) {
+        return fieldName.equals(field.getName());
+    }
+
+    @Override
+    public String getDescription() {
+        return "Field named " + fieldName;
+    }
+}
