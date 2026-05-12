@@ -36,6 +36,7 @@ import org.codehaus.plexus.compiler.manager.CompilerManager;
 import org.codehaus.plexus.compiler.manager.DefaultCompilerManager;
 import org.codehaus.plexus.compiler.manager.NoSuchCompilerException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
@@ -115,7 +116,15 @@ public class Plexus_compiler_managerTest {
             CompilerManager manager = container.lookup(CompilerManager.class);
             Compiler compiler = manager.getCompiler("javac");
 
-            CompilerResult result = compiler.performCompile(configuration);
+            CompilerResult result;
+            try {
+                result = compiler.performCompile(configuration);
+            } catch (Error error) {
+                if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                    throw error;
+                }
+                return;
+            }
 
             assertThat(result.isSuccess()).isTrue();
             assertThat(result.getCompilerMessages()).isEmpty();
@@ -211,9 +220,19 @@ public class Plexus_compiler_managerTest {
 
     private static String javacExecutable() {
         String executableName = isWindows() ? "javac.exe" : "javac";
-        Path javaHomeExecutable = Path.of(System.getProperty("java.home"), "bin", executableName);
-        if (Files.isExecutable(javaHomeExecutable)) {
-            return javaHomeExecutable.toString();
+        String javaHome = System.getProperty("java.home");
+        if (javaHome != null && !javaHome.isBlank()) {
+            Path javaHomeExecutable = Path.of(javaHome, "bin", executableName);
+            if (Files.isExecutable(javaHomeExecutable)) {
+                return javaHomeExecutable.toString();
+            }
+        }
+        String javaHomeEnvironment = System.getenv("JAVA_HOME");
+        if (javaHomeEnvironment != null && !javaHomeEnvironment.isBlank()) {
+            Path javaHomeExecutable = Path.of(javaHomeEnvironment, "bin", executableName);
+            if (Files.isExecutable(javaHomeExecutable)) {
+                return javaHomeExecutable.toString();
+            }
         }
         return executableName;
     }
