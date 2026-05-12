@@ -127,7 +127,9 @@ jobs:
             RUNNER_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/$JOB_ID"
           fi
 
-          ./gradlew generateMatrixMatchingCoordinates -Pcoordinates="${{ matrix.coordinates }}" > test-all-results/matching-matrix.txt
+          MATCHING_MATRIX_OUTPUT_FILE="$(mktemp)"
+          GITHUB_OUTPUT="$MATCHING_MATRIX_OUTPUT_FILE" ./gradlew generateMatrixMatchingCoordinates -Pcoordinates="${{ matrix.coordinates }}"
+          cp "$MATCHING_MATRIX_OUTPUT_FILE" test-all-results/matching-matrix.txt
           sed -n 's/^matrix=//p' test-all-results/matching-matrix.txt | jq -r '.coordinates[]' | sort > test-all-results/batch-coordinates.txt
           if [[ ! -s test-all-results/batch-coordinates.txt ]]; then
             echo "No coordinates were resolved for ${{ matrix.coordinates }}"
