@@ -7,6 +7,7 @@
 package org_apache_velocity.velocity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -60,5 +61,44 @@ public class RuntimeInstanceTest {
 
         assertThat(runtime.isInitialized()).isTrue();
         assertThat(runtime.createNewParser()).isNotNull();
+    }
+
+    @Test
+    void reportsResourceManagerClassThatDoesNotImplementResourceManagerInterface() {
+        RuntimeInstance runtime = new RuntimeInstance();
+        runtime.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, new NullLogSystem());
+        runtime.setProperty(RuntimeConstants.VM_LIBRARY, "");
+        runtime.setProperty(RuntimeConstants.RESOURCE_MANAGER_CLASS, String.class.getName());
+
+        assertThatThrownBy(runtime::init)
+                .isInstanceOf(Exception.class)
+                .hasMessageContaining("does not implement")
+                .hasMessageContaining("org.apache.velocity.runtime.resource.ResourceManager");
+    }
+
+    @Test
+    void reportsParserPoolClassThatDoesNotImplementParserPoolInterface() {
+        RuntimeInstance runtime = new RuntimeInstance();
+        runtime.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, new NullLogSystem());
+        runtime.setProperty(RuntimeConstants.VM_LIBRARY, "");
+        runtime.setProperty(RuntimeConstants.PARSER_POOL_CLASS, String.class.getName());
+
+        assertThatThrownBy(runtime::init)
+                .isInstanceOf(Exception.class)
+                .hasMessageContaining("does not implement")
+                .hasMessageContaining("org.apache.velocity.runtime.ParserPool");
+    }
+
+    @Test
+    void reportsUberspectClassThatDoesNotImplementUberspectInterface() {
+        RuntimeInstance runtime = new RuntimeInstance();
+        runtime.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, new NullLogSystem());
+        runtime.setProperty(RuntimeConstants.VM_LIBRARY, "");
+        runtime.setProperty(RuntimeConstants.UBERSPECT_CLASSNAME, String.class.getName());
+
+        assertThatThrownBy(runtime::init)
+                .isInstanceOf(Exception.class)
+                .hasMessageContaining("does not implement")
+                .hasMessageContaining("org.apache.velocity.util.introspection.Uberspect");
     }
 }
