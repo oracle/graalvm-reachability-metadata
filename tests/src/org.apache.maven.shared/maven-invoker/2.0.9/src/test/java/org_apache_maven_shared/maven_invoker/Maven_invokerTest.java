@@ -274,6 +274,35 @@ public class Maven_invokerTest {
     }
 
     @Test
+    void defaultInvokerUsesInvokerLevelWorkingDirectoryAndLocalRepositoryDefaults() throws Exception {
+        Path mavenHome = createFakeMavenHome(0);
+        Path projectDirectory = Files.createDirectory(tempDir.resolve("defaulted-project"));
+        Path localRepository = Files.createDirectory(tempDir.resolve("defaulted-local-repository"));
+        List<String> outputLines = new ArrayList<>();
+        List<String> errorLines = new ArrayList<>();
+        InvocationRequest request = new DefaultInvocationRequest()
+                .setGoals(Arrays.asList("validate"));
+        Invoker invoker = new DefaultInvoker()
+                .setMavenHome(mavenHome.toFile())
+                .setWorkingDirectory(projectDirectory.toFile())
+                .setLocalRepositoryDirectory(localRepository.toFile())
+                .setOutputHandler(outputLines::add)
+                .setErrorHandler(errorLines::add)
+                .setLogger(new PrintStreamLogger(new PrintStream(new ByteArrayOutputStream()), InvokerLogger.ERROR));
+
+        InvocationResult result = invoker.execute(request);
+
+        assertThat(result.getExitCode()).isZero();
+        assertThat(result.getExecutionException()).isNull();
+        assertThat(outputLines).contains("PWD=" + projectDirectory.toRealPath());
+        assertThat(outputLines).anySatisfy(line -> assertThat(line)
+                .contains("ARGS=")
+                .contains("maven.repo.local=" + localRepository.toRealPath())
+                .contains("validate"));
+        assertThat(errorLines).contains("stderr-line");
+    }
+
+    @Test
     void defaultInvokerExecutesConfiguredMavenCommandAndCapturesResult() throws Exception {
         Path mavenHome = createFakeMavenHome(7);
         Path projectDirectory = Files.createDirectory(tempDir.resolve("invoked-project"));
