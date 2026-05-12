@@ -4,6 +4,18 @@
       "condition": {
         "typeReached": "org.apache.commons.logging.LogFactory"
       },
+      "type": "java.lang.Thread",
+      "methods": [
+        {
+          "name": "getContextClassLoader",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.commons.logging.LogFactory"
+      },
       "type": "org.apache.commons.logging.LogFactory"
     },
     {
@@ -11,6 +23,24 @@
         "typeReached": "org.apache.commons.logging.impl.LogFactoryImpl"
       },
       "type": "org.apache.commons.logging.LogFactory"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.commons.logging.impl.LogFactoryImpl"
+      },
+      "type": "java.lang.Throwable",
+      "methods": [
+        {
+          "name": "getStackTrace",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.commons.logging.impl.LogFactoryImpl"
+      },
+      "type": "org.apache.log4j.Logger"
     },
     {
       "condition": {
@@ -69,6 +99,20 @@
           "parameterTypes": []
         }
       ]
+    }
+  ],
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "org.apache.commons.logging.LogFactory"
+      },
+      "glob": "commons-logging.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.commons.logging.LogFactory"
+      },
+      "glob": "META-INF/services/org.apache.commons.logging.LogFactory"
     }
   ]
 }

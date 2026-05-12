@@ -1,0 +1,1015 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1e0b-f139-7fd3-9d95-a833222cb0d4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0-beta-6" when "$version$" is replaced with "1.0-beta-6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+- Set "coordinates" to "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0-beta-6".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream project layout, then patch the JSON directly. I’m going to prefer Maven-hosted source/test artifacts where they exist and only fall back to repository/tag URLs if needed.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+-rw-rw-r-- 1 vjovanov vjovanov 82 May 12 23:15 build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+{
+  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'wagon-webdav-jackrabbit|org.apache.maven.wagon' metadata tests build/discovered-artifact-metadata 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json:2:  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6"
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/build.gradle:14:    testImplementation "org.apache.maven.wagon:wagon-provider-api:$libraryVersion"
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/settings.gradle:20:rootProject.name = 'org.apache.maven.wagon.wagon-provider-api_tests'
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/src/test/java/org_apache_maven_wagon/wagon_provider_api/CommandExecutorAnonymous1Test.java:7:package org_apache_maven_wagon.wagon_provider_api;
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/src/test/java/org_apache_maven_wagon/wagon_provider_api/CommandExecutorAnonymous1Test.java:9:import org.apache.maven.wagon.CommandExecutor;
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/src/test/java/org_apache_maven_wagon/wagon_provider_api/WagonAnonymous1Test.java:7:package org_apache_maven_wagon.wagon_provider_api;
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/src/test/java/org_apache_maven_wagon/wagon_provider_api/WagonAnonymous1Test.java:9:import org.apache.maven.wagon.Wagon;
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/gradle.properties:4:library.coordinates = org.apache.maven.wagon:wagon-provider-api:1.0
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/gradle.properties:6:metadata.dir = org.apache.maven.wagon/wagon-provider-api/1.0/
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/user-code-filter.json:7:      "includeClasses" : "org.apache.maven.wagon.**"
+tests/src/org.apache.maven.wagon/wagon-provider-api/1.0/user-code-filter.json:10:      "includeClasses" : "org_apache_maven_wagon.wagon_provider_api.**"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.wagon.CommandExecutor$1"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0/reachability-metadata.json:11:        "typeReached": "org.apache.maven.wagon.CommandExecutor$1"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0/reachability-metadata.json:13:      "type": "org.apache.maven.wagon.CommandExecutor"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0/reachability-metadata.json:17:        "typeReached": "org.apache.maven.wagon.Wagon$1"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0/reachability-metadata.json:19:      "type": "org.apache.maven.wagon.Wagon"
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:41:      "org.apache.maven.wagon"
+tests/src/org.apache.maven.shared/maven-common-artifact-filters/1.3/src/test/java/org_apache_maven_shared/maven_common_artifact_filters/Maven_common_artifact_filtersTest.java:49:import org.apache.maven.wagon.events.TransferListener;
+
+web search: 
+web search: org.apache.maven.wagon wagon-webdav-jackrabbit 1.0-beta-6 Maven Central sources javadoc tests
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/
+web search: 
+web search: 
+codex
+The artifact directory on Maven Central has the main JAR plus `sources` and `javadoc` JARs for `1.0-beta-6`; I don’t see a test JAR in that artifact listing. I’m checking the POM and release archive now to pin repository and test-suite URL accurately.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.apache.maven.wagon/wagon-provider-api/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/maven-wagon",
+    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-provider-api/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-javadoc.jar",
+    "description" : "Maven Wagon Provider API defines the common Java interfaces, events, exceptions, and support classes used by Wagon transport providers. It lets Maven and related tools interact with repository transfer implementations through a shared provider contract.",
+    "tested-versions" : [
+      "1.0",
+      "2.0",
+      "2.1",
+      "2.2",
+      "2.3",
+      "2.4",
+      "2.5",
+      "2.6",
+      "2.7",
+      "2.8",
+      "2.9",
+      "2.10",
+      "2.12",
+      "3.0.0",
+      "3.1.0",
+      "3.2.0",
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "3.3.4",
+      "3.4.0",
+      "3.4.1",
+      "3.4.2",
+      "3.4.3",
+      "3.5.0",
+      "3.5.1",
+      "3.5.2",
+      "3.5.3"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.wagon"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/wagon-webdav-jackrabbit-1.0-beta-6.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven.wagon</groupId>
+    <artifactId>wagon-providers</artifactId>
+    <version>1.0-beta-6</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>wagon-webdav-jackrabbit</artifactId>
+  <name>Maven Wagon WebDav Provider</name>
+  <description>
+    Wagon that gets and puts artifacts through webdav protocol
+  </description>
+
+  <contributors>
+    <contributor>
+      <name>Henry Isidro</name>
+      <email>hisidro@exist.com</email>
+    </contributor>
+    <contributor>
+      <name>James William Dumay</name>
+      <email>james@atlassian.com</email>
+    </contributor>
+  </contributors>
+
+  <dependencies>
+    <dependency>
+      <groupId>${pom.groupId}</groupId>
+      <artifactId>wagon-http-shared</artifactId>
+      <version>1.0-beta-6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>jackrabbit-webdav</artifactId>
+      <version>1.5.0</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>1.5.3</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>it.could</groupId>
+      <artifactId>webdav</artifactId>
+      <version>0.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>merge-descriptors</id>
+            <configuration>
+              <descriptors>
+                <descriptor>${basedir}/src/main/resources/META-INF/plexus/components.xml</descriptor>
+                <descriptor>${project.build.directory}/generated-resources/plexus/META-INF/plexus/components.xml</descriptor>
+              </descriptors>
+            </configuration>
+            <goals>
+              <goal>merge-descriptors</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>  
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/1.0-beta-6/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 313ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/wagon/wagon/1.0-beta-6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/wagon/wagon/1.0-beta-6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="wagon-1.0-beta-6-site.xml" title="wagon-1.0-beta-6-site.xml">wagon-1.0-beta-6-site.xml</a>                         2009-06-25 19:36       565      
+<a href="wagon-1.0-beta-6-site.xml.md5" title="wagon-1.0-beta-6-site.xml.md5">wagon-1.0-beta-6-site.xml.md5</a>                     2009-06-25 19:36        32      
+<a href="wagon-1.0-beta-6-site.xml.sha1" title="wagon-1.0-beta-6-site.xml.sha1">wagon-1.0-beta-6-site.xml.sha1</a>                    2009-06-25 19:36        40      
+<a href="wagon-1.0-beta-6-source-release.tar.bz2" title="wagon-1.0-beta-6-source-release.tar.bz2">wagon-1.0-beta-6-source-release.tar.bz2</a>           2009-06-25 19:36    115005      
+<a href="wagon-1.0-beta-6-source-release.tar.bz2.asc" title="wagon-1.0-beta-6-source-release.tar.bz2.asc">wagon-1.0-beta-6-source-release.tar.bz2.asc</a>       2009-06-25 19:36       186      
+<a href="wagon-1.0-beta-6-source-release.tar.bz2.asc.md5" title="wagon-1.0-beta-6-source-release.tar.bz2.asc.md5">wagon-1.0-beta-6-source-release.tar.bz2.asc.m...</a>  2009-06-25 19:36        32      
+<a href="wagon-1.0-beta-6-source-release.tar.bz2.asc.sha1" title="wagon-1.0-beta-6-source-release.tar.bz2.asc.sha1">wagon-1.0-beta-6-source-release.tar.bz2.asc.s...</a>  2009-06-25 19:36        40      
+<a href="wagon-1.0-beta-6-source-release.tar.bz2.md5" title="wagon-1.0-beta-6-source-release.tar.bz2.md5">wagon-1.0-beta-6-source-release.tar.bz2.md5</a>       2009-06-25 19:36        32      
+<a href="wagon-1.0-beta-6-source-release.tar.bz2.sha1" title="wagon-1.0-beta-6-source-release.tar.bz2.sha1">wagon-1.0-beta-6-source-release.tar.bz2.sha1</a>      2009-06-25 19:36        40      
+<a href="wagon-1.0-beta-6-source-release.tar.gz" title="wagon-1.0-beta-6-source-release.tar.gz">wagon-1.0-beta-6-source-release.tar.gz</a>            2009-06-25 19:36    157931      
+<a href="wagon-1.0-beta-6-source-release.tar.gz.asc" title="wagon-1.0-beta-6-source-release.tar.gz.asc">wagon-1.0-beta-6-source-release.tar.gz.asc</a>        2009-06-25 19:36       186      
+<a href="wagon-1.0-beta-6-source-release.tar.gz.asc.md5" title="wagon-1.0-beta-6-source-release.tar.gz.asc.md5">wagon-1.0-beta-6-source-release.tar.gz.asc.md...</a>  2009-06-25 19:36        32      
+<a href="wagon-1.0-beta-6-source-release.tar.gz.asc.sha1" title="wagon-1.0-beta-6-source-release.tar.gz.asc.sha1">wagon-1.0-beta-6-source-release.tar.gz.asc.sh...</a>  2009-06-25 19:36        40      
+<a href="wagon-1.0-beta-6-source-release.tar.gz.md5" title="wagon-1.0-beta-6-source-release.tar.gz.md5">wagon-1.0-beta-6-source-release.tar.gz.md5</a>        2009-06-25 19:36        32      
+<a href="wagon-1.0-beta-6-source-release.tar.gz.sha1" title="wagon-1.0-beta-6-source-release.tar.gz.sha1">wagon-1.0-beta-6-source-release.tar.gz.sha1</a>       2009-06-25 19:36        40      
+<a href="wagon-1.0-beta-6-source-release.zip" title="wagon-1.0-beta-6-source-release.zip">wagon-1.0-beta-6-source-release.zip</a>               2009-06-25 19:36    412728      
+<a href="wagon-1.0-beta-6-source-release.zip.asc" title="wagon-1.0-beta-6-source-release.zip.asc">wagon-1.0-beta-6-source-release.zip.asc</a>           2009-06-25 19:36       186      
+<a href="wagon-1.0-beta-6-source-release.zip.asc.md5" title="wagon-1.0-beta-6-source-release.zip.asc.md5">wagon-1.0-beta-6-source-release.zip.asc.md5</a>       2009-06-25 19:36        32      
+<a href="wagon-1.0-beta-6-source-release.zip.asc.sha1" title="wagon-1.0-beta-6-source-release.zip.asc.sha1">wagon-1.0-beta-6-source-release.zip.asc.sha1</a>      2009-06-25 19:36        40      
+<a href="wagon-1.0-beta-6-source-release.zip.md5" title="wagon-1.0-beta-6-source-release.zip.md5">wagon-1.0-beta-6-source-release.zip.md5</a>           2009-06-25 19:36        32      
+<a href="wagon-1.0-beta-6-source-release.zip.sha1" title="wagon-1.0-beta-6-source-release.zip.sha1">wagon-1.0-beta-6-source-release.zip.sha1</a>          2009-06-25 19:36        40      
+<a href="wagon-1.0-beta-6.pom" title="wagon-1.0-beta-6.pom">wagon-1.0-beta-6.pom</a>                              2009-06-25 19:36     12386      
+<a href="wagon-1.0-beta-6.pom.asc" title="wagon-1.0-beta-6.pom.asc">wagon-1.0-beta-6.pom.asc</a>                          2009-06-25 19:36       186      
+<a href="wagon-1.0-beta-6.pom.asc.md5" title="wagon-1.0-beta-6.pom.asc.md5">wagon-1.0-beta-6.pom.asc.md5</a>                      2009-06-25 19:36        32      
+<a href="wagon-1.0-beta-6.pom.asc.sha1" title="wagon-1.0-beta-6.pom.asc.sha1">wagon-1.0-beta-6.pom.asc.sha1</a>                     2009-06-25 19:36        40      
+<a href="wagon-1.0-beta-6.pom.md5" title="wagon-1.0-beta-6.pom.md5">wagon-1.0-beta-6.pom.md5</a>                          2009-06-25 19:36        32      
+<a href="wagon-1.0-beta-6.pom.sha1" title="wagon-1.0-beta-6.pom.sha1">wagon-1.0-beta-6.pom.sha1</a>                         2009-06-25 19:36        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/1.0-beta-6/wagon-1.0-beta-6.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>maven-parent</artifactId>
+    <groupId>org.apache.maven</groupId>
+    <version>11</version>
+    <relativePath>../pom/maven/pom.xml</relativePath>
+  </parent>
+
+  <groupId>org.apache.maven.wagon</groupId>
+  <artifactId>wagon</artifactId>
+  <version>1.0-beta-6</version>
+  <packaging>pom</packaging>
+
+  <name>Maven Wagon</name>
+  <description>Tools to manage artifacts and deployment</description>
+  <url>http://maven.apache.org/wagon</url>
+  <inceptionYear>2003</inceptionYear>
+
+  <developers>
+    <developer>
+      <id>michal</id>
+      <name>Michal Maczka</name>
+      <email>michal@codehaus.org</email>
+      <organization>Codehaus</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>James William Dumay</name>
+    </contributor>
+    <contributor>
+      <name>Nathan Beyer</name>
+    </contributor>
+    <contributor>
+      <name>Gregory Block</name>
+    </contributor>
+    <contributor>
+      <name>Thomas Recloux</name>
+    </contributor>
+    <contributor>
+      <name>Trustin Lee</name>
+    </contributor>
+    <contributor>
+      <name>John Wells</name>
+    </contributor>
+    <contributor>
+      <name>Marcel Schutte</name>
+    </contributor>
+    <contributor>
+      <name>David Hawkins</name>
+    </contributor>
+    <contributor>
+      <name>Juan F. Codagnone</name>
+    </contributor>
+    <contributor>
+      <name>ysoonleo</name>
+    </contributor>
+    <contributor>
+      <name>Thomas Champagne</name>
+    </contributor>
+    <contributor>
+      <name>M. van der Plas</name>
+    </contributor>
+    <contributor>
+      <name>Jason Dillon</name>
+    </contributor>
+    <contributor>
+      <name>Jochen Wiedmann</name>
+    </contributor>
+    <contributor>
+      <name>Gilles Scokart</name>
+    </contributor>
+    <contributor>
+      <name>Wolfgang Glas</name>
+    </contributor>
+    <contributor>
+      <name>Kohsuke Kawaguchi</name>
+    </contributor>
+    <contributor>
+      <name>Antti Virtanen</name>
+    </contributor>
+  </contributors>
+
+  <mailingLists>
+    <mailingList>
+      <name>Wagon User List</name>
+      <post>wagon-users@maven.apache.org</post>
+      <subscribe>wagon-users-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>wagon-users-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-wagon-users/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/wagon-users@maven.apache.org</otherArchive>
+        <otherArchive>http://www.nabble.com/Wagon---Users-f13870.html</otherArchive>
+        <otherArchive>http://maven.wagon.users.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Wagon Developer List</name>
+      <post>wagon-dev@maven.apache.org</post>
+      <subscribe>wagon-dev-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>wagon-dev-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-wagon-dev/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/wagon-dev@maven.apache.org</otherArchive>
+        <otherArchive>http://www.nabble.com/Wagon---Dev-f13871.html</otherArchive>
+        <otherArchive>http://maven.wagon.dev.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Wagon Commits List</name>
+      <subscribe>wagon-commits-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>wagon-commits-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-wagon-commits/</archive>
+      <otherArchives>
+        <otherArchive>http://maven.wagon.commits.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0-beta-6</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0-beta-6</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/wagon/tags/wagon-1.0-beta-6</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/WAGON</url>
+  </issueManagement>
+  <!-- TODO: point to ref location
+    <distributionManagement>
+      <site>
+        <id>apache.website</id>
+        <url>scp://people.apache.org/www/maven.apache.org/wagon/</url>
+      </site>
+    </distributionManagement>
+  -->
+
+  <modules>
+    <module>wagon-provider-api</module>
+    <module>wagon-providers</module>
+    <module>wagon-provider-test</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-api</artifactId>
+        <version>1.0-beta-6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-test</artifactId>
+        <version>1.0-beta-6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-common-test</artifactId>
+        <version>1.0-beta-6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-common</artifactId>
+        <version>1.0-beta-6</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-interactivity-api</artifactId>
+        <version>1.0-alpha-6</version>
+        <exclusions>
+          <exclusion>
+            <groupId>plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-container-default</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>classworlds</groupId>
+            <artifactId>classworlds</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.0-alpha-9</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>1.4.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <tagBase>https://svn.apache.org/repos/asf/maven/wagon/tags</tagBase>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-maven-plugin</artifactId>
+          <!-- the one in maven-parent-10 and after is no longer backward compatible-->
+          <version>1.3.5</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-providers/1.0-beta-6/wagon-providers-1.0-beta-6.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven.wagon</groupId>
+    <artifactId>wagon</artifactId>
+    <version>1.0-beta-6</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>wagon-providers</artifactId>
+  <packaging>pom</packaging>
+  <name>Maven Wagon Providers</name>
+
+  <modules>
+    <module>wagon-file</module>
+    <module>wagon-ftp</module>
+    <module>wagon-http-lightweight</module>
+    <module>wagon-http</module>
+    <module>wagon-http-shared</module>
+    <module>wagon-scm</module>
+    <module>wagon-ssh-external</module>
+    <module>wagon-ssh-common</module>
+    <module>wagon-ssh-common-test</module>
+    <module>wagon-ssh</module>
+    <module>wagon-webdav-jackrabbit</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/ | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar" title="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar">wagon-webdav-jackrabbit-1.0-beta-6-javadoc.ja...</a>  2009-06-25 19:42     61206      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar.asc" title="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar.asc">wagon-webdav-jackrabbit-1.0-beta-6-javadoc.ja...</a>  2009-06-25 19:42       186      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar.asc.md5" title="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar.asc.md5">wagon-webdav-jackrabbit-1.0-beta-6-javadoc.ja...</a>  2009-06-25 19:42        32      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar.asc.sha1" title="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar.asc.sha1">wagon-webdav-jackrabbit-1.0-beta-6-javadoc.ja...</a>  2009-06-25 19:42        40      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar.md5" title="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar.md5">wagon-webdav-jackrabbit-1.0-beta-6-javadoc.ja...</a>  2009-06-25 19:42        32      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar.sha1" title="wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar.sha1">wagon-webdav-jackrabbit-1.0-beta-6-javadoc.ja...</a>  2009-06-25 19:42        40      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar" title="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar">wagon-webdav-jackrabbit-1.0-beta-6-sources.ja...</a>  2009-06-25 19:42     15439      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar.asc" title="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar.asc">wagon-webdav-jackrabbit-1.0-beta-6-sources.ja...</a>  2009-06-25 19:42       186      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar.asc.md5" title="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar.asc.md5">wagon-webdav-jackrabbit-1.0-beta-6-sources.ja...</a>  2009-06-25 19:42        32      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar.asc.sha1" title="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar.asc.sha1">wagon-webdav-jackrabbit-1.0-beta-6-sources.ja...</a>  2009-06-25 19:42        40      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar.md5" title="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar.md5">wagon-webdav-jackrabbit-1.0-beta-6-sources.ja...</a>  2009-06-25 19:42        32      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar.sha1" title="wagon-webdav-jackrabbit-1.0-beta-6-sources.jar.sha1">wagon-webdav-jackrabbit-1.0-beta-6-sources.ja...</a>  2009-06-25 19:42        40      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.jar" title="wagon-webdav-jackrabbit-1.0-beta-6.jar">wagon-webdav-jackrabbit-1.0-beta-6.jar</a>            2009-06-25 19:42     18291      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.jar.asc" title="wagon-webdav-jackrabbit-1.0-beta-6.jar.asc">wagon-webdav-jackrabbit-1.0-beta-6.jar.asc</a>        2009-06-25 19:42       186      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.jar.asc.md5" title="wagon-webdav-jackrabbit-1.0-beta-6.jar.asc.md5">wagon-webdav-jackrabbit-1.0-beta-6.jar.asc.md...</a>  2009-06-25 19:42        32      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.jar.asc.sha1" title="wagon-webdav-jackrabbit-1.0-beta-6.jar.asc.sha1">wagon-webdav-jackrabbit-1.0-beta-6.jar.asc.sh...</a>  2009-06-25 19:42        40      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.jar.md5" title="wagon-webdav-jackrabbit-1.0-beta-6.jar.md5">wagon-webdav-jackrabbit-1.0-beta-6.jar.md5</a>        2009-06-25 19:42        32      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.jar.sha1" title="wagon-webdav-jackrabbit-1.0-beta-6.jar.sha1">wagon-webdav-jackrabbit-1.0-beta-6.jar.sha1</a>       2009-06-25 19:42        40      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.pom" title="wagon-webdav-jackrabbit-1.0-beta-6.pom">wagon-webdav-jackrabbit-1.0-beta-6.pom</a>            2009-06-25 19:42      3511      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.pom.asc" title="wagon-webdav-jackrabbit-1.0-beta-6.pom.asc">wagon-webdav-jackrabbit-1.0-beta-6.pom.asc</a>        2009-06-25 19:42       186      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.pom.asc.md5" title="wagon-webdav-jackrabbit-1.0-beta-6.pom.asc.md5">wagon-webdav-jackrabbit-1.0-beta-6.pom.asc.md...</a>  2009-06-25 19:42        32      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.pom.asc.sha1" title="wagon-webdav-jackrabbit-1.0-beta-6.pom.asc.sha1">wagon-webdav-jackrabbit-1.0-beta-6.pom.asc.sh...</a>  2009-06-25 19:42        40      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.pom.md5" title="wagon-webdav-jackrabbit-1.0-beta-6.pom.md5">wagon-webdav-jackrabbit-1.0-beta-6.pom.md5</a>        2009-06-25 19:42        32      
+<a href="wagon-webdav-jackrabbit-1.0-beta-6.pom.sha1" title="wagon-webdav-jackrabbit-1.0-beta-6.pom.sha1">wagon-webdav-jackrabbit-1.0-beta-6.pom.sha1</a>       2009-06-25 19:42        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/maven-wagon.git 'refs/tags/wagon-1.0-beta-6' 'refs/tags/*1.0-beta-6*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 327ms:
+aa7179be2d3d65d22c59102fb8216715efcea57e	refs/tags/wagon-1.0-beta-6
+9fd599900b669c17e58cababedae6680b5862ac3	refs/tags/wagon-1.0-beta-6^{}
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://github.com/apache/maven-wagon/tree/wagon-1.0-beta-6/wagon-providers/wagon-webdav-jackrabbit/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven-wagon/contents/wagon-providers/wagon-webdav-jackrabbit/src/test?ref=wagon-1.0-beta-6' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/wagon-webdav-jackrabbit-1.0-beta-6-sources.jar | sed -n '1,20p' && curl -fsSL -I https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp" && curl -fsSLO https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/wagon-webdav-jackrabbit-1.0-beta-6.jar && jar tf wagon-webdav-jackrabbit-1.0-beta-6.jar | sed -n '"'1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 139ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 21:16:34 GMT
+content-type: application/java-archive
+content-length: 61206
+cf-ray: 9fac71f93979ed45-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 65123
+etag: "31e99fe0cff5c2ce0b62127c3b008742"
+last-modified: Thu, 25 Jun 2009 19:43:02 GMT
+x-checksum-md5: 31e99fe0cff5c2ce0b62127c3b008742
+x-checksum-sha1: 4dfb0841c1591bd4f2b0cb292ddd7f7f2c185c62
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 137ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/plexus/
+org/
+org/apache/
+org/apache/jackrabbit/
+org/apache/jackrabbit/webdav/
+org/apache/jackrabbit/webdav/client/
+org/apache/jackrabbit/webdav/client/methods/
+org/apache/maven/
+org/apache/maven/wagon/
+org/apache/maven/wagon/providers/
+org/apache/maven/wagon/providers/webdav/
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+META-INF/plexus/components.xml
+org/apache/jackrabbit/webdav/client/methods/XmlRequestEntity.class
+org/apache/jackrabbit/webdav/MultiStatus.class
+org/apache/maven/wagon/providers/webdav/PathNavigator.class
+org/apache/maven/wagon/providers/webdav/WebDavWagon.class
+META-INF/maven/
+META-INF/maven/org.apache.maven.wagon/
+META-INF/maven/org.apache.maven.wagon/wagon-webdav-jackrabbit/
+META-INF/maven/org.apache.maven.wagon/wagon-webdav-jackrabbit/pom.xml
+META-INF/maven/org.apache.maven.wagon/wagon-webdav-jackrabbit/pom.properties
+
+ succeeded in 226ms:
+[
+  {
+    "name": "java",
+    "path": "wagon-providers/wagon-webdav-jackrabbit/src/test/java",
+    "sha": "4033070f270ae59f826b9fca1953ed7a9bc30f6b",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven-wagon/contents/wagon-providers/wagon-webdav-jackrabbit/src/test/java?ref=wagon-1.0-beta-6",
+    "html_url": "https://github.com/apache/maven-wagon/tree/wagon-1.0-beta-6/wagon-providers/wagon-webdav-jackrabbit/src/test/java",
+    "git_url": "https://api.github.com/repos/apache/maven-wagon/git/trees/4033070f270ae59f826b9fca1953ed7a9bc30f6b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven-wagon/contents/wagon-providers/wagon-webdav-jackrabbit/src/test/java?ref=wagon-1.0-beta-6",
+      "git": "https://api.github.com/repos/apache/maven-wagon/git/trees/4033070f270ae59f826b9fca1953ed7a9bc30f6b",
+      "html": "https://github.com/apache/maven-wagon/tree/wagon-1.0-beta-6/wagon-providers/wagon-webdav-jackrabbit/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "wagon-providers/wagon-webdav-jackrabbit/src/test/resources",
+    "sha": "b2d7170df1bf862183637d66b632dc8f9761844c",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven-wagon/contents/wagon-providers/wagon-webdav-jackrabbit/src/test/resources?ref=wagon-1.0-beta-6",
+    "html_url": "https://github.com/apache/maven-wagon/tree/wagon-1.0-beta-6/wagon-providers/wagon-webdav-jackrabbit/src/test/resources",
+    "git_url": "https://api.github.com/repos/apache/maven-wagon/git/trees/b2d7170df1bf862183637d66b632dc8f9761844c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven-wagon/contents/wagon-providers/wagon-webdav-jackrabbit/src/test/resources?ref=wagon-1.0-beta-6",
+      "git": "https://api.github.com/repos/apache/maven-wagon/git/trees/b2d7170df1bf862183637d66b632dc8f9761844c",
+      "html": "https://github.com/apache/maven-wagon/tree/wagon-1.0-beta-6/wagon-providers/wagon-webdav-jackrabbit/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 761ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 21:16:34 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e88b4da4f3f86747e10360d5576f6c3d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=HMnAvcCG8fO%2Fv0Cej2n%2FzJRlC5h9YGsaFCuN6l9Ec2RqKVkbS19XZP6oSkmMcMCzVJwaptCnAPpcgtSSMBTS3YHD9uVrHjpTHoKI5Cx%2BEQG8XyQu2l3vmH723oegKhVuWcGO3bP%2FHHV1E17%2FqD5u0G0IQmR5dKBWBM2FZbp4FBRYW7L9dMr2s4n8lYYIml0bQBILGpvUaivSoA3JvpFvBT%2FtQ8r5Qc10rUXA1XEbgKC6aUxJNtJXXFoyfjFBjjaHzoJaJyDoRtHA6Y5LLVL1TA%3D%3D--qk1Sq4hodZLjODkN--FGOwb0s8VoBrBNxqTrfxlQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1458321226.1778620594; expires=Wed, 12 May 2027 21:16:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 12 May 2027 21:16:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5112:3437FC:B095BF:82951C:6A0398B2
+
+
+codex
+I found the upstream tag as `wagon-1.0-beta-6` in `apache/maven-wagon`, and the module path has both `src/test/java` and `src/test/resources` at that tag. I’m updating the JSON with Maven Central source/javadoc JARs and the GitHub tag URL for the tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+index d0b1e4ee76d6ab3d4e1f7378a5f8ef7fb3e52363..5c3c16d3d19ec21c1fb3d14ad7eec574c3590ccb
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6"
++  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-webdav-jackrabbit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-javadoc.jar",
++  "description" : "Maven Wagon WebDAV Jackrabbit is a Wagon transport provider that lets Maven transfer artifacts over WebDAV using Apache Jackrabbit's WebDAV client APIs. It integrates with Maven Wagon's provider API so build tools can upload and download repository artifacts through WebDAV endpoints."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+index d0b1e4ee76d6ab3d4e1f7378a5f8ef7fb3e52363..5c3c16d3d19ec21c1fb3d14ad7eec574c3590ccb
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6"
++  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-webdav-jackrabbit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-javadoc.jar",
++  "description" : "Maven Wagon WebDAV Jackrabbit is a Wagon transport provider that lets Maven transfer artifacts over WebDAV using Apache Jackrabbit's WebDAV client APIs. It integrates with Maven Wagon's provider API so build tools can upload and download repository artifacts through WebDAV endpoints."
+ }
+
+web search: 
+web search: https://github.com/apache/maven-wagon/tree/wagon-1.0-beta-6/wagon-providers/wagon-webdav-jackrabbit/src/test
+web search: 
+web search: repo.maven.apache.org org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6 wagon-webdav-jackrabbit-1.0-beta-6-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6",
+  "repository-url": "https://github.com/apache/maven-wagon",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-webdav-jackrabbit/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-javadoc.jar",
+  "description": "Maven Wagon WebDAV Jackrabbit is a Wagon transport provider that lets Maven transfer artifacts over WebDAV using Apache Jackrabbit's WebDAV client APIs. It integrates with Maven Wagon's provider API so build tools can upload and download repository artifacts through WebDAV endpoints."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+index d0b1e4ee76d6ab3d4e1f7378a5f8ef7fb3e52363..5c3c16d3d19ec21c1fb3d14ad7eec574c3590ccb
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6"
++  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-webdav-jackrabbit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-javadoc.jar",
++  "description" : "Maven Wagon WebDAV Jackrabbit is a Wagon transport provider that lets Maven transfer artifacts over WebDAV using Apache Jackrabbit's WebDAV client APIs. It integrates with Maven Wagon's provider API so build tools can upload and download repository artifacts through WebDAV endpoints."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json && git ls-files --stage build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+index d0b1e4ee76d6ab3d4e1f7378a5f8ef7fb3e52363..5c3c16d3d19ec21c1fb3d14ad7eec574c3590ccb
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6"
++  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-webdav-jackrabbit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-javadoc.jar",
++  "description" : "Maven Wagon WebDAV Jackrabbit is a Wagon transport provider that lets Maven transfer artifacts over WebDAV using Apache Jackrabbit's WebDAV client APIs. It integrates with Maven Wagon's provider API so build tools can upload and download repository artifacts through WebDAV endpoints."
+ }
+
+ succeeded in 213ms:
+web search: 
+web search: Maven Central wagon-webdav-jackrabbit 1.0-beta-6 javadoc sources
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/
+web search: 
+web search: 
+web search: 
+web search: https://maven.apache.org/wagon/
+exec
+/usr/bin/bash -lc "file=build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json; jq -r '.[\"source-code-url\"], .[\"test-code-url\"], .[\"documentation-url\"]' \""'$file" | sed '"'s/\\"'$version'"\\"'$/1.0-beta-6/g'"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/wagon-webdav-jackrabbit-1.0-beta-6-sources.jar
+https://github.com/apache/maven-wagon/tree/wagon-1.0-beta-6/wagon-providers/wagon-webdav-jackrabbit/src/test
+https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/wagon-webdav-jackrabbit-1.0-beta-6-javadoc.jar
+
+exec
+/usr/bin/bash -lc 'file=build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json; test "$(jq -r '"'.coordinates' \""'$file")" = '"'org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6' && test \""'$(jq -r '"'has(\"language\")' \""'$file")" = false && test "$(jq -r '"'has(\"not-for-native-image\")' \""'$file")" = false && echo ok' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112
+ succeeded in 0ms:
+ok
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+index d0b1e4ee76d6ab3d4e1f7378a5f8ef7fb3e52363..5c3c16d3d19ec21c1fb3d14ad7eec574c3590ccb
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6"
++  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-webdav-jackrabbit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-javadoc.jar",
++  "description" : "Maven Wagon WebDAV Jackrabbit is a Wagon transport provider that lets Maven transfer artifacts over WebDAV using Apache Jackrabbit's WebDAV client APIs. It integrates with Maven Wagon's provider API so build tools can upload and download repository artifacts through WebDAV endpoints."
+ }
+
+web search: 
+web search: "wagon-webdav-jackrabbit-1.0-beta-6-sources.jar"
+web search: 
+web search: 
+web search: 
+web search: wagon-webdav-jackrabbit-1.0-beta-6-sources.jar site:repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/
+web search: 
+web search: https://github.com/apache/maven-wagon/tree/wagon-1.0-beta-6/wagon-providers/wagon-webdav-jackrabbit/src/test
+codex
+Updated [org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json).
+
+I used the Maven Central `sources` and `javadoc` JARs for `1.0-beta-6`, and the GitHub `wagon-1.0-beta-6` test tree for `src/test`. Maven Central also publishes the main artifact as a JAR, so I left `language` and `not-for-native-image` absent. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/))
+
+Validation: `jq` parsed the file successfully, and the `$version$` substitutions render to the expected `1.0-beta-6` URLs.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+index d0b1e4ee76d6ab3d4e1f7378a5f8ef7fb3e52363..5c3c16d3d19ec21c1fb3d14ad7eec574c3590ccb
+--- a/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6"
++  "coordinates" : "org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6",
++  "repository-url" : "https://github.com/apache/maven-wagon",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-webdav-jackrabbit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/$version$/wagon-webdav-jackrabbit-$version$-javadoc.jar",
++  "description" : "Maven Wagon WebDAV Jackrabbit is a Wagon transport provider that lets Maven transfer artifacts over WebDAV using Apache Jackrabbit's WebDAV client APIs. It integrates with Maven Wagon's provider API so build tools can upload and download repository artifacts through WebDAV endpoints."
+ }
+
+tokens used
+82,582
+Updated [org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112/build/discovered-artifact-metadata/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.json).
+
+I used the Maven Central `sources` and `javadoc` JARs for `1.0-beta-6`, and the GitHub `wagon-1.0-beta-6` test tree for `src/test`. Maven Central also publishes the main artifact as a JAR, so I left `language` and `not-for-native-image` absent. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-webdav-jackrabbit/1.0-beta-6/))
+
+Validation: `jq` parsed the file successfully, and the `$version$` substitutions render to the expected `1.0-beta-6` URLs.
+Ran agent for org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112/build/agent-artifact-discovery-logs/org.apache.maven.wagon-wagon-webdav-jackrabbit-1.0-beta-6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2353-7f851112/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 16s
+9 actionable tasks: 9 executed
