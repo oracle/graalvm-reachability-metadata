@@ -167,6 +167,44 @@ public class Wagon_fileTest {
     }
 
     @Test
+    void putDirectoryMergesNewFilesIntoExistingDestinationDirectory() throws Exception {
+        Path repositoryDirectory = Files.createDirectory(temporaryDirectory.resolve("repository"));
+        Files.createDirectories(repositoryDirectory.resolve("published/site/assets"));
+        Files.writeString(
+                repositoryDirectory.resolve("published/site/index.html"),
+                "existing-index",
+                StandardCharsets.UTF_8);
+        Files.writeString(
+                repositoryDirectory.resolve("published/site/assets/existing.css"),
+                "body { color: blue; }",
+                StandardCharsets.UTF_8);
+        Path sourceDirectory = Files.createDirectory(temporaryDirectory.resolve("site-update"));
+        Files.writeString(sourceDirectory.resolve("about.html"), "new-about", StandardCharsets.UTF_8);
+        Files.createDirectories(sourceDirectory.resolve("assets/images"));
+        Files.writeString(sourceDirectory.resolve("assets/images/logo.txt"), "logo", StandardCharsets.UTF_8);
+        FileWagon wagon = connectedWagon(repositoryDirectory);
+
+        try {
+            wagon.putDirectory(sourceDirectory.toFile(), "published/site");
+        } finally {
+            wagon.disconnect();
+        }
+
+        assertThat(Files.readString(repositoryDirectory.resolve("published/site/index.html"), StandardCharsets.UTF_8))
+                .isEqualTo("existing-index");
+        assertThat(Files.readString(
+                        repositoryDirectory.resolve("published/site/assets/existing.css"),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("body { color: blue; }");
+        assertThat(Files.readString(repositoryDirectory.resolve("published/site/about.html"), StandardCharsets.UTF_8))
+                .isEqualTo("new-about");
+        assertThat(Files.readString(
+                        repositoryDirectory.resolve("published/site/assets/images/logo.txt"),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("logo");
+    }
+
+    @Test
     void exposesStreamBasedInputAndOutputDataForResources() throws Exception {
         Path repositoryDirectory = Files.createDirectory(temporaryDirectory.resolve("repository"));
         FileWagon wagon = connectedWagon(repositoryDirectory);
