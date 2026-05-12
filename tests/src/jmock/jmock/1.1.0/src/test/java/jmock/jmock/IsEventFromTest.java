@@ -26,7 +26,7 @@ public class IsEventFromTest {
         assertThat(sameSourceResult).isTrue();
         assertThat(differentSourceResult).isFalse();
         assertThat(nonEventResult).isFalse();
-        assertThat(constraint.describeTo(new StringBuffer()).toString())
+        assertThat(constraint.describeTo(new java.io.StringWriter().getBuffer()).toString())
                 .contains(EventObject.class.getName())
                 .contains(source.toString());
     }
