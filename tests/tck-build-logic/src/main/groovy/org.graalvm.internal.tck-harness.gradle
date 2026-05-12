@@ -479,6 +479,10 @@ List<Map<String, Object>> changedMetadataTestEntries(
         List<String> changedCoordinates
 ) {
     List<Map<String, Object>> addedVersionEntries = flattenChangedTestedVersionEntries(tck.diffIndexTestedVersions(base, head))
+            .findAll { Map<String, Object> entry ->
+                String coordinates = entry["coordinates"] as String
+                coordinates && !tck.getMatchingCoordinates(coordinates).isEmpty()
+            }
     List<Map<String, Object>> entries = []
     entries.addAll(addedVersionEntries.collect { Map<String, Object> entry ->
         [
