@@ -453,7 +453,28 @@ class ReadmeBadgeSummarySupportTests {
                   {
                     "latest": true,
                     "metadata-version": "2.0.0",
-                    "description": "Zeta library"
+                    "description": "Zeta library",
+                    "tested-versions": [
+                      "0.9.0",
+                      "0.10.0",
+                      "0.13.0"
+                    ]
+                  }
+                ]
+                """
+        );
+        writeIndexFile(
+                "com.example",
+                "beta",
+                """
+                [
+                  {
+                    "latest": true,
+                    "metadata-version": "1.0.0",
+                    "description": "Beta library without stats",
+                    "tested-versions": [
+                      "1.0.0"
+                    ]
                   }
                 ]
                 """
@@ -470,7 +491,11 @@ class ReadmeBadgeSummarySupportTests {
                   {
                     "latest": true,
                     "metadata-version": "1.0.0",
-                    "description": "Alpha | library. Provides extended <docs> & utilities."
+                    "description": "Alpha | library. Provides extended <docs> & utilities.",
+                    "tested-versions": [
+                      "1.0.0",
+                      "1.0.1"
+                    ]
                   }
                 ]
                 """
@@ -502,15 +527,28 @@ class ReadmeBadgeSummarySupportTests {
 
         assertThat(markdown).contains("# Coverage");
         assertThat(markdown).contains("Updated: 2026-04-08");
-        assertThat(markdown).contains("![Coverage over Time](latest/metrics-over-time.svg#gh-light-mode-only)");
-        assertThat(markdown).contains("![Coverage over Time](latest/metrics-over-time-dark.svg#gh-dark-mode-only)");
-        assertThat(markdown).contains("| Library | Description | Dynamic access coverage |");
         assertThat(markdown).contains(
-                "| `com.example:alpha` | <details><summary>Show</summary> "
-                        + "Alpha \\| library. Provides extended &lt;docs&gt; &amp; utilities.</details> | 75.0% (3/4 calls) |"
+                "![Coverage over Time](https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/"
+                        + "stats/coverage/latest/metrics-over-time.svg#gh-light-mode-only)"
         );
         assertThat(markdown).contains(
-                "| `com.example:zeta` | <details><summary>Show</summary> Zeta library</details> | 25.0% (1/4 calls) |"
+                "![Coverage over Time](https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/"
+                        + "stats/coverage/latest/metrics-over-time-dark.svg#gh-dark-mode-only)"
+        );
+        assertThat(markdown).contains("| Library | Versions | Description | Dynamic access coverage |");
+        assertThat(markdown).contains(
+                "| `com.example:alpha` | [0.9.0<br>- 1.0.1](metadata/com.example/alpha/index.json) | "
+                        + "<details><summary>Show</summary> Alpha \\| library. Provides extended &lt;docs&gt; &amp; utilities.</details> | "
+                        + "[75.0% (3/4 calls)](stats/com.example/alpha/) |"
+        );
+        assertThat(markdown).contains(
+                "| `com.example:zeta` | [0.9.0<br>- 0.13.0](metadata/com.example/zeta/index.json) | "
+                        + "<details><summary>Show</summary> Zeta library</details> | "
+                        + "[25.0% (1/4 calls)](stats/com.example/zeta/) |"
+        );
+        assertThat(markdown).contains(
+                "| `com.example:beta` | [1.0.0](metadata/com.example/beta/index.json) | "
+                        + "<details><summary>Show</summary> Beta library without stats</details> | N/A |"
         );
         assertThat(markdown).doesNotContain("org.example:ignored");
         assertThat(markdown.indexOf("`com.example:alpha`")).isLessThan(markdown.indexOf("`com.example:zeta`"));

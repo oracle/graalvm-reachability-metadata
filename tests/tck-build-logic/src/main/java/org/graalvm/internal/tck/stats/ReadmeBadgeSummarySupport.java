@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gradle.api.GradleException;
+import org.gradle.util.internal.VersionNumber;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -232,18 +234,25 @@ public final class ReadmeBadgeSummarySupport {
         markdown.append("Updated: ")
                 .append(summary.date())
                 .append("\n\n");
-        markdown.append("![Coverage over Time](latest/metrics-over-time.svg#gh-light-mode-only)\n");
-        markdown.append("![Coverage over Time](latest/metrics-over-time-dark.svg#gh-dark-mode-only)\n\n");
+        markdown.append("![Coverage over Time](https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/")
+                .append("stats/coverage/latest/metrics-over-time.svg#gh-light-mode-only)\n");
+        markdown.append("![Coverage over Time](https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/")
+                .append("stats/coverage/latest/metrics-over-time-dark.svg#gh-dark-mode-only)\n\n");
         markdown.append("## Libraries\n\n");
-        markdown.append("| Library | Description | Dynamic access coverage |\n");
-        markdown.append("| --- | --- | ---: |\n");
+        markdown.append("| Library | Versions | Description | Dynamic access coverage |\n");
+        markdown.append("| --- | --- | --- | ---: |\n");
         for (CoverageTableEntry entry : entries) {
             markdown.append("| `")
                     .append(markdownCell(entry.coordinate()))
                     .append("` | ")
+                    .append(markdownLink(entry.versionSummary(), entry.metadataIndexPath()))
+                    .append(" | ")
                     .append(collapsibleDescriptionCell(entry.description()))
                     .append(" | ")
-                    .append(markdownCell(formatDynamicAccessCoverage(entry.dynamicAccessCoverage())))
+                    .append(markdownLinkOrText(
+                            formatDynamicAccessCoverage(entry.dynamicAccessCoverage()),
+                            entry.statsPath()
+                    ))
                     .append(" |\n");
         }
         return markdown.toString();
@@ -383,7 +392,9 @@ public final class ReadmeBadgeSummarySupport {
         })) {
             for (Path indexFile : paths.sorted().toList()) {
                 Path relative = metadataRoot.relativize(indexFile);
-                String coordinate = relative.getName(0) + ":" + relative.getName(1);
+                String groupId = relative.getName(0).toString();
+                String artifactId = relative.getName(1).toString();
+                String coordinate = groupId + ":" + artifactId;
                 List<MetadataVersionsIndexEntry> indexEntries = readIndexEntries(indexFile);
                 if (!hasMetadataIndexEntries(indexEntries)) {
                     continue;
@@ -392,6 +403,9 @@ public final class ReadmeBadgeSummarySupport {
                         coordinate,
                         new CoverageTableEntry(
                                 coordinate,
+                                formatVersionSummary(indexEntries),
+                                "metadata/" + groupId + "/" + artifactId + "/index.json",
+                                statsLinkTarget(statsRoot, groupId, artifactId),
                                 selectDescription(indexEntries),
                                 aggregateDynamicAccessCoverage(libraryStats.entries().get(coordinate))
                         )
@@ -402,6 +416,13 @@ public final class ReadmeBadgeSummarySupport {
         }
 
         return List.copyOf(entriesByCoordinate.values());
+    }
+
+    private static String statsLinkTarget(Path statsRoot, String groupId, String artifactId) {
+        if (Files.isDirectory(statsRoot.resolve(groupId).resolve(artifactId))) {
+            return "stats/" + groupId + "/" + artifactId + "/";
+        }
+        return "";
     }
 
     private static String selectDescription(List<MetadataVersionsIndexEntry> entries) {
@@ -419,6 +440,37 @@ public final class ReadmeBadgeSummarySupport {
             }
         }
         return "";
+    }
+
+    private static String formatVersionSummary(List<MetadataVersionsIndexEntry> entries) {
+        List<String> testedVersions = new ArrayList<>();
+        for (MetadataVersionsIndexEntry entry : entries) {
+            if (!isMetadataIndexEntry(entry)) {
+                continue;
+            }
+            if (entry.testedVersions() != null && !entry.testedVersions().isEmpty()) {
+                for (String testedVersion : entry.testedVersions()) {
+                    addVersionIfAbsent(testedVersions, testedVersion);
+                }
+            } else if (!isBlank(entry.metadataVersion())) {
+                addVersionIfAbsent(testedVersions, entry.metadataVersion());
+            }
+        }
+        if (testedVersions.isEmpty()) {
+            return "";
+        }
+        testedVersions.sort(Comparator.comparing(VersionNumber::parse)
+                .thenComparing(Function.identity()));
+        if (testedVersions.size() == 1) {
+            return testedVersions.get(0);
+        }
+        return testedVersions.get(0) + "<br>- " + testedVersions.get(testedVersions.size() - 1);
+    }
+
+    private static void addVersionIfAbsent(List<String> versions, String version) {
+        if (!isBlank(version) && !versions.contains(version)) {
+            versions.add(version);
+        }
     }
 
     private static DynamicAccessCoverage aggregateDynamicAccessCoverage(LibraryStatsModels.ArtifactStats artifactStats) {
@@ -1013,6 +1065,20 @@ public final class ReadmeBadgeSummarySupport {
                 .replace("|", "\\|");
     }
 
+    private static String markdownLink(String label, String target) {
+        if (isBlank(label)) {
+            return "";
+        }
+        return "[" + markdownCell(label) + "](" + target + ")";
+    }
+
+    private static String markdownLinkOrText(String label, String target) {
+        if (isBlank(target)) {
+            return markdownCell(label);
+        }
+        return markdownLink(label, target);
+    }
+
     private static boolean isBlank(String value) {
         return value == null || value.isBlank();
     }
@@ -1204,6 +1270,9 @@ public final class ReadmeBadgeSummarySupport {
 
     private record CoverageTableEntry(
             String coordinate,
+            String versionSummary,
+            String metadataIndexPath,
+            String statsPath,
             String description,
             DynamicAccessCoverage dynamicAccessCoverage
     ) {
