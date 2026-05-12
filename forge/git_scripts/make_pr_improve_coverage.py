@@ -48,6 +48,7 @@ REPO = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = "master"
 REVIEWERS = get_configured_reviewers()
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
+LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
 
 
 def build_pull_request_body(
@@ -64,6 +65,7 @@ def build_pull_request_body(
         baseline_test_only_entries: int | None = None,
         current_test_only_entries: int | None = None,
         post_generation_intervention: dict | None = None,
+        library_update_target: dict | None = None,
         is_large_library_part: bool = False,
         is_final_large_library_part: bool = True,
         large_library_part: int | None = None,
@@ -91,6 +93,20 @@ def build_pull_request_body(
                 f"- Test-only metadata entries (after): {current_test_only_entries or 0}\n"
             )
 
+    update_target_lines = ""
+    if isinstance(library_update_target, dict):
+        update_target_lines = (
+            f"- Requested coordinate: `{library_update_target.get('requested_coordinate') or coordinates}`\n"
+            f"- Match type: `{library_update_target.get('match_type') or 'unknown'}`\n"
+            f"- Matched metadata version: `{library_update_target.get('matched_metadata_version') or 'none'}`\n"
+            f"- Matched test version: `{library_update_target.get('matched_test_version') or 'none'}`\n"
+            f"- Resolved metadata version: `{library_update_target.get('resolved_metadata_version') or 'unknown'}`\n"
+            f"- Resolved test version: `{library_update_target.get('resolved_test_version') or 'unknown'}`\n"
+        )
+    validation_status = "not recorded"
+    if isinstance(local_ci_verification, dict):
+        validation_status = str(local_ci_verification.get("status") or "unknown")
+
     issue_reference = f"Fixes: #{issue_no}"
     if is_large_library_part and not is_final_large_library_part:
         issue_reference = f"Refs: #{issue_no}"
@@ -107,6 +123,9 @@ This PR improves dynamic-access coverage for {coordinates} by generating additio
 
 Summary:
 {part_line}\
+- Validation command: `./gradlew test -Pcoordinates={coordinates}`
+- Validation result: `{validation_status}`
+{update_target_lines}\
 - Strategy: {strategy_name}
 - Agent: {agent_name}
 - Model: {model_display_name}
@@ -144,6 +163,19 @@ def load_and_remove_baseline_snapshot(repo_path: str, group: str, artifact: str,
         snapshot = None
     os.remove(baseline_path)
     return snapshot
+
+
+def load_library_update_target_sidecar(metrics_repo_root: str) -> dict | None:
+    """Load PR-only target-resolution details written by improve_library_coverage."""
+    sidecar_path = os.path.join(metrics_repo_root, LIBRARY_UPDATE_TARGET_FILENAME)
+    if not os.path.isfile(sidecar_path):
+        return None
+    try:
+        with open(sidecar_path, "r", encoding="utf-8") as sidecar_file:
+            sidecar = json.load(sidecar_file)
+    except (OSError, json.JSONDecodeError):
+        return None
+    return sidecar if isinstance(sidecar, dict) else None
 
 
 def stage_and_commit(
@@ -245,6 +277,7 @@ def create_pull_request(
         baseline_test_only_entries=baseline_test_only_entries,
         current_test_only_entries=current_test_only_entries,
         post_generation_intervention=matched.get("post_generation_intervention"),
+        library_update_target=load_library_update_target_sidecar(metrics_repo_root),
         local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
         is_large_library_part=large_library_part is not None,
         is_final_large_library_part=is_final_large_library_part,
