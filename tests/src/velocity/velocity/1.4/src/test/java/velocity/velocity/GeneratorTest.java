@@ -9,9 +9,12 @@ package velocity.velocity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.Writer;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.texen.Generator;
 import org.apache.velocity.texen.util.FileUtil;
@@ -24,6 +27,10 @@ public class GeneratorTest {
     public void parsesControlTemplateWithDefaultTexenContextObjects() throws Exception {
         TexenGenerator generator = new TexenGenerator("missing-texen-test.properties");
         generator.setOutputPath("target/texen-output");
+        clearVelocityEngineClassCache();
+        generator.reloadDefaultProperties();
+        assertThat(resolveVelocityEngineThroughGeneratedHelper())
+                .isSameAs(VelocityEngine.class);
 
         VelocityContext context = new VelocityContext();
         String rendered = generator.parse("control.vm", context);
@@ -36,9 +43,28 @@ public class GeneratorTest {
         assertThat(context.get("properties")).isInstanceOf(PropertiesUtil.class);
     }
 
+    private static void clearVelocityEngineClassCache() throws Exception {
+        Field classCache = Generator.class.getDeclaredField(
+                "class$org$apache$velocity$app$VelocityEngine");
+        classCache.setAccessible(true);
+        classCache.set(null, null);
+    }
+
+    private static Class<?> resolveVelocityEngineThroughGeneratedHelper() throws Exception {
+        Method generatedClassLiteralHelper = Generator.class.getDeclaredMethod(
+                "class$", String.class);
+        generatedClassLiteralHelper.setAccessible(true);
+        return (Class<?>) generatedClassLiteralHelper.invoke(
+                null, "org.apache.velocity.app.VelocityEngine");
+    }
+
     private static final class TexenGenerator extends Generator {
         private TexenGenerator(String propFile) {
             super(propFile);
+        }
+
+        private void reloadDefaultProperties() {
+            setDefaultProps();
         }
 
         @Override
