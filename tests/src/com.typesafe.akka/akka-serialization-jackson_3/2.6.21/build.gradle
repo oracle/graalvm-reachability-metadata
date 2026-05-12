@@ -34,3 +34,38 @@ graalvmNative {
         }
     }
 }
+
+def generatedTestResourcesDir = layout.buildDirectory.dir("generated/test-resources")
+
+tasks.register("extractAkkaReferenceConfigs", Sync) {
+    from({
+        zipTree(configurations.testRuntimeClasspath.files.find { File file ->
+            file.name.startsWith("akka-actor_3-")
+        })
+    }) {
+        include "reference.conf"
+        include "version.conf"
+        rename { String fileName ->
+            fileName == "reference.conf" ? "akka-actor-reference.conf" : fileName
+        }
+    }
+    from({
+        zipTree(configurations.testRuntimeClasspath.files.find { File file ->
+            file.name.startsWith("akka-serialization-jackson_3-")
+        })
+    }) {
+        include "reference.conf"
+        rename { String fileName -> "akka-serialization-jackson-reference.conf" }
+    }
+    into(generatedTestResourcesDir)
+}
+
+sourceSets {
+    test {
+        resources.srcDir(generatedTestResourcesDir)
+    }
+}
+
+tasks.named("processTestResources").configure {
+    dependsOn("extractAkkaReferenceConfigs")
+}
