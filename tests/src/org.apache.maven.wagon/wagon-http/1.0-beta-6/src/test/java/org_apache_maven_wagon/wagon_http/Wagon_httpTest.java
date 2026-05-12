@@ -22,6 +22,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Base64;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.GZIPOutputStream;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.maven.wagon.TransferFailedException;
+import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.providers.http.HttpWagon;
 import org.apache.maven.wagon.repository.Repository;
@@ -151,6 +153,47 @@ public class Wagon_httpTest {
                 wagon.putFromStream(new ByteArrayInputStream(streamPayload), "streams/data.bin", streamPayload.length,
                         source.toFile().lastModified());
 
+                assertThat(requests).hasValue(2);
+                server.assertNoFailure();
+            } finally {
+                wagon.disconnect();
+            }
+        }
+    }
+
+    @Test
+    void getRespondsToBasicAuthenticationChallengeWithRepositoryCredentials() throws Exception {
+        String expectedAuthorization = "Basic "
+                + Base64.getEncoder().encodeToString("alice:s3cret".getBytes(UTF_8));
+        AtomicInteger requests = new AtomicInteger();
+
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            int requestNumber = requests.incrementAndGet();
+            assertThat(exchange.getRequestMethod()).isEqualTo("GET");
+            assertThat(exchange.getRequestURI().getPath()).isEqualTo("/repository/private/data.txt");
+
+            String authorization = exchange.getRequestHeaders().getFirst("Authorization");
+            if (expectedAuthorization.equals(authorization)) {
+                writeStringResponse(exchange, HttpStatus.SC_OK, "authenticated content");
+                return;
+            }
+
+            assertThat(authorization).isNull();
+            assertThat(requestNumber).isEqualTo(1);
+            exchange.getResponseHeaders().add("WWW-Authenticate", "Basic realm=\"wagon-test\"");
+            writeStringResponse(exchange, HttpStatus.SC_UNAUTHORIZED, "credentials required");
+        })) {
+            HttpWagon wagon = new HttpWagon();
+            wagon.setTimeout(SHORT_TIMEOUT_MILLIS);
+            AuthenticationInfo authenticationInfo = new AuthenticationInfo();
+            authenticationInfo.setUserName("alice");
+            authenticationInfo.setPassword("s3cret");
+            wagon.connect(new Repository("test", server.uri("/repository").toString()), authenticationInfo);
+            Path destination = tempDir.resolve("authenticated.txt");
+            try {
+                wagon.get("private/data.txt", destination.toFile());
+
+                assertThat(Files.readString(destination, UTF_8)).isEqualTo("authenticated content");
                 assertThat(requests).hasValue(2);
                 server.assertNoFailure();
             } finally {
