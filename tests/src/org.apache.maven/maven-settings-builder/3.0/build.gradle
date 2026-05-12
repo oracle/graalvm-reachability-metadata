@@ -16,6 +16,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs("-J-Djava.io.tmpdir=${layout.buildDirectory.get().asFile.absolutePath}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {

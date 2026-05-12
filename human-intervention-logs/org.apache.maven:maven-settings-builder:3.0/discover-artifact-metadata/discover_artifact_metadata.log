@@ -1,0 +1,1278 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1308700
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1d5f-688a-7071-add3-184ee5891076
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven:maven-settings-builder:3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0" when "$version$" is replaced with "3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+- Set "coordinates" to "org.apache.maven:maven-settings-builder:3.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the existing metadata shape first, then check Maven/source upstream so the URLs point at the correct `3.0` tag and any Maven-hosted source/test artifacts are preferred.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.maven:maven-settings-builder:3.0"
+}
+
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+-rw-rw-r-- 1 vjovanov vjovanov 68 May 12 20:07 build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+
+exec
+/usr/bin/bash -lc 'rg -n "maven-settings-builder|org.apache.maven:maven-settings-builder|source-code-url|test-code-url" metadata build/discovered-artifact-metadata | head -80' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json:2:  "coordinates" : "org.apache.maven:maven-settings-builder:3.0"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/io.getquill/quill-engine_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+metadata/io.getquill/quill-engine_3/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-sources.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:7:    "test-code-url" : "https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test/java/org/apache/pulsar/client/api",
+metadata/io.getquill/quill-engine_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian-swt/tree/release/$version$/durian-swt.os/src/test/java/com/diffplug/common/swt/os",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-sources.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:7:    "test-code-url" : "N/A",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/io.getquill/quill-util_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-sources.jar",
+metadata/io.getquill/quill-util_3/index.json:7:    "test-code-url" : "N/A",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/com.diffplug.durian/durian-collect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-collect/$version$/durian-collect-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-collect/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian/tree/ed0c024120f2feec0cc2ffcfa3e17f13544d2cfe/collect/tests/tests",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:8:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:23:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/org.yaml/snakeyaml/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:21:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:32:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/com.diffplug.durian/durian-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/$version$/durian-core-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-core/index.json:7:    "test-code-url" : "https://github.com/diffplug/durian/tree/ed0c024120/core/tests/tests",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/org.log4s/log4s_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/log4s/log4s_3/$version$/log4s_3-$version$-sources.jar",
+metadata/org.log4s/log4s_3/index.json:7:    "test-code-url" : "https://github.com/Log4s/log4s/tree/v$version$/core/shared/src/test",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/net/javacrumbs/json-unit/json-unit-core/$version$/json-unit-core-$version$-sources.jar",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:7:    "test-code-url" : "https://github.com/lukas-krecan/JsonUnit/tree/json-unit-parent-$version$/json-unit-core/src/test",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/com.github.ghostdogpr/caliban_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ghostdogpr/caliban_3/$version$/caliban_3-$version$-sources.jar",
+metadata/com.github.ghostdogpr/caliban_3/index.json:7:    "test-code-url" : "https://github.com/ghostdogpr/caliban/tree/v$version$/core/src/test",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+
+web search: 
+web search: org.apache.maven maven-settings-builder 3.0 Maven Central sources tests
+web search: 
+web search: https://maven.apache.org/components/ref/3.0/maven-settings-builder/apidocs/overview-tree.html
+codex
+The local file is just the coordinate stub. I found the Maven 3.0 API docs and the Maven source repository pattern; next I’m checking Central directly for source/test artifacts before choosing GitHub URLs for anything Central does not publish.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven</artifactId>
+    <version>3.0</version>
+  </parent>
+
+  <artifactId>maven-settings-builder</artifactId>
+
+  <name>Maven Settings Builder</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interpolation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.plexus</groupId>
+      <artifactId>plexus-sec-dispatcher</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/maven-settings-builder/3.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/maven-settings-builder/3.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-settings-builder-3.0-javadoc.jar" title="maven-settings-builder-3.0-javadoc.jar">maven-settings-builder-3.0-javadoc.jar</a>            2010-10-04 11:48    167102      
+<a href="maven-settings-builder-3.0-javadoc.jar.asc" title="maven-settings-builder-3.0-javadoc.jar.asc">maven-settings-builder-3.0-javadoc.jar.asc</a>        2010-10-04 11:48       202      
+<a href="maven-settings-builder-3.0-javadoc.jar.asc.md5" title="maven-settings-builder-3.0-javadoc.jar.asc.md5">maven-settings-builder-3.0-javadoc.jar.asc.md...</a>  2010-10-04 11:48        32      
+<a href="maven-settings-builder-3.0-javadoc.jar.asc.sha1" title="maven-settings-builder-3.0-javadoc.jar.asc.sha1">maven-settings-builder-3.0-javadoc.jar.asc.sh...</a>  2010-10-04 11:48        40      
+<a href="maven-settings-builder-3.0-javadoc.jar.md5" title="maven-settings-builder-3.0-javadoc.jar.md5">maven-settings-builder-3.0-javadoc.jar.md5</a>        2010-10-04 11:48        32      
+<a href="maven-settings-builder-3.0-javadoc.jar.sha1" title="maven-settings-builder-3.0-javadoc.jar.sha1">maven-settings-builder-3.0-javadoc.jar.sha1</a>       2010-10-04 11:48        40      
+<a href="maven-settings-builder-3.0-sources.jar" title="maven-settings-builder-3.0-sources.jar">maven-settings-builder-3.0-sources.jar</a>            2010-10-04 11:48     39187      
+<a href="maven-settings-builder-3.0-sources.jar.asc" title="maven-settings-builder-3.0-sources.jar.asc">maven-settings-builder-3.0-sources.jar.asc</a>        2010-10-04 11:48       202      
+<a href="maven-settings-builder-3.0-sources.jar.asc.md5" title="maven-settings-builder-3.0-sources.jar.asc.md5">maven-settings-builder-3.0-sources.jar.asc.md...</a>  2010-10-04 11:48        32      
+<a href="maven-settings-builder-3.0-sources.jar.asc.sha1" title="maven-settings-builder-3.0-sources.jar.asc.sha1">maven-settings-builder-3.0-sources.jar.asc.sh...</a>  2010-10-04 11:48        40      
+<a href="maven-settings-builder-3.0-sources.jar.md5" title="maven-settings-builder-3.0-sources.jar.md5">maven-settings-builder-3.0-sources.jar.md5</a>        2010-10-04 11:48        32      
+<a href="maven-settings-builder-3.0-sources.jar.sha1" title="maven-settings-builder-3.0-sources.jar.sha1">maven-settings-builder-3.0-sources.jar.sha1</a>       2010-10-04 11:48        40      
+<a href="maven-settings-builder-3.0.jar" title="maven-settings-builder-3.0.jar">maven-settings-builder-3.0.jar</a>                    2010-10-04 11:48     37780      
+<a href="maven-settings-builder-3.0.jar.asc" title="maven-settings-builder-3.0.jar.asc">maven-settings-builder-3.0.jar.asc</a>                2010-10-04 11:48       202      
+<a href="maven-settings-builder-3.0.jar.asc.md5" title="maven-settings-builder-3.0.jar.asc.md5">maven-settings-builder-3.0.jar.asc.md5</a>            2010-10-04 11:48        32      
+<a href="maven-settings-builder-3.0.jar.asc.sha1" title="maven-settings-builder-3.0.jar.asc.sha1">maven-settings-builder-3.0.jar.asc.sha1</a>           2010-10-04 11:48        40      
+<a href="maven-settings-builder-3.0.jar.md5" title="maven-settings-builder-3.0.jar.md5">maven-settings-builder-3.0.jar.md5</a>                2010-10-04 11:48        32      
+<a href="maven-settings-builder-3.0.jar.sha1" title="maven-settings-builder-3.0.jar.sha1">maven-settings-builder-3.0.jar.sha1</a>               2010-10-04 11:48        40      
+<a href="maven-settings-builder-3.0.pom" title="maven-settings-builder-3.0.pom">maven-settings-builder-3.0.pom</a>                    2010-10-04 11:48      2220      
+<a href="maven-settings-builder-3.0.pom.asc" title="maven-settings-builder-3.0.pom.asc">maven-settings-builder-3.0.pom.asc</a>                2010-10-04 11:48       202      
+<a href="maven-settings-builder-3.0.pom.asc.md5" title="maven-settings-builder-3.0.pom.asc.md5">maven-settings-builder-3.0.pom.asc.md5</a>            2010-10-04 11:48        32      
+<a href="maven-settings-builder-3.0.pom.asc.sha1" title="maven-settings-builder-3.0.pom.asc.sha1">maven-settings-builder-3.0.pom.asc.sha1</a>           2010-10-04 11:48        40      
+<a href="maven-settings-builder-3.0.pom.md5" title="maven-settings-builder-3.0.pom.md5">maven-settings-builder-3.0.pom.md5</a>                2010-10-04 11:48        32      
+<a href="maven-settings-builder-3.0.pom.sha1" title="maven-settings-builder-3.0.pom.sha1">maven-settings-builder-3.0.pom.sha1</a>               2010-10-04 11:48        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -L https://github.com/apache/maven/tree/maven-3.0/maven-settings-builder' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+exec
+/usr/bin/bash -lc 'curl -I -L https://maven.apache.org/ref/3.0/maven-settings-builder/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  7756    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+server: Apache
+last-modified: Wed, 09 Mar 2022 07:20:12 GMT
+etag: "1e4c-5d9c3eda8151e"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Tue, 12 May 2026 18:07:59 GMT
+x-served-by: cache-hel1410021-HEL, cache-fra-eddf8230162-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1778609280.688430,VS0,VE46
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 7756
+
+
+ succeeded in 682ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 18:08:00 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c630941eb59c8aff1693aeefcf786dfb"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Hen9Mr7VyLUFu%2F%2FIeNsW8qqPdyoZb8h0fxCdUawoZy56an0XM2dyCUePNQFGW5AD6oJU%2Btt26CaTvbB05ZBoqMI7L92u5IZwXPuIXzbduhV1JHLiL4%2BkrgWtyX8c5oRWkGB7BvGRCIF4pKVh5RwreeDbQbjLebQsti0dp6%2FVi0S%2B%2F%2Bx4fbwlDxZjQbh6NV2KwtIpqjRbcc9UW78JPidUQtMxG0trKhBRlGux%2FDRYGjAWiWynyiwBJ%2BwX41lMXNOhV6OemN4k8XNQea06hzVWWA%3D%3D--e816kRnAVuHHSt%2Ba--Bu06SvEAGU2JEgt621D6KA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1262662217.1778609279; expires=Wed, 12 May 2027 18:07:59 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 12 May 2027 18:07:59 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5119:299D84:263CDB6:1C5A900:6A036C7F
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://maven.apache.org/ref/3.0/maven-settings-builder/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- Generated by Apache Maven Doxia at Oct 8, 2010 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Maven Settings Builder - About</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta name="Date-Revision-yyyymmdd" content="20101008" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+                                                    
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  /* We explicitly disable cookie tracking to avoid privacy issues */
+  _paq.push(['disableCookies']);  
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//matomo.privacy.apache.org/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '3']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
+                    </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="" id="bannerLeft">
+                                                <img src="../images/apache-maven-project-2.png" alt="" />
+                </a>
+                        <span id="bannerRight">
+                                                <img src="../images/maven-logo-2.gif" alt="" />
+                </span>
+            <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+            
+                                <div class="xleft">
+                          <a href="http://www.apache.org/" class="externalLink">Apache</a>
+                &gt;
+                      <a href="../">Apache Maven 3.x</a>
+                &gt;
+                      <a href="http://maven.apache.org/maven-settings-builder" class="externalLink">Maven Settings Builder</a>
+                  </div>
+            <div class="xright">        
+                                 Last Published: 2010-10-08
+              &nbsp;| Version: 3.0
+            </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+             
+                                                <h5>Project Documentation</h5>
+                  <ul>
+                                                                                                                                                                                                                                                                                                      <li class="expanded">
+                  <a href="project-info.html">Project Information</a>
+                    <ul>
+                      <li class="none">
+            <strong>About</strong>
+          </li>
+                      <li class="none">
+                  <a href="integration.html">Continuous Integration</a>
+            </li>
+                      <li class="none">
+                  <a href="dependencies.html">Dependencies</a>
+            </li>
+                      <li class="none">
+                  <a href="dependency-convergence.html">Dependency Convergence</a>
+            </li>
+                      <li class="none">
+                  <a href="dependency-management.html">Dependency Management</a>
+            </li>
+                      <li class="none">
+                  <a href="issue-tracking.html">Issue Tracking</a>
+            </li>
+                      <li class="none">
+                  <a href="mail-lists.html">Mailing Lists</a>
+            </li>
+                      <li class="none">
+                  <a href="plugin-management.html">Plugin Management</a>
+            </li>
+                      <li class="none">
+                  <a href="license.html">Project License</a>
+            </li>
+                      <li class="none">
+                  <a href="plugins.html">Project Plugins</a>
+            </li>
+                      <li class="none">
+                  <a href="project-summary.html">Project Summary</a>
+            </li>
+                      <li class="none">
+                  <a href="team-list.html">Project Team</a>
+            </li>
+                      <li class="none">
+                  <a href="source-repository.html">Source Repository</a>
+            </li>
+              </ul>
+        </li>
+                                                                                                                                                                                                                    <li class="collapsed">
+                  <a href="project-reports.html">Project Reports</a>
+                  </li>
+          </ul>
+                       <h5>Maven Projects</h5>
+                  <ul>
+                  <li class="none">
+                  <a href="../ant-tasks/index.html">Ant Tasks</a>
+            </li>
+                  <li class="none">
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/maven.git 'refs/tags/maven-3.0' 'refs/tags/maven-3.0"'^{}'"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven/contents/maven-settings-builder?ref=maven-3.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven/contents/maven-settings-builder/src/test?ref=maven-3.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 220ms:
+[
+  {
+    "name": "java",
+    "path": "maven-settings-builder/src/test/java",
+    "sha": "1628718158cf763131f20e3a515e9e0e8c6a4cf9",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/maven-settings-builder/src/test/java?ref=maven-3.0",
+    "html_url": "https://github.com/apache/maven/tree/maven-3.0/maven-settings-builder/src/test/java",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/1628718158cf763131f20e3a515e9e0e8c6a4cf9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/maven-settings-builder/src/test/java?ref=maven-3.0",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/1628718158cf763131f20e3a515e9e0e8c6a4cf9",
+      "html": "https://github.com/apache/maven/tree/maven-3.0/maven-settings-builder/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "maven-settings-builder/src/test/resources",
+    "sha": "6c3865214a229300429442d456b22b1f3ef6adbf",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/maven-settings-builder/src/test/resources?ref=maven-3.0",
+    "html_url": "https://github.com/apache/maven/tree/maven-3.0/maven-settings-builder/src/test/resources",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/6c3865214a229300429442d456b22b1f3ef6adbf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/maven-settings-builder/src/test/resources?ref=maven-3.0",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/6c3865214a229300429442d456b22b1f3ef6adbf",
+      "html": "https://github.com/apache/maven/tree/maven-3.0/maven-settings-builder/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 223ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "maven-settings-builder/pom.xml",
+    "sha": "5eb85a148994d3574d2d17d5b6f722ac222f0a3f",
+    "size": 2153,
+    "url": "https://api.github.com/repos/apache/maven/contents/maven-settings-builder/pom.xml?ref=maven-3.0",
+    "html_url": "https://github.com/apache/maven/blob/maven-3.0/maven-settings-builder/pom.xml",
+    "git_url": "https://api.github.com/repos/apache/maven/git/blobs/5eb85a148994d3574d2d17d5b6f722ac222f0a3f",
+    "download_url": "https://raw.githubusercontent.com/apache/maven/maven-3.0/maven-settings-builder/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/maven-settings-builder/pom.xml?ref=maven-3.0",
+      "git": "https://api.github.com/repos/apache/maven/git/blobs/5eb85a148994d3574d2d17d5b6f722ac222f0a3f",
+      "html": "https://github.com/apache/maven/blob/maven-3.0/maven-settings-builder/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "maven-settings-builder/src",
+    "sha": "9f7a098aa13de3f54ba4d3b8d43698ceb481662b",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/maven-settings-builder/src?ref=maven-3.0",
+    "html_url": "https://github.com/apache/maven/tree/maven-3.0/maven-settings-builder/src",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/9f7a098aa13de3f54ba4d3b8d43698ceb481662b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/maven-settings-builder/src?ref=maven-3.0",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/9f7a098aa13de3f54ba4d3b8d43698ceb481662b",
+      "html": "https://github.com/apache/maven/tree/maven-3.0/maven-settings-builder/src"
+    }
+  }
+]
+
+ succeeded in 339ms:
+1970bee9fefc870438c04a38dbefa94c5dfd5ea4	refs/tags/maven-3.0
+629fd749e59a679809c86eb26d554520e4de3a78	refs/tags/maven-3.0^{}
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"\\s*:\\s*\"https://repo.maven.apache.org/maven2/.+javadoc.jar' metadata | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"\\s*:\\s*\"https://maven.apache.org/ref/\\"'$version'"\\"'$'"' metadata build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'maven-settings-builder' metadata build/discovered-artifact-metadata" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json:2:  "coordinates" : "org.apache.maven:maven-settings-builder:3.0"
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"\\s*:\\s*\"https://github.com/apache/maven\"' metadata build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+metadata/org.apache.maven/maven-api-di/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-builder-support/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-api-meta/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-support/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.maven/maven-support/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.maven/maven-api-di/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.0-rc-5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/maven",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-javadoc.jar",
+    "description" : "maven-api-di provides Maven 4's public dependency injection annotations and related API types for declaring injectable components, scopes, qualifiers, and providers. It also includes the annotation processor that indexes Maven DI metadata at compile time for Maven's runtime container.",
+    "tested-versions" : [
+      "4.0.0-rc-5"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.api.di",
+      "org.apache.maven.di.tool"
+    ]
+  }
+]
+
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.0-rc-5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-support/$version$/maven-support-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/maven",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-support/$version$/maven-support-$version$-javadoc.jar",
+    "description" : "Maven Support provides the generated support layer for Maven 4 model-related data, including readers, writers, mergers, transformers, and model-version helpers. It handles XML serialization support for Maven project models, settings, toolchains, repository metadata, plugin descriptors, and plugin lifecycle descriptors used by Maven's implementation.",
+    "tested-versions" : [
+      "4.0.0-rc-5"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.metadata.v4",
+      "org.apache.maven.model.v4",
+      "org.apache.maven.plugin.descriptor.io",
+      "org.apache.maven.plugin.lifecycle.io",
+      "org.apache.maven.settings.v4",
+      "org.apache.maven.toolchain.v4"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.maven/maven-builder-support/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.3.9",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/maven",
+    "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/maven-builder-support/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-javadoc.jar",
+    "description" : "Apache Maven Builder Support provides shared building-block classes for Maven descriptor builders, including model, settings, and toolchains builders. It supplies common problem reporting and source abstractions used while reading, validating, and constructing Maven descriptor data.",
+    "tested-versions" : [
+      "3.3.9"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.building"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0.jar -o /tmp/maven-settings-builder-3.0.jar && jar tf /tmp/maven-settings-builder-3.0.jar | rg '\\.class"'$|META-INF/MANIFEST.MF'"' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ exited 23 in 0ms:
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0-sources.jar -o /tmp/maven-settings-builder-3.0-sources.jar && jar tf /tmp/maven-settings-builder-3.0-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ exited 23 in 0ms:
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0-test.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 275ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0   HTTP/2 404 
+date: Tue, 12 May 2026 18:08:34 GMT
+content-type: text/html
+cf-ray: 9fab5e9308544beb-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0-test.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+  0      0      0 --:--:-- --:--:-- --:--:--     0
+
+ succeeded in 280ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 404 
+date: Tue, 12 May 2026 18:08:34 GMT
+content-type: text/html
+cf-ray: 9fab5e930d804c5c-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'ls -ld /tmp && df -h /tmp' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+drwxrwxrwt 7076 root root 659456 May 12 20:08 /tmp
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p5  179G  170G     0 100% /
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0.jar | jar tf /dev/stdin | rg '\\.class"'$|META-INF/MANIFEST.MF'"' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1310045
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0-sources.jar | jar tf /dev/stdin | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   1310044
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+curl: (23) Failure writing output to destination
+
+codex
+Central confirms a `sources.jar` and `javadoc.jar`, and no `test.jar`/`tests.jar` is published for this version. The root filesystem is full, so I’m avoiding downloads and using streaming/HTTP checks where possible.
+exec
+/usr/bin/bash -lc 'command -v bsdtar || command -v unzip || command -v zipinfo' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+/usr/bin/bsdtar
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0.jar | bsdtar -tf - | rg '\\.class"'$|META-INF/MANIFEST.MF'"' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+org/apache/maven/settings/building/DefaultSettingsBuilder$1.class
+org/apache/maven/settings/building/DefaultSettingsBuilder.class
+org/apache/maven/settings/building/DefaultSettingsBuilderFactory.class
+org/apache/maven/settings/building/DefaultSettingsBuildingRequest.class
+org/apache/maven/settings/building/DefaultSettingsBuildingResult.class
+org/apache/maven/settings/building/DefaultSettingsProblem.class
+org/apache/maven/settings/building/DefaultSettingsProblemCollector.class
+org/apache/maven/settings/building/SettingsBuilder.class
+org/apache/maven/settings/building/SettingsBuildingException.class
+org/apache/maven/settings/building/SettingsBuildingRequest.class
+org/apache/maven/settings/building/SettingsBuildingResult.class
+org/apache/maven/settings/building/SettingsProblem$Severity.class
+org/apache/maven/settings/building/SettingsProblem.class
+org/apache/maven/settings/building/SettingsProblemCollector.class
+org/apache/maven/settings/crypto/DefaultSettingsDecrypter.class
+org/apache/maven/settings/crypto/DefaultSettingsDecryptionRequest.class
+org/apache/maven/settings/crypto/DefaultSettingsDecryptionResult.class
+org/apache/maven/settings/crypto/SettingsDecrypter.class
+org/apache/maven/settings/crypto/SettingsDecryptionRequest.class
+org/apache/maven/settings/crypto/SettingsDecryptionResult.class
+org/apache/maven/settings/io/DefaultSettingsReader.class
+org/apache/maven/settings/io/DefaultSettingsWriter.class
+org/apache/maven/settings/io/SettingsParseException.class
+org/apache/maven/settings/io/SettingsReader.class
+org/apache/maven/settings/io/SettingsWriter.class
+org/apache/maven/settings/merge/MavenSettingsMerger.class
+org/apache/maven/settings/validation/DefaultSettingsValidator.class
+org/apache/maven/settings/validation/SettingsValidator.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0-sources.jar | bsdtar -tf - | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/settings/
+org/apache/maven/settings/building/
+org/apache/maven/settings/crypto/
+org/apache/maven/settings/io/
+org/apache/maven/settings/merge/
+org/apache/maven/settings/validation/
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+org/apache/maven/settings/building/DefaultSettingsBuilder.java
+org/apache/maven/settings/building/DefaultSettingsBuilderFactory.java
+org/apache/maven/settings/building/DefaultSettingsBuildingRequest.java
+org/apache/maven/settings/building/DefaultSettingsBuildingResult.java
+org/apache/maven/settings/building/DefaultSettingsProblem.java
+org/apache/maven/settings/building/DefaultSettingsProblemCollector.java
+org/apache/maven/settings/building/SettingsBuilder.java
+org/apache/maven/settings/building/SettingsBuildingException.java
+org/apache/maven/settings/building/SettingsBuildingRequest.java
+org/apache/maven/settings/building/SettingsBuildingResult.java
+org/apache/maven/settings/building/SettingsProblem.java
+org/apache/maven/settings/building/SettingsProblemCollector.java
+org/apache/maven/settings/crypto/DefaultSettingsDecrypter.java
+org/apache/maven/settings/crypto/DefaultSettingsDecryptionRequest.java
+org/apache/maven/settings/crypto/DefaultSettingsDecryptionResult.java
+org/apache/maven/settings/crypto/SettingsDecrypter.java
+org/apache/maven/settings/crypto/SettingsDecryptionRequest.java
+org/apache/maven/settings/crypto/SettingsDecryptionResult.java
+org/apache/maven/settings/io/DefaultSettingsReader.java
+org/apache/maven/settings/io/DefaultSettingsWriter.java
+org/apache/maven/settings/io/SettingsParseException.java
+org/apache/maven/settings/io/SettingsReader.java
+org/apache/maven/settings/io/SettingsWriter.java
+org/apache/maven/settings/merge/MavenSettingsMerger.java
+org/apache/maven/settings/validation/DefaultSettingsValidator.java
+org/apache/maven/settings/validation/SettingsValidator.java
+
+web search: 
+web search: https://maven.apache.org/ref/3.0/maven-settings-builder/
+web search: 
+web search: repo.maven.apache.org org apache maven maven-settings-builder 3.0 maven-settings-builder-3.0-sources.jar javadoc.jar
+web search: 
+web search: https://maven.apache.org/ref/3.0/maven-settings-builder/source-repository.html
+exec
+/usr/bin/bash -lc "rg -n 'maven-\\"'$version'"\\"'$|maven/maven-3/tags'"' metadata/org.apache.maven metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+metadata/org.apache.maven/maven-builder-support/index.json:7:    "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/maven-builder-support/src/test",
+metadata/org.apache.maven/maven-support/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-plugin-parameter-documenter/src/test",
+metadata/org.apache.maven/maven-model/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-model/src/test",
+metadata/org.apache.maven/maven-artifact/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-artifact/src/test",
+metadata/org.apache.maven/maven-builder-support/index.json:7:    "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/maven-builder-support/src/test",
+metadata/org.apache.maven/maven-support/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-plugin-parameter-documenter/src/test",
+metadata/org.apache.maven/maven-model/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-model/src/test",
+metadata/org.apache.maven/maven-artifact/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-artifact/src/test",
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"\\s*:\\s*\"https?://svn.apache.org|\"source-code-url\"\\s*:\\s*\"https?://svn.apache.org|\"test-code-url\"\\s*:\\s*\"https?://svn.apache.org' metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+metadata/org.apache.directory.api/api-asn1-ber/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/oro/oro/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/jakarta/oro/",
+metadata/org.apache.xbean/xbean-reflect/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/javax.portlet/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+metadata/org.apache.httpcomponents/httpmime/index.json:19:    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/apacheds",
+metadata/org.apache.directory.server/apacheds-kerberos-codec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/apacheds",
+metadata/org.apache.directory.server/apacheds-kerberos-codec/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/apacheds/tags/$version$/kerberos-codec/src/test/java/",
+metadata/portlet-api/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+metadata/tomcat/jasper-compiler/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+metadata/tomcat/jasper-runtime/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+metadata/xml-apis/xml-apis/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/",
+metadata/org.apache.pdfbox/fontbox/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/org.apache.pdfbox/fontbox/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/pdfbox/tags/$version$/fontbox/src/test/",
+metadata/org.apache.pdfbox/pdfbox-io/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/org.apache.pdfbox/pdfbox-io/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/pdfbox/tags/$version$/io/src/test/",
+metadata/org.apache.pdfbox/pdfbox/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/org.apache.pdfbox/pdfbox/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/pdfbox/tags/$version$/pdfbox/src/test/",
+metadata/avalon-framework/avalon-framework/index.json:5:    "source-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/framework/src/",
+metadata/avalon-framework/avalon-framework/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/avalon",
+metadata/avalon-framework/avalon-framework/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/framework/src/test/",
+metadata/org.apache.maven.doxia/doxia-module-apt/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia/",
+metadata/org.apache.maven.doxia/doxia-module-apt/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia/tags/doxia-$version$/doxia-modules/doxia-module-apt/src/test/",
+metadata/org.apache.maven.doxia/doxia-core/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia",
+metadata/org.apache.maven.doxia/doxia-core/index.json:30:    "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia",
+metadata/org.apache.maven.doxia/doxia-sink-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia",
+metadata/org.apache.tomcat/annotations-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+metadata/org.apache.maven.doxia/doxia-module-xhtml/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia",
+metadata/org.apache.maven.doxia/doxia-module-xhtml/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia/tags/doxia-$version$/doxia-modules/doxia-module-xhtml/src/test/",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/logkit/logkit/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/avalon",
+metadata/logkit/logkit/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LogKit_1_0_1/avalon-logkit/src/test/",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.maven/maven-plugin-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.maven/maven-monitor/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-plugin-parameter-documenter/src/test",
+metadata/org.apache.maven/maven-error-diagnostics/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-model/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-model/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-model/src/test",
+metadata/org.apache.maven/maven-model/index.json:21:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-artifact/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-artifact/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-artifact/src/test",
+
+exec
+/usr/bin/bash -lc "sed -n '1,90p' metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-parameter-documenter/$version$/maven-plugin-parameter-documenter-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-plugin-parameter-documenter/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-parameter-documenter/$version$/maven-plugin-parameter-documenter-$version$-javadoc.jar",
+    "description" : "Maven Plugin Parameter Documenter API stores and reads documentation for Maven plugin parameter expressions used by Maven 2 usability and help components. It provides model classes for expression documentation plus XPP3 reader and writer classes for serializing and parsing the parameter-documentation XML format.",
+    "tested-versions" : [
+      "2.0.6",
+      "2.0.7",
+      "2.0.8",
+      "2.0.9",
+      "2.0.10",
+      "2.0.11"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.usability.plugin"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,90p' metadata/org.apache.maven/maven-artifact/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-artifact/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-javadoc.jar",
+    "description" : "Maven Artifact is the Maven 2 library that represents project artifacts, coordinates, scopes, handlers, repositories, and artifact metadata used during dependency resolution. It also provides version and version-range parsing and comparison utilities used by Maven components to select, install, deploy, and resolve artifacts.",
+    "tested-versions" : [
+      "2.0.6",
+      "2.0.7",
+      "2.0.8",
+      "2.0.9",
+      "2.0.10",
+      "2.0.11",
+      "2.1.0",
+      "2.2.0",
+      "2.2.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.artifact"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,90p' metadata/org.apache.maven/maven-model/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.10",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-model/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+    "description" : "Maven Model provides the Java object model for Maven project metadata, including POM concepts such as dependencies, repositories, plugins, profiles, and build configuration. It also includes XPP3 reader and writer support so tools can parse and serialize Maven model XML.",
+    "tested-versions" : [
+      "2.0.10",
+      "2.0.11"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.model"
+    ]
+  },
+  {
+    "metadata-version" : "2.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+    "description" : "Maven Model provides the Java object model for Maven project metadata, including POM concepts such as dependencies, repositories, plugins, profiles, and build configuration. It also includes XPP3 reader and writer support so tools can parse and serialize Maven model XML.",
+    "tested-versions" : [
+      "2.0.6",
+      "2.0.7",
+      "2.0.8",
+      "2.0.9"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.model"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://maven.apache.org/ref/3.0/maven-settings-builder/source-repository.html | rg -n 'svn|github|Source|Repository|maven-3' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+3-<html xmlns="http://www.w3.org/1999/xhtml">
+4-  <head>
+5:    <title>Maven Settings Builder - Source Repository</title>
+6-    <style type="text/css" media="all">
+7-      @import url("./css/maven-base.css");
+--
+105-            </li>
+106-                      <li class="none">
+107:            <strong>Source Repository</strong>
+108-          </li>
+109-              </ul>
+--
+157-    <div id="bodyColumn">
+158-      <div id="contentBox">
+159:        <a name="Overview"></a><div class="section"><h2>Overview<a name="Overview"></a></h2>This project uses <a class="externalLink" href="http://subversion.tigris.org/">Subversion</a> to manage its source code. Instructions on Subversion use can be found at <a class="externalLink" href="http://svnbook.red-bean.com/">http://svnbook.red-bean.com/</a>.</div><a name="Web_Access"></a><div class="section"><h2>Web Access<a name="Web_Access"></a></h2><p>The following is a link to the online source repository.</p><div class="source"><pre><a class="externalLink" href="http://svn.apache.org/viewvc/maven/maven-3/tags/maven-3.0/maven-settings-builder">http://svn.apache.org/viewvc/maven/maven-3/tags/maven-3.0/maven-settings-builder</a></pre></div></div><a name="Anonymous_access"></a><div class="section"><h2>Anonymous access<a name="Anonymous_access"></a></h2><p>The source can be checked out anonymously from SVN with this command:</p><div class="source"><pre>$ svn checkout http://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-settings-builder maven-settings-builder</pre></div></div><a name="Developer_access"></a><div class="section"><h2>Developer access<a name="Developer_access"></a></h2><p>Everyone can access the Subversion repository via HTTP, but Committers must checkout the Subversion repository via HTTPS.</p><div class="source"><pre>$ svn checkout https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-settings-builder maven-settings-builder</pre></div><p>To commit changes to the repository, execute the following command to commit your changes (svn will prompt you for your password)</p><div class="source"><pre>$ svn commit --username your-username -m &quot;A message&quot;</pre></div></div><a name="Access_from_behind_a_firewall"></a><div class="section"><h2>Access from behind a firewall<a name="Access_from_behind_a_firewall"></a></h2><p>For those users who are stuck behind a corporate firewall which is blocking HTTP access to the Subversion repository, you can try to access it via the developer connection:</p><div class="source"><pre>$ svn checkout https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-settings-builder maven-settings-builder</pre></div></div><a name="Access_through_a_proxy"></a><div class="section"><h2>Access through a proxy<a name="Access_through_a_proxy"></a></h2><p>The Subversion client can go through a proxy, if you configure it to do so. First, edit your &quot;servers&quot; configuration file to indicate which proxy to use. The file's location depends on your operating system. On Linux or Unix it is located in the directory &quot;~/.subversion&quot;. On Windows it is in &quot;%APPDATA%\Subversion&quot;. (Try &quot;echo %APPDATA%&quot;, note this is a hidden directory.)</p><p>There are comments in the file explaining what to do. If you don't have that file, get the latest Subversion client and run any command; this will cause the configuration directory and template files to be created.</p><p>Example: Edit the 'servers' file and add something like:</p><div class="source"><pre>[global]
+160-http-proxy-host = your.proxy.name
+161-http-proxy-port = 3128
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-settings-builder/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+exec
+/usr/bin/bash -lc 'curl -I -L https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-settings-builder/src/test/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+exec
+/usr/bin/bash -lc 'curl -I -L https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-settings-builder/src/main/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 122ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 200 OK
+Date: Tue, 12 May 2026 18:09:21 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Sat, 07 Aug 2010 10:29:09 GMT
+ETag: W/"983198//maven/maven-3/tags/maven-3.0/maven-settings-builder/src/main"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+ succeeded in 124ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 200 OK
+Date: Tue, 12 May 2026 18:09:21 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Sun, 18 Jul 2010 14:23:06 GMT
+ETag: W/"965233//maven/maven-3/tags/maven-3.0/maven-settings-builder/src/test"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+ succeeded in 173ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 301 Moved Permanently
+Date: Tue, 12 May 2026 18:09:21 GMT
+Server: Apache
+Location: https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-settings-builder/src/test/
+Content-Type: text/html; charset=iso-8859-1
+
+HTTP/1.1 200 OK
+Date: Tue, 12 May 2026 18:09:21 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Sun, 18 Jul 2010 14:23:06 GMT
+ETag: W/"965233//maven/maven-3/tags/maven-3.0/maven-settings-builder/src/test"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://svn.apache.org/repos/asf/maven/maven-3/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+exec
+/usr/bin/bash -lc 'curl -I -L https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-settings-builder/src/test/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 114ms:
+
+  0     0    0     0    0     0  HTTP/1.1 200 OK
+Date: Tue, 12 May 2026 18:09:28 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Mon, 26 Nov 2012 05:07:28 GMT
+ETag: W/"1413481//maven/maven-3"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+    0      0 --:--:-- --:--:-- --:--:--     0
+
+ succeeded in 115ms:
+
+  0     0    0     0    0     0      HTTP/1.1 200 OK
+Date: Tue, 12 May 2026 18:09:28 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Sun, 18 Jul 2010 14:23:06 GMT
+ETag: W/"965233//maven/maven-3/tags/maven-3.0/maven-settings-builder/src/test"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+0      0 --:--:-- --:--:-- --:--:--     0
+
+codex
+I’ve got enough to make the metadata update: Central has sources and javadocs, the published 3.0 site points to the Apache SVN tag, and the artifact JAR contains JVM class files, so it remains a Native Image metadata target.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+index 6405ff6d011dff51122a464f3245f54230e57416..41b726cfde8592cae74c485a5faa795a4ed8325d
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-settings-builder:3.0"
++  "coordinates" : "org.apache.maven:maven-settings-builder:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-settings-builder/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-javadoc.jar",
++  "description" : "Maven Settings Builder reads, validates, decrypts, and assembles Maven settings data into effective settings for Maven execution. It provides APIs for parsing settings.xml files, merging settings sources, validating configuration, and reporting settings-building problems used by Maven core."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+index 6405ff6d011dff51122a464f3245f54230e57416..41b726cfde8592cae74c485a5faa795a4ed8325d
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-settings-builder:3.0"
++  "coordinates" : "org.apache.maven:maven-settings-builder:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-settings-builder/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-javadoc.jar",
++  "description" : "Maven Settings Builder reads, validates, decrypts, and assembles Maven settings data into effective settings for Maven execution. It provides APIs for parsing settings.xml files, merging settings sources, validating configuration, and reporting settings-building problems used by Maven core."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven:maven-settings-builder:3.0",
+  "repository-url": "https://svn.apache.org/repos/asf/maven/maven-3",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-sources.jar",
+  "test-code-url": "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-settings-builder/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-javadoc.jar",
+  "description": "Maven Settings Builder reads, validates, decrypts, and assembles Maven settings data into effective settings for Maven execution. It provides APIs for parsing settings.xml files, merging settings sources, validating configuration, and reporting settings-building problems used by Maven core."
+}
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.maven:maven-settings-builder:3.0",
+  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-sources.jar",
+  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-settings-builder/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-javadoc.jar",
+  "description" : "Maven Settings Builder reads, validates, decrypts, and assembles Maven settings data into effective settings for Maven execution. It provides APIs for parsing settings.xml files, merging settings sources, validating configuration, and reporting settings-building problems used by Maven core."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0-sources.jar \\
+  https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-settings-builder/src/test \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0-javadoc.jar \\
+  https://svn.apache.org/repos/asf/maven/maven-3; do \\
+  code="'$(curl -s -o /dev/null -w '"'%{http_code}' -L \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+index 6405ff6d011dff51122a464f3245f54230e57416..41b726cfde8592cae74c485a5faa795a4ed8325d
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-settings-builder:3.0"
++  "coordinates" : "org.apache.maven:maven-settings-builder:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-settings-builder/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-javadoc.jar",
++  "description" : "Maven Settings Builder reads, validates, decrypts, and assembles Maven settings data into effective settings for Maven execution. It provides APIs for parsing settings.xml files, merging settings sources, validating configuration, and reporting settings-building problems used by Maven core."
+ }
+
+ succeeded in 776ms:
+200 https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-settings-builder/src/test
+200 https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/maven-settings-builder-3.0-javadoc.jar
+200 https://svn.apache.org/repos/asf/maven/maven-3
+
+web search: 
+web search: Maven Settings Builder 3.0 source repository svn maven-3 tags maven-settings-builder
+web search: 
+web search: https://maven.apache.org/ref/3.0/maven-settings-builder/
+web search: 
+web search: https://maven.apache.org/ref/3.0/maven-settings-builder/source-repository.html
+web search: 
+web search: maven-settings-builder-3.0-sources.jar repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/3.0/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/
+web search: 
+web search: 
+codex
+Updated [org.apache.maven-maven-settings-builder-3.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json:1).
+
+I set Maven Central source/javadoc URLs, the Apache SVN repository root and 3.0 test tag URL, and a two-sentence description. I omitted `language` and `not-for-native-image` because this is a normal JVM Java artifact with class files. Verified JSON with `jq`, and all substituted `3.0` URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+index 6405ff6d011dff51122a464f3245f54230e57416..41b726cfde8592cae74c485a5faa795a4ed8325d
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-settings-builder:3.0"
++  "coordinates" : "org.apache.maven:maven-settings-builder:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-settings-builder/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings-builder/$version$/maven-settings-builder-$version$-javadoc.jar",
++  "description" : "Maven Settings Builder reads, validates, decrypts, and assembles Maven settings data into effective settings for Maven execution. It provides APIs for parsing settings.xml files, merging settings sources, validating configuration, and reporting settings-building problems used by Maven core."
+ }
+
+tokens used
+87,323
+Updated [org.apache.maven-maven-settings-builder-3.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797/build/discovered-artifact-metadata/org.apache.maven-maven-settings-builder-3.0.json:1).
+
+I set Maven Central source/javadoc URLs, the Apache SVN repository root and 3.0 test tag URL, and a two-sentence description. I omitted `language` and `not-for-native-image` because this is a normal JVM Java artifact with class files. Verified JSON with `jq`, and all substituted `3.0` URLs returned HTTP 200.
+Ran agent for org.apache.maven:maven-settings-builder:3.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797/build/agent-artifact-discovery-logs/org.apache.maven-maven-settings-builder-3.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2377-8e69f797/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 6s
+9 actionable tasks: 9 executed
