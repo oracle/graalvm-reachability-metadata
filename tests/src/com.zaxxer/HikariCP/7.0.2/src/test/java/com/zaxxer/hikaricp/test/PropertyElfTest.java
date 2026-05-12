@@ -25,6 +25,8 @@ public class PropertyElfTest {
         properties.setProperty("enabled", "true");
         properties.setProperty("flag", "true");
         properties.setProperty("letters", "abc");
+        properties.setProperty("numbers", "1,2,3");
+        properties.setProperty("aliases", "primary,replica\\,with-comma");
         properties.setProperty("name", "hikari");
         properties.setProperty("payload", ConstructedPayload.class.getName());
 
@@ -36,6 +38,8 @@ public class PropertyElfTest {
         assertThat(bean.isEnabled()).isTrue();
         assertThat(bean.getFlag()).isTrue();
         assertThat(bean.getLetters()).containsExactly('a', 'b', 'c');
+        assertThat(bean.getNumbers()).containsExactly(1, 2, 3);
+        assertThat(bean.getAliases()).containsExactly("primary", "replica,with-comma");
         assertThat(bean.getName()).isEqualTo("hikari");
         assertThat(bean.getPayload()).isInstanceOf(ConstructedPayload.class);
     }
@@ -57,12 +61,14 @@ public class PropertyElfTest {
 
         assertThat(propertyNames)
                 .contains(
+                        "aliases",
                         "enabled",
                         "flag",
                         "intValue",
                         "letters",
                         "longValue",
                         "name",
+                        "numbers",
                         "payload",
                         "shortValue")
                 .doesNotContain("class", "readOnlyValue");
@@ -89,6 +95,8 @@ public class PropertyElfTest {
         private boolean enabled;
         private Boolean flag;
         private char[] letters;
+        private int[] numbers;
+        private String[] aliases;
         private String name;
         private Object payload;
 
@@ -138,6 +146,22 @@ public class PropertyElfTest {
 
         public void setLetters(char[] letters) {
             this.letters = letters;
+        }
+
+        public int[] getNumbers() {
+            return numbers;
+        }
+
+        public void setNumbers(int[] numbers) {
+            this.numbers = numbers;
+        }
+
+        public String[] getAliases() {
+            return aliases;
+        }
+
+        public void setAliases(String[] aliases) {
+            this.aliases = aliases;
         }
 
         public String getName() {
