@@ -88,7 +88,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
             throw new IllegalArgumentException("Cannot find tests directory for " + coordinate + ": " + testsDirectory);
         }
 
-        Set<String> testPackages = MetadataGenerationUtils.discoverTestPackages(testsDirectory);
+        Set<String> testPackages = MetadataGenerationUtils.discoverTestOnlyMetadataPackages(testsDirectory);
         Set<String> testResources = discoverTestResources(testsDirectory);
 
         ObjectNode libraryMetadata = requireObjectNode(objectMapper.readTree(metadataFile.toFile()), metadataFile);

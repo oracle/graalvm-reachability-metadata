@@ -48,6 +48,15 @@ public final class MetadataGenerationUtils {
 
     public static final String BUILD_FILE = "build.gradle";
     private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
+    private static final List<String> TEST_SOURCE_SETS = List.of("src/test/java", "src/test/kotlin", "src/test/groovy", "src/test/scala");
+    private static final List<String> TEST_SOURCE_EXTENSIONS = List.of(".java", ".kt", ".groovy", ".scala");
+    private static final List<String> TEST_SOURCE_MARKERS = List.of(
+            "@Test",
+            "org.junit.",
+            "org.testng.",
+            "spock.lang.",
+            "org.scalatest."
+    );
 
     private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -135,12 +144,10 @@ public final class MetadataGenerationUtils {
 
     /**
      * Walks the conventional test source roots and returns the package names they contain.
-     * Shared with SplitTestOnlyMetadataTask so the same set drives both filter generation
-     * and the test-only split.
      */
     public static Set<String> discoverTestPackages(Path testsDirectory) throws IOException {
         Set<String> packages = new LinkedHashSet<>();
-        for (String sourceSet : List.of("src/test/java", "src/test/kotlin", "src/test/groovy", "src/test/scala")) {
+        for (String sourceSet : TEST_SOURCE_SETS) {
             Path sourceRoot = testsDirectory.resolve(sourceSet);
             if (!Files.isDirectory(sourceRoot)) {
                 continue;
@@ -159,6 +166,46 @@ public final class MetadataGenerationUtils {
             }
         }
         return packages;
+    }
+
+    /**
+     * Returns packages that are clear test owners for metadata splitting.
+     * Dependency API stubs may live under src/test in their real packages, but
+     * they are not test-only merely because a generated test provided a stub.
+     */
+    public static Set<String> discoverTestOnlyMetadataPackages(Path testsDirectory) throws IOException {
+        Set<String> packages = new LinkedHashSet<>();
+        for (String sourceSet : TEST_SOURCE_SETS) {
+            Path sourceRoot = testsDirectory.resolve(sourceSet);
+            if (!Files.isDirectory(sourceRoot)) {
+                continue;
+            }
+            try (var pathStream = Files.walk(sourceRoot)) {
+                for (Path path : pathStream.filter(Files::isRegularFile).toList()) {
+                    if (!isTestOwnedSource(path)) {
+                        continue;
+                    }
+                    Path relativeParent = sourceRoot.relativize(path).getParent();
+                    if (relativeParent == null) {
+                        continue;
+                    }
+                    String packageName = relativeParent.toString().replace('/', '.').replace('\\', '.');
+                    if (!packageName.isBlank()) {
+                        packages.add(packageName);
+                    }
+                }
+            }
+        }
+        return packages;
+    }
+
+    private static boolean isTestOwnedSource(Path path) throws IOException {
+        String fileName = path.getFileName().toString();
+        if (TEST_SOURCE_EXTENSIONS.stream().noneMatch(fileName::endsWith)) {
+            return false;
+        }
+        String source = Files.readString(path, StandardCharsets.UTF_8);
+        return TEST_SOURCE_MARKERS.stream().anyMatch(source::contains);
     }
 
     /**
