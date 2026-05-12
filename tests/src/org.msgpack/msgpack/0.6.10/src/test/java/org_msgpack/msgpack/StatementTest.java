@@ -59,6 +59,10 @@ public class StatementTest {
         final Object iteratorResult = new Expression(new SingleValueIterator("next-value"), "next", new Object[0])
                 .getValue();
         assertThat(iteratorResult).isEqualTo("next-value");
+
+        final Object instanceResult = new Expression(new Greeter("Hello"), "greet", new Object[] { "Statement" })
+                .getValue();
+        assertThat(instanceResult).isEqualTo("Hello, Statement");
     }
 
     @Test
@@ -89,6 +93,18 @@ public class StatementTest {
     public static final class NewInstanceFactory {
         public ConstructedValue newInstance() {
             return new ConstructedValue("from-factory");
+        }
+    }
+
+    public static final class Greeter {
+        private final String greeting;
+
+        public Greeter(String greeting) {
+            this.greeting = greeting;
+        }
+
+        public String greet(String name) {
+            return this.greeting + ", " + name;
         }
     }
 
