@@ -3,6 +3,9 @@ Role: You are an expert JVM test engineer specializing in high-coverage integrat
 Task:
 You need to generate comprehensive tests for the library defined by these Maven coordinates: {library}.
 
+Issue-Requested Metadata:
+{issue_requested_metadata_context}
+
 Rules:
 - Write tests in `{test_language_display_name}` under the module's existing `src/test/{test_source_dir_name}` tree.
 - Follow idiomatic `{test_language_display_name}` coding conventions.
@@ -20,3 +23,4 @@ Rules:
 - Do not skip Native Image execution with `assumeFalse("runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")))`, early returns, `@DisabledInNativeImage`, `isNativeImageRuntime()`, `ImageInfo.inImageRuntimeCode()`, or equivalent guards.
 - Do not use this dynamic-class-loading pattern for ordinary reflection, resources, serialization, dynamic proxies, JNI, or missing reachability metadata; those tests must still run under Native Image.
 - After generating the tests, do NOT attempt to compile, run, or verify them. We will handle test execution externally.
+- Reporter snippets identify what is missing; any added or modified reachability metadata must include appropriate conditions, preferably `typeReached`.

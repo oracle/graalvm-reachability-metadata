@@ -19,10 +19,15 @@ Usage:
 """
 
 import argparse
+import copy
 import json
 import os
+import re
+import shutil
 import subprocess
 import sys
+import tempfile
+from typing import Any, Callable
 
 import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.workflow_strategies  # noqa: F401 — triggers strategy registration
@@ -37,7 +42,13 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
 from utility_scripts.large_library_progress import resolve_workflow_progress_state
-from utility_scripts.metadata_index import resolve_test_dir, resolve_test_version
+from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.metadata_index import (
+    MATCH_NEW_VERSION,
+    LibraryUpdateTarget,
+    load_index_entries,
+    resolve_library_update_target,
+)
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
@@ -55,6 +66,7 @@ DEFAULT_MODEL_NAME = "oca/gpt-5.5"
 DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
 METRICS_TASK_TYPE = "improve_library_coverage"
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
+LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
 
 
 def list_all_files(directory_path: str) -> list[str]:
@@ -132,6 +144,11 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         help="GitHub issue number for durable large-library progress state.",
     )
+    parser.add_argument(
+        "--issue-requested-metadata-context",
+        default="",
+        help="Reporter-provided missing metadata context extracted from the GitHub issue body.",
+    )
     return parser
 
 
@@ -160,6 +177,7 @@ def parse_flags(argv_list: list[str]):
         flags.chunk_call_limit,
         flags.resume_artifact,
         flags.issue_number,
+        flags.issue_requested_metadata_context,
     )
 
 
@@ -200,6 +218,345 @@ def write_metrics(run_metrics: dict, metrics_repo_dir: str, metrics_repo_root: s
     validate_run_metrics(metrics_json)
 
 
+def _version_numbers(version: str) -> tuple[int, ...]:
+    """Return numeric version parts for compatibility ranking."""
+    return tuple(int(part) for part in re.findall(r"\d+", version))
+
+
+def _padded_version_numbers(version: str, length: int = 4) -> tuple[int, ...]:
+    numbers = _version_numbers(version)
+    return numbers[:length] + (0,) * max(length - len(numbers), 0)
+
+
+def _is_supported_index_entry(entry: dict[str, Any]) -> bool:
+    metadata_version = entry.get("metadata-version")
+    return isinstance(metadata_version, str) and bool(metadata_version)
+
+
+def _entry_test_version(entry: dict[str, Any]) -> str:
+    return str(entry.get("test-version") or entry.get("metadata-version"))
+
+
+def _usable_clone_entry(repo_path: str, group: str, artifact: str, entry: dict[str, Any]) -> bool:
+    metadata_version = str(entry.get("metadata-version") or "")
+    if not metadata_version:
+        return False
+    test_version = _entry_test_version(entry)
+    metadata_dir = os.path.join(repo_path, "metadata", group, artifact, metadata_version)
+    test_dir = os.path.join(repo_path, "tests", "src", group, artifact, test_version)
+    return os.path.isdir(metadata_dir) and os.path.isdir(test_dir)
+
+
+def _closest_entry(
+        entries: list[dict[str, Any]],
+        requested_version: str,
+        predicate: Callable[[tuple[int, ...]], bool],
+) -> dict[str, Any] | None:
+    candidates = [entry for entry in entries if predicate(_padded_version_numbers(str(entry["metadata-version"])))]
+    if not candidates:
+        return None
+    requested_numbers = _padded_version_numbers(requested_version)
+
+    def rank(entry: dict[str, Any]) -> tuple[tuple[int, ...], tuple[int, ...]]:
+        candidate_numbers = _padded_version_numbers(str(entry["metadata-version"]))
+        distance = tuple(abs(candidate - requested) for candidate, requested in zip(candidate_numbers, requested_numbers))
+        descending_candidate = tuple(-part for part in candidate_numbers)
+        return distance, descending_candidate
+
+    return min(candidates, key=rank)
+
+
+def select_clone_baseline_entry(
+        repo_path: str,
+        group: str,
+        artifact: str,
+        requested_version: str,
+) -> dict[str, Any] | None:
+    """Select the closest compatible existing support to clone for a new version."""
+    entries = load_index_entries(repo_path, group, artifact) or []
+    usable_entries = [
+        entry for entry in entries
+        if isinstance(entry, dict) and _is_supported_index_entry(entry)
+        and _usable_clone_entry(repo_path, group, artifact, entry)
+    ]
+    if not usable_entries:
+        return None
+
+    requested_numbers = _padded_version_numbers(requested_version)
+    same_major_minor = _closest_entry(
+        usable_entries,
+        requested_version,
+        lambda numbers: numbers[:2] == requested_numbers[:2],
+    )
+    if same_major_minor is not None:
+        return same_major_minor
+
+    same_major = _closest_entry(
+        usable_entries,
+        requested_version,
+        lambda numbers: numbers[:1] == requested_numbers[:1],
+    )
+    if same_major is not None:
+        return same_major
+
+    latest_entries = [entry for entry in usable_entries if entry.get("latest") is True]
+    if latest_entries:
+        return latest_entries[0]
+    return None
+
+
+def _copytree_replace(destination: str, source: str) -> None:
+    if os.path.exists(destination):
+        shutil.rmtree(destination)
+    shutil.copytree(source, destination)
+
+
+def _rewrite_text_files(root_dir: str, replacements: list[tuple[str, str]]) -> None:
+    if not os.path.isdir(root_dir):
+        return
+    for current_root, _, file_names in os.walk(root_dir):
+        for file_name in file_names:
+            path = os.path.join(current_root, file_name)
+            try:
+                with open(path, "r", encoding="utf-8") as file:
+                    original = file.read()
+            except UnicodeDecodeError:
+                continue
+            updated = original
+            for old_value, new_value in replacements:
+                if old_value:
+                    updated = updated.replace(old_value, new_value)
+            if updated != original:
+                with open(path, "w", encoding="utf-8") as file:
+                    file.write(updated)
+
+
+def _replace_version_in_value(value: Any, old_versions: set[str], new_version: str) -> Any:
+    if isinstance(value, str):
+        updated = value
+        for old_version in sorted(old_versions, key=len, reverse=True):
+            updated = updated.replace(old_version, new_version)
+        return updated
+    if isinstance(value, list):
+        return [_replace_version_in_value(item, old_versions, new_version) for item in value]
+    if isinstance(value, dict):
+        return {
+            key: _replace_version_in_value(item, old_versions, new_version)
+            for key, item in value.items()
+        }
+    return value
+
+
+def _new_index_entry_from_baseline(
+        baseline_entry: dict[str, Any],
+        requested_version: str,
+) -> dict[str, Any]:
+    old_versions = {
+        str(value)
+        for value in [
+            baseline_entry.get("metadata-version"),
+            baseline_entry.get("test-version"),
+            *list(baseline_entry.get("tested-versions") or []),
+        ]
+        if value
+    }
+    new_entry = copy.deepcopy(baseline_entry)
+    new_entry = _replace_version_in_value(new_entry, old_versions, requested_version)
+    new_entry["latest"] = True
+    new_entry["metadata-version"] = requested_version
+    new_entry.pop("test-version", None)
+    new_entry.pop("default-for", None)
+    new_entry.pop("skipped-versions", None)
+    new_entry["tested-versions"] = [requested_version]
+    return new_entry
+
+
+def _write_index_entries(repo_path: str, group: str, artifact: str, entries: list[dict[str, Any]]) -> None:
+    index_path = os.path.join(repo_path, "metadata", group, artifact, "index.json")
+    os.makedirs(os.path.dirname(index_path), exist_ok=True)
+    with open(index_path, "w", encoding="utf-8") as index_file:
+        json.dump(entries, index_file, indent=2)
+        index_file.write("\n")
+
+
+def clone_library_update_support(
+        repo_path: str,
+        group: str,
+        artifact: str,
+        requested_version: str,
+        baseline_entry: dict[str, Any],
+) -> None:
+    """Clone baseline metadata/tests/stats support for a requested new version."""
+    baseline_metadata_version = str(baseline_entry["metadata-version"])
+    baseline_test_version = _entry_test_version(baseline_entry)
+    target_metadata_dir = os.path.join(repo_path, "metadata", group, artifact, requested_version)
+    target_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, requested_version)
+    baseline_metadata_dir = os.path.join(repo_path, "metadata", group, artifact, baseline_metadata_version)
+    baseline_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, baseline_test_version)
+    _copytree_replace(target_metadata_dir, baseline_metadata_dir)
+    _copytree_replace(target_test_dir, baseline_test_dir)
+
+    baseline_stats_dir = os.path.join(stats_artifact_dir(repo_path, group, artifact), baseline_metadata_version)
+    target_stats_dir = os.path.join(stats_artifact_dir(repo_path, group, artifact), requested_version)
+    if os.path.isdir(baseline_stats_dir):
+        _copytree_replace(target_stats_dir, baseline_stats_dir)
+
+    replacements = [
+        (f"{group}:{artifact}:{baseline_metadata_version}", f"{group}:{artifact}:{requested_version}"),
+        (f"{group}:{artifact}:{baseline_test_version}", f"{group}:{artifact}:{requested_version}"),
+        (baseline_metadata_version, requested_version),
+        (baseline_test_version, requested_version),
+    ]
+    _rewrite_text_files(target_metadata_dir, replacements)
+    _rewrite_text_files(target_test_dir, replacements)
+    _rewrite_text_files(target_stats_dir, replacements)
+
+    entries = load_index_entries(repo_path, group, artifact) or []
+    updated_entries: list[dict[str, Any]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        entry_copy = copy.deepcopy(entry)
+        if entry_copy.get("latest") is True:
+            entry_copy.pop("latest", None)
+        updated_entries.append(entry_copy)
+    updated_entries.append(_new_index_entry_from_baseline(baseline_entry, requested_version))
+    _write_index_entries(repo_path, group, artifact, updated_entries)
+
+
+def prepare_library_update_target(
+        repo_path: str,
+        group: str,
+        artifact: str,
+        requested_version: str,
+) -> LibraryUpdateTarget:
+    """Ensure the requested library-update target exists and return its resolved paths."""
+    target = resolve_library_update_target(repo_path, group, artifact, requested_version)
+    if target.match_type != MATCH_NEW_VERSION:
+        return target
+
+    baseline_entry = select_clone_baseline_entry(repo_path, group, artifact, requested_version)
+    if baseline_entry is not None:
+        clone_library_update_support(repo_path, group, artifact, requested_version, baseline_entry)
+        log_stage(
+            "library-update-target",
+            "Cloned support for {group}:{artifact}:{requested_version} from metadata-version {metadata_version}".format(
+                group=group,
+                artifact=artifact,
+                requested_version=requested_version,
+                metadata_version=baseline_entry.get("metadata-version"),
+            ),
+        )
+    else:
+        log_stage("library-update-target", f"No compatible support found; scaffolding {group}:{artifact}:{requested_version}")
+        subprocess.run(["./gradlew", "scaffold", "--coordinates", f"{group}:{artifact}:{requested_version}"], check=True)
+
+    return target
+
+
+def _target_metrics(target: LibraryUpdateTarget) -> dict[str, Any]:
+    matched_test_version = None
+    if target.matched_entry is not None:
+        matched_test_version = (
+            target.matched_entry.get("test-version")
+            or target.matched_entry.get("metadata-version")
+        )
+    return {
+        "requested_coordinate": target.requested_coordinate,
+        "match_type": target.match_type,
+        "matched_metadata_version": (
+            target.matched_entry.get("metadata-version")
+            if target.matched_entry is not None else None
+        ),
+        "matched_test_version": matched_test_version,
+        "resolved_metadata_version": target.resolved_metadata_version,
+        "resolved_test_version": target.resolved_test_version,
+    }
+
+
+def write_library_update_target_sidecar(metrics_repo_root: str | None, target: LibraryUpdateTarget) -> None:
+    """Write PR-only library-update target details outside validated run metrics."""
+    if not metrics_repo_root:
+        return
+    sidecar_path = os.path.join(metrics_repo_root, LIBRARY_UPDATE_TARGET_FILENAME)
+    with open(sidecar_path, "w", encoding="utf-8") as sidecar_file:
+        json.dump(_target_metrics(target), sidecar_file, indent=2)
+        sidecar_file.write("\n")
+
+
+def _snapshot_existing_paths(paths: list[str]) -> str | None:
+    snapshot_root = tempfile.mkdtemp(prefix="forge-update-failure-")
+    copied = False
+    for index, path in enumerate(paths):
+        if not os.path.exists(path):
+            continue
+        destination = os.path.join(snapshot_root, str(index))
+        if os.path.isdir(path):
+            shutil.copytree(path, destination)
+        else:
+            shutil.copy2(path, destination)
+        copied = True
+    if copied:
+        return snapshot_root
+    shutil.rmtree(snapshot_root, ignore_errors=True)
+    return None
+
+
+def _restore_snapshot_paths(snapshot_root: str | None, paths: list[str]) -> None:
+    if snapshot_root is None:
+        return
+    for index, path in enumerate(paths):
+        source = os.path.join(snapshot_root, str(index))
+        if not os.path.exists(source):
+            continue
+        if os.path.exists(path):
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                os.remove(path)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        if os.path.isdir(source):
+            shutil.copytree(source, path)
+        else:
+            shutil.copy2(source, path)
+
+
+def reset_failed_library_update_worktree(
+        repo_path: str,
+        checkpoint_commit: str,
+        target: LibraryUpdateTarget,
+) -> str:
+    """Reset to checkpoint while preserving generated target files for follow-up branches."""
+    group, artifact, _version = target.requested_coordinate.split(":")
+    paths = [
+        target.test_dir,
+        os.path.join(repo_path, "metadata", group, artifact, "index.json"),
+        target.metadata_dir,
+        stats_artifact_dir(repo_path, group, artifact),
+    ]
+    snapshot_root = _snapshot_existing_paths(paths)
+    try:
+        subprocess.run(["git", "reset", "--hard", checkpoint_commit], cwd=repo_path, check=True)
+        _restore_snapshot_paths(snapshot_root, paths)
+    finally:
+        if snapshot_root is not None:
+            shutil.rmtree(snapshot_root, ignore_errors=True)
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
+
+
+def format_issue_requested_metadata_context(context: str) -> str:
+    """Format reporter-provided metadata context for prompt templates."""
+    stripped = context.strip()
+    if not stripped:
+        return "No reporter-provided missing metadata context was supplied."
+    return (
+        "Reporter-provided missing metadata context:\n"
+        f"{stripped}\n\n"
+        "Treat these snippets as evidence of what is missing. Any added or modified "
+        "reachability metadata must include appropriate conditions, preferably `typeReached`."
+    )
+
+
 def main(argv=None) -> int:
     (
         group,
@@ -215,6 +572,7 @@ def main(argv=None) -> int:
         chunk_call_limit,
         resume_artifact,
         issue_number,
+        issue_requested_metadata_context,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     library = f"{group}:{artifact}:{version}"
@@ -229,6 +587,16 @@ def main(argv=None) -> int:
     os.chdir(reachability_repo_path)
 
     log_stage("setup", f"Selected strategy: {strategy_name}")
+    update_target = prepare_library_update_target(reachability_repo_path, group, artifact, version)
+    if update_target.match_type != MATCH_NEW_VERSION:
+        log_stage(
+            "library-update-target",
+            (
+                f"Using {update_target.match_type} target: "
+                f"metadata-version={update_target.resolved_metadata_version}, "
+                f"test-version={update_target.resolved_test_version}"
+            ),
+        )
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
     large_library_state, large_library_state_path = resolve_workflow_progress_state(
         metrics_repo_root=metrics_repo_root,
@@ -246,8 +614,8 @@ def main(argv=None) -> int:
     subprocess.run(["git", "switch", "-C", new_branch], check=True)
 
     # Commit existing state as checkpoint
-    test_version = resolve_test_version(reachability_repo_path, group, artifact, version)
-    tests_dir = resolve_test_dir(reachability_repo_path, group, artifact, version)
+    test_version = update_target.resolved_test_version
+    tests_dir = update_target.test_dir
     if not os.path.isdir(tests_dir):
         print(
             "ERROR: Test directory for {library} does not exist: {path}".format(
@@ -322,9 +690,11 @@ def main(argv=None) -> int:
         source_context_overview=prepared_source_context.to_prompt_overview(),
         source_context_available=prepared_source_context.is_available,
         source_context_files=prepared_source_context.read_only_files,
+        issue_requested_metadata_context=format_issue_requested_metadata_context(issue_requested_metadata_context),
         test_language=test_source_layout.language,
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
+        metadata_version=update_target.resolved_metadata_version,
         large_library_progress_state=large_library_state,
         large_library_progress_state_path=large_library_state_path,
         large_library_issue_number=issue_number,
@@ -375,8 +745,11 @@ def main(argv=None) -> int:
 
     if workflow_status not in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS, RUN_STATUS_CHUNK_READY}:
         log_stage("status", "Coverage improvement failed")
-        subprocess.run(["git", "reset", "--hard", checkpoint_commit], check=True)
-        ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+        ending_commit = reset_failed_library_update_worktree(
+            reachability_repo_path,
+            checkpoint_commit,
+            update_target,
+        )
         run_metrics = create_failure_run_metrics_output(
             package=group,
             artifact=artifact,
@@ -409,6 +782,7 @@ def main(argv=None) -> int:
             post_generation_intervention=strategy_obj.post_generation_intervention,
         )
 
+    write_library_update_target_sidecar(metrics_repo_root, update_target)
     write_metrics(run_metrics, metrics_repo_dir, metrics_repo_root)
     return 0 if workflow_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS, RUN_STATUS_CHUNK_READY} else 1
 

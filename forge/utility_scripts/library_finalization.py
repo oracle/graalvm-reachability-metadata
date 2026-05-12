@@ -10,6 +10,7 @@ import subprocess
 import sys
 
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.metadata_index import find_index_entry_for_version
 from utility_scripts.style_checks import run_style_fix_and_checks
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
@@ -53,8 +54,18 @@ def _extract_missing_allowed_packages(check_metadata_output: str) -> set[str]:
     return packages
 
 
-def _resolve_index_entry_for_current_version(index_entries: list[dict], library_version: str) -> dict | None:
+def _resolve_index_entry_for_current_version(
+        repo_path: str,
+        group: str,
+        artifact: str,
+        index_entries: list[dict],
+        library_version: str,
+) -> dict | None:
     """Return the metadata index entry that should receive allowed-package updates."""
+    resolved_entry = find_index_entry_for_version(repo_path, group, artifact, library_version)
+    if resolved_entry is not None:
+        return resolved_entry
+
     matching_version_entries = [
         entry for entry in index_entries if str(entry.get("metadata-version") or "") == library_version
     ]
@@ -100,7 +111,13 @@ def _append_allowed_packages_to_metadata_index(
         print(f"ERROR: Metadata index {index_path_display} does not contain a JSON array.", file=sys.stderr)
         return False
 
-    index_entry = _resolve_index_entry_for_current_version(index_entries, library_version)
+    index_entry = _resolve_index_entry_for_current_version(
+        repo_path,
+        group,
+        artifact,
+        index_entries,
+        library_version,
+    )
     if index_entry is None:
         print(
             f"ERROR: Could not resolve metadata index entry for {library} in {index_path_display}.",

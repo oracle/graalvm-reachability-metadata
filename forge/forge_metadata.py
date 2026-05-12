@@ -514,6 +514,7 @@ def normalize_github_issue_search_item(item: dict) -> dict:
     return {
         "number": item["number"],
         "title": item.get("title", ""),
+        "body": item.get("body", ""),
         "url": item.get("html_url") or item.get("url"),
         "labels": [
             {"name": label["name"]}
@@ -3471,6 +3472,9 @@ def invoke_pipeline(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        issue_requested_metadata_context = extract_issue_requested_metadata_context(claimed_issue.issue.get("body"))
+        if issue_requested_metadata_context:
+            pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         if keep_tests_without_dynamic_access:
@@ -4023,6 +4027,37 @@ def build_claim_metadata(
 
     current_coordinates = f"{group}:{artifact}:{current_version}"
     return issue_coordinates, current_coordinates, new_version
+
+
+def extract_issue_requested_metadata_context(issue_body: str | None, max_chars: int = 12000) -> str:
+    """Extract reporter-provided missing metadata evidence from an issue body."""
+    if not issue_body:
+        return ""
+
+    snippets: list[str] = []
+    for match in re.finditer(r"```(?:[A-Za-z0-9_.+-]+)?\n(.*?)```", issue_body, flags=re.DOTALL):
+        block = match.group(1).strip()
+        if block:
+            snippets.append(block)
+
+    metadata_keywords = re.compile(
+        r"("
+        r"reflection|reflect-config|resource|resource-config|proxy|proxy-config|jni|jni-config|"
+        r"reachability|native-image|missing|NoSuch(Method|Field)|ClassNotFound|NoClassDefFound|"
+        r"UnsupportedFeature|typeReached|condition|method|constructor|field|class|file|stack trace|coordinate"
+        r")",
+        flags=re.IGNORECASE,
+    )
+    for line in issue_body.splitlines():
+        stripped = line.strip()
+        if stripped and metadata_keywords.search(stripped):
+            snippets.append(stripped)
+
+    deduplicated = list(dict.fromkeys(snippets))
+    context = "\n\n".join(deduplicated).strip()
+    if len(context) > max_chars:
+        context = context[:max_chars].rstrip() + "\n[truncated]"
+    return context
 
 
 def resolve_large_library_resume_artifact(issue: dict, canonical_metrics_repo_path: str) -> str | None:
