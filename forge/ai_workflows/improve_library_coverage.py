@@ -41,6 +41,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 )
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
+from utility_scripts.issue_requested_metadata import format_issue_requested_test_requirements
 from utility_scripts.large_library_progress import resolve_workflow_progress_state
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import (
@@ -226,6 +227,19 @@ def _version_numbers(version: str) -> tuple[int, ...]:
 def _padded_version_numbers(version: str, length: int = 4) -> tuple[int, ...]:
     numbers = _version_numbers(version)
     return numbers[:length] + (0,) * max(length - len(numbers), 0)
+
+
+def _version_is_at_or_after(version: str, requested_version: str) -> bool:
+    """Return true when a tested version should move off the older split baseline."""
+    if version == requested_version:
+        return True
+    if version.startswith(f"{requested_version}-"):
+        return False
+    version_numbers = _version_numbers(version)
+    requested_numbers = _version_numbers(requested_version)
+    if not version_numbers or not requested_numbers:
+        return False
+    return _padded_version_numbers(version) > _padded_version_numbers(requested_version)
 
 
 def _is_supported_index_entry(entry: dict[str, Any]) -> bool:
@@ -419,6 +433,13 @@ def clone_library_update_support(
         entry_copy = copy.deepcopy(entry)
         if entry_copy.get("latest") is True:
             entry_copy.pop("latest", None)
+        if entry_copy.get("metadata-version") == baseline_metadata_version:
+            tested_versions = entry_copy.get("tested-versions")
+            if isinstance(tested_versions, list):
+                entry_copy["tested-versions"] = [
+                    version for version in tested_versions
+                    if not _version_is_at_or_after(str(version), requested_version)
+                ]
         updated_entries.append(entry_copy)
     updated_entries.append(_new_index_entry_from_baseline(baseline_entry, requested_version))
     _write_index_entries(repo_path, group, artifact, updated_entries)
@@ -429,9 +450,36 @@ def prepare_library_update_target(
         group: str,
         artifact: str,
         requested_version: str,
+        issue_requested_metadata_context: str = "",
 ) -> LibraryUpdateTarget:
     """Ensure the requested library-update target exists and return its resolved paths."""
     target = resolve_library_update_target(repo_path, group, artifact, requested_version)
+    must_split_shared_target = (
+        target.match_type != MATCH_NEW_VERSION
+        and target.resolved_metadata_version != requested_version
+    )
+    if must_split_shared_target and target.matched_entry is not None:
+        clone_library_update_support(repo_path, group, artifact, requested_version, target.matched_entry)
+        log_stage(
+            "library-update-target",
+            "Split {group}:{artifact}:{requested_version} from shared metadata-version {metadata_version} "
+            "for version-specific library-update coverage".format(
+                group=group,
+                artifact=artifact,
+                requested_version=requested_version,
+                metadata_version=target.resolved_metadata_version,
+            ),
+        )
+        return LibraryUpdateTarget(
+            requested_coordinate=f"{group}:{artifact}:{requested_version}",
+            match_type=MATCH_NEW_VERSION,
+            matched_entry=target.matched_entry,
+            resolved_metadata_version=requested_version,
+            resolved_test_version=requested_version,
+            metadata_dir=os.path.join(repo_path, "metadata", group, artifact, requested_version),
+            test_dir=os.path.join(repo_path, "tests", "src", group, artifact, requested_version),
+        )
+
     if target.match_type != MATCH_NEW_VERSION:
         return target
 
@@ -549,11 +597,14 @@ def format_issue_requested_metadata_context(context: str) -> str:
     stripped = context.strip()
     if not stripped:
         return "No reporter-provided missing metadata context was supplied."
+    test_requirements = format_issue_requested_test_requirements(stripped)
+    requirements_section = f"\n\n{test_requirements}" if test_requirements else ""
     return (
         "Reporter-provided missing metadata context:\n"
         f"{stripped}\n\n"
         "Treat these snippets as evidence of what is missing. Any added or modified "
         "reachability metadata must include appropriate conditions, preferably `typeReached`."
+        f"{requirements_section}"
     )
 
 
@@ -587,7 +638,13 @@ def main(argv=None) -> int:
     os.chdir(reachability_repo_path)
 
     log_stage("setup", f"Selected strategy: {strategy_name}")
-    update_target = prepare_library_update_target(reachability_repo_path, group, artifact, version)
+    update_target = prepare_library_update_target(
+        reachability_repo_path,
+        group,
+        artifact,
+        version,
+        issue_requested_metadata_context=issue_requested_metadata_context,
+    )
     if update_target.match_type != MATCH_NEW_VERSION:
         log_stage(
             "library-update-target",

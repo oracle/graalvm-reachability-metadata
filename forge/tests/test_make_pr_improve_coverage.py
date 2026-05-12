@@ -40,7 +40,11 @@ class MakePrImproveCoverageTests(unittest.TestCase):
         self.assertIn("- Matched metadata version: `1.0.0`", body)
         self.assertIn("- Matched test version: `1.0.0`", body)
         self.assertIn("- Resolved test version: `1.0.0`", body)
-        self.assertIn("- Validation command: `./gradlew test -Pcoordinates=org.example:demo:1.0.1`", body)
+        self.assertIn(
+            "- Validation commands: `./gradlew test -Pcoordinates=org.example:demo:1.0.1`, "
+            "`./gradlew test -Pcoordinates=org.example:demo:1.0.0`",
+            body,
+        )
         self.assertIn("- Validation result: `success`", body)
 
     def test_load_library_update_target_sidecar_reads_pr_only_details(self) -> None:

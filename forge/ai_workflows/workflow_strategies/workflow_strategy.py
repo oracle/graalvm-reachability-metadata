@@ -21,8 +21,14 @@ from ai_workflows.fix_post_generation_pi import (
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
+from utility_scripts.issue_requested_metadata import apply_issue_requested_metadata
 from utility_scripts.library_stats import stats_artifact_dir
-from utility_scripts.metadata_index import find_index_entry_for_version, resolve_metadata_version, resolve_test_version
+from utility_scripts.metadata_index import (
+    coordinate_parts,
+    find_index_entry_for_version,
+    resolve_metadata_version,
+    resolve_test_version,
+)
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_persistent_instructions, load_prompt_template
@@ -273,6 +279,37 @@ class WorkflowStrategy(ABC):
         # local CI verification after generation.
         return final_status
 
+    def _finalization_libraries(self) -> list[str]:
+        """Return requested and resolved metadata coordinates that must stay valid."""
+        libraries = [self.library]
+        metadata_version = str(
+            self.context.get("metadata_version")
+            or resolve_metadata_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
+        metadata_library = f"{self.group}:{self.artifact}:{metadata_version}"
+        if metadata_library not in libraries:
+            libraries.append(metadata_library)
+        return libraries
+
+    def _apply_issue_requested_metadata(self) -> int:
+        """Apply explicit reporter-requested metadata to the resolved metadata directory."""
+        metadata_version = str(
+            self.context.get("metadata_version")
+            or resolve_metadata_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
+        metadata_dir = os.path.join(
+            self.reachability_repo_path,
+            "metadata",
+            self.group,
+            self.artifact,
+            metadata_version,
+        )
+        context = str(self.context.get("issue_requested_metadata_context") or "")
+        added = apply_issue_requested_metadata(metadata_dir, context)
+        if added:
+            log_stage("issue-requested-metadata", f"Applied {added} issue-requested metadata entrie(s)")
+        return added
+
     def _run_gradle_command_with_output(self, command: list[str]) -> subprocess.CompletedProcess[str]:
         """Run a Gradle command in the reachability repo and capture combined output."""
         require_complete_reachability_repo(self.reachability_repo_path)
@@ -417,23 +454,33 @@ class WorkflowStrategy(ABC):
         """Generate metadata, run follow-up Gradle tasks, and commit the iteration."""
         log_stage("generate-metadata", f"Running generateMetadata for {self.library}")
         self._run_command(f"./gradlew generateMetadata -Pcoordinates={self.library} --agentAllowedPackages=fromJar")
-        test_retry_status = self._run_test_with_retry(self.library)
-        if test_retry_status == RUN_STATUS_FAILURE:
-            return test_retry_status, None
-        if not run_library_finalization(
-            repo_path=self.reachability_repo_path,
-            library=self.library,
-            group=self.group,
-            artifact=self.artifact,
-            library_version=self.version,
-            model_name=self.model_name,
-        ):
-            return RUN_STATUS_FAILURE, None
+        self._apply_issue_requested_metadata()
+        final_status = RUN_STATUS_SUCCESS
+        finalization_libraries = self._finalization_libraries()
+        for library in finalization_libraries:
+            test_retry_status = self._run_test_with_retry(library)
+            if test_retry_status == RUN_STATUS_FAILURE:
+                return test_retry_status, None
+            if test_retry_status == SUCCESS_WITH_INTERVENTION_STATUS:
+                final_status = SUCCESS_WITH_INTERVENTION_STATUS
+        for library in finalization_libraries:
+            group, artifact, library_version = coordinate_parts(library)
+            if library_version is None:
+                return RUN_STATUS_FAILURE, None
+            if not run_library_finalization(
+                repo_path=self.reachability_repo_path,
+                library=library,
+                group=group,
+                artifact=artifact,
+                library_version=library_version,
+                model_name=self.model_name,
+            ):
+                return RUN_STATUS_FAILURE, None
         log_stage("commit-iteration", f"Running commit iteration for {self.library}")
         if not self._commit_library_iteration():
             return RUN_STATUS_FAILURE, None
         checkpoint_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-        return test_retry_status, checkpoint_commit_hash
+        return final_status, checkpoint_commit_hash
 
     def _run_split_test_only_metadata(self, library: str) -> bool:
         """Split test-only metadata before stats generation or committing."""

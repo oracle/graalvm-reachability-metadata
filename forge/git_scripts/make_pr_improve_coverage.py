@@ -106,6 +106,22 @@ def build_pull_request_body(
     validation_status = "not recorded"
     if isinstance(local_ci_verification, dict):
         validation_status = str(local_ci_verification.get("status") or "unknown")
+    validation_coordinates = [coordinates]
+    if isinstance(library_update_target, dict):
+        coordinate_parts = coordinates.split(":")
+        resolved_metadata_version = library_update_target.get("resolved_metadata_version")
+        if (
+                len(coordinate_parts) == 3
+                and isinstance(resolved_metadata_version, str)
+                and resolved_metadata_version
+                and resolved_metadata_version != coordinate_parts[2]
+        ):
+            validation_coordinates.append(
+                f"{coordinate_parts[0]}:{coordinate_parts[1]}:{resolved_metadata_version}"
+            )
+    validation_commands = ", ".join(
+        f"`./gradlew test -Pcoordinates={coordinate}`" for coordinate in validation_coordinates
+    )
 
     issue_reference = f"Fixes: #{issue_no}"
     if is_large_library_part and not is_final_large_library_part:
@@ -123,7 +139,7 @@ This PR improves dynamic-access coverage for {coordinates} by generating additio
 
 Summary:
 {part_line}\
-- Validation command: `./gradlew test -Pcoordinates={coordinates}`
+- Validation commands: {validation_commands}
 - Validation result: `{validation_status}`
 {update_target_lines}\
 - Strategy: {strategy_name}
