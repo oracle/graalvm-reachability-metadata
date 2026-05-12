@@ -1,0 +1,959 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1977-c7a7-7820-9f87-66473687b8ba
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.github.classgraph:classgraph:4.8.108
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.8.108" when "$version$" is replaced with "4.8.108".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+- Set "coordinates" to "io.github.classgraph:classgraph:4.8.108".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.8.108".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/GitHub, then update the JSON in place and validate the result parses cleanly.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+ succeeded in 0ms:
+{
+  "coordinates" : "io.github.classgraph:classgraph:4.8.108"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'io\\.github\\.classgraph-classgraph-4\\.8\\.108\\.json"'$'"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+
+web search: 
+web search: Maven Central io.github.classgraph classgraph 4.8.108 source jar tests jar pom scm
+web search: 
+web search: https://github.com/classgraph/classgraph/tree/classgraph-4.8.108
+web search: 
+web search: https://repo1.maven.org/maven2/io/github/classgraph/classgraph/
+web search: 
+web search: 
+codex
+The existing file only has `coordinates`. I found the 4.8.108 release in Maven Central and the matching `classgraph-4.8.108` GitHub tag; now I’m checking whether Maven published sources or test artifacts before falling back to tagged repository paths.
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.108/classgraph-4.8.108.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.classgraph</groupId>
+    <artifactId>classgraph</artifactId>
+    <version>4.8.108</version>
+    <name>ClassGraph</name>
+
+    <description>The uber-fast, ultra-lightweight classpath and module scanner for JVM languages.</description>
+
+    <url>https://github.com/classgraph/classgraph</url>
+
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Luke Hutchison</name>
+            <email>luke.hutch@gmail.com</email>
+            <organization>ClassGraph</organization>
+            <organizationUrl>https://github.com/classgraph</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:classgraph/classgraph.git</connection>
+        <developerConnection>scm:git:git@github.com:classgraph/classgraph.git</developerConnection>
+        <url>https://github.com/classgraph/classgraph</url>
+        <tag>classgraph-4.8.108</tag>
+    </scm>
+
+    <issueManagement>
+        <url>https://github.com/classgraph/classgraph/issues</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <properties>
+        <!-- Set UTF-8 encoding for Maven plugins and output -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Default to generating Javadoc in HTML 4.01 format -->
+        <javadoc.html.version />
+
+        <!-- Warnings are disabled, in order to suppress warning about bootstrap classpath not being set -->
+        <!-- (which arises as a result of building for JDK 7 on JDK8+, allowing for use of @FunctionalInterface) -->
+        <!-- <maven.compiler.showWarnings>true</maven.compiler.showWarnings> -->
+        <!-- <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation> -->
+    </properties>
+
+    <!-- Test dependencies (main has no dependencies). -->
+    <!-- Find dependency updates with: ./mvnw versions:display-dependency-updates -->
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.7.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.32</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.32</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.19.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-aether</artifactId>
+            <version>2.6.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.0-alpha1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>2.0.0-alpha1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.2.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.jimfs</groupId>
+            <artifactId>jimfs</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- "provided" dependencies (soft compile-time dependencies that do not create a runtime dependency): -->
+
+        <dependency>
+            <!-- Needed for Eclipse nullability analysis to work, but use "provided" as the scope so that we -->
+            <!-- don't add a hard dependency on the JDT annotations, because we don't use the annotations in -->
+            <!-- any of the ClassGraph code, so these annotations are not needed at runtime. -->
+            <!-- See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=552198 -->
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.annotation</artifactId>
+            <version>2.2.600</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Plugins are listed here, but configured in pluginManagement, for compatibility with Eclipse. -->
+            <!-- See: https://stackoverflow.com/a/10483284/3950982 -->
+            <!-- Find updates with: ./mvnw versions:display-plugin-updates -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version><!--$NO-MVN-MAN-VER$ -->
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M4</version>
+            </plugin>
+
+            <!-- Override versions of the following plugins, inherited from the super-pom, with latest versions -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+            </plugin>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.108/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+ succeeded in 252ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/github/classgraph/classgraph/4.8.108</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/github/classgraph/classgraph/4.8.108</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="classgraph-4.8.108-javadoc.jar" title="classgraph-4.8.108-javadoc.jar">classgraph-4.8.108-javadoc.jar</a>                    2021-06-06 23:47    434624      
+<a href="classgraph-4.8.108-javadoc.jar.asc" title="classgraph-4.8.108-javadoc.jar.asc">classgraph-4.8.108-javadoc.jar.asc</a>                2021-06-06 23:47       488      
+<a href="classgraph-4.8.108-javadoc.jar.md5" title="classgraph-4.8.108-javadoc.jar.md5">classgraph-4.8.108-javadoc.jar.md5</a>                2021-06-06 23:47        32      
+<a href="classgraph-4.8.108-javadoc.jar.sha1" title="classgraph-4.8.108-javadoc.jar.sha1">classgraph-4.8.108-javadoc.jar.sha1</a>               2021-06-06 23:47        40      
+<a href="classgraph-4.8.108-sources.jar" title="classgraph-4.8.108-sources.jar">classgraph-4.8.108-sources.jar</a>                    2021-06-06 23:47    491539      
+<a href="classgraph-4.8.108-sources.jar.asc" title="classgraph-4.8.108-sources.jar.asc">classgraph-4.8.108-sources.jar.asc</a>                2021-06-06 23:47       488      
+<a href="classgraph-4.8.108-sources.jar.md5" title="classgraph-4.8.108-sources.jar.md5">classgraph-4.8.108-sources.jar.md5</a>                2021-06-06 23:47        32      
+<a href="classgraph-4.8.108-sources.jar.sha1" title="classgraph-4.8.108-sources.jar.sha1">classgraph-4.8.108-sources.jar.sha1</a>               2021-06-06 23:47        40      
+<a href="classgraph-4.8.108.jar" title="classgraph-4.8.108.jar">classgraph-4.8.108.jar</a>                            2021-06-06 23:47    534613      
+<a href="classgraph-4.8.108.jar.asc" title="classgraph-4.8.108.jar.asc">classgraph-4.8.108.jar.asc</a>                        2021-06-06 23:47       488      
+<a href="classgraph-4.8.108.jar.md5" title="classgraph-4.8.108.jar.md5">classgraph-4.8.108.jar.md5</a>                        2021-06-06 23:47        32      
+<a href="classgraph-4.8.108.jar.sha1" title="classgraph-4.8.108.jar.sha1">classgraph-4.8.108.jar.sha1</a>                       2021-06-06 23:47        40      
+<a href="classgraph-4.8.108.pom" title="classgraph-4.8.108.pom">classgraph-4.8.108.pom</a>                            2021-06-06 23:47     27599      
+<a href="classgraph-4.8.108.pom.asc" title="classgraph-4.8.108.pom.asc">classgraph-4.8.108.pom.asc</a>                        2021-06-06 23:47       488      
+<a href="classgraph-4.8.108.pom.md5" title="classgraph-4.8.108.pom.md5">classgraph-4.8.108.pom.md5</a>                        2021-06-06 23:47        32      
+<a href="classgraph-4.8.108.pom.sha1" title="classgraph-4.8.108.pom.sha1">classgraph-4.8.108.pom.sha1</a>                       2021-06-06 23:47        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "rg 'repo1\\.maven\\.org|search\\.maven\\.org|maven2' -g '*.json' --glob '"'!build/**'"' . | head -60" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+ succeeded in 0ms:
+./metadata/jakarta.json/jakarta.json-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+./metadata/jakarta.json/jakarta.json-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+./metadata/org.playframework.twirl/twirl-api_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-sources.jar",
+./metadata/org.playframework.twirl/twirl-api_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-javadoc.jar",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+./metadata/com.google.re2j/re2j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+./metadata/com.google.re2j/re2j/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+./metadata/io.prometheus/simpleclient_tracer_otel/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/net.postgis/postgis-geometry/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+./metadata/net.postgis/postgis-geometry/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+./metadata/net.postgis/postgis-jdbc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+./metadata/net.postgis/postgis-jdbc/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/com.comcast/ip4s-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+./metadata/com.comcast/ip4s-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+./metadata/com.rabbitmq/amqp-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+./metadata/org.springframework/spring-instrument/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+./metadata/org.springframework/spring-instrument/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+./metadata/org.springframework/spring-context-support/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-sources.jar",
+./metadata/org.springframework/spring-context-support/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+./metadata/org.springframework/spring-tx/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+./metadata/org.springframework/spring-tx/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+./metadata/org.springframework/spring-expression/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+./metadata/org.springframework/spring-expression/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+./metadata/org.springframework/spring-aspects/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+./metadata/org.springframework/spring-aspects/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+./metadata/org.springframework/spring-webflux/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-sources.jar",
+./metadata/org.springframework/spring-webflux/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-javadoc.jar",
+./metadata/org.springframework/spring-aop/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-sources.jar",
+./metadata/org.springframework/spring-aop/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+./metadata/org.springframework/spring-aop/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' -g '*.json' --glob '"'!build/**'"' metadata tests | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+ succeeded in 0ms:
+metadata/com.google.j2objc/j2objc-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-sources.jar",
+metadata/log4j/log4j/index.json:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-sources.jar",
+metadata/com.github.ghostdogpr/caliban_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ghostdogpr/caliban_3/$version$/caliban_3-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-sources.jar",
+metadata/oro/oro/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/org.mortbay.jetty/jetty-sslengine/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-sslengine/$version$/jetty-sslengine-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/com.itextpdf/svg/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/classgraph/classgraph/contents/src?ref=classgraph-4.8.108 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/classgraph/classgraph/contents?ref=classgraph-4.8.108 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+ succeeded in 149ms:
+[
+  {
+    "name": "main",
+    "path": "src/main",
+    "sha": "57fa083d9fb8563322ed670f267d65f91effb13e",
+    "size": 0,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/src/main?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src/main",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/trees/57fa083d9fb8563322ed670f267d65f91effb13e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/src/main?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/trees/57fa083d9fb8563322ed670f267d65f91effb13e",
+      "html": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src/main"
+    }
+  },
+  {
+    "name": "module-info",
+    "path": "src/module-info",
+    "sha": "b4c71c393dcdd1b325b79e8bdcb17faa573c1173",
+    "size": 0,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/src/module-info?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src/module-info",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/trees/b4c71c393dcdd1b325b79e8bdcb17faa573c1173",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/src/module-info?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/trees/b4c71c393dcdd1b325b79e8bdcb17faa573c1173",
+      "html": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src/module-info"
+    }
+  },
+  {
+    "name": "test",
+    "path": "src/test",
+    "sha": "e48cb51c334490f60216f13de18e09fb03cda4ea",
+    "size": 0,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/src/test?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src/test",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/trees/e48cb51c334490f60216f13de18e09fb03cda4ea",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/src/test?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/trees/e48cb51c334490f60216f13de18e09fb03cda4ea",
+      "html": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src/test"
+    }
+  }
+]
+
+ succeeded in 287ms:
+[
+  {
+    "name": ".classpath",
+    "path": ".classpath",
+    "sha": "5576b4361ce6885899520cae7d079997c0b840ba",
+    "size": 1566,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/.classpath?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/.classpath",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/5576b4361ce6885899520cae7d079997c0b840ba",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/.classpath",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/.classpath?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/5576b4361ce6885899520cae7d079997c0b840ba",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/.classpath"
+    }
+  },
+  {
+    "name": ".codacy.yaml",
+    "path": ".codacy.yaml",
+    "sha": "3dd79f5534bf029ba2eaff0543b190c49dd00a9f",
+    "size": 34,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/.codacy.yaml?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/.codacy.yaml",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/3dd79f5534bf029ba2eaff0543b190c49dd00a9f",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/.codacy.yaml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/.codacy.yaml?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/3dd79f5534bf029ba2eaff0543b190c49dd00a9f",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/.codacy.yaml"
+    }
+  },
+  {
+    "name": ".eclipse",
+    "path": ".eclipse",
+    "sha": "2c244e22037b61d1a82f3a717948a710bfa95840",
+    "size": 0,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/.eclipse?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/.eclipse",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/trees/2c244e22037b61d1a82f3a717948a710bfa95840",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/.eclipse?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/trees/2c244e22037b61d1a82f3a717948a710bfa95840",
+      "html": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/.eclipse"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "bae3bf460c3e324bc5b292e4afd21ebdb8ed93d6",
+    "size": 0,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/.github?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/.github",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/trees/bae3bf460c3e324bc5b292e4afd21ebdb8ed93d6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/.github?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/trees/bae3bf460c3e324bc5b292e4afd21ebdb8ed93d6",
+      "html": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "b39e9e34923f843b3d8e43be4dfe18c25fde775f",
+    "size": 254,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/.gitignore?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/.gitignore",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/b39e9e34923f843b3d8e43be4dfe18c25fde775f",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/.gitignore?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/b39e9e34923f843b3d8e43be4dfe18c25fde775f",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/.gitignore"
+    }
+  },
+  {
+    "name": ".mvn",
+    "path": ".mvn",
+    "sha": "533dd47b1157d35e4361f3cca6329df4578ecee0",
+    "size": 0,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/.mvn?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/.mvn",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/trees/533dd47b1157d35e4361f3cca6329df4578ecee0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/.mvn?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/trees/533dd47b1157d35e4361f3cca6329df4578ecee0",
+      "html": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/.mvn"
+    }
+  },
+  {
+    "name": ".project",
+    "path": ".project",
+    "sha": "0e6b5e6db5742b5f86b272b3b7dc0e9beaa2e5fb",
+    "size": 653,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/.project?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/.project",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/0e6b5e6db5742b5f86b272b3b7dc0e9beaa2e5fb",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/.project",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/.project?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/0e6b5e6db5742b5f86b272b3b7dc0e9beaa2e5fb",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/.project"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "3a0a18254837192c35c1c5ebc8ae83ce3fcb0838",
+    "size": 201,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/.travis.yml?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/.travis.yml",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/3a0a18254837192c35c1c5ebc8ae83ce3fcb0838",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/.travis.yml?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/3a0a18254837192c35c1c5ebc8ae83ce3fcb0838",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/.travis.yml"
+    }
+  },
+  {
+    "name": "LICENSE-ClassGraph.txt",
+    "path": "LICENSE-ClassGraph.txt",
+    "sha": "eddec36100b000d686bc6499b26211de428ae2e4",
+    "size": 1081,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/LICENSE-ClassGraph.txt?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/LICENSE-ClassGraph.txt",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/eddec36100b000d686bc6499b26211de428ae2e4",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/LICENSE-ClassGraph.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/LICENSE-ClassGraph.txt?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/eddec36100b000d686bc6499b26211de428ae2e4",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/LICENSE-ClassGraph.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "f2293fffba12b37aaab31ce710631a8c58a52c88",
+    "size": 15244,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/README.md?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/README.md",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/f2293fffba12b37aaab31ce710631a8c58a52c88",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/README.md?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/f2293fffba12b37aaab31ce710631a8c58a52c88",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/README.md"
+    }
+  },
+  {
+    "name": "Zero-Bugs-Commitment.md",
+    "path": "Zero-Bugs-Commitment.md",
+    "sha": "399949ea33c9e205f63927174bd53de78fd0cf51",
+    "size": 3330,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/Zero-Bugs-Commitment.md?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/Zero-Bugs-Commitment.md",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/399949ea33c9e205f63927174bd53de78fd0cf51",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/Zero-Bugs-Commitment.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/Zero-Bugs-Commitment.md?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/399949ea33c9e205f63927174bd53de78fd0cf51",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/Zero-Bugs-Commitment.md"
+    }
+  },
+  {
+    "name": "mvnw",
+    "path": "mvnw",
+    "sha": "41c0f0c23db5dca836d3db1a17a7a28444d17d74",
+    "size": 10069,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/mvnw?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/mvnw",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/41c0f0c23db5dca836d3db1a17a7a28444d17d74",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/mvnw",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/mvnw?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/41c0f0c23db5dca836d3db1a17a7a28444d17d74",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/mvnw"
+    }
+  },
+  {
+    "name": "mvnw.cmd",
+    "path": "mvnw.cmd",
+    "sha": "86115719e5383e94597f918bf18c5ecbb7cfe492",
+    "size": 6607,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/mvnw.cmd?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/mvnw.cmd",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/86115719e5383e94597f918bf18c5ecbb7cfe492",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/mvnw.cmd",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/mvnw.cmd?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/86115719e5383e94597f918bf18c5ecbb7cfe492",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/mvnw.cmd"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "6e9c589ed1ac6876ac0d10c8e3cdbcce749d6d0f",
+    "size": 27599,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/pom.xml?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/pom.xml",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/blobs/6e9c589ed1ac6876ac0d10c8e3cdbcce749d6d0f",
+    "download_url": "https://raw.githubusercontent.com/classgraph/classgraph/classgraph-4.8.108/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/pom.xml?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/blobs/6e9c589ed1ac6876ac0d10c8e3cdbcce749d6d0f",
+      "html": "https://github.com/classgraph/classgraph/blob/classgraph-4.8.108/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "2389c713b3ede6eecf91c9cee8cd11b4f47d335f",
+    "size": 0,
+    "url": "https://api.github.com/repos/classgraph/classgraph/contents/src?ref=classgraph-4.8.108",
+    "html_url": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src",
+    "git_url": "https://api.github.com/repos/classgraph/classgraph/git/trees/2389c713b3ede6eecf91c9cee8cd11b4f47d335f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/classgraph/classgraph/contents/src?ref=classgraph-4.8.108",
+      "git": "https://api.github.com/repos/classgraph/classgraph/git/trees/2389c713b3ede6eecf91c9cee8cd11b4f47d335f",
+      "html": "https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src"
+    }
+
+codex
+Maven Central publishes both `-sources.jar` and `-javadoc.jar` for this version, but not a test-sources artifact. I’m using Maven URLs for sources/docs and the tagged GitHub `src/test` directory for the test suite.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+index f8ba56f10884cba92ac73f4b468db58a75a77563..cab1f9607b089c77c74e470bcd6197821a50dcae
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.108"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.108",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a classpath and module scanner for JVM applications. It discovers classes, annotations, resources, modules, and package metadata without requiring applications to load the scanned classes."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+index f8ba56f10884cba92ac73f4b468db58a75a77563..cab1f9607b089c77c74e470bcd6197821a50dcae
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.108"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.108",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a classpath and module scanner for JVM applications. It discovers classes, annotations, resources, modules, and package metadata without requiring applications to load the scanned classes."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+ succeeded in 0ms:
+{
+  "coordinates": "io.github.classgraph:classgraph:4.8.108",
+  "repository-url": "https://github.com/classgraph/classgraph",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
+  "test-code-url": "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
+  "description": "ClassGraph is a classpath and module scanner for JVM applications. It discovers classes, annotations, resources, modules, and package metadata without requiring applications to load the scanned classes."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/4.8.108/classgraph-4.8.108-sources.jar \\
+  https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/4.8.108/classgraph-4.8.108-javadoc.jar \\
+  https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src/test; do \\
+  code="'$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+index f8ba56f10884cba92ac73f4b468db58a75a77563..cab1f9607b089c77c74e470bcd6197821a50dcae
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.108"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.108",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a classpath and module scanner for JVM applications. It discovers classes, annotations, resources, modules, and package metadata without requiring applications to load the scanned classes."
+ }
+
+ succeeded in 1691ms:
+200 https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/4.8.108/classgraph-4.8.108-sources.jar
+200 https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/4.8.108/classgraph-4.8.108-javadoc.jar
+200 https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src/test
+
+codex
+The JSON parses correctly. The Maven source and Javadoc URLs resolve with the version substituted; I’m waiting on the GitHub tagged test path check, then I’ll report the exact change.
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+index f8ba56f10884cba92ac73f4b468db58a75a77563..cab1f9607b089c77c74e470bcd6197821a50dcae
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.108"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.108",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a classpath and module scanner for JVM applications. It discovers classes, annotations, resources, modules, and package metadata without requiring applications to load the scanned classes."
+ }
+
+web search: 
+web search: https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src/test
+web search: 
+web search: repo.maven.apache.org maven2 io github classgraph classgraph 4.8.108 sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/io.github.classgraph/classgraph
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json && git diff --no-index /dev/null build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json 2>/dev/null | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+index f8ba56f10884cba92ac73f4b468db58a75a77563..cab1f9607b089c77c74e470bcd6197821a50dcae
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.108"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.108",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a classpath and module scanner for JVM applications. It discovers classes, annotations, resources, modules, and package metadata without requiring applications to load the scanned classes."
+ }
+
+ succeeded in 315ms:
+diff --git 1/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json 2/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+new file mode 100644
+index 0000000000..cab1f9607b
+--- /dev/null
++++ 2/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+@@ -0,0 +1,8 @@
++{
++  "coordinates" : "io.github.classgraph:classgraph:4.8.108",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a classpath and module scanner for JVM applications. It discovers classes, annotations, resources, modules, and package metadata without requiring applications to load the scanned classes."
++}
+
+web search: 
+web search: io.github.classgraph classgraph 4.8.108 Maven Central POM sources javadoc ClassGraph GitHub
+web search: 
+web search: https://github.com/classgraph/classgraph/tree/classgraph-4.8.108/src/test
+web search: 
+web search: 
+web search: 
+web search: "classgraph-4.8.108-sources.jar" "classgraph-4.8.108-javadoc.jar"
+codex
+Updated [io.github.classgraph-classgraph-4.8.108.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json:1) with repository, Maven source/Javadoc URLs, tagged GitHub test URL, and a two-sentence description.
+
+I left `language` absent because ClassGraph is for JVM languages generally, not a Kotlin/Groovy/Scala-specific artifact, and I did not set `not-for-native-image` because the artifact is a JVM `jar`. Maven identifies the artifact as `io.github.classgraph:classgraph:jar:4.8.108`, and the tagged GitHub tree includes `src/test`. ([mvnrepository.com](https://mvnrepository.com/artifact/io.github.classgraph/classgraph/4.8.108?utm_source=openai))
+
+Validated the JSON with `jq`, and checked the substituted source, documentation, and test URLs all return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+index f8ba56f10884cba92ac73f4b468db58a75a77563..cab1f9607b089c77c74e470bcd6197821a50dcae
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.108"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.108",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a classpath and module scanner for JVM applications. It discovers classes, annotations, resources, modules, and package metadata without requiring applications to load the scanned classes."
+ }
+
+tokens used
+85,606
+Updated [io.github.classgraph-classgraph-4.8.108.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.108.json:1) with repository, Maven source/Javadoc URLs, tagged GitHub test URL, and a two-sentence description.
+
+I left `language` absent because ClassGraph is for JVM languages generally, not a Kotlin/Groovy/Scala-specific artifact, and I did not set `not-for-native-image` because the artifact is a JVM `jar`. Maven identifies the artifact as `io.github.classgraph:classgraph:jar:4.8.108`, and the tagged GitHub tree includes `src/test`. ([mvnrepository.com](https://mvnrepository.com/artifact/io.github.classgraph/classgraph/4.8.108?utm_source=openai))
+
+Validated the JSON with `jq`, and checked the substituted source, documentation, and test URLs all return HTTP 200.
+Ran agent for io.github.classgraph:classgraph:4.8.108 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef/build/agent-artifact-discovery-logs/io.github.classgraph-classgraph-4.8.108.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2805-ea5adaef/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 54s
+9 actionable tasks: 9 executed
