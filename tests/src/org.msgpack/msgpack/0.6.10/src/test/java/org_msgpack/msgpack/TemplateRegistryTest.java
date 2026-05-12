@@ -68,6 +68,20 @@ public class TemplateRegistryTest {
     }
 
     @Test
+    void looksUpTemplateForGenericReferenceArrayTypeWithClassForNameFallback() throws Exception {
+        final TemplateRegistry registry = new TemplateRegistry(null);
+        final GenericArrayType stringArrayType = genericArrayType(String.class, String.class + "[]");
+        final ClassLoader previousClassLoader = Thread.currentThread().getContextClassLoader();
+
+        Thread.currentThread().setContextClassLoader(null);
+        try {
+            assertStringArrayRoundTrip(registry, stringArrayType);
+        } finally {
+            Thread.currentThread().setContextClassLoader(previousClassLoader);
+        }
+    }
+
+    @Test
     void reportsMissingGenericArrayComponentTypeAfterTryingClassLoaders() {
         final TemplateRegistry registry = new TemplateRegistry(null);
         final String missingTypeName = "org_msgpack.msgpack.NoSuchMessagePackComponent";
