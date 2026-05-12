@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.velocity.runtime.RuntimeConstants;
@@ -25,7 +24,6 @@ public class ResourceManagerImplTest {
     @Test
     void initializesDefaultResourceCacheWhenConfiguredCacheClassHasWrongType() throws Exception {
         ExtendedProperties configuration = new ExtendedProperties();
-        configuration.setProperty(RuntimeConstants.RESOURCE_LOADER, new Vector<String>());
         configuration.setProperty(RuntimeConstants.RESOURCE_MANAGER_CACHE_CLASS, ResourceManagerImpl.class.getName());
 
         ConfiguredRuntimeInstance runtime = new ConfiguredRuntimeInstance(configuration);
