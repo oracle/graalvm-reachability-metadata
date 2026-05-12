@@ -43,7 +43,7 @@ public class XmlRequestEntityTest {
     }
 
     private static Document createDocument() throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document document = builder.newDocument();
         Element resource = document.createElement("resource");
