@@ -1,0 +1,129 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.boot:spring-boot-test-autoconfigure:2.7.18
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 2 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+JsonTestersAutoConfigurationInnerJsonTesterFactoryBeanTest > createsJacksonTesterWithMarshallerConstructor() FAILED
+    org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jacksonTesterFactoryBean': FactoryBean threw exception on object creation; nested exception is java.lang.NoClassDefFoundError: com/jayway/jsonpath/spi/json/JsonProvider
+        at app//org.springframework.beans.factory.support.FactoryBeanRegistrySupport.doGetObjectFromFactoryBean(FactoryBeanRegistrySupport.java:176)
+        at app//org.springframework.beans.factory.support.FactoryBeanRegistrySupport.getObjectFromFactoryBean(FactoryBeanRegistrySupport.java:135)
+        at app//org.springframework.beans.factory.support.AbstractBeanFactory.getObjectForBeanInstance(AbstractBeanFactory.java:1898)
+        at app//org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getObjectForBeanInstance(AbstractAutowireCapableBeanFactory.java:1284)
+        at app//org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:358)
+        at app//org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+        at app//org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1168)
+        at java.base@25.0.3/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base@25.0.3/java.lang.reflect.Method.invoke(Method.java:565)
+        at app//org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.invokeApplicationContextMethod(AssertProviderApplicationContextInvocationHandler.java:147)
+        at app//org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.invoke(AssertProviderApplicationContextInvocationHandler.java:85)
+        at app/jdk.proxy3/jdk.proxy3.$Proxy33.getBean(Unknown Source)
+        at app//org_springframework_boot.spring_boot_test_autoconfigure.JsonTestersAutoConfigurationInnerJsonTesterFactoryBeanTest.lambda$createsJacksonTesterWithMarshallerConstructor$0(JsonTestersAutoConfigurationInnerJsonTesterFactoryBeanTest.java:35)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:480)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$null$0(AbstractApplicationContextRunner.java:407)
+        at app//org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:405)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:416)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:404)
+        at app//org_springframework_boot.spring_boot_test_autoconfigure.JsonTestersAutoConfigurationInnerJsonTesterFactoryBeanTest.createsJacksonTesterWithMarshallerConstructor(JsonTestersAutoConfigurationInnerJsonTesterFactoryBeanTest.java:35)
+
+        Caused by:
+        java.lang.NoClassDefFoundError: com/jayway/jsonpath/spi/json/JsonProvider
+            at java.base/java.lang.Class.getDeclaredConstructors0(Native Method)
+            at java.base/java.lang.Class.privateGetDeclaredConstructors(Class.java:2985)
+            at java.base/java.lang.Class.getDeclaredConstructors(Class.java:2354)
+            at org.springframework.boot.test.autoconfigure.json.JsonTestersAutoConfiguration$JsonTesterFactoryBean.getObject(JsonTestersAutoConfiguration.java:145)
+            at org.springframework.beans.factory.support.FactoryBeanRegistrySupport.doGetObjectFromFactoryBean(FactoryBeanRegistrySupport.java:169)
+
+3 tests completed, 1 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/tests/src/org.springframework.boot/spring-boot-test-autoconfigure/2.7.18/build/reports/tests/test/index.html
+
+* Try:
+            ... 19 more
+> 
+Run with --scan to generate a Build Scan (Powered by Develocity).
+            Caused by:
+            java.lang.ClassNotFoundException: com.jayway.jsonpath.spi.json.JsonProvider
+                at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+                at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+                ... 24 more
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/tests/src/org.springframework.boot/spring-boot-test-autoconfigure/2.7.18/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED in 7s
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.boot:spring-boot-test-autoconfigure:2.7.18 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 8s
+9 actionable tasks: 1 executed, 8 up-to-date

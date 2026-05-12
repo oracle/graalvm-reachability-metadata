@@ -1,0 +1,743 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1d25-de6c-7b81-823e-98462c799cbd
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-test-autoconfigure:2.7.18
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.7.18" when "$version$" is replaced with "2.7.18".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+- Set "coordinates" to "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.7.18".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/Spring sources first, then update the JSON directly and validate its formatting.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json && sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+-rw-rw-r-- 1 vjovanov vjovanov 87 May 12 19:04 build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+{
+  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "spring-boot-test-autoconfigure" -S .' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-test-autoconfigure 2.7.18 sources jar
+codex
+The artifact exists as a regular Maven JAR with sources on Maven Central, so I’m treating it as a JVM artifact and not marking it `not-for-native-image`. I’m checking the repo’s existing metadata style before writing the discovered URLs.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+ succeeded in 0ms:
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:6:    "repository-url": "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:6:    "repository-url" : "https://github.com/Comcast/ip4s",
+metadata/com.comcast/ip4s-core_3/index.json:7:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.github.ghostdogpr/caliban_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ghostdogpr/caliban_3/$version$/caliban_3-$version$-sources.jar",
+metadata/com.github.ghostdogpr/caliban_3/index.json:6:    "repository-url" : "https://github.com/ghostdogpr/caliban",
+metadata/com.github.ghostdogpr/caliban_3/index.json:7:    "test-code-url" : "https://github.com/ghostdogpr/caliban/tree/v$version$/core/src/test",
+metadata/com.github.ghostdogpr/caliban_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ghostdogpr/caliban_3/$version$/caliban_3-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:6:    "repository-url" : "https://github.com/ning/compress",
+metadata/com.ning/compress-lzf/index.json:7:    "test-code-url" : "https://github.com/ning/compress/tree/compress-lzf-$version$/src/test",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-tests.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/2.7.18/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/2.7.18/spring-boot-test-autoconfigure-2.7.18-sources.jar && curl -fsSL -I https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/2.7.18/spring-boot-test-autoconfigure-2.7.18-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/2.7.18/spring-boot-test-autoconfigure-2.7.18.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-test-autoconfigure</artifactId>
+  <version>2.7.18</version>
+  <name>spring-boot-test-autoconfigure</name>
+  <description>Spring Boot Test AutoConfigure</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>2.7.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-test</artifactId>
+      <version>2.7.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>2.7.18</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 268ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-test-autoconfigure/2.7.18</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-test-autoconfigure/2.7.18</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-test-autoconfigure-2.7.18-javadoc.jar" title="spring-boot-test-autoconfigure-2.7.18-javadoc.jar">spring-boot-test-autoconfigure-2.7.18-javadoc...</a>  2023-11-23 08:05    417021      
+<a href="spring-boot-test-autoconfigure-2.7.18-javadoc.jar.asc" title="spring-boot-test-autoconfigure-2.7.18-javadoc.jar.asc">spring-boot-test-autoconfigure-2.7.18-javadoc...</a>  2023-11-23 08:05       833      
+<a href="spring-boot-test-autoconfigure-2.7.18-javadoc.jar.md5" title="spring-boot-test-autoconfigure-2.7.18-javadoc.jar.md5">spring-boot-test-autoconfigure-2.7.18-javadoc...</a>  2023-11-23 08:05        32      
+<a href="spring-boot-test-autoconfigure-2.7.18-javadoc.jar.sha1" title="spring-boot-test-autoconfigure-2.7.18-javadoc.jar.sha1">spring-boot-test-autoconfigure-2.7.18-javadoc...</a>  2023-11-23 08:05        40      
+<a href="spring-boot-test-autoconfigure-2.7.18-sources.jar" title="spring-boot-test-autoconfigure-2.7.18-sources.jar">spring-boot-test-autoconfigure-2.7.18-sources...</a>  2023-11-23 08:05    218356      
+<a href="spring-boot-test-autoconfigure-2.7.18-sources.jar.asc" title="spring-boot-test-autoconfigure-2.7.18-sources.jar.asc">spring-boot-test-autoconfigure-2.7.18-sources...</a>  2023-11-23 08:05       833      
+<a href="spring-boot-test-autoconfigure-2.7.18-sources.jar.md5" title="spring-boot-test-autoconfigure-2.7.18-sources.jar.md5">spring-boot-test-autoconfigure-2.7.18-sources...</a>  2023-11-23 08:05        32      
+<a href="spring-boot-test-autoconfigure-2.7.18-sources.jar.sha1" title="spring-boot-test-autoconfigure-2.7.18-sources.jar.sha1">spring-boot-test-autoconfigure-2.7.18-sources...</a>  2023-11-23 08:05        40      
+<a href="spring-boot-test-autoconfigure-2.7.18.jar" title="spring-boot-test-autoconfigure-2.7.18.jar">spring-boot-test-autoconfigure-2.7.18.jar</a>         2023-11-23 08:05    213810      
+<a href="spring-boot-test-autoconfigure-2.7.18.jar.asc" title="spring-boot-test-autoconfigure-2.7.18.jar.asc">spring-boot-test-autoconfigure-2.7.18.jar.asc</a>     2023-11-23 08:05       833      
+<a href="spring-boot-test-autoconfigure-2.7.18.jar.md5" title="spring-boot-test-autoconfigure-2.7.18.jar.md5">spring-boot-test-autoconfigure-2.7.18.jar.md5</a>     2023-11-23 08:05        32      
+<a href="spring-boot-test-autoconfigure-2.7.18.jar.sha1" title="spring-boot-test-autoconfigure-2.7.18.jar.sha1">spring-boot-test-autoconfigure-2.7.18.jar.sha...</a>  2023-11-23 08:05        40      
+<a href="spring-boot-test-autoconfigure-2.7.18.module" title="spring-boot-test-autoconfigure-2.7.18.module">spring-boot-test-autoconfigure-2.7.18.module</a>      2023-11-23 08:05      6901      
+<a href="spring-boot-test-autoconfigure-2.7.18.module.asc" title="spring-boot-test-autoconfigure-2.7.18.module.asc">spring-boot-test-autoconfigure-2.7.18.module....</a>  2023-11-23 08:05       833      
+<a href="spring-boot-test-autoconfigure-2.7.18.module.md5" title="spring-boot-test-autoconfigure-2.7.18.module.md5">spring-boot-test-autoconfigure-2.7.18.module....</a>  2023-11-23 08:05        32      
+<a href="spring-boot-test-autoconfigure-2.7.18.module.sha1" title="spring-boot-test-autoconfigure-2.7.18.module.sha1">spring-boot-test-autoconfigure-2.7.18.module....</a>  2023-11-23 08:05        40      
+<a href="spring-boot-test-autoconfigure-2.7.18.pom" title="spring-boot-test-autoconfigure-2.7.18.pom">spring-boot-test-autoconfigure-2.7.18.pom</a>         2023-11-23 08:05      2474      
+<a href="spring-boot-test-autoconfigure-2.7.18.pom.asc" title="spring-boot-test-autoconfigure-2.7.18.pom.asc">spring-boot-test-autoconfigure-2.7.18.pom.asc</a>     2023-11-23 08:05       833      
+<a href="spring-boot-test-autoconfigure-2.7.18.pom.md5" title="spring-boot-test-autoconfigure-2.7.18.pom.md5">spring-boot-test-autoconfigure-2.7.18.pom.md5</a>     2023-11-23 08:05        32      
+<a href="spring-boot-test-autoconfigure-2.7.18.pom.sha1" title="spring-boot-test-autoconfigure-2.7.18.pom.sha1">spring-boot-test-autoconfigure-2.7.18.pom.sha...</a>  2023-11-23 08:05        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 320ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 12 May 2026 17:05:05 GMT
+content-type: text/html
+cf-ray: 9fab01975a66c986-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/boot/spring-boot-test-autoconfigure/2.7.18/spring-boot-test-autoconfigure-2.7.18-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-test-autoconfigure 2.7.18
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-test-autoconfigure/src/test/java' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-test-autoconfigure' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://docs.spring.io/spring-boot/docs/2.7.18/api/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-boot/v2.7.18/spring-boot-project/spring-boot-test-autoconfigure/build.gradle | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+ succeeded in 192ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 17:05:16 GMT
+content-type: text/html
+last-modified: Thu, 23 Nov 2023 07:23:12 GMT
+strict-transport-security: max-age=15552000; includeSubDomains
+vary: Accept-Encoding
+set-cookie: __cf_bm=hszDcHreRgwD8lqUXFHy5k3XoV9bZR6EgFdGHOvZ3d8-1778605516.4080513-1.0.1.1-t.dWlbNtEVXBy_UU0RWmxzsisd0gtHCK4ThzhYpgnM65jlmDHqwARBsV0lwWw_Fs_oaIUOyYLyk7rNc9P5jKfrgK.kDFHw4z6KSRyQDncuNnJmuuWWmrFDvm9maFR2zo; HttpOnly; SameSite=None; Secure; Path=/; Domain=spring.io; Expires=Tue, 12 May 2026 17:35:16 GMT
+server: cloudflare
+expires: Tue, 12 May 2026 18:05:16 GMT
+cache-control: public, max-age=3600
+cf-cache-status: EXPIRED
+link: <https://docs.spring.io/spring-boot/docs/current/api/index.html>; rel="canonical"
+cf-ray: 9fab01dd880b3b5e-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 206ms:
+plugins {
+	id "java-library"
+	id "org.springframework.boot.conventions"
+	id "org.springframework.boot.deployed"
+	id "org.springframework.boot.optional-dependencies"
+}
+
+description = "Spring Boot Test AutoConfigure"
+
+dependencies {
+	api(project(":spring-boot-project:spring-boot"))
+	api(project(":spring-boot-project:spring-boot-test"))
+	api(project(":spring-boot-project:spring-boot-autoconfigure"))
+
+	optional("jakarta.json.bind:jakarta.json.bind-api")
+	optional("jakarta.persistence:jakarta.persistence-api")
+	optional("jakarta.servlet:jakarta.servlet-api")
+	optional("jakarta.transaction:jakarta.transaction-api")
+	optional("com.fasterxml.jackson.core:jackson-databind")
+	optional("com.google.code.gson:gson")
+	optional("com.jayway.jsonpath:json-path")
+	optional("com.sun.xml.messaging.saaj:saaj-impl")
+	optional("io.rest-assured:rest-assured") {
+		exclude group: "commons-logging", module: "commons-logging"
+		exclude group: "javax.activation", module: "activation"
+		exclude group: "javax.xml.bind", module: "jaxb-api"
+	}
+	optional("net.sourceforge.htmlunit:htmlunit") {
+		exclude group: "commons-logging", module: "commons-logging"
+	}
+	optional("org.hibernate:hibernate-core") {
+		exclude group: "commons-logging", module: "commons-logging"
+		exclude group: "javax.activation", module: "javax.activation-api"
+		exclude group: "javax.persistence", module: "javax.persistence-api"
+		exclude group: "javax.xml.bind", module: "jaxb-api"
+		exclude group: "org.jboss.spec.javax.transaction", module: "jboss-transaction-api_1.2_spec"
+	}
+	optional("org.junit.jupiter:junit-jupiter-api")
+	optional("org.seleniumhq.selenium:htmlunit-driver") {
+		exclude group: "commons-logging", module: "commons-logging"
+	}
+	optional("org.seleniumhq.selenium:selenium-api")
+	optional("org.springframework:spring-orm")
+	optional("org.springframework:spring-test")
+	optional("org.springframework:spring-web")
+	optional("org.springframework:spring-webmvc")
+	optional("org.springframework:spring-webflux")
+	optional("org.springframework.data:spring-data-cassandra") {
+		exclude group: "org.slf4j", module: "jcl-over-slf4j"
+	}
+	optional("org.springframework.data:spring-data-couchbase") {
+		exclude group: "com.querydsl", module: "querydsl-apt"
+		exclude group: "javax.annotation", module: "javax.annotation-api"
+	}
+	optional("org.springframework.data:spring-data-elasticsearch")
+	optional("org.springframework.data:spring-data-jdbc")
+	optional("org.springframework.data:spring-data-jpa")
+	optional("org.springframework.data:spring-data-ldap")
+	optional("org.springframework.data:spring-data-mongodb")
+	optional("org.springframework.data:spring-data-neo4j")
+	optional("org.springframework.data:spring-data-r2dbc")
+	optional("org.springframework.data:spring-data-redis")
+	optional("org.springframework.graphql:spring-graphql-test")
+	optional("org.springframework.restdocs:spring-restdocs-mockmvc") {
+		exclude group: "javax.servlet", module: "javax.servlet-api"
+	}
+	optional("org.springframework.restdocs:spring-restdocs-restassured") {
+		exclude group: "commons-logging", module: "commons-logging"
+		exclude group: "javax.activation", module: "activation"
+		exclude group: "javax.xml.bind", module: "jaxb-api"
+	}
+	optional("org.springframework.restdocs:spring-restdocs-webtestclient")
+	optional("org.springframework.security:spring-security-config")
+	optional("org.springframework.security:spring-security-test")
+	optional("org.springframework.ws:spring-ws-core")
+	optional("org.springframework.ws:spring-ws-test")
+	optional("org.apache.tomcat.embed:tomcat-embed-core")
+	optional("org.mongodb:mongodb-driver-reactivestreams")
+	optional("org.mongodb:mongodb-driver-sync")
+
+	testImplementation(project(":spring-boot-project:spring-boot-actuator"))
+	testImplementation(project(":spring-boot-project:spring-boot-actuator-autoconfigure"))
+	testImplementation(project(":spring-boot-project:spring-boot-tools:spring-boot-test-support"))
+	testImplementation("ch.qos.logback:logback-classic")
+	testImplementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
+	testImplementation("com.h2database:h2")
+	testImplementation("com.unboundid:unboundid-ldapsdk")
+	testImplementation("io.lettuce:lettuce-core")
+	testImplementation("io.micrometer:micrometer-registry-prometheus")
+	testImplementation("io.projectreactor.netty:reactor-netty-http")
+	testImplementation("io.projectreactor:reactor-core")
+	testImplementation("io.projectreactor:reactor-test")
+	testImplementation("io.r2dbc:r2dbc-h2")
+	testImplementation("jakarta.json:jakarta.json-api")
+	testImplementation("org.apache.commons:commons-pool2")
+	testImplementation("org.apache.johnzon:johnzon-jsonb")
+	testImplementation("org.apache.tomcat.embed:tomcat-embed-el")
+	testImplementation("org.aspectj:aspectjrt")
+	testImplementation("org.aspectj:aspectjweaver")
+	testImplementation("org.assertj:assertj-core")
+	testImplementation("org.awaitility:awaitility")
+	testImplementation("org.hibernate.validator:hibernate-validator")
+	testImplementation("org.hsqldb:hsqldb")
+	testImplementation("org.jooq:jooq") {
+		exclude group: "javax.xml.bind", module: "jaxb-api"
+	}
+	testImplementation("org.junit.jupiter:junit-jupiter")
+	testImplementation("org.junit.platform:junit-platform-engine")
+	testImplementation("org.junit.platform:junit-platform-launcher")
+	testImplementation("org.mockito:mockito-core")
+	testImplementation("org.mockito:mockito-junit-jupiter")
+	testImplementation("org.skyscreamer:jsonassert")
+	testImplementation("org.springframework.hateoas:spring-hateoas")
+	testImplementation("org.springframework.plugin:spring-plugin-core")
+	testImplementation("org.testcontainers:cassandra")
+	testImplementation("org.testcontainers:couchbase")
+	testImplementation("org.testcontainers:elasticsearch")
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:mongodb")
+	testImplementation("org.testcontainers:neo4j")
+	testImplementation("org.testcontainers:testcontainers")
+	testImplementation("org.thymeleaf:thymeleaf")
+}
+
+configurations {
+	configurationPropertiesMetadata
+}
+
+artifacts {
+	configurationPropertiesMetadata new File(sourceSets.main.output.resourcesDir, "META-INF/spring-configuration-metadata.json"), { artifact ->
+		artifact.builtBy sourceSets.main.processResourcesTaskName
+	}
+}
+
+test {
+	include "**/*Tests.class"
+}
+
+task testSliceMetadata(type: org.springframework.boot.build.test.autoconfigure.TestSliceMetadata) {
+	sourceSet = sourceSets.main
+	outputFile = file("${buildDir}/test-slice-metadata.properties")
+}
+
+ succeeded in 594ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 17:05:16 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6dbdec44ade1b5b7be53f746cd8ec353"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=8w0OgH0wF5wio66m01Q113Kz78E8YtM4QKoyvR%2F4fE35jy04Zmezj66s3fAhLfvKkhb7qtCsg9kkmceqizcoPEzvYO3PLpiO6y9ihLaRZI1zTNVsfQeSMPGlRKSTcy46ksbFkbgTzvrwzD1Zsr9XhHblVSsRx5Wqjxyj6lkROUY5QCnnZ4tB7wpOUiIFZyXGYNOYAmgeiLHgH0gAScAYZMlUNKk5B6i7kBOxaH0drSyT%2F0lf9rxt6Gg45GbfuXCszdTGDcfwc9YSVY9K7THsLw%3D%3D--ULiDQao%2BTPJep16R--eXhYHmhqR%2B%2F0EGKyyk5rRQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1258871560.1778605516; expires=Wed, 12 May 2027 17:05:16 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 12 May 2027 17:05:16 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5126:3983C8:1B28282:145900A:6A035DCC
+
+
+ succeeded in 813ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 17:05:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"fe1aa6e2e6530770bf7a77d66f346bc5"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=xafTINBmox9KotZ7LohMus0BsJlJFeTtJoEedN6hQ%2BSngCFojGw0FNn%2FRrk75430Vzp23rt0YobX%2BZyZ2vA0uappPfFHBM6r%2F9hr9au4%2BzHQOZtbQ%2BtVWjkwqJMBHpONdYXUE8bTqoFbTEaUwodOLlgP14S8xFOpjFYA5Yb7GQmleLcrJ9EkjN5sGH77HNzq4r7E8s2crDSvBpD4MOdk1tPpKnAciW%2BH1CVNDcIoDI0pm4e8yhySQMSNXIL4M%2BpzVb%2BB5CfuGa7dTX%2BFsRygig%3D%3D--dSH4CX63XdXukhSj--%2BrPclA2jr6dDPJGEsHX1%2FQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1529917868.1778605516; expires=Wed, 12 May 2027 17:05:16 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 12 May 2027 17:05:16 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5113:1E5DB6:1BE46F4:14EDDAA:6A035DCC
+
+
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-test-autoconfigure/src/test/java
+web search: 
+web search: repo.maven.apache.org maven2 org springframework boot spring-boot-test-autoconfigure 2.7.18 sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/
+web search: 
+web search: 
+codex
+I found no published `-tests.jar` for this artifact, so the test suite URL will use the `v$version$` GitHub tag path. The source and documentation URLs can use Maven Central `-sources.jar` and `-javadoc.jar`, matching the metadata style already in the repo.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+index d0bf1d76a4ce532d3ecadecd56bbcf4216c75e41..56fc4c0dca96e95ec482b83b46e2a84ab6ce7231
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-test-autoconfigure/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Test AutoConfigure provides auto-configuration support for Spring Boot test slices and test utilities. It supplies annotations and infrastructure that let tests load focused application contexts for web, data, JSON, REST client, and other Spring Boot components."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+index d0bf1d76a4ce532d3ecadecd56bbcf4216c75e41..56fc4c0dca96e95ec482b83b46e2a84ab6ce7231
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-test-autoconfigure/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Test AutoConfigure provides auto-configuration support for Spring Boot test slices and test utilities. It supplies annotations and infrastructure that let tests load focused application contexts for web, data, JSON, REST client, and other Spring Boot components."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-test-autoconfigure/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-javadoc.jar",
+  "description": "Spring Boot Test AutoConfigure provides auto-configuration support for Spring Boot test slices and test utilities. It supplies annotations and infrastructure that let tests load focused application contexts for web, data, JSON, REST client, and other Spring Boot components."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/2.7.18/spring-boot-test-autoconfigure-2.7.18-sources.jar && curl -fsSL -I https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/2.7.18/spring-boot-test-autoconfigure-2.7.18-javadoc.jar && curl -fsSL -I https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-test-autoconfigure/src/test/java' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp) && curl -fsSL -o "$tmp" https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/2.7.18/spring-boot-test-autoconfigure-2.7.18.jar && unzip -l "$tmp" | rg '"'\\.class"'$'"' | head -20; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+ succeeded in 120ms:
+      880  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/core/AutoConfigureCache.class
+      912  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/couchbase/DataCouchbaseTypeExcludeFilter.class
+     1967  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/couchbase/DataCouchbaseTest.class
+     1322  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/couchbase/DataCouchbaseTestContextBootstrapper.class
+      612  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/couchbase/AutoConfigureDataCouchbase.class
+     1282  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/r2dbc/DataR2dbcTestContextBootstrapper.class
+      884  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/r2dbc/DataR2dbcTypeExcludeFilter.class
+     1855  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/r2dbc/DataR2dbcTest.class
+      600  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/r2dbc/AutoConfigureDataR2dbc.class
+      884  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/mongo/DataMongoTypeExcludeFilter.class
+     1931  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/mongo/DataMongoTest.class
+     1282  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/mongo/DataMongoTestContextBootstrapper.class
+      600  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/mongo/AutoConfigureDataMongo.class
+     1272  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/ldap/DataLdapTestContextBootstrapper.class
+      877  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/ldap/DataLdapTypeExcludeFilter.class
+     1922  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/ldap/DataLdapTest.class
+      597  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/ldap/AutoConfigureDataLdap.class
+     1322  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/cassandra/DataCassandraTestContextBootstrapper.class
+     1967  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/cassandra/DataCassandraTest.class
+      612  2023-11-23 07:21   org/springframework/boot/test/autoconfigure/data/cassandra/AutoConfigureDataCassandra.class
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+index d0bf1d76a4ce532d3ecadecd56bbcf4216c75e41..56fc4c0dca96e95ec482b83b46e2a84ab6ce7231
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-test-autoconfigure/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Test AutoConfigure provides auto-configuration support for Spring Boot test slices and test utilities. It supplies annotations and infrastructure that let tests load focused application contexts for web, data, JSON, REST client, and other Spring Boot components."
+ }
+
+ succeeded in 245ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 17:05:49 GMT
+content-type: application/java-archive
+content-length: 417021
+cf-ray: 9fab02ae7b981569-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 982570
+etag: "af1bbfd3b926aca6fa53975854b25b22"
+last-modified: Thu, 23 Nov 2023 08:05:40 GMT
+x-checksum-md5: af1bbfd3b926aca6fa53975854b25b22
+x-checksum-sha1: 26ff4e1cb369cea1e1d8b2373fc29aace1031cbc
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 12 May 2026 17:05:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"fe1aa6e2e6530770bf7a77d66f346bc5"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=MGSxBOLWQFb5SXUf1eKatYur%2Fi900w62BlYbi7Id4j55L%2BPVNrm3bNPB%2FsNBMVYEzldEbRXSAUlLhbuoN9WZOuz61OB7M03kCEPpajLDa9W9XOcVxj5B9ARbCSoP47bJIasxSuLiIBbZlyVHQUCPTAtk2orCCeVKSQoPwI6vhl1vcXuUqSscLZrou7nkoYnVrzidAVRkElmQWi5Ts1X5LFFtjJNy1KW0YU%2Bb9NmqMcreS0sQ6uy1vm0aGmClqRm%2FjmeN59EVyeMAJe3UtmsDQA%3D%3D--GVHn2pXVQU4YEsHX--tofyRbESFKbOcfc%2FZNq4OQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1123414599.1778605549; expires=Wed, 12 May 2027 17:05:49 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 12 May 2027 17:05:49 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5111:B969D:1BE9E67:14E7CC0:6A035DED
+
+
+web search: 
+web search: site:mvnrepository.com/artifact/org.springframework.boot/spring-boot-test-autoconfigure/2.7.18 spring-boot-test-autoconfigure 2.7.18
+web search: 
+web search: site:docs.spring.io/spring-boot/docs/2.7.18 Spring Boot test slices AutoConfigure
+codex
+The JSON is valid, the rendered source/doc/test URLs returned HTTP 200, and the published JAR contains JVM `.class` files. I’m doing one final diff check now.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+index d0bf1d76a4ce532d3ecadecd56bbcf4216c75e41..56fc4c0dca96e95ec482b83b46e2a84ab6ce7231
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-test-autoconfigure/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Test AutoConfigure provides auto-configuration support for Spring Boot test slices and test utilities. It supplies annotations and infrastructure that let tests load focused application contexts for web, data, JSON, REST client, and other Spring Boot components."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json && git status --short --ignored=matching build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+index d0bf1d76a4ce532d3ecadecd56bbcf4216c75e41..56fc4c0dca96e95ec482b83b46e2a84ab6ce7231
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-test-autoconfigure/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Test AutoConfigure provides auto-configuration support for Spring Boot test slices and test utilities. It supplies annotations and infrastructure that let tests load focused application contexts for web, data, JSON, REST client, and other Spring Boot components."
+ }
+
+ succeeded in 171ms:
+!! build/
+
+codex
+Updated [the metadata JSON](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json:1).
+
+I set the repository, Maven Central source/Javadoc URLs, GitHub tagged test-suite URL, and the two-sentence description. I left `language` absent and did not set `not-for-native-image` because the published artifact is a JVM JAR with `.class` files.
+
+Validation performed: `jq` passed, and the rendered source, documentation, and test URLs for `2.7.18` returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+index d0bf1d76a4ce532d3ecadecd56bbcf4216c75e41..56fc4c0dca96e95ec482b83b46e2a84ab6ce7231
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18"
++  "coordinates" : "org.springframework.boot:spring-boot-test-autoconfigure:2.7.18",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-test-autoconfigure/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-test-autoconfigure/$version$/spring-boot-test-autoconfigure-$version$-javadoc.jar",
++  "description" : "Spring Boot Test AutoConfigure provides auto-configuration support for Spring Boot test slices and test utilities. It supplies annotations and infrastructure that let tests load focused application contexts for web, data, JSON, REST client, and other Spring Boot components."
+ }
+
+tokens used
+70,321
+Updated [the metadata JSON](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.json:1).
+
+I set the repository, Maven Central source/Javadoc URLs, GitHub tagged test-suite URL, and the two-sentence description. I left `language` absent and did not set `not-for-native-image` because the published artifact is a JVM JAR with `.class` files.
+
+Validation performed: `jq` passed, and the rendered source, documentation, and test URLs for `2.7.18` returned HTTP 200.
+Ran agent for org.springframework.boot:spring-boot-test-autoconfigure:2.7.18 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-test-autoconfigure-2.7.18.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2382-278c64c0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 1s
+9 actionable tasks: 9 executed
