@@ -6,6 +6,7 @@
  */
 package org_apache_maven_wagon.wagon_file;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.apache.maven.wagon.InputData;
 import org.apache.maven.wagon.OutputData;
@@ -205,6 +208,25 @@ public class Wagon_fileTest {
     }
 
     @Test
+    void createsZipArchiveFromSelectedFilesUsingRelativeEntryNames() throws Exception {
+        Path sourceDirectory = Files.createDirectory(temporaryDirectory.resolve("archive-source"));
+        Files.writeString(sourceDirectory.resolve("index.txt"), "index-content", StandardCharsets.UTF_8);
+        Files.createDirectories(sourceDirectory.resolve("docs"));
+        Files.writeString(sourceDirectory.resolve("docs/readme.txt"), "readme-content", StandardCharsets.UTF_8);
+        Files.writeString(sourceDirectory.resolve("not-selected.txt"), "ignored", StandardCharsets.UTF_8);
+        Path archive = temporaryDirectory.resolve("selected-files.zip");
+        FileWagon wagon = new FileWagon();
+
+        wagon.createZip(List.of("index.txt", "docs/readme.txt"), archive.toFile(), sourceDirectory.toFile());
+
+        try (ZipFile zipFile = new ZipFile(archive.toFile())) {
+            assertThat(readZipEntry(zipFile, "index.txt")).isEqualTo("index-content");
+            assertThat(readZipEntry(zipFile, "docs/readme.txt")).isEqualTo("readme-content");
+            assertThat(zipFile.getEntry("not-selected.txt")).isNull();
+        }
+    }
+
+    @Test
     void exposesStreamBasedInputAndOutputDataForResources() throws Exception {
         Path repositoryDirectory = Files.createDirectory(temporaryDirectory.resolve("repository"));
         FileWagon wagon = connectedWagon(repositoryDirectory);
@@ -281,6 +303,14 @@ public class Wagon_fileTest {
 
     private static Repository repository(Path repositoryDirectory) {
         return new Repository("file-repository", repositoryDirectory.toUri().toString());
+    }
+
+    private static String readZipEntry(ZipFile zipFile, String name) throws IOException {
+        ZipEntry entry = zipFile.getEntry(name);
+        assertThat(entry).isNotNull();
+        try (InputStream inputStream = zipFile.getInputStream(entry)) {
+            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        }
     }
 
     private static final class RecordingTransferListener extends AbstractTransferListener {
