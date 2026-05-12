@@ -72,11 +72,16 @@ Every two weeks the `create-scheduled-release` workflow packages metadata if it 
 
 `publish-scheduled-coverage.yml` derives, from committed `stats/` and `metadata/**/index.json`:
 - `latest/badges.json` — badges shown in the README (libraries supported, tested versions, dynamic-access coverage, tested LOC).
-- `latest/libraries.json` — per-library metrics.
+- `COVERAGE.md` — the per-library coverage table linked from the README. Each
+  table row must link the tested versions to the artifact's
+  `metadata/<group>/<artifact>/index.json` file and the dynamic-access coverage
+  value to the artifact's `stats/<group>/<artifact>/` directory.
 - `latest/metrics-over-time.svg` and `latest/metrics-over-time-dark.svg` — light and dark historical charts referenced from [COVERAGE.md](../COVERAGE.md).
 - `history/history.json` — append-only history.
 
-These are force-pushed to the `stats/coverage` branch.
+CI must keep the root [COVERAGE.md](../COVERAGE.md) on the source branch in
+sync with the generated coverage table. The same `COVERAGE.md` and the badge,
+graph, and history artifacts are published to the `stats/coverage` branch.
 
 ### 4.6 Metadata Forge automation
 
@@ -269,7 +274,7 @@ Forge's functional requirements are specified in [forge/docs/functional-spec.md]
 ### 7.2 Outputs
 
 - Validated metadata + tests + index.json under `metadata/` and `tests/src/`.
-- Mirrored stats under `stats/` and aggregated coverage artifacts on `stats/coverage`.
+- Mirrored stats under `stats/`, a generated root `COVERAGE.md`, and aggregated coverage artifacts on `stats/coverage`.
 - Bi-weekly release artifacts consumed by the GraalVM Gradle/Maven plugins.
 - Forge metrics records under `metrics_repo_path` (or `metadata-forge/{script_run_metrics,benchmark_run_metrics}/` in merged-repo mode).
 - GitHub PRs (only when initiated through Forge `complete_pipelines/` or `git_scripts/`).
