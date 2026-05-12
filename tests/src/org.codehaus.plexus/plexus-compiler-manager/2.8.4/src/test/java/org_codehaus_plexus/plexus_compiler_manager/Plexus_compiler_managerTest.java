@@ -12,9 +12,14 @@ import static org.assertj.core.api.Assertions.fail;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,6 +37,7 @@ import org.codehaus.plexus.compiler.manager.DefaultCompilerManager;
 import org.codehaus.plexus.compiler.manager.NoSuchCompilerException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -74,6 +80,46 @@ public class Plexus_compiler_managerTest {
             assertThat(compiler.getInputFileEnding(configuration)).isEqualTo(".java");
             assertThat(compiler.getOutputFileEnding(configuration)).isEqualTo(".class");
             assertThat(compiler.canUpdateTarget(configuration)).isTrue();
+        } finally {
+            container.dispose();
+        }
+    }
+
+    @Test
+    public void managerSuppliesJavacCompilerThatCompilesConfiguredSourceFiles(@TempDir Path tempDirectory)
+            throws Exception {
+        Path sourceRoot = tempDirectory.resolve("src/main/java");
+        Path sourceFile = sourceRoot.resolve("example/Greeter.java");
+        Files.createDirectories(sourceFile.getParent());
+        Files.writeString(sourceFile, """
+                package example;
+
+                public final class Greeter {
+                    public String greeting() {
+                        return "hello";
+                    }
+                }
+                """, StandardCharsets.UTF_8);
+
+        Path outputDirectory = tempDirectory.resolve("classes");
+        CompilerConfiguration configuration = new CompilerConfiguration();
+        configuration.setFork(true);
+        configuration.setExecutable(javacExecutable());
+        configuration.setOutputLocation(outputDirectory.toString());
+        configuration.setWorkingDirectory(tempDirectory.toFile());
+        configuration.setReleaseVersion(currentJavaRelease());
+        configuration.setSourceFiles(Set.of(sourceFile.toFile()));
+
+        DefaultPlexusContainer container = new DefaultPlexusContainer();
+        try {
+            CompilerManager manager = container.lookup(CompilerManager.class);
+            Compiler compiler = manager.getCompiler("javac");
+
+            CompilerResult result = compiler.performCompile(configuration);
+
+            assertThat(result.isSuccess()).isTrue();
+            assertThat(result.getCompilerMessages()).isEmpty();
+            assertThat(outputDirectory.resolve("example/Greeter.class")).isRegularFile();
         } finally {
             container.dispose();
         }
@@ -161,6 +207,27 @@ public class Plexus_compiler_managerTest {
 
     private static String directChildText(Element element, String name) {
         return directChild(element, name).getTextContent().trim();
+    }
+
+    private static String javacExecutable() {
+        String executableName = isWindows() ? "javac.exe" : "javac";
+        Path javaHomeExecutable = Path.of(System.getProperty("java.home"), "bin", executableName);
+        if (Files.isExecutable(javaHomeExecutable)) {
+            return javaHomeExecutable.toString();
+        }
+        return executableName;
+    }
+
+    private static boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows");
+    }
+
+    private static String currentJavaRelease() {
+        String specificationVersion = System.getProperty("java.specification.version");
+        if (specificationVersion.startsWith("1.")) {
+            return specificationVersion.substring(2);
+        }
+        return specificationVersion;
     }
 
     public static final class InMemoryCompiler implements Compiler {
