@@ -36,15 +36,15 @@ public class Maven_builder_supportTest {
 
     @Test
     void stringSourcePreservesContentLocationAndUtf8Bytes() throws IOException {
-        StringBuilder content = new StringBuilder("<project>héllo</project>\n");
+        StringBuilder content = new StringBuilder("<project>h\u00e9llo</project>\n");
         StringSource source = new StringSource(content, "memory:pom.xml");
 
         content.append("mutated after construction");
 
-        assertThat(source.getContent()).isEqualTo("<project>héllo</project>\n");
+        assertThat(source.getContent()).isEqualTo("<project>h\u00e9llo</project>\n");
         assertThat(source.getLocation()).isEqualTo("memory:pom.xml");
         assertThat(source.toString()).isEqualTo("memory:pom.xml");
-        assertThat(readUtf8(source)).isEqualTo("<project>héllo</project>\n");
+        assertThat(readUtf8(source)).isEqualTo("<project>h\u00e9llo</project>\n");
     }
 
     @Test
