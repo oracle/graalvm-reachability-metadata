@@ -35,6 +35,7 @@ import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.providers.ssh.CommandExecutorStreamProcessor;
 import org.apache.maven.wagon.providers.ssh.LSParser;
+import org.apache.maven.wagon.providers.ssh.interactive.ConsoleInteractiveUserInfo;
 import org.apache.maven.wagon.providers.ssh.interactive.NullInteractiveUserInfo;
 import org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon;
 import org.apache.maven.wagon.providers.ssh.jsch.ScpWagon;
@@ -182,6 +183,47 @@ public class Wagon_sshTest {
     }
 
     @Test
+    void consoleInteractiveUserInfoRoutesPromptsThroughPrompter() {
+        ConsolePrompter prompter = new ConsolePrompter();
+        ConsoleInteractiveUserInfo interactiveUserInfo = new ConsoleInteractiveUserInfo(prompter);
+
+        prompter.promptReply = "yes";
+        assertThat(interactiveUserInfo.promptYesNo("Trust host?"))
+                .isTrue();
+        prompter.promptReply = "NO";
+        assertThat(interactiveUserInfo.promptYesNo("Trust second host?"))
+                .isFalse();
+        assertThat(prompter.prompts)
+                .containsExactly("Trust host?", "Trust second host?");
+        assertThat(prompter.possibleValues)
+                .containsExactly(List.of("yes", "no"), List.of("yes", "no"));
+
+        prompter.passwordReply = "secret";
+        assertThat(interactiveUserInfo.promptPassword("Password:"))
+                .isEqualTo("secret");
+        prompter.passwordReply = "phrase";
+        assertThat(interactiveUserInfo.promptPassphrase("Passphrase:"))
+                .isEqualTo("phrase");
+        assertThat(prompter.passwordPrompts)
+                .containsExactly("Password:", "Passphrase:");
+
+        interactiveUserInfo.showMessage("notice");
+        assertThat(prompter.messages)
+                .containsExactly("notice");
+
+        prompter.failOnPrompt = true;
+        assertThat(interactiveUserInfo.promptYesNo("Unavailable?"))
+                .isFalse();
+        prompter.failOnPasswordPrompt = true;
+        assertThat(interactiveUserInfo.promptPassword("Unavailable password:"))
+                .isNull();
+        assertThat(interactiveUserInfo.promptPassphrase("Unavailable passphrase:"))
+                .isNull();
+        prompter.failOnShowMessage = true;
+        interactiveUserInfo.showMessage("ignored");
+    }
+
+    @Test
     void traditionalKeyboardInteractiveOnlyAnswersSingleHiddenPasswordPrompt() {
         AuthenticationInfo authenticationInfo = authenticationInfo();
         TraditionalUIKeyboardInteractive interactive = new TraditionalUIKeyboardInteractive(authenticationInfo);
@@ -276,6 +318,64 @@ public class Wagon_sshTest {
     private static int findUnusedLocalPort() throws IOException {
         try (ServerSocket serverSocket = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"))) {
             return serverSocket.getLocalPort();
+        }
+    }
+
+    private static final class ConsolePrompter implements Prompter {
+        private final List<String> prompts = new ArrayList<>();
+        private final List<List<String>> possibleValues = new ArrayList<>();
+        private final List<String> passwordPrompts = new ArrayList<>();
+        private final List<String> messages = new ArrayList<>();
+        private String promptReply = "yes";
+        private String passwordReply = "secret";
+        private boolean failOnPrompt;
+        private boolean failOnPasswordPrompt;
+        private boolean failOnShowMessage;
+
+        @Override
+        public String prompt(String message) throws PrompterException {
+            if (failOnPrompt) {
+                throw new PrompterException("failed");
+            }
+            prompts.add(message);
+            return promptReply;
+        }
+
+        @Override
+        public String prompt(String message, String defaultReply) throws PrompterException {
+            return prompt(message);
+        }
+
+        @Override
+        public String prompt(String message, List possibleValues) throws PrompterException {
+            List<String> values = new ArrayList<>();
+            for (Object possibleValue : possibleValues) {
+                values.add(String.valueOf(possibleValue));
+            }
+            this.possibleValues.add(values);
+            return prompt(message);
+        }
+
+        @Override
+        public String prompt(String message, List possibleValues, String defaultReply) throws PrompterException {
+            return prompt(message, possibleValues);
+        }
+
+        @Override
+        public String promptForPassword(String message) throws PrompterException {
+            if (failOnPasswordPrompt) {
+                throw new PrompterException("failed");
+            }
+            passwordPrompts.add(message);
+            return passwordReply;
+        }
+
+        @Override
+        public void showMessage(String message) throws PrompterException {
+            if (failOnShowMessage) {
+                throw new PrompterException("failed");
+            }
+            messages.add(message);
         }
     }
 
