@@ -551,9 +551,8 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
-// gradle generateChangedMetadataTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
-Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChangedMetadataTestMatrix", DefaultTask) { task ->
-    task.setDescription("Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files")
+Closure<Void> configureChangedMetadataTestMatrixTask = { Task task, String matrixTaskName, String description ->
+    task.setDescription(description)
     task.setGroup(METADATA_GROUP)
     task.doFirst {
         if (!project.hasProperty("baseCommit")) {
@@ -567,7 +566,7 @@ Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChang
         boolean noneFound = testEntries.isEmpty()
         List<Map<String, Object>> include = noneFound
                 ? []
-                : expandMatrixEntries(testEntries, "generateChangedMetadataTestMatrix")
+                : expandMatrixEntries(testEntries, matrixTaskName)
         def matrix = [include: include]
         if (noneFound) {
             println "No changed metadata test entries were found!"
@@ -580,6 +579,24 @@ Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChang
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
         writeGithubOutput("none-found", noneFound.toString())
     }
+}
+
+// gradle generateChangedMetadataTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChangedMetadataTestMatrix", DefaultTask) { task ->
+    configureChangedMetadataTestMatrixTask(
+            task,
+            "generateChangedMetadataTestMatrix",
+            "Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files"
+    )
+}
+
+// gradle generateChangedTestedVersionsMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+tasks.register("generateChangedTestedVersionsMatrix", DefaultTask) { task ->
+    configureChangedMetadataTestMatrixTask(
+            task,
+            "generateChangedMetadataTestMatrix",
+            "Compatibility alias for generateChangedMetadataTestMatrix"
+    )
 }
 
 // gradle generateChangedCoordinatesOnlyMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
