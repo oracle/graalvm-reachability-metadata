@@ -79,7 +79,7 @@ public class Api_ldap_modelTest {
         assertThat(person.isDescendantOf(base)).isTrue();
         assertThat(person.getParent()).isEqualTo(people);
         assertThat(person.getRdn().getType()).isEqualTo("cn");
-        assertThat(person.getRdn().getValue().getString()).isEqualTo("John Doe");
+        assertThat(person.getRdn().getValue()).isEqualTo("John Doe");
         assertThat(multiValuedRdn.size()).isEqualTo(2);
         assertThat(multiValuedRdn.getAva("sn")).isNotNull();
         assertThat(Dn.isValid(person.getName())).isTrue();
@@ -228,7 +228,7 @@ public class Api_ldap_modelTest {
         assertThat(compare.getResultResponse().getType()).isEqualTo(MessageTypeEnum.COMPARE_RESPONSE);
         assertThat(delete.getName().getName()).isEqualTo("cn=Obsolete,ou=People,dc=example,dc=com");
         assertThat(delete.getResponseType()).isEqualTo(MessageTypeEnum.DEL_RESPONSE);
-        assertThat(rename.getNewRdn().getValue().getString()).isEqualTo("Jane Smith");
+        assertThat(rename.getNewRdn().getValue()).isEqualTo("Jane Smith");
         assertThat(rename.getNewSuperior().getName()).isEqualTo("ou=Alumni,dc=example,dc=com");
         assertThat(rename.isMove()).isTrue();
         assertThat(rename.getDeleteOldRdn()).isTrue();
@@ -413,7 +413,7 @@ public class Api_ldap_modelTest {
         assertThat(persistentSearch.isReturnECs()).isTrue();
         assertThat(opaqueControl.hasEncodedValue()).isTrue();
         assertThat(opaqueControl.getEncodedValue()).containsExactly((byte) 1, (byte) 3, (byte) 3, (byte) 7);
-        assertThat(sortKey.getAttributeTypeOid()).isEqualTo("sn");
+        assertThat(sortKey.getAttributeTypeDesc()).isEqualTo("sn");
         assertThat(sortKey.getMatchingRuleId()).isEqualTo("caseIgnoreOrderingMatch");
         assertThat(sortKey.isReverseOrder()).isTrue();
 
