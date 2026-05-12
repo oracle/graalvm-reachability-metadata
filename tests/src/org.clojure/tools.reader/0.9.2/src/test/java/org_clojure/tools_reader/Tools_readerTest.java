@@ -203,6 +203,16 @@ public class Tools_readerTest {
                 .isEqualTo(Keyword.intern(null, "selected"));
     }
 
+    @Test
+    void clojureReaderExpandsQuoteVarQuoteAndDerefReaderMacros() {
+        assertThat(READER_READ_STRING.invoke("'alpha"))
+                .isEqualTo(RT.list(Symbol.intern("quote"), Symbol.intern("alpha")));
+        assertThat(READER_READ_STRING.invoke("#'clojure.core/map"))
+                .isEqualTo(RT.list(Symbol.intern("var"), Symbol.intern("clojure.core", "map")));
+        assertThat(READER_READ_STRING.invoke("@state"))
+                .isEqualTo(RT.list(Symbol.intern("clojure.core", "deref"), Symbol.intern("state")));
+    }
+
     private static final class PointReader extends AFn {
         @Override
         public Object invoke(Object form) {
