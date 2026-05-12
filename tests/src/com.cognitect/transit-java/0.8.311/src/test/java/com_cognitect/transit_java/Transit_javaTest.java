@@ -172,6 +172,20 @@ public class Transit_javaTest {
     }
 
     @Test
+    void writesJavaNetUrisAsTransitUrisInEveryFormat() {
+        java.net.URI javaUri = java.net.URI.create("https://example.test/search?q=transit#result");
+        URI transitUri = TransitFactory.uri(javaUri.toString());
+        for (TransitFactory.Format format : ALL_FORMATS) {
+            Map<String, Object> payload = new LinkedHashMap<>();
+            payload.put("uri", javaUri);
+
+            Map<?, ?> result = roundTrip(format, payload);
+
+            assertThat(result.get("uri")).isEqualTo(transitUri);
+        }
+    }
+
+    @Test
     void writesAndReadsLinksAndExplicitTaggedValuesInEveryFormat() {
         for (TransitFactory.Format format : ALL_FORMATS) {
             Link fullLink = TransitFactory.link(
