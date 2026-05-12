@@ -496,8 +496,15 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
     task.setDescription("Returns matrix definition populated with all matching coordinates")
     task.setGroup(METADATA_GROUP)
     task.doFirst {
+        List<String> matrixCoordinates = matchingCoordinates
+        if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
+            def frac = CoordinateUtils.parseFraction(coordinateFilter)
+            List<String> allStrict = tck.getMatchingCoordinatesStrict("all")
+            matrixCoordinates = CoordinateUtils.computeBatchedCoordinates(allStrict, frac[0], frac[1])
+                    .findAll { !it.startsWith("samples:") }
+        }
         def matrix = [
-                "coordinates": matchingCoordinates
+                "coordinates": matrixCoordinates
         ]
         matrix.putAll(matrixDefaultsFor("generateMatrixMatchingCoordinates"))
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
