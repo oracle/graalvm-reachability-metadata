@@ -11,31 +11,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.ReflectionUtils;
 
 public class DefaultMethodInvokingMethodInterceptorInnerMethodHandleLookupTest {
 
     @Test
-    void invokesDefaultProjectionMethodThroughMethodHandleLookup() {
-        SpelAwareProxyProjectionFactory factory = new SpelAwareProxyProjectionFactory();
-        PersonProjection projection = factory.createProjection(PersonProjection.class,
-                Map.of("firstName", "Ada", "lastName", "Lovelace"));
+    void invokesDefaultLibraryMethodThroughMethodHandleLookup() throws Throwable {
+        Method method = Pageable.class.getMethod("isPaged");
+        MethodHandle handle = lookup(method);
 
-        assertThat(projection.getDisplayName()).isEqualTo("Ada Lovelace");
+        Object result = handle.bindTo(PageRequest.of(0, 1)).invokeWithArguments();
+
+        assertThat(result).isEqualTo(true);
     }
 
     @Test
     void resolvesStaticInterfaceMethodThroughMethodHandleLookup() throws Throwable {
-        Method method = StaticLookupProjection.class.getMethod("greeting", String.class);
+        Method method = Pageable.class.getMethod("unpaged");
         MethodHandle handle = lookup(method);
 
-        Object result = handle.invokeWithArguments("Spring Data");
+        Object result = handle.invokeWithArguments();
 
-        assertThat(result).isEqualTo("Hello Spring Data");
+        assertThat(result).isInstanceOf(Pageable.class);
+        assertThat(((Pageable) result).isUnpaged()).isTrue();
     }
 
     private static MethodHandle lookup(Method method) throws Throwable {
@@ -52,24 +54,6 @@ public class DefaultMethodInvokingMethodInterceptorInnerMethodHandleLookupTest {
             return (MethodHandle) lookup.invoke(lookupStrategy, method);
         } catch (InvocationTargetException ex) {
             throw ex.getTargetException();
-        }
-    }
-
-    public interface PersonProjection {
-
-        String getFirstName();
-
-        String getLastName();
-
-        default String getDisplayName() {
-            return getFirstName() + " " + getLastName();
-        }
-    }
-
-    public interface StaticLookupProjection {
-
-        static String greeting(String name) {
-            return "Hello " + name;
         }
     }
 }

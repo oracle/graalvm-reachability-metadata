@@ -14,19 +14,20 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.ReflectionUtils;
 
 public class DefaultMethodInvokingMethodInterceptorInnerMethodHandleLookupAnonymous2Test {
 
     @Test
-    void openLookupInvokesInterfaceDefaultMethod() throws Throwable {
-        Method method = SalutationProjection.class.getMethod("salutation", String.class);
+    void openLookupInvokesLibraryDefaultMethod() throws Throwable {
+        Method method = Pageable.class.getMethod("isPaged");
         MethodHandle methodHandle = lookupWithOpenStrategy(method);
-        SalutationProjection projection = new SalutationProjectionImpl();
 
-        Object result = methodHandle.bindTo(projection).invokeWithArguments("Ada");
+        Object result = methodHandle.bindTo(PageRequest.of(0, 1)).invokeWithArguments();
 
-        assertThat(result).isEqualTo("Hello Ada");
+        assertThat(result).isEqualTo(true);
     }
 
     private static MethodHandle lookupWithOpenStrategy(Method method) throws Throwable {
@@ -44,15 +45,5 @@ public class DefaultMethodInvokingMethodInterceptorInnerMethodHandleLookupAnonym
         } catch (InvocationTargetException ex) {
             throw ex.getTargetException();
         }
-    }
-
-    public interface SalutationProjection {
-
-        default String salutation(String name) {
-            return "Hello " + name;
-        }
-    }
-
-    public static class SalutationProjectionImpl implements SalutationProjection {
     }
 }

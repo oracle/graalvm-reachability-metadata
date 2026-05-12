@@ -14,6 +14,8 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.AbstractPageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.data.util.ReflectionUtils.DescribedFieldFilter;
 
@@ -21,47 +23,28 @@ public class ReflectionUtilsTest {
 
     @Test
     void findsMatchingDeclaredFieldUsingDescribedFilter() {
-        Field field = ReflectionUtils.findField(ReflectionUtilsSampleDomain.class,
-                new ReflectionUtilsNamedFieldFilter("identifier"), true);
+        Field field = ReflectionUtils.findField(AbstractPageRequest.class,
+                new ReflectionUtilsNamedFieldFilter("page"), true);
 
         assertThat(field).isNotNull();
-        assertThat(field.getName()).isEqualTo("identifier");
-        assertThat(field.getType()).isEqualTo(String.class);
+        assertThat(field.getName()).isEqualTo("page");
+        assertThat(field.getType()).isEqualTo(int.class);
     }
 
     @Test
     void findsMatchingDeclaredConstructorFromRuntimeArguments() {
-        Optional<Constructor<?>> constructor = ReflectionUtils.findConstructor(ReflectionUtilsSampleDomain.class,
-                "spring-data", 18);
+        Optional<Constructor<?>> constructor = ReflectionUtils.findConstructor(AbstractPageRequest.class, 0, 20);
 
         assertThat(constructor).isPresent();
-        assertThat(constructor.get().getParameterTypes()).containsExactly(String.class, int.class);
+        assertThat(constructor.get().getParameterTypes()).containsExactly(int.class, int.class);
     }
 
     @Test
     void findsRequiredInterfaceMethodThroughPublicMethodLookup() {
-        Method method = ReflectionUtils.findRequiredMethod(ReflectionUtilsSampleContract.class, "describe",
-                String.class);
+        Method method = ReflectionUtils.findRequiredMethod(Pageable.class, "getPageSize");
 
-        assertThat(method.getDeclaringClass()).isEqualTo(ReflectionUtilsSampleContract.class);
-        assertThat(method.getReturnType()).isEqualTo(String.class);
-    }
-}
-
-interface ReflectionUtilsSampleContract {
-
-    String describe(String prefix);
-}
-
-final class ReflectionUtilsSampleDomain {
-
-    private final String identifier;
-
-    private final int revision;
-
-    ReflectionUtilsSampleDomain(String identifier, int revision) {
-        this.identifier = identifier;
-        this.revision = revision;
+        assertThat(method.getDeclaringClass()).isEqualTo(Pageable.class);
+        assertThat(method.getReturnType()).isEqualTo(int.class);
     }
 }
 
