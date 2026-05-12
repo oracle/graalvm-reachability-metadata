@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   get-all-metadata:
-    if: github.event_name == 'workflow_dispatch' || github.repository == 'oracle/graalvm-reachability-metadata'
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
     name: "📋 Get list of all supported libraries"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
@@ -35,10 +35,11 @@ jobs:
       - name: "🕸️ Populate matrix"
         id: set-matrix
         run: |
-          ./gradlew generateMatrixBatchedCoordinates -Pbatches=64
+          ./gradlew generateMatrixBatchedCoordinates -Pbatches=85
 
   test-all-metadata:
     name: "🧪 ${{ matrix.coordinates }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
     needs: get-all-metadata
@@ -240,7 +241,7 @@ jobs:
     needs:
       - get-all-metadata
       - test-all-metadata
-    if: always() && needs.get-all-metadata.result == 'success'
+    if: always() && github.repository == 'oracle/graalvm-reachability-metadata' && needs.get-all-metadata.result == 'success'
     outputs:
       has-failures: ${{ steps.aggregate.outputs.has-failures }}
     steps:
@@ -482,7 +483,7 @@ jobs:
     needs:
       - test-all-metadata
       - process-results
-    if: always() && (github.event_name == 'workflow_dispatch' || github.repository == 'oracle/graalvm-reachability-metadata')
+    if: always() && github.repository == 'oracle/graalvm-reachability-metadata'
     steps:
       - name: "All tests passed"
         if: needs.test-all-metadata.result == 'success' && needs.process-results.result == 'success' && needs.process-results.outputs.has-failures != 'true'

@@ -235,7 +235,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **FR-CI-4** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
 - **FR-CI-5** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library, expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
 - **FR-CI-6** Dependabot updates to `allowed-docker-images` trigger `sync-docker-tags.yml`, which back-commits the synchronized tags into the Dependabot PR.
-- **FR-CI-7** `test-all-metadata` runs only on schedule or manual dispatch, uses 64 batches, and creates one aggregated GitHub issue per failed `(library, version)` pair across configured GraalVM JDK/OS combinations and native-image modes.
+- **FR-CI-7** `test-all-metadata` runs only on schedule or manual dispatch in the main repository, uses 85 batches, and creates one aggregated GitHub issue per failed `(library, version)` pair across configured GraalVM JDK/OS combinations and native-image modes.
 
 ### 5.5 Native-image modes (FR-NI)
 
