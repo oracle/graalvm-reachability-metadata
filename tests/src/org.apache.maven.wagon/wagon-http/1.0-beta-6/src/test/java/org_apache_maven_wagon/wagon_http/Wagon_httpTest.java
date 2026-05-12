@@ -22,10 +22,10 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,6 +37,7 @@ import org.apache.maven.wagon.TransferFailedException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.providers.http.HttpWagon;
+import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
 import org.apache.maven.wagon.shared.http.HttpConfiguration;
 import org.apache.maven.wagon.shared.http.HttpMethodConfiguration;
@@ -194,6 +195,53 @@ public class Wagon_httpTest {
                 wagon.get("private/data.txt", destination.toFile());
 
                 assertThat(Files.readString(destination, UTF_8)).isEqualTo("authenticated content");
+                assertThat(requests).hasValue(2);
+                server.assertNoFailure();
+            } finally {
+                wagon.disconnect();
+            }
+        }
+    }
+
+    @Test
+    void getUsesConfiguredHttpProxyAndRespondsToProxyAuthenticationChallenge() throws Exception {
+        String expectedProxyAuthorization = "Basic "
+                + Base64.getEncoder().encodeToString("proxy-user:proxy-pass".getBytes(UTF_8));
+        AtomicInteger requests = new AtomicInteger();
+
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            int requestNumber = requests.incrementAndGet();
+            assertThat(exchange.getRequestMethod()).isEqualTo("GET");
+            assertThat(exchange.getRequestURI()).isEqualTo(URI.create(
+                    "http://repository.example.invalid/repository/proxied.txt"));
+            assertThat(exchange.getRequestHeaders().getFirst("Host")).isEqualTo("repository.example.invalid");
+
+            String proxyAuthorization = exchange.getRequestHeaders().getFirst("Proxy-Authorization");
+            if (expectedProxyAuthorization.equals(proxyAuthorization)) {
+                writeStringResponse(exchange, HttpStatus.SC_OK, "proxied content");
+                return;
+            }
+
+            assertThat(proxyAuthorization).isNull();
+            assertThat(requestNumber).isEqualTo(1);
+            exchange.getResponseHeaders().add("Proxy-Authenticate", "Basic realm=\"wagon-proxy-test\"");
+            writeStringResponse(exchange, HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED, "proxy credentials required");
+        })) {
+            HttpWagon wagon = new HttpWagon();
+            wagon.setTimeout(SHORT_TIMEOUT_MILLIS);
+            ProxyInfo proxyInfo = new ProxyInfo();
+            URI proxyUri = server.uri("/");
+            proxyInfo.setType(ProxyInfo.PROXY_HTTP);
+            proxyInfo.setHost(proxyUri.getHost());
+            proxyInfo.setPort(proxyUri.getPort());
+            proxyInfo.setUserName("proxy-user");
+            proxyInfo.setPassword("proxy-pass");
+            wagon.connect(new Repository("test", "http://repository.example.invalid/repository"), proxyInfo);
+            Path destination = tempDir.resolve("proxied.txt");
+            try {
+                wagon.get("proxied.txt", destination.toFile());
+
+                assertThat(Files.readString(destination, UTF_8)).isEqualTo("proxied content");
                 assertThat(requests).hasValue(2);
                 server.assertNoFailure();
             } finally {
