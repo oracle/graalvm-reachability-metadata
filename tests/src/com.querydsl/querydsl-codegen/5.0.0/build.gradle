@@ -11,7 +11,9 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "com.querydsl:querydsl-codegen:$libraryVersion"
+    testImplementation("com.querydsl:querydsl-codegen:$libraryVersion") {
+        exclude group: "org.eclipse.jdt", module: "ecj"
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
