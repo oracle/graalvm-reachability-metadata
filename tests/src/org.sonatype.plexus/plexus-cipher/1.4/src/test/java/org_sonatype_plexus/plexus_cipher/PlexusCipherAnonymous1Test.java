@@ -6,11 +6,14 @@
  */
 package org_sonatype_plexus.plexus_cipher;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class Plexus_cipherTest {
+import org.junit.jupiter.api.Test;
+import org.sonatype.plexus.components.cipher.PlexusCipher;
+
+public class PlexusCipherAnonymous1Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void roleConstantInitializesPlexusCipherInterface() {
+        assertThat(PlexusCipher.ROLE).isEqualTo(PlexusCipher.class.getName());
     }
 }
