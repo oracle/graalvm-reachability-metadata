@@ -10,6 +10,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+def generatedConfigDir = layout.buildDirectory.dir("generated/test-resources/akka-config")
 
 dependencies {
     testImplementation "com.typesafe.akka:akka-serialization-jackson_3:$libraryVersion"
@@ -22,6 +23,50 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+}
+
+def dependencyJar = { String prefix ->
+    configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
+        .find { it.file.name.startsWith(prefix) }
+        ?.file
+}
+
+tasks.register("extractAkkaConfigResources", Sync) {
+    into(generatedConfigDir)
+
+    from({
+        File actorJar = dependencyJar("akka-actor_3-")
+        actorJar == null ? [] : zipTree(actorJar)
+    }) {
+        include "reference.conf"
+        rename { "akka-actor-reference.conf" }
+    }
+
+    from({
+        File actorJar = dependencyJar("akka-actor_3-")
+        actorJar == null ? [] : zipTree(actorJar)
+    }) {
+        include "version.conf"
+        rename { "akka-version.conf" }
+    }
+
+    from({
+        File jacksonJar = dependencyJar("akka-serialization-jackson_3-")
+        jacksonJar == null ? [] : zipTree(jacksonJar)
+    }) {
+        include "reference.conf"
+        rename { "akka-serialization-jackson-reference.conf" }
+    }
+}
+
+sourceSets {
+    test {
+        resources.srcDir(generatedConfigDir)
+    }
+}
+
+tasks.named("processTestResources").configure {
+    dependsOn("extractAkkaConfigResources")
 }
 
 graalvmNative {
