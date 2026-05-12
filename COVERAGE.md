@@ -1,6 +1,6 @@
 # Coverage
 
-Updated: 2026-05-11
+Updated: 2026-05-12
 
 ![Coverage over Time](latest/metrics-over-time.svg#gh-light-mode-only)
 ![Coverage over Time](latest/metrics-over-time-dark.svg#gh-dark-mode-only)
