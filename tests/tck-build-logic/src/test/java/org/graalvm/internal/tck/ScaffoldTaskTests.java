@@ -108,6 +108,31 @@ class ScaffoldTaskTests {
     }
 
     @Test
+    void runSelectsStandardJvmRuntimeJarFromMultiVariantGradleModule() throws IOException {
+        Coordinates coordinates = Coordinates.parse("com.example:multi-variant:1.0.0-jre");
+        installJvmAndAndroidVariantArtifacts(
+                coordinates,
+                "1.0.0-android",
+                List.of("com/example/jre/Selected.class"),
+                List.of("com/example/android/Wrong.class")
+        );
+        Project project = createProject();
+        ScaffoldTask task = registerScaffoldTask(project, "scaffold", coordinates);
+
+        task.run();
+
+        assertGeneratedMetadataIndex(
+                "metadata/com.example/multi-variant/index.json",
+                List.of("com.example.jre"),
+                List.of("1.0.0-jre")
+        );
+        assertGeneratedUserCodeFilter(
+                "tests/src/com.example/multi-variant/1.0.0-jre/user-code-filter.json",
+                List.of("com.example.jre")
+        );
+    }
+
+    @Test
     void runRejectsNotForNativeImageMarker() throws IOException {
         Coordinates coordinates = Coordinates.parse("org.scala-js:scalajs-library_2.13:1.18.2");
         Files.createDirectories(tempDir.resolve("metadata/org.scala-js/scalajs-library_2.13"));
@@ -600,6 +625,32 @@ class ScaffoldTaskTests {
         );
     }
 
+    private void installJvmAndAndroidVariantArtifacts(
+            Coordinates coordinates,
+            String androidVersion,
+            List<String> jvmJarEntries,
+            List<String> androidJarEntries
+    ) throws IOException {
+        Path artifactRoot = ensureRepositoryRoot()
+                .resolve(coordinates.group().replace('.', '/'))
+                .resolve(coordinates.artifact());
+        Path jvmArtifactDirectory = artifactRoot.resolve(coordinates.version());
+        Path androidArtifactDirectory = artifactRoot.resolve(androidVersion);
+        Files.createDirectories(jvmArtifactDirectory);
+        Files.createDirectories(androidArtifactDirectory);
+
+        createLibraryJar(
+                jvmArtifactDirectory.resolve(coordinates.artifact() + "-" + coordinates.version() + ".jar"),
+                jvmJarEntries
+        );
+        createLibraryJar(
+                androidArtifactDirectory.resolve(coordinates.artifact() + "-" + androidVersion + ".jar"),
+                androidJarEntries
+        );
+        writePomWithGradleMetadataMarker(jvmArtifactDirectory, coordinates);
+        writeGradleModuleMetadata(jvmArtifactDirectory, coordinates, androidVersion);
+    }
+
     private Path createLibraryJar(Path jarPath, List<String> entries) throws IOException {
         try (JarOutputStream jarOutputStream = new JarOutputStream(Files.newOutputStream(jarPath))) {
             for (String entry : entries) {
@@ -609,6 +660,91 @@ class ScaffoldTaskTests {
             }
         }
         return jarPath;
+    }
+
+    private void writePomWithGradleMetadataMarker(Path artifactDirectory, Coordinates coordinates) throws IOException {
+        Files.writeString(
+                artifactDirectory.resolve(coordinates.artifact() + "-" + coordinates.version() + ".pom"),
+                """
+                <project xmlns="http://maven.apache.org/POM/4.0.0"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                  <!-- do_not_remove: published-with-gradle-metadata -->
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>%s</groupId>
+                  <artifactId>%s</artifactId>
+                  <version>%s</version>
+                </project>
+                """.formatted(coordinates.group(), coordinates.artifact(), coordinates.version()),
+                StandardCharsets.UTF_8
+        );
+    }
+
+    private void writeGradleModuleMetadata(Path artifactDirectory, Coordinates coordinates, String androidVersion) throws IOException {
+        Files.writeString(
+                artifactDirectory.resolve(coordinates.artifact() + "-" + coordinates.version() + ".module"),
+                """
+                {
+                  "formatVersion": "1.1",
+                  "component": {
+                    "group": "%s",
+                    "module": "%s",
+                    "version": "%s",
+                    "attributes": {
+                      "org.gradle.status": "release"
+                    }
+                  },
+                  "variants": [
+                    {
+                      "name": "jreRuntimeElements",
+                      "attributes": {
+                        "org.gradle.category": "library",
+                        "org.gradle.dependency.bundling": "external",
+                        "org.gradle.jvm.environment": "standard-jvm",
+                        "org.gradle.libraryelements": "jar",
+                        "org.gradle.usage": "java-runtime"
+                      },
+                      "files": [
+                        {
+                          "name": "%s-%s.jar",
+                          "url": "%s-%s.jar"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "androidRuntimeElements",
+                      "attributes": {
+                        "org.gradle.category": "library",
+                        "org.gradle.dependency.bundling": "external",
+                        "org.gradle.jvm.environment": "android",
+                        "org.gradle.libraryelements": "jar",
+                        "org.gradle.usage": "java-runtime"
+                      },
+                      "files": [
+                        {
+                          "name": "%s-%s.jar",
+                          "url": "../%s/%s-%s.jar"
+                        }
+                      ]
+                    }
+                  ]
+                }
+                """.formatted(
+                        coordinates.group(),
+                        coordinates.artifact(),
+                        coordinates.version(),
+                        coordinates.artifact(),
+                        coordinates.version(),
+                        coordinates.artifact(),
+                        coordinates.version(),
+                        coordinates.artifact(),
+                        androidVersion,
+                        androidVersion,
+                        coordinates.artifact(),
+                        androidVersion
+                ),
+                StandardCharsets.UTF_8
+        );
     }
 
     private Path ensureRepositoryRoot() throws IOException {
