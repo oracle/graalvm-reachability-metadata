@@ -40,6 +40,19 @@ else
 fi
 echo "Timeout per Gradle invocation: $TIMEOUT"
 
+if ! LIST_OUTPUT=$(./gradlew -q listCoordinates -Pcoordinates="$TEST_COORDINATES" 2>&1); then
+  echo "$LIST_OUTPUT"
+  exit 1
+fi
+
+if ! printf '%s\n' "$LIST_OUTPUT" | grep -Fxq "$TEST_COORDINATES"; then
+  echo "$DELIMITER"
+  echo " skipping missing coordinates"
+  echo "$DELIMITER"
+  echo "Coordinate $TEST_COORDINATES no longer resolves in the current worktree. Nothing to test."
+  exit 0
+fi
+
 run_multiple_attempts() {
   local stage="$1"
   local max_attempts="$2"
