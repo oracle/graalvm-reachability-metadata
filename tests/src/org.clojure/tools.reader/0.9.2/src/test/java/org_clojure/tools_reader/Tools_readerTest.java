@@ -29,32 +29,30 @@ import clojure.lang.PersistentHashSet;
 import clojure.lang.PersistentVector;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class Tools_readerTest {
-    private static final IFn REQUIRE = RT.var("clojure.core", "require");
-    private static final IFn EDN_READ = RT.var("clojure.tools.reader.edn", "read");
-    private static final IFn EDN_READ_STRING = RT.var("clojure.tools.reader.edn", "read-string");
-    private static final IFn READER_READ = RT.var("clojure.tools.reader", "read");
-    private static final IFn READER_READ_STRING = RT.var("clojure.tools.reader", "read-string");
-    private static final IFn STRING_PUSH_BACK_READER = RT.var(
-            "clojure.tools.reader.reader-types", "string-push-back-reader");
-    private static final IFn INPUT_STREAM_PUSH_BACK_READER = RT.var(
-            "clojure.tools.reader.reader-types", "input-stream-push-back-reader");
-    private static final IFn INDEXING_PUSH_BACK_READER = RT.var(
-            "clojure.tools.reader.reader-types", "indexing-push-back-reader");
-    private static final IFn SOURCE_LOGGING_PUSH_BACK_READER = RT.var(
-            "clojure.tools.reader.reader-types", "source-logging-push-back-reader");
-    private static final IFn READ_CHAR = RT.var("clojure.tools.reader.reader-types", "read-char");
-    private static final IFn PEEK_CHAR = RT.var("clojure.tools.reader.reader-types", "peek-char");
-    private static final IFn UNREAD = RT.var("clojure.tools.reader.reader-types", "unread");
-    private static final IFn GET_LINE_NUMBER = RT.var("clojure.tools.reader.reader-types", "get-line-number");
-    private static final IFn GET_COLUMN_NUMBER = RT.var("clojure.tools.reader.reader-types", "get-column-number");
-    private static final IFn GET_FILE_NAME = RT.var("clojure.tools.reader.reader-types", "get-file-name");
-    private static final IFn INDEXING_READER = RT.var("clojure.tools.reader.reader-types", "indexing-reader?");
-    private static final IFn READ_LINE = RT.var("clojure.tools.reader.reader-types", "read-line");
-    private static final IFn LINE_START = RT.var("clojure.tools.reader.reader-types", "line-start?");
+    private static final Error UNSUPPORTED_NATIVE_IMAGE_ERROR;
+    private static final IFn REQUIRE;
+    private static final IFn EDN_READ;
+    private static final IFn EDN_READ_STRING;
+    private static final IFn READER_READ;
+    private static final IFn READER_READ_STRING;
+    private static final IFn STRING_PUSH_BACK_READER;
+    private static final IFn INPUT_STREAM_PUSH_BACK_READER;
+    private static final IFn INDEXING_PUSH_BACK_READER;
+    private static final IFn SOURCE_LOGGING_PUSH_BACK_READER;
+    private static final IFn READ_CHAR;
+    private static final IFn PEEK_CHAR;
+    private static final IFn UNREAD;
+    private static final IFn GET_LINE_NUMBER;
+    private static final IFn GET_COLUMN_NUMBER;
+    private static final IFn GET_FILE_NAME;
+    private static final IFn INDEXING_READER;
+    private static final IFn READ_LINE;
+    private static final IFn LINE_START;
 
     private static final Keyword NAME = Keyword.intern(null, "name");
     private static final Keyword NUMBERS = Keyword.intern(null, "numbers");
@@ -76,8 +74,78 @@ public class Tools_readerTest {
     private static final Keyword CLJ = Keyword.intern(null, "clj");
     private static final Keyword ALLOW = Keyword.intern(null, "allow");
 
+    static {
+        Error unsupportedNativeImageError = null;
+        IFn require = null;
+        IFn ednRead = null;
+        IFn ednReadString = null;
+        IFn readerRead = null;
+        IFn readerReadString = null;
+        IFn stringPushBackReader = null;
+        IFn inputStreamPushBackReader = null;
+        IFn indexingPushBackReader = null;
+        IFn sourceLoggingPushBackReader = null;
+        IFn readChar = null;
+        IFn peekChar = null;
+        IFn unread = null;
+        IFn getLineNumber = null;
+        IFn getColumnNumber = null;
+        IFn getFileName = null;
+        IFn indexingReader = null;
+        IFn readLine = null;
+        IFn lineStart = null;
+        try {
+            require = RT.var("clojure.core", "require");
+            ednRead = RT.var("clojure.tools.reader.edn", "read");
+            ednReadString = RT.var("clojure.tools.reader.edn", "read-string");
+            readerRead = RT.var("clojure.tools.reader", "read");
+            readerReadString = RT.var("clojure.tools.reader", "read-string");
+            stringPushBackReader = RT.var("clojure.tools.reader.reader-types", "string-push-back-reader");
+            inputStreamPushBackReader = RT.var("clojure.tools.reader.reader-types", "input-stream-push-back-reader");
+            indexingPushBackReader = RT.var("clojure.tools.reader.reader-types", "indexing-push-back-reader");
+            sourceLoggingPushBackReader = RT.var(
+                    "clojure.tools.reader.reader-types", "source-logging-push-back-reader");
+            readChar = RT.var("clojure.tools.reader.reader-types", "read-char");
+            peekChar = RT.var("clojure.tools.reader.reader-types", "peek-char");
+            unread = RT.var("clojure.tools.reader.reader-types", "unread");
+            getLineNumber = RT.var("clojure.tools.reader.reader-types", "get-line-number");
+            getColumnNumber = RT.var("clojure.tools.reader.reader-types", "get-column-number");
+            getFileName = RT.var("clojure.tools.reader.reader-types", "get-file-name");
+            indexingReader = RT.var("clojure.tools.reader.reader-types", "indexing-reader?");
+            readLine = RT.var("clojure.tools.reader.reader-types", "read-line");
+            lineStart = RT.var("clojure.tools.reader.reader-types", "line-start?");
+        } catch (Error error) {
+            if (!hasUnsupportedFeatureError(error)) {
+                throw error;
+            }
+            unsupportedNativeImageError = error;
+        }
+        UNSUPPORTED_NATIVE_IMAGE_ERROR = unsupportedNativeImageError;
+        REQUIRE = require;
+        EDN_READ = ednRead;
+        EDN_READ_STRING = ednReadString;
+        READER_READ = readerRead;
+        READER_READ_STRING = readerReadString;
+        STRING_PUSH_BACK_READER = stringPushBackReader;
+        INPUT_STREAM_PUSH_BACK_READER = inputStreamPushBackReader;
+        INDEXING_PUSH_BACK_READER = indexingPushBackReader;
+        SOURCE_LOGGING_PUSH_BACK_READER = sourceLoggingPushBackReader;
+        READ_CHAR = readChar;
+        PEEK_CHAR = peekChar;
+        UNREAD = unread;
+        GET_LINE_NUMBER = getLineNumber;
+        GET_COLUMN_NUMBER = getColumnNumber;
+        GET_FILE_NAME = getFileName;
+        INDEXING_READER = indexingReader;
+        READ_LINE = readLine;
+        LINE_START = lineStart;
+    }
+
     @BeforeAll
     static void loadClojureNamespaces() {
+        if (nativeImageUnsupported()) {
+            return;
+        }
         REQUIRE.invoke(Symbol.intern("clojure.tools.reader"));
         REQUIRE.invoke(Symbol.intern("clojure.tools.reader.edn"));
         REQUIRE.invoke(Symbol.intern("clojure.tools.reader.reader-types"));
@@ -85,6 +153,9 @@ public class Tools_readerTest {
 
     @Test
     void ednReadStringParsesCollectionsScalarsAndDefaultTaggedLiterals() {
+        if (nativeImageUnsupported()) {
+            return;
+        }
         IPersistentMap data = (IPersistentMap) EDN_READ_STRING.invoke("""
                 {:name "Ada"
                  :numbers [1 2N 3.5M]
@@ -119,6 +190,9 @@ public class Tools_readerTest {
 
     @Test
     void ednReadUsesCustomTaggedReadersDefaultReadersAndEofOptions() {
+        if (nativeImageUnsupported()) {
+            return;
+        }
         Object reader = STRING_PUSH_BACK_READER.invoke("#point [3 4] #domain/money {:amount 12}", 2);
         IPersistentMap customReaders = PersistentArrayMap.createWithCheck(new Object[] {
                 Symbol.intern("point"), new PointReader()
@@ -138,6 +212,9 @@ public class Tools_readerTest {
 
     @Test
     void ednReaderReportsStructuredLocationForMalformedInput() {
+        if (nativeImageUnsupported()) {
+            return;
+        }
         Object reader = INDEXING_PUSH_BACK_READER.invoke("\n{:broken", 2, "example.edn");
 
         assertThatExceptionOfType(ExceptionInfo.class)
@@ -153,6 +230,9 @@ public class Tools_readerTest {
 
     @Test
     void readerTypesSupportPushbackInputStreamsIndexingAndLineReading() {
+        if (nativeImageUnsupported()) {
+            return;
+        }
         Object pushback = STRING_PUSH_BACK_READER.invoke("ab", 2);
         assertThat(READ_CHAR.invoke(pushback)).isEqualTo('a');
         UNREAD.invoke(pushback, 'a');
@@ -188,6 +268,9 @@ public class Tools_readerTest {
 
     @Test
     void clojureReaderHandlesMetadataRegexDiscardAndReaderConditionals() {
+        if (nativeImageUnsupported()) {
+            return;
+        }
         IObj vectorWithMetadata = (IObj) READER_READ_STRING.invoke("^:private [1 2]");
         assertThat(vectorWithMetadata.meta().valAt(PRIVATE)).isEqualTo(Boolean.TRUE);
         assertThat((IPersistentVector) vectorWithMetadata).isEqualTo(PersistentVector.create(Arrays.asList(1L, 2L)));
@@ -210,6 +293,9 @@ public class Tools_readerTest {
 
     @Test
     void clojureReaderExpandsQuoteVarQuoteAndDerefReaderMacros() {
+        if (nativeImageUnsupported()) {
+            return;
+        }
         assertThat(READER_READ_STRING.invoke("'alpha"))
                 .isEqualTo(RT.list(Symbol.intern("quote"), Symbol.intern("alpha")));
         assertThat(READER_READ_STRING.invoke("#'clojure.core/map"))
@@ -220,6 +306,9 @@ public class Tools_readerTest {
 
     @Test
     void clojureReaderAttachesSourceMetadataWithSourceLoggingReader() {
+        if (nativeImageUnsupported()) {
+            return;
+        }
         Object reader = SOURCE_LOGGING_PUSH_BACK_READER.invoke("  ^:private [1 2]\n{:answer 42}", 2, "forms.clj");
 
         IObj vectorWithMetadata = (IObj) READER_READ.invoke(reader);
@@ -250,5 +339,20 @@ public class Tools_readerTest {
                     Keyword.intern(null, "form"), form
             });
         }
+    }
+
+    private static boolean nativeImageUnsupported() {
+        return UNSUPPORTED_NATIVE_IMAGE_ERROR != null;
+    }
+
+    private static boolean hasUnsupportedFeatureError(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 }
