@@ -100,6 +100,64 @@ public class Wagon_ssh_externalTest {
 
     @Test
     @Timeout(10)
+    void privateKeyAuthenticationIsPassedToExternalSshAndScpExecutables() throws Exception {
+        Path log = temporaryDirectory.resolve("private-key.log");
+        Path privateKey = temporaryDirectory.resolve("id_test");
+        Files.writeString(privateKey, "test private key", StandardCharsets.UTF_8);
+        Path ssh = loggingScript("key-ssh", "ssh", log, 0);
+        Path scp = writeScript("key-scp", """
+            #!/bin/sh
+            last=''
+            {
+              echo 'CALL:scp'
+              for arg in "$@"; do
+                last="$arg"
+                printf 'ARG:%%s\n' "$arg"
+              done
+            } >> %s
+            : > "$last"
+            exit 0
+            """.formatted(shellQuote(log)));
+        AuthenticationInfo authenticationInfo = authenticationInfoWithPrivateKey(privateKey);
+        ScpExternalWagon sshWagon = new ScpExternalWagon();
+        sshWagon.setSshExecutable(ssh.toString());
+        sshWagon.connect(repository(), authenticationInfo);
+
+        try {
+            sshWagon.executeCommand("hostname", false);
+        } finally {
+            sshWagon.disconnect();
+        }
+
+        ScpExternalWagon scpWagon = new ScpExternalWagon();
+        scpWagon.setScpExecutable(scp.toString());
+        scpWagon.connect(repository(), authenticationInfo);
+        try {
+            scpWagon.get("remote/artifact.txt", temporaryDirectory.resolve("key-download/artifact.txt").toFile());
+        } finally {
+            scpWagon.disconnect();
+        }
+
+        assertThat(readLines(log)).containsSubsequence(
+            "CALL:ssh",
+            "ARG:-i",
+            "ARG:" + privateKey,
+            "ARG:-o",
+            "ARG:BatchMode yes",
+            "ARG:deployer@" + REMOTE_HOST,
+            "ARG:hostname",
+            "CALL:scp",
+            "ARG:-i",
+            "ARG:" + privateKey,
+            "ARG:-o",
+            "ARG:BatchMode yes",
+            "ARG:deployer@" + REMOTE_HOST + ":/var/maven/remote/artifact.txt",
+            "ARG:artifact.txt"
+        );
+    }
+
+    @Test
+    @Timeout(10)
     void executeCommandUsesPuttyBatchPasswordAndPortOptionsWhenExecutableLooksLikePlink() throws Exception {
         Path log = temporaryDirectory.resolve("plink.log");
         Path plink = writeScript("plink", """
@@ -408,6 +466,13 @@ public class Wagon_ssh_externalTest {
         AuthenticationInfo authenticationInfo = new AuthenticationInfo();
         authenticationInfo.setUserName("deployer");
         authenticationInfo.setPassword("secret");
+        return authenticationInfo;
+    }
+
+    private static AuthenticationInfo authenticationInfoWithPrivateKey(Path privateKey) {
+        AuthenticationInfo authenticationInfo = new AuthenticationInfo();
+        authenticationInfo.setUserName("deployer");
+        authenticationInfo.setPrivateKey(privateKey.toString());
         return authenticationInfo;
     }
 
