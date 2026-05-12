@@ -15,14 +15,20 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.apache.maven.wagon.Streams;
 import org.apache.maven.wagon.authentication.AuthenticationException;
@@ -41,6 +47,7 @@ import org.apache.maven.wagon.providers.ssh.knownhost.KnownHostsProvider;
 import org.apache.maven.wagon.providers.ssh.knownhost.NullKnownHostProvider;
 import org.apache.maven.wagon.providers.ssh.knownhost.SingleKnownHostProvider;
 import org.apache.maven.wagon.providers.ssh.knownhost.StreamKnownHostsProvider;
+import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
 import org.codehaus.plexus.components.interactivity.Prompter;
 import org.codehaus.plexus.components.interactivity.PrompterException;
@@ -82,6 +89,42 @@ public class Wagon_sshTest {
             assertThat(wagon.getInteractiveUserInfo()).isInstanceOf(NullInteractiveUserInfo.class);
 
             wagon.disconnect();
+        }
+    }
+
+    @Test
+    void httpProxyConfigurationIsUsedWhenConnecting() throws Exception {
+        try (ServerSocket proxyServer = new ServerSocket(0, 1, InetAddress.getByName("127.0.0.1"))) {
+            proxyServer.setSoTimeout(5_000);
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Future<List<String>> proxyRequest = executor.submit(() -> readHttpProxyRequest(proxyServer));
+            ScpWagon wagon = new ScpWagon();
+            ProxyInfo proxyInfo = new ProxyInfo();
+            proxyInfo.setHost("127.0.0.1");
+            proxyInfo.setPort(proxyServer.getLocalPort());
+            proxyInfo.setUserName("proxy-user");
+            proxyInfo.setPassword("proxy-password");
+
+            try {
+                wagon.setKnownHostsProvider(new NullKnownHostProvider());
+                wagon.setInteractive(false);
+
+                Repository proxiedRepository = new Repository("proxied", "scp://repository.example.test/repository");
+                proxiedRepository.setPort(2222);
+
+                assertThatThrownBy(() -> wagon.connect(proxiedRepository, authenticationInfo(), proxyInfo))
+                        .isInstanceOf(AuthenticationException.class)
+                        .hasMessageContaining("Cannot connect");
+
+                List<String> requestLines = proxyRequest.get(5, TimeUnit.SECONDS);
+                String authorizationHeader = "Proxy-Authorization: Basic " + Base64.getEncoder()
+                        .encodeToString("proxy-user:proxy-password".getBytes(StandardCharsets.ISO_8859_1));
+                assertThat(requestLines.get(0)).isEqualTo("CONNECT repository.example.test:2222 HTTP/1.0");
+                assertThat(requestLines).contains(authorizationHeader);
+            } finally {
+                wagon.disconnect();
+                executor.shutdownNow();
+            }
         }
     }
 
@@ -197,6 +240,24 @@ public class Wagon_sshTest {
 
     private static BufferedReader reader(String content) {
         return new BufferedReader(new StringReader(content));
+    }
+
+    private static List<String> readHttpProxyRequest(ServerSocket serverSocket) throws IOException {
+        try (Socket socket = serverSocket.accept()) {
+            socket.setSoTimeout(5_000);
+            BufferedReader requestReader = new BufferedReader(
+                    new InputStreamReader(socket.getInputStream(), StandardCharsets.ISO_8859_1));
+            List<String> requestLines = new ArrayList<>();
+            String line;
+            while ((line = requestReader.readLine()) != null && !line.isEmpty()) {
+                requestLines.add(line);
+            }
+            byte[] response = "HTTP/1.0 403 Forbidden\r\nContent-Length: 0\r\n\r\n"
+                    .getBytes(StandardCharsets.ISO_8859_1);
+            socket.getOutputStream().write(response);
+            socket.getOutputStream().flush();
+            return requestLines;
+        }
     }
 
     private static Repository repository(int port) {
