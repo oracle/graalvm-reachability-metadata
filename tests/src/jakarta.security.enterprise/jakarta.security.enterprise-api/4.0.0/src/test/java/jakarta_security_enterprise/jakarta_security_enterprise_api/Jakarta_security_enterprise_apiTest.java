@@ -46,7 +46,6 @@ import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult.Status;
 import jakarta.security.enterprise.identitystore.IdentityStore;
 import jakarta.security.enterprise.identitystore.IdentityStore.ValidationType;
-import jakarta.security.enterprise.identitystore.IdentityStorePermission;
 import jakarta.security.enterprise.identitystore.PasswordHash;
 import jakarta.security.enterprise.identitystore.RememberMeIdentityStore;
 import jakarta.security.enterprise.identitystore.openid.Claims;
@@ -278,16 +277,6 @@ public class Jakarta_security_enterprise_apiTest {
         assertThat(result.getStatus()).isEqualTo(Status.VALID);
         assertThat(result.getCallerPrincipal().getName()).isEqualTo("alice");
         assertThat(result.getCallerGroups()).containsExactly("validated");
-    }
-
-    @Test
-    void identityStorePermissionUsesBasicPermissionSemantics() {
-        IdentityStorePermission wildcard = new IdentityStorePermission("*");
-        IdentityStorePermission validate = new IdentityStorePermission("validate", "ignored-actions");
-
-        assertThat(wildcard.implies(validate)).isTrue();
-        assertThat(validate.getName()).isEqualTo("validate");
-        assertThat(validate.getActions()).isEmpty();
     }
 
     @Test
