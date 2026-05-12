@@ -7,7 +7,6 @@
 package org_msgpack.msgpack;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.IOException;
 
@@ -20,11 +19,15 @@ import org.msgpack.unpacker.Unpacker;
 
 public class DefaultBuildContextTest {
     @Test
-    void instantiatesTemplateConstructorSelectedByBuildContext() {
+    void instantiatesTemplateConstructorSelectedByBuildContext() throws Exception {
         final ExposedBuildContext context = new ExposedBuildContext();
 
-        assertThatExceptionOfType(InstantiationException.class)
-                .isThrownBy(() -> context.instantiate(JavassistTemplate.class));
+        final Template<?> template = context.instantiate(StubJavassistTemplate.class);
+
+        assertThat(template).isInstanceOf(StubJavassistTemplate.class);
+        final StubJavassistTemplate generatedTemplate = (StubJavassistTemplate) template;
+        assertThat(generatedTemplate.targetClass).isSameAs(String.class);
+        assertThat(generatedTemplate.templates).isEmpty();
     }
 
     @Test
