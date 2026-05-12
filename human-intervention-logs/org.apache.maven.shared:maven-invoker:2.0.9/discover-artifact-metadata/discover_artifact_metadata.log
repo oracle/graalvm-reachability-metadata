@@ -1,0 +1,1033 @@
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   407252
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   408243
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1c19-fa09-7c41-b80b-67c90d90f598
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven.shared:maven-invoker:2.0.9
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0.9" when "$version$" is replaced with "2.0.9".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+- Set "coordinates" to "org.apache.maven.shared:maven-invoker:2.0.9".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.9".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven Central and the upstream Apache source/tag layout, then patch the JSON directly with only the confident fields.
+web search: 
+web search: Maven Central org.apache.maven.shared maven-invoker 2.0.9 pom scm tag source jar
+codex
+The initial search points to Apache’s `maven-invoker` project and shows Maven Central has a POM for this artifact. I’m checking the actual POM and repository contents now so the URLs can use Maven-hosted source/test/doc artifacts where available.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json && rg -n \"maven-invoker\" build/discovered-artifact-metadata metadata -S || true" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+{
+  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9"
+}
+build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json:2:  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9"
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.maven.shared</groupId>
+    <artifactId>maven-shared-components</artifactId>
+    <version>9</version>
+  </parent>
+  <artifactId>maven-invoker</artifactId>
+  <version>2.0.9</version>
+  <name>Maven Invoker</name>
+  <description>A component to programmatically invoke Maven.</description>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MSHARED/component/13271</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>2.0-beta-7</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <systemProperties>
+            <!-- required for maven-invoker to locate Maven installation -->
+            <property>
+              <name>maven.home</name>
+              <value>${maven.home}</value>
+            </property>
+          </systemProperties>
+          <excludes>
+            <exclude>test-build-should*/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-maven-plugin</artifactId>
+        <version>1.3.8</version>
+        <executions>
+          <execution>
+            <id>create-component-descriptor</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.4.3</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report-only</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>2.0</version>
+        <configuration>
+          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <quiet>true</quiet>
+          <links>
+            <link>http://java.sun.com/javase/6/docs/api/</link>
+          </links>
+          <tags>
+            <tag>
+              <name>plexus.component</name>
+              <placement>Xt</placement>
+            </tag>
+            <tag>
+              <name>plexus.configuration</name>
+              <placement>Xf</placement>
+            </tag>
+            <tag>
+              <name>plexus.requirement</name>
+              <placement>Xf</placement>
+            </tag>
+          </tags>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-2.0.9</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-2.0.9</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/shared/tags/maven-invoker-2.0.9</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/shared/maven-invoker/2.0.9</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/shared/maven-invoker/2.0.9</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-invoker-2.0.9-javadoc.jar" title="maven-invoker-2.0.9-javadoc.jar">maven-invoker-2.0.9-javadoc.jar</a>                   2008-08-06 07:52    120811      
+<a href="maven-invoker-2.0.9-javadoc.jar.asc" title="maven-invoker-2.0.9-javadoc.jar.asc">maven-invoker-2.0.9-javadoc.jar.asc</a>               2008-08-06 07:52       194      
+<a href="maven-invoker-2.0.9-javadoc.jar.asc.md5" title="maven-invoker-2.0.9-javadoc.jar.asc.md5">maven-invoker-2.0.9-javadoc.jar.asc.md5</a>           2008-08-06 07:52        32      
+<a href="maven-invoker-2.0.9-javadoc.jar.asc.sha1" title="maven-invoker-2.0.9-javadoc.jar.asc.sha1">maven-invoker-2.0.9-javadoc.jar.asc.sha1</a>          2008-08-06 07:52        40      
+<a href="maven-invoker-2.0.9-javadoc.jar.md5" title="maven-invoker-2.0.9-javadoc.jar.md5">maven-invoker-2.0.9-javadoc.jar.md5</a>               2008-08-06 07:52        32      
+<a href="maven-invoker-2.0.9-javadoc.jar.sha1" title="maven-invoker-2.0.9-javadoc.jar.sha1">maven-invoker-2.0.9-javadoc.jar.sha1</a>              2008-08-06 07:52        40      
+<a href="maven-invoker-2.0.9-sources.jar" title="maven-invoker-2.0.9-sources.jar">maven-invoker-2.0.9-sources.jar</a>                   2008-08-06 07:52     30026      
+<a href="maven-invoker-2.0.9-sources.jar.asc" title="maven-invoker-2.0.9-sources.jar.asc">maven-invoker-2.0.9-sources.jar.asc</a>               2008-08-06 07:52       194      
+<a href="maven-invoker-2.0.9-sources.jar.asc.md5" title="maven-invoker-2.0.9-sources.jar.asc.md5">maven-invoker-2.0.9-sources.jar.asc.md5</a>           2008-08-06 07:52        32      
+<a href="maven-invoker-2.0.9-sources.jar.asc.sha1" title="maven-invoker-2.0.9-sources.jar.asc.sha1">maven-invoker-2.0.9-sources.jar.asc.sha1</a>          2008-08-06 07:52        40      
+<a href="maven-invoker-2.0.9-sources.jar.md5" title="maven-invoker-2.0.9-sources.jar.md5">maven-invoker-2.0.9-sources.jar.md5</a>               2008-08-06 07:52        32      
+<a href="maven-invoker-2.0.9-sources.jar.sha1" title="maven-invoker-2.0.9-sources.jar.sha1">maven-invoker-2.0.9-sources.jar.sha1</a>              2008-08-06 07:52        40      
+<a href="maven-invoker-2.0.9.jar" title="maven-invoker-2.0.9.jar">maven-invoker-2.0.9.jar</a>                           2008-08-06 07:52     28282      
+<a href="maven-invoker-2.0.9.jar.asc" title="maven-invoker-2.0.9.jar.asc">maven-invoker-2.0.9.jar.asc</a>                       2008-08-06 07:52       194      
+<a href="maven-invoker-2.0.9.jar.asc.md5" title="maven-invoker-2.0.9.jar.asc.md5">maven-invoker-2.0.9.jar.asc.md5</a>                   2008-08-06 07:52        32      
+<a href="maven-invoker-2.0.9.jar.asc.sha1" title="maven-invoker-2.0.9.jar.asc.sha1">maven-invoker-2.0.9.jar.asc.sha1</a>                  2008-08-06 07:52        40      
+<a href="maven-invoker-2.0.9.jar.md5" title="maven-invoker-2.0.9.jar.md5">maven-invoker-2.0.9.jar.md5</a>                       2008-08-06 07:52        32      
+<a href="maven-invoker-2.0.9.jar.sha1" title="maven-invoker-2.0.9.jar.sha1">maven-invoker-2.0.9.jar.sha1</a>                      2008-08-06 07:52        40      
+<a href="maven-invoker-2.0.9.pom" title="maven-invoker-2.0.9.pom">maven-invoker-2.0.9.pom</a>                           2008-08-06 07:52      5777      
+<a href="maven-invoker-2.0.9.pom.asc" title="maven-invoker-2.0.9.pom.asc">maven-invoker-2.0.9.pom.asc</a>                       2008-08-06 07:52       194      
+<a href="maven-invoker-2.0.9.pom.asc.md5" title="maven-invoker-2.0.9.pom.asc.md5">maven-invoker-2.0.9.pom.asc.md5</a>                   2008-08-06 07:52        32      
+<a href="maven-invoker-2.0.9.pom.asc.sha1" title="maven-invoker-2.0.9.pom.asc.sha1">maven-invoker-2.0.9.pom.asc.sha1</a>                  2008-08-06 07:52        40      
+<a href="maven-invoker-2.0.9.pom.md5" title="maven-invoker-2.0.9.pom.md5">maven-invoker-2.0.9.pom.md5</a>                       2008-08-06 07:52        32      
+<a href="maven-invoker-2.0.9.pom.sha1" title="maven-invoker-2.0.9.pom.sha1">maven-invoker-2.0.9.pom.sha1</a>                      2008-08-06 07:52        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven-invoker 2.0.9 sources jar javadoc jar
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.maven.shared/maven-invoker/2.0.9
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9.pom
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.maven.shared/maven-invoker
+codex
+The 2.0.9 POM records an old SVN SCM tag, while the current project has moved to GitHub. Because the requested URLs need to resolve for exactly 2.0.9 and Maven has sources and javadocs, I’m favoring Maven Central artifact URLs for source and docs, and checking whether a test artifact exists before deciding the test URL.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata metadata -S | head -120" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:6:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:29:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:30:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:31:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:44:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:45:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:46:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:6:    "repository-url": "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:5:    "repository-url" : "https://github.com/javaee/jaxb-istack-commons",
+metadata/com.sun.istack/istack-commons-runtime/index.json:6:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/$version$-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:20:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
+metadata/com.sun.istack/istack-commons-runtime/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/runtime/src/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:6:    "repository-url" : "https://github.com/square/moshi",
+metadata/com.squareup.moshi/moshi-adapters/index.json:7:    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-adapters/src/test",
+metadata/com.squareup.moshi/moshi-adapters/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/org.jetbrains/annotations-java5/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/$version$/annotations-java5-$version$-sources.jar",
+metadata/org.jetbrains/annotations-java5/index.json:6:    "repository-url" : "https://github.com/JetBrains/java-annotations",
+metadata/org.jetbrains/annotations-java5/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jetbrains/annotations-java5/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/$version$/annotations-java5-$version$-javadoc.jar",
+metadata/org.jetbrains/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/$version$/annotations-$version$-sources.jar",
+metadata/org.jetbrains/annotations/index.json:7:    "repository-url": "https://github.com/JetBrains/intellij-community",
+metadata/org.jetbrains/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/org.jetbrains/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:6:    "repository-url" : "https://github.com/google/dagger",
+metadata/com.google.dagger/dagger/index.json:7:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-util/index.json:6:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/org.apache.kerby/kerby-util/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-common/kerby-util/src/test/java",
+metadata/org.apache.kerby/kerby-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:6:    "repository-url" : "https://github.com/spotify/completable-futures",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-pkix/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-pkix/$version$/kerby-pkix-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-pkix/index.json:6:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/org.apache.kerby/kerby-pkix/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-pkix/src/test/java",
+metadata/org.apache.kerby/kerby-pkix/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-pkix/$version$/kerby-pkix-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:6:    "repository-url" : "https://github.com/square/moshi",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:7:    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-kotlin/src/test",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:5:    "repository-url" : "https://github.com/jakartaee/servlet",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:6:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:20:    "repository-url" : "https://github.com/jakartaee/servlet",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:21:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/org.immutables/value/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-sources.jar",
+metadata/org.immutables/value/index.json:7:    "repository-url" : "https://github.com/immutables/immutables",
+metadata/org.immutables/value/index.json:8:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-tests.jar",
+metadata/org.immutables/value/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9.jar -o /tmp/maven-invoker-2.0.9.jar && jar tf /tmp/maven-invoker-2.0.9.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ exited 23 in 0ms:
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9-sources.jar -o /tmp/maven-invoker-2.0.9-sources.jar && jar tf /tmp/maven-invoker-2.0.9-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ exited 23 in 0ms:
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9-tests.jar || true
+curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9-test-sources.jar || true
+curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9-sources.jar || true
+curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9-javadoc.jar || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 1162ms:
+HTTP/2 404 
+date: Tue, 12 May 2026 12:12:35 GMT
+content-type: text/html
+cf-ray: 9fa9551fcd36edcc-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 12 May 2026 12:12:35 GMT
+content-type: text/html
+cf-ray: 9fa95521e9f1c12f-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 12 May 2026 12:12:35 GMT
+content-type: application/java-archive
+content-length: 30026
+cf-ray: 9fa95523d9ab4bef-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 105019
+etag: "045ce9553742f0218cb5236f31699e83"
+last-modified: Wed, 06 Aug 2008 07:52:00 GMT
+x-checksum-md5: 045ce9553742f0218cb5236f31699e83
+x-checksum-sha1: dfe84b74690e24dc645d455f7108a25cd2392642
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 12 May 2026 12:12:36 GMT
+content-type: application/java-archive
+content-length: 120811
+cf-ray: 9fa9552459da4be4-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "a845aea423d5b2292e4d744417e3a16d"
+last-modified: Wed, 06 Aug 2008 07:52:00 GMT
+x-checksum-md5: a845aea423d5b2292e4d744417e3a16d
+x-checksum-sha1: 2dde0c241270034974864754d1486b5d1d3b6a4a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'ls -lh /tmp/maven-invoker-2.0.9-sources.jar /tmp/maven-invoker-2.0.9.jar 2>/dev/null || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 0 May 12 14:12 /tmp/maven-invoker-2.0.9-sources.jar
+-rw-rw-r-- 1 vjovanov vjovanov 0 May 12 14:12 /tmp/maven-invoker-2.0.9.jar
+
+exec
+/usr/bin/bash -lc 'jar tf /tmp/maven-invoker-2.0.9-sources.jar | head -120' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   409421
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+
+exec
+/usr/bin/bash -lc 'jar tf /tmp/maven-invoker-2.0.9.jar | head -120' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+Java HotSpot(TM) 64-Bit Server VM warning: Insufficient space for shared memory file:
+   409423
+Try using the -Djava.io.tmpdir= option to select an alternate temp location.
+
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+
+exec
+/usr/bin/bash -lc 'df -h /tmp .' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p5  179G  170G     0 100% /
+/dev/nvme0n1p7  1.7T  1.6T  2.9G 100% /home
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://archive.apache.org/dist/maven/shared/maven-invoker-2.0.9-source-release.zip -I || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-2.0.9/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 127ms:
+<html><head><title>asf - Revision 1934140: /maven/shared/tags/maven-invoker-2.0.9</title></head>
+<body>
+ <h2>asf - Revision 1934140: /maven/shared/tags/maven-invoker-2.0.9</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="pom.xml">pom.xml</a></li>
+  <li><a href="src/">src/</a></li>
+ </ul>
+</body></html>
+ succeeded in 426ms:
+curl: (22) The requested URL returned error: 404
+HTTP/1.1 404 Not Found
+Date: Tue, 12 May 2026 12:12:57 GMT
+Server: Apache
+Content-Type: text/html; charset=iso-8859-1
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/apache/maven-invoker || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/apache/maven-invoker/tree/maven-invoker-2.0.9 || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/apache/maven-invoker/tree/maven-invoker-2.0.9/src/test || true' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-2.0.9/src/ | sed -n '1,100p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 116ms:
+<html><head><title>asf - Revision 1934140: /maven/shared/tags/maven-invoker-2.0.9/src</title></head>
+<body>
+ <h2>asf - Revision 1934140: /maven/shared/tags/maven-invoker-2.0.9/src</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="changes/">changes/</a></li>
+  <li><a href="main/">main/</a></li>
+  <li><a href="site/">site/</a></li>
+  <li><a href="test/">test/</a></li>
+ </ul>
+</body></html>
+ succeeded in 766ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 12:13:06 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c4ade0b3a5f1adcc326d8e115392dbb1"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=wvxFwG79t14z0%2FTfEjy064PElZyzCTZVmyb%2BPYb0zyW1s%2Box3gq1Wa2n7dFhcQOBTvJLOEcfuqmQGgpd3rGzoTxLt3hAyzz2DJbs2bWx4CeZgmGjmB3sLNsoluc9sHf3meSycdX1Ttl%2FfiaKXKgaylkjdhqLMAQfATi%2FP9Kohqzio28BBgx64J%2Bus%2FRIvGhwwipFNhpj6thSglBHxxz27fMhqNhkSrUlh0GomitIJtz3uuSYSVUBwXnxgSC76wzA1FxiKAbhZBBYNgj52zbrmg%3D%3D--VsA%2FsrAieET1nqiX--kp5XvXOsE3mUS7gjTqjOCA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.560151257.1778587986; expires=Wed, 12 May 2027 12:13:06 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 12 May 2027 12:13:06 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 513D:2C6B3:B3D2FFB:8BBAD6F:6A031952
+
+
+ succeeded in 851ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 12:13:06 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"181403ca3fcd6e77307cbd5353eac6de"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=txXWBgv4OLBfarearpwoJYhCTHmQZOHDYSAclLGPWmpMiOw2Uri4X3bUiL8lt0EYPFyLHhBGdYTSaeZ8gbOfJMbdtn%2F5MDo42bDxUzwD0KqOAgOB06S5hcO%2BcKGxR9ozc8Qo0N8pcW%2FZBZc3R0oeFepe3jJK0J2lpa4FMn5BmypB5vn%2BCdbQbW1FLH9%2FqJXxYb66ZIi%2Fyi%2FaCYAnutA5uXBGSZHYcN6zeogifACpLRK6vCvLM5kSdVTCzsiId8dJeuPrU%2FMyO7FcRO%2F1evq8eg%3D%3D--Y8kTK3FMYyOcrJN5--KWsiSAIHAWlzdQLdcmwL3Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.368140378.1778587986; expires=Wed, 12 May 2027 12:13:06 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 12 May 2027 12:13:06 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5130:3ABBFD:B5B2B29:8D4432F:6A031952
+
+
+ succeeded in 923ms:
+HTTP/2 200 
+date: Tue, 12 May 2026 12:13:06 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"cd5e6586afd4b2a43caff2d721f8d6d6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=NUB2jW%2F7M7ZMOZMXwVrxSb1ZoZdmlu%2FdfKop2sQg6ij5BCr2WL%2BCqaa5IP9AXN9Rf1Wf5SHGnJNQmIGByBHFG%2BYj2g%2FWauZ3UYvQbcZXJQ%2FpjRbiuhPNKmuPc68v38UoSxs8ATVH2Azbau18jzr4sBiurKvHfofa5IrtI8bzkckWTa4xs%2FGMUx%2F96xT1uNGQ8ZGc0ecwsFDs42RS8JHUYsbIT6EGQZsRjJEuFQ4CMJN7utLHhuYIy4EIWUtY98RiY5dWsKOrFpCFPW1J5gZCng%3D%3D--R%2BelAcMWin6dmVyo--RjrjKvT9C%2FG2gYsR3R%2BbUg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1895963273.1778587986; expires=Wed, 12 May 2027 12:13:06 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 12 May 2027 12:13:06 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5136:2351D2:B1F36CA:8A69384:6A031952
+
+
+web search: 
+web search: Maven Invoker 2.0.9 org.apache.maven.shared
+web search: 
+web search: https://maven.apache.org/shared/maven-invoker/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/ maven-invoker-2.0.9-sources.jar javadoc.jar
+web search: 
+web search: svn.apache.org maven/shared/tags/maven-invoker-2.0.9 src test
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/shared/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-2.0.9/
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-2.0.9/src/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "rg -n 'svn.apache.org/repos/asf.*\"repository-url\"' metadata build/discovered-artifact-metadata -S | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"\\s*:\\s*\"["'^"]*svn'"\\.apache\\.org' metadata build/discovered-artifact-metadata -S | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+metadata/portlet-api/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.pdfbox/fontbox/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/org.apache.pdfbox/pdfbox-io/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/org.apache.pdfbox/pdfbox/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/org.apache.tomcat/annotations-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+metadata/oro/oro/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/jakarta/oro/",
+metadata/javax.portlet/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+metadata/xml-apis/xml-apis/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/",
+metadata/org.apache.directory.server/apacheds-i18n/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/apacheds",
+metadata/avalon-framework/avalon-framework/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/avalon",
+metadata/org.apache.xbean/xbean-reflect/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+metadata/logkit/logkit/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/avalon",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs",
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.maven/maven-plugin-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-monitor/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-model/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-artifact/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.maven/maven-plugin-api/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-javadoc.jar",
+    "description" : "Maven Plugin API defines the core Mojo interfaces, exceptions, context access, and logging abstractions used to implement Maven plugins. It lets plugin code interact with Maven's execution model through a stable API without depending directly on Maven Core internals.",
+    "tested-versions" : [
+      "2.0",
+      "2.0.1",
+      "2.0.2",
+      "2.0.3",
+      "2.0.4",
+      "2.0.5",
+      "2.0.6",
+      "2.0.7",
+      "2.0.8",
+      "2.0.9",
+      "2.0.10",
+      "2.0.11",
+      "2.1.0",
+      "2.2.0",
+      "2.2.1",
+      "3.0",
+      "3.0.1",
+      "3.0.2",
+      "3.0.3",
+      "3.0.4",
+      "3.0.5",
+      "3.1.0",
+      "3.1.1",
+      "3.2.1",
+      "3.2.2",
+      "3.2.3",
+      "3.2.5",
+      "3.3.1",
+      "3.3.3",
+      "3.3.9",
+      "3.5.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.plugin"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.xbean/xbean-reflect/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+exec
+/usr/bin/bash -lc 'find metadata/org.apache.maven.shared -maxdepth 3 -type f -name index.json -print 2>/dev/null | head -40' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+    "description" : "Apache XBean Reflect provides utilities for constructing and configuring Java objects from recipes, resolving dependencies, references, collections, maps, and factory methods through reflection. It also includes property editors and converters that coerce string or generic values into Java types used during object assembly.",
+    "tested-versions" : [
+      "3.4",
+      "3.4.1",
+      "3.4.2",
+      "3.4.3",
+      "3.5"
+    ],
+    "allowed-packages" : [
+      "org.apache.xbean"
+    ]
+  }
+]
+
+ succeeded in 0ms:
+codex
+I have enough confidence now: Maven Central provides sources and javadocs for 2.0.9, there is no Maven tests artifact, and the original 2.0.9 SCM points at the Apache SVN tag where `src/test/` is present. I’m patching the metadata with no language field and no `not-for-native-image` flag because this is a normal JVM JAR artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+index 9811cf145dd446b375ec6e02f1783f055dc46cd3..0b51fe150b64659eb0f309e35bee574b8583e775
+--- a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9"
++  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/shared",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-$version$/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-javadoc.jar",
++  "description" : "Apache Maven Invoker is a Java component for programmatically launching Maven builds from another application. It lets callers configure Maven goals, properties, profiles, working directories, and output handling so tools and tests can run Maven projects under controlled conditions."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+index 9811cf145dd446b375ec6e02f1783f055dc46cd3..0b51fe150b64659eb0f309e35bee574b8583e775
+--- a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9"
++  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/shared",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-$version$/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-javadoc.jar",
++  "description" : "Apache Maven Invoker is a Java component for programmatically launching Maven builds from another application. It lets callers configure Maven goals, properties, profiles, working directories, and output handling so tools and tests can run Maven projects under controlled conditions."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven.shared:maven-invoker:2.0.9",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-sources.jar",
+  "repository-url": "https://svn.apache.org/repos/asf/maven/shared",
+  "test-code-url": "https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-$version$/src/test/",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-javadoc.jar",
+  "description": "Apache Maven Invoker is a Java component for programmatically launching Maven builds from another application. It lets callers configure Maven goals, properties, profiles, working directories, and output handling so tools and tests can run Maven projects under controlled conditions."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9-javadoc.jar >/dev/null && printf 'docs OK\\n'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+docs OK
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/maven-invoker-2.0.9-sources.jar >/dev/null && printf 'source OK\\n'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+source OK
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-2.0.9/src/test/ >/dev/null && printf 'tests OK\\n'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+index 9811cf145dd446b375ec6e02f1783f055dc46cd3..0b51fe150b64659eb0f309e35bee574b8583e775
+--- a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9"
++  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/shared",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-$version$/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-javadoc.jar",
++  "description" : "Apache Maven Invoker is a Java component for programmatically launching Maven builds from another application. It lets callers configure Maven goals, properties, profiles, working directories, and output handling so tools and tests can run Maven projects under controlled conditions."
+ }
+
+ succeeded in 180ms:
+tests OK
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/maven/shared/ >/dev/null && printf 'repository OK\\n'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+index 9811cf145dd446b375ec6e02f1783f055dc46cd3..0b51fe150b64659eb0f309e35bee574b8583e775
+--- a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9"
++  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/shared",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-$version$/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-javadoc.jar",
++  "description" : "Apache Maven Invoker is a Java component for programmatically launching Maven builds from another application. It lets callers configure Maven goals, properties, profiles, working directories, and output handling so tools and tests can run Maven projects under controlled conditions."
+ }
+
+ succeeded in 117ms:
+repository OK
+
+web search: 
+web search: Apache Maven Invoker A component to programmatically invoke Maven
+web search: 
+web search: 
+web search: 
+web search: "Central Repository: org/apache/maven/shared/maven-invoker/2.0.9"
+web search: 
+web search: "maven-invoker-2.0.9" "src/test" "svn.apache.org"
+web search: 
+web search: 
+web search: 
+web search: "https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-2.0.9/"
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+index 9811cf145dd446b375ec6e02f1783f055dc46cd3..0b51fe150b64659eb0f309e35bee574b8583e775
+--- a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9"
++  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/shared",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-$version$/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-javadoc.jar",
++  "description" : "Apache Maven Invoker is a Java component for programmatically launching Maven builds from another application. It lets callers configure Maven goals, properties, profiles, working directories, and output handling so tools and tests can run Maven projects under controlled conditions."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json && sed -n '1,80p' build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+index 9811cf145dd446b375ec6e02f1783f055dc46cd3..0b51fe150b64659eb0f309e35bee574b8583e775
+--- a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9"
++  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/shared",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-$version$/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-javadoc.jar",
++  "description" : "Apache Maven Invoker is a Java component for programmatically launching Maven builds from another application. It lets callers configure Maven goals, properties, profiles, working directories, and output handling so tools and tests can run Maven projects under controlled conditions."
+ }
+
+ succeeded in 168ms:
+{
+  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-sources.jar",
+  "repository-url" : "https://svn.apache.org/repos/asf/maven/shared",
+  "test-code-url" : "https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-$version$/src/test/",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-javadoc.jar",
+  "description" : "Apache Maven Invoker is a Java component for programmatically launching Maven builds from another application. It lets callers configure Maven goals, properties, profiles, working directories, and output handling so tools and tests can run Maven projects under controlled conditions."
+}
+
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.9/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/shared/
+web search: 
+web search: 
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker "2.0.9/" "2.0.10/"
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.maven.shared/maven-invoker/2.0.9
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-2.0.9/
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-2.0.9/src/
+codex
+Updated [org.apache.maven.shared-maven-invoker-2.0.9.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json).
+
+I used Maven artifact URLs for sources and javadocs because 2.0.9 is a regular `jar` with source and javadoc artifacts available, and I used the Apache SVN 2.0.9 tag for tests because that tag contains `src/test/`. I left `language` absent and did not set `not-for-native-image`. ([mvnrepository.com](https://mvnrepository.com/artifact/org.apache.maven.shared/maven-invoker/2.0.9))
+
+Validation: `jq` passed, and the substituted source, documentation, repository, and test URLs all resolved successfully.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+index 9811cf145dd446b375ec6e02f1783f055dc46cd3..0b51fe150b64659eb0f309e35bee574b8583e775
+--- a/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9"
++  "coordinates" : "org.apache.maven.shared:maven-invoker:2.0.9",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/shared",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/shared/tags/maven-invoker-$version$/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/$version$/maven-invoker-$version$-javadoc.jar",
++  "description" : "Apache Maven Invoker is a Java component for programmatically launching Maven builds from another application. It lets callers configure Maven goals, properties, profiles, working directories, and output handling so tools and tests can run Maven projects under controlled conditions."
+ }
+
+tokens used
+145,489
+Updated [org.apache.maven.shared-maven-invoker-2.0.9.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff/build/discovered-artifact-metadata/org.apache.maven.shared-maven-invoker-2.0.9.json).
+
+I used Maven artifact URLs for sources and javadocs because 2.0.9 is a regular `jar` with source and javadoc artifacts available, and I used the Apache SVN 2.0.9 tag for tests because that tag contains `src/test/`. I left `language` absent and did not set `not-for-native-image`. ([mvnrepository.com](https://mvnrepository.com/artifact/org.apache.maven.shared/maven-invoker/2.0.9))
+
+Validation: `jq` passed, and the substituted source, documentation, repository, and test URLs all resolved successfully.
+Ran agent for org.apache.maven.shared:maven-invoker:2.0.9 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff/build/agent-artifact-discovery-logs/org.apache.maven.shared-maven-invoker-2.0.9.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2403-defec9ff/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 32s
+9 actionable tasks: 9 executed
