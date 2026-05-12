@@ -42,6 +42,7 @@ public class SimpleTypeVisitorAdapterTest {
 
     @Test
     void extendedTypeFactoryUsesFirstIntersectionBoundForTypeVariableUpperBound() throws Exception {
+        NativeCompilerSupport.ensureJavaHomeProperty();
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         assertThat(compiler).as("A JDK compiler is required to inspect javac intersection types").isNotNull();
 

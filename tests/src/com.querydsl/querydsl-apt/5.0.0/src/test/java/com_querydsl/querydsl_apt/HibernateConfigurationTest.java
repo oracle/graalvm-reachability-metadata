@@ -39,6 +39,7 @@ public class HibernateConfigurationTest {
 
     @Test
     void includesHibernateSpecificAnnotations() throws Exception {
+        NativeCompilerSupport.ensureJavaHomeProperty();
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         assertThat(compiler).as("A JDK compiler is required to create an annotation processing environment").isNotNull();
 
