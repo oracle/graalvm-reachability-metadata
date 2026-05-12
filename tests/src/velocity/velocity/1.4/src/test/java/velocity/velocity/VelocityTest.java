@@ -8,7 +8,7 @@ package velocity.velocity;
 
 import org.junit.jupiter.api.Test;
 
-class VelocityTest {
+public class VelocityTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
