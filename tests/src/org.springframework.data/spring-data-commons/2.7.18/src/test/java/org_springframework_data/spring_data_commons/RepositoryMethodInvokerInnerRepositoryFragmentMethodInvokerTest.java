@@ -43,7 +43,7 @@ public class RepositoryMethodInvokerInnerRepositoryFragmentMethodInvokerTest {
         Method baseMethod = ReactiveCrudFragment.class.getMethod("findById", String.class);
         CapturingContinuation<SampleEntity> continuation = new CapturingContinuation<>();
 
-        Object result = fragments.invoke(declaredMethod, baseMethod, new Object[] { "id-1", continuation });
+        Object result = fragments.invoke(declaredMethod, baseMethod, new Object[] {"id-1", continuation });
 
         SampleEntity resolvedEntity = result instanceof SampleEntity ? (SampleEntity) result : continuation.awaitValue();
         assertThat(resolvedEntity).isSameAs(entity);
