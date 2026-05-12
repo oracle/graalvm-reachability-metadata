@@ -36,6 +36,7 @@ public class Tools_readerTest {
     private static final IFn REQUIRE = RT.var("clojure.core", "require");
     private static final IFn EDN_READ = RT.var("clojure.tools.reader.edn", "read");
     private static final IFn EDN_READ_STRING = RT.var("clojure.tools.reader.edn", "read-string");
+    private static final IFn READER_READ = RT.var("clojure.tools.reader", "read");
     private static final IFn READER_READ_STRING = RT.var("clojure.tools.reader", "read-string");
     private static final IFn STRING_PUSH_BACK_READER = RT.var(
             "clojure.tools.reader.reader-types", "string-push-back-reader");
@@ -43,6 +44,8 @@ public class Tools_readerTest {
             "clojure.tools.reader.reader-types", "input-stream-push-back-reader");
     private static final IFn INDEXING_PUSH_BACK_READER = RT.var(
             "clojure.tools.reader.reader-types", "indexing-push-back-reader");
+    private static final IFn SOURCE_LOGGING_PUSH_BACK_READER = RT.var(
+            "clojure.tools.reader.reader-types", "source-logging-push-back-reader");
     private static final IFn READ_CHAR = RT.var("clojure.tools.reader.reader-types", "read-char");
     private static final IFn PEEK_CHAR = RT.var("clojure.tools.reader.reader-types", "peek-char");
     private static final IFn UNREAD = RT.var("clojure.tools.reader.reader-types", "unread");
@@ -66,6 +69,8 @@ public class Tools_readerTest {
     private static final Keyword COLUMN = Keyword.intern(null, "column");
     private static final Keyword FILE = Keyword.intern(null, "file");
     private static final Keyword PRIVATE = Keyword.intern(null, "private");
+    private static final Keyword SOURCE = Keyword.intern(null, "source");
+    private static final Keyword ANSWER = Keyword.intern(null, "answer");
     private static final Keyword READ_COND = Keyword.intern(null, "read-cond");
     private static final Keyword FEATURES = Keyword.intern(null, "features");
     private static final Keyword CLJ = Keyword.intern(null, "clj");
@@ -211,6 +216,22 @@ public class Tools_readerTest {
                 .isEqualTo(RT.list(Symbol.intern("var"), Symbol.intern("clojure.core", "map")));
         assertThat(READER_READ_STRING.invoke("@state"))
                 .isEqualTo(RT.list(Symbol.intern("clojure.core", "deref"), Symbol.intern("state")));
+    }
+
+    @Test
+    void clojureReaderAttachesSourceMetadataWithSourceLoggingReader() {
+        Object reader = SOURCE_LOGGING_PUSH_BACK_READER.invoke("  ^:private [1 2]\n{:answer 42}", 2, "forms.clj");
+
+        IObj vectorWithMetadata = (IObj) READER_READ.invoke(reader);
+        assertThat((IPersistentVector) vectorWithMetadata).isEqualTo(PersistentVector.create(Arrays.asList(1L, 2L)));
+        assertThat(vectorWithMetadata.meta().valAt(PRIVATE)).isEqualTo(Boolean.TRUE);
+        assertThat(vectorWithMetadata.meta().valAt(SOURCE)).isEqualTo("^:private [1 2]");
+        assertThat(vectorWithMetadata.meta().valAt(FILE)).isEqualTo("forms.clj");
+
+        IObj mapWithSourceMetadata = (IObj) READER_READ.invoke(reader);
+        assertThat(((IPersistentMap) mapWithSourceMetadata).valAt(ANSWER)).isEqualTo(42L);
+        assertThat(mapWithSourceMetadata.meta().valAt(SOURCE)).isEqualTo("{:answer 42}");
+        assertThat(mapWithSourceMetadata.meta().valAt(FILE)).isEqualTo("forms.clj");
     }
 
     private static final class PointReader extends AFn {
