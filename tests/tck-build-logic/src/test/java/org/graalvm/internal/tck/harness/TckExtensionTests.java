@@ -12,9 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -162,6 +164,59 @@ class TckExtensionTests {
                 );
     }
 
+    @Test
+    void diffIndexTestedVersionsIncludesRunnableMetadataCoordinates() throws Exception {
+        initializeGitRepository();
+        String baseCommit = commitAll("base");
+
+        Files.createDirectories(tempDir.resolve("metadata/com.example/demo/1.0.0"));
+        Files.writeString(tempDir.resolve("metadata/com.example/demo/index.json"), """
+                [
+                  {
+                    "latest": true,
+                    "metadata-version": "1.0.0",
+                    "tested-versions": [
+                      "1.0.0"
+                    ]
+                  }
+                ]
+                """);
+        Files.createDirectories(tempDir.resolve("tests/src/com.example/demo/1.0.0"));
+        commitAll("add metadata");
+
+        TckExtension extension = createExtensionForCurrentProjectDir();
+
+        assertThat(extension.diffIndexTestedVersions(baseCommit, "HEAD"))
+                .containsExactly(Map.of(
+                        "coordinates", "com.example:demo:1.0.0",
+                        "versions", List.of("1.0.0")
+                ));
+    }
+
+    @Test
+    void diffIndexTestedVersionsSkipsMetadataCoordinatesThatCannotRunConsecutiveTests() throws Exception {
+        initializeGitRepository();
+        String baseCommit = commitAll("base");
+
+        Files.writeString(tempDir.resolve("metadata/com.example/demo/index.json"), """
+                [
+                  {
+                    "latest": true,
+                    "metadata-version": "1.0.0",
+                    "tested-versions": [
+                      "1.0.0"
+                    ]
+                  }
+                ]
+                """);
+        Files.createDirectories(tempDir.resolve("tests/src/com.example/demo/1.0.0"));
+        commitAll("add unresolved metadata entry");
+
+        TckExtension extension = createExtensionForCurrentProjectDir();
+
+        assertThat(extension.diffIndexTestedVersions(baseCommit, "HEAD")).isEmpty();
+    }
+
     private TckExtension createExtension(String metadataIndexJson) throws IOException {
         Files.createDirectories(tempDir.resolve("metadata/com.example/demo/1.0.0"));
         Files.writeString(tempDir.resolve("metadata/com.example/demo/index.json"), metadataIndexJson);
@@ -169,6 +224,10 @@ class TckExtensionTests {
         Files.createDirectories(tempDir.resolve("tests/tck-build-logic"));
         Files.writeString(tempDir.resolve("LICENSE"), "test");
 
+        return createExtensionForCurrentProjectDir();
+    }
+
+    private TckExtension createExtensionForCurrentProjectDir() {
         Project project = ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
                 .build();
@@ -180,5 +239,39 @@ class TckExtensionTests {
                 .map(value -> "\"" + value + "\"")
                 .toList()
                 .toString();
+    }
+
+    private void initializeGitRepository() throws IOException, InterruptedException {
+        Files.createDirectories(tempDir.resolve("metadata/com.example/demo"));
+        Files.createDirectories(tempDir.resolve("tests/src"));
+        Files.createDirectories(tempDir.resolve("tests/tck-build-logic"));
+        Files.writeString(tempDir.resolve("LICENSE"), "test");
+
+        git("init");
+        git("config", "user.name", "Test User");
+        git("config", "user.email", "test@example.com");
+    }
+
+    private String commitAll(String message) throws IOException, InterruptedException {
+        git("add", "-A");
+        git("commit", "-m", message);
+        return git("rev-parse", "HEAD");
+    }
+
+    private String git(String... args) throws IOException, InterruptedException {
+        List<String> command = new ArrayList<>();
+        command.add("git");
+        command.addAll(Arrays.asList(args));
+
+        Process process = new ProcessBuilder(command)
+                .directory(tempDir.toFile())
+                .redirectErrorStream(true)
+                .start();
+        int exitCode = process.waitFor();
+        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).trim();
+        assertThat(exitCode)
+                .withFailMessage("git %s failed:%n%s", String.join(" ", Arrays.asList(args)), output)
+                .isZero();
+        return output;
     }
 }

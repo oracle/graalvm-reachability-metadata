@@ -273,9 +273,10 @@ public abstract class TckExtension {
             List<String> addedVersions = headEntry.getValue().stream()
                     .filter(testedVersion -> !baseVersions.contains(testedVersion))
                     .toList();
-            if (!addedVersions.isEmpty()) {
+            String metadataCoordinates = coordinates + ":" + metadataVersion;
+            if (!addedVersions.isEmpty() && isRunnableCoordinate(metadataCoordinates)) {
                 changedMetadataVersions.add(Map.of(
-                        "coordinates", coordinates + ":" + metadataVersion,
+                        "coordinates", metadataCoordinates,
                         "versions", addedVersions
                 ));
             }
@@ -348,6 +349,16 @@ public abstract class TckExtension {
             return new JsonSlurper().parseText(json);
         } catch (Exception ex) {
             return Collections.emptyList();
+        }
+    }
+
+    private boolean isRunnableCoordinate(String coordinates) {
+        try {
+            getMetadataDir(coordinates);
+            getTestDir(coordinates);
+            return true;
+        } catch (RuntimeException ignored) {
+            return false;
         }
     }
 
