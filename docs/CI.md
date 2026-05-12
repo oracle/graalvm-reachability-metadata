@@ -11,7 +11,7 @@ You usually do not need this locally.
 
 ## Types of jobs in the CI
 
-The release is made every two weeks if there are metadata changes: [.github/workflows/create-scheduled-release.yml](../.github/workflows/create-scheduled-release.yml).
+The release is made every two weeks if there are metadata changes and the latest completed test-all metadata workflow passed. Manual release dispatches bypass this gate: [.github/workflows/create-scheduled-release.yml](../.github/workflows/create-scheduled-release.yml).
 
 The test matrix definition starts with [ci.json](../ci.json):
 - A single source of truth for which Java versions and OS runners to test on.
@@ -21,8 +21,8 @@ The test matrix definition starts with [ci.json](../ci.json):
 
 Workflows testing metadata using [ci.json](../ci.json):
 - Test all metadata ([.github/workflows/test-all-metadata.yml](../.github/workflows/test-all-metadata.yml))
-  - Triggers: manual (workflow_dispatch) and PRs that touch [ci.json](../ci.json).
-  - Uses: generateMatrixBatchedCoordinates to build a matrix (java + os). Runs full tests, pulls only allowed Docker images, then disables Docker networking for deterministic runs.
+  - Triggers: every three days and manual ([`workflow_dispatch`](../.github/workflows/test-all-metadata.yml)).
+  - Uses: generateMatrixBatchedCoordinates with 64 batches to build a matrix (java + os). Runs full tests, pulls only allowed Docker images, then disables Docker networking for deterministic runs. Failed batches are isolated down to concrete library versions and reported as aggregated GitHub issues across the configured GraalVM JDK/OS combinations and native-image modes.
 - Test changed metadata ([.github/workflows/test-changed-metadata.yml](../.github/workflows/test-changed-metadata.yml))
   - Triggers: PRs to master touching [metadata/](../metadata/) or [tests/src/](../tests/src/).
   - Uses: [`generateChangedMetadataTestMatrix`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) with base/head SHAs to test only what changed. It batches each changed metadata version's [`tested-versions`](../metadata/com.google.protobuf/protobuf-java-util/index.json) into chunks of up to 30 versions per job, includes newly added tested versions from artifact-level index diffs, then pulls allowed images, disables Docker networking, validates config, and runs only that batch.
