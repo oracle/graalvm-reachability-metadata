@@ -6,18 +6,16 @@
  */
 package velocity.velocity;
 
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.RuntimeSingleton;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.velocity.test.IntrospectorTestCase3;
 import org.junit.jupiter.api.Test;
 
 public class IntrospectorTestCase3Test {
     @Test
     void runsPrimitiveOverloadIntrospectionTestCase() throws Exception {
-        RuntimeSingleton.setProperty(
-                RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-                "org.apache.velocity.runtime.log.NullLogSystem");
-        RuntimeSingleton.init();
+        junit.framework.Test suite = IntrospectorTestCase3.suite();
+        assertNotNull(suite);
 
         IntrospectorTestCase3 testCase = new IntrospectorTestCase3("testSimple");
         testCase.testSimple();
