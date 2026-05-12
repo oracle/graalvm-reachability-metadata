@@ -12,7 +12,9 @@ import static org.assertj.core.api.Assertions.fail;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,11 +22,15 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.compiler.Compiler;
 import org.codehaus.plexus.compiler.CompilerConfiguration;
+import org.codehaus.plexus.compiler.CompilerError;
+import org.codehaus.plexus.compiler.CompilerException;
 import org.codehaus.plexus.compiler.CompilerOutputStyle;
+import org.codehaus.plexus.compiler.CompilerResult;
 import org.codehaus.plexus.compiler.javac.JavacCompiler;
 import org.codehaus.plexus.compiler.manager.CompilerManager;
 import org.codehaus.plexus.compiler.manager.DefaultCompilerManager;
 import org.codehaus.plexus.compiler.manager.NoSuchCompilerException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -91,6 +97,30 @@ public class Plexus_compiler_managerTest {
         }
     }
 
+    @Test
+    public void managerReturnsCompilerRegisteredWithAdditionalRoleHint() throws Exception {
+        DefaultPlexusContainer container = new DefaultPlexusContainer();
+        try {
+            String compilerId = "in-memory";
+            ComponentDescriptor<Compiler> descriptor = new ComponentDescriptor<>();
+            descriptor.setRole(Compiler.ROLE);
+            descriptor.setRoleClass(Compiler.class);
+            descriptor.setRoleHint(compilerId);
+            descriptor.setImplementationClass(InMemoryCompiler.class);
+            container.addComponentDescriptor(descriptor);
+
+            CompilerManager manager = container.lookup(CompilerManager.class);
+            Compiler compiler = manager.getCompiler(compilerId);
+
+            assertThat(compiler).isInstanceOf(InMemoryCompiler.class);
+            assertThat(compiler.getCompilerOutputStyle()).isEqualTo(CompilerOutputStyle.ONE_OUTPUT_FILE_FOR_ALL_INPUT_FILES);
+            assertThat(compiler.getInputFileEnding(new CompilerConfiguration())).isEqualTo(".source");
+            assertThat(compiler.performCompile(new CompilerConfiguration()).isSuccess()).isTrue();
+        } finally {
+            container.dispose();
+        }
+    }
+
     private static Element findCompilerManagerComponent() throws Exception {
         Enumeration<URL> descriptors = Thread.currentThread().getContextClassLoader()
                 .getResources(COMPONENT_DESCRIPTOR);
@@ -131,5 +161,47 @@ public class Plexus_compiler_managerTest {
 
     private static String directChildText(Element element, String name) {
         return directChild(element, name).getTextContent().trim();
+    }
+
+    public static final class InMemoryCompiler implements Compiler {
+        @Override
+        public CompilerOutputStyle getCompilerOutputStyle() {
+            return CompilerOutputStyle.ONE_OUTPUT_FILE_FOR_ALL_INPUT_FILES;
+        }
+
+        @Override
+        public String getInputFileEnding(CompilerConfiguration compilerConfiguration) throws CompilerException {
+            return ".source";
+        }
+
+        @Override
+        public String getOutputFileEnding(CompilerConfiguration compilerConfiguration) throws CompilerException {
+            return ".compiled";
+        }
+
+        @Override
+        public String getOutputFile(CompilerConfiguration compilerConfiguration) throws CompilerException {
+            return "in-memory-output";
+        }
+
+        @Override
+        public boolean canUpdateTarget(CompilerConfiguration compilerConfiguration) throws CompilerException {
+            return false;
+        }
+
+        @Override
+        public CompilerResult performCompile(CompilerConfiguration compilerConfiguration) throws CompilerException {
+            return new CompilerResult(true, Collections.emptyList());
+        }
+
+        @Override
+        public List<CompilerError> compile(CompilerConfiguration compilerConfiguration) throws CompilerException {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public String[] createCommandLine(CompilerConfiguration compilerConfiguration) throws CompilerException {
+            return new String[] {"in-memory-compiler"};
+        }
     }
 }
