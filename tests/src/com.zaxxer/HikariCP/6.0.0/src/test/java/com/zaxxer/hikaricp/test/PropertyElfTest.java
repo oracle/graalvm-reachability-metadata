@@ -41,6 +41,25 @@ public class PropertyElfTest {
     }
 
     @Test
+    void setsArrayPropertiesFromDelimitedTextValues() {
+        MutableBean bean = new MutableBean();
+        Properties properties = new Properties();
+        properties.setProperty("intValues", "1,2,3");
+        properties.setProperty("stringValues", "alpha,beta\\,gamma,delta\\\\epsilon");
+
+        try {
+            PropertyElf.setTargetFromProperties(bean, properties);
+        } catch (RuntimeException exception) {
+            // HikariCP versions before array coercion reject these array setters.
+            assertThat(exception).hasCauseInstanceOf(IllegalArgumentException.class);
+            return;
+        }
+
+        assertThat(bean.getIntValues()).containsExactly(1, 2, 3);
+        assertThat(bean.getStringValues()).containsExactly("alpha", "beta,gamma", "delta\\epsilon");
+    }
+
+    @Test
     void usesOriginalValueWhenObjectPropertyIsNotAClassName() {
         MutableBean bean = new MutableBean();
         Properties properties = new Properties();
@@ -89,6 +108,8 @@ public class PropertyElfTest {
         private boolean enabled;
         private Boolean flag;
         private char[] letters;
+        private int[] intValues;
+        private String[] stringValues;
         private String name;
         private Object payload;
 
@@ -138,6 +159,22 @@ public class PropertyElfTest {
 
         public void setLetters(char[] letters) {
             this.letters = letters;
+        }
+
+        public int[] getIntValues() {
+            return intValues;
+        }
+
+        public void setIntValues(int[] intValues) {
+            this.intValues = intValues;
+        }
+
+        public String[] getStringValues() {
+            return stringValues;
+        }
+
+        public void setStringValues(String[] stringValues) {
+            this.stringValues = stringValues;
         }
 
         public String getName() {
