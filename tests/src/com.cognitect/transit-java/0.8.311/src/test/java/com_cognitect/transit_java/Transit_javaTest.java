@@ -121,6 +121,25 @@ public class Transit_javaTest {
     }
 
     @Test
+    void writesObjectAndPrimitiveArraysAsTransitArraysInEveryFormat() {
+        for (TransitFactory.Format format : ALL_FORMATS) {
+            Keyword keyword = TransitFactory.keyword("array/item");
+            Map<String, Object> payload = new LinkedHashMap<>();
+            payload.put("objectArray", new Object[] {"alpha", keyword, 3});
+            payload.put("intArray", new int[] {1, 2, 3});
+            payload.put("booleanArray", new boolean[] {true, false, true});
+            payload.put("charArray", new char[] {'a', 'z'});
+
+            Map<?, ?> result = roundTrip(format, payload);
+
+            assertThat(result.get("objectArray")).isEqualTo(Arrays.asList("alpha", keyword, 3L));
+            assertThat(result.get("intArray")).isEqualTo(Arrays.asList(1L, 2L, 3L));
+            assertThat(result.get("booleanArray")).isEqualTo(Arrays.asList(true, false, true));
+            assertThat(result.get("charArray")).isEqualTo(Arrays.asList('a', 'z'));
+        }
+    }
+
+    @Test
     void readsTransitLiteralsForRatiosLinksAndUnknownTaggedValues() {
         Map<?, ?> payload = read(TransitFactory.Format.JSON_VERBOSE, """
                 {
