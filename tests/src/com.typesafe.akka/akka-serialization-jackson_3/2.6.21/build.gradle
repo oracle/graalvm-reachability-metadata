@@ -1,3 +1,5 @@
+import java.nio.charset.StandardCharsets
+
 /*
  * Copyright and related rights waived via CC0
  *
@@ -33,4 +35,44 @@ graalvmNative {
             }
         }
     }
+}
+
+def mergedConfigResourcesDir = layout.buildDirectory.dir("generated/test-config-resources")
+
+def mergeTestConfigResources = tasks.register("mergeTestConfigResources") {
+    inputs.files(configurations.testRuntimeClasspath)
+    outputs.dir(mergedConfigResourcesDir)
+
+    doLast {
+        File outputDir = mergedConfigResourcesDir.get().asFile
+        delete(outputDir)
+        outputDir.mkdirs()
+
+        ["reference.conf", "version.conf"].each { String resourceName ->
+            List<String> resourceContents = configurations.testRuntimeClasspath.files
+                    .sort { File left, File right -> left.absolutePath <=> right.absolutePath }
+                    .collectMany { File dependency ->
+                        if (dependency.isDirectory()) {
+                            File resourceFile = new File(dependency, resourceName)
+                            return resourceFile.isFile() ? [resourceFile.getText(StandardCharsets.UTF_8.name())] : []
+                        }
+                        return zipTree(dependency)
+                                .matching { include resourceName }
+                                .files
+                                .sort { File left, File right -> left.absolutePath <=> right.absolutePath }
+                                .collect { File resourceFile -> resourceFile.getText(StandardCharsets.UTF_8.name()) }
+                    }
+                    .findAll { String contents -> !contents.isBlank() }
+
+            if (!resourceContents.isEmpty()) {
+                File outputFile = new File(outputDir, resourceName)
+                outputFile.setText(resourceContents.join(System.lineSeparator() + System.lineSeparator()), StandardCharsets.UTF_8.name())
+            }
+        }
+    }
+}
+
+tasks.named("processTestResources").configure {
+    dependsOn(mergeTestConfigResources)
+    from(mergedConfigResourcesDir)
 }
