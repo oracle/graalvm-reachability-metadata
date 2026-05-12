@@ -686,7 +686,8 @@ def execution_metrics_path(repo_path: str, run_metrics: dict) -> str:
         raise ValueError(f"ERROR: run_metrics library must be group:artifact:version: {library}")
 
     group, artifact, version = parts
-    return os.path.join(repo_path, "stats", group, artifact, version, "execution-metrics.json")
+    metadata_version = resolve_metadata_version(repo_path, group, artifact, version)
+    return os.path.join(repo_path, "stats", group, artifact, metadata_version, "execution-metrics.json")
 
 
 def _load_execution_metrics_entries(path: str) -> dict:
