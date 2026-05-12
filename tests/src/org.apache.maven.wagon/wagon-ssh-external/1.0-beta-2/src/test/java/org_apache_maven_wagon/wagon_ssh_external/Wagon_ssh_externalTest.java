@@ -7,10 +7,13 @@
 package org_apache_maven_wagon.wagon_ssh_external;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.apache.maven.wagon.CommandExecutionException;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
@@ -196,6 +199,67 @@ public class Wagon_ssh_externalTest {
                 .contains("ARG:-q")
                 .contains("ARG:artifact.jar")
                 .contains("ARG:deployer@" + REMOTE_HOST + ":/var/maven/com/acme/artifact.jar");
+        } finally {
+            wagon.disconnect();
+        }
+    }
+
+    @Test
+    @Timeout(10)
+    void putDirectoryArchivesSourceUploadsItAndRunsRemoteUnpackCommands() throws Exception {
+        Path log = temporaryDirectory.resolve("directory-transfer.log");
+        Path capturedArchive = temporaryDirectory.resolve("captured-directory.zip");
+        Path ssh = loggingScript("directory-ssh", "ssh", log, 0);
+        Path scp = writeScript("directory-scp", """
+            #!/bin/sh
+            {
+              echo 'CALL:scp'
+              echo "PWD:$(pwd)"
+              for arg in "$@"; do
+                printf 'ARG:%%s\n' "$arg"
+              done
+            } >> %s
+            for arg in "$@"; do
+              if [ -f "$arg" ]; then
+                cp "$arg" %s
+              fi
+            done
+            exit 0
+            """.formatted(shellQuote(log), shellQuote(capturedArchive)));
+        Path sourceDirectory = temporaryDirectory.resolve("site-source");
+        Files.createDirectories(sourceDirectory.resolve("assets"));
+        Files.writeString(sourceDirectory.resolve("index.html"), "<h1>Documentation</h1>", StandardCharsets.UTF_8);
+        Files.writeString(sourceDirectory.resolve("assets/app.css"), "body { color: blue; }", StandardCharsets.UTF_8);
+        ScpExternalWagon wagon = new ScpExternalWagon();
+        wagon.setSshExecutable(ssh.toString());
+        wagon.setScpExecutable(scp.toString());
+        wagon.connect(repositoryWithPermissions(), authenticationInfo());
+
+        try {
+            wagon.putDirectory(sourceDirectory.toFile(), "site\\docs");
+
+            assertThat(capturedArchive).exists().isRegularFile();
+            try (ZipFile zip = new ZipFile(capturedArchive.toFile())) {
+                ZipEntry indexEntry = zip.getEntry("index.html");
+                assertThat(indexEntry).isNotNull();
+                assertThat(zip.getEntry("assets/app.css")).isNotNull();
+                try (InputStream input = zip.getInputStream(indexEntry)) {
+                    assertThat(new String(input.readAllBytes(), StandardCharsets.UTF_8))
+                        .isEqualTo("<h1>Documentation</h1>");
+                }
+            }
+
+            String logContents = Files.readString(log, StandardCharsets.UTF_8);
+            assertThat(logContents)
+                .contains("CALL:ssh")
+                .contains("ARG:umask 2")
+                .contains("ARG:mkdir -p /var/maven/site/docs")
+                .contains("CALL:scp")
+                .contains("ARG:deployer@" + REMOTE_HOST + ":/var/maven/site/docs/wagon")
+                .contains("ARG:cd /var/maven/site/docs; unzip -o wagon")
+                .contains("; rm -f wagon")
+                .contains("ARG:chgrp -Rf maven /var/maven/site/docs")
+                .contains("ARG:chmod -Rf 640 /var/maven/site/docs");
         } finally {
             wagon.disconnect();
         }
