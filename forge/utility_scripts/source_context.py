@@ -17,7 +17,7 @@ from email.message import Message
 from typing import Any
 
 from utility_scripts.gradle_environment import gradle_command_environment
-from utility_scripts.metadata_index import is_not_for_native_image_entry
+from utility_scripts.metadata_index import find_index_entry_for_version, is_not_for_native_image_entry
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import build_task_log_path, display_log_path
@@ -258,12 +258,9 @@ def load_index_entry(reachability_repo_path: str, coordinate: str) -> dict[str, 
         )
         raise SystemExit(1)
 
-    for entry in entries:
-        if entry.get("metadata-version") == version:
-            return entry
-        tested_versions = entry.get("tested-versions") or []
-        if version in tested_versions:
-            return entry
+    entry = find_index_entry_for_version(reachability_repo_path, group, artifact, version)
+    if entry is not None:
+        return entry
 
     print(f"ERROR: No metadata index entry found for {coordinate} in {index_path_display}", file=sys.stderr)
     raise SystemExit(1)

@@ -152,6 +152,43 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
         ])
 
 
+class LibraryUpdateIssueTests(unittest.TestCase):
+    def test_library_update_uses_title_coordinate_when_body_mentions_other_coordinates(self) -> None:
+        issue = {
+            "number": 1412,
+            "title": "Update support for org.example:title-lib:1.2.3",
+            "body": (
+                "The failure also mentions org.other:body-lib:9.9.9 and "
+                "com.acme:context:4.5.6 in the stack trace."
+            ),
+        }
+
+        claim_metadata = forge_metadata.build_claim_metadata(
+            issue,
+            forge_metadata.LABEL_LIBRARY_UPDATE,
+            "/tmp/reachability",
+        )
+
+        self.assertEqual(claim_metadata, ("org.example:title-lib:1.2.3", None, None))
+
+    def test_extract_issue_requested_metadata_context_keeps_missing_metadata_evidence(self) -> None:
+        body = """
+        Related coordinate: org.other:body-lib:9.9.9
+
+        ```json
+        {"reflection":[{"type":"org.example.Missing"}]}
+        ```
+
+        native-image reports missing resource file config/app.properties.
+        """
+
+        context = forge_metadata.extract_issue_requested_metadata_context(body)
+
+        self.assertIn("org.example.Missing", context)
+        self.assertIn("missing resource file config/app.properties", context)
+        self.assertIn("Related coordinate", context)
+
+
 class IssueClaimPreflightTests(unittest.TestCase):
     def test_forge_gh_does_not_log_github_query_by_default(self) -> None:
         completed_process = subprocess.CompletedProcess(

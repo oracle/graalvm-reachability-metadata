@@ -17,6 +17,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, read_pending_metrics, write_pending_metrics
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
@@ -644,29 +645,7 @@ def _required_docker_images_path(repo_path: str, coordinates: str) -> str | None
 def _resolve_coordinate_test_version(repo_path: str, coordinates: str) -> str | None:
     """Resolve the test-version used by pullAllowedDockerImages for a coordinate."""
     group, artifact, version = parse_coordinate_parts(coordinates)
-    index_path = os.path.join(repo_path, "metadata", group, artifact, "index.json")
-    if not os.path.isfile(index_path):
-        return version
-
-    with open(index_path, "r", encoding="utf-8") as index_file:
-        index_entries = json.load(index_file)
-    if not isinstance(index_entries, list):
-        return version
-
-    for entry in index_entries:
-        if not isinstance(entry, dict):
-            continue
-        tested_versions = entry.get("tested-versions")
-        if isinstance(tested_versions, list) and version in [str(tested_version) for tested_version in tested_versions]:
-            return str(entry.get("test-version") or entry.get("metadata-version") or version)
-
-    for entry in index_entries:
-        if not isinstance(entry, dict):
-            continue
-        if version == str(entry.get("metadata-version") or ""):
-            return str(entry.get("test-version") or entry.get("metadata-version") or version)
-
-    return version
+    return resolve_test_version(repo_path, group, artifact, version)
 
 
 def _is_required_docker_image_line(line: str) -> bool:
