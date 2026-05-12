@@ -9,6 +9,7 @@ package com_alibaba_fastjson2.fastjson2;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.alibaba.fastjson2.PropertyNamingStrategy;
+import com.alibaba.fastjson2.util.Fnv;
 import org.junit.jupiter.api.Test;
 
 public class Fastjson2Test {
@@ -42,5 +43,21 @@ public class Fastjson2Test {
         assertThat(snakeCase == PropertyNamingStrategy.SnakeCase).isTrue();
         assertThat(kebabCase == PropertyNamingStrategy.KebabCase).isTrue();
         assertThat(lowerCaseWithDots == PropertyNamingStrategy.LowerCaseWithDots).isTrue();
+    }
+
+    @Test
+    void computesStableFieldNameHashes() {
+        long idHash = Fnv.hashCode64("id");
+        long upperCaseIdHash = Fnv.hashCode64("ID");
+        long lowerCaseIdHash = Fnv.hashCode64LCase("ID");
+        long snakeCaseHash = Fnv.hashCode64LCase("customer_id");
+        long kebabCaseHash = Fnv.hashCode64LCase("Customer-ID");
+        long spacedHash = Fnv.hashCode64LCase("customer ID");
+
+        assertThat(idHash).isEqualTo(lowerCaseIdHash);
+        assertThat(idHash).isNotEqualTo(upperCaseIdHash);
+        assertThat(snakeCaseHash).isEqualTo(kebabCaseHash);
+        assertThat(snakeCaseHash).isEqualTo(spacedHash);
+        assertThat(Fnv.hashCode64("customer", "id")).isNotEqualTo(Fnv.hashCode64("id", "customer"));
     }
 }
