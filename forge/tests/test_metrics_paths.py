@@ -15,9 +15,11 @@ from ai_workflows.add_new_library_support import (
 from ai_workflows.java_fail_workflow import JAVAC_CONFIG, resolve_fix_metrics_json, write_fix_metrics
 from utility_scripts.library_stats import load_library_stats_entry, resolve_stats_file_path
 from utility_scripts.metrics_writer import (
+    append_execution_metrics,
     count_metadata_entries,
     count_test_only_metadata_entries,
     create_run_metrics_output_json,
+    execution_metrics_path,
     resolve_artifact_paths,
 )
 
@@ -285,6 +287,55 @@ class MetricsPathTests(unittest.TestCase):
             )
             stats_entry = load_library_stats_entry(temp_dir, "org.example", "demo", "10.20.1")
             self.assertEqual(stats_entry["dynamicAccess"]["coveredCalls"], 1)
+
+    def test_execution_metrics_path_uses_resolved_metadata_version(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            metadata_index_dir = os.path.join(temp_dir, "metadata", "org.example", "demo")
+            os.makedirs(metadata_index_dir)
+            with open(os.path.join(metadata_index_dir, "index.json"), "w", encoding="utf-8") as file:
+                json.dump(
+                    [
+                        {
+                            "metadata-version": "1.0.0",
+                            "tested-versions": ["1.0.0", "1.0.1"],
+                        }
+                    ],
+                    file,
+                )
+
+            self.assertEqual(
+                execution_metrics_path(temp_dir, _minimal_run_metrics("org.example:demo:1.0.1")),
+                os.path.join(temp_dir, "stats", "org.example", "demo", "1.0.0", "execution-metrics.json"),
+            )
+
+    def test_append_execution_metrics_uses_resolved_metadata_version(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            metadata_index_dir = os.path.join(temp_dir, "metadata", "org.example", "demo")
+            os.makedirs(metadata_index_dir)
+            with open(os.path.join(metadata_index_dir, "index.json"), "w", encoding="utf-8") as file:
+                json.dump(
+                    [
+                        {
+                            "metadata-version": "1.0.0",
+                            "tested-versions": ["1.0.0", "1.0.1"],
+                        }
+                    ],
+                    file,
+                )
+            run_metrics = _minimal_run_metrics("org.example:demo:1.0.1")
+
+            metrics_path = append_execution_metrics(temp_dir, run_metrics, "improve_library_coverage")
+
+            self.assertEqual(
+                metrics_path,
+                os.path.join(temp_dir, "stats", "org.example", "demo", "1.0.0", "execution-metrics.json"),
+            )
+            with open(metrics_path, "r", encoding="utf-8") as file:
+                persisted = json.load(file)
+            self.assertEqual(
+                persisted,
+                {"improve_library_coverage:2026-04-29": _public_execution_metrics(run_metrics)},
+            )
 
     def test_count_test_only_metadata_entries_counts_direct_native_image_reachability_file(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

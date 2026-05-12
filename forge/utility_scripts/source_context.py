@@ -206,6 +206,7 @@ def prepare_source_contexts(
         source_context_types: list[str],
 ) -> PreparedSourceContext:
     index_entry = load_index_entry(reachability_repo_path, coordinate)
+    _, _, requested_version = _coordinate_parts(coordinate)
     metadata_version = index_entry.get("metadata-version")
     if not isinstance(metadata_version, str) or not metadata_version.strip():
         print(f"ERROR: Missing metadata-version in index.json entry for {coordinate}", file=sys.stderr)
@@ -216,7 +217,7 @@ def prepare_source_contexts(
     artifacts: list[SourceArtifactContext] = []
     for source_type in source_context_types:
         field_name = SOURCE_CONTEXT_FIELD_BY_TYPE[source_type]
-        url = render_url_template(normalize_url_value(index_entry.get(field_name)), metadata_version)
+        url = render_url_template(normalize_url_value(index_entry.get(field_name)), requested_version)
         if url is None:
             log_stage("source-context", f"{source_type}: unavailable, no URL in index.json")
             artifacts.append(SourceArtifactContext(source_type, None, None, [], False, "no URL in index.json"))
