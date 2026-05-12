@@ -161,6 +161,20 @@ public class Maven_builder_supportTest {
     }
 
     @Test
+    void problemCollectorReportsLineAndColumnWithoutSource() {
+        ProblemCollector collector = ProblemCollectorFactory.newInstance(null);
+
+        collector.add(Problem.Severity.WARNING, "stream-backed descriptor warning", 7, 21, null);
+
+        Problem problem = collector.getProblems().get(0);
+        assertThat(problem.getSource()).isEmpty();
+        assertThat(problem.getLineNumber()).isEqualTo(7);
+        assertThat(problem.getColumnNumber()).isEqualTo(21);
+        assertThat(problem.getLocation()).isEqualTo("line 7, column 21");
+        assertThat(problem.toString()).isEqualTo("[WARNING] stream-backed descriptor warning @ line 7, column 21");
+    }
+
+    @Test
     void severityEnumOrderMatchesDescendingSeverityContract() {
         assertThat(Problem.Severity.values()).containsExactly(
                 Problem.Severity.FATAL,
