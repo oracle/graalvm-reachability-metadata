@@ -9,14 +9,19 @@ package commons_httpclient.commons_httpclient;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.httpclient.HttpException;
 import org.junit.jupiter.api.Test;
 
 public class HttpExceptionTest {
+    private static final String THROWABLE_CLASS_CACHE_FIELD_NAME = "class$java$lang$Throwable";
+
     @Test
     void storesCauseAndPrintsNestedStackTraceToStreamAndWriter() {
         IllegalArgumentException cause = new IllegalArgumentException("invalid header");
@@ -37,6 +42,24 @@ public class HttpExceptionTest {
                 .contains("Caused by:");
     }
 
+    @Test
+    void constructorInitializesLegacyThrowableClassCacheWhenEmpty() throws Exception {
+        VarHandle throwableClassCache = throwableClassCache();
+        Object previousValue = throwableClassCache.get();
+        IOException cause = new IOException("fresh cache cause");
+
+        try {
+            throwableClassCache.set(null);
+
+            HttpException exception = new HttpException("fresh cache failure", cause);
+
+            assertThat(exception.getCause()).isSameAs(cause);
+            assertThat(throwableClassCache.get()).isSameAs(Throwable.class);
+        } finally {
+            throwableClassCache.set(previousValue);
+        }
+    }
+
     private static String printToStream(HttpException exception) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try (PrintStream stream = new PrintStream(output, true, StandardCharsets.UTF_8)) {
@@ -51,5 +74,10 @@ public class HttpExceptionTest {
             exception.printStackTrace(writer);
         }
         return output.toString(StandardCharsets.UTF_8);
+    }
+
+    private static VarHandle throwableClassCache() throws IllegalAccessException, NoSuchFieldException {
+        MethodHandles.Lookup privateLookup = MethodHandles.privateLookupIn(HttpException.class, MethodHandles.lookup());
+        return privateLookup.findStaticVarHandle(HttpException.class, THROWABLE_CLASS_CACHE_FIELD_NAME, Class.class);
     }
 }
