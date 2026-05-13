@@ -12,13 +12,32 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.httpclient.HttpConnection;
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 public class HttpConnectionTest {
+    private static final String HTTP_CONNECTION_CLASS_NAME = "org.apache.commons.httpclient.HttpConnection";
+
+    @Test
+    void freshClassLoaderInitializationRunsLegacyClassHelper() throws Exception {
+        try (HttpConnectionClassLoader classLoader = newHttpConnectionClassLoader()) {
+            Class<?> connectionClass = Class.forName(HTTP_CONNECTION_CLASS_NAME, true, classLoader);
+
+            assertThat(connectionClass.getName()).isEqualTo(HTTP_CONNECTION_CLASS_NAME);
+            assertThat(connectionClass.getClassLoader()).isSameAs(classLoader);
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
+    }
+
     @Test
     void shutdownOutputClosesClientWriteSide() throws Exception {
         InetAddress loopbackAddress = InetAddress.getLoopbackAddress();
@@ -53,6 +72,12 @@ public class HttpConnectionTest {
         }
     }
 
+    private static HttpConnectionClassLoader newHttpConnectionClassLoader() {
+        URL location = HttpConnection.class.getProtectionDomain().getCodeSource().getLocation();
+        return new HttpConnectionClassLoader(new URL[] {location},
+                HttpConnectionTest.class.getClassLoader());
+    }
+
     private static ServerObservation readUntilEndOfStream(ServerSocket serverSocket) throws Exception {
         try (Socket socket = serverSocket.accept()) {
             socket.setSoTimeout(5000);
@@ -63,6 +88,29 @@ public class HttpConnectionTest {
                 currentByte = input.read();
             }
             return new ServerObservation(firstByte, true);
+        }
+    }
+
+    private static final class HttpConnectionClassLoader extends URLClassLoader {
+        private HttpConnectionClassLoader(URL[] urls, ClassLoader parent) {
+            super(urls, parent);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                if (HTTP_CONNECTION_CLASS_NAME.equals(name)) {
+                    Class<?> loadedClass = findLoadedClass(name);
+                    if (loadedClass == null) {
+                        loadedClass = findClass(name);
+                    }
+                    if (resolve) {
+                        resolveClass(loadedClass);
+                    }
+                    return loadedClass;
+                }
+                return super.loadClass(name, resolve);
+            }
         }
     }
 
