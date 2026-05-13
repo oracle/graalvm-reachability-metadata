@@ -6,11 +6,14 @@
  */
 package org_codehaus_plexus.plexus_component_api;
 
+import org.codehaus.plexus.PlexusContainer;
 import org.junit.jupiter.api.Test;
 
-class Plexus_component_apiTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class PlexusContainerAnonymous1Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void roleNameInitializesPlexusContainerClassLiteralHelper() {
+        assertThat(PlexusContainer.ROLE).isEqualTo(PlexusContainer.class.getName());
     }
 }
