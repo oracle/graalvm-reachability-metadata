@@ -8,7 +8,7 @@ package commons_httpclient.commons_httpclient;
 
 import org.junit.jupiter.api.Test;
 
-class Commons_httpclientTest {
+public class Commons_httpclientTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
