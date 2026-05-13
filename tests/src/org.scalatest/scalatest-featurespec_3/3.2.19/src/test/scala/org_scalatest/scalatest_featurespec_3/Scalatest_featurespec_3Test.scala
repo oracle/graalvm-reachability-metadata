@@ -87,6 +87,19 @@ class Scalatest_featurespec_3Test:
     assert(ignoredEvents(result.events).isEmpty)
 
   @Test
+  def registersSharedScenariosWithScenariosFor(): Unit =
+    val suite: SharedCheckoutFeatureSpec = new SharedCheckoutFeatureSpec
+    val sharedTestName: String = findTestName(suite, "validates a reusable checkout total")
+    val specificTestName: String = findTestName(suite, "adds a feature-specific checkout summary")
+
+    val result: RunResult = runSuite(suite)
+
+    assert(result.succeeded)
+    assert(suite.executed == Vector("shared-total", "specific-summary"))
+    assert(succeededEvents(result.events).map(_.testName) == Vector(sharedTestName, specificTestName))
+    assert(ignoredEvents(result.events).isEmpty)
+
+  @Test
   def reportsPendingCanceledAndFailedScenarioLifecycleEvents(): Unit =
     val lifecycleSuite: LifecycleFeatureSpec = new LifecycleFeatureSpec
     val lifecycleResult: RunResult = runSuite(lifecycleSuite)
@@ -200,6 +213,24 @@ class Scalatest_featurespec_3Test:
   private object ShoppingCartFeatureSpec:
     val Fast: Tag = Tag("org.scalatest.featurespec.generated.Fast")
     val Slow: Tag = Tag("org.scalatest.featurespec.generated.Slow")
+
+  private final class SharedCheckoutFeatureSpec extends AnyFeatureSpec:
+    var executed: Vector[String] = Vector.empty
+
+    Feature("Reusable checkout behavior") {
+      scenariosFor(sharedCheckoutScenarios(expectedTotal = 12))
+
+      Scenario("adds a feature-specific checkout summary") {
+        executed = executed :+ "specific-summary"
+        assert(s"total=${6 + 6}" == "total=12")
+      }
+    }
+
+    private def sharedCheckoutScenarios(expectedTotal: Int): Unit =
+      Scenario("validates a reusable checkout total") {
+        executed = executed :+ "shared-total"
+        assert(Vector(5, 7).sum == expectedTotal)
+      }
 
   private final class LifecycleFeatureSpec extends AnyFeatureSpec:
     var executed: Vector[String] = Vector.empty
