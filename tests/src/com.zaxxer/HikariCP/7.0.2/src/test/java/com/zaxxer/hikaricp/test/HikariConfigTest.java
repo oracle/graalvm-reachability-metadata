@@ -36,6 +36,17 @@ public class HikariConfigTest {
     public void constructorLoadsConfigurationFromClasspathResource() {
         HikariConfig config = new HikariConfig("/hikari-config-test.properties");
 
+        assertThatConfigurationLoaded(config);
+    }
+
+    @Test
+    public void constructorLoadsConfigurationFromClasspathResourceThroughClassLoaderFallback() {
+        HikariConfig config = new HikariConfig("hikari-config-test.properties");
+
+        assertThatConfigurationLoaded(config);
+    }
+
+    private static void assertThatConfigurationLoaded(HikariConfig config) {
         assertThat(config.getJdbcUrl()).isEqualTo("jdbc:test:from-resource");
         assertThat(config.getMaximumPoolSize()).isEqualTo(4);
         assertThat(config.getMinimumIdle()).isEqualTo(1);
