@@ -515,7 +515,7 @@ public class Plexus_compiler_apiTest {
 
         @Override
         public String[] createCommandLine(CompilerConfiguration config) throws CompilerException {
-            return new String[] { config.getExecutable(), "-d", config.getOutputLocation() };
+            return new String[] {config.getExecutable(), "-d", config.getOutputLocation() };
         }
     }
 }
