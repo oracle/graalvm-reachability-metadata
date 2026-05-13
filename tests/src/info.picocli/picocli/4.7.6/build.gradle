@@ -4,15 +4,40 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import java.io.OutputStream
+
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+Provider<Directory> generatedTestRuntimePropertiesDir = layout.buildDirectory.dir("generated/test-runtime-properties")
 
 dependencies {
     testImplementation "info.picocli:picocli:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.register("generateNativeRuntimeProperties") {
+    outputs.dir(generatedTestRuntimePropertiesDir)
+    doLast {
+        File outputDir = generatedTestRuntimePropertiesDir.get().asFile
+        outputDir.mkdirs()
+
+        Properties properties = new Properties()
+        properties.setProperty("java.home", System.getenv("JAVA_HOME") ?: "")
+        properties.setProperty("java.class.path", sourceSets.test.runtimeClasspath.asPath)
+
+        File outputFile = new File(outputDir, "native-runtime.properties")
+        outputFile.withOutputStream { OutputStream outputStream ->
+            properties.store(outputStream, "Generated runtime properties for picocli native tests")
+        }
+    }
+}
+
+processTestResources {
+    dependsOn(tasks.named("generateNativeRuntimeProperties"))
+    from(generatedTestRuntimePropertiesDir)
 }
 
 graalvmNative {

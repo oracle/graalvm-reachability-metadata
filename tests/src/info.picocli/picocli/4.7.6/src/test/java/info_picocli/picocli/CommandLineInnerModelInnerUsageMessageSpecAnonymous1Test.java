@@ -60,6 +60,7 @@ public class CommandLineInnerModelInnerUsageMessageSpecAnonymous1Test {
     }
 
     private static ProcessResult runChildProcessInPseudoTerminal() throws IOException, InterruptedException {
+        NativeRuntimePropertiesSupport.restoreMissingRuntimeProperties();
         Path javaExecutable = Paths.get(System.getProperty("java.home"), "bin", javaExecutableName());
         Path scriptExecutable = Paths.get("/usr/bin/script");
         Path typescript = Files.createTempFile("picocli-usage-width-pty", ".log");
@@ -86,10 +87,14 @@ public class CommandLineInnerModelInnerUsageMessageSpecAnonymous1Test {
 
     private static List<String> childJavaCommand(Path javaExecutable) {
         List<String> command = new ArrayList<>();
+        String classPath = System.getProperty("java.class.path", "");
+        if (classPath.isBlank()) {
+            throw new IllegalStateException("Could not locate child Java classpath");
+        }
         command.add(javaExecutable.toString());
         command.addAll(jacocoAgentArguments());
         command.add("-cp");
-        command.add(System.getProperty("java.class.path"));
+        command.add(classPath);
         command.add(CommandLineInnerModelInnerUsageMessageSpecAnonymous1Test.class.getName());
         command.add(CHILD_PROCESS_ARGUMENT);
         return command;
