@@ -47,7 +47,7 @@ public class ObjectFactoryTest {
     @Test
     void htmlConfigurationUsesClassForNameWhenContextClassLoaderIsUnavailable() throws Exception {
         VersionFlags versionFlags = TestHTMLConfiguration.enableSymbolTableFactoryPath();
-        clearObjectFactoryClassCache();
+        Class<?> originalCachedClass = setObjectFactoryClassCache(String.class);
         Thread thread = Thread.currentThread();
         ClassLoader originalClassLoader = thread.getContextClassLoader();
 
@@ -61,15 +61,45 @@ public class ObjectFactoryTest {
             assertTrue(SymbolTable.class.isInstance(symbolTable));
         } finally {
             thread.setContextClassLoader(originalClassLoader);
+            setObjectFactoryClassCache(originalCachedClass);
+            TestHTMLConfiguration.restoreVersionFlags(versionFlags);
+        }
+    }
+
+    @Test
+    void htmlConfigurationUsesClassForNameWhenFallbackClassLoaderIsUnavailable() throws Exception {
+        VersionFlags versionFlags = TestHTMLConfiguration.enableSymbolTableFactoryPath();
+        Class<?> originalCachedClass = setObjectFactoryClassCache(String.class);
+        Thread thread = Thread.currentThread();
+        ClassLoader originalClassLoader = thread.getContextClassLoader();
+        ClassLoader blockingClassLoader = new BlockingClassLoader(SYMBOL_TABLE_CLASS_NAME);
+
+        try {
+            thread.setContextClassLoader(blockingClassLoader);
+
+            HTMLConfiguration configuration = new TestHTMLConfiguration();
+
+            Object symbolTable = configuration.getProperty(SYMBOL_TABLE_PROPERTY);
+            assertNotNull(symbolTable);
+            assertTrue(SymbolTable.class.isInstance(symbolTable));
+        } finally {
+            thread.setContextClassLoader(originalClassLoader);
+            setObjectFactoryClassCache(originalCachedClass);
             TestHTMLConfiguration.restoreVersionFlags(versionFlags);
         }
     }
 
     private static void clearObjectFactoryClassCache() throws ReflectiveOperationException {
+        setObjectFactoryClassCache(null);
+    }
+
+    private static Class<?> setObjectFactoryClassCache(Class<?> cachedClass) throws ReflectiveOperationException {
         Class<?> objectFactoryClass = Class.forName(OBJECT_FACTORY_CLASS_NAME);
         Field field = objectFactoryClass.getDeclaredField(OBJECT_FACTORY_CLASS_CACHE_FIELD);
         field.setAccessible(true);
-        field.set(null, null);
+        Class<?> originalClass = (Class<?>) field.get(null);
+        field.set(null, cachedClass);
+        return originalClass;
     }
 
     private static final class TestHTMLConfiguration extends HTMLConfiguration {
