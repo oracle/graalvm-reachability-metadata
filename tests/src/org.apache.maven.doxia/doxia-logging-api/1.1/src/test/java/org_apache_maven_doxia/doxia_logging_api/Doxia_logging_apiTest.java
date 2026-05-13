@@ -84,6 +84,24 @@ public class Doxia_logging_apiTest {
     }
 
     @Test
+    void systemStreamLogWritesThrowableOnlyDebugAndWarnEntriesToStandardOut() throws Exception {
+        CapturedOutput output = captureSystemStreams(() -> {
+            SystemStreamLog log = new SystemStreamLog();
+
+            log.setLogLevel(Log.LEVEL_DEBUG);
+            log.debug(new UnsupportedOperationException("debug failure"));
+            log.warn(new IllegalArgumentException("warn failure"));
+        });
+
+        assertThat(output.out())
+                .contains("[debug]")
+                .contains("java.lang.UnsupportedOperationException: debug failure")
+                .contains("[warn]")
+                .contains("java.lang.IllegalArgumentException: warn failure");
+        assertThat(output.err()).isEmpty();
+    }
+
+    @Test
     void systemStreamLogDoesNotFormatMessagesForDisabledLevels() throws Exception {
         CapturedOutput output = captureSystemStreams(() -> {
             SystemStreamLog log = new SystemStreamLog();
