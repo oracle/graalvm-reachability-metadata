@@ -9,6 +9,7 @@ package org_apache_maven.maven_plugin_descriptor;
 import java.io.FileNotFoundException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -347,6 +348,66 @@ public class Maven_plugin_descriptorTest {
         descriptor.setClassRealm(realm);
 
         assertThrows(FileNotFoundException.class, () -> descriptor.getLifecycleMapping("default"));
+    }
+
+    @Test
+    void pluginDescriptorLoadsLifecycleMappingsFromClassRealmResource() throws Exception {
+        Path lifecycleDirectory = Files.createDirectories(temporaryDirectory.resolve("META-INF/maven"));
+        Files.writeString(lifecycleDirectory.resolve("lifecycle.xml"), """
+                <lifecycles>
+                  <lifecycle>
+                    <id>default</id>
+                    <phases>
+                      <phase>
+                        <id>generate-resources</id>
+                        <executions>
+                          <execution>
+                            <goals>
+                              <goal>resources</goal>
+                            </goals>
+                            <configuration>
+                              <encoding>UTF-8</encoding>
+                            </configuration>
+                          </execution>
+                        </executions>
+                      </phase>
+                    </phases>
+                  </lifecycle>
+                  <lifecycle>
+                    <id>site</id>
+                    <phases>
+                      <phase>
+                        <id>site</id>
+                        <executions>
+                          <execution>
+                            <goals>
+                              <goal>site</goal>
+                            </goals>
+                          </execution>
+                        </executions>
+                      </phase>
+                    </phases>
+                  </lifecycle>
+                </lifecycles>
+                """);
+
+        PluginDescriptor descriptor = new PluginDescriptor();
+        ClassRealm realm = new ClassWorld().newRealm("plugin-lifecycle-realm");
+        realm.addConstituent(temporaryDirectory.toUri().toURL());
+        descriptor.setClassRealm(realm);
+
+        Lifecycle defaultLifecycle = descriptor.getLifecycleMapping("default");
+        assertThat(defaultLifecycle.getId()).isEqualTo("default");
+        Phase defaultPhase = (Phase) defaultLifecycle.getPhases().get(0);
+        assertThat(defaultPhase.getId()).isEqualTo("generate-resources");
+        Execution defaultExecution = (Execution) defaultPhase.getExecutions().get(0);
+        assertThat(defaultExecution.getGoals()).containsExactly("resources");
+        Xpp3Dom configuration = (Xpp3Dom) defaultExecution.getConfiguration();
+        assertThat(configuration.getChild("encoding").getValue()).isEqualTo("UTF-8");
+
+        Lifecycle siteLifecycle = descriptor.getLifecycleMapping("site");
+        assertThat(siteLifecycle.getId()).isEqualTo("site");
+        assertThat(descriptor.getLifecycleMapping("missing")).isNull();
     }
 
     @Test
