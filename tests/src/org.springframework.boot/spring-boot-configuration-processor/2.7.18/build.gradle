@@ -4,11 +4,18 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.graalvm.buildtools.gradle.tasks.NativeRunTask
+
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String javaHome = System.getenv('JAVA_HOME')
+List<String> javacRuntimeArgs = [
+        "-Djava.home=${javaHome}",
+        "-Djava.class.path=${-> sourceSets.test.runtimeClasspath.asPath}"
+]
 
 dependencies {
     testImplementation "org.springframework.boot:spring-boot-configuration-processor:$libraryVersion"
@@ -19,8 +26,7 @@ graalvmNative {
     binaries {
         test {
             buildArgs("-H:+AllowJRTFileSystem")
-            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
-            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+            runtimeArgs.addAll(javacRuntimeArgs)
         }
     }
     agent {
@@ -31,4 +37,8 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.named("nativeTest", NativeRunTask) {
+    runtimeArgs.addAll(javacRuntimeArgs)
 }
