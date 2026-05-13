@@ -11,7 +11,11 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "nekohtml:nekohtml:$libraryVersion"
+    testImplementation("nekohtml:nekohtml:$libraryVersion") {
+        exclude group: 'xerces', module: 'xercesImpl'
+    }
+    // Exercise HTMLTagBalancer's compatibility fallback for the legacy XNI startDocument signature.
+    testImplementation 'xerces:xercesImpl:2.0.2'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
