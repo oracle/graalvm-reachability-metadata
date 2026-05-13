@@ -153,7 +153,7 @@ class Akka_serialization_jackson_3Test {
 
   private def withActorSystem(test: ActorSystem => Unit): Unit = {
     val systemName: String = s"akka-jackson-test-${System.nanoTime()}"
-    val system: ActorSystem = ActorSystem(systemName, TestConfig)
+    val system: ActorSystem = ActorSystem(systemName, testConfig)
     try test(system)
     finally Await.result(system.terminate(), 10.seconds)
   }
@@ -174,36 +174,80 @@ object Akka_serialization_jackson_3Test {
   val SingletonNotificationClassName = SingletonNotification.getClass.getName
   val RenameOldNameMigrationClassName = s"$PackageName.RenameOldNameMigration"
 
-  val TestConfig: Config = ConfigFactory
-    .parseString(s"""
-      akka.actor.serialization-bindings {
-        "$JsonPayloadClassName" = jackson-json
-        "$CborPayloadClassName" = jackson-cbor
-        "$ActorRefPayloadClassName" = jackson-json
-        "$MigratingMessageClassName" = jackson-json
-        "$SingletonNotificationClassName" = jackson-json
-      }
-      akka.serialization.jackson {
-        allowed-class-prefix = ["$PackageName."]
-        jackson-json {
-          compression {
-            algorithm = gzip
-            compress-larger-than = 1 byte
+  def testConfig: Config =
+    ConfigFactory
+      .parseString(s"""
+        akka {
+          version = "2.6.21"
+          home = ""
+          loglevel = "INFO"
+          stdout-loglevel = "WARNING"
+          loggers = ["akka.event.Logging$$DefaultLogger"]
+          loggers-dispatcher = "akka.actor.default-dispatcher"
+          logging-filter = "akka.event.DefaultLoggingFilter"
+          logger-startup-timeout = 5s
+          log-config-on-start = off
+          log-dead-letters = 10
+          log-dead-letters-during-shutdown = off
+          log-dead-letters-suspend-duration = 5 minutes
+          use-slf4j = off
+          daemonic = off
+          jvm-exit-on-fatal-error = on
+          jvm-shutdown-hooks = on
+          fail-mixed-versions = on
+          scheduler.implementation = "akka.actor.LightArrayRevolverScheduler"
+          scheduler.tick-duration = 10ms
+          scheduler.ticks-per-wheel = 512
+          scheduler.shutdown-timeout = 5s
+          coordinated-shutdown.terminate-actor-system = on
+          coordinated-shutdown.run-by-actor-system-terminate = on
+        }
+        akka.actor {
+          provider = "local"
+          guardian-supervisor-strategy = "akka.actor.DefaultSupervisorStrategy"
+          creation-timeout = 20s
+          unstarted-push-timeout = 10s
+          allow-java-serialization = off
+          serialize-messages = off
+          serialize-creators = off
+          no-serialization-verification-needed-class-prefix = ["akka."]
+          deployment.default.virtual-nodes-factor = 10
+          debug.receive = off
+          debug.autoreceive = off
+          debug.lifecycle = off
+          debug.fsm = off
+          debug.event-stream = off
+          debug.unhandled = off
+          debug.router-misconfiguration = off
+        }
+        akka.actor.serialization-bindings {
+          "$JsonPayloadClassName" = jackson-json
+          "$CborPayloadClassName" = jackson-cbor
+          "$ActorRefPayloadClassName" = jackson-json
+          "$MigratingMessageClassName" = jackson-json
+          "$SingletonNotificationClassName" = jackson-json
+        }
+        akka.serialization.jackson {
+          allowed-class-prefix = ["$PackageName."]
+          jackson-json {
+            compression {
+              algorithm = gzip
+              compress-larger-than = 1 byte
+            }
+            json-read-features {
+              ALLOW_SINGLE_QUOTES = on
+            }
           }
-          json-read-features {
-            ALLOW_SINGLE_QUOTES = on
+          jackson-cbor {
+            type-in-manifest = off
+            deserialization-type = "$CborPayloadClassName"
+          }
+          migrations {
+            "$MigratingMessageClassName" = "$RenameOldNameMigrationClassName"
           }
         }
-        jackson-cbor {
-          type-in-manifest = off
-          deserialization-type = "$CborPayloadClassName"
-        }
-        migrations {
-          "$MigratingMessageClassName" = "$RenameOldNameMigrationClassName"
-        }
-      }
-      """)
-    .withFallback(ConfigFactory.load())
+        """)
+      .withFallback(ConfigFactory.load(classOf[Akka_serialization_jackson_3Test].getClassLoader))
 }
 
 final case class MapperEnvelope(
