@@ -1,0 +1,1715 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1f19-4d95-7f73-91f5-2e3d7f89eaf9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.sonatype.aether:aether-impl:1.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.7" when "$version$" is replaced with "1.7".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+- Set "coordinates" to "org.sonatype.aether:aether-impl:1.7".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.7".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream source layout, then patch the JSON in place using the repository’s existing formatting conventions.
+exec
+/usr/bin/bash -lc "rg --files build/discovered-artifact-metadata | sed -n '1,40p' && rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json && rg -n 'org\\.sonatype\\.aether|aether-impl' -S ." in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+{
+  "coordinates" : "org.sonatype.aether:aether-impl:1.7"
+}
+./COVERAGE.md:418:| [`org.eclipse.aether:aether-impl`](https://git.eclipse.org/c/aether/aether-core.git) | 1.0.2.v20150114<br>– 1.1.0 | 100% (0/0 calls) | <details><summary>Show</summary> Aether Implementation provides the default services that implement Eclipse Aether's repository system. It handles dependency collection and resolution, artifact and metadata installation and deployment, repository layout selection, and integration points for service locators and dependency injection.</details> |
+./COVERAGE.md:599:| [`org.sonatype.aether:aether-api`](https://github.com/sonatype/sonatype-aether) | 1.7<br>– 1.13.1 | 100% (0/0 calls) | <details><summary>Show</summary> Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.</details> |
+./COVERAGE.md:600:| [`org.sonatype.aether:aether-spi`](https://github.com/sonatype/sonatype-aether) | 1.7<br>– 1.8 | 100% (0/0 calls) | <details><summary>Show</summary> Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.</details> |
+./COVERAGE.md:601:| [`org.sonatype.aether:aether-util`](https://github.com/sonatype/sonatype-aether) | 1.7<br>– 1.8 | 100% (0/0 calls) | <details><summary>Show</summary> Aether Util provides utility classes that simplify use of the Sonatype Aether repository system. It supports common repository operations such as artifact, dependency, and metadata handling for applications built on Aether.</details> |
+./stats/org.eclipse.aether/aether-impl/1.0.2.v20150114/execution-metrics.json:4:    "library": "org.eclipse.aether:aether-impl:1.0.2.v20150114",
+./stats/org.eclipse.aether/aether-impl/1.0.2.v20150114/execution-metrics.json:58:      "test_file": "tests/src/org.eclipse.aether/aether-impl/1.0.2.v20150114/src/test/java/org_eclipse_aether/aether_impl/DefaultServiceLocatorInnerEntryTest.java",
+./stats/org.eclipse.aether/aether-impl/1.0.2.v20150114/execution-metrics.json:59:      "metadata_file": "metadata/org.eclipse.aether/aether-impl/1.0.2.v20150114/reachability-metadata.json"
+./metadata/org.eclipse.aether/aether-impl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/$version$/aether-impl-$version$-sources.jar",
+./metadata/org.eclipse.aether/aether-impl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
+./metadata/org.sonatype.aether/aether-util/1.8/reachability-metadata.json:5:        "typeReached": "org.sonatype.aether.util.ChecksumUtils"
+./metadata/org.sonatype.aether/aether-util/1.8/reachability-metadata.json:17:        "typeReached": "org.sonatype.aether.util.ChecksumUtils"
+./metadata/org.sonatype.aether/aether-util/index.json:16:      "org.sonatype.aether.util"
+./metadata/org.sonatype.aether/aether-util/index.json:35:      "org.sonatype.aether.util"
+./metadata/org.sonatype.aether/aether-util/index.json:49:      "org.sonatype.aether.util"
+./metadata/org.sonatype.aether/aether-util/1.12/reachability-metadata.json:5:        "typeReached": "org.sonatype.aether.util.ChecksumUtils"
+./metadata/org.sonatype.aether/aether-api/index.json:14:      "org.sonatype.aether"
+./metadata/org.sonatype.aether/aether-api/index.json:33:      "org.sonatype.aether"
+./metadata/org.sonatype.aether/aether-api/index.json:48:      "org.sonatype.aether"
+./metadata/org.sonatype.aether/aether-api/index.json:62:      "org.sonatype.aether"
+./metadata/org.sonatype.aether/aether-spi/index.json:22:      "org.sonatype.aether.spi"
+./metadata/org.sonatype.aether/aether-spi/index.json:36:      "org.sonatype.aether.spi"
+./stats/org.sonatype.aether/aether-util/1.8/execution-metrics.json:4:    "library": "org.sonatype.aether:aether-util:1.8",
+./stats/org.sonatype.aether/aether-util/1.8/execution-metrics.json:7:    "previous_library": "org.sonatype.aether:aether-util:1.7",
+./stats/org.sonatype.aether/aether-util/1.8/execution-metrics.json:83:      "test_file": "tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java",
+./stats/org.sonatype.aether/aether-util/1.8/execution-metrics.json:84:      "metadata_file": "metadata/org.sonatype.aether/aether-util/1.8/reachability-metadata.json"
+./stats/org.sonatype.aether/aether-util/1.12/execution-metrics.json:4:    "library": "org.sonatype.aether:aether-util:1.12",
+./stats/org.sonatype.aether/aether-util/1.12/execution-metrics.json:7:    "previous_library": "org.sonatype.aether:aether-util:1.8",
+./stats/org.sonatype.aether/aether-util/1.12/execution-metrics.json:83:      "test_file": "tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java",
+./stats/org.sonatype.aether/aether-util/1.12/execution-metrics.json:84:      "metadata_file": "metadata/org.sonatype.aether/aether-util/1.12/reachability-metadata.json"
+./stats/org.sonatype.aether/aether-api/1.9/execution-metrics.json:4:    "library": "org.sonatype.aether:aether-api:1.9",
+./stats/org.sonatype.aether/aether-api/1.9/execution-metrics.json:7:    "previous_library": "org.sonatype.aether:aether-api:1.8",
+./stats/org.sonatype.aether/aether-api/1.9/execution-metrics.json:83:      "test_file": "tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java",
+./stats/org.sonatype.aether/aether-api/1.9/execution-metrics.json:84:      "metadata_file": "metadata/org.sonatype.aether/aether-api/1.9/reachability-metadata.json"
+./stats/org.sonatype.aether/aether-api/1.7/execution-metrics.json:4:    "library": "org.sonatype.aether:aether-api:1.7",
+./stats/org.sonatype.aether/aether-api/1.7/execution-metrics.json:52:      "test_file": "tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java",
+./stats/org.sonatype.aether/aether-api/1.7/execution-metrics.json:53:      "metadata_file": "metadata/org.sonatype.aether/aether-api/1.7/reachability-metadata.json"
+./stats/org.sonatype.aether/aether-api/1.8/execution-metrics.json:4:    "library": "org.sonatype.aether:aether-api:1.8",
+./stats/org.sonatype.aether/aether-api/1.8/execution-metrics.json:7:    "previous_library": "org.sonatype.aether:aether-api:1.7",
+./stats/org.sonatype.aether/aether-api/1.8/execution-metrics.json:83:      "test_file": "tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java",
+./stats/org.sonatype.aether/aether-api/1.8/execution-metrics.json:84:      "metadata_file": "metadata/org.sonatype.aether/aether-api/1.8/reachability-metadata.json"
+./stats/org.sonatype.aether/aether-api/1.13.1/execution-metrics.json:4:    "library": "org.sonatype.aether:aether-api:1.13.1",
+./stats/org.sonatype.aether/aether-api/1.13.1/execution-metrics.json:7:    "previous_library": "org.sonatype.aether:aether-api:1.9",
+./stats/org.sonatype.aether/aether-api/1.13.1/execution-metrics.json:83:      "test_file": "tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java",
+./stats/org.sonatype.aether/aether-api/1.13.1/execution-metrics.json:84:      "metadata_file": "metadata/org.sonatype.aether/aether-api/1.13.1/reachability-metadata.json"
+./stats/org.sonatype.aether/aether-spi/1.8/execution-metrics.json:4:    "library": "org.sonatype.aether:aether-spi:1.8",
+./stats/org.sonatype.aether/aether-spi/1.8/execution-metrics.json:7:    "previous_library": "org.sonatype.aether:aether-spi:1.7",
+./stats/org.sonatype.aether/aether-spi/1.8/execution-metrics.json:83:      "test_file": "tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java",
+./stats/org.sonatype.aether/aether-spi/1.8/execution-metrics.json:84:      "metadata_file": "metadata/org.sonatype.aether/aether-spi/1.8/reachability-metadata.json"
+./tests/src/org.eclipse.aether/aether-impl/1.0.2.v20150114/build.gradle:14:    testImplementation "org.eclipse.aether:aether-impl:$libraryVersion"
+./tests/src/org.sonatype.aether/aether-util/1.7/build.gradle:14:    testImplementation "org.sonatype.aether:aether-util:$libraryVersion"
+./tests/src/org.sonatype.aether/aether-util/1.7/settings.gradle:20:rootProject.name = 'org.sonatype.aether.aether-util_tests'
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:26:import org.sonatype.aether.RepositoryException;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:27:import org.sonatype.aether.RepositorySystemSession;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:28:import org.sonatype.aether.artifact.Artifact;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:29:import org.sonatype.aether.artifact.ArtifactType;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:30:import org.sonatype.aether.collection.DependencyCollectionContext;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:31:import org.sonatype.aether.collection.DependencyGraphTransformationContext;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:32:import org.sonatype.aether.collection.DependencyGraphTransformer;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:33:import org.sonatype.aether.collection.DependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:34:import org.sonatype.aether.graph.Dependency;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:35:import org.sonatype.aether.graph.DependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:36:import org.sonatype.aether.graph.DependencyNode;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:37:import org.sonatype.aether.graph.Exclusion;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:38:import org.sonatype.aether.metadata.Metadata;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:39:import org.sonatype.aether.repository.Authentication;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:40:import org.sonatype.aether.repository.Proxy;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:41:import org.sonatype.aether.repository.RemoteRepository;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:42:import org.sonatype.aether.repository.RepositoryPolicy;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:43:import org.sonatype.aether.repository.WorkspaceReader;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:44:import org.sonatype.aether.repository.WorkspaceRepository;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:45:import org.sonatype.aether.transfer.TransferEvent;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:46:import org.sonatype.aether.util.ChecksumUtils;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:47:import org.sonatype.aether.util.DefaultRepositoryCache;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:48:import org.sonatype.aether.util.DefaultRepositorySystemSession;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:49:import org.sonatype.aether.util.DefaultSessionData;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:50:import org.sonatype.aether.util.artifact.ArtifactProperties;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:51:import org.sonatype.aether.util.artifact.DefaultArtifact;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:52:import org.sonatype.aether.util.artifact.DefaultArtifactType;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:53:import org.sonatype.aether.util.artifact.DefaultArtifactTypeRegistry;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:54:import org.sonatype.aether.util.artifact.JavaScopes;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:55:import org.sonatype.aether.util.artifact.SubArtifact;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:56:import org.sonatype.aether.util.filter.AndDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:57:import org.sonatype.aether.util.filter.ExclusionsDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:58:import org.sonatype.aether.util.filter.OrDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:59:import org.sonatype.aether.util.filter.PatternExclusionsDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:60:import org.sonatype.aether.util.filter.PatternInclusionsDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:61:import org.sonatype.aether.util.filter.ScopeDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:62:import org.sonatype.aether.util.graph.CloningDependencyVisitor;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:63:import org.sonatype.aether.util.graph.DefaultDependencyNode;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:64:import org.sonatype.aether.util.graph.FilteringDependencyVisitor;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:65:import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:66:import org.sonatype.aether.util.graph.TreeDependencyVisitor;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:67:import org.sonatype.aether.util.graph.selector.ExclusionDependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:68:import org.sonatype.aether.util.graph.selector.OptionalDependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:69:import org.sonatype.aether.util.graph.selector.ScopeDependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:70:import org.sonatype.aether.util.graph.transformer.ChainedDependencyGraphTransformer;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:71:import org.sonatype.aether.util.graph.transformer.ConflictMarker;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:72:import org.sonatype.aether.util.graph.transformer.JavaEffectiveScopeCalculator;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:73:import org.sonatype.aether.util.graph.transformer.NearestVersionConflictResolver;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:74:import org.sonatype.aether.util.graph.transformer.TransformationContextKeys;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:75:import org.sonatype.aether.util.layout.MavenDefaultLayout;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:76:import org.sonatype.aether.util.listener.DefaultRepositoryEvent;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:77:import org.sonatype.aether.util.listener.DefaultTransferEvent;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:78:import org.sonatype.aether.util.listener.DefaultTransferResource;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:79:import org.sonatype.aether.util.metadata.DefaultMetadata;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:80:import org.sonatype.aether.util.repository.ChainedWorkspaceReader;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:81:import org.sonatype.aether.util.repository.DefaultAuthenticationSelector;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:82:import org.sonatype.aether.util.repository.DefaultMirrorSelector;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:83:import org.sonatype.aether.util.repository.DefaultProxySelector;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:84:import org.sonatype.aether.util.version.GenericVersionScheme;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:85:import org.sonatype.aether.version.InvalidVersionSpecificationException;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:86:import org.sonatype.aether.version.Version;
+./tests/src/org.sonatype.aether/aether-util/1.7/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:87:import org.sonatype.aether.version.VersionConstraint;
+./tests/src/org.sonatype.aether/aether-util/1.7/gradle.properties:4:library.coordinates = org.sonatype.aether:aether-util:1.7
+./tests/src/org.sonatype.aether/aether-util/1.7/gradle.properties:6:metadata.dir = org.sonatype.aether/aether-util/1.7/
+./tests/src/org.sonatype.aether/aether-util/1.7/user-code-filter.json:7:      "includeClasses" : "org.sonatype.aether.util.**"
+./tests/src/org.sonatype.aether/aether-util/1.8/build.gradle:14:    testImplementation "org.sonatype.aether:aether-util:$libraryVersion"
+./tests/src/org.sonatype.aether/aether-util/1.8/settings.gradle:20:rootProject.name = 'org.sonatype.aether.aether-util_tests'
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:26:import org.sonatype.aether.RepositoryEvent;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:27:import org.sonatype.aether.RepositoryException;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:28:import org.sonatype.aether.RepositorySystemSession;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:29:import org.sonatype.aether.artifact.Artifact;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:30:import org.sonatype.aether.artifact.ArtifactType;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:31:import org.sonatype.aether.collection.DependencyCollectionContext;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:32:import org.sonatype.aether.collection.DependencyGraphTransformationContext;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:33:import org.sonatype.aether.collection.DependencyGraphTransformer;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:34:import org.sonatype.aether.collection.DependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:35:import org.sonatype.aether.graph.Dependency;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:36:import org.sonatype.aether.graph.DependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:37:import org.sonatype.aether.graph.DependencyNode;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:38:import org.sonatype.aether.graph.Exclusion;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:39:import org.sonatype.aether.metadata.Metadata;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:40:import org.sonatype.aether.repository.Authentication;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:41:import org.sonatype.aether.repository.Proxy;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:42:import org.sonatype.aether.repository.RemoteRepository;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:43:import org.sonatype.aether.repository.RepositoryPolicy;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:44:import org.sonatype.aether.repository.WorkspaceReader;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:45:import org.sonatype.aether.repository.WorkspaceRepository;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:46:import org.sonatype.aether.transfer.TransferEvent;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:47:import org.sonatype.aether.util.ChecksumUtils;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:48:import org.sonatype.aether.util.DefaultRepositoryCache;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:49:import org.sonatype.aether.util.DefaultRepositorySystemSession;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:50:import org.sonatype.aether.util.DefaultSessionData;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:51:import org.sonatype.aether.util.artifact.ArtifactProperties;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:52:import org.sonatype.aether.util.artifact.DefaultArtifact;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:53:import org.sonatype.aether.util.artifact.DefaultArtifactType;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:54:import org.sonatype.aether.util.artifact.DefaultArtifactTypeRegistry;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:55:import org.sonatype.aether.util.artifact.JavaScopes;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:56:import org.sonatype.aether.util.artifact.SubArtifact;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:57:import org.sonatype.aether.util.filter.AndDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:58:import org.sonatype.aether.util.filter.ExclusionsDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:59:import org.sonatype.aether.util.filter.OrDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:60:import org.sonatype.aether.util.filter.PatternExclusionsDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:61:import org.sonatype.aether.util.filter.PatternInclusionsDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:62:import org.sonatype.aether.util.filter.ScopeDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:63:import org.sonatype.aether.util.graph.CloningDependencyVisitor;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:64:import org.sonatype.aether.util.graph.DefaultDependencyNode;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:65:import org.sonatype.aether.util.graph.FilteringDependencyVisitor;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:66:import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:67:import org.sonatype.aether.util.graph.TreeDependencyVisitor;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:68:import org.sonatype.aether.util.graph.selector.ExclusionDependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:69:import org.sonatype.aether.util.graph.selector.OptionalDependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:70:import org.sonatype.aether.util.graph.selector.ScopeDependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:71:import org.sonatype.aether.util.graph.transformer.ChainedDependencyGraphTransformer;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:72:import org.sonatype.aether.util.graph.transformer.ConflictMarker;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:73:import org.sonatype.aether.util.graph.transformer.JavaEffectiveScopeCalculator;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:74:import org.sonatype.aether.util.graph.transformer.NearestVersionConflictResolver;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:75:import org.sonatype.aether.util.graph.transformer.TransformationContextKeys;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:76:import org.sonatype.aether.util.layout.MavenDefaultLayout;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:77:import org.sonatype.aether.util.listener.DefaultRepositoryEvent;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:78:import org.sonatype.aether.util.listener.DefaultTransferEvent;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:79:import org.sonatype.aether.util.listener.DefaultTransferResource;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:80:import org.sonatype.aether.util.metadata.DefaultMetadata;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:81:import org.sonatype.aether.util.repository.ChainedWorkspaceReader;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:82:import org.sonatype.aether.util.repository.DefaultAuthenticationSelector;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:83:import org.sonatype.aether.util.repository.DefaultMirrorSelector;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:84:import org.sonatype.aether.util.repository.DefaultProxySelector;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:85:import org.sonatype.aether.util.version.GenericVersionScheme;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:86:import org.sonatype.aether.version.InvalidVersionSpecificationException;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:87:import org.sonatype.aether.version.Version;
+./tests/src/org.sonatype.aether/aether-util/1.8/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:88:import org.sonatype.aether.version.VersionConstraint;
+./tests/src/org.sonatype.aether/aether-util/1.8/gradle.properties:4:library.coordinates = org.sonatype.aether:aether-util:1.8
+./tests/src/org.sonatype.aether/aether-util/1.8/gradle.properties:6:metadata.dir = org.sonatype.aether/aether-util/1.8/
+./tests/src/org.sonatype.aether/aether-util/1.8/user-code-filter.json:7:      "includeClasses" : "org.sonatype.aether.util.**"
+./tests/src/org.sonatype.aether/aether-util/1.12/build.gradle:14:    testImplementation "org.sonatype.aether:aether-util:$libraryVersion"
+./tests/src/org.sonatype.aether/aether-util/1.12/settings.gradle:20:rootProject.name = 'org.sonatype.aether.aether-util_tests'
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:26:import org.sonatype.aether.RepositoryEvent;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:27:import org.sonatype.aether.RepositoryException;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:28:import org.sonatype.aether.RepositorySystemSession;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:29:import org.sonatype.aether.artifact.Artifact;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:30:import org.sonatype.aether.artifact.ArtifactType;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:31:import org.sonatype.aether.collection.DependencyCollectionContext;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:32:import org.sonatype.aether.collection.DependencyGraphTransformationContext;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:33:import org.sonatype.aether.collection.DependencyGraphTransformer;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:34:import org.sonatype.aether.collection.DependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:35:import org.sonatype.aether.graph.Dependency;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:36:import org.sonatype.aether.graph.DependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:37:import org.sonatype.aether.graph.DependencyNode;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:38:import org.sonatype.aether.graph.Exclusion;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:39:import org.sonatype.aether.metadata.Metadata;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:40:import org.sonatype.aether.repository.Authentication;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:41:import org.sonatype.aether.repository.Proxy;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:42:import org.sonatype.aether.repository.RemoteRepository;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:43:import org.sonatype.aether.repository.RepositoryPolicy;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:44:import org.sonatype.aether.repository.WorkspaceReader;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:45:import org.sonatype.aether.repository.WorkspaceRepository;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:46:import org.sonatype.aether.transfer.TransferEvent;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:47:import org.sonatype.aether.util.ChecksumUtils;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:48:import org.sonatype.aether.util.DefaultRepositoryCache;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:49:import org.sonatype.aether.util.DefaultRepositorySystemSession;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:50:import org.sonatype.aether.util.DefaultSessionData;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:51:import org.sonatype.aether.util.artifact.ArtifactProperties;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:52:import org.sonatype.aether.util.artifact.DefaultArtifact;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:53:import org.sonatype.aether.util.artifact.DefaultArtifactType;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:54:import org.sonatype.aether.util.artifact.DefaultArtifactTypeRegistry;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:55:import org.sonatype.aether.util.artifact.JavaScopes;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:56:import org.sonatype.aether.util.artifact.SubArtifact;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:57:import org.sonatype.aether.util.filter.AndDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:58:import org.sonatype.aether.util.filter.ExclusionsDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:59:import org.sonatype.aether.util.filter.OrDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:60:import org.sonatype.aether.util.filter.PatternExclusionsDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:61:import org.sonatype.aether.util.filter.PatternInclusionsDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:62:import org.sonatype.aether.util.filter.ScopeDependencyFilter;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:63:import org.sonatype.aether.util.graph.CloningDependencyVisitor;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:64:import org.sonatype.aether.util.graph.DefaultDependencyNode;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:65:import org.sonatype.aether.util.graph.FilteringDependencyVisitor;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:66:import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:67:import org.sonatype.aether.util.graph.TreeDependencyVisitor;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:68:import org.sonatype.aether.util.graph.selector.ExclusionDependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:69:import org.sonatype.aether.util.graph.selector.OptionalDependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:70:import org.sonatype.aether.util.graph.selector.ScopeDependencySelector;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:71:import org.sonatype.aether.util.graph.transformer.ChainedDependencyGraphTransformer;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:72:import org.sonatype.aether.util.graph.transformer.ConflictMarker;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:73:import org.sonatype.aether.util.graph.transformer.JavaEffectiveScopeCalculator;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:74:import org.sonatype.aether.util.graph.transformer.NearestVersionConflictResolver;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:75:import org.sonatype.aether.util.graph.transformer.TransformationContextKeys;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:76:import org.sonatype.aether.util.layout.MavenDefaultLayout;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:77:import org.sonatype.aether.util.listener.DefaultRepositoryEvent;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:78:import org.sonatype.aether.util.listener.DefaultTransferEvent;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:79:import org.sonatype.aether.util.listener.DefaultTransferResource;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:80:import org.sonatype.aether.util.metadata.DefaultMetadata;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:81:import org.sonatype.aether.util.repository.ChainedWorkspaceReader;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:82:import org.sonatype.aether.util.repository.DefaultAuthenticationSelector;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:83:import org.sonatype.aether.util.repository.DefaultMirrorSelector;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:84:import org.sonatype.aether.util.repository.DefaultProxySelector;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:85:import org.sonatype.aether.util.version.GenericVersionScheme;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:86:import org.sonatype.aether.version.InvalidVersionSpecificationException;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:87:import org.sonatype.aether.version.Version;
+./tests/src/org.sonatype.aether/aether-util/1.12/src/test/java/org_sonatype_aether/aether_util/Aether_utilTest.java:88:import org.sonatype.aether.version.VersionConstraint;
+./tests/src/org.sonatype.aether/aether-util/1.12/gradle.properties:4:library.coordinates = org.sonatype.aether:aether-util:1.12
+./tests/src/org.sonatype.aether/aether-util/1.12/gradle.properties:6:metadata.dir = org.sonatype.aether/aether-util/1.12/
+./tests/src/org.sonatype.aether/aether-util/1.12/user-code-filter.json:7:      "includeClasses" : "org.sonatype.aether.util.**"
+./tests/src/org.sonatype.aether/aether-api/1.9/build.gradle:14:    testImplementation "org.sonatype.aether:aether-api:$libraryVersion"
+./tests/src/org.sonatype.aether/aether-api/1.9/settings.gradle:20:rootProject.name = 'org.sonatype.aether.aether-api_tests'
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:19:import org.sonatype.aether.ConfigurationProperties;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:20:import org.sonatype.aether.RepositoryException;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:21:import org.sonatype.aether.collection.CollectRequest;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:22:import org.sonatype.aether.collection.CollectResult;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:23:import org.sonatype.aether.collection.DependencyManagement;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:24:import org.sonatype.aether.deployment.DeployRequest;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:25:import org.sonatype.aether.deployment.DeployResult;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:26:import org.sonatype.aether.graph.Dependency;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:27:import org.sonatype.aether.graph.DependencyNode;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:28:import org.sonatype.aether.graph.DependencyVisitor;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:29:import org.sonatype.aether.graph.Exclusion;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:30:import org.sonatype.aether.installation.InstallRequest;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:31:import org.sonatype.aether.installation.InstallResult;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:32:import org.sonatype.aether.metadata.Metadata;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:33:import org.sonatype.aether.repository.Authentication;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:34:import org.sonatype.aether.repository.LocalArtifactRegistration;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:35:import org.sonatype.aether.repository.LocalArtifactRequest;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:36:import org.sonatype.aether.repository.LocalArtifactResult;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:37:import org.sonatype.aether.repository.LocalRepository;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:38:import org.sonatype.aether.repository.Proxy;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:39:import org.sonatype.aether.repository.RemoteRepository;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:40:import org.sonatype.aether.repository.RepositoryPolicy;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:41:import org.sonatype.aether.repository.WorkspaceRepository;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:42:import org.sonatype.aether.resolution.ArtifactDescriptorRequest;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:43:import org.sonatype.aether.resolution.ArtifactDescriptorResult;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:44:import org.sonatype.aether.resolution.ArtifactRequest;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:45:import org.sonatype.aether.resolution.ArtifactResult;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:46:import org.sonatype.aether.resolution.MetadataRequest;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:47:import org.sonatype.aether.resolution.MetadataResult;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:48:import org.sonatype.aether.resolution.VersionRangeRequest;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:49:import org.sonatype.aether.resolution.VersionRangeResult;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:50:import org.sonatype.aether.resolution.VersionRequest;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:51:import org.sonatype.aether.resolution.VersionResult;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:52:import org.sonatype.aether.transfer.ArtifactNotFoundException;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:53:import org.sonatype.aether.transfer.MetadataNotFoundException;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:54:import org.sonatype.aether.version.Version;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:55:import org.sonatype.aether.version.VersionConstraint;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:56:import org.sonatype.aether.version.VersionRange;
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:486:    private static final class TestArtifact implements org.sonatype.aether.artifact.Artifact {
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:764:        private List<org.sonatype.aether.artifact.Artifact> relocations = new ArrayList<>();
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:765:        private Collection<org.sonatype.aether.artifact.Artifact> aliases = new ArrayList<>();
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:804:        public void setArtifact(org.sonatype.aether.artifact.Artifact artifact) {
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:809:        public List<org.sonatype.aether.artifact.Artifact> getRelocations() {
+./tests/src/org.sonatype.aether/aether-api/1.9/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:814:        public Collection<org.sonatype.aether.artifact.Artifact> getAliases() {
+./tests/src/org.sonatype.aether/aether-api/1.9/gradle.properties:4:library.coordinates = org.sonatype.aether:aether-api:1.9
+./tests/src/org.sonatype.aether/aether-api/1.9/gradle.properties:6:metadata.dir = org.sonatype.aether/aether-api/1.9/
+./tests/src/org.sonatype.aether/aether-api/1.9/user-code-filter.json:7:      "includeClasses" : "org.sonatype.aether.**"
+./tests/src/org.sonatype.aether/aether-api/1.7/build.gradle:14:    testImplementation "org.sonatype.aether:aether-api:$libraryVersion"
+./tests/src/org.sonatype.aether/aether-api/1.7/settings.gradle:20:rootProject.name = 'org.sonatype.aether.aether-api_tests'
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:18:import org.sonatype.aether.ConfigurationProperties;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:19:import org.sonatype.aether.RepositoryException;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:20:import org.sonatype.aether.collection.CollectRequest;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:21:import org.sonatype.aether.collection.CollectResult;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:22:import org.sonatype.aether.collection.DependencyManagement;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:23:import org.sonatype.aether.deployment.DeployRequest;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:24:import org.sonatype.aether.deployment.DeployResult;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:25:import org.sonatype.aether.graph.Dependency;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:26:import org.sonatype.aether.graph.DependencyNode;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:27:import org.sonatype.aether.graph.DependencyVisitor;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:28:import org.sonatype.aether.graph.Exclusion;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:29:import org.sonatype.aether.installation.InstallRequest;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:30:import org.sonatype.aether.installation.InstallResult;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:31:import org.sonatype.aether.metadata.Metadata;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:32:import org.sonatype.aether.repository.Authentication;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:33:import org.sonatype.aether.repository.LocalArtifactRegistration;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:34:import org.sonatype.aether.repository.LocalArtifactRequest;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:35:import org.sonatype.aether.repository.LocalArtifactResult;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:36:import org.sonatype.aether.repository.LocalRepository;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:37:import org.sonatype.aether.repository.Proxy;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:38:import org.sonatype.aether.repository.RemoteRepository;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:39:import org.sonatype.aether.repository.RepositoryPolicy;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:40:import org.sonatype.aether.repository.WorkspaceRepository;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:41:import org.sonatype.aether.resolution.ArtifactDescriptorRequest;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:42:import org.sonatype.aether.resolution.ArtifactDescriptorResult;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:43:import org.sonatype.aether.resolution.ArtifactRequest;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:44:import org.sonatype.aether.resolution.ArtifactResult;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:45:import org.sonatype.aether.resolution.MetadataRequest;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:46:import org.sonatype.aether.resolution.MetadataResult;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:47:import org.sonatype.aether.resolution.VersionRangeRequest;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:48:import org.sonatype.aether.resolution.VersionRangeResult;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:49:import org.sonatype.aether.resolution.VersionRequest;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:50:import org.sonatype.aether.resolution.VersionResult;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:51:import org.sonatype.aether.transfer.ArtifactNotFoundException;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:52:import org.sonatype.aether.transfer.MetadataNotFoundException;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:53:import org.sonatype.aether.version.Version;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:54:import org.sonatype.aether.version.VersionConstraint;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:55:import org.sonatype.aether.version.VersionRange;
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:485:    private static final class TestArtifact implements org.sonatype.aether.artifact.Artifact {
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:763:        private List<org.sonatype.aether.artifact.Artifact> relocations = new ArrayList<>();
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:764:        private Collection<org.sonatype.aether.artifact.Artifact> aliases = new ArrayList<>();
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:802:        public void setArtifact(org.sonatype.aether.artifact.Artifact artifact) {
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:807:        public List<org.sonatype.aether.artifact.Artifact> getRelocations() {
+./tests/src/org.sonatype.aether/aether-api/1.7/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:812:        public Collection<org.sonatype.aether.artifact.Artifact> getAliases() {
+./tests/src/org.sonatype.aether/aether-api/1.7/gradle.properties:4:library.coordinates = org.sonatype.aether:aether-api:1.7
+./tests/src/org.sonatype.aether/aether-api/1.7/gradle.properties:6:metadata.dir = org.sonatype.aether/aether-api/1.7/
+./tests/src/org.sonatype.aether/aether-api/1.7/user-code-filter.json:7:      "includeClasses" : "org.sonatype.aether.**"
+./tests/src/org.sonatype.aether/aether-api/1.8/build.gradle:14:    testImplementation "org.sonatype.aether:aether-api:$libraryVersion"
+./tests/src/org.sonatype.aether/aether-api/1.8/settings.gradle:20:rootProject.name = 'org.sonatype.aether.aether-api_tests'
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:19:import org.sonatype.aether.ConfigurationProperties;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:20:import org.sonatype.aether.RepositoryException;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:21:import org.sonatype.aether.collection.CollectRequest;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:22:import org.sonatype.aether.collection.CollectResult;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:23:import org.sonatype.aether.collection.DependencyManagement;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:24:import org.sonatype.aether.deployment.DeployRequest;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:25:import org.sonatype.aether.deployment.DeployResult;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:26:import org.sonatype.aether.graph.Dependency;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:27:import org.sonatype.aether.graph.DependencyNode;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:28:import org.sonatype.aether.graph.DependencyVisitor;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:29:import org.sonatype.aether.graph.Exclusion;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:30:import org.sonatype.aether.installation.InstallRequest;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:31:import org.sonatype.aether.installation.InstallResult;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:32:import org.sonatype.aether.metadata.Metadata;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:33:import org.sonatype.aether.repository.Authentication;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:34:import org.sonatype.aether.repository.LocalArtifactRegistration;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:35:import org.sonatype.aether.repository.LocalArtifactRequest;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:36:import org.sonatype.aether.repository.LocalArtifactResult;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:37:import org.sonatype.aether.repository.LocalRepository;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:38:import org.sonatype.aether.repository.Proxy;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:39:import org.sonatype.aether.repository.RemoteRepository;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:40:import org.sonatype.aether.repository.RepositoryPolicy;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:41:import org.sonatype.aether.repository.WorkspaceRepository;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:42:import org.sonatype.aether.resolution.ArtifactDescriptorRequest;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:43:import org.sonatype.aether.resolution.ArtifactDescriptorResult;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:44:import org.sonatype.aether.resolution.ArtifactRequest;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:45:import org.sonatype.aether.resolution.ArtifactResult;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:46:import org.sonatype.aether.resolution.MetadataRequest;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:47:import org.sonatype.aether.resolution.MetadataResult;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:48:import org.sonatype.aether.resolution.VersionRangeRequest;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:49:import org.sonatype.aether.resolution.VersionRangeResult;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:50:import org.sonatype.aether.resolution.VersionRequest;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:51:import org.sonatype.aether.resolution.VersionResult;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:52:import org.sonatype.aether.transfer.ArtifactNotFoundException;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:53:import org.sonatype.aether.transfer.MetadataNotFoundException;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:54:import org.sonatype.aether.version.Version;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:55:import org.sonatype.aether.version.VersionConstraint;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:56:import org.sonatype.aether.version.VersionRange;
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:486:    private static final class TestArtifact implements org.sonatype.aether.artifact.Artifact {
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:764:        private List<org.sonatype.aether.artifact.Artifact> relocations = new ArrayList<>();
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:765:        private Collection<org.sonatype.aether.artifact.Artifact> aliases = new ArrayList<>();
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:804:        public void setArtifact(org.sonatype.aether.artifact.Artifact artifact) {
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:809:        public List<org.sonatype.aether.artifact.Artifact> getRelocations() {
+./tests/src/org.sonatype.aether/aether-api/1.8/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:814:        public Collection<org.sonatype.aether.artifact.Artifact> getAliases() {
+./tests/src/org.eclipse.aether/aether-impl/1.0.2.v20150114/settings.gradle:20:rootProject.name = 'org.eclipse.aether.aether-impl_tests'
+./tests/src/org.sonatype.aether/aether-api/1.8/gradle.properties:4:library.coordinates = org.sonatype.aether:aether-api:1.8
+./tests/src/org.sonatype.aether/aether-api/1.8/gradle.properties:6:metadata.dir = org.sonatype.aether/aether-api/1.8/
+./tests/src/org.sonatype.aether/aether-api/1.8/user-code-filter.json:7:      "includeClasses" : "org.sonatype.aether.**"
+./tests/src/org.sonatype.aether/aether-api/1.13.1/build.gradle:14:    testImplementation "org.sonatype.aether:aether-api:$libraryVersion"
+./tests/src/org.sonatype.aether/aether-api/1.13.1/settings.gradle:20:rootProject.name = 'org.sonatype.aether.aether-api_tests'
+./tests/src/org.eclipse.aether/aether-impl/1.0.2.v20150114/gradle.properties:4:library.coordinates = org.eclipse.aether:aether-impl:1.0.2.v20150114
+./tests/src/org.eclipse.aether/aether-impl/1.0.2.v20150114/gradle.properties:6:metadata.dir = org.eclipse.aether/aether-impl/1.0.2.v20150114/
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:19:import org.sonatype.aether.ConfigurationProperties;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:20:import org.sonatype.aether.RepositoryException;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:21:import org.sonatype.aether.collection.CollectRequest;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:22:import org.sonatype.aether.collection.CollectResult;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:23:import org.sonatype.aether.collection.DependencyManagement;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:24:import org.sonatype.aether.deployment.DeployRequest;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:25:import org.sonatype.aether.deployment.DeployResult;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:26:import org.sonatype.aether.graph.Dependency;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:27:import org.sonatype.aether.graph.DependencyNode;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:28:import org.sonatype.aether.graph.DependencyVisitor;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:29:import org.sonatype.aether.graph.Exclusion;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:30:import org.sonatype.aether.installation.InstallRequest;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:31:import org.sonatype.aether.installation.InstallResult;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:32:import org.sonatype.aether.metadata.Metadata;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:33:import org.sonatype.aether.repository.Authentication;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:34:import org.sonatype.aether.repository.LocalArtifactRegistration;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:35:import org.sonatype.aether.repository.LocalArtifactRequest;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:36:import org.sonatype.aether.repository.LocalArtifactResult;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:37:import org.sonatype.aether.repository.LocalRepository;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:38:import org.sonatype.aether.repository.Proxy;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:39:import org.sonatype.aether.repository.RemoteRepository;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:40:import org.sonatype.aether.repository.RepositoryPolicy;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:41:import org.sonatype.aether.repository.WorkspaceRepository;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:42:import org.sonatype.aether.resolution.ArtifactDescriptorRequest;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:43:import org.sonatype.aether.resolution.ArtifactDescriptorResult;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:44:import org.sonatype.aether.resolution.ArtifactRequest;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:45:import org.sonatype.aether.resolution.ArtifactResult;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:46:import org.sonatype.aether.resolution.MetadataRequest;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:47:import org.sonatype.aether.resolution.MetadataResult;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:48:import org.sonatype.aether.resolution.VersionRangeRequest;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:49:import org.sonatype.aether.resolution.VersionRangeResult;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:50:import org.sonatype.aether.resolution.VersionRequest;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:51:import org.sonatype.aether.resolution.VersionResult;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:52:import org.sonatype.aether.transfer.ArtifactNotFoundException;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:53:import org.sonatype.aether.transfer.MetadataNotFoundException;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:54:import org.sonatype.aether.version.Version;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:55:import org.sonatype.aether.version.VersionConstraint;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:56:import org.sonatype.aether.version.VersionRange;
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:486:    private static final class TestArtifact implements org.sonatype.aether.artifact.Artifact {
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:764:        private List<org.sonatype.aether.artifact.Artifact> relocations = new ArrayList<>();
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:765:        private Collection<org.sonatype.aether.artifact.Artifact> aliases = new ArrayList<>();
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:804:        public void setArtifact(org.sonatype.aether.artifact.Artifact artifact) {
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:809:        public List<org.sonatype.aether.artifact.Artifact> getRelocations() {
+./tests/src/org.sonatype.aether/aether-api/1.13.1/src/test/java/org_sonatype_aether/aether_api/Aether_apiTest.java:814:        public Collection<org.sonatype.aether.artifact.Artifact> getAliases() {
+./tests/src/org.sonatype.aether/aether-api/1.13.1/gradle.properties:4:library.coordinates = org.sonatype.aether:aether-api:1.13.1
+./tests/src/org.sonatype.aether/aether-api/1.13.1/gradle.properties:6:metadata.dir = org.sonatype.aether/aether-api/1.13.1/
+./tests/src/org.sonatype.aether/aether-api/1.13.1/user-code-filter.json:7:      "includeClasses" : "org.sonatype.aether.**"
+./tests/src/org.sonatype.aether/aether-spi/1.7/build.gradle:14:    testImplementation "org.sonatype.aether:aether-spi:$libraryVersion"
+./tests/src/org.sonatype.aether/aether-spi/1.7/settings.gradle:20:rootProject.name = 'org.sonatype.aether.aether-spi_tests'
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:27:import org.sonatype.aether.RepositorySystemSession;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:28:import org.sonatype.aether.artifact.Artifact;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:29:import org.sonatype.aether.metadata.Metadata;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:30:import org.sonatype.aether.repository.RemoteRepository;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:31:import org.sonatype.aether.spi.connector.ArtifactDownload;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:32:import org.sonatype.aether.spi.connector.ArtifactTransfer;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:33:import org.sonatype.aether.spi.connector.ArtifactUpload;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:34:import org.sonatype.aether.spi.connector.MetadataDownload;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:35:import org.sonatype.aether.spi.connector.MetadataTransfer;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:36:import org.sonatype.aether.spi.connector.MetadataUpload;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:37:import org.sonatype.aether.spi.connector.RepositoryConnector;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:38:import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:39:import org.sonatype.aether.spi.connector.Transfer;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:40:import org.sonatype.aether.spi.connector.Transfer.State;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:41:import org.sonatype.aether.spi.io.FileProcessor;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:42:import org.sonatype.aether.spi.locator.Service;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:43:import org.sonatype.aether.spi.locator.ServiceLocator;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:44:import org.sonatype.aether.spi.log.Logger;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:45:import org.sonatype.aether.spi.log.NullLogger;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:46:import org.sonatype.aether.transfer.ArtifactTransferException;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:47:import org.sonatype.aether.transfer.MetadataTransferException;
+./tests/src/org.sonatype.aether/aether-spi/1.7/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:48:import org.sonatype.aether.transfer.NoRepositoryConnectorException;
+./tests/src/org.sonatype.aether/aether-spi/1.7/gradle.properties:4:library.coordinates = org.sonatype.aether:aether-spi:1.7
+./tests/src/org.sonatype.aether/aether-spi/1.7/gradle.properties:6:metadata.dir = org.sonatype.aether/aether-spi/1.7/
+./tests/src/org.sonatype.aether/aether-spi/1.7/user-code-filter.json:7:      "includeClasses" : "org.sonatype.aether.spi.**"
+./tests/src/org.sonatype.aether/aether-spi/1.8/build.gradle:14:    testImplementation "org.sonatype.aether:aether-spi:$libraryVersion"
+./tests/src/org.sonatype.aether/aether-spi/1.8/settings.gradle:20:rootProject.name = 'org.sonatype.aether.aether-spi_tests'
+./tests/src/org.sonatype.aether/aether-spi/1.8/user-code-filter.json:7:      "includeClasses" : "org.sonatype.aether.spi.**"
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:28:import org.sonatype.aether.RepositorySystemSession;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:29:import org.sonatype.aether.artifact.Artifact;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:30:import org.sonatype.aether.metadata.Metadata;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:31:import org.sonatype.aether.repository.RemoteRepository;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:32:import org.sonatype.aether.spi.connector.ArtifactDownload;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:33:import org.sonatype.aether.spi.connector.ArtifactTransfer;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:34:import org.sonatype.aether.spi.connector.ArtifactUpload;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:35:import org.sonatype.aether.spi.connector.MetadataDownload;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:36:import org.sonatype.aether.spi.connector.MetadataTransfer;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:37:import org.sonatype.aether.spi.connector.MetadataUpload;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:38:import org.sonatype.aether.spi.connector.RepositoryConnector;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:39:import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:40:import org.sonatype.aether.spi.connector.Transfer;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:41:import org.sonatype.aether.spi.connector.Transfer.State;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:42:import org.sonatype.aether.spi.io.FileProcessor;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:43:import org.sonatype.aether.spi.locator.Service;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:44:import org.sonatype.aether.spi.locator.ServiceLocator;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:45:import org.sonatype.aether.spi.log.Logger;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:46:import org.sonatype.aether.spi.log.NullLogger;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:47:import org.sonatype.aether.transfer.ArtifactTransferException;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:48:import org.sonatype.aether.transfer.MetadataTransferException;
+./tests/src/org.sonatype.aether/aether-spi/1.8/src/test/java/org_sonatype_aether/aether_spi/Aether_spiTest.java:49:import org.sonatype.aether.transfer.NoRepositoryConnectorException;
+./tests/src/org.sonatype.aether/aether-spi/1.8/gradle.properties:4:library.coordinates = org.sonatype.aether:aether-spi:1.8
+./tests/src/org.sonatype.aether/aether-spi/1.8/gradle.properties:6:metadata.dir = org.sonatype.aether/aether-spi/1.8/
+
+web search: 
+web search: Maven Central org.sonatype.aether aether-impl 1.7 pom scm url sources javadoc tests
+codex
+Maven Central has the `1.7` binary, sources, and javadocs for this artifact. I’m checking whether a test artifact exists and how the upstream repository tags this release so the test URL can target the correct source tree.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.eclipse.aether/aether-impl/index.json; sed -n '1,120p' metadata/org.sonatype.aether/aether-api/index.json; sed -n '1,120p' metadata/org.sonatype.aether/aether-spi/index.json; sed -n '1,120p' metadata/org.sonatype.aether/aether-util/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.2.v20150114",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/$version$/aether-impl-$version$-sources.jar",
+    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/$version$/aether-$version$-source-release.zip",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
+    "description" : "Aether Implementation provides the default services that implement Eclipse Aether's repository system. It handles dependency collection and resolution, artifact and metadata installation and deployment, repository layout selection, and integration points for service locators and dependency injection.",
+    "tested-versions" : [
+      "1.0.2.v20150114",
+      "1.1.0"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.aether.impl",
+      "org.eclipse.aether.internal.impl"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.13.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/$version$/aether-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-$version$/aether-api/src/test/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/$version$/aether-api-$version$-javadoc.jar",
+    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+    "tested-versions" : [
+      "1.13.1"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether"
+    ]
+  },
+  {
+    "metadata-version" : "1.9",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/$version$/aether-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-$version$/aether-api/src/test/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/$version$/aether-api-$version$-javadoc.jar",
+    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+    "tested-versions" : [
+      "1.9",
+      "1.10",
+      "1.10.1",
+      "1.11",
+      "1.12",
+      "1.13"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether"
+    ]
+  },
+  {
+    "metadata-version" : "1.8",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/$version$/aether-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-$version$/aether-api/src/test/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/$version$/aether-api-$version$-javadoc.jar",
+    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+    "tested-versions" : [
+      "1.8",
+      "1.8.1"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether"
+    ]
+  },
+  {
+    "metadata-version" : "1.7",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/$version$/aether-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-$version$/aether-api/src/test/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/$version$/aether-api-$version$-javadoc.jar",
+    "description" : "Aether API defines the core interfaces for artifact resolution and repository access in a Maven-style dependency system. It provides contracts for dependency collection, version resolution, and local or remote repository interactions that implementations execute.",
+    "tested-versions" : [
+      "1.7"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/$version$/aether-spi-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/$version$/aether-spi-$version$-javadoc.jar",
+    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+    "tested-versions" : [
+      "1.8",
+      "1.8.1",
+      "1.9",
+      "1.10",
+      "1.10.1",
+      "1.11",
+      "1.12",
+      "1.13",
+      "1.13.1"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether.spi"
+    ]
+  },
+  {
+    "metadata-version" : "1.7",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/$version$/aether-spi-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/$version$/aether-spi-$version$-javadoc.jar",
+    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+    "tested-versions" : [
+      "1.7"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether.spi"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.12",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/$version$/aether-util-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether/$version$/aether-$version$-source-release.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/$version$/aether-util-$version$-javadoc.jar",
+    "description" : "Aether Util provides utility classes that simplify use of the Sonatype Aether repository system. It supports common repository operations such as artifact, dependency, and metadata handling for applications built on Aether.",
+    "tested-versions" : [
+      "1.12",
+      "1.13",
+      "1.13.1"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether.util"
+    ]
+  },
+  {
+    "metadata-version" : "1.8",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/$version$/aether-util-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/$version$/aether-parent-$version$-source-release.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/$version$/aether-util-$version$-javadoc.jar",
+    "description" : "Aether Util provides utility classes that simplify use of the Sonatype Aether repository system. It supports common repository operations such as artifact, dependency, and metadata handling for applications built on Aether.",
+    "tested-versions" : [
+      "1.8",
+      "1.8.1",
+      "1.9",
+      "1.10",
+      "1.10.1",
+      "1.11"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether.util"
+    ]
+  },
+  {
+    "metadata-version" : "1.7",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/$version$/aether-util-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-$version$/aether-util/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/$version$/aether-util-$version$-javadoc.jar",
+    "description" : "Aether Util provides utility classes that simplify use of the Sonatype Aether repository system. It supports common repository operations such as artifact, dependency, and metadata handling for applications built on Aether.",
+    "tested-versions" : [
+      "1.7"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether.util"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-impl/1.7/aether-impl-1.7.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.aether</groupId>
+    <artifactId>aether-parent</artifactId>
+    <version>1.7</version>
+  </parent>
+
+  <artifactId>aether-impl</artifactId>
+
+  <name>Aether :: Implementation</name>
+  <description>
+    An implementation of the repository system.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-spi</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+      <version>1.5.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <version>1.5.5</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-classworlds</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.xbean</groupId>
+          <artifactId>xbean-reflect</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.collections</groupId>
+          <artifactId>google-collections</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.6.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-test-util</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether/1.7/aether-1.7.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ exited 22 in 346ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/sonatype/sonatype-aether.git | rg '1\\.7|aether'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 334ms:
+65b1adf4ebdcf54782f68def6661450d3fe3fa68	refs/tags/aether-1.0
+efa59b797625d22c8a534cf82c9ded5011e166bc	refs/tags/aether-1.0^{}
+e232a5dfd16fee712ac6ae065145e260df8d0132	refs/tags/aether-1.1
+98c954e1862c944e3948a7e60e060f46bbdc2671	refs/tags/aether-1.1^{}
+067f7a2049a23856bda88916f8efdacf1da03cc1	refs/tags/aether-1.1.1
+fe17a2ba82cde9df247fe1ddebadc7f5fd107d3b	refs/tags/aether-1.1.1^{}
+167930e0ad2f31741bbfb7b4fd39acd724bbdcac	refs/tags/aether-1.10
+d71c5197d2e20a2c316b287dfc982554a8cb20fa	refs/tags/aether-1.10^{}
+a656249f119581df50acc0528f8d2510c89d8547	refs/tags/aether-1.10.1
+76f98140fc1f16b7fcc9159c8735606fc4292a65	refs/tags/aether-1.10.1^{}
+5fdaf8ad32b374619fa4ebb03230b06467fafdd9	refs/tags/aether-1.11
+fe0c31efdceef5cbf27e1916a82e5fe98717004f	refs/tags/aether-1.11^{}
+e54745906a2072052fd42a5719f7c91963408e28	refs/tags/aether-1.12
+1adb762cd909d153ee88c505e45955cb62c271a8	refs/tags/aether-1.12^{}
+d842d0e2fe0fad6df396873f4939edc45fd3ea0d	refs/tags/aether-1.13
+ad94c23417e8dac7859abcc02bba4384dad4efb6	refs/tags/aether-1.13^{}
+d2c4b5c5e2bb3d5cb46dca694e3f6c355b8df750	refs/tags/aether-1.13.1
+50983e14b99ff694cbb150612352c621b3d7d695	refs/tags/aether-1.13.1^{}
+3310c1ff32811f8909d6d0c9ad160f7245644ca2	refs/tags/aether-1.2
+f95e3e6c52d348493a8856543e87614526d6219c	refs/tags/aether-1.2^{}
+05dc9fa24e4161c791badf25e1b3247cb5098f82	refs/tags/aether-1.3
+f24b8f3c7a9276d58f03d0fad9a5af106810d9dc	refs/tags/aether-1.3^{}
+797f3680f5a9ab0cffb857ddfc99bdbca21d6f3f	refs/tags/aether-1.4
+cc08b07360bb850e166733a4d5461bf2e11387bd	refs/tags/aether-1.4^{}
+cda45110d0252e3eb89d50d60afa50ef7b1367e1	refs/tags/aether-1.5
+91fe6f1329eab38c269d206388875af104fefaaf	refs/tags/aether-1.5^{}
+74f8754e096da3384b18d588c715572bfaeb7196	refs/tags/aether-1.6
+77bd2525a90e1e5d4dbdf419de1c5d708e21186d	refs/tags/aether-1.6^{}
+074c2fb83fb0bd88d7bfe4db80f9fec35c97edcb	refs/tags/aether-1.7
+6ef7c0475459b9204bea7370ae97c6ea2921f0f4	refs/tags/aether-1.7^{}
+52629b29b3920dd2d76b0b8c95a2834a94a0106a	refs/tags/aether-1.8
+af9a0611350ecf4aa835c97f5c97411811db62fe	refs/tags/aether-1.8^{}
+1b7a5bf7f3e9e181fde132e7ff319dde8ad23e3c	refs/tags/aether-1.8.1
+0688bc7895319a8547ab93ff21c2db4ae9e942ce	refs/tags/aether-1.8.1^{}
+333a9442d170baa4f6ad27bcf77c46d39946aab9	refs/tags/aether-1.9
+23f7474dd2de47a67484c10f74b44b6e2dc9b85f	refs/tags/aether-1.9^{}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/sonatype/sonatype-aether/aether-1.7/aether-impl/pom.xml | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether/1.7/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/1.7/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/1.7/' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 204ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.aether</groupId>
+    <artifactId>aether-parent</artifactId>
+    <version>1.7</version>
+  </parent>
+
+  <artifactId>aether-impl</artifactId>
+
+  <name>Aether :: Implementation</name>
+  <description>
+    An implementation of the repository system.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-spi</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+      <version>1.5.5</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <version>1.5.5</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-classworlds</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.xbean</groupId>
+          <artifactId>xbean-reflect</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.collections</groupId>
+          <artifactId>google-collections</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.6.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-test-util</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ succeeded in 279ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/aether/aether-parent/1.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/aether/aether-parent/1.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="aether-parent-1.7-source-release.zip" title="aether-parent-1.7-source-release.zip">aether-parent-1.7-source-release.zip</a>              2010-10-04 09:00    501412      
+<a href="aether-parent-1.7-source-release.zip.asc" title="aether-parent-1.7-source-release.zip.asc">aether-parent-1.7-source-release.zip.asc</a>          2010-10-04 09:00       194      
+<a href="aether-parent-1.7-source-release.zip.asc.md5" title="aether-parent-1.7-source-release.zip.asc.md5">aether-parent-1.7-source-release.zip.asc.md5</a>      2010-10-04 09:00        32      
+<a href="aether-parent-1.7-source-release.zip.asc.sha1" title="aether-parent-1.7-source-release.zip.asc.sha1">aether-parent-1.7-source-release.zip.asc.sha1</a>     2010-10-04 09:00        40      
+<a href="aether-parent-1.7-source-release.zip.md5" title="aether-parent-1.7-source-release.zip.md5">aether-parent-1.7-source-release.zip.md5</a>          2010-10-04 09:00        32      
+<a href="aether-parent-1.7-source-release.zip.sha1" title="aether-parent-1.7-source-release.zip.sha1">aether-parent-1.7-source-release.zip.sha1</a>         2010-10-04 09:00        40      
+<a href="aether-parent-1.7.pom" title="aether-parent-1.7.pom">aether-parent-1.7.pom</a>                             2010-10-04 09:00      7725      
+<a href="aether-parent-1.7.pom.asc" title="aether-parent-1.7.pom.asc">aether-parent-1.7.pom.asc</a>                         2010-10-04 09:00       194      
+<a href="aether-parent-1.7.pom.asc.md5" title="aether-parent-1.7.pom.asc.md5">aether-parent-1.7.pom.asc.md5</a>                     2010-10-04 09:00        32      
+<a href="aether-parent-1.7.pom.asc.sha1" title="aether-parent-1.7.pom.asc.sha1">aether-parent-1.7.pom.asc.sha1</a>                    2010-10-04 09:00        40      
+<a href="aether-parent-1.7.pom.md5" title="aether-parent-1.7.pom.md5">aether-parent-1.7.pom.md5</a>                         2010-10-04 09:00        32      
+<a href="aether-parent-1.7.pom.sha1" title="aether-parent-1.7.pom.sha1">aether-parent-1.7.pom.sha1</a>                        2010-10-04 09:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 342ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 551ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/aether/aether-impl/1.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/aether/aether-impl/1.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="aether-impl-1.7-javadoc.jar" title="aether-impl-1.7-javadoc.jar">aether-impl-1.7-javadoc.jar</a>                       2010-10-04 09:02    186665      
+<a href="aether-impl-1.7-javadoc.jar.asc" title="aether-impl-1.7-javadoc.jar.asc">aether-impl-1.7-javadoc.jar.asc</a>                   2010-10-04 09:02       194      
+<a href="aether-impl-1.7-javadoc.jar.asc.md5" title="aether-impl-1.7-javadoc.jar.asc.md5">aether-impl-1.7-javadoc.jar.asc.md5</a>               2010-10-04 09:02        32      
+<a href="aether-impl-1.7-javadoc.jar.asc.sha1" title="aether-impl-1.7-javadoc.jar.asc.sha1">aether-impl-1.7-javadoc.jar.asc.sha1</a>              2010-10-04 09:02        40      
+<a href="aether-impl-1.7-javadoc.jar.md5" title="aether-impl-1.7-javadoc.jar.md5">aether-impl-1.7-javadoc.jar.md5</a>                   2010-10-04 09:02        32      
+<a href="aether-impl-1.7-javadoc.jar.sha1" title="aether-impl-1.7-javadoc.jar.sha1">aether-impl-1.7-javadoc.jar.sha1</a>                  2010-10-04 09:02        40      
+<a href="aether-impl-1.7-sources.jar" title="aether-impl-1.7-sources.jar">aether-impl-1.7-sources.jar</a>                       2010-10-04 09:02     70173      
+<a href="aether-impl-1.7-sources.jar.asc" title="aether-impl-1.7-sources.jar.asc">aether-impl-1.7-sources.jar.asc</a>                   2010-10-04 09:02       194      
+<a href="aether-impl-1.7-sources.jar.asc.md5" title="aether-impl-1.7-sources.jar.asc.md5">aether-impl-1.7-sources.jar.asc.md5</a>               2010-10-04 09:02        32      
+<a href="aether-impl-1.7-sources.jar.asc.sha1" title="aether-impl-1.7-sources.jar.asc.sha1">aether-impl-1.7-sources.jar.asc.sha1</a>              2010-10-04 09:02        40      
+<a href="aether-impl-1.7-sources.jar.md5" title="aether-impl-1.7-sources.jar.md5">aether-impl-1.7-sources.jar.md5</a>                   2010-10-04 09:02        32      
+<a href="aether-impl-1.7-sources.jar.sha1" title="aether-impl-1.7-sources.jar.sha1">aether-impl-1.7-sources.jar.sha1</a>                  2010-10-04 09:02        40      
+<a href="aether-impl-1.7.jar" title="aether-impl-1.7.jar">aether-impl-1.7.jar</a>                               2010-10-04 09:02    106275      
+<a href="aether-impl-1.7.jar.asc" title="aether-impl-1.7.jar.asc">aether-impl-1.7.jar.asc</a>                           2010-10-04 09:02       194      
+<a href="aether-impl-1.7.jar.asc.md5" title="aether-impl-1.7.jar.asc.md5">aether-impl-1.7.jar.asc.md5</a>                       2010-10-04 09:02        32      
+<a href="aether-impl-1.7.jar.asc.sha1" title="aether-impl-1.7.jar.asc.sha1">aether-impl-1.7.jar.asc.sha1</a>                      2010-10-04 09:02        40      
+<a href="aether-impl-1.7.jar.md5" title="aether-impl-1.7.jar.md5">aether-impl-1.7.jar.md5</a>                           2010-10-04 09:02        32      
+<a href="aether-impl-1.7.jar.sha1" title="aether-impl-1.7.jar.sha1">aether-impl-1.7.jar.sha1</a>                          2010-10-04 09:02        40      
+<a href="aether-impl-1.7.pom" title="aether-impl-1.7.pom">aether-impl-1.7.pom</a>                               2010-10-04 09:02      3693      
+<a href="aether-impl-1.7.pom.asc" title="aether-impl-1.7.pom.asc">aether-impl-1.7.pom.asc</a>                           2010-10-04 09:02       194      
+<a href="aether-impl-1.7.pom.asc.md5" title="aether-impl-1.7.pom.asc.md5">aether-impl-1.7.pom.asc.md5</a>                       2010-10-04 09:02        32      
+<a href="aether-impl-1.7.pom.asc.sha1" title="aether-impl-1.7.pom.asc.sha1">aether-impl-1.7.pom.asc.sha1</a>                      2010-10-04 09:02        40      
+<a href="aether-impl-1.7.pom.md5" title="aether-impl-1.7.pom.md5">aether-impl-1.7.pom.md5</a>                           2010-10-04 09:02        32      
+<a href="aether-impl-1.7.pom.sha1" title="aether-impl-1.7.pom.sha1">aether-impl-1.7.pom.sha1</a>                          2010-10-04 09:02        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.sonatype.aether aether-impl 1.7 sources javadoc
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/1.7/aether-parent-1.7.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2008 Sonatype, Inc. All rights reserved.
+
+This program is licensed to you under the Apache License Version 2.0,
+and you may not use this file except in compliance with the Apache License Version 2.0.
+You may obtain a copy of the Apache License Version 2.0 at http://www.apache.org/licenses/LICENSE-2.0.
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the Apache License Version 2.0 is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Apache License Version 2.0 for the specific language governing permissions and limitations there under.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.forge</groupId>
+    <artifactId>forge-parent</artifactId>
+    <version>6</version>
+  </parent>
+
+  <groupId>org.sonatype.aether</groupId>
+  <artifactId>aether-parent</artifactId>
+  <version>1.7</version>
+  <packaging>pom</packaging>
+
+  <name>Aether</name>
+  <description>
+    The parent and aggregator for the repository system.
+  </description>
+  <url>http://aether.sonatype.org/</url>
+  <inceptionYear>2010</inceptionYear>
+
+  <organization>
+    <name>Sonatype, Inc.</name>
+    <url>http://www.sonatype.com</url>
+  </organization>
+
+  <mailingLists>
+    <mailingList>
+      <name>Aether Developers List</name>
+      <subscribe>aether-dev-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-dev-unsubscribe@sonatype.org</unsubscribe>
+      <post>aether-dev@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Aether Users List</name>
+      <subscribe>aether-user-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-user-unsubscribe@sonatype.org</unsubscribe>
+      <post>aether-user@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Aether Commits List</name>
+      <subscribe>aether-scm-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-scm-unsubscribe@sonatype.org</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
+  <scm>
+    <connection>scm:git:git@github.com:sonatype/sonatype-aether.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/sonatype-aether.git</developerConnection>
+    <url>git@github.com:sonatype/sonatype-aether.git</url>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.sonatype.org/browse/AETHER</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Hudson</system>
+    <url>https://grid.sonatype.org/ci/job/Aether/</url>
+  </ciManagement>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <modules>
+    <module>aether-api</module>
+    <module>aether-spi</module>
+    <module>aether-util</module>
+    <module>aether-impl</module>
+    <module>aether-test-util</module>
+    <module>aether-connector-file</module>
+    <module>aether-connector-wagon</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.8.1</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.1</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <links>
+              <link>http://java.sun.com/javase/6/docs/api/</link>
+            </links>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.0</version>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.6</version>
+          <configuration>
+            <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java15</artifactId>
+              <version>1.0</version>
+            </signature>
+          </configuration>
+          <executions>
+            <execution>
+              <id>check-java-1.5-compat</id>
+              <phase>process-classes</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-metadata</artifactId>
+          <version>1.5.5</version>
+          <executions>
+            <execution>
+              <id>generate-components-xml</id>
+              <goals>
+                <goal>generate-metadata</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>demo</id>
+      <modules>
+        <module>aether-demo</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.apache.resources</groupId>
+                <artifactId>apache-source-release-assembly-descriptor</artifactId>
+                <version>1.0.2</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>attach-source-release-distro</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                  <descriptorRefs>
+                    <descriptorRef>source-release</descriptorRef>
+                  </descriptorRefs>
+                  <tarLongFileFormat>gnu</tarLongFileFormat>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL -o "$tmp" https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/1.7/aether-parent-1.7-source-release.zip; unzip -l "$tmp" | rg '"'aether-impl/src/test|aether-impl/src/main|pom.xml' | sed -n '1,120p'; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/1.7/aether-impl-1.7.jar -o /tmp/aether-impl-1.7.jar; jar tf /tmp/aether-impl-1.7.jar | sed -n '1,80p'; rm -f /tmp/aether-impl-1.7.jar" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/plexus/
+org/
+org/sonatype/
+org/sonatype/aether/
+org/sonatype/aether/impl/
+org/sonatype/aether/impl/internal/
+META-INF/plexus/components.xml
+org/sonatype/aether/impl/ArtifactDescriptorReader.class
+org/sonatype/aether/impl/ArtifactResolver.class
+org/sonatype/aether/impl/DependencyCollector.class
+org/sonatype/aether/impl/Deployer.class
+org/sonatype/aether/impl/Installer.class
+org/sonatype/aether/impl/internal/ArtifactRequestBuilder.class
+org/sonatype/aether/impl/internal/CacheUtils.class
+org/sonatype/aether/impl/internal/CachingArtifactTypeRegistry.class
+org/sonatype/aether/impl/internal/DataPool$Constraint.class
+org/sonatype/aether/impl/internal/DataPool$ConstraintKey.class
+org/sonatype/aether/impl/internal/DataPool$Descriptor.class
+org/sonatype/aether/impl/internal/DataPool$GraphKey.class
+org/sonatype/aether/impl/internal/DataPool$NodeKey.class
+org/sonatype/aether/impl/internal/DataPool.class
+org/sonatype/aether/impl/internal/DefaultArtifactResolver$ResolutionGroup.class
+org/sonatype/aether/impl/internal/DefaultArtifactResolver$ResolutionItem.class
+org/sonatype/aether/impl/internal/DefaultArtifactResolver.class
+org/sonatype/aether/impl/internal/DefaultDependencyCollectionContext.class
+org/sonatype/aether/impl/internal/DefaultDependencyCollector.class
+org/sonatype/aether/impl/internal/DefaultDependencyGraphTransformationContext.class
+org/sonatype/aether/impl/internal/DefaultDeployer$1.class
+org/sonatype/aether/impl/internal/DefaultDeployer$ArtifactUploadEx.class
+org/sonatype/aether/impl/internal/DefaultDeployer$EventCatapult.class
+org/sonatype/aether/impl/internal/DefaultDeployer$MetadataUploadEx.class
+org/sonatype/aether/impl/internal/DefaultDeployer.class
+org/sonatype/aether/impl/internal/DefaultFileProcessor$ProgressingChannel.class
+org/sonatype/aether/impl/internal/DefaultFileProcessor.class
+org/sonatype/aether/impl/internal/DefaultInstaller$1.class
+org/sonatype/aether/impl/internal/DefaultInstaller.class
+org/sonatype/aether/impl/internal/DefaultLocalRepositoryEvent.class
+org/sonatype/aether/impl/internal/DefaultMetadataResolver$1.class
+org/sonatype/aether/impl/internal/DefaultMetadataResolver$ResolveTask.class
+org/sonatype/aether/impl/internal/DefaultMetadataResolver.class
+org/sonatype/aether/impl/internal/DefaultRemoteRepositoryManager$1.class
+org/sonatype/aether/impl/internal/DefaultRemoteRepositoryManager.class
+org/sonatype/aether/impl/internal/DefaultRepositorySystem.class
+org/sonatype/aether/impl/internal/DefaultServiceLocator.class
+org/sonatype/aether/impl/internal/DefaultUpdateCheckManager.class
+org/sonatype/aether/impl/internal/DependencyNodeInfo.class
+org/sonatype/aether/impl/internal/EnhancedLocalRepositoryManager.class
+org/sonatype/aether/impl/internal/GraphEdge.class
+org/sonatype/aether/impl/internal/GraphNode.class
+org/sonatype/aether/impl/internal/ObjectPool.class
+org/sonatype/aether/impl/internal/PlexusLogger.class
+org/sonatype/aether/impl/internal/SimpleDigest.class
+org/sonatype/aether/impl/internal/SimpleLocalRepositoryManager.class
+org/sonatype/aether/impl/internal/Slf4jLogger.class
+org/sonatype/aether/impl/internal/TrackingFileManager.class
+org/sonatype/aether/impl/LocalRepositoryEvent.class
+org/sonatype/aether/impl/LocalRepositoryMaintainer.class
+org/sonatype/aether/impl/MetadataGenerator.class
+org/sonatype/aether/impl/MetadataGeneratorFactory.class
+org/sonatype/aether/impl/MetadataResolver.class
+org/sonatype/aether/impl/RemoteRepositoryManager.class
+org/sonatype/aether/impl/UpdateCheck.class
+org/sonatype/aether/impl/UpdateCheckManager.class
+org/sonatype/aether/impl/VersionRangeResolver.class
+org/sonatype/aether/impl/VersionResolver.class
+META-INF/maven/
+META-INF/maven/org.sonatype.aether/
+META-INF/maven/org.sonatype.aether/aether-impl/
+META-INF/maven/org.sonatype.aether/aether-impl/pom.xml
+META-INF/maven/org.sonatype.aether/aether-impl/pom.properties
+
+ succeeded in 256ms:
+ succeeded in 635ms:
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/
+        0  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/managed/
+     1673  2010-10-04 11:00   aether-parent-1.7/aether-api/pom.xml
+     2749  2010-10-04 11:00   aether-parent-1.7/aether-connector-file/pom.xml
+     3166  2010-10-04 11:00   aether-parent-1.7/aether-connector-wagon/pom.xml
+     5140  2010-10-04 11:00   aether-parent-1.7/aether-demo/pom.xml
+     3693  2010-10-04 11:00   aether-parent-1.7/aether-impl/pom.xml
+     1656  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/ArtifactDescriptorReader.java
+     1662  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/ArtifactResolver.java
+     1509  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/DependencyCollector.java
+     1720  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/Deployer.java
+     1747  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/Installer.java
+     1692  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/ArtifactRequestBuilder.java
+     4477  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/CacheUtils.java
+     2118  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/CachingArtifactTypeRegistry.java
+    14077  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DataPool.java
+    23831  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultArtifactResolver.java
+     1835  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultDependencyCollectionContext.java
+    24308  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultDependencyCollector.java
+     1664  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultDependencyGraphTransformationContext.java
+    19845  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultDeployer.java
+     7257  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultFileProcessor.java
+    13716  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultInstaller.java
+     1993  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultLocalRepositoryEvent.java
+    18838  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultMetadataResolver.java
+    14435  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultRemoteRepositoryManager.java
+    16167  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultRepositorySystem.java
+     7283  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultServiceLocator.java
+    19880  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DefaultUpdateCheckManager.java
+     4686  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/DependencyNodeInfo.java
+     6578  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/EnhancedLocalRepositoryManager.java
+     4650  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/GraphEdge.java
+     2321  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/GraphNode.java
+     1545  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/ObjectPool.java
+     1471  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/PlexusLogger.java
+     2635  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/SimpleDigest.java
+     6693  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/SimpleLocalRepositoryManager.java
+     1554  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/Slf4jLogger.java
+     5944  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/internal/TrackingFileManager.java
+     2026  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/LocalRepositoryEvent.java
+     1625  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/LocalRepositoryMaintainer.java
+     2174  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/MetadataGenerator.java
+     2379  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/MetadataGeneratorFactory.java
+     1297  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/MetadataResolver.java
+     1800  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/RemoteRepositoryManager.java
+     7099  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/UpdateCheck.java
+     4007  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/UpdateCheckManager.java
+     1413  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/VersionRangeResolver.java
+     1690  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/main/java/org/sonatype/aether/impl/VersionResolver.java
+     3261  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/DefaultServiceLocatorTest.java
+    25544  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/DefaultArtifactResolverTest.java
+    15201  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/DefaultDependencyCollectorTest.java
+    12838  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/DefaultDeployerTest.java
+     2719  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/DefaultFileProcessorTest.java
+    13102  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/DefaultInstallerTest.java
+     5965  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/DefaultMetadataResolverTest.java
+    21453  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/DefaultUpdateCheckManagerTest.java
+     6335  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/EnhancedLocalRepositoryManagerTest.java
+     7281  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/RecordingRepositoryConnector.java
+     2330  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/StaticUpdateCheckManager.java
+     2605  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/StubRemoteRepositoryManager.java
+     1794  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/StubVersionRangeResolver.java
+     1603  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/java/org/sonatype/aether/impl/internal/StubVersionResolver.java
+       49  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/duplicate_transitive_dependency_ext.ini
+      176  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/expectedPartialSubtreeOnError.txt
+      234  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/expectedSubtreeComparisonResult.txt
+       16  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/gid_aid2_managedVersion_ext.ini
+       16  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/gid_aid2_ver_ext.ini
+       34  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/gid_aid_ver_ext.ini
+       49  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/managed/duplicate_transitive_managed_ext.ini
+       16  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/managed/gid_aid2_managed_ext.ini
+       34  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/managed/gid_aid_ver_ext.ini
+       70  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/managed/subtree_comparison_ver_ext.ini
+       98  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/managed_aid_ver_ext.ini
+       51  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/missing_description_ver_ext.ini
+       70  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/subtree_comparison_error_ext.ini
+       70  2010-10-04 11:00   aether-parent-1.7/aether-impl/src/test/resources/artifact-descriptions/subtree_comparison_ver_ext.ini
+     1741  2010-10-04 11:00   aether-parent-1.7/aether-spi/pom.xml
+     2044  2010-10-04 11:00   aether-parent-1.7/aether-test-util/pom.xml
+     2062  2010-10-04 11:00   aether-parent-1.7/aether-util/pom.xml
+     7725  2010-10-04 11:00   aether-parent-1.7/pom.xml
+
+web search: 
+web search: org.sonatype.aether aether-impl 1.7 Maven Central
+codex
+The source-release ZIP for `aether-parent:1.7` is present on Maven Central and contains the `aether-impl/src/test` tree, so I’ll use that for `test-code-url` instead of the GitHub tree URL. The artifact JAR contains JVM `.class` files and is plain Java, so no `language` or `not-for-native-image` fields are needed.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+diff --git a/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json b/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+index 24fe33c9c14463115c0682509945245cff29c3fc..4726f03c133c10a88c2a821a17e51d93db06f23d
+--- a/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
++++ b/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.aether:aether-impl:1.7"
++  "coordinates" : "org.sonatype.aether:aether-impl:1.7",
++  "repository-url" : "https://github.com/sonatype/sonatype-aether",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/$version$/aether-parent-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
++  "description" : "Aether Implementation provides the default services that implement Sonatype Aether's repository system. It handles dependency collection and resolution, artifact and metadata installation and deployment, repository management, and service location for applications using Aether."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json b/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+index 24fe33c9c14463115c0682509945245cff29c3fc..4726f03c133c10a88c2a821a17e51d93db06f23d
+--- a/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
++++ b/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.aether:aether-impl:1.7"
++  "coordinates" : "org.sonatype.aether:aether-impl:1.7",
++  "repository-url" : "https://github.com/sonatype/sonatype-aether",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/$version$/aether-parent-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
++  "description" : "Aether Implementation provides the default services that implement Sonatype Aether's repository system. It handles dependency collection and resolution, artifact and metadata installation and deployment, repository management, and service location for applications using Aether."
+ }
+
+codex
+The JSON is patched. I’ll do a quick validation pass now: parse the file and verify the Maven URLs resolve after substituting `1.7`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 0ms:
+{
+  "coordinates": "org.sonatype.aether:aether-impl:1.7",
+  "repository-url": "https://github.com/sonatype/sonatype-aether",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/$version$/aether-parent-$version$-source-release.zip",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
+  "description": "Aether Implementation provides the default services that implement Sonatype Aether's repository system. It handles dependency collection and resolution, artifact and metadata installation and deployment, repository management, and service location for applications using Aether."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/1.7/aether-impl-1.7-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/1.7/aether-parent-1.7-source-release.zip \\
+  https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/1.7/aether-impl-1.7-javadoc.jar; do \\
+  curl -fsSI \""'$url" | sed -n '"'1p'; \\
+done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+diff --git a/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json b/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+index 24fe33c9c14463115c0682509945245cff29c3fc..4726f03c133c10a88c2a821a17e51d93db06f23d
+--- a/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
++++ b/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.aether:aether-impl:1.7"
++  "coordinates" : "org.sonatype.aether:aether-impl:1.7",
++  "repository-url" : "https://github.com/sonatype/sonatype-aether",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/$version$/aether-parent-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
++  "description" : "Aether Implementation provides the default services that implement Sonatype Aether's repository system. It handles dependency collection and resolution, artifact and metadata installation and deployment, repository management, and service location for applications using Aether."
+ }
+
+ succeeded in 140ms:
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json && sed -n '1,120p' build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944
+ succeeded in 0ms:
+{
+  "coordinates" : "org.sonatype.aether:aether-impl:1.7",
+  "repository-url" : "https://github.com/sonatype/sonatype-aether",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-sources.jar",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/$version$/aether-parent-$version$-source-release.zip",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
+  "description" : "Aether Implementation provides the default services that implement Sonatype Aether's repository system. It handles dependency collection and resolution, artifact and metadata installation and deployment, repository management, and service location for applications using Aether."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json b/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+index 24fe33c9c14463115c0682509945245cff29c3fc..4726f03c133c10a88c2a821a17e51d93db06f23d
+--- a/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
++++ b/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.aether:aether-impl:1.7"
++  "coordinates" : "org.sonatype.aether:aether-impl:1.7",
++  "repository-url" : "https://github.com/sonatype/sonatype-aether",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/$version$/aether-parent-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
++  "description" : "Aether Implementation provides the default services that implement Sonatype Aether's repository system. It handles dependency collection and resolution, artifact and metadata installation and deployment, repository management, and service location for applications using Aether."
+ }
+
+codex
+Updated [org.sonatype.aether-aether-impl-1.7.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json) with the repository, Maven sources, Maven source-release test suite, Maven javadocs, and a two-sentence description.
+
+Validated the JSON with `jq`; the three `$version$` URLs resolve with `1.7` substituted. No `language` or `not-for-native-image` fields were added because this is a JVM Java artifact with class files.
+diff --git a/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json b/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+index 24fe33c9c14463115c0682509945245cff29c3fc..4726f03c133c10a88c2a821a17e51d93db06f23d
+--- a/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
++++ b/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.aether:aether-impl:1.7"
++  "coordinates" : "org.sonatype.aether:aether-impl:1.7",
++  "repository-url" : "https://github.com/sonatype/sonatype-aether",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/$version$/aether-parent-$version$-source-release.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-impl/$version$/aether-impl-$version$-javadoc.jar",
++  "description" : "Aether Implementation provides the default services that implement Sonatype Aether's repository system. It handles dependency collection and resolution, artifact and metadata installation and deployment, repository management, and service location for applications using Aether."
+ }
+
+tokens used
+58,878
+Updated [org.sonatype.aether-aether-impl-1.7.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944/build/discovered-artifact-metadata/org.sonatype.aether-aether-impl-1.7.json) with the repository, Maven sources, Maven source-release test suite, Maven javadocs, and a two-sentence description.
+
+Validated the JSON with `jq`; the three `$version$` URLs resolve with `1.7` substituted. No `language` or `not-for-native-image` fields were added because this is a JVM Java artifact with class files.
+Ran agent for org.sonatype.aether:aether-impl:1.7 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944/build/agent-artifact-discovery-logs/org.sonatype.aether-aether-impl-1.7.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2339-f5db9944/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 48s
+9 actionable tasks: 9 executed
