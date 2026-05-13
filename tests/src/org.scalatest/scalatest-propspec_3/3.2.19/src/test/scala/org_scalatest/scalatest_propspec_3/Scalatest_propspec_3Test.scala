@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test
 import org.scalatest.{Args, ConfigMap, Filter, Outcome, Reporter, Tag}
 import org.scalatest.events.{Event, InfoProvided, TestCanceled, TestFailed, TestIgnored, TestPending, TestStarting, TestSucceeded}
 import org.scalatest.exceptions.{DuplicateTestNameException, TestRegistrationClosedException}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 import org.scalatest.propspec.{AnyPropSpec, FixtureAnyPropSpec}
 
 import scala.collection.mutable.ListBuffer
@@ -126,6 +127,20 @@ class Scalatest_propspec_3Test {
       "stack created with one element is non-empty",
       "stack created with one element returns the top element"
     )
+  }
+
+  @Test
+  def anyPropSpecRunsTableDrivenPropertyChecks(): Unit = {
+    val suite: TableDrivenPropSpec = new TableDrivenPropSpec
+    val reporter: PropSpecRecordingReporter = new PropSpecRecordingReporter
+
+    val status = suite.run(None, Args(reporter))
+
+    assertThat(status.isCompleted()).isTrue()
+    assertThat(status.succeeds()).isTrue()
+    assertThat(suite.checkedInputs.asJava).containsExactly("scala", "propspec", "native")
+    assertThat(reporter.eventsOf[TestSucceeded].map(_.testName).asJava)
+      .containsExactly("all sample strings round-trip through reverse")
   }
 
   @Test
@@ -294,6 +309,25 @@ class SharedBehaviorPropSpec extends AnyPropSpec {
 
     property(s"$description returns the top element") {
       assert(stack.head == 1)
+    }
+  }
+}
+
+class TableDrivenPropSpec extends AnyPropSpec with TableDrivenPropertyChecks {
+  val checkedInputs: ListBuffer[String] = ListBuffer.empty
+
+  private val examples: TableFor2[String, String] = Table(
+    ("input", "reversed"),
+    ("scala", "alacs"),
+    ("propspec", "cepsporp"),
+    ("native", "evitan")
+  )
+
+  property("all sample strings round-trip through reverse") {
+    forAll(examples) { (input: String, reversed: String) =>
+      checkedInputs += input
+      assert(input.reverse == reversed)
+      assert(reversed.reverse == input)
     }
   }
 }
