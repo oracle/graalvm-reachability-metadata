@@ -180,6 +180,18 @@ class Scalatest_funsuite_3Test:
     assert(succeededEvents(result.events).map(_.testName) == Vector("uses an asynchronous fixture"))
 
   @Test
+  def fixtureAsyncFunSuiteRunsNoArgAsynchronousTestsThroughFixtureLifecycle(): Unit =
+    val suite: AsyncFixtureNoArgFunSuite = new AsyncFixtureNoArgFunSuite
+    val result: RunResult = runSuite(suite)
+
+    assert(result.succeeded)
+    assert(suite.events == Vector(
+      "fixture:uses no-arg asynchronous test body",
+      "body:no-arg async"
+    ))
+    assert(succeededEvents(result.events).map(_.testName) == Vector("uses no-arg asynchronous test body"))
+
+  @Test
   def anyFunSuiteRejectsDuplicateTestNames(): Unit =
     assertThrows(classOf[DuplicateTestNameException], () => new DuplicateNameFunSuite)
     ()
@@ -332,6 +344,22 @@ class Scalatest_funsuite_3Test:
         builder.append("-used")
         seenFixtures = seenFixtures :+ builder.toString()
         assert(builder.toString() == "async-fixture-used")
+        succeed
+      }
+    }
+
+  private final class AsyncFixtureNoArgFunSuite extends FixtureAsyncFunSuite:
+    type FixtureParam = StringBuilder
+
+    var events: Vector[String] = Vector.empty
+
+    override def withFixture(test: OneArgAsyncTest): FutureOutcome =
+      events = events :+ s"fixture:${test.name}"
+      withFixture(test.toNoArgAsyncTest(new StringBuilder("unused")))
+
+    test("uses no-arg asynchronous test body") { () =>
+      Future.successful {
+        events = events :+ "body:no-arg async"
         succeed
       }
     }
