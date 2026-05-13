@@ -40,6 +40,7 @@ public class HikariConfigTest {
         assertThat(config.getMaximumPoolSize()).isEqualTo(4);
         assertThat(config.getMinimumIdle()).isEqualTo(1);
         assertThat(config.getUsername()).isEqualTo("resource-user");
+        assertThat(config.getPassword()).isEqualTo("resource-password");
     }
 
     public static final class TestExceptionOverride implements SQLExceptionOverride {

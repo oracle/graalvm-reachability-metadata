@@ -9,6 +9,8 @@ package com.zaxxer.hikaricp.test;
 import com.zaxxer.hikari.util.FastList;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FastListTest {
@@ -47,5 +49,19 @@ public class FastListTest {
         assertThat(values.removeLast()).isEqualTo("second");
         assertThat(values.removeLast()).isEqualTo("first");
         assertThat(values.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void supportsUuidElementArrays() {
+        FastList<UUID> values = new FastList<>(UUID.class, 1);
+        UUID first = UUID.randomUUID();
+        UUID second = UUID.randomUUID();
+
+        values.add(first);
+        values.add(second);
+
+        assertThat(values.size()).isEqualTo(2);
+        assertThat(values.get(0)).isEqualTo(first);
+        assertThat(values.get(1)).isEqualTo(second);
     }
 }
