@@ -24,8 +24,11 @@ import org.scalatest.Outcome
 import org.scalatest.Reporter
 import org.scalatest.Suite
 import org.scalatest.Tag
+import org.scalatest.events.AlertProvided
 import org.scalatest.events.Event
 import org.scalatest.events.InfoProvided
+import org.scalatest.events.MarkupProvided
+import org.scalatest.events.NoteProvided
 import org.scalatest.events.TestCanceled
 import org.scalatest.events.TestFailed
 import org.scalatest.events.TestIgnored
@@ -119,6 +122,20 @@ class Scalatest_featurespec_3Test:
       "Then the order summary contains the guide",
       "checkout summary verified"
     ))
+
+  @Test
+  def publishesNoteAlertAndMarkupEventsFromSucceededScenario(): Unit =
+    val suite: NotificationFeatureSpec = new NotificationFeatureSpec
+    val scenarioTestName: String = findTestName(suite, "publishes notifications and markup")
+
+    val result: RunResult = runSuite(suite)
+
+    assert(result.succeeded)
+    assert(suite.executed == Vector("notifications"))
+    assert(succeededEvents(result.events).map(_.testName) == Vector(scenarioTestName))
+    assert(noteMessages(result.events) == Vector("checkout note published"))
+    assert(alertMessages(result.events) == Vector("checkout alert published"))
+    assert(recordedMarkupText(result.events) == Vector("<p>checkout documentation published</p>"))
 
   @Test
   def fixtureAnyFeatureSpecProvidesFreshFixturesAndReportsIgnoredScenarios(): Unit =
@@ -222,6 +239,19 @@ class Scalatest_featurespec_3Test:
         info("checkout summary verified")
         executed = executed :+ "narrative"
         assert(Vector("guide").mkString(",") == "guide")
+      }
+    }
+
+  private final class NotificationFeatureSpec extends AnyFeatureSpec:
+    var executed: Vector[String] = Vector.empty
+
+    Feature("Scenario notifications and documentation") {
+      Scenario("publishes notifications and markup") {
+        note("checkout note published")
+        alert("checkout alert published")
+        markup("<p>checkout documentation published</p>")
+        executed = executed :+ "notifications"
+        assert("cart".reverse.reverse == "cart")
       }
     }
 
@@ -332,6 +362,17 @@ class Scalatest_featurespec_3Test:
   private def recordedInfoMessages(events: Vector[Event]): Vector[String] =
     succeededEvents(events).flatMap { (event: TestSucceeded) =>
       event.recordedEvents.collect { case info: InfoProvided => info.message }.toVector
+    }
+
+  private def noteMessages(events: Vector[Event]): Vector[String] =
+    events.collect { case event: NoteProvided => event.message }
+
+  private def alertMessages(events: Vector[Event]): Vector[String] =
+    events.collect { case event: AlertProvided => event.message }
+
+  private def recordedMarkupText(events: Vector[Event]): Vector[String] =
+    succeededEvents(events).flatMap { (event: TestSucceeded) =>
+      event.recordedEvents.collect { case markup: MarkupProvided => markup.text }.toVector
     }
 
   private final class RecordingReporter extends Reporter:
