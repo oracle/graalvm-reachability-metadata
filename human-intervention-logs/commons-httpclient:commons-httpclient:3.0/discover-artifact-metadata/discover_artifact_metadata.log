@@ -1,0 +1,1136 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e2111-10cc-74c3-b017-b108853f077f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: commons-httpclient:commons-httpclient:3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.0" when "$version$" is replaced with "3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+- Set "coordinates" to "commons-httpclient:commons-httpclient:3.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact details against authoritative sources first, then update the JSON in place using the repo’s existing metadata style.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 0ms:
+{
+  "coordinates" : "commons-httpclient:commons-httpclient:3.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'commons-httpclient-commons-httpclient-3\\.0\\.json|commons-httpclient'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"documentation-url\"|\"test-code-url\"|\"commons-httpclient\"|\"not-for-native-image\"|\"language\"' -g '*.json' metadata build/discovered-artifact-metadata | head -200" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 0ms:
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:9:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v$version$/jctools-core/src/test",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:6:    "repository-url" : "https://github.com/mwiede/jsch",
+metadata/com.github.mwiede/jsch/index.json:7:    "test-code-url" : "https://github.com/mwiede/jsch/tree/jsch-$version$/src/test",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:6:    "repository-url" : "https://github.com/openzipkin/zipkin",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/$version$/zipkin-tests/src/test",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/clikt",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:5:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:20:    "repository-url" : "https://github.com/apache/commons-compress",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.beust/jcommander/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/$version$/jcommander-$version$-sources.jar",
+metadata/com.beust/jcommander/index.json:6:    "repository-url" : "https://github.com/cbeust/jcommander",
+metadata/com.beust/jcommander/index.json:7:    "test-code-url" : "N/A",
+metadata/com.beust/jcommander/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/$version$/jcommander-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/$version$/slf4j-jboss-logmanager-$version$-sources.jar",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:6:    "repository-url" : "https://github.com/jboss-logging/slf4j-jboss-logmanager",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/$version$/slf4j-jboss-logmanager-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:6:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:8:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:20:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:22:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:34:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:36:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:48:    "repository-url" : "https://github.com/apache/commons-fileupload",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:50:    "documentation-url" : "https://github.com/apache/commons-fileupload/blob/rel/commons-fileupload-$version$/src/site/xdoc/index.xml",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.curator/curator-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-client/$version$/curator-client-$version$-sources.jar",
+metadata/org.apache.curator/curator-client/index.json:6:    "repository-url" : "https://github.com/apache/curator",
+metadata/org.apache.curator/curator-client/index.json:7:    "test-code-url" : "https://github.com/apache/curator/tree/apache-curator-$version$/curator-client/src/test",
+metadata/org.apache.curator/curator-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-client/$version$/curator-client-$version$-javadoc.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/beanbag/smallrye-beanbag-sisu/$version$/smallrye-beanbag-sisu-$version$-sources.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-beanbag",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-beanbag/tree/$version$/maven/src/test",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/beanbag/smallrye-beanbag-sisu/$version$/smallrye-beanbag-sisu-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/com.typesafe/ssl-config-core_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/ssl-config-core_2.13/$version$/ssl-config-core_2.13-$version$-sources.jar",
+metadata/com.typesafe/ssl-config-core_2.13/index.json:6:    "repository-url" : "https://github.com/lightbend/ssl-config",
+metadata/com.typesafe/ssl-config-core_2.13/index.json:7:    "test-code-url" : "https://github.com/lightbend/ssl-config/tree/v$version$/ssl-config-core/src/test/scala",
+metadata/com.typesafe/ssl-config-core_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/ssl-config-core_2.13/$version$/ssl-config-core_2.13-$version$-javadoc.jar",
+metadata/com.typesafe/ssl-config-core_2.13/index.json:10:    "language" : {
+metadata/com.sun.xml.dtd-parser/dtd-parser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-sources.jar",
+metadata/com.sun.xml.dtd-parser/dtd-parser/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser",
+metadata/com.sun.xml.dtd-parser/dtd-parser/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-dtd-parser/tree/$version$/dtd-parser/src/test",
+metadata/com.sun.xml.dtd-parser/dtd-parser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/xml/dtd-parser/dtd-parser/$version$/dtd-parser-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_2.13/$version$/parboiled_2.13-$version$-sources.jar",
+metadata/org.parboiled/parboiled_2.13/index.json:6:    "repository-url" : "https://github.com/sirthias/parboiled2",
+metadata/org.parboiled/parboiled_2.13/index.json:7:    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+metadata/org.parboiled/parboiled_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_2.13/$version$/parboiled_2.13-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-core_3/$version$/jsoniter-scala-core_3-$version$-sources.jar",
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:6:    "repository-url" : "https://github.com/plokhotnyuk/jsoniter-scala",
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:7:    "test-code-url" : "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-core/shared/src/test",
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/plokhotnyuk/jsoniter-scala/jsoniter-scala-core_3/$version$/jsoniter-scala-core_3-$version$-javadoc.jar",
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/org.jooq/jooq/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:7:    "repository-url" : "https://github.com/jOOQ/jOOQ",
+metadata/org.jooq/jooq/index.json:8:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:37:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:38:    "repository-url" : "https://github.com/jOOQ/jOOQ",
+metadata/org.jooq/jooq/index.json:39:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:40:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:113:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:114:    "repository-url" : "https://github.com/jOOQ/jOOQ",
+metadata/org.jooq/jooq/index.json:115:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:116:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:6:    "repository-url" : "https://github.com/bcgit/bc-java",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/beanbag/smallrye-beanbag/$version$/smallrye-beanbag-$version$-sources.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-beanbag",
+metadata/io.smallrye.beanbag/smallrye-beanbag/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-beanbag/tree/$version$/maven/src/test",
+metadata/io.smallrye.beanbag/smallrye-beanbag/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/beanbag/smallrye-beanbag/$version$/smallrye-beanbag-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-sources.jar",
+metadata/org.parboiled/parboiled_3/index.json:6:    "repository-url" : "https://github.com/sirthias/parboiled2",
+metadata/org.parboiled/parboiled_3/index.json:7:    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+metadata/org.parboiled/parboiled_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/$version$/shrinkwrap-descriptors-api-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/descriptors",
+metadata/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-parent/$version$/shrinkwrap-descriptors-parent-$version$-source-release.zip",
+metadata/org.jboss.shrinkwrap.descriptors/shrinkwrap-descriptors-api-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/$version$/shrinkwrap-descriptors-api-base-$version$-javadoc.jar",
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-generic-base_3/$version$/pureconfig-generic-base_3-$version$-sources.jar",
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:6:    "repository-url" : "https://github.com/pureconfig/pureconfig",
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:7:    "test-code-url" : "https://github.com/pureconfig/pureconfig/tree/v$version$/modules/generic-base/src/test",
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-generic-base_3/$version$/pureconfig-generic-base_3-$version$-javadoc.jar",
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:10:    "language" : {
+metadata/org.apache.velocity/velocity-engine-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/$version$/velocity-engine-core-$version$-sources.jar",
+metadata/org.apache.velocity/velocity-engine-core/index.json:6:    "repository-url" : "https://github.com/apache/velocity-engine",
+metadata/org.apache.velocity/velocity-engine-core/index.json:7:    "test-code-url" : "https://github.com/apache/velocity-engine/tree/$version$/velocity-engine-core/src/test",
+metadata/org.apache.velocity/velocity-engine-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/velocity/velocity-engine-core/$version$/velocity-engine-core-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:9:    "repository-url": "https://github.com/bcgit/bc-java",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/commons-net/commons-net/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-net/commons-net/$version$/commons-net-$version$-sources.jar",
+metadata/commons-net/commons-net/index.json:6:    "repository-url" : "https://github.com/apache/commons-net",
+metadata/commons-net/commons-net/index.json:7:    "test-code-url" : "https://github.com/apache/commons-net/tree/NET_3_1/src/test",
+metadata/commons-net/commons-net/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-net/commons-net/$version$/commons-net-$version$-javadoc.jar",
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-core_3/$version$/pureconfig-core_3-$version$-sources.jar",
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:6:    "repository-url" : "https://github.com/pureconfig/pureconfig",
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:7:    "test-code-url" : "https://github.com/pureconfig/pureconfig/tree/v$version$/tests/src/test",
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-core_3/$version$/pureconfig-core_3-$version$-javadoc.jar",
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/clikt",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/org.apache.commons/commons-exec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:6:    "repository-url" : "https://github.com/apache/commons-exec",
+metadata/org.apache.commons/commons-exec/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-exec/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:22:    "repository-url" : "https://github.com/apache/commons-exec",
+metadata/org.apache.commons/commons-exec/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-javadoc.jar",
+metadata/io.reactivex.rxjava3/rxjava/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/reactivex/rxjava3/rxjava/$version$/rxjava-$version$-sources.jar",
+metadata/io.reactivex.rxjava3/rxjava/index.json:6:    "repository-url" : "https://github.com/ReactiveX/RxJava",
+metadata/io.reactivex.rxjava3/rxjava/index.json:7:    "test-code-url" : "https://github.com/ReactiveX/RxJava/tree/v$version$/src/test",
+metadata/io.reactivex.rxjava3/rxjava/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/reactivex/rxjava3/rxjava/$version$/rxjava-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:6:    "repository-url" : "https://github.com/JetBrains/Exposed",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/tree/$version$/docs/api/exposed-jdbc",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/jline/jline/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/jline/jline/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/jline/jline/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-tests.jar",
+metadata/jline/jline/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-javadoc.jar",
+metadata/jline/jline/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/jline/jline/index.json:22:    "repository-url" : "https://github.com/jline/jline2",
+metadata/jline/jline/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-tests.jar",
+metadata/jline/jline/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/jline/jline/$version$/jline-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/dev.langchain4j/langchain4j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/$version$/langchain4j-$version$-sources.jar",
+metadata/dev.langchain4j/langchain4j/index.json:6:    "repository-url" : "https://github.com/langchain4j/langchain4j",
+metadata/dev.langchain4j/langchain4j/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/$version$/langchain4j-$version$-test-sources.jar",
+metadata/dev.langchain4j/langchain4j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/$version$/langchain4j-$version$-javadoc.jar",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/pureconfig/pureconfig-generic-scala3_3/$version$/pureconfig-generic-scala3_3-$version$-sources.jar",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:6:    "repository-url" : "https://github.com/pureconfig/pureconfig",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:7:    "test-code-url" : "https://github.com/pureconfig/pureconfig/tree/v$version$/modules/generic-scala3/src/test",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/pureconfig/pureconfig-generic-scala3_3/$version$/pureconfig-generic-scala3_3-$version$-javadoc.jar",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/app/cash/sqldelight/coroutines-extensions-jvm/$version$/coroutines-extensions-jvm-$version$-sources.jar",
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:6:    "repository-url" : "https://github.com/sqldelight/sqldelight",
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:7:    "test-code-url" : "https://github.com/sqldelight/sqldelight/tree/$version$/extensions/coroutines-extensions/src/jvmTest",
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/app/cash/sqldelight/coroutines-extensions-jvm/$version$/coroutines-extensions-jvm-$version$-javadoc.jar",
+metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:10:    "language" : {
+metadata/com.hazelcast/hazelcast/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$version$/hazelcast-$version$-sources.jar",
+metadata/com.hazelcast/hazelcast/index.json:8:    "repository-url": "https://github.com/hazelcast/hazelcast",
+metadata/com.hazelcast/hazelcast/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$version$/hazelcast-$version$-tests.jar",
+metadata/com.hazelcast/hazelcast/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$version$/hazelcast-$version$-javadoc.jar",
+
+web search: 
+web search: Maven commons-httpclient commons-httpclient 3.0 sources javadoc tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/commons-httpclient/commons-httpclient/3.0/
+codex
+The Maven Central entry exists and only publishes the main JAR, POM, and sources JAR for `3.0`; I’m checking the Apache source history now so the test URL can target the exact release tag instead of a moving branch.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>commons-httpclient</groupId>
+  <artifactId>commons-httpclient</artifactId>
+  <name>HttpClient</name>
+  <version>3.0</version>
+  <description>The HttpClient  component supports the client-side of RFC 1945 (HTTP/1.0)  and RFC 2616 (HTTP/1.1) , several related specifications (RFC 2109 (Cookies) , RFC 2617 (HTTP Authentication) , etc.), and provides a framework by which new request types (methods) or HTTP extensions can be created easily.</description>
+  <url>http://jakarta.apache.org/commons/httpclient/</url>
+  <issueManagement>
+    <url>http://issues.apache.org/bugzilla/buglist.cgi?query_format=advanced&amp;short_desc_type=allwordssubstr&amp;short_desc=&amp;product=HttpClient&amp;component=Commons+HttpClient&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;keywords_type=anywords&amp;keywords=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=NEEDINFO&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailreporter2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=</url>
+  </issueManagement>
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>httpclient-dev@jakarta.apache.org</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <inceptionYear>2001</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>HttpClient Developer List</name>
+      <subscribe>httpclient-dev-subscribe@jakarta.apache.org</subscribe>
+      <unsubscribe>httpclient-dev-unsubscribe@jakarta.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/eyebrowse/SummarizeList?listId=281</archive>
+    </mailingList>
+    <mailingList>
+      <name>HttpClient User List</name>
+      <subscribe>httpclient-user-subscribe@jakarta.apache.org</subscribe>
+      <unsubscribe>httpclient-user-unsubscribe@jakarta.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/eyebrowse/SummarizeList?listId=280</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>mbecke</id>
+      <name>Michael Becke</name>
+      <email>mbecke -at- apache.org</email>
+      <organization></organization>
+      <roles>
+        <role>Release Prime</role>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jsdever</id>
+      <name>Jeff Dever</name>
+      <email>jsdever -at- apache.org</email>
+      <organization>Independent consultant</organization>
+      <roles>
+        <role>2.0 Release Prime</role>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>dion</id>
+      <name>dIon Gillard</name>
+      <email>dion -at- apache.org</email>
+      <organization>Multitask Consulting</organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>oglueck</id>
+      <name>Ortwin Glueck</name>
+      <email>oglueck -at- apache.org</email>
+      <url>http://www.odi.ch/</url>
+      <organization></organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jericho</id>
+      <name>Sung-Gu</name>
+      <email>jericho -at- apache.org</email>
+      <organization></organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>olegk</id>
+      <name>Oleg Kalnichevski</name>
+      <email>olegk -at- apache.org</email>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>sullis</id>
+      <name>Sean C. Sullivan</name>
+      <email>sullis -at- apache.org</email>
+      <organization>Independent consultant</organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>adrian</id>
+      <name>Adrian Sutton</name>
+      <email>adrian.sutton -at- ephox.com</email>
+      <organization>Intencha</organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>rwaldhoff</id>
+      <name>Rodney Waldhoff</name>
+      <email>rwaldhoff -at- apache</email>
+      <organization>Britannica</organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Armando Anton</name>
+      <email>armando.anton -at- newknow.com</email>
+    </contributor>
+    <contributor>
+      <name>Ola Berg</name>
+      <email></email>
+    </contributor>
+    <contributor>
+      <name>Sam Berlin</name>
+      <email>sberlin -at- limepeer.com</email>
+    </contributor>
+    <contributor>
+      <name>Mike Bowler</name>
+      <email></email>
+    </contributor>
+    <contributor>
+      <name>Samit Jain</name>
+      <email>jain.samit -at- gmail.com</email>
+    </contributor>
+    <contributor>
+      <name>Eric Johnson</name>
+      <email>eric -at- tibco.com</email>
+    </contributor>
+    <contributor>
+      <name>Christian Kohlschuetter</name>
+      <email>ck -at- newsclub.de</email>
+    </contributor>
+    <contributor>
+      <name>Ryan Lubke</name>
+      <email>Ryan.Lubke -at- Sun.COM</email>
+    </contributor>
+    <contributor>
+      <name>Sam Maloney</name>
+      <email>sam.maloney -at- filogix.com</email>
+    </contributor>
+    <contributor>
+      <name>Rob Di Marco</name>
+      <email>rdimarco -at- hmsonline.com</email>
+    </contributor>
+    <contributor>
+      <name>Juergen Pill</name>
+      <email>Juergen.Pill -at- softwareag.com</email>
+    </contributor>
+    <contributor>
+      <name>Mohammad Rezaei</name>
+      <email>mohammad.rezaei -at- gs.com</email>
+    </contributor>
+    <contributor>
+      <name>Roland Weber</name>
+      <email>ROLWEBER -at- de.ibm.com</email>
+    </contributor>
+    <contributor>
+      <name>Laura Werner</name>
+      <email>laura -at- lwerner.org</email>
+    </contributor>
+  </contributors>
+  <licenses>
+    <license>
+      <name>Apache License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/jakarta/commons/proper/${pom.artifactId.substring(8)}/trunk</connection>
+    <url>http://svn.apache.org/repos/asf/jakarta/commons/proper/${pom.artifactId.substring(8)}/trunk</url>
+  </scm>
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>http://jakarta.apache.org/</url>
+  </organization>
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>src/test</testSourceDirectory>
+    <testResources>
+      <testResource>
+        <directory>src/test</directory>
+        <includes>
+          <include>**/*.keystore</include>
+        </includes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>surefire</artifactId>
+        <configuration>
+          <includes>
+            <include>**/TestAll.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/httpcomponents-client.git | rg '3[._-]0|HTTPCLIENT|httpclient'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-sources.jar && curl -fsSI https://repo1.maven.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-test-sources.jar && curl -fsSI https://repo1.maven.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-tests.jar && curl -fsSI https://repo1.maven.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-javadoc.jar' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ exited 22 in 344ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 13 May 2026 11:20:47 GMT
+content-type: text/html
+cf-ray: 9fb146a16a60ee9b-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 1 in 369ms:
+web search: 
+web search: GitHub apache commons-httpclient repository
+web search: 
+web search: 
+web search: 
+web search: site:svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags HTTPCLIENT_3_0
+web search: 
+web search: https://svn.apache.org/repos/asf/httpcomponents/
+web search: 
+web search: https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/
+web search: 
+web search: https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/
+web search: 
+web search: https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/
+exec
+/usr/bin/bash -lc 'for f in commons-httpclient-3.0-sources.jar commons-httpclient-3.0-test-sources.jar commons-httpclient-3.0-tests.jar commons-httpclient-3.0-javadoc.jar; do url="https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/3.0/$f"; code=$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 768ms:
+200 https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-sources.jar
+404 https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-test-sources.jar
+404 https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-tests.jar
+404 https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-javadoc.jar
+
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/apache/httpcomponents-client.git | tail -80' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 374ms:
+ebdc150906de49bddb38f370e840d876a64ea1b2	refs/tags/rel/v5.0-beta2
+83f9ab8d1dbed37818b45a286996779930d2a2ae	refs/tags/rel/v5.0-beta2^{}
+1ed318f331c1258d9328b4e33b8044adf9d806d5	refs/tags/rel/v5.0-beta3
+6a0dc585708e8c8c7ec4bb186f4159c8b03359b1	refs/tags/rel/v5.0-beta3^{}
+3af1cad59cf36ee5a07e3ff2ae9f36ed96699c20	refs/tags/rel/v5.0-beta4
+3fac3a4435189965fc098ad28e12a379fc98ba75	refs/tags/rel/v5.0-beta4^{}
+0abaa91f85dea69a49e0ee45f24d965bf4e07c50	refs/tags/rel/v5.0-beta5
+77ed93e30cdd63fa129842bf326fda29cc9df3a8	refs/tags/rel/v5.0-beta5^{}
+cadcbefb3f2a2730f73fb1c78d2511b27cf25429	refs/tags/rel/v5.0-beta6
+a3f24e978b3a93ac72f7c60b2a349120002401b6	refs/tags/rel/v5.0-beta6^{}
+47f6416b9c5dd24f8ded4cc54262f20b4fad25e1	refs/tags/rel/v5.0-beta7
+17d0d0a42d69c940f97b3d3006431905137ea32d	refs/tags/rel/v5.0-beta7^{}
+6f569e77b4bb9a7070816ac281e0018ee462abd9	refs/tags/rel/v5.0.1
+44e464ac200a15da3b6a73ddc39e48d12cdaf865	refs/tags/rel/v5.0.1^{}
+0f5ef246ef96e5b437dbd51e9f334f1ca6c5393f	refs/tags/rel/v5.0.2
+09525137f826e89a911992b40d0490f136f7f0d5	refs/tags/rel/v5.0.2^{}
+c988a27db25659801a72cdd7a8d70eb4ec89726d	refs/tags/rel/v5.0.3
+3734aaa038a58c17af638e9fa29019cacb22e82c	refs/tags/rel/v5.0.3^{}
+dcd21f658451ff4c9669b22f39e22ca8e08c96a5	refs/tags/rel/v5.0.4
+9c233a85a2489c622b267d3f2d9a984fed2b1d2f	refs/tags/rel/v5.0.4^{}
+1c7b96e0eb43f84e600d43dc03c9e6af7528fd3b	refs/tags/rel/v5.1
+d7502b1e94f4ad9627c529a999c4453e4c85230c	refs/tags/rel/v5.1^{}
+3c94c4afe22d353552cbfb0bbb6d9b148d695433	refs/tags/rel/v5.1-beta1
+a3472881ec53b87594dc0dd5552d90b9fe4b13c8	refs/tags/rel/v5.1-beta1^{}
+e8fadc12ad0b95e13fae4c0d01b439c6a9123ad6	refs/tags/rel/v5.1.1
+56812c5562e174975ffb5f0431ffc112b29f85dc	refs/tags/rel/v5.1.1^{}
+19bcf6a499e54e1554f4c35b3da8535fd0bfb6c5	refs/tags/rel/v5.1.2
+67fe69e17e5a4aab8db51ed74cbe8b4c0656e64e	refs/tags/rel/v5.1.2^{}
+2b3a4749a2f02d521e1432564c40bf7a10017f5c	refs/tags/rel/v5.1.3
+64d662d831408a1c3f82707d97749b0e5bdfa00e	refs/tags/rel/v5.1.3^{}
+6c2c20426f69b294ce4c44b5af5b7e63dc64dc2c	refs/tags/rel/v5.1.4
+f67e99b50b60460ae3d7f30a64293df66afa1db3	refs/tags/rel/v5.1.4^{}
+0b6df1d4d4eafbb21235d0c9b316eaf2baef427e	refs/tags/rel/v5.2
+4ababc56e49a2313c386966d453de30eea6aaed9	refs/tags/rel/v5.2^{}
+f12f18101cde71e34efdf1b7ce22c66263168ae8	refs/tags/rel/v5.2-alpha1
+0e5a206569d88ea0195795937f46914d7af5960a	refs/tags/rel/v5.2-alpha1^{}
+00905cb1d914a680effc7680fc191a5c198fd21d	refs/tags/rel/v5.2-beta1
+2083056cfe191373e1d1addb2931881d560fb764	refs/tags/rel/v5.2-beta1^{}
+50a2bfa6f5cbee1f3ecd4167dcfdbeb77bcb080d	refs/tags/rel/v5.2.1
+d8f702fb4d44c746bb0edf00643aa7139cb8bdf7	refs/tags/rel/v5.2.1^{}
+98aefdeedc01765ceaf6199fda2518a0282217a9	refs/tags/rel/v5.2.2
+57f69276a5586c138c173cc8773e83afcf44140a	refs/tags/rel/v5.2.2^{}
+11f24b59d2c1c8165427c1b9aff83d3c585233d7	refs/tags/rel/v5.2.3
+ff9e2cadd407ce8237e7e1a55dc707ab6120be1f	refs/tags/rel/v5.2.3^{}
+281a8a0ea1b44f4bd29d4c634db8d2ee6576d773	refs/tags/rel/v5.3
+ed0e68b2a9454a357de226738efea040abfe20ac	refs/tags/rel/v5.3^{}
+1e6cdf69e50b569021f74684210809297650b51a	refs/tags/rel/v5.3-alpha1
+0fbaf66f953f65b6a6187044e313e7677e79ff9e	refs/tags/rel/v5.3-alpha1^{}
+473d02a81cbf7fc0b6a39a6acc4c83e86ecd1607	refs/tags/rel/v5.3.1
+4f852608c3315975bf6cd72d10999626784cd9a6	refs/tags/rel/v5.3.1^{}
+859f279b5dd637ef31b094bdbcabdff5fdcb7a21	refs/tags/rel/v5.4
+84cccfe6300bca6b37abd05af527df08a781b677	refs/tags/rel/v5.4^{}
+25585175d6f201dcf6aa143370d53a5b9c8d744f	refs/tags/rel/v5.4-alpha1
+33646f7735ab3f44d37072c4dc8c0175c6f5eadb	refs/tags/rel/v5.4-alpha1^{}
+e12de16394132614fd0e4c8848fefce5793b11f2	refs/tags/rel/v5.4-alpha2
+e2d88700dba637209ffc97b31fb6f3d0744d0e8d	refs/tags/rel/v5.4-alpha2^{}
+7fb7ea42fcfcc38938216118f3be5ce6f7acb999	refs/tags/rel/v5.4-beta1
+f081a7d364cf3909aef6788eeeef3278478e8b31	refs/tags/rel/v5.4-beta1^{}
+b226ec788904fd012e9b98cafc965f8e21f438ab	refs/tags/rel/v5.4.1
+9df5acdb37f3502d85b8cc8a9cf4c2d16448ee77	refs/tags/rel/v5.4.1^{}
+ac5bf920e4fa6fcda5b8be4a3a32c2df5ebe7512	refs/tags/rel/v5.4.2
+34f1b029d31f28baa96cea388a88c78104a40edb	refs/tags/rel/v5.4.2^{}
+b1d58bcc4ca4f941fb3abff2d0cc3bc27cdd1ff1	refs/tags/rel/v5.4.3
+48236f5f1a7b78f4446d2c00c4c25c598148f57b	refs/tags/rel/v5.4.3^{}
+f07cb5c2a5f7d13a4018888fe8506204b3269b90	refs/tags/rel/v5.4.4
+ffe4a05f4faf3706a41ff660bcb3474c6b5101a3	refs/tags/rel/v5.4.4^{}
+d7385831ac46400150854726ef8f321080a81e6a	refs/tags/rel/v5.5
+b42e73cc93667f93def29479706f12ff5141a9d9	refs/tags/rel/v5.5^{}
+97fc55310f7ce8ef084ec73b93b66861d2aff68f	refs/tags/rel/v5.5-alpha1
+0a53ee3bda146244826a2fdefe186ff97e1bbf8a	refs/tags/rel/v5.5-alpha1^{}
+8c3b54cc1094a9ab2889472a31385050dcc02aae	refs/tags/rel/v5.5.1
+6a3d332ce7c9108356de47590d71a98481bfc5b3	refs/tags/rel/v5.5.1^{}
+0462985a79eb4fc6fef1010ee6129676d52e1129	refs/tags/rel/v5.5.2
+8a79eaa9ffb7e971d887cfe29e9ad3efa1068e91	refs/tags/rel/v5.5.2^{}
+0e12e7612eb457a319dae2c9c63ae94af2cfcb22	refs/tags/rel/v5.6
+decd193d2b615fa18146a9f8392f201d736faf4b	refs/tags/rel/v5.6^{}
+ee2151b65fd73a81aa5f47522c130672f36bcd12	refs/tags/rel/v5.6-alpha1
+48e0f25b1cba6dd686e5570ebdcc0d8c5ad1997f	refs/tags/rel/v5.6-alpha1^{}
+6444e2a560713574827e236c963c12e805b8d89b	refs/tags/rel/v5.6.1
+4f86ca6a5eb528613edb892a4f7161e23dce15d7	refs/tags/rel/v5.6.1^{}
+
+exec
+/usr/bin/bash -lc 'for f in commons-httpclient-3.0-src.tar.gz commons-httpclient-3.0-src.zip; do url="https://archive.apache.org/dist/jakarta/commons/httpclient/source/$f"; code=$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+exec
+/usr/bin/bash -lc "for url in \\
+'https://archive.apache.org/dist/jakarta/commons/httpclient/binary/commons-httpclient-3.0.zip' \\
+'https://archive.apache.org/dist/httpcomponents/commons-httpclient/source/commons-httpclient-3.0-src.zip' \\
+'https://archive.apache.org/dist/commons/httpclient/source/commons-httpclient-3.0-src.zip' \\
+'https://archive.apache.org/dist/httpcomponents/httpclient/source/commons-httpclient-3.0-src.zip'; do code="'$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+exec
+/usr/bin/bash -lc "for url in \\
+'https://hc.apache.org/httpclient-3.x/' \\
+'https://hc.apache.org/httpclient-legacy/' \\
+'https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/' \\
+'https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/site/' \\
+'https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/' \\
+'https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/java/'; do code="'$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 529ms:
+404 https://archive.apache.org/dist/jakarta/commons/httpclient/source/commons-httpclient-3.0-src.tar.gz
+404 https://archive.apache.org/dist/jakarta/commons/httpclient/source/commons-httpclient-3.0-src.zip
+
+ succeeded in 813ms:
+200 https://hc.apache.org/httpclient-legacy/
+200 https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/
+404 https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/site/
+200 https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/
+200 https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/java/
+
+ succeeded in 1015ms:
+404 https://archive.apache.org/dist/jakarta/commons/httpclient/binary/commons-httpclient-3.0.zip
+404 https://archive.apache.org/dist/httpcomponents/commons-httpclient/source/commons-httpclient-3.0-src.zip
+404 https://archive.apache.org/dist/commons/httpclient/source/commons-httpclient-3.0-src.zip
+404 https://archive.apache.org/dist/httpcomponents/httpclient/source/commons-httpclient-3.0-src.zip
+
+web search: 
+web search: 
+web search: 
+web search: commons-httpclient commons-httpclient 3.0 Maven Central sources jar
+web search: 
+web search: "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test"
+web search: 
+web search: svn.apache.org repos asf httpcomponents oac.hc3x tags HTTPCLIENT_3_0
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/ | sed -n '1,100p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0.jar -o /tmp/commons-httpclient-3.0.jar && jar tf /tmp/commons-httpclient-3.0.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 117ms:
+<html><head><title>asf - Revision 1934160: /httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs</title></head>
+<body>
+ <h2>asf - Revision 1934160: /httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="authentication.xml">authentication.xml</a></li>
+  <li><a href="charencodings.xml">charencodings.xml</a></li>
+  <li><a href="cookies.xml">cookies.xml</a></li>
+  <li><a href="developerguide.xml">developerguide.xml</a></li>
+  <li><a href="downloads.xml">downloads.xml</a></li>
+  <li><a href="exception-handling.xml">exception-handling.xml</a></li>
+  <li><a href="features.xml">features.xml</a></li>
+  <li><a href="images/">images/</a></li>
+  <li><a href="index.xml">index.xml</a></li>
+  <li><a href="logging.xml">logging.xml</a></li>
+  <li><a href="methods/">methods/</a></li>
+  <li><a href="methods.xml">methods.xml</a></li>
+  <li><a href="navigation.xml">navigation.xml</a></li>
+  <li><a href="news.xml">news.xml</a></li>
+  <li><a href="overview.xml">overview.xml</a></li>
+  <li><a href="performance.xml">performance.xml</a></li>
+  <li><a href="preference-api.xml">preference-api.xml</a></li>
+  <li><a href="proposal.xml">proposal.xml</a></li>
+  <li><a href="redirects.xml">redirects.xml</a></li>
+  <li><a href="releases.xml">releases.xml</a></li>
+  <li><a href="sslguide.xml">sslguide.xml</a></li>
+  <li><a href="status.xml">status.xml</a></li>
+  <li><a href="stylesheets/">stylesheets/</a></li>
+  <li><a href="threading.xml">threading.xml</a></li>
+  <li><a href="troubleshooting.xml">troubleshooting.xml</a></li>
+  <li><a href="tutorial.xml">tutorial.xml</a></li>
+  <li><a href="userguide.xml">userguide.xml</a></li>
+ </ul>
+</body></html>
+ succeeded in 121ms:
+<html><head><title>asf - Revision 1934160: /httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test</title></head>
+<body>
+ <h2>asf - Revision 1934160: /httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="org/">org/</a></li>
+ </ul>
+</body></html>
+ succeeded in 124ms:
+<html><head><title>asf - Revision 1934160: /httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0</title></head>
+<body>
+ <h2>asf - Revision 1934160: /httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="API_CHANGES_3_0.txt">API_CHANGES_3_0.txt</a></li>
+  <li><a href="LICENSE.txt">LICENSE.txt</a></li>
+  <li><a href="NOTICE.txt">NOTICE.txt</a></li>
+  <li><a href="PROPOSAL.html">PROPOSAL.html</a></li>
+  <li><a href="README.txt">README.txt</a></li>
+  <li><a href="RELEASE_PLAN_1_0.txt">RELEASE_PLAN_1_0.txt</a></li>
+  <li><a href="RELEASE_PLAN_2_0.txt">RELEASE_PLAN_2_0.txt</a></li>
+  <li><a href="RELEASE_PLAN_3_0.txt">RELEASE_PLAN_3_0.txt</a></li>
+  <li><a href="STATUS.html">STATUS.html</a></li>
+  <li><a href="build.properties.sample">build.properties.sample</a></li>
+  <li><a href="build.xml">build.xml</a></li>
+  <li><a href="checkstyle.properties">checkstyle.properties</a></li>
+  <li><a href="checkstyle.xml.properties">checkstyle.xml.properties</a></li>
+  <li><a href="docs/">docs/</a></li>
+  <li><a href="lib/">lib/</a></li>
+  <li><a href="license.regexp">license.regexp</a></li>
+  <li><a href="maven.xml">maven.xml</a></li>
+  <li><a href="project.properties">project.properties</a></li>
+  <li><a href="project.xml">project.xml</a></li>
+  <li><a href="release_notes.txt">release_notes.txt</a></li>
+  <li><a href="src/">src/</a></li>
+  <li><a href="xdocs/">xdocs/</a></li>
+ </ul>
+</body></html>
+ succeeded in 183ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/commons/
+org/apache/commons/httpclient/
+org/apache/commons/httpclient/auth/
+org/apache/commons/httpclient/cookie/
+org/apache/commons/httpclient/methods/
+org/apache/commons/httpclient/methods/multipart/
+org/apache/commons/httpclient/params/
+org/apache/commons/httpclient/protocol/
+org/apache/commons/httpclient/util/
+org/apache/commons/httpclient/auth/AuthChallengeException.class
+org/apache/commons/httpclient/auth/AuthChallengeParser.class
+org/apache/commons/httpclient/auth/AuthChallengeProcessor.class
+org/apache/commons/httpclient/auth/AuthenticationException.class
+org/apache/commons/httpclient/auth/AuthPolicy.class
+org/apache/commons/httpclient/auth/AuthScheme.class
+org/apache/commons/httpclient/auth/AuthSchemeBase.class
+org/apache/commons/httpclient/auth/AuthScope.class
+org/apache/commons/httpclient/auth/AuthState.class
+org/apache/commons/httpclient/auth/BasicScheme.class
+org/apache/commons/httpclient/auth/CredentialsNotAvailableException.class
+org/apache/commons/httpclient/auth/CredentialsProvider.class
+org/apache/commons/httpclient/auth/DigestScheme.class
+org/apache/commons/httpclient/auth/HttpAuthenticator.class
+org/apache/commons/httpclient/auth/HttpAuthRealm.class
+org/apache/commons/httpclient/auth/InvalidCredentialsException.class
+org/apache/commons/httpclient/auth/MalformedChallengeException.class
+org/apache/commons/httpclient/auth/NTLM.class
+org/apache/commons/httpclient/auth/NTLMScheme.class
+org/apache/commons/httpclient/auth/RFC2617Scheme.class
+org/apache/commons/httpclient/AutoCloseInputStream.class
+org/apache/commons/httpclient/ChunkedInputStream.class
+org/apache/commons/httpclient/ChunkedOutputStream.class
+org/apache/commons/httpclient/CircularRedirectException.class
+org/apache/commons/httpclient/ConnectionPoolTimeoutException.class
+org/apache/commons/httpclient/ConnectMethod.class
+org/apache/commons/httpclient/ConnectTimeoutException.class
+org/apache/commons/httpclient/ContentLengthInputStream.class
+org/apache/commons/httpclient/cookie/CookiePolicy.class
+org/apache/commons/httpclient/cookie/CookieSpec.class
+org/apache/commons/httpclient/cookie/CookieSpecBase.class
+org/apache/commons/httpclient/cookie/IgnoreCookiesSpec.class
+org/apache/commons/httpclient/cookie/MalformedCookieException.class
+org/apache/commons/httpclient/cookie/NetscapeDraftSpec.class
+org/apache/commons/httpclient/cookie/RFC2109Spec.class
+org/apache/commons/httpclient/Cookie.class
+org/apache/commons/httpclient/Credentials.class
+org/apache/commons/httpclient/DefaultHttpMethodRetryHandler.class
+org/apache/commons/httpclient/DefaultMethodRetryHandler.class
+org/apache/commons/httpclient/Header.class
+org/apache/commons/httpclient/HeaderElement.class
+org/apache/commons/httpclient/HeaderGroup.class
+org/apache/commons/httpclient/HostConfiguration.class
+org/apache/commons/httpclient/HttpClient.class
+org/apache/commons/httpclient/HttpClientError.class
+org/apache/commons/httpclient/HttpConnection.class
+org/apache/commons/httpclient/HttpConnectionManager.class
+org/apache/commons/httpclient/HttpConstants.class
+org/apache/commons/httpclient/HttpException.class
+org/apache/commons/httpclient/HttpHost.class
+org/apache/commons/httpclient/HttpMethod.class
+org/apache/commons/httpclient/HttpMethodBase$1.class
+org/apache/commons/httpclient/HttpMethodBase.class
+org/apache/commons/httpclient/HttpMethodDirector.class
+org/apache/commons/httpclient/HttpMethodRetryHandler.class
+org/apache/commons/httpclient/HttpParser.class
+org/apache/commons/httpclient/HttpRecoverableException.class
+org/apache/commons/httpclient/HttpState.class
+org/apache/commons/httpclient/HttpStatus.class
+org/apache/commons/httpclient/HttpsURL.class
+org/apache/commons/httpclient/HttpURL.class
+org/apache/commons/httpclient/HttpVersion.class
+org/apache/commons/httpclient/MethodRetryHandler.class
+org/apache/commons/httpclient/methods/ByteArrayRequestEntity.class
+org/apache/commons/httpclient/methods/DeleteMethod.class
+org/apache/commons/httpclient/methods/EntityEnclosingMethod.class
+org/apache/commons/httpclient/methods/ExpectContinueMethod.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/docs/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 116ms:
+<html><head><title>asf - Revision 1934160: /httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/docs</title></head>
+<body>
+ <h2>asf - Revision 1934160: /httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/docs</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0.pom | rg -n '<description>|<url>|<scm>|<sourceDirectory>|<testSourceDirectory>|<artifactId>|<version>'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 0ms:
+4:  <artifactId>commons-httpclient</artifactId>
+6:  <version>3.0</version>
+7:  <description>The HttpClient  component supports the client-side of RFC 1945 (HTTP/1.0)  and RFC 2616 (HTTP/1.1) , several related specifications (RFC 2109 (Cookies) , RFC 2617 (HTTP Authentication) , etc.), and provides a framework by which new request types (methods) or HTTP extensions can be created easily.</description>
+8:  <url>http://jakarta.apache.org/commons/httpclient/</url>
+10:    <url>http://issues.apache.org/bugzilla/buglist.cgi?query_format=advanced&amp;short_desc_type=allwordssubstr&amp;short_desc=&amp;product=HttpClient&amp;component=Commons+HttpClient&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;keywords_type=anywords&amp;keywords=&amp;bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;bug_status=NEEDINFO&amp;emailassigned_to1=1&amp;emailtype1=substring&amp;email1=&amp;emailreporter2=1&amp;emailtype2=substring&amp;email2=&amp;bugidtype=include&amp;bug_id=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;cmdtype=doit&amp;order=Reuse+same+sort+as+last+time&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=</url>
+70:      <url>http://www.odi.ch/</url>
+182:      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+185:  <scm>
+187:    <url>http://svn.apache.org/repos/asf/jakarta/commons/proper/${pom.artifactId.substring(8)}/trunk</url>
+191:    <url>http://jakarta.apache.org/</url>
+194:    <sourceDirectory>src/java</sourceDirectory>
+195:    <testSourceDirectory>src/test</testSourceDirectory>
+206:        <artifactId>surefire</artifactId>
+218:      <artifactId>junit</artifactId>
+219:      <version>3.8.1</version>
+223:      <artifactId>commons-logging</artifactId>
+224:      <version>1.0.3</version>
+228:      <artifactId>commons-codec</artifactId>
+229:      <version>1.2</version>
+236:      <url>scp://people.apache.org//www/jakarta.apache.org/commons/httpclient/</url>
+
+exec
+/usr/bin/bash -lc "for url in \\
+'https://svn.apache.org/repos/asf/jakarta/commons/proper/httpclient/' \\
+'https://svn.apache.org/repos/asf/jakarta/commons/proper/httpclient/tags/HTTPCLIENT_3_0/' \\
+'https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/' \\
+'https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/trunk/'; do code="'$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 595ms:
+404 https://svn.apache.org/repos/asf/jakarta/commons/proper/httpclient/
+404 https://svn.apache.org/repos/asf/jakarta/commons/proper/httpclient/tags/HTTPCLIENT_3_0/
+200 https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/
+200 https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/trunk/
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"\\s*:\\s*\"https://.*[0-9]_[0-9]|\"documentation-url\"\\s*:\\s*\"https://.*[0-9]_[0-9]|\"source-code-url\"\\s*:\\s*\"https://.*[0-9]_[0-9]' metadata build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 0ms:
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-javadoc.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:8:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_6_1/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:23:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_5/org.eclipse.jdt.core.tests.compiler/src",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:38:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_4_2/org.eclipse.jdt.core.tests.compiler/src",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-math/index.json:7:    "test-code-url" : "https://github.com/apache/commons-math/tree/MATH_2_1/src/test",
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/$version$/magnolia_3-$version$-sources.jar",
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/magnolia1_3/magnolia_3/$version$/magnolia_3-$version$-javadoc.jar",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/pureconfig/pureconfig-generic-scala3_3/$version$/pureconfig-generic-scala3_3-$version$-sources.jar",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/pureconfig/pureconfig-generic-scala3_3/$version$/pureconfig-generic-scala3_3-$version$-javadoc.jar",
+metadata/dom4j/dom4j/index.json:7:    "test-code-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/src/test",
+metadata/dom4j/dom4j/index.json:8:    "documentation-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/xdocs",
+metadata/commons-logging/commons-logging-api/index.json:5:    "source-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/java",
+metadata/commons-logging/commons-logging-api/index.json:7:    "test-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/test",
+metadata/commons-logging/commons-logging-api/index.json:8:    "documentation-url" : "https://github.com/apache/commons-logging/blob/LOGGING_1_1_0/xdocs/guide.xml",
+metadata/commons-net/commons-net/index.json:7:    "test-code-url" : "https://github.com/apache/commons-net/tree/NET_3_1/src/test",
+metadata/xml-apis/xml-apis/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+metadata/org.ow2.asm/asm-debug-all/index.json:7:    "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_5_0_1/test",
+metadata/org.ow2.asm/asm-commons/index.json:7:    "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_2/asm-commons/src/test/java",
+metadata/org.ow2.asm/asm-tree/index.json:7:    "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_7_1/asm-tree/src/test",
+metadata/org.ow2.asm/asm-analysis/index.json:7:    "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_7_1/asm-analysis/src/test/java",
+metadata/org.ow2.asm/asm-util/index.json:7:    "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_9_7_1/asm-util/src/test",
+metadata/commons-lang/commons-lang/index.json:5:    "source-code-url" : "https://github.com/apache/commons-lang/tree/LANG_1_0/src/java",
+metadata/commons-lang/commons-lang/index.json:7:    "test-code-url" : "https://github.com/apache/commons-lang/tree/LANG_1_0/src/test",
+metadata/logkit/logkit/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LogKit_1_0_1/avalon-logkit/src/test/",
+metadata/logkit/logkit/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/LogKit_1_0_1/avalon-logkit/src/xdocs/",
+metadata/avalon-framework/avalon-framework/index.json:5:    "source-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/framework/src/",
+metadata/avalon-framework/avalon-framework/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/framework/src/test/",
+metadata/avalon-framework/avalon-framework/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/Avalon_4_1_3/avalon/src/xdocs/framework/",
+metadata/org.eclipse.jdt/ecj/index.json:8:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_26/org.eclipse.jdt.core.tests.compiler",
+metadata/org.eclipse.jdt/ecj/index.json:24:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_24/org.eclipse.jdt.core.tests.compiler",
+metadata/org.eclipse.jdt/ecj/index.json:39:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_23/org.eclipse.jdt.core.tests.compiler",
+metadata/org.eclipse.jdt/ecj/index.json:54:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_22/org.eclipse.jdt.core.tests.compiler",
+metadata/org.eclipse.jdt/ecj/index.json:69:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_21/org.eclipse.jdt.core.tests.compiler",
+metadata/org.eclipse.jdt/ecj/index.json:83:    "test-code-url" : "https://github.com/eclipse-jdt/eclipse.jdt.core/tree/R4_20/org.eclipse.jdt.core.tests.compiler",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-javadoc.jar",
+metadata/xalan/xalan/index.json:8:    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+metadata/javax.servlet/servlet-api/index.json:5:    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
+metadata/javax.servlet/servlet-api/index.json:8:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
+metadata/javax.servlet/servlet-api/index.json:25:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/servlet-$version$-fr-spec-oth-JSpec/servlet-2_4-fr-spec.pdf",
+metadata/javax.servlet/servlet-api/index.json:39:    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7840-servlet-$version$-spec-oth-JSpec/servlet-2_3-fcs-spec.pdf",
+metadata/org.aspectj/aspectjweaver/index.json:7:    "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_7/tests",
+metadata/org.aspectj/aspectjrt/index.json:7:    "test-code-url" : "https://github.com/eclipse-aspectj/aspectj/tree/V1_9_6/runtime/src/test",
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"\\s*:\\s*\"https://svn\\.apache\\.org' metadata build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 0ms:
+metadata/org.apache.directory.server/apacheds-i18n/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/apacheds",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.xbean/xbean-reflect/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+metadata/oro/oro/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/jakarta/oro/",
+metadata/javax.portlet/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+metadata/portlet-api/portlet-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/portals/portlet-spec",
+metadata/xml-apis/xml-apis/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/",
+metadata/org.apache.tomcat/annotations-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+metadata/avalon-framework/avalon-framework/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/avalon",
+metadata/org.apache.pdfbox/fontbox/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/org.apache.pdfbox/pdfbox-io/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/org.apache.pdfbox/pdfbox/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/pdfbox",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/specs/",
+metadata/org.apache.maven/maven-plugin-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-monitor/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-model/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-artifact/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/logkit/logkit/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/avalon",
+
+codex
+I found a real JVM JAR with class files, Maven Central sources, no Maven-published tests or Javadocs, and an Apache SVN release tag for the 3.0 test tree and project docs. I’m updating only the discovered artifact JSON with those fields and leaving language/not-for-native-image absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+diff --git a/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json b/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+index 68fc6a9257ca56868afc97a803460a77defeae49..fccfd4de1075837c499b94ebc24d0f7040960611
+--- a/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
++++ b/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-httpclient:commons-httpclient:3.0"
++  "coordinates" : "commons-httpclient:commons-httpclient:3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/$version$/commons-httpclient-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x",
++  "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/",
++  "description" : "Apache Commons HttpClient is a Java HTTP client library that implements client-side HTTP/1.0 and HTTP/1.1, including cookie handling, authentication, redirects, and connection management. It provides extensible request method and protocol support for applications that need to make HTTP calls from JVM code."
+ }
+
+diff --git a/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json b/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+index 68fc6a9257ca56868afc97a803460a77defeae49..fccfd4de1075837c499b94ebc24d0f7040960611
+--- a/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
++++ b/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-httpclient:commons-httpclient:3.0"
++  "coordinates" : "commons-httpclient:commons-httpclient:3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/$version$/commons-httpclient-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x",
++  "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/",
++  "description" : "Apache Commons HttpClient is a Java HTTP client library that implements client-side HTTP/1.0 and HTTP/1.1, including cookie handling, authentication, redirects, and connection management. It provides extensible request method and protocol support for applications that need to make HTTP calls from JVM code."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org commons-httpclient commons-httpclient 3.0 commons-httpclient-3.0.pom description
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 0ms:
+{
+  "coordinates": "commons-httpclient:commons-httpclient:3.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/$version$/commons-httpclient-$version$-sources.jar",
+  "repository-url": "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x",
+  "test-code-url": "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/",
+  "documentation-url": "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/",
+  "description": "Apache Commons HttpClient is a Java HTTP client library that implements client-side HTTP/1.0 and HTTP/1.1, including cookie handling, authentication, redirects, and connection management. It provides extensible request method and protocol support for applications that need to make HTTP calls from JVM code."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+'https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/3.0/commons-httpclient-3.0-sources.jar' \\
+'https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/' \\
+'https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/' \\
+'https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/'; do code="'$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+diff --git a/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json b/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+index 68fc6a9257ca56868afc97a803460a77defeae49..fccfd4de1075837c499b94ebc24d0f7040960611
+--- a/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
++++ b/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-httpclient:commons-httpclient:3.0"
++  "coordinates" : "commons-httpclient:commons-httpclient:3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/$version$/commons-httpclient-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x",
++  "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/",
++  "description" : "Apache Commons HttpClient is a Java HTTP client library that implements client-side HTTP/1.0 and HTTP/1.1, including cookie handling, authentication, redirects, and connection management. It provides extensible request method and protocol support for applications that need to make HTTP calls from JVM code."
+ }
+
+ succeeded in 595ms:
+200 https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/
+200 https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/
+200 https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/
+
+web search: 
+web search: Maven Central commons-httpclient commons-httpclient 3.0 sources jar
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'git status --short --ignored -- build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7
+diff --git a/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json b/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+index 68fc6a9257ca56868afc97a803460a77defeae49..fccfd4de1075837c499b94ebc24d0f7040960611
+--- a/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
++++ b/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-httpclient:commons-httpclient:3.0"
++  "coordinates" : "commons-httpclient:commons-httpclient:3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/$version$/commons-httpclient-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x",
++  "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/",
++  "description" : "Apache Commons HttpClient is a Java HTTP client library that implements client-side HTTP/1.0 and HTTP/1.1, including cookie handling, authentication, redirects, and connection management. It provides extensible request method and protocol support for applications that need to make HTTP calls from JVM code."
+ }
+
+ succeeded in 285ms:
+!! build/
+
+web search: 
+web search: Maven Repository commons-httpclient commons-httpclient 3.0
+web search: 
+web search: 
+web search: 
+web search: "Revision 1934160" "HTTPCLIENT_3_0/src/test"
+codex
+Updated [commons-httpclient-commons-httpclient-3.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json) with repository, source, test, documentation, and two-sentence description fields.
+
+I used Maven Central for the published `3.0` sources JAR and Apache SVN release-tag paths for tests/docs because Maven Central does not publish test sources or Javadocs for this version. ([repo1.maven.org](https://repo1.maven.org/maven2/commons-httpclient/commons-httpclient/3.0/?utm_source=openai)) Verified JSON validity and confirmed the resolved URLs return HTTP 200. No `language` or `not-for-native-image` fields were added because this is a regular JVM JAR with class files.
+diff --git a/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json b/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+index 68fc6a9257ca56868afc97a803460a77defeae49..fccfd4de1075837c499b94ebc24d0f7040960611
+--- a/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
++++ b/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-httpclient:commons-httpclient:3.0"
++  "coordinates" : "commons-httpclient:commons-httpclient:3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/commons-httpclient/commons-httpclient/$version$/commons-httpclient-$version$-sources.jar",
++  "repository-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x",
++  "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/src/test/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/oac.hc3x/tags/HTTPCLIENT_3_0/xdocs/",
++  "description" : "Apache Commons HttpClient is a Java HTTP client library that implements client-side HTTP/1.0 and HTTP/1.1, including cookie handling, authentication, redirects, and connection management. It provides extensible request method and protocol support for applications that need to make HTTP calls from JVM code."
+ }
+
+tokens used
+102,103
+Updated [commons-httpclient-commons-httpclient-3.0.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7/build/discovered-artifact-metadata/commons-httpclient-commons-httpclient-3.0.json) with repository, source, test, documentation, and two-sentence description fields.
+
+I used Maven Central for the published `3.0` sources JAR and Apache SVN release-tag paths for tests/docs because Maven Central does not publish test sources or Javadocs for this version. ([repo1.maven.org](https://repo1.maven.org/maven2/commons-httpclient/commons-httpclient/3.0/?utm_source=openai)) Verified JSON validity and confirmed the resolved URLs return HTTP 200. No `language` or `not-for-native-image` fields were added because this is a regular JVM JAR with class files.
+Ran agent for commons-httpclient:commons-httpclient:3.0 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7/build/agent-artifact-discovery-logs/commons-httpclient-commons-httpclient-3.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2304-2deba2b7/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 7s
+9 actionable tasks: 9 executed
