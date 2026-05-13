@@ -182,6 +182,45 @@ public class Sisu_guiceTest {
                 .isEqualTo("created by provider");
     }
 
+    @Test
+    void childInjectorsInheritParentBindingsAndKeepChildBindingsIsolated() {
+        SharedConfiguration sharedConfiguration = new SharedConfiguration("main");
+        Injector parent = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(SharedConfiguration.class).toInstance(sharedConfiguration);
+                bindConstant().annotatedWith(Names.named("tenant")).to("parent");
+            }
+        });
+        Injector dailyChild = parent.createChildInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(ChildReport.class).toInstance(new ChildReport("daily"));
+            }
+        });
+        Injector weeklyChild = parent.createChildInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(ChildReport.class).toInstance(new ChildReport("weekly"));
+            }
+        });
+
+        ChildDashboard dailyDashboard = dailyChild.getInstance(ChildDashboard.class);
+        ChildDashboard weeklyDashboard = weeklyChild.getInstance(ChildDashboard.class);
+
+        assertThat(dailyChild.getParent())
+                .isSameAs(parent);
+        assertThat(dailyChild.getInstance(SharedConfiguration.class))
+                .isSameAs(sharedConfiguration)
+                .isSameAs(parent.getInstance(SharedConfiguration.class));
+        assertThat(dailyDashboard.summary())
+                .isEqualTo("main/parent/daily");
+        assertThat(weeklyDashboard.summary())
+                .isEqualTo("main/parent/weekly");
+        assertThatThrownBy(() -> parent.getInstance(ChildDashboard.class))
+                .isInstanceOf(ConfigurationException.class);
+    }
+
     public static final class ApplicationModule extends AbstractModule {
         @Override
         protected void configure() {
@@ -368,6 +407,48 @@ public class Sisu_guiceTest {
 
         public String id() {
             return id;
+        }
+    }
+
+    public static final class SharedConfiguration {
+        private final String profile;
+
+        public SharedConfiguration(String profile) {
+            this.profile = profile;
+        }
+
+        public String profile() {
+            return profile;
+        }
+    }
+
+    public static final class ChildReport {
+        private final String cadence;
+
+        public ChildReport(String cadence) {
+            this.cadence = cadence;
+        }
+
+        public String cadence() {
+            return cadence;
+        }
+    }
+
+    public static final class ChildDashboard {
+        private final SharedConfiguration sharedConfiguration;
+        private final String tenant;
+        private final ChildReport childReport;
+
+        @Inject
+        public ChildDashboard(SharedConfiguration sharedConfiguration, @Named("tenant") String tenant,
+                ChildReport childReport) {
+            this.sharedConfiguration = sharedConfiguration;
+            this.tenant = tenant;
+            this.childReport = childReport;
+        }
+
+        public String summary() {
+            return sharedConfiguration.profile() + "/" + tenant + "/" + childReport.cadence();
         }
     }
 
