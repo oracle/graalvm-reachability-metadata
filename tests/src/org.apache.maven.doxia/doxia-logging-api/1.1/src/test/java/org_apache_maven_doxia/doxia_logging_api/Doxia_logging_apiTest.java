@@ -127,6 +127,17 @@ public class Doxia_logging_apiTest {
     }
 
     @Test
+    void plexusLoggerWrapperTreatsFatalLevelAsDisabledForDoxiaLogMethods() {
+        RecordingLogger logger = new RecordingLogger("root");
+        PlexusLoggerWrapper wrapper = new PlexusLoggerWrapper(logger);
+
+        wrapper.setLogLevel(Log.LEVEL_FATAL);
+
+        assertThat(logger.getThreshold()).isEqualTo(Logger.LEVEL_DISABLED);
+        assertEnabledLevels(wrapper, false, false, false, false);
+    }
+
+    @Test
     void plexusLoggerWrapperDelegatesMessagesThrowablesAndNulls() {
         RecordingLogger logger = new RecordingLogger("root");
         PlexusLoggerWrapper wrapper = new PlexusLoggerWrapper(logger);
