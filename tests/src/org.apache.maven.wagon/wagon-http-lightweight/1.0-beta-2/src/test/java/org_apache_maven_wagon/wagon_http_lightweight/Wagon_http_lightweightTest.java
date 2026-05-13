@@ -50,8 +50,11 @@ public class Wagon_http_lightweightTest {
     private static final String PLAIN_TEXT = "plain artifact downloaded through wagon";
     private static final String GZIP_TEXT = "compressed artifact transparently inflated by wagon";
     private static final String AUTHENTICATED_TEXT = "artifact downloaded after basic authentication";
+    private static final String PROXIED_TEXT = "artifact downloaded through an authenticated HTTP proxy";
     private static final String AUTH_USERNAME = "wagon-user";
     private static final String AUTH_PASSWORD = "wagon-secret";
+    private static final String PROXY_USERNAME = "proxy-user";
+    private static final String PROXY_PASSWORD = "proxy-secret";
 
     @TempDir
     Path tempDirectory;
@@ -178,6 +181,40 @@ public class Wagon_http_lightweightTest {
     }
 
     @Test
+    void downloadsResourcesThroughHttpProxyWithBasicAuthentication() throws Exception {
+        synchronized (SYSTEM_PROPERTY_LOCK) {
+            withProxyPropertiesCleared(() -> {
+                try (RepositoryServer server = RepositoryServer.start()) {
+                    ProxyInfo proxyInfo = new ProxyInfo();
+                    proxyInfo.setHost("127.0.0.1");
+                    proxyInfo.setPort(server.port());
+                    proxyInfo.setUserName(PROXY_USERNAME);
+                    proxyInfo.setPassword(PROXY_PASSWORD);
+                    Authenticator originalAuthenticator = Authenticator.getDefault();
+
+                    LightweightHttpWagon wagon = connectedWagon("http://upstream.example.test/repository", proxyInfo);
+                    try {
+                        Path target = tempDirectory.resolve("proxied.txt");
+
+                        wagon.get("proxied.txt", target.toFile());
+
+                        assertThat(Files.readString(target)).isEqualTo(PROXIED_TEXT);
+                        assertThat(server.headersFor("GET /repository/proxied.txt"))
+                                .anySatisfy(headers -> assertThat(headers).containsEntry(
+                                        "proxy-authorization", List.of(expectedProxyAuthorizationHeader())));
+                    } finally {
+                        try {
+                            wagon.disconnect();
+                        } finally {
+                            Authenticator.setDefault(originalAuthenticator);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    @Test
     void connectionAppliesAndRestoresProxySystemProperties() throws Exception {
         synchronized (SYSTEM_PROPERTY_LOCK) {
             Map<String, String> originalProperties = snapshotProxyProperties();
@@ -228,8 +265,22 @@ public class Wagon_http_lightweightTest {
         return wagon;
     }
 
+    private static LightweightHttpWagon connectedWagon(String repositoryUrl, ProxyInfo proxyInfo) throws Exception {
+        LightweightHttpWagon wagon = new LightweightHttpWagon();
+        wagon.connect(new Repository("test", repositoryUrl), proxyInfo);
+        return wagon;
+    }
+
     private static String expectedAuthorizationHeader() {
-        String credentials = AUTH_USERNAME + ":" + AUTH_PASSWORD;
+        return basicAuthorizationHeader(AUTH_USERNAME, AUTH_PASSWORD);
+    }
+
+    private static String expectedProxyAuthorizationHeader() {
+        return basicAuthorizationHeader(PROXY_USERNAME, PROXY_PASSWORD);
+    }
+
+    private static String basicAuthorizationHeader(String username, String password) {
+        String credentials = username + ":" + password;
         return "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -314,6 +365,10 @@ public class Wagon_http_lightweightTest {
             return "http://127.0.0.1:" + server.getAddress().getPort() + "/repository";
         }
 
+        int port() {
+            return server.getAddress().getPort();
+        }
+
         Map<String, String> uploads() {
             return uploads;
         }
@@ -361,6 +416,8 @@ public class Wagon_http_lightweightTest {
                 sendBytes(exchange, 404, "missing".getBytes(StandardCharsets.UTF_8), "text/plain", false);
             } else if ("GET".equals(method) && "/repository/protected.txt".equals(path)) {
                 sendProtectedResource(exchange);
+            } else if ("GET".equals(method) && "/repository/proxied.txt".equals(path)) {
+                sendProxiedResource(exchange);
             } else if ("HEAD".equals(method) && "/repository/existing.txt".equals(path)) {
                 sendHead(exchange, 200);
             } else if ("HEAD".equals(method) && "/repository/missing.txt".equals(path)) {
@@ -390,6 +447,18 @@ public class Wagon_http_lightweightTest {
 
             exchange.getResponseHeaders().set("WWW-Authenticate", "Basic realm=\"wagon-test\"");
             sendBytes(exchange, 401, "authentication required".getBytes(StandardCharsets.UTF_8), "text/plain", false);
+        }
+
+        private static void sendProxiedResource(HttpExchange exchange) throws IOException {
+            String proxyAuthorization = exchange.getRequestHeaders().getFirst("Proxy-Authorization");
+            if (expectedProxyAuthorizationHeader().equals(proxyAuthorization)) {
+                sendBytes(exchange, 200, PROXIED_TEXT.getBytes(StandardCharsets.UTF_8), "text/plain", false);
+                return;
+            }
+
+            byte[] body = "proxy authentication required".getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().set("Proxy-Authenticate", "Basic realm=\"wagon-proxy-test\"");
+            sendBytes(exchange, 407, body, "text/plain", false);
         }
 
         private static void sendHead(HttpExchange exchange, int status) throws IOException {
