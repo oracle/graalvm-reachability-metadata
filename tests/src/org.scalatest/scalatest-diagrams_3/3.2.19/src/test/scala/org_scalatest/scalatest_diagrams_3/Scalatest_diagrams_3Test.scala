@@ -47,6 +47,24 @@ class Scalatest_diagrams_3Test extends Diagrams:
     assertTrue(message.contains("|"), message)
 
   @Test
+  def failingDiagramAssertionWithCluePreservesTheClueAndDiagramDetails(): Unit =
+    val availableItems: Int = 2
+    val requestedItems: Int = 5
+    val clue: String = "inventory request should fit the available stock"
+
+    val failure: TestFailedException = expectTestFailure {
+      assert(requestedItems <= availableItems, clue)
+    }
+
+    val message: String = failure.getMessage
+    assertTrue(message.contains(clue), message)
+    assertTrue(message.contains("requestedItems <= availableItems"), message)
+    assertTrue(message.contains("5"), message)
+    assertTrue(message.contains("2"), message)
+    assertTrue(message.contains("false"), message)
+    assertTrue(message.contains("|"), message)
+
+  @Test
   def failingDiagramAssertionRendersNestedSelectionsAndMethodApplications(): Unit =
     val calculator: Calculator = Calculator(6)
     val delta: Int = 5
