@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import java.lang.reflect.Field;
+
 import org.apache.xerces.util.AugmentationsImpl;
 import org.apache.xerces.util.NamespaceSupport;
 import org.apache.xerces.xni.Augmentations;
@@ -86,6 +88,34 @@ public class DefaultFilterTest {
         assertEquals(1, handler.endPrefixMappingCount);
         assertEquals("svg", handler.endedPrefix);
         assertSame(augmentations, handler.endPrefixMappingAugmentations);
+    }
+
+    @Test
+    void startDocumentResolvesSignatureClassNamesWhenCompilerCachesAreEmpty() throws Exception {
+        clearDefaultFilterClassCacheFields();
+        DefaultFilter filter = new DefaultFilter();
+        NamespaceAwareDocumentHandler handler = new NamespaceAwareDocumentHandler();
+        Augmentations augmentations = new AugmentationsImpl();
+
+        filter.setDocumentHandler(handler);
+        filter.startDocument(null, "UTF-8", new NamespaceSupport(), augmentations);
+
+        assertEquals(1, handler.startDocumentCount);
+        assertEquals("UTF-8", handler.encoding);
+        assertSame(augmentations, handler.startDocumentAugmentations);
+    }
+
+    private static void clearDefaultFilterClassCacheFields() throws ReflectiveOperationException {
+        clearDefaultFilterClassCacheField("class$org$apache$xerces$xni$XMLLocator");
+        clearDefaultFilterClassCacheField("class$java$lang$String");
+        clearDefaultFilterClassCacheField("class$org$apache$xerces$xni$NamespaceContext");
+        clearDefaultFilterClassCacheField("class$org$apache$xerces$xni$Augmentations");
+    }
+
+    private static void clearDefaultFilterClassCacheField(String name) throws ReflectiveOperationException {
+        Field field = DefaultFilter.class.getDeclaredField(name);
+        field.setAccessible(true);
+        field.set(null, null);
     }
 
     public static class NamespaceAwareDocumentHandler extends DefaultFilter {
