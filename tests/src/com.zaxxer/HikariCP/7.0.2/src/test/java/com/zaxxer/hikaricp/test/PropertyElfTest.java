@@ -25,6 +25,8 @@ public class PropertyElfTest {
         properties.setProperty("enabled", "true");
         properties.setProperty("flag", "true");
         properties.setProperty("letters", "abc");
+        properties.setProperty("numbers", "1,2,3");
+        properties.setProperty("tags", "alpha,beta\\,gamma,delta");
         properties.setProperty("name", "hikari");
         properties.setProperty("payload", ConstructedPayload.class.getName());
 
@@ -36,6 +38,8 @@ public class PropertyElfTest {
         assertThat(bean.isEnabled()).isTrue();
         assertThat(bean.getFlag()).isTrue();
         assertThat(bean.getLetters()).containsExactly('a', 'b', 'c');
+        assertThat(bean.getNumbers()).containsExactly(1, 2, 3);
+        assertThat(bean.getTags()).containsExactly("alpha", "beta,gamma", "delta");
         assertThat(bean.getName()).isEqualTo("hikari");
         assertThat(bean.getPayload()).isInstanceOf(ConstructedPayload.class);
     }
@@ -63,8 +67,10 @@ public class PropertyElfTest {
                         "letters",
                         "longValue",
                         "name",
+                        "numbers",
                         "payload",
-                        "shortValue")
+                        "shortValue",
+                        "tags")
                 .doesNotContain("class", "readOnlyValue");
     }
 
@@ -89,6 +95,8 @@ public class PropertyElfTest {
         private boolean enabled;
         private Boolean flag;
         private char[] letters;
+        private int[] numbers;
+        private String[] tags;
         private String name;
         private Object payload;
 
@@ -138,6 +146,22 @@ public class PropertyElfTest {
 
         public void setLetters(char[] letters) {
             this.letters = letters;
+        }
+
+        public int[] getNumbers() {
+            return numbers;
+        }
+
+        public void setNumbers(int[] numbers) {
+            this.numbers = numbers;
+        }
+
+        public String[] getTags() {
+            return tags;
+        }
+
+        public void setTags(String[] tags) {
+            this.tags = tags;
         }
 
         public String getName() {
