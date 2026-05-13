@@ -9,6 +9,7 @@ package org_apache_maven_wagon.wagon_http_lightweight;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,6 +18,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +33,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
+import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.apache.maven.wagon.proxy.ProxyInfo;
@@ -46,6 +49,9 @@ public class Wagon_http_lightweightTest {
     private static final Instant LAST_MODIFIED = Instant.parse("2024-01-02T03:04:05Z");
     private static final String PLAIN_TEXT = "plain artifact downloaded through wagon";
     private static final String GZIP_TEXT = "compressed artifact transparently inflated by wagon";
+    private static final String AUTHENTICATED_TEXT = "artifact downloaded after basic authentication";
+    private static final String AUTH_USERNAME = "wagon-user";
+    private static final String AUTH_PASSWORD = "wagon-secret";
 
     @TempDir
     Path tempDirectory;
@@ -140,6 +146,38 @@ public class Wagon_http_lightweightTest {
     }
 
     @Test
+    void downloadsResourcesProtectedByBasicAuthentication() throws Exception {
+        synchronized (SYSTEM_PROPERTY_LOCK) {
+            withProxyPropertiesCleared(() -> {
+                try (RepositoryServer server = RepositoryServer.start()) {
+                    AuthenticationInfo authenticationInfo = new AuthenticationInfo();
+                    authenticationInfo.setUserName(AUTH_USERNAME);
+                    authenticationInfo.setPassword(AUTH_PASSWORD);
+                    Authenticator originalAuthenticator = Authenticator.getDefault();
+
+                    LightweightHttpWagon wagon = connectedWagon(server.repositoryUrl(), authenticationInfo);
+                    try {
+                        Path target = tempDirectory.resolve("protected.txt");
+
+                        wagon.get("protected.txt", target.toFile());
+
+                        assertThat(Files.readString(target)).isEqualTo(AUTHENTICATED_TEXT);
+                        assertThat(server.headersFor("GET /repository/protected.txt"))
+                                .anySatisfy(headers -> assertThat(headers)
+                                        .containsEntry("authorization", List.of(expectedAuthorizationHeader())));
+                    } finally {
+                        try {
+                            wagon.disconnect();
+                        } finally {
+                            Authenticator.setDefault(originalAuthenticator);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    @Test
     void connectionAppliesAndRestoresProxySystemProperties() throws Exception {
         synchronized (SYSTEM_PROPERTY_LOCK) {
             Map<String, String> originalProperties = snapshotProxyProperties();
@@ -181,6 +219,18 @@ public class Wagon_http_lightweightTest {
         LightweightHttpWagon wagon = new LightweightHttpWagon();
         wagon.connect(new Repository("test", repositoryUrl));
         return wagon;
+    }
+
+    private static LightweightHttpWagon connectedWagon(String repositoryUrl, AuthenticationInfo authenticationInfo)
+            throws Exception {
+        LightweightHttpWagon wagon = new LightweightHttpWagon();
+        wagon.connect(new Repository("test", repositoryUrl), authenticationInfo);
+        return wagon;
+    }
+
+    private static String expectedAuthorizationHeader() {
+        String credentials = AUTH_USERNAME + ":" + AUTH_PASSWORD;
+        return "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
     }
 
     private static void withProxyPropertiesCleared(ThrowingRunnable runnable) throws Exception {
@@ -269,9 +319,13 @@ public class Wagon_http_lightweightTest {
         }
 
         Headers firstHeadersFor(String requestKey) {
+            return headersFor(requestKey).get(0);
+        }
+
+        List<Headers> headersFor(String requestKey) {
             List<Headers> matchingRequests = requests.getOrDefault(requestKey, List.of());
             assertThat(matchingRequests).as(requestKey).isNotEmpty();
-            return matchingRequests.get(0);
+            return matchingRequests;
         }
 
         @Override
@@ -305,6 +359,8 @@ public class Wagon_http_lightweightTest {
                 sendBytes(exchange, 200, html.getBytes(StandardCharsets.UTF_8), "text/html", false);
             } else if ("GET".equals(method) && "/repository/missing.txt".equals(path)) {
                 sendBytes(exchange, 404, "missing".getBytes(StandardCharsets.UTF_8), "text/plain", false);
+            } else if ("GET".equals(method) && "/repository/protected.txt".equals(path)) {
+                sendProtectedResource(exchange);
             } else if ("HEAD".equals(method) && "/repository/existing.txt".equals(path)) {
                 sendHead(exchange, 200);
             } else if ("HEAD".equals(method) && "/repository/missing.txt".equals(path)) {
@@ -324,6 +380,16 @@ public class Wagon_http_lightweightTest {
             Headers normalized = new Headers();
             headers.forEach((name, values) -> normalized.put(name.toLowerCase(Locale.ROOT), List.copyOf(values)));
             return normalized;
+        }
+
+        private static void sendProtectedResource(HttpExchange exchange) throws IOException {
+            if (expectedAuthorizationHeader().equals(exchange.getRequestHeaders().getFirst("Authorization"))) {
+                sendBytes(exchange, 200, AUTHENTICATED_TEXT.getBytes(StandardCharsets.UTF_8), "text/plain", false);
+                return;
+            }
+
+            exchange.getResponseHeaders().set("WWW-Authenticate", "Basic realm=\"wagon-test\"");
+            sendBytes(exchange, 401, "authentication required".getBytes(StandardCharsets.UTF_8), "text/plain", false);
         }
 
         private static void sendHead(HttpExchange exchange, int status) throws IOException {
