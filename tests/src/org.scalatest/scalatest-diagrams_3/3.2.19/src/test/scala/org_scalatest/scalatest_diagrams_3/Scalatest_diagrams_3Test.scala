@@ -65,6 +65,24 @@ class Scalatest_diagrams_3Test extends Diagrams:
     assertTrue(message.contains("false"), message)
 
   @Test
+  def failingTripleEqualsDiagramAssertionRendersComparedValues(): Unit =
+    val actual: Int = 3
+    val expected: Int = 5
+
+    assert(actual === 3)
+
+    val failure: TestFailedException = expectTestFailure {
+      assert(actual === expected)
+    }
+
+    val message: String = failure.getMessage
+    assertTrue(message.contains("actual === expected"), message)
+    assertTrue(message.contains("3"), message)
+    assertTrue(message.contains("5"), message)
+    assertTrue(message.contains("false"), message)
+    assertTrue(message.contains("|"), message)
+
+  @Test
   def failingDiagramAssumeThrowsCanceledExceptionWithDiagramDetails(): Unit =
     val serviceName: String = "metadata-service"
     val requestedPrefix: String = "native-image"
