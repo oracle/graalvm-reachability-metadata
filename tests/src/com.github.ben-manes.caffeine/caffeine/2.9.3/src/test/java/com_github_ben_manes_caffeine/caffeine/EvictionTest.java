@@ -56,7 +56,9 @@ public class EvictionTest {
     void testReferenceBased() {
         LoadingCache<String, String> firstGraphs = Caffeine.newBuilder().weakKeys().weakValues().build(key -> key.equals("Hello") ? "World" : "Universe");
         assertThat(firstGraphs.get("Hello")).isEqualTo("World");
-        LoadingCache<String, String> secondGraphs = Caffeine.newBuilder().softValues().build(key -> key.equals("Hello") ? "World" : "Universe");
+        LoadingCache<String, String> secondGraphs = Caffeine.newBuilder().weakKeys().build(key -> key.equals("Hello") ? "World" : "Universe");
         assertThat(secondGraphs.get("Hello")).isEqualTo("World");
+        LoadingCache<String, String> thirdGraphs = Caffeine.newBuilder().softValues().build(key -> key.equals("Hello") ? "World" : "Universe");
+        assertThat(thirdGraphs.get("Hello")).isEqualTo("World");
     }
 }
