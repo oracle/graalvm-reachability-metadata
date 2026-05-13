@@ -7,8 +7,12 @@
 package nekohtml.nekohtml;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 
 import org.apache.xerces.util.SymbolTable;
@@ -87,6 +91,22 @@ public class ObjectFactoryTest {
             setObjectFactoryClassCache(originalCachedClass);
             TestHTMLConfiguration.restoreVersionFlags(versionFlags);
         }
+    }
+
+    @Test
+    void providerLookupUsesClassForNameWhenNoClassLoaderIsSupplied() throws Throwable {
+        MethodHandle findProviderClass = findProviderClassMethod();
+
+        Class<?> providerClass = (Class<?>) findProviderClass.invoke(SYMBOL_TABLE_CLASS_NAME, null, false);
+
+        assertSame(SymbolTable.class, providerClass);
+    }
+
+    private static MethodHandle findProviderClassMethod() throws ReflectiveOperationException {
+        Class<?> objectFactoryClass = Class.forName(OBJECT_FACTORY_CLASS_NAME);
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(objectFactoryClass, MethodHandles.lookup());
+        MethodType methodType = MethodType.methodType(Class.class, String.class, ClassLoader.class, boolean.class);
+        return lookup.findStatic(objectFactoryClass, "findProviderClass", methodType);
     }
 
     private static void clearObjectFactoryClassCache() throws ReflectiveOperationException {
