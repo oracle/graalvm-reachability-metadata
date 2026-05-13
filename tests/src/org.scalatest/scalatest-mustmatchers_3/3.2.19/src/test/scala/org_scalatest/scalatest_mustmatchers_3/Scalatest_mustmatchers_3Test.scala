@@ -98,6 +98,20 @@ class Scalatest_mustmatchers_3Test extends Matchers {
   }
 
   @Test
+  def combinesMatchersWithLogicalOperators(): Unit = {
+    val sourceFileName: String = "native-image-test.scala"
+
+    sourceFileName must (startWith ("native") and endWith (".scala"))
+    sourceFileName must (include ("image") or include ("metadata"))
+
+    val failure: TestFailedException = expectMatcherFailure {
+      sourceFileName must (startWith ("jvm") or endWith (".java"))
+    }
+    assertTrue(failure.getMessage.contains("jvm"))
+    assertTrue(failure.getMessage.contains(".java"))
+  }
+
+  @Test
   def checksPartialFunctionDefinedAtMatcher(): Unit = {
     val routeStatuses: PartialFunction[String, Int] = {
       case "/health" => 200
