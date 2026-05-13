@@ -6,6 +6,9 @@
  */
 package org_scalatest.scalatest_shouldmatchers_3
 
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util
 
 import scala.util.Success
@@ -225,6 +228,38 @@ class Scalatest_shouldmatchers_3Test extends Matchers {
       "metadata" should palindrome
     }
     failure.getMessage should include("metadata was not a palindrome")
+  }
+
+  @Test
+  def shouldDslSupportsFileExistenceReadabilityAndWritabilityMatchers(): Unit = {
+    val tempDirectory: Path = Files.createTempDirectory("scalatest-shouldmatchers-")
+    val dataFile: Path = tempDirectory.resolve("metadata.txt")
+    val missingFile: Path = tempDirectory.resolve("missing.txt")
+
+    try {
+      Files.writeString(dataFile, "reachable=true")
+
+      val tempDirectoryFile: File = tempDirectory.toFile
+      val dataFileObject: File = dataFile.toFile
+      val missingFileObject: File = missingFile.toFile
+
+      tempDirectoryFile should exist
+      tempDirectoryFile shouldBe readable
+      tempDirectoryFile shouldBe writable
+      dataFileObject should exist
+      dataFileObject shouldBe readable
+      dataFileObject shouldBe writable
+      missingFileObject should not (exist)
+
+      val failure: TestFailedException = expectMatcherFailure {
+        missingFileObject should exist
+      }
+      failure.getMessage should include("missing.txt")
+    } finally {
+      Files.deleteIfExists(dataFile)
+      Files.deleteIfExists(missingFile)
+      Files.deleteIfExists(tempDirectory)
+    }
   }
 
   @Test
