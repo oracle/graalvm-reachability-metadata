@@ -6,6 +6,15 @@
 """Format reporter-provided missing-metadata requests for agent prompts."""
 
 
+NO_REPORTER_METADATA_CONTEXT = "No reporter-provided missing metadata context was supplied."
+
+
+def has_issue_requested_metadata_context(context: str | None) -> bool:
+    """Return whether formatted reporter-provided metadata context is present."""
+    stripped = (context or "").strip()
+    return bool(stripped and stripped != NO_REPORTER_METADATA_CONTEXT)
+
+
 def format_issue_requested_test_requirements(context: str) -> str:
     """Format generic prompt requirements for reporter-provided metadata context."""
     if not context.strip():

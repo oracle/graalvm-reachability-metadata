@@ -41,6 +41,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 )
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
+from utility_scripts.issue_requested_metadata import NO_REPORTER_METADATA_CONTEXT
 from utility_scripts.issue_requested_metadata import format_issue_requested_test_requirements
 from utility_scripts.large_library_progress import resolve_workflow_progress_state
 from utility_scripts.library_stats import stats_artifact_dir
@@ -596,7 +597,7 @@ def format_issue_requested_metadata_context(context: str) -> str:
     """Format reporter-provided metadata context for prompt templates."""
     stripped = context.strip()
     if not stripped:
-        return "No reporter-provided missing metadata context was supplied."
+        return NO_REPORTER_METADATA_CONTEXT
     test_requirements = format_issue_requested_test_requirements(stripped)
     requirements_section = f"\n\n{test_requirements}" if test_requirements else ""
     return (
