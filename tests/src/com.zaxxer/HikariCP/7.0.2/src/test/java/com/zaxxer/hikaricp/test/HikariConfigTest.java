@@ -42,6 +42,16 @@ public class HikariConfigTest {
         assertThat(config.getUsername()).isEqualTo("resource-user");
     }
 
+    @Test
+    public void constructorFallsBackToClassLoaderResourceLookup() {
+        HikariConfig config = new HikariConfig("hikari-config-test.properties");
+
+        assertThat(config.getJdbcUrl()).isEqualTo("jdbc:test:from-resource");
+        assertThat(config.getMaximumPoolSize()).isEqualTo(4);
+        assertThat(config.getMinimumIdle()).isEqualTo(1);
+        assertThat(config.getUsername()).isEqualTo("resource-user");
+    }
+
     public static final class TestExceptionOverride implements SQLExceptionOverride {
         public TestExceptionOverride() {
         }
