@@ -25,8 +25,11 @@ import org.scalatest.Outcome
 import org.scalatest.Reporter
 import org.scalatest.Suite
 import org.scalatest.Tag
+import org.scalatest.events.AlertProvided
 import org.scalatest.events.Event
 import org.scalatest.events.InfoProvided
+import org.scalatest.events.MarkupProvided
+import org.scalatest.events.NoteProvided
 import org.scalatest.events.TestCanceled
 import org.scalatest.events.TestFailed
 import org.scalatest.events.TestIgnored
@@ -79,6 +82,20 @@ class Scalatest_funsuite_3Test:
       case event: InfoProvided => event.message
     }.toVector
     assert(messages == Vector("diagnostic details"))
+
+  @Test
+  def anyFunSuiteReportsNotificationsAndRecordedMarkup(): Unit =
+    val suite: DocumentationFunSuite = new DocumentationFunSuite
+    val result: RunResult = runSuite(suite)
+    val success: TestSucceeded = succeededEvents(result.events).head
+    val markup: Vector[String] = success.recordedEvents.collect {
+      case event: MarkupProvided => event.text
+    }.toVector
+
+    assert(result.succeeded)
+    assert(noteEvents(result.events).map(_.message) == Vector("note for the operator"))
+    assert(alertEvents(result.events).map(_.message) == Vector("alert for the operator"))
+    assert(markup == Vector("### supporting details"))
 
   @Test
   def anyFunSuiteReportsCanceledTestsAndContinuesTheSuite(): Unit =
@@ -236,6 +253,13 @@ class Scalatest_funsuite_3Test:
     test("failing test") {
       executionLog = executionLog :+ "failed"
       throw new IllegalStateException("intentional failure")
+    }
+
+  private final class DocumentationFunSuite extends AnyFunSuite:
+    test("emits notifications and markup") {
+      note("note for the operator")
+      alert("alert for the operator")
+      markup("### supporting details")
     }
 
   private final class CancelingFunSuite extends AnyFunSuite:
@@ -403,6 +427,12 @@ class Scalatest_funsuite_3Test:
 
   private def canceledEvents(events: Vector[Event]): Vector[TestCanceled] =
     events.collect { case event: TestCanceled => event }
+
+  private def noteEvents(events: Vector[Event]): Vector[NoteProvided] =
+    events.collect { case event: NoteProvided => event }
+
+  private def alertEvents(events: Vector[Event]): Vector[AlertProvided] =
+    events.collect { case event: AlertProvided => event }
 
   private def ignoredEvents(events: Vector[Event]): Vector[TestIgnored] =
     events.collect { case event: TestIgnored => event }
