@@ -8,7 +8,7 @@ package org_codehaus_plexus.plexus_java;
 
 import org.junit.jupiter.api.Test;
 
-class Plexus_javaTest {
+public class Plexus_javaTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
