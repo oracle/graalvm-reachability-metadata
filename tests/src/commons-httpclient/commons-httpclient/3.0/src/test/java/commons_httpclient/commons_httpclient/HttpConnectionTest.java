@@ -35,9 +35,9 @@ public class HttpConnectionTest {
             } else {
                 assertThat(connectionClass.getClassLoader()).isSameAs(classLoader);
             }
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
+        } catch (Throwable throwable) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+                throw throwable;
             }
         }
     }

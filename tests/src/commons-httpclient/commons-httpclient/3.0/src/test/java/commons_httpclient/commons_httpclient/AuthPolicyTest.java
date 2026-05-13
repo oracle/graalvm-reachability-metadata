@@ -27,9 +27,9 @@ public class AuthPolicyTest {
             Class<?> authPolicyClass = Class.forName(AUTH_POLICY_CLASS_NAME, true, classLoader);
 
             assertThat(authPolicyClass.getName()).isEqualTo(AUTH_POLICY_CLASS_NAME);
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
+        } catch (Throwable throwable) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(throwable)) {
+                throw throwable;
             }
         }
     }

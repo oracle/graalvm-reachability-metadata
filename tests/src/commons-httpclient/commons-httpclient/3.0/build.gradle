@@ -16,6 +16,36 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('--enable-url-protocols=http')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.auth.BasicScheme')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.auth.DigestScheme')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.auth.NTLMScheme')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.HeaderElement')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.HttpMethodBase')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.HttpMethodDirector')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.methods.ExpectContinueMethod')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.methods.multipart.FilePart')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.methods.multipart.StringPart')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.methods.GetMethod')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.methods.HeadMethod')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.methods.InputStreamRequestEntity')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.methods.MultipartPostMethod')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.methods.OptionsMethod')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.methods.PostMethod')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.util.EncodingUtil')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.util.HttpURLConnection')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.util.IdleConnectionHandler')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.HttpState')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.cookie.CookieSpecBase')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.params.DefaultHttpParamsFactory')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.MultiThreadedHttpConnectionManager')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.SimpleHttpConnectionManager')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.protocol.DefaultProtocolSocketFactory')
+            buildArgs.add('--initialize-at-run-time=org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
