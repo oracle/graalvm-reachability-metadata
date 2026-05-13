@@ -21,9 +21,24 @@ import org.gradle.util.internal.VersionNumber;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +49,14 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
     public abstract ListProperty<String> getAllLibraryCoordinates();
 
     private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example");
+    private static final String MAVEN_CENTRAL_BASE_URL = "https://repo.maven.apache.org/maven2";
+    private static final int MAX_METADATA_READ_ATTEMPTS = 5;
+    private static final Duration MIN_REMOTE_REQUEST_INTERVAL = Duration.ofMillis(250);
+    private static final Duration DEFAULT_RETRY_DELAY = Duration.ofSeconds(2);
+    private static final Duration MAX_RETRY_DELAY = Duration.ofSeconds(30);
+    private static final int CONNECTION_TIMEOUT_MILLIS = (int) Duration.ofSeconds(30).toMillis();
+    private static final String USER_AGENT = "graalvm-reachability-metadata-new-library-version-checker";
+    private static Instant nextRemoteRequest = Instant.EPOCH;
 
     @TaskAction
     public void action() {
@@ -82,11 +105,11 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
     }
 
     static List<String> getNewerVersionsFor(String library, String startingVersion) {
-        String baseUrl = "https://repo1.maven.org/maven2";
         String[] libraryParts = library.split(":");
         String group = libraryParts[0].replace(".", "/");
         String artifact = libraryParts[1];
-        Optional<String> metadata = readMavenMetadata(baseUrl + "/" + group + "/" + artifact + "/maven-metadata.xml");
+        Optional<String> metadata = readMavenMetadata(
+                MAVEN_CENTRAL_BASE_URL + "/" + group + "/" + artifact + "/maven-metadata.xml");
         if (metadata.isEmpty()) {
             return Collections.emptyList();
         }
@@ -100,12 +123,138 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
     }
 
     static Optional<String> readMavenMetadata(String metadataUrl) {
+        return readMavenMetadata(metadataUrl, millis -> {
+            try {
+                Thread.sleep(millis);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IOException("Interrupted while waiting to retry Maven metadata request", e);
+            }
+        });
+    }
+
+    static Optional<String> readMavenMetadata(String metadataUrl, MetadataReadSleeper sleeper) {
+        URI metadataUri = URI.create(metadataUrl);
         try {
-            return Optional.of(new String(URI.create(metadataUrl).toURL().openStream().readAllBytes(), StandardCharsets.UTF_8));
+            for (int attempt = 1; attempt <= MAX_METADATA_READ_ATTEMPTS; attempt++) {
+                try {
+                    return readMavenMetadataOnce(metadataUri);
+                } catch (RetryableMetadataReadException e) {
+                    if (attempt == MAX_METADATA_READ_ATTEMPTS) {
+                        throw new IOException("Failed to read Maven metadata after " + MAX_METADATA_READ_ATTEMPTS
+                                + " attempts from " + metadataUrl + ": " + e.getMessage(), e);
+                    }
+                    sleeper.sleep(retryDelay(e, attempt).toMillis());
+                }
+            }
+            throw new IOException("Failed to read Maven metadata from " + metadataUrl);
         } catch (FileNotFoundException e) {
             return Optional.empty();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static Optional<String> readMavenMetadataOnce(URI metadataUri) throws IOException {
+        URLConnection connection = metadataUri.toURL().openConnection();
+        connection.setConnectTimeout(CONNECTION_TIMEOUT_MILLIS);
+        connection.setReadTimeout(CONNECTION_TIMEOUT_MILLIS);
+        connection.setRequestProperty("User-Agent", USER_AGENT);
+        HttpURLConnection httpConnection = connection instanceof HttpURLConnection http ? http : null;
+        try {
+            if (httpConnection != null) {
+                throttleRemoteRequest();
+                int responseCode = httpConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                    return Optional.empty();
+                }
+                if (isRetryableResponse(responseCode)) {
+                    throw new RetryableMetadataReadException(
+                            "HTTP " + responseCode + " for URL: " + metadataUri,
+                            retryAfter(httpConnection));
+                }
+                if (responseCode >= HttpURLConnection.HTTP_BAD_REQUEST) {
+                    throw new IOException("Server returned HTTP response code: " + responseCode
+                            + " for URL: " + metadataUri);
+                }
+            }
+            return Optional.of(new String(connection.getInputStream().readAllBytes(), StandardCharsets.UTF_8));
+        } finally {
+            if (httpConnection != null) {
+                httpConnection.disconnect();
+            }
+        }
+    }
+
+    private static synchronized void throttleRemoteRequest() {
+        Instant now = Instant.now();
+        if (now.isBefore(nextRemoteRequest)) {
+            sleepUnchecked(Duration.between(now, nextRemoteRequest));
+        }
+        nextRemoteRequest = Instant.now().plus(MIN_REMOTE_REQUEST_INTERVAL);
+    }
+
+    private static void sleepUnchecked(Duration duration) {
+        try {
+            Thread.sleep(duration.toMillis());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while throttling Maven metadata requests", e);
+        }
+    }
+
+    private static boolean isRetryableResponse(int responseCode) {
+        return responseCode == 429
+                || responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR
+                || responseCode == HttpURLConnection.HTTP_BAD_GATEWAY
+                || responseCode == HttpURLConnection.HTTP_UNAVAILABLE
+                || responseCode == HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
+    }
+
+    private static Optional<Duration> retryAfter(HttpURLConnection connection) {
+        String retryAfterHeader = connection.getHeaderField("Retry-After");
+        if (retryAfterHeader == null || retryAfterHeader.isBlank()) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(Duration.ofSeconds(Long.parseLong(retryAfterHeader)));
+        } catch (NumberFormatException e) {
+            try {
+                Instant retryAt = DateTimeFormatter.RFC_1123_DATE_TIME.parse(retryAfterHeader, Instant::from);
+                return Optional.of(Duration.between(Instant.now(), retryAt));
+            } catch (DateTimeParseException ignored) {
+                return Optional.empty();
+            }
+        }
+    }
+
+    private static Duration retryDelay(RetryableMetadataReadException e, int attempt) {
+        Duration delay = e.retryAfter().orElse(DEFAULT_RETRY_DELAY.multipliedBy(1L << (attempt - 1)));
+        if (delay.isNegative() || delay.isZero()) {
+            return DEFAULT_RETRY_DELAY;
+        }
+        if (delay.compareTo(MAX_RETRY_DELAY) > 0) {
+            return MAX_RETRY_DELAY;
+        }
+        return delay;
+    }
+
+    @FunctionalInterface
+    interface MetadataReadSleeper {
+        void sleep(long millis) throws IOException;
+    }
+
+    private static final class RetryableMetadataReadException extends IOException {
+
+        private final Optional<Duration> retryAfter;
+
+        private RetryableMetadataReadException(String message, Optional<Duration> retryAfter) {
+            super(message);
+            this.retryAfter = retryAfter;
+        }
+
+        private Optional<Duration> retryAfter() {
+            return retryAfter;
         }
     }
 

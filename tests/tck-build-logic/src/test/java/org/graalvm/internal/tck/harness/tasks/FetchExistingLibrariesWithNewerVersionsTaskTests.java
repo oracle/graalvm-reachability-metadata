@@ -6,13 +6,18 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,6 +51,45 @@ class FetchExistingLibrariesWithNewerVersionsTaskTests {
     }
 
     @Test
+    void readMavenMetadataRetriesRateLimitedRequests() throws IOException {
+        AtomicInteger requests = new AtomicInteger();
+        HttpServer server = startServer(exchange -> {
+            if (requests.incrementAndGet() == 1) {
+                exchange.getResponseHeaders().add("Retry-After", "1");
+                exchange.sendResponseHeaders(429, -1);
+                exchange.close();
+                return;
+            }
+
+            byte[] response = """
+                    <metadata>
+                      <versioning>
+                        <versions>
+                          <version>1.0.0</version>
+                        </versions>
+                      </versioning>
+                    </metadata>
+                    """.getBytes();
+            exchange.sendResponseHeaders(200, response.length);
+            exchange.getResponseBody().write(response);
+            exchange.close();
+        });
+        List<Long> retryDelays = new ArrayList<>();
+
+        try {
+            assertThat(FetchExistingLibrariesWithNewerVersionsTask.readMavenMetadata(
+                    "http://localhost:" + server.getAddress().getPort() + "/maven-metadata.xml",
+                    retryDelays::add))
+                    .hasValueSatisfying(metadata -> assertThat(metadata).contains("<version>1.0.0</version>"));
+        } finally {
+            server.stop(0);
+        }
+
+        assertThat(requests).hasValue(2);
+        assertThat(retryDelays).containsExactly(1_000L);
+    }
+
+    @Test
     void getNewerVersionsFromLibraryIndexKeepsVersionsAfterStartingVersion() {
         String metadata = """
                 <metadata>
@@ -63,5 +107,24 @@ class FetchExistingLibrariesWithNewerVersionsTaskTests {
                 metadata, "1.0.0", "com.example:demo");
 
         assertThat(newerVersions).containsExactly("1.1.0", "1.2.0");
+    }
+
+    private HttpServer startServer(ThrowingExchangeHandler handler) throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
+        server.createContext("/", exchange -> {
+            try {
+                handler.handle(exchange);
+            } catch (Exception e) {
+                exchange.sendResponseHeaders(500, -1);
+                exchange.close();
+            }
+        });
+        server.start();
+        return server;
+    }
+
+    @FunctionalInterface
+    private interface ThrowingExchangeHandler {
+        void handle(HttpExchange exchange) throws Exception;
     }
 }
