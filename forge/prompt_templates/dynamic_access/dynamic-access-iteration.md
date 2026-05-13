@@ -22,4 +22,4 @@ Remaining uncovered dynamic-access call sites for this class:
 Rules:
 - Add or refine tests so execution reaches the remaining uncovered call sites for the active class.
 - Focus on the active class only.
-- Reporter snippets identify what is missing; any added or modified reachability metadata must include appropriate conditions, preferably `typeReached`.
+- Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`.

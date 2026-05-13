@@ -602,8 +602,10 @@ def format_issue_requested_metadata_context(context: str) -> str:
     return (
         "Reporter-provided missing metadata context:\n"
         f"{stripped}\n\n"
-        "Treat these snippets as evidence of what is missing. Any added or modified "
-        "reachability metadata must include appropriate conditions, preferably `typeReached`."
+        "Treat this prose, logs, and snippets as evidence of what reachability metadata "
+        "the reporter is requesting. Determine the requested metadata from the context; "
+        "any added or modified reachability metadata must include appropriate conditions, "
+        "preferably `typeReached`."
         f"{requirements_section}"
     )
 

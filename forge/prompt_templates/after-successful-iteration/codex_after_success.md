@@ -18,4 +18,4 @@ Rules:
 - You may inspect the repository only to learn local test style and structure.
 - The tests must execute under native image. Do not skip, disable, or short-circuit test logic in native image using assumptions, `@DisabledInNativeImage`, `isNativeImageRuntime()`, `ImageInfo.inImageRuntimeCode()`, or equivalent guards.
 - Do NOT compile or run tests yourself. The workflow will do that externally.
-- Reporter snippets identify what is missing; any added or modified reachability metadata must include appropriate conditions, preferably `typeReached`.
+- Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`.

@@ -203,8 +203,10 @@ class LibraryUpdateIssueTests(unittest.TestCase):
 
         self.assertEqual(claim_metadata, ("org.example:title-lib:1.2.3", None, None))
 
-    def test_extract_issue_requested_metadata_context_keeps_missing_metadata_evidence(self) -> None:
+    def test_extract_issue_requested_metadata_context_keeps_full_issue_body(self) -> None:
         body = """
+        The reporter may describe the missing metadata in arbitrary prose.
+
         Related coordinate: org.other:body-lib:9.9.9
 
         ```json
@@ -216,6 +218,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
 
         context = forge_metadata.extract_issue_requested_metadata_context(body)
 
+        self.assertIn("arbitrary prose", context)
         self.assertIn("org.example.Missing", context)
         self.assertIn("missing resource file config/app.properties", context)
         self.assertIn("Related coordinate", context)

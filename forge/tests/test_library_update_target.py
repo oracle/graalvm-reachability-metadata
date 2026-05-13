@@ -47,9 +47,12 @@ class LibraryUpdateTargetTests(unittest.TestCase):
             "It looks like java.util.UUID[].class also needs to be registered."
         )
 
-        self.assertIn("Mandatory issue-requested test coverage", context)
-        self.assertIn("Exercise code that requires `org.example.Demo.setName(java.lang.String)`", context)
-        self.assertIn("Exercise code that requires `java.util.UUID[]` to be registered", context)
+        self.assertIn("Reporter-provided missing metadata context", context)
+        self.assertIn("org.example.Demo.setName(java.lang.String)", context)
+        self.assertIn("java.util.UUID[].class", context)
+        self.assertIn("Reporter-requested metadata requirements", context)
+        self.assertIn("Infer the reachability metadata requested by the reporter", context)
+        self.assertIn("prefer the narrowest valid `typeReached` condition", context)
 
     def test_resolves_version_in_tested_versions(self) -> None:
         with tempfile.TemporaryDirectory() as repo:

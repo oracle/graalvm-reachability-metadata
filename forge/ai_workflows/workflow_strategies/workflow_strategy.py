@@ -21,7 +21,6 @@ from ai_workflows.fix_post_generation_pi import (
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
-from utility_scripts.issue_requested_metadata import apply_issue_requested_metadata
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import (
     coordinate_parts,
@@ -291,25 +290,6 @@ class WorkflowStrategy(ABC):
             libraries.append(metadata_library)
         return libraries
 
-    def _apply_issue_requested_metadata(self) -> int:
-        """Apply explicit reporter-requested metadata to the resolved metadata directory."""
-        metadata_version = str(
-            self.context.get("metadata_version")
-            or resolve_metadata_version(self.reachability_repo_path, self.group, self.artifact, self.version)
-        )
-        metadata_dir = os.path.join(
-            self.reachability_repo_path,
-            "metadata",
-            self.group,
-            self.artifact,
-            metadata_version,
-        )
-        context = str(self.context.get("issue_requested_metadata_context") or "")
-        added = apply_issue_requested_metadata(metadata_dir, context)
-        if added:
-            log_stage("issue-requested-metadata", f"Applied {added} issue-requested metadata entrie(s)")
-        return added
-
     def _run_gradle_command_with_output(self, command: list[str]) -> subprocess.CompletedProcess[str]:
         """Run a Gradle command in the reachability repo and capture combined output."""
         require_complete_reachability_repo(self.reachability_repo_path)
@@ -454,7 +434,6 @@ class WorkflowStrategy(ABC):
         """Generate metadata, run follow-up Gradle tasks, and commit the iteration."""
         log_stage("generate-metadata", f"Running generateMetadata for {self.library}")
         self._run_command(f"./gradlew generateMetadata -Pcoordinates={self.library} --agentAllowedPackages=fromJar")
-        self._apply_issue_requested_metadata()
         final_status = RUN_STATUS_SUCCESS
         finalization_libraries = self._finalization_libraries()
         for library in finalization_libraries:

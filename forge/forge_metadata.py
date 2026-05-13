@@ -4032,32 +4032,12 @@ def build_claim_metadata(
     return issue_coordinates, current_coordinates, new_version
 
 
-def extract_issue_requested_metadata_context(issue_body: str | None, max_chars: int = 12000) -> str:
-    """Extract reporter-provided missing metadata evidence from an issue body."""
+def extract_issue_requested_metadata_context(issue_body: str | None, max_chars: int = 50000) -> str:
+    """Return reporter-provided missing metadata context from an issue body."""
     if not issue_body:
         return ""
 
-    snippets: list[str] = []
-    for match in re.finditer(r"```(?:[A-Za-z0-9_.+-]+)?\n(.*?)```", issue_body, flags=re.DOTALL):
-        block = match.group(1).strip()
-        if block:
-            snippets.append(block)
-
-    metadata_keywords = re.compile(
-        r"("
-        r"reflection|reflect-config|resource|resource-config|proxy|proxy-config|jni|jni-config|"
-        r"reachability|native-image|missing|NoSuch(Method|Field)|ClassNotFound|NoClassDefFound|"
-        r"UnsupportedFeature|typeReached|condition|method|constructor|field|class|file|stack trace|coordinate"
-        r")",
-        flags=re.IGNORECASE,
-    )
-    for line in issue_body.splitlines():
-        stripped = line.strip()
-        if stripped and metadata_keywords.search(stripped):
-            snippets.append(stripped)
-
-    deduplicated = list(dict.fromkeys(snippets))
-    context = "\n\n".join(deduplicated).strip()
+    context = issue_body.strip()
     if len(context) > max_chars:
         context = context[:max_chars].rstrip() + "\n[truncated]"
     return context
