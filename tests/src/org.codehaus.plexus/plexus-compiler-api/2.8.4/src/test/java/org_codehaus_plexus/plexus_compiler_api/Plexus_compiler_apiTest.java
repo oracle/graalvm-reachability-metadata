@@ -410,6 +410,26 @@ public class Plexus_compiler_apiTest {
     }
 
     @Test
+    void simpleSourceScannerHonorsDefaultDirectoryExcludes() throws Exception {
+        Path sourceDirectory = temporaryDirectory.resolve("default-exclude-sources");
+        Path targetDirectory = temporaryDirectory.resolve("default-exclude-target");
+        Path includedSource = sourceDirectory.resolve("org/example/App.java");
+        Path ignoredMetadataSource = sourceDirectory.resolve(".git/objects/Ignored.java");
+        Files.createDirectories(includedSource.getParent());
+        Files.createDirectories(ignoredMetadataSource.getParent());
+        Files.createDirectories(targetDirectory);
+        Files.writeString(includedSource, "class App {}", StandardCharsets.UTF_8);
+        Files.writeString(ignoredMetadataSource, "class Ignored {}", StandardCharsets.UTF_8);
+        SimpleSourceInclusionScanner scanner = new SimpleSourceInclusionScanner(
+                Collections.singleton("**/*.java"),
+                Collections.emptySet());
+        scanner.addSourceMapping(new SuffixMapping(".java", ".class"));
+
+        assertThat(scanner.getIncludedSources(sourceDirectory.toFile(), targetDirectory.toFile()))
+                .containsExactly(includedSource.toFile());
+    }
+
+    @Test
     void staleSourceScannerIncludesSourcesWithoutTargetsOrWithOutdatedTargets() throws Exception {
         Path sourceDirectory = temporaryDirectory.resolve("stale-sources");
         Path targetDirectory = temporaryDirectory.resolve("stale-target");
