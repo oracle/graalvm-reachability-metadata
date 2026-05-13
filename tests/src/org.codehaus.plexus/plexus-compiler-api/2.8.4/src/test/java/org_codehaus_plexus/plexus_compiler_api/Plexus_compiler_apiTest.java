@@ -446,6 +446,31 @@ public class Plexus_compiler_apiTest {
     }
 
     @Test
+    void staleSourceScannerHonorsLastModifiedGracePeriod() throws Exception {
+        Path sourceDirectory = temporaryDirectory.resolve("grace-period-sources");
+        Path targetDirectory = temporaryDirectory.resolve("grace-period-target");
+        Path withinGraceSource = sourceDirectory.resolve("org/example/WithinGrace.java");
+        Path outsideGraceSource = sourceDirectory.resolve("org/example/OutsideGrace.java");
+        Path withinGraceTarget = targetDirectory.resolve("org/example/WithinGrace.class");
+        Path outsideGraceTarget = targetDirectory.resolve("org/example/OutsideGrace.class");
+        Files.createDirectories(withinGraceSource.getParent());
+        Files.createDirectories(withinGraceTarget.getParent());
+        Files.writeString(withinGraceSource, "class WithinGrace {}", StandardCharsets.UTF_8);
+        Files.writeString(outsideGraceSource, "class OutsideGrace {}", StandardCharsets.UTF_8);
+        Files.writeString(withinGraceTarget, "recent bytecode", StandardCharsets.UTF_8);
+        Files.writeString(outsideGraceTarget, "older bytecode", StandardCharsets.UTF_8);
+        assertThat(withinGraceSource.toFile().setLastModified(10_000L)).isTrue();
+        assertThat(outsideGraceSource.toFile().setLastModified(10_000L)).isTrue();
+        assertThat(withinGraceTarget.toFile().setLastModified(9_000L)).isTrue();
+        assertThat(outsideGraceTarget.toFile().setLastModified(7_000L)).isTrue();
+        StaleSourceScanner scanner = new StaleSourceScanner(2_000L);
+        scanner.addSourceMapping(new SuffixMapping(".java", ".class"));
+
+        assertThat(scanner.getIncludedSources(sourceDirectory.toFile(), targetDirectory.toFile()))
+                .containsExactly(outsideGraceSource.toFile());
+    }
+
+    @Test
     void streamPumperCopiesFiniteBufferedInputAndStops() throws Exception {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         StreamPumper streamPumper = new StreamPumper(
