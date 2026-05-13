@@ -176,7 +176,112 @@ object Akka_serialization_jackson_3Test {
 
   val TestConfig: Config = ConfigFactory
     .parseString(s"""
+      akka.version = "2.6.21"
+      akka.loggers = ["akka.event.Logging$$DefaultLogger"]
+      akka.logging-filter = "akka.event.DefaultLoggingFilter"
+      akka.loggers-dispatcher = "akka.actor.default-dispatcher"
+      akka.home = ""
+      akka.logger-startup-timeout = 5s
+      akka.loglevel = "INFO"
+      akka.stdout-loglevel = "WARNING"
+      akka.log-config-on-start = off
+      akka.log-dead-letters = 10
+      akka.log-dead-letters-during-shutdown = off
+      akka.log-dead-letters-suspend-duration = 5 minutes
+      akka.library-extensions = ["akka.serialization.SerializationExtension$$"]
+      akka.extensions = []
+      akka.daemonic = off
+      akka.jvm-exit-on-fatal-error = on
+      akka.jvm-shutdown-hooks = on
+      akka.fail-mixed-versions = on
+      akka.java-flight-recorder.enabled = true
+      akka.actor.provider = "local"
+      akka.actor.guardian-supervisor-strategy = "akka.actor.DefaultSupervisorStrategy"
+      akka.actor.creation-timeout = 20s
+      akka.actor.serialize-messages = off
+      akka.actor.serialize-creators = off
+      akka.actor.no-serialization-verification-needed-class-prefix = ["akka."]
+      akka.actor.unstarted-push-timeout = 10s
+      akka.actor.default-dispatcher {
+        type = "Dispatcher"
+        executor = "fork-join-executor"
+        throughput = 5
+        throughput-deadline-time = 0ms
+        attempt-teamwork = on
+        mailbox-requirement = ""
+        fork-join-executor {
+          parallelism-min = 8
+          parallelism-factor = 1.0
+          parallelism-max = 64
+        }
+        shutdown-timeout = 1s
+      }
+      akka.actor.internal-dispatcher {
+        type = "Dispatcher"
+        executor = "fork-join-executor"
+        throughput = 5
+        fork-join-executor {
+          parallelism-min = 4
+          parallelism-factor = 1.0
+          parallelism-max = 64
+        }
+      }
+      akka.actor.default-mailbox {
+        mailbox-type = "akka.dispatch.UnboundedMailbox"
+        mailbox-capacity = 1000
+        mailbox-push-timeout-time = 10s
+        stash-capacity = -1
+      }
+      akka.actor.deployment.default.virtual-nodes-factor = 10
+      akka.actor.debug {
+        receive = off
+        autoreceive = off
+        lifecycle = off
+        fsm = off
+        event-stream = off
+        unhandled = off
+        router-misconfiguration = off
+      }
+      akka.actor.allow-java-serialization = off
+      akka.actor.warn-about-java-serializer-usage = on
+      akka.actor.warn-on-no-serialization-verification = on
+      akka.actor.serializers {
+        java = "akka.serialization.JavaSerializer"
+        bytes = "akka.serialization.ByteArraySerializer"
+        primitive-long = "akka.serialization.LongSerializer"
+        primitive-int = "akka.serialization.IntSerializer"
+        primitive-string = "akka.serialization.StringSerializer"
+        primitive-bytestring = "akka.serialization.ByteStringSerializer"
+        primitive-boolean = "akka.serialization.BooleanSerializer"
+        jackson-json = "akka.serialization.jackson.JacksonJsonSerializer"
+        jackson-cbor = "akka.serialization.jackson.JacksonCborSerializer"
+        jackson-cbor-264 = "akka.serialization.jackson.JacksonJsonSerializer"
+      }
+      akka.actor.serialization-identifiers {
+        "akka.serialization.JavaSerializer" = 1
+        "akka.serialization.ByteArraySerializer" = 4
+        primitive-long = 18
+        primitive-int = 19
+        primitive-string = 20
+        primitive-bytestring = 21
+        primitive-boolean = 35
+        jackson-json = 31
+        jackson-cbor = 33
+        jackson-cbor-264 = 32
+      }
       akka.actor.serialization-bindings {
+        "[B" = bytes
+        "java.io.Serializable" = java
+        "java.lang.String" = primitive-string
+        "akka.util.ByteString$$ByteString1C" = primitive-bytestring
+        "akka.util.ByteString$$ByteString1" = primitive-bytestring
+        "akka.util.ByteString$$ByteStrings" = primitive-bytestring
+        "java.lang.Long" = primitive-long
+        "scala.Long" = primitive-long
+        "java.lang.Integer" = primitive-int
+        "scala.Int" = primitive-int
+        "java.lang.Boolean" = primitive-boolean
+        "scala.Boolean" = primitive-boolean
         "$JsonPayloadClassName" = jackson-json
         "$CborPayloadClassName" = jackson-cbor
         "$ActorRefPayloadClassName" = jackson-json
@@ -201,6 +306,20 @@ object Akka_serialization_jackson_3Test {
         migrations {
           "$MigratingMessageClassName" = "$RenameOldNameMigrationClassName"
         }
+      }
+      akka.scheduler {
+        tick-duration = 10ms
+        ticks-per-wheel = 512
+        implementation = "akka.actor.LightArrayRevolverScheduler"
+        shutdown-timeout = 5s
+      }
+      akka.coordinated-shutdown {
+        default-phase-timeout = 5s
+        terminate-actor-system = on
+        exit-jvm = off
+        exit-code = 0
+        run-by-jvm-shutdown-hook = on
+        run-by-actor-system-terminate = on
       }
       """)
     .withFallback(ConfigFactory.load())

@@ -1,0 +1,922 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e20bf-0158-7982-b621-6dcb3e77b026
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven.reporting:maven-reporting-api:2.0.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0.6" when "$version$" is replaced with "2.0.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+- Set "coordinates" to "org.apache.maven.reporting:maven-reporting-api:2.0.6".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.6".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the Maven metadata and upstream tag layout first, then patch the discovered metadata JSON in place.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.apache\\.maven\\.reporting-maven-reporting-api-2\\.0\\.6\\.json"'$'"'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+
+web search: 
+web search: org.apache.maven.reporting maven-reporting-api 2.0.6 pom scm tag
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/
+codex
+The Maven Central directory has both `-sources.jar` and `-javadoc.jar` for `2.0.6`; I’m checking the POM and upstream source repository now to confirm the release tag and whether tests are published separately.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>maven-reporting</artifactId>
+    <groupId>org.apache.maven.reporting</groupId>
+    <version>2.0.6</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>maven-reporting-api</artifactId>
+  <name>Maven Reporting API</name>
+  <developers>
+    <developer>
+      <id>vsiveton</id>
+      <name>Vincent Siveton</name>
+      <email>vincent.siveton@gmail.com</email>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+      <timezone>-5</timezone>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-sink-api</artifactId>
+      <version>1.0-alpha-7</version>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/reporting/maven-reporting-api/2.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/reporting/maven-reporting-api/2.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-reporting-api-2.0.6-javadoc.jar" title="maven-reporting-api-2.0.6-javadoc.jar">maven-reporting-api-2.0.6-javadoc.jar</a>             2007-04-01 04:54     36878      
+<a href="maven-reporting-api-2.0.6-javadoc.jar.asc" title="maven-reporting-api-2.0.6-javadoc.jar.asc">maven-reporting-api-2.0.6-javadoc.jar.asc</a>         2007-04-01 04:54       186      
+<a href="maven-reporting-api-2.0.6-javadoc.jar.asc.md5" title="maven-reporting-api-2.0.6-javadoc.jar.asc.md5">maven-reporting-api-2.0.6-javadoc.jar.asc.md5</a>     2007-04-01 04:54        32      
+<a href="maven-reporting-api-2.0.6-javadoc.jar.asc.sha1" title="maven-reporting-api-2.0.6-javadoc.jar.asc.sha1">maven-reporting-api-2.0.6-javadoc.jar.asc.sha...</a>  2007-04-01 04:54        40      
+<a href="maven-reporting-api-2.0.6-javadoc.jar.md5" title="maven-reporting-api-2.0.6-javadoc.jar.md5">maven-reporting-api-2.0.6-javadoc.jar.md5</a>         2007-04-01 04:54        32      
+<a href="maven-reporting-api-2.0.6-javadoc.jar.sha1" title="maven-reporting-api-2.0.6-javadoc.jar.sha1">maven-reporting-api-2.0.6-javadoc.jar.sha1</a>        2007-04-01 04:54        40      
+<a href="maven-reporting-api-2.0.6-sources.jar" title="maven-reporting-api-2.0.6-sources.jar">maven-reporting-api-2.0.6-sources.jar</a>             2007-04-01 04:54      8689      
+<a href="maven-reporting-api-2.0.6-sources.jar.asc" title="maven-reporting-api-2.0.6-sources.jar.asc">maven-reporting-api-2.0.6-sources.jar.asc</a>         2007-04-01 04:54       186      
+<a href="maven-reporting-api-2.0.6-sources.jar.asc.md5" title="maven-reporting-api-2.0.6-sources.jar.asc.md5">maven-reporting-api-2.0.6-sources.jar.asc.md5</a>     2007-04-01 04:54        32      
+<a href="maven-reporting-api-2.0.6-sources.jar.asc.sha1" title="maven-reporting-api-2.0.6-sources.jar.asc.sha1">maven-reporting-api-2.0.6-sources.jar.asc.sha...</a>  2007-04-01 04:54        40      
+<a href="maven-reporting-api-2.0.6-sources.jar.md5" title="maven-reporting-api-2.0.6-sources.jar.md5">maven-reporting-api-2.0.6-sources.jar.md5</a>         2007-04-01 04:54        32      
+<a href="maven-reporting-api-2.0.6-sources.jar.sha1" title="maven-reporting-api-2.0.6-sources.jar.sha1">maven-reporting-api-2.0.6-sources.jar.sha1</a>        2007-04-01 04:54        40      
+<a href="maven-reporting-api-2.0.6.jar" title="maven-reporting-api-2.0.6.jar">maven-reporting-api-2.0.6.jar</a>                     2007-04-01 04:54      9941      
+<a href="maven-reporting-api-2.0.6.jar.asc" title="maven-reporting-api-2.0.6.jar.asc">maven-reporting-api-2.0.6.jar.asc</a>                 2007-04-01 04:54       186      
+<a href="maven-reporting-api-2.0.6.jar.asc.md5" title="maven-reporting-api-2.0.6.jar.asc.md5">maven-reporting-api-2.0.6.jar.asc.md5</a>             2007-04-01 04:54        32      
+<a href="maven-reporting-api-2.0.6.jar.asc.sha1" title="maven-reporting-api-2.0.6.jar.asc.sha1">maven-reporting-api-2.0.6.jar.asc.sha1</a>            2007-04-01 04:54        40      
+<a href="maven-reporting-api-2.0.6.jar.md5" title="maven-reporting-api-2.0.6.jar.md5">maven-reporting-api-2.0.6.jar.md5</a>                 2007-04-01 04:54        32      
+<a href="maven-reporting-api-2.0.6.jar.sha1" title="maven-reporting-api-2.0.6.jar.sha1">maven-reporting-api-2.0.6.jar.sha1</a>                2007-04-01 04:54        40      
+<a href="maven-reporting-api-2.0.6.pom" title="maven-reporting-api-2.0.6.pom">maven-reporting-api-2.0.6.pom</a>                     2007-04-01 04:54      1752      
+<a href="maven-reporting-api-2.0.6.pom.asc" title="maven-reporting-api-2.0.6.pom.asc">maven-reporting-api-2.0.6.pom.asc</a>                 2007-04-01 04:54       186      
+<a href="maven-reporting-api-2.0.6.pom.asc.md5" title="maven-reporting-api-2.0.6.pom.asc.md5">maven-reporting-api-2.0.6.pom.asc.md5</a>             2007-04-01 04:54        32      
+<a href="maven-reporting-api-2.0.6.pom.asc.sha1" title="maven-reporting-api-2.0.6.pom.asc.sha1">maven-reporting-api-2.0.6.pom.asc.sha1</a>            2007-04-01 04:54        40      
+<a href="maven-reporting-api-2.0.6.pom.md5" title="maven-reporting-api-2.0.6.pom.md5">maven-reporting-api-2.0.6.pom.md5</a>                 2007-04-01 04:54        32      
+<a href="maven-reporting-api-2.0.6.pom.sha1" title="maven-reporting-api-2.0.6.pom.sha1">maven-reporting-api-2.0.6.pom.sha1</a>                2007-04-01 04:54        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://maven.apache.org/shared/maven-reporting-api/scm-usage.html | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting/2.0.6/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/reporting/maven-reporting/2.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/reporting/maven-reporting/2.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-reporting-2.0.6.pom" title="maven-reporting-2.0.6.pom">maven-reporting-2.0.6.pom</a>                         2007-04-01 04:54      1439      
+<a href="maven-reporting-2.0.6.pom.asc" title="maven-reporting-2.0.6.pom.asc">maven-reporting-2.0.6.pom.asc</a>                     2007-04-01 04:54       186      
+<a href="maven-reporting-2.0.6.pom.asc.md5" title="maven-reporting-2.0.6.pom.asc.md5">maven-reporting-2.0.6.pom.asc.md5</a>                 2007-04-01 04:54        32      
+<a href="maven-reporting-2.0.6.pom.asc.sha1" title="maven-reporting-2.0.6.pom.asc.sha1">maven-reporting-2.0.6.pom.asc.sha1</a>                2007-04-01 04:54        40      
+<a href="maven-reporting-2.0.6.pom.md5" title="maven-reporting-2.0.6.pom.md5">maven-reporting-2.0.6.pom.md5</a>                     2007-04-01 04:54        32      
+<a href="maven-reporting-2.0.6.pom.sha1" title="maven-reporting-2.0.6.pom.sha1">maven-reporting-2.0.6.pom.sha1</a>                    2007-04-01 04:54        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting/2.0.6/maven-reporting-2.0.6.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>maven</artifactId>
+    <groupId>org.apache.maven</groupId>
+    <version>2.0.6</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.maven.reporting</groupId>
+  <artifactId>maven-reporting</artifactId>
+  <packaging>pom</packaging>
+  <name>Maven Reporting</name>
+  <inceptionYear>2005</inceptionYear>
+  <modules>
+    <module>maven-reporting-api</module>
+  </modules>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/maven/maven/2.0.6/maven-2.0.6.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>5</version>
+    <relativePath>../pom/maven/pom.xml</relativePath>
+  </parent>
+  <artifactId>maven</artifactId>
+  <packaging>pom</packaging>
+  <name>Maven</name>
+  <version>2.0.6</version>
+  <description>Maven is a project development management and comprehension tool. Based on the concept of a project object model: builds, dependency management, documentation creation, site publication, and distribution publication are all controlled from the declarative file. Maven can be extended by plugins to utilise a number of other development tools for reporting or the build process.</description>
+  <url>http://maven.apache.org</url>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MNG</url>
+  </issueManagement>
+  <inceptionYear>2001</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>Maven User List</name>
+      <subscribe>users-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@maven.apache.org</unsubscribe>
+      <post>users@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-users</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/users@maven.apache.org/</otherArchive>
+        <otherArchive>http://www.nabble.com/Maven---Users-f178.html</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6</developerConnection>
+    <url>https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6</url>
+  </scm>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <tagBase>https://svn.apache.org/repos/asf/maven/components/tags</tagBase>
+          </configuration>
+        </plugin>
+       <plugin>
+          <groupId>org.codehaus.modello</groupId>
+          <artifactId>modello-maven-plugin</artifactId>
+          <version>1.0-alpha-13</version>
+          <executions>
+            <execution>
+              <id>site-docs</id>
+              <phase>pre-site</phase>
+              <goals>
+                <goal>xdoc</goal>
+                <goal>xsd</goal>
+              </goals>
+            </execution>
+            <execution>
+
+              <id>standard</id>
+              <goals>
+                <goal>java</goal>
+                <goal>xpp3-reader</goal>
+                <goal>xpp3-writer</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>        
+      </plugins>
+    </pluginManagement>
+  </build>
+  <modules>
+    <module>maven-artifact</module>
+    <module>maven-artifact-manager</module>
+    <module>maven-artifact-test</module>
+    <module>maven-core</module>
+    <module>maven-error-diagnostics</module>
+    <module>maven-model</module>
+    <module>maven-monitor</module>
+    <module>maven-plugin-api</module>
+    <module>maven-plugin-descriptor</module>
+    <module>maven-plugin-parameter-documenter</module>
+    <module>maven-plugin-registry</module>
+    <module>maven-profile</module>
+    <module>maven-project</module>
+    <module>maven-reporting</module>
+    <module>maven-repository-metadata</module>
+    <module>maven-script</module>
+    <module>maven-settings</module>
+  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <properties>
+    <mavenVersion>2.0.6</mavenVersion>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <!-- Maven -->
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-project</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.reporting</groupId>
+        <artifactId>maven-reporting-api</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-repository-metadata</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact-manager</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact-test</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-parameter-documenter</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-profile</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-registry</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-monitor</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>      
+      <!-- Plexus -->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.0-alpha-9-stable-1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>1.4.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-api</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-file</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-http-lightweight</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>1.2_Java1.3</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>classworlds</groupId>
+        <artifactId>classworlds</artifactId>
+        <version>1.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scp://people.apache.org/www/maven.apache.org/ref/${project.version}/</url>
+    </site>
+  </distributionManagement>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-sources.jar -o /tmp/maven-reporting-api-2.0.6-sources.jar && jar tf /tmp/maven-reporting-api-2.0.6-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6.jar -o /tmp/maven-reporting-api-2.0.6.jar && jar tf /tmp/maven-reporting-api-2.0.6.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/reporting/
+default-report.xml
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+org/apache/maven/reporting/MavenReport$1.class
+org/apache/maven/reporting/MavenReport.class
+org/apache/maven/reporting/MavenReportException.class
+org/apache/maven/reporting/MavenReportRenderer.class
+META-INF/maven/
+META-INF/maven/org.apache.maven.reporting/
+META-INF/maven/org.apache.maven.reporting/maven-reporting-api/
+META-INF/maven/org.apache.maven.reporting/maven-reporting-api/pom.xml
+META-INF/maven/org.apache.maven.reporting/maven-reporting-api/pom.properties
+
+ succeeded in 297ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/reporting/
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+org/apache/maven/reporting/MavenReport.java
+org/apache/maven/reporting/MavenReportException.java
+org/apache/maven/reporting/MavenReportRenderer.java
+default-report.xml
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'repo\\.maven\\.apache\\.org.*sources\\.jar|javadoc\\.jar|test-.*jar|tests\\.jar' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+metadata/io.suzaku/boopickle_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/velocity/velocity-dep/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/velocity/velocity-dep/$version$/velocity-dep-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-javadoc.jar",
+metadata/com.github.jnr/jnr-x86asm/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-x86asm/$version$/jnr-x86asm-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/$version$/okio-jvm-$version$-sources.jar",
+metadata/com.squareup.okio/okio-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/$version$/okio-jvm-$version$-javadoc.jar",
+metadata/com.beust/jcommander/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/$version$/jcommander-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.hibernate.models/hibernate-models/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/models/hibernate-models/$version$/hibernate-models-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg 'maven-2\\.0\\.6|maven-reporting-api|maven/components/tags' -g '*.json' -g '*.md' . | head -80" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+./metadata/org.apache.maven/maven-artifact/index.json:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-artifact/src/test",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.maven/maven-artifact/index.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-artifact/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-javadoc.jar",
+    "description" : "Maven Artifact is the Maven 2 library that represents project artifacts, coordinates, scopes, handlers, repositories, and artifact metadata used during dependency resolution. It also provides version and version-range parsing and comparison utilities used by Maven components to select, install, deploy, and resolve artifacts.",
+    "tested-versions" : [
+      "2.0.6",
+      "2.0.7",
+      "2.0.8",
+      "2.0.9",
+      "2.0.10",
+      "2.0.11",
+      "2.1.0",
+      "2.2.0",
+      "2.2.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.artifact"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg 'org\\.apache\\.maven\\.reporting|maven-reporting-api' metadata -g 'index.json' -n" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "for u in \\
+  https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/test \\
+  https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/test/java \\
+  https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/main/java \\
+  https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/site; do echo \""'$u"; curl -fsSL "$u" | sed -n '"'1,60p'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 654ms:
+curl: (22) The requested URL returned error: 404
+https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/test/java
+curl: (22) The requested URL returned error: 404
+https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/main/java
+<html><head><title>asf - Revision 1934160: /maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/main/java</title></head>
+<body>
+ <h2>asf - Revision 1934160: /maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/main/java</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="org/">org/</a></li>
+ </ul>
+</body></html>https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/site
+curl: (22) The requested URL returned error: 404
+
+codex
+The artifact is a normal JVM JAR with `.class` files, so it remains applicable for Native Image metadata. Its published source and javadoc artifacts are available on Maven Central, but I do not see a published tests JAR or an upstream `src/test` directory for this module.
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-javadoc.jar; do status="'$(curl -s -o /dev/null -w '"'%{http_code}' \""'$u"); printf '"'%s %s\\n' \""'$status" "$u"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 116ms:
+<html><head><title>asf - Revision 1934160: /maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src</title></head>
+<body>
+ <h2>asf - Revision 1934160: /maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="main/">main/</a></li>
+ </ul>
+</body></html>
+ succeeded in 132ms:
+<html><head><title>asf - Revision 1934160: /maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api</title></head>
+<body>
+ <h2>asf - Revision 1934160: /maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="pom.xml">pom.xml</a></li>
+  <li><a href="src/">src/</a></li>
+ </ul>
+</body></html>
+ succeeded in 1712ms:
+404 https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-tests.jar
+404 https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-test-sources.jar
+200 https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-sources.jar
+200 https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-javadoc.jar
+
+codex
+I’m going to write the JSON with Maven Central source/javadoc links, the SVN repository root used by the Maven 2 components, and `N/A` for the test suite because neither Maven Central nor the release tag exposes tests for this module.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+index e36a925a7f841475c75b34e3595054d58b001503..a47f020c4198b57ff319bd678f03e8d4c32baea0
+--- a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6"
++  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-javadoc.jar",
++  "description" : "Maven Reporting API defines the interfaces and exceptions used by Maven report plugins to generate reports and render them through Doxia sinks. It provides the shared contract for report metadata, output naming, category handling, and renderer integration in Maven 2 reporting components."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+index e36a925a7f841475c75b34e3595054d58b001503..a47f020c4198b57ff319bd678f03e8d4c32baea0
+--- a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6"
++  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-javadoc.jar",
++  "description" : "Maven Reporting API defines the interfaces and exceptions used by Maven report plugins to generate reports and render them through Doxia sinks. It provides the shared contract for report metadata, output naming, category handling, and renderer integration in Maven 2 reporting components."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven.reporting:maven-reporting-api:2.0.6",
+  "repository-url": "https://svn.apache.org/repos/asf/maven/components",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-javadoc.jar",
+  "description": "Maven Reporting API defines the interfaces and exceptions used by Maven report plugins to generate reports and render them through Doxia sinks. It provides the shared contract for report metadata, output naming, category handling, and renderer integration in Maven 2 reporting components."
+}
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-javadoc.jar \\
+  https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src; do status="'$(curl -s -o /dev/null -w '"'%{http_code}' \""'$u"); printf '"'%s %s\\n' \""'$status" "$u"; done' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+index e36a925a7f841475c75b34e3595054d58b001503..a47f020c4198b57ff319bd678f03e8d4c32baea0
+--- a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6"
++  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-javadoc.jar",
++  "description" : "Maven Reporting API defines the interfaces and exceptions used by Maven report plugins to generate reports and render them through Doxia sinks. It provides the shared contract for report metadata, output naming, category handling, and renderer integration in Maven 2 reporting components."
+ }
+
+ succeeded in 281ms:
+200 https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/maven-reporting-api-2.0.6-javadoc.jar
+301 https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -Ls -o /dev/null -w '%{http_code} %{url_effective}\\n' https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+index e36a925a7f841475c75b34e3595054d58b001503..a47f020c4198b57ff319bd678f03e8d4c32baea0
+--- a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6"
++  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-javadoc.jar",
++  "description" : "Maven Reporting API defines the interfaces and exceptions used by Maven report plugins to generate reports and render them through Doxia sinks. It provides the shared contract for report metadata, output naming, category handling, and renderer integration in Maven 2 reporting components."
+ }
+
+ succeeded in 168ms:
+200 https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b
+ succeeded in 221ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+index e36a925a7f841475c75b34e3595054d58b001503..a47f020c4198b57ff319bd678f03e8d4c32baea0
+--- a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6"
++  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-javadoc.jar",
++  "description" : "Maven Reporting API defines the interfaces and exceptions used by Maven report plugins to generate reports and render them through Doxia sinks. It provides the shared contract for report metadata, output naming, category handling, and renderer integration in Maven 2 reporting components."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/maven/maven/2.0.6/maven-2.0.6.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven/2.0.6/
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.6/maven-reporting/maven-reporting-api/src/
+codex
+Updated [org.apache.maven.reporting-maven-reporting-api-2.0.6.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json).
+
+I set Maven Central source and javadoc URLs, the Apache Maven components SVN repository root, and `test-code-url` to `N/A` because the release tag exposes only `src/main` for this module and Maven Central does not publish a tests artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/))
+
+I left `language` absent and did not set `not-for-native-image`; the artifact is a normal JVM JAR with class files. Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+index e36a925a7f841475c75b34e3595054d58b001503..a47f020c4198b57ff319bd678f03e8d4c32baea0
+--- a/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
++++ b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6"
++  "coordinates" : "org.apache.maven.reporting:maven-reporting-api:2.0.6",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-api/$version$/maven-reporting-api-$version$-javadoc.jar",
++  "description" : "Maven Reporting API defines the interfaces and exceptions used by Maven report plugins to generate reports and render them through Doxia sinks. It provides the shared contract for report metadata, output naming, category handling, and renderer integration in Maven 2 reporting components."
+ }
+
+tokens used
+52,118
+Updated [org.apache.maven.reporting-maven-reporting-api-2.0.6.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b/build/discovered-artifact-metadata/org.apache.maven.reporting-maven-reporting-api-2.0.6.json).
+
+I set Maven Central source and javadoc URLs, the Apache Maven components SVN repository root, and `test-code-url` to `N/A` because the release tag exposes only `src/main` for this module and Maven Central does not publish a tests artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/maven/reporting/maven-reporting-api/2.0.6/))
+
+I left `language` absent and did not set `not-for-native-image`; the artifact is a normal JVM JAR with class files. Validated the JSON with `jq`.
+Ran agent for org.apache.maven.reporting:maven-reporting-api:2.0.6 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b/build/agent-artifact-discovery-logs/org.apache.maven.reporting-maven-reporting-api-2.0.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2311-55b4456b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 4s
+9 actionable tasks: 9 executed
