@@ -17,6 +17,9 @@ import scala.util.Try
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.function.Executable
+import org.scalactic.Equality
+import org.scalactic.StringNormalizations.lowerCased
+import org.scalactic.StringNormalizations.trimmed
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.BePropertyMatchResult
@@ -52,6 +55,35 @@ class Scalatest_shouldmatchers_3Test extends Matchers {
     }
     failure.getMessage should include("3.142857")
     failure.getMessage should include("3.0")
+  }
+
+  @Test
+  def shouldDslSupportsExplicitEqualityNormalizationAndCustomEquality(): Unit = {
+    val caseInsensitiveEquality: Equality[String] = new Equality[String] {
+      override def areEqual(left: String, right: Any): Boolean = {
+        right match {
+          case expected: String => left.equalsIgnoreCase(expected)
+          case _ => false
+        }
+      }
+    }
+
+    locally {
+      ("  Metadata Service  " should equal("metadata service")) (after being trimmed and lowerCased)
+    }
+    locally {
+      ("SCALATEST" should equal("scalatest")) (after being lowerCased)
+    }
+    locally {
+      ("Reachability" should equal("reachability")) (decided by caseInsensitiveEquality)
+    }
+
+    val failure: TestFailedException = expectMatcherFailure {
+      locally {
+        (" metadata " should equal("monitoring")) (after being trimmed and lowerCased)
+      }
+    }
+    failure.getMessage should include("monitoring")
   }
 
   @Test
