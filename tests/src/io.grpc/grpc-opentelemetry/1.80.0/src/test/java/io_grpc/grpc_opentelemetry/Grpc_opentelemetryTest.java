@@ -93,7 +93,7 @@ public class Grpc_opentelemetryTest {
 
         propagator.inject(originalContext, carrier, MAP_SETTER);
 
-        assertThat(carrier).containsOnlyKeys(GrpcTraceBinContextPropagator.GRPC_TRACE_BIN_HEADER);
+        assertThat(carrier.keySet()).containsExactly(GrpcTraceBinContextPropagator.GRPC_TRACE_BIN_HEADER);
         assertThat(carrier.get(GrpcTraceBinContextPropagator.GRPC_TRACE_BIN_HEADER))
                 .isNotBlank()
                 .doesNotContain("=");
@@ -132,7 +132,7 @@ public class Grpc_opentelemetryTest {
         propagator.inject(null, carrier, MAP_SETTER);
         propagator.inject(Context.root().with(Span.wrap(SpanContext.getInvalid())), carrier, MAP_SETTER);
 
-        assertThat(carrier).isEmpty();
+        assertThat(carrier.keySet()).isEmpty();
         assertThat(propagator.extract(null, carrier, MAP_GETTER)).isSameAs(Context.root());
 
         Context existingContext = Context.root().with(Span.wrap(sampledSpanContext()));
