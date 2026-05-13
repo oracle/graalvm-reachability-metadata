@@ -13,7 +13,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.descriptor.DuplicateMojoDescriptorException;
 import org.apache.maven.plugin.descriptor.DuplicateParameterException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -251,6 +258,31 @@ public class Maven_plugin_descriptorTest {
         Parameter duplicateParameter = new Parameter();
         duplicateParameter.setName("outputDirectory");
         assertThrows(DuplicateParameterException.class, () -> mojo.addParameter(duplicateParameter));
+    }
+
+    @Test
+    void pluginDescriptorIndexesArtifactsAndTracksIntroducedDependencies() {
+        Artifact alphaArtifact = new DefaultArtifact("com.example", "alpha-plugin", VersionRange.createFromVersion("1"),
+                Artifact.SCOPE_RUNTIME, "jar", null, new DefaultArtifactHandler("jar"));
+        Artifact betaArtifact = new DefaultArtifact("com.example", "beta-plugin", VersionRange.createFromVersion("1"),
+                Artifact.SCOPE_RUNTIME, "jar", null, new DefaultArtifactHandler("jar"));
+
+        PluginDescriptor descriptor = new PluginDescriptor();
+        descriptor.setArtifacts(Collections.singletonList(alphaArtifact));
+
+        Map artifactMap = descriptor.getArtifactMap();
+        assertThat(artifactMap).hasSize(1).containsEntry("com.example:alpha-plugin", alphaArtifact);
+        assertThat(descriptor.getIntroducedDependencyArtifacts()).isEmpty();
+
+        descriptor.setArtifacts(Collections.singletonList(betaArtifact));
+        assertThat(descriptor.getArtifactMap())
+                .hasSize(1)
+                .containsEntry("com.example:beta-plugin", betaArtifact)
+                .doesNotContainKey("com.example:alpha-plugin");
+
+        Set introducedDependencyArtifacts = new LinkedHashSet(Collections.singleton(betaArtifact));
+        descriptor.setIntroducedDependencyArtifacts(introducedDependencyArtifacts);
+        assertThat(descriptor.getIntroducedDependencyArtifacts()).containsExactly(betaArtifact);
     }
 
     @Test
