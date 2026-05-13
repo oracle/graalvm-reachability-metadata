@@ -55,6 +55,23 @@ public class Wagon_http_sharedTest {
     }
 
     @Test
+    void acceptsHostRelativeLinksWhenListingIsAtServerRoot() throws Exception {
+        String html = """
+                <html>
+                  <body>
+                    <a href="/maven-metadata.xml">metadata</a>
+                    <a href="/releases/">releases</a>
+                    <a href="/nested/artifact.jar">nested file</a>
+                  </body>
+                </html>
+                """;
+
+        List<String> links = parseFileList("http://repo.example.test/", html);
+
+        assertThat(links).containsExactly("maven-metadata.xml", "releases/");
+    }
+
+    @Test
     void filtersNavigationAndNonListingLinks() throws Exception {
         String html = """
                 <html>
