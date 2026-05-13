@@ -8,7 +8,7 @@ package org_apache_maven.maven_plugin_registry;
 
 import org.junit.jupiter.api.Test;
 
-class Maven_plugin_registryTest {
+public class Maven_plugin_registryTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
