@@ -10,7 +10,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.scalatest.{Args, ConfigMap, Filter, Outcome, Reporter, Tag}
-import org.scalatest.events.{Event, InfoProvided, TestCanceled, TestFailed, TestIgnored, TestPending, TestStarting, TestSucceeded}
+import org.scalatest.events.{Event, InfoProvided, MarkupProvided, TestCanceled, TestFailed, TestIgnored, TestPending, TestStarting, TestSucceeded}
 import org.scalatest.exceptions.{DuplicateTestNameException, TestRegistrationClosedException}
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 import org.scalatest.propspec.{AnyPropSpec, FixtureAnyPropSpec}
@@ -141,6 +141,22 @@ class Scalatest_propspec_3Test {
     assertThat(suite.checkedInputs.asJava).containsExactly("scala", "propspec", "native")
     assertThat(reporter.eventsOf[TestSucceeded].map(_.testName).asJava)
       .containsExactly("all sample strings round-trip through reverse")
+  }
+
+  @Test
+  def anyPropSpecRecordsMarkupProvidedInsideSucceededProperties(): Unit = {
+    val suite: DocumentedPropSpec = new DocumentedPropSpec
+    val reporter: PropSpecRecordingReporter = new PropSpecRecordingReporter
+
+    val status = suite.run(None, Args(reporter))
+
+    assertThat(status.isCompleted()).isTrue()
+    assertThat(status.succeeds()).isTrue()
+    assertThat(suite.executionLog.asJava).containsExactly("documented")
+
+    val succeeded: TestSucceeded = reporter.eventsOf[TestSucceeded].head
+    assertThat(succeeded.recordedEvents.collect { case event: MarkupProvided => event.text }.asJava)
+      .containsExactly("### Generated evidence\n\nThe property records Markdown documentation for reports.")
   }
 
   @Test
@@ -329,6 +345,15 @@ class TableDrivenPropSpec extends AnyPropSpec with TableDrivenPropertyChecks {
       assert(input.reverse == reversed)
       assert(reversed.reverse == input)
     }
+  }
+}
+
+class DocumentedPropSpec extends AnyPropSpec {
+  val executionLog: ListBuffer[String] = ListBuffer.empty
+
+  property("documents generated evidence with markup") {
+    markup("### Generated evidence\n\nThe property records Markdown documentation for reports.")
+    executionLog += "documented"
   }
 }
 
