@@ -6,11 +6,14 @@
  */
 package org_codehaus_plexus.plexus_interactivity_api;
 
+import org.codehaus.plexus.components.interactivity.InputHandler;
 import org.junit.jupiter.api.Test;
 
-public class Plexus_interactivity_apiTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class InputHandlerAnonymous1Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void exposesInputHandlerRoleName() {
+        assertThat(InputHandler.ROLE).isEqualTo(InputHandler.class.getName());
     }
 }
