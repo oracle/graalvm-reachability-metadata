@@ -16,17 +16,16 @@ tasks.withType(Test).configureEach {
     systemProperty nanoTimerProviderProperty, nanoTimerProviderClass
 }
 
+tasks.named("nativeTest") {
+    runtimeArgs.add("-D${nanoTimerProviderProperty}=${nanoTimerProviderClass}")
+}
+
 dependencies {
     testImplementation "backport-util-concurrent:backport-util-concurrent:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
 graalvmNative {
-    binaries {
-        test {
-            runtimeArgs("-D${nanoTimerProviderProperty}=${nanoTimerProviderClass}")
-        }
-    }
     agent {
         defaultMode = "conditional"
         modes {
