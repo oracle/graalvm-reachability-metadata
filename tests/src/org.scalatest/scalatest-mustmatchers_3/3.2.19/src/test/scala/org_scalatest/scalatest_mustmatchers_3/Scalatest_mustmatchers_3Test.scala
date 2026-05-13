@@ -98,6 +98,24 @@ class Scalatest_mustmatchers_3Test extends Matchers {
   }
 
   @Test
+  def checksPartialFunctionDefinedAtMatcher(): Unit = {
+    val routeStatuses: PartialFunction[String, Int] = {
+      case "/health" => 200
+      case path if path.startsWith("/assets/") => path.length
+    }
+
+    routeStatuses must be definedAt ("/health")
+    routeStatuses must be definedAt ("/assets/app.js")
+    routeStatuses must not be definedAt ("/metrics")
+
+    val failure: TestFailedException = expectMatcherFailure {
+      routeStatuses must be definedAt ("/metrics")
+    }
+    assertTrue(failure.getMessage.contains("was not defined at"))
+    assertTrue(failure.getMessage.contains("/metrics"))
+  }
+
+  @Test
   def checksExceptionMatchers(): Unit = {
     an[IllegalArgumentException] must be thrownBy {
       Integer.parseInt("not-a-number")
