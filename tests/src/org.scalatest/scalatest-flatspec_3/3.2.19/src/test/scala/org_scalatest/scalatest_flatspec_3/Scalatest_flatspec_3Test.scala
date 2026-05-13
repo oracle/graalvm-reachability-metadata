@@ -175,6 +175,18 @@ class Scalatest_flatspec_3Test:
     assert(suite.executed == Vector("head", "order"))
 
   @Test
+  def supportsBehaviorOfClausesForDeclaredSubjects(): Unit =
+    val suite: BehaviorOfFlatSpec = new BehaviorOfFlatSpec
+    val names: Vector[String] = suite.testNames.toVector
+    val result: RunResult = runSuite(suite)
+
+    assert(names.exists(_ == "A configured text normalizer should trim surrounding whitespace"))
+    assert(names.exists(_ == "A configured text normalizer must preserve internal spaces"))
+    assert(result.succeeded)
+    assert(succeededEvents(result.events).size == 2)
+    assert(suite.executed == Vector("trim", "preserve"))
+
+  @Test
   def appliesBeforeAndAfterHooksAroundEachFlatSpecTest(): Unit =
     val suite: HookedFlatSpec = new HookedFlatSpec
     val result: RunResult = runSuite(suite)
@@ -362,6 +374,21 @@ class Scalatest_flatspec_3Test:
     they must "preserve insertion order" in {
       executed = executed :+ "order"
       assert(List(1, 2, 3).mkString(",") == "1,2,3")
+    }
+
+  private final class BehaviorOfFlatSpec extends AnyFlatSpec:
+    var executed: Vector[String] = Vector.empty
+
+    behavior of "A configured text normalizer"
+
+    it should "trim surrounding whitespace" in {
+      executed = executed :+ "trim"
+      assert("  scala  ".trim == "scala")
+    }
+
+    it must "preserve internal spaces" in {
+      executed = executed :+ "preserve"
+      assert("native image".replace(" ", " ") == "native image")
     }
 
   private final class HookedFlatSpec extends AnyFlatSpec with BeforeAndAfter:
