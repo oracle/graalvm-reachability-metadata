@@ -1,0 +1,2189 @@
+Downloading https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
+............10%.............20%.............30%.............40%.............50%............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e1f90-61d4-7390-a737-433b81a23fdc
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.sonatype.sisu:sisu-inject-plexus:1.4.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.4.2" when "$version$" is replaced with "1.4.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+- Set "coordinates" to "org.sonatype.sisu:sisu-inject-plexus:1.4.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.4.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven metadata and the upstream project before editing the JSON, since the artifact is old and the correct tag/source layout is likely non-obvious.
+web search: 
+web search: org.sonatype.sisu sisu-inject-plexus 1.4.2 repository source tests documentation
+codex
+Maven Central shows a sources jar and a javadoc jar for `1.4.2`, so I’m going to prefer those for source and documentation unless the POM points to a clearer versioned upstream location for tests.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json && sed -n '1,200p' build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+-rw-rw-r-- 1 vjovanov vjovanov 67 May 13 06:20 build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+{
+  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu.inject</groupId>
+    <artifactId>guice-plexus</artifactId>
+    <version>1.4.2</version>
+  </parent>
+
+  <packaging>bundle</packaging>
+
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-inject-plexus</artifactId>
+
+  <name>Sisu - Inject (Plexus bean support)</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-classworlds</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-bean</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu.inject</groupId>
+      <artifactId>guice-plexus-shim</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <excludeDependencies>
+            <!-- fragment host and external dependencies -->
+            sisu-inject-bean,*;groupId=org.codehaus.plexus
+          </excludeDependencies>
+          <instructions>
+            <Bundle-SymbolicName>
+              org.sonatype.inject.plexus
+            </Bundle-SymbolicName>
+            <Fragment-Host>
+              org.sonatype.inject
+            </Fragment-Host>
+            <Export-Package>
+              org.codehaus.plexus.*;-noimport:=true;-split-package:=merge-first
+            </Export-Package>
+            <Private-Package>
+              META-INF.plexus,org.sonatype.guice.*,org.objectweb.asm
+            </Private-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>${project.groupId}:${project.artifactId}</include>
+                </includes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>org.objectweb</pattern>
+                  <shadedPattern>org.sonatype.guice</shadedPattern>
+                </relocation>
+              </relocations>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <includes>
+                    <include>META-INF/**</include>
+                    <include>org/codehaus/plexus/**</include>
+                    <include>org/sonatype/guice/plexus/**</include>
+                    <include>org/objectweb/asm/*Writer*</include>
+                  </includes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-source</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>unpack-dependencies</goal>
+                </goals>
+                <configuration>
+                  <classifier>sources</classifier>
+                  <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+                  <outputDirectory>${project.build.directory}/sources</outputDirectory>
+                  <excludeGroupIds>org.codehaus.plexus</excludeGroupIds>
+                  <includes>
+                    org/codehaus/plexus/**,org/sonatype/guice/plexus/**
+                  </includes>
+                  <silent>true</silent>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-source</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>${project.build.directory}/sources</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2.jar -o /tmp/sisu-inject-plexus-1.4.2.jar && jar tf /tmp/sisu-inject-plexus-1.4.2.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 107ms:
+odehaus/plexus/component/configurator/converters/composite/
+org/codehaus/plexus/component/configurator/converters/composite/ArrayConverter.class
+org/codehaus/plexus/component/configurator/converters/composite/CollectionConverter.class
+org/codehaus/plexus/component/configurator/converters/composite/MapConverter.class
+org/codehaus/plexus/component/configurator/converters/composite/ObjectWithFieldsConverter.class
+org/codehaus/plexus/component/configurator/converters/composite/PlexusConfigurationConverter.class
+org/codehaus/plexus/component/configurator/converters/composite/PropertiesConverter.class
+org/codehaus/plexus/component/configurator/converters/lookup/
+org/codehaus/plexus/component/configurator/converters/lookup/ConverterLookup.class
+org/codehaus/plexus/component/configurator/converters/lookup/DefaultConverterLookup.class
+org/codehaus/plexus/component/configurator/converters/special/
+org/codehaus/plexus/component/configurator/converters/special/ClassRealmConverter.class
+org/codehaus/plexus/component/configurator/expression/
+org/codehaus/plexus/component/configurator/expression/DefaultExpressionEvaluator.class
+org/codehaus/plexus/component/configurator/expression/ExpressionEvaluationException.class
+org/codehaus/plexus/component/configurator/expression/ExpressionEvaluator.class
+org/codehaus/plexus/component/configurator/expression/TypeAwareExpressionEvaluator.class
+org/codehaus/plexus/component/factory/
+org/codehaus/plexus/component/factory/AbstractComponentFactory.class
+org/codehaus/plexus/component/factory/ComponentFactory.class
+org/codehaus/plexus/component/factory/ComponentInstantiationException.class
+org/codehaus/plexus/component/repository/
+org/codehaus/plexus/component/repository/ComponentDependency.class
+org/codehaus/plexus/component/repository/ComponentDescriptor.class
+org/codehaus/plexus/component/repository/ComponentRequirement.class
+org/codehaus/plexus/component/repository/ComponentRequirementList.class
+org/codehaus/plexus/component/repository/ComponentSetDescriptor.class
+org/codehaus/plexus/component/repository/exception/
+org/codehaus/plexus/component/repository/exception/ComponentLifecycleException.class
+org/codehaus/plexus/component/repository/exception/ComponentLookupException.class
+org/codehaus/plexus/component/repository/exception/ComponentRepositoryException.class
+org/codehaus/plexus/configuration/
+org/codehaus/plexus/configuration/DefaultPlexusConfiguration.class
+org/codehaus/plexus/configuration/PlexusConfiguration.class
+org/codehaus/plexus/configuration/PlexusConfigurationException.class
+org/codehaus/plexus/configuration/xml/
+org/codehaus/plexus/configuration/xml/XmlPlexusConfiguration.class
+org/codehaus/plexus/context/
+org/codehaus/plexus/context/Context.class
+org/codehaus/plexus/context/ContextException.class
+org/codehaus/plexus/context/ContextMapAdapter.class
+org/codehaus/plexus/context/DefaultContext.class
+org/codehaus/plexus/logging/
+org/codehaus/plexus/logging/AbstractLogEnabled.class
+org/codehaus/plexus/logging/AbstractLogger.class
+org/codehaus/plexus/logging/AbstractLoggerManager.class
+org/codehaus/plexus/logging/BaseLoggerManager.class
+org/codehaus/plexus/logging/LogEnabled.class
+org/codehaus/plexus/logging/Logger.class
+org/codehaus/plexus/logging/LoggerManager.class
+org/codehaus/plexus/logging/console/
+org/codehaus/plexus/logging/console/ConsoleLogger.class
+org/codehaus/plexus/logging/console/ConsoleLoggerManager.class
+
+web search: 
+web search: 
+web search: 
+web search: org.sonatype.sisu sisu-inject-plexus 1.4.2 repository source tests documentation
+exec
+/usr/bin/bash -lc "rg -n \"source-code-url|test-code-url|documentation-url|repository-url|not-for-native-image|language\" build/discovered-artifact-metadata metadata -g '*.json' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:6:    "repository-url" : "https://github.com/eclipse-sisu/sisu-project",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:7:    "test-code-url" : "https://github.com/eclipse-sisu/sisu-project/tree/milestones/$version$/org.eclipse.sisu.inject.tests",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/$version$/okio-jvm-$version$-sources.jar",
+metadata/com.squareup.okio/okio-jvm/index.json:6:    "repository-url" : "https://github.com/square/okio",
+metadata/com.squareup.okio/okio-jvm/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/parent-$version$/okio/src/jvmTest",
+metadata/com.squareup.okio/okio-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/$version$/okio-jvm-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/org.apache.camel/camel-util-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-sources.jar",
+metadata/org.apache.camel/camel-util-json/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/camel-util-json/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
+metadata/org.apache.camel/camel-util-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-util-json/$version$/camel-util-json-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-module-scala",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-scala/tree/jackson-module-scala-$version$/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:9:    "description" : "Jackson Module Scala adds support for serializing and deserializing Scala classes and standard Scala collection types with Jackson Databind. It provides Jackson modules and serializers/deserializers that understand Scala language constructs such as case classes, Option values, tuples, maps, sequences, and iterators.",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-sources.jar",
+metadata/com.squareup.okio/okio/index.json:6:    "repository-url" : "https://github.com/square/okio",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-$version$/okio/src/test",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-javadoc.jar",
+metadata/org.apache.camel/apt/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/$version$/apt-$version$-sources.jar",
+metadata/org.apache.camel/apt/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/apt/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/apt/src/test",
+metadata/org.apache.camel/apt/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/apt/$version$/apt-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-java8",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-java8/tree/jackson-modules-java8-$version$/parameter-names/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:6:    "repository-url" : "https://github.com/apache/zookeeper",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-tests.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-starter/index.json:3:    "not-for-native-image": true,
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-el/$version$/tomcat-embed-el-$version$-sources.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:6:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test/org/apache/el",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:8:    "documentation-url" : "https://github.com/apache/tomcat/tree/$version$/webapps/docs/elapi",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-sources.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf/zookeeper.git",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-tests.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:8:    "documentation-url" : "https://zookeeper.apache.org/doc/r3.8.1/index.html",
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:3:    "not-for-native-image": true,
+metadata/io.perfmark/perfmark-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/perfmark/perfmark-api/$version$/perfmark-api-$version$-sources.jar",
+metadata/io.perfmark/perfmark-api/index.json:6:    "repository-url" : "https://github.com/perfmark/perfmark",
+metadata/io.perfmark/perfmark-api/index.json:7:    "test-code-url" : "https://github.com/perfmark/perfmark/tree/v$version$/api/src/test",
+metadata/io.perfmark/perfmark-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/perfmark/perfmark-api/$version$/perfmark-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:5:    "repository-url" : "https://github.com/javaee/jaxb-istack-commons",
+metadata/com.sun.istack/istack-commons-runtime/index.json:6:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/$version$-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:20:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
+metadata/com.sun.istack/istack-commons-runtime/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/runtime/src/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-api/$version$/camel-api-$version$-sources.jar",
+metadata/org.apache.camel/camel-api/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/camel-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
+metadata/org.apache.camel/camel-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-api/$version$/camel-api-$version$-javadoc.jar",
+metadata/org.scala-js/scalajs-stubs_2.13/index.json:3:    "not-for-native-image": true,
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/$version$/tomcat-embed-websocket-$version$-sources.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json:6:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test/org/apache/tomcat/websocket",
+metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json:8:    "documentation-url" : "https://github.com/apache/tomcat/blob/$version$/webapps/docs/web-socket-howto.xml",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-modules-base",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-base/tree/jackson-modules-base-$version$/paranamer/src/test/java",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:30:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:31:    "repository-url" : "https://github.com/FasterXML/jackson-modules-base",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:32:    "test-code-url" : "https://github.com/FasterXML/jackson-modules-base/tree/jackson-modules-base-$version$/paranamer/src/test/java",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:33:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/fusesource/hawtjni/hawtjni-runtime/$version$/hawtjni-runtime-$version$-sources.jar",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:6:    "repository-url" : "https://github.com/fusesource/hawtjni",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:7:    "test-code-url" : "N/A",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/fusesource/hawtjni/hawtjni-runtime/$version$/hawtjni-runtime-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-management-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-management-api/$version$/camel-management-api-$version$-sources.jar",
+metadata/org.apache.camel/camel-management-api/index.json:6:    "repository-url" : "https://github.com/apache/camel",
+metadata/org.apache.camel/camel-management-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel/$version$/camel-$version$-source-release.zip",
+metadata/org.apache.camel/camel-management-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-management-api/$version$/camel-management-api-$version$-javadoc.jar",
+metadata/com.zaxxer/SparseBitSet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/SparseBitSet/$version$/SparseBitSet-$version$-sources.jar",
+metadata/com.zaxxer/SparseBitSet/index.json:6:    "repository-url" : "https://github.com/brettwooldridge/SparseBitSet",
+metadata/com.zaxxer/SparseBitSet/index.json:7:    "test-code-url" : "https://github.com/brettwooldridge/SparseBitSet/tree/SparseBitSet-$version$/src/test/java",
+metadata/com.zaxxer/SparseBitSet/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/zaxxer/SparseBitSet/$version$/SparseBitSet-$version$-javadoc.jar",
+metadata/javax.enterprise/cdi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-sources.jar",
+metadata/javax.enterprise/cdi-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/weld/api",
+metadata/javax.enterprise/cdi-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.enterprise/cdi-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/enterprise/cdi-api/$version$/cdi-api-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-util/index.json:6:    "repository-url" : "https://github.com/apache/directory-kerby",
+metadata/org.apache.kerby/kerby-util/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-common/kerby-util/src/test/java",
+metadata/org.apache.kerby/kerby-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-javadoc.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/$version$/tomcat-embed-core-$version$-sources.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:7:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:8:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:9:    "documentation-url" : "https://github.com/apache/tomcat/tree/$version$/webapps/docs",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:86:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/$version$/tomcat-embed-core-$version$-sources.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:87:    "repository-url" : "https://github.com/apache/tomcat",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:88:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:89:    "documentation-url" : "https://github.com/apache/tomcat/tree/$version$/webapps/docs",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/$version$/scalajs-javalib-intf-$version$-sources.jar",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:6:    "repository-url" : "https://github.com/scala-js/scala-js",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:7:    "test-code-url" : "https://github.com/scala-js/scala-js/tree/v$version$/test-suite",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/$version$/scalajs-javalib-intf-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-module-kotlin",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-$version$/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:6:    "repository-url" : "https://github.com/google/dagger",
+metadata/com.google.dagger/dagger/index.json:7:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-sources.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:5:    "repository-url" : "https://github.com/open-telemetry/semantic-conventions-java",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:6:    "test-code-url" : "https://github.com/open-telemetry/semantic-conventions-java/tree/v1.23.1/src/test",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-javadoc.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-sources.jar",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:20:    "repository-url" : "https://github.com/open-telemetry/semantic-conventions-java",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:21:    "test-code-url" : "https://github.com/open-telemetry/semantic-conventions-java/tree/v1.25.0/semconv/src/test",
+metadata/io.opentelemetry.semconv/opentelemetry-semconv/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/semconv/opentelemetry-semconv/$version$/opentelemetry-semconv-$version$-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
+metadata/com.zaxxer/HikariCP/index.json:5:    "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+metadata/com.zaxxer/HikariCP/index.json:6:    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/inject/guice-plexus/1.4.2/guice-plexus-1.4.2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <relativePath>../guice-bean</relativePath>
+    <groupId>org.sonatype.sisu.inject</groupId>
+    <artifactId>guice-bean</artifactId>
+    <version>1.4.2</version>
+  </parent>
+
+  <packaging>pom</packaging>
+
+  <artifactId>guice-plexus</artifactId>
+
+  <name>Guice - Plexus</name>
+
+  <modules>
+    <module>guice-plexus-metadata</module>
+    <module>guice-plexus-scanners</module>
+    <module>guice-plexus-converters</module>
+    <module>guice-plexus-locators</module>
+    <module>guice-plexus-binders</module>
+    <module>guice-plexus-shim</module>
+    <module>sisu-inject-plexus</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-annotations</artifactId>
+        <version>1.5.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-classworlds</artifactId>
+        <version>2.2.3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>2.0.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-plexus-metadata</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-plexus-scanners</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-plexus-converters</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-plexus-locators</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-plexus-binders</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-plexus-shim</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-plexus-tck</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-inject-plexus</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 213ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/sisu/sisu-inject-plexus/1.4.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/sisu/sisu-inject-plexus/1.4.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="sisu-inject-plexus-1.4.2-javadoc.jar" title="sisu-inject-plexus-1.4.2-javadoc.jar">sisu-inject-plexus-1.4.2-javadoc.jar</a>              2010-09-24 15:15    734440      
+<a href="sisu-inject-plexus-1.4.2-javadoc.jar.asc" title="sisu-inject-plexus-1.4.2-javadoc.jar.asc">sisu-inject-plexus-1.4.2-javadoc.jar.asc</a>          2010-09-24 15:15       194      
+<a href="sisu-inject-plexus-1.4.2-javadoc.jar.asc.md5" title="sisu-inject-plexus-1.4.2-javadoc.jar.asc.md5">sisu-inject-plexus-1.4.2-javadoc.jar.asc.md5</a>      2010-09-24 15:15        32      
+<a href="sisu-inject-plexus-1.4.2-javadoc.jar.asc.sha1" title="sisu-inject-plexus-1.4.2-javadoc.jar.asc.sha1">sisu-inject-plexus-1.4.2-javadoc.jar.asc.sha1</a>     2010-09-24 15:15        40      
+<a href="sisu-inject-plexus-1.4.2-javadoc.jar.md5" title="sisu-inject-plexus-1.4.2-javadoc.jar.md5">sisu-inject-plexus-1.4.2-javadoc.jar.md5</a>          2010-09-24 15:15        32      
+<a href="sisu-inject-plexus-1.4.2-javadoc.jar.sha1" title="sisu-inject-plexus-1.4.2-javadoc.jar.sha1">sisu-inject-plexus-1.4.2-javadoc.jar.sha1</a>         2010-09-24 15:15        40      
+<a href="sisu-inject-plexus-1.4.2-sources.jar" title="sisu-inject-plexus-1.4.2-sources.jar">sisu-inject-plexus-1.4.2-sources.jar</a>              2010-09-24 15:15    165435      
+<a href="sisu-inject-plexus-1.4.2-sources.jar.asc" title="sisu-inject-plexus-1.4.2-sources.jar.asc">sisu-inject-plexus-1.4.2-sources.jar.asc</a>          2010-09-24 15:15       194      
+<a href="sisu-inject-plexus-1.4.2-sources.jar.asc.md5" title="sisu-inject-plexus-1.4.2-sources.jar.asc.md5">sisu-inject-plexus-1.4.2-sources.jar.asc.md5</a>      2010-09-24 15:15        32      
+<a href="sisu-inject-plexus-1.4.2-sources.jar.asc.sha1" title="sisu-inject-plexus-1.4.2-sources.jar.asc.sha1">sisu-inject-plexus-1.4.2-sources.jar.asc.sha1</a>     2010-09-24 15:15        40      
+<a href="sisu-inject-plexus-1.4.2-sources.jar.md5" title="sisu-inject-plexus-1.4.2-sources.jar.md5">sisu-inject-plexus-1.4.2-sources.jar.md5</a>          2010-09-24 15:15        32      
+<a href="sisu-inject-plexus-1.4.2-sources.jar.sha1" title="sisu-inject-plexus-1.4.2-sources.jar.sha1">sisu-inject-plexus-1.4.2-sources.jar.sha1</a>         2010-09-24 15:15        40      
+<a href="sisu-inject-plexus-1.4.2.jar" title="sisu-inject-plexus-1.4.2.jar">sisu-inject-plexus-1.4.2.jar</a>                      2010-09-24 15:15    201716      
+<a href="sisu-inject-plexus-1.4.2.jar.asc" title="sisu-inject-plexus-1.4.2.jar.asc">sisu-inject-plexus-1.4.2.jar.asc</a>                  2010-09-24 15:15       194      
+<a href="sisu-inject-plexus-1.4.2.jar.asc.md5" title="sisu-inject-plexus-1.4.2.jar.asc.md5">sisu-inject-plexus-1.4.2.jar.asc.md5</a>              2010-09-24 15:15        32      
+<a href="sisu-inject-plexus-1.4.2.jar.asc.sha1" title="sisu-inject-plexus-1.4.2.jar.asc.sha1">sisu-inject-plexus-1.4.2.jar.asc.sha1</a>             2010-09-24 15:15        40      
+<a href="sisu-inject-plexus-1.4.2.jar.md5" title="sisu-inject-plexus-1.4.2.jar.md5">sisu-inject-plexus-1.4.2.jar.md5</a>                  2010-09-24 15:15        32      
+<a href="sisu-inject-plexus-1.4.2.jar.sha1" title="sisu-inject-plexus-1.4.2.jar.sha1">sisu-inject-plexus-1.4.2.jar.sha1</a>                 2010-09-24 15:15        40      
+<a href="sisu-inject-plexus-1.4.2.pom" title="sisu-inject-plexus-1.4.2.pom">sisu-inject-plexus-1.4.2.pom</a>                      2010-09-24 15:15      5369      
+<a href="sisu-inject-plexus-1.4.2.pom.asc" title="sisu-inject-plexus-1.4.2.pom.asc">sisu-inject-plexus-1.4.2.pom.asc</a>                  2010-09-24 15:15       194      
+<a href="sisu-inject-plexus-1.4.2.pom.asc.md5" title="sisu-inject-plexus-1.4.2.pom.asc.md5">sisu-inject-plexus-1.4.2.pom.asc.md5</a>              2010-09-24 15:15        32      
+<a href="sisu-inject-plexus-1.4.2.pom.asc.sha1" title="sisu-inject-plexus-1.4.2.pom.asc.sha1">sisu-inject-plexus-1.4.2.pom.asc.sha1</a>             2010-09-24 15:15        40      
+<a href="sisu-inject-plexus-1.4.2.pom.md5" title="sisu-inject-plexus-1.4.2.pom.md5">sisu-inject-plexus-1.4.2.pom.md5</a>                  2010-09-24 15:15        32      
+<a href="sisu-inject-plexus-1.4.2.pom.sha1" title="sisu-inject-plexus-1.4.2.pom.sha1">sisu-inject-plexus-1.4.2.pom.sha1</a>                 2010-09-24 15:15        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+The artifact is a normal JVM jar with `.class` files, so I won’t mark it as `not-for-native-image`. Its own POM is sparse, so I’m walking the parent POM chain to get the authoritative SCM/repository information.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/inject/guice-bean/1.4.2/guice-bean-1.4.2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu</groupId>
+    <artifactId>sisu-inject</artifactId>
+    <version>1.4.2</version>
+  </parent>
+
+  <packaging>pom</packaging>
+
+  <groupId>org.sonatype.sisu.inject</groupId>
+  <artifactId>guice-bean</artifactId>
+
+  <name>Guice - Bean</name>
+
+  <modules>
+    <module>guice-bean-reflect</module>
+    <module>guice-bean-inject</module>
+    <module>guice-bean-scanners</module>
+    <module>guice-bean-converters</module>
+    <module>guice-bean-locators</module>
+    <module>guice-bean-binders</module>
+    <module>guice-bean-containers</module>
+    <module>sisu-inject-bean</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-bean-reflect</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-bean-inject</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-bean-scanners</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-bean-converters</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-bean-locators</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-bean-binders</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu.inject</groupId>
+        <artifactId>guice-bean-containers</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-inject-bean</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/inject/guice-plexus-tck/1.4.2/guice-plexus-tck-1.4.2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/inject/guice-plexus-tck/1.4.2/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ exited 22 in 229ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 237ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject/1.4.2/sisu-inject-1.4.2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu</groupId>
+    <artifactId>sisu-parent</artifactId>
+    <version>1.4.2</version>
+  </parent>
+
+  <packaging>pom</packaging>
+
+  <artifactId>sisu-inject</artifactId>
+
+  <name>Sisu - Dependency Injection</name>
+
+  <modules>
+    <module>guice-bean</module>
+    <module>guice-plexus</module>
+  </modules>
+
+  <properties>
+    <sisu.guice.version>2.1.7</sisu.guice.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-guice</artifactId>
+        <version>${sisu.guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-guice</artifactId>
+        <version>${sisu.guice.version}</version>
+        <classifier>noaop</classifier>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/inject/ | sed -n '1,240p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/sisu/inject</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/sisu/inject</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="cglib/" title="cglib/">cglib/</a>                                                           -         -      
+<a href="containers/" title="containers/">containers/</a>                                                      -         -      
+<a href="extensions-parent/" title="extensions-parent/">extensions-parent/</a>                                               -         -      
+<a href="guava-bootstrap/" title="guava-bootstrap/">guava-bootstrap/</a>                                                 -         -      
+<a href="guava-parent/" title="guava-parent/">guava-parent/</a>                                                    -         -      
+<a href="guava-testlib/" title="guava-testlib/">guava-testlib/</a>                                                   -         -      
+<a href="guava-tests/" title="guava-tests/">guava-tests/</a>                                                     -         -      
+<a href="guice-assistedinject/" title="guice-assistedinject/">guice-assistedinject/</a>                                            -         -      
+<a href="guice-bean/" title="guice-bean/">guice-bean/</a>                                                      -         -      
+<a href="guice-bean-binders/" title="guice-bean-binders/">guice-bean-binders/</a>                                              -         -      
+<a href="guice-bean-containers/" title="guice-bean-containers/">guice-bean-containers/</a>                                           -         -      
+<a href="guice-bean-converters/" title="guice-bean-converters/">guice-bean-converters/</a>                                           -         -      
+<a href="guice-bean-inject/" title="guice-bean-inject/">guice-bean-inject/</a>                                               -         -      
+<a href="guice-bean-locators/" title="guice-bean-locators/">guice-bean-locators/</a>                                             -         -      
+<a href="guice-bean-reflect/" title="guice-bean-reflect/">guice-bean-reflect/</a>                                              -         -      
+<a href="guice-bean-scanners/" title="guice-bean-scanners/">guice-bean-scanners/</a>                                             -         -      
+<a href="guice-bom/" title="guice-bom/">guice-bom/</a>                                                       -         -      
+<a href="guice-dagger-adapter/" title="guice-dagger-adapter/">guice-dagger-adapter/</a>                                            -         -      
+<a href="guice-eclipse/" title="guice-eclipse/">guice-eclipse/</a>                                                   -         -      
+<a href="guice-extensions/" title="guice-extensions/">guice-extensions/</a>                                                -         -      
+<a href="guice-grapher/" title="guice-grapher/">guice-grapher/</a>                                                   -         -      
+<a href="guice-jmx/" title="guice-jmx/">guice-jmx/</a>                                                       -         -      
+<a href="guice-jndi/" title="guice-jndi/">guice-jndi/</a>                                                      -         -      
+<a href="guice-mini/" title="guice-mini/">guice-mini/</a>                                                      -         -      
+<a href="guice-multibindings/" title="guice-multibindings/">guice-multibindings/</a>                                             -         -      
+<a href="guice-parent/" title="guice-parent/">guice-parent/</a>                                                    -         -      
+<a href="guice-persist/" title="guice-persist/">guice-persist/</a>                                                   -         -      
+<a href="guice-plexus/" title="guice-plexus/">guice-plexus/</a>                                                    -         -      
+<a href="guice-plexus-binders/" title="guice-plexus-binders/">guice-plexus-binders/</a>                                            -         -      
+<a href="guice-plexus-converters/" title="guice-plexus-converters/">guice-plexus-converters/</a>                                         -         -      
+<a href="guice-plexus-lifecycles/" title="guice-plexus-lifecycles/">guice-plexus-lifecycles/</a>                                         -         -      
+<a href="guice-plexus-locators/" title="guice-plexus-locators/">guice-plexus-locators/</a>                                           -         -      
+<a href="guice-plexus-metadata/" title="guice-plexus-metadata/">guice-plexus-metadata/</a>                                           -         -      
+<a href="guice-plexus-scanners/" title="guice-plexus-scanners/">guice-plexus-scanners/</a>                                           -         -      
+<a href="guice-plexus-shim/" title="guice-plexus-shim/">guice-plexus-shim/</a>                                               -         -      
+<a href="guice-service/" title="guice-service/">guice-service/</a>                                                   -         -      
+<a href="guice-servlet/" title="guice-servlet/">guice-servlet/</a>                                                   -         -      
+<a href="guice-spring/" title="guice-spring/">guice-spring/</a>                                                    -         -      
+<a href="guice-struts2/" title="guice-struts2/">guice-struts2/</a>                                                   -         -      
+<a href="guice-testlib/" title="guice-testlib/">guice-testlib/</a>                                                   -         -      
+<a href="guice-throwingproviders/" title="guice-throwingproviders/">guice-throwingproviders/</a>                                         -         -      
+<a href="jdk8-tests/" title="jdk8-tests/">jdk8-tests/</a>                                                      -         -      
+<a href="registries/" title="registries/">registries/</a>                                                      -         -      
+<a href="wrappers/" title="wrappers/">wrappers/</a>                                                        -         -      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject/1.4.2/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 283ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/sisu/sisu-inject/1.4.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/sisu/sisu-inject/1.4.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="sisu-inject-1.4.2.pom" title="sisu-inject-1.4.2.pom">sisu-inject-1.4.2.pom</a>                             2010-09-24 15:10      1249      
+<a href="sisu-inject-1.4.2.pom.asc" title="sisu-inject-1.4.2.pom.asc">sisu-inject-1.4.2.pom.asc</a>                         2010-09-24 15:10       194      
+<a href="sisu-inject-1.4.2.pom.asc.md5" title="sisu-inject-1.4.2.pom.asc.md5">sisu-inject-1.4.2.pom.asc.md5</a>                     2010-09-24 15:10        32      
+<a href="sisu-inject-1.4.2.pom.asc.sha1" title="sisu-inject-1.4.2.pom.asc.sha1">sisu-inject-1.4.2.pom.asc.sha1</a>                    2010-09-24 15:10        40      
+<a href="sisu-inject-1.4.2.pom.md5" title="sisu-inject-1.4.2.pom.md5">sisu-inject-1.4.2.pom.md5</a>                         2010-09-24 15:10        32      
+<a href="sisu-inject-1.4.2.pom.sha1" title="sisu-inject-1.4.2.pom.sha1">sisu-inject-1.4.2.pom.sha1</a>                        2010-09-24 15:10        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-parent/1.4.2/sisu-parent-1.4.2.pom' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2009 Sonatype, Inc. All rights reserved.
+
+This program is licensed to you under the Apache License Version 2.0,
+and you may not use this file except in compliance with the Apache License Version 2.0.
+You may obtain a copy of the Apache License Version 2.0 at http://www.apache.org/licenses/LICENSE-2.0.
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the Apache License Version 2.0 is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Apache License Version 2.0 for the specific language governing permissions and limitations there under.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.forge</groupId>
+    <artifactId>forge-parent</artifactId>
+    <version>6</version>
+  </parent>
+
+  <packaging>pom</packaging>
+
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-parent</artifactId>
+  <version>1.4.2</version>
+
+  <name>Sisu</name>
+
+  <url>http://sisu.sonatype.org/</url>
+  <inceptionYear>2010</inceptionYear>
+
+  <organization>
+    <name>Sonatype, Inc.</name>
+    <url>http://www.sonatype.com</url>
+  </organization>
+
+  <mailingLists>
+    <mailingList>
+      <name>Sisu Developers List</name>
+      <subscribe>sisu-dev-subscribe@sonatype.org</subscribe>
+      <unsubscribe>sisu-dev-unsubscribe@sonatype.org</unsubscribe>
+      <post>sisu-dev@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Sisu Users List</name>
+      <subscribe>sisu-user-subscribe@sonatype.org</subscribe>
+      <unsubscribe>sisu-user-unsubscribe@sonatype.org</unsubscribe>
+      <post>sisu-user@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Sisu Commits List</name>
+      <subscribe>sisu-scm-subscribe@sonatype.org</subscribe>
+      <unsubscribe>sisu-scm-unsubscribe@sonatype.org</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
+  <scm>
+    <connection>scm:git:git@github.com:sonatype/sisu.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/sisu.git</developerConnection>
+    <url>git@github.com:sonatype/sisu.git</url>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.sonatype.org/browse/SISU</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Hudson</system>
+    <url>https://grid.sonatype.org/ci/job/Sisu/</url>
+  </ciManagement>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <modules>
+    <module>sisu-inject</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <slf4j.version>1.6.1</slf4j.version>
+    <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>3.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>1.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>4.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>4.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.framework</artifactId>
+        <version>3.0.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.2</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.1.0</version>
+          <configuration>
+            <instructions>
+              <Bundle-RequiredExecutionEnvironment>
+                J2SE-1.5,JavaSE-1.6
+              </Bundle-RequiredExecutionEnvironment>
+              <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
+              <_nouses>true</_nouses>
+              <_removeheaders>
+                Embed-Dependency,Embed-Transitive,
+                Built-By,Tool,Created-By,Build-Jdk,
+                Include-Resource,Private-Package,
+                Ignore-Package,Bnd-LastModified
+              </_removeheaders>
+            </instructions>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>1.4</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.5</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.0</version>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>examples</id>
+      <modules>
+        <module>sisu-examples</module>
+      </modules>
+    </profile>
+  </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-parent/1.4.2/sisu-parent-1.4.2.pom | rg -n "scm|connection|developerConnection|url|github|svn|git|project.build.sourceEncoding|description|site" -C 2' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+33-  <name>Sisu</name>
+34-
+35:  <url>http://sisu.sonatype.org/</url>
+36-  <inceptionYear>2010</inceptionYear>
+37-
+38-  <organization>
+39-    <name>Sonatype, Inc.</name>
+40:    <url>http://www.sonatype.com</url>
+41-  </organization>
+42-
+--
+58-    <mailingList>
+59-      <name>Sisu Commits List</name>
+60:      <subscribe>sisu-scm-subscribe@sonatype.org</subscribe>
+61:      <unsubscribe>sisu-scm-unsubscribe@sonatype.org</unsubscribe>
+62-    </mailingList>
+63-  </mailingLists>
+64-
+65:  <scm>
+66:    <connection>scm:git:git@github.com:sonatype/sisu.git</connection>
+67:    <developerConnection>scm:git:git@github.com:sonatype/sisu.git</developerConnection>
+68:    <url>git@github.com:sonatype/sisu.git</url>
+69:  </scm>
+70-
+71-  <issueManagement>
+72-    <system>jira</system>
+73:    <url>https://issues.sonatype.org/browse/SISU</url>
+74-  </issueManagement>
+75-
+76-  <ciManagement>
+77-    <system>Hudson</system>
+78:    <url>https://grid.sonatype.org/ci/job/Sisu/</url>
+79-  </ciManagement>
+80-
+--
+82-    <license>
+83-      <name>The Apache Software License, Version 2.0</name>
+84:      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+85-      <distribution>repo</distribution>
+86-    </license>
+--
+92-
+93-  <properties>
+94:    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+95-    <slf4j.version>1.6.1</slf4j.version>
+96-    <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-parent/1.4.2/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 277ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/sisu/sisu-parent/1.4.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/sisu/sisu-parent/1.4.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="sisu-parent-1.4.2.pom" title="sisu-parent-1.4.2.pom">sisu-parent-1.4.2.pom</a>                             2010-09-24 15:10      7777      
+<a href="sisu-parent-1.4.2.pom.asc" title="sisu-parent-1.4.2.pom.asc">sisu-parent-1.4.2.pom.asc</a>                         2010-09-24 15:10       194      
+<a href="sisu-parent-1.4.2.pom.asc.md5" title="sisu-parent-1.4.2.pom.asc.md5">sisu-parent-1.4.2.pom.asc.md5</a>                     2010-09-24 15:10        32      
+<a href="sisu-parent-1.4.2.pom.asc.sha1" title="sisu-parent-1.4.2.pom.asc.sha1">sisu-parent-1.4.2.pom.asc.sha1</a>                    2010-09-24 15:10        40      
+<a href="sisu-parent-1.4.2.pom.md5" title="sisu-parent-1.4.2.pom.md5">sisu-parent-1.4.2.pom.md5</a>                         2010-09-24 15:10        32      
+<a href="sisu-parent-1.4.2.pom.sha1" title="sisu-parent-1.4.2.pom.sha1">sisu-parent-1.4.2.pom.sha1</a>                        2010-09-24 15:10        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/sonatype/sisu.git | rg '1\\.4\\.2|sisu' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/sonatype/sisu.git | sed -n '1,120p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2-tests.jar \\
+  https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject/1.4.2/sisu-inject-1.4.2-source-release.zip \\
+  https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-parent/1.4.2/sisu-parent-1.4.2-source-release.zip \\
+  https://repo1.maven.org/maven2/org/sonatype/sisu/inject/guice-plexus/1.4.2/guice-plexus-1.4.2-source-release.zip; do printf '%s -> ' \""'$u"; curl -fsSI "$u" | sed -n '"'1p' || true; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 441ms:
+e2dc0472c750d94d543d40bdef903202d8f44369	refs/heads/SISU-112
+fb639be0a995b816f90e52a9c4f3f3cc33799740	refs/heads/bump-version-to-2.3.1-snapshot
+497fa9e29896ab76782fff399df37eb173ef10ae	refs/heads/collection-requirement
+9666af88460c17a0ab97aa127d13b06bf5697619	refs/heads/eclipse-move
+8448a91253504bf2c1e01683056b15a6d3f04f2d	refs/heads/gh-pages
+f5e3f1645e925844f492cd0ce31d8b8d6c9303fb	refs/heads/master
+1aeece488c8212e3690d8f6c9e16ad691e10b8b1	refs/heads/old-master
+d95dfd7fb84083a21afd426257d4c82e63ce56c7	refs/heads/perf
+e2d16d96f4ff14eaf32af69d79b3718ff75bf5f1	refs/heads/sisu-1.4.3-server
+b23be79610aea132bd059150d426d27fa273b9bb	refs/heads/sisu-116-bind-bundle-context
+4a7d1925377ed220f1e55c416602a8811332bd76	refs/heads/sisu-2.1.1-nexus-4312
+2e790cf59d6e4a0871dfb23f027cb96d9c7520a7	refs/heads/wrappers
+
+ succeeded in 488ms:
+355e55fcd95af44765a0599302becfffd8f7a3c1	refs/tags/sisu-1.4.0
+65583d86c5df9478300e2e2fd202a854a5b39eb2	refs/tags/sisu-1.4.0^{}
+96e6a94064a1369f2d57258ecd9f592b922111eb	refs/tags/sisu-1.4.1
+26d5a5f5b772aa39022db509e80580c308743f15	refs/tags/sisu-1.4.1^{}
+18a9c2cda2e4cf4dbbd0409fc021ab685f164358	refs/tags/sisu-1.4.2
+ae9a4073f1f4b92d5750e80eab4bd7987c636bde	refs/tags/sisu-1.4.2^{}
+4e25c0d4535c6c0f465fae83a9f3a38a4f4bb448	refs/tags/sisu-1.4.3
+baf2834ab6eb5df5f83001a7845c9616e4f3bcec	refs/tags/sisu-1.4.3^{}
+ecfd054f9e34f0a251fd9236bde5f5d8e00369cd	refs/tags/sisu-1.4.3.1
+5f665862707b4dcbf3a0419f9588a51592d1e601	refs/tags/sisu-1.4.3.1^{}
+b1a355af852bbc744c46ac039370117bf439fb1c	refs/tags/sisu-1.4.3.2
+20a2e056d1fc8a1d9af62d5ca35ec9939a8422ce	refs/tags/sisu-1.4.3.2^{}
+d37820f563b4fc73c4058cd88703b520a261e56f	refs/tags/sisu-2.0.0
+76e31d881954f73047f9241bc32bc7920f51961e	refs/tags/sisu-2.0.0^{}
+7ee57298d1ecd2f9ac865bfbf8482c962c3ffe14	refs/tags/sisu-2.1.0
+ad388269230ba088c6348a8bef3fc6bc5f148639	refs/tags/sisu-2.1.0^{}
+baad53c7d50871c14195aaeab1824f888e6f4a4f	refs/tags/sisu-2.1.1
+184468e2064e306cf9e284dbc3310d243034f388	refs/tags/sisu-2.1.1^{}
+9e1f6f4f104ace9bad87d3b106bd4cf869832d96	refs/tags/sisu-2.2.0
+4b997a980e470cbeb0dd31108ecf87885bfe9f2d	refs/tags/sisu-2.2.0^{}
+89b84617d1c837b8141e4cf25c6638fec589db40	refs/tags/sisu-2.2.1
+12b8a648453a2a34e3a89a05f7cabb4df8cfe48d	refs/tags/sisu-2.2.1^{}
+6ca55620858faf23bbe3f909905d3fcceb91113f	refs/tags/sisu-2.2.2
+1220392f7e37c77909eb7610612adc1fbaee0c33	refs/tags/sisu-2.2.2^{}
+5b27b45f4645c16f3c7823f6a76752ad45077b2e	refs/tags/sisu-2.2.3
+4718c88ff122a1c3352059fa938406a2688b098d	refs/tags/sisu-2.2.3^{}
+f006c1ad2291bc8dea5d979019aebe7d4b390431	refs/tags/sisu-2.3.0
+3b60a6ec2ebb26142c8092ad93de058c0c0cda52	refs/tags/sisu-2.3.0^{}
+a42ddf5b62412cdf4025e086ef27e5f334856677	refs/tags/sisu-2.3.1
+2f79198aa16f11b789dd219c9fe2b54933463f7b	refs/tags/sisu-2.3.1^{}
+2f2cab48ab4143426d4338b4440797fe13c9a93a	refs/tags/sisu-2.3.2
+85396abcd8a76e83fe27f3d08eecdbab7b586ad3	refs/tags/sisu-2.3.2^{}
+0df0445d9f0ec42df0de4d89c2e9e1c6e8fed45e	refs/tags/sisu-2.3.3
+e39d5344211e42af716754c040461345905caa60	refs/tags/sisu-2.3.3^{}
+03f7eaf414b5cde6fe11e79a5305c2aa906ffe06	refs/tags/sisu-2.3.4
+1b0258a218a1cbdd3444751dd6719c385db1f82f	refs/tags/sisu-2.3.4^{}
+2e6f18256ab44d7131c96433e05f9c87c02618a1	refs/tags/sisu-2.4.0
+741eea627ccf671388536367542a11584640f7be	refs/tags/sisu-2.4.0^{}
+5757456c442feee14d8ed7437f023e8a1dc60e25	refs/tags/sisu-2.4.1
+6da21b3f806586a83d3f83a958aa7f3ae4bf3827	refs/tags/sisu-2.4.1^{}
+84eecfeee6fc64bc89dbf619f321ac9cbfba3509	refs/tags/sisu-2.4.2
+24ae61a988792daf5cea22c5fd4f705523028285	refs/tags/sisu-2.4.2^{}
+325a767e9d18e394c9d0010772ecc28326c5c3aa	refs/tags/sisu-2.4.3
+292ac7b4ee52bf3e7776656c1eda72f1a424a66f	refs/tags/sisu-2.4.3^{}
+b55b3032d16a73a31229d6c1fb42c42f27e1eb94	refs/tags/sisu-2.5.0
+722234d54fab0d6eb2b791eaceb1c745d055447f	refs/tags/sisu-2.5.0^{}
+38b716a23c7c1ec93cdf6b1b4ab158e0a4e1b108	refs/tags/sisu-2.5.1
+3e07b0faf2ae1df0d69ef16499dfb4a6b0101dde	refs/tags/sisu-2.5.1^{}
+57ca66e0680d7d9eabb98bdbab89fcff971e6098	refs/tags/sisu-2.5.2
+c295ca177016df4a8d6e945b0c9fe972665b7d5a	refs/tags/sisu-2.5.2^{}
+55fc50b85b7ecf018fa6ef2a8e1f80ed53a7d978	refs/tags/sisu-2.5.3
+d40ddf5ba22afb5ad3d8549a639b134646ac64ad	refs/tags/sisu-2.5.3^{}
+4a98730d35a77e3b56b0895e4056ef8c686e7f4a	refs/tags/sisu-2.6.0
+9e2f2ff383e028fcea19b15e35d9ffbc9a7d363a	refs/tags/sisu-2.6.0^{}
+
+ succeeded in 1684ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject/1.4.2/sisu-inject-1.4.2-source-release.zip -> curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-parent/1.4.2/sisu-parent-1.4.2-source-release.zip -> curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+https://repo1.maven.org/maven2/org/sonatype/sisu/inject/guice-plexus/1.4.2/guice-plexus-1.4.2-source-release.zip -> curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+
+codex
+The POM SCM points at `sonatype/sisu.git`, and the repository has a `sisu-1.4.2` tag. I’m checking that tag’s tree now to locate the module’s test directory instead of guessing a GitHub path.
+exec
+/usr/bin/bash -lc "rm -rf /tmp/sisu-1.4.2 && git clone --depth 1 --branch sisu-1.4.2 https://github.com/sonatype/sisu.git /tmp/sisu-1.4.2 && find /tmp/sisu-1.4.2 -maxdepth 5 \\( -path '*/sisu-inject-plexus*' -o -path '*/guice-plexus*' \\) -type d | sort | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 918ms:
+Note: switching to 'ae9a4073f1f4b92d5750e80eab4bd7987c636bde'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/sisu-inject-plexus
+
+exec
+/usr/bin/bash -lc "find /tmp/sisu-1.4.2/sisu-inject/guice-plexus/sisu-inject-plexus -maxdepth 6 -type d | sort | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/sisu-inject-plexus
+
+exec
+/usr/bin/bash -lc "find /tmp/sisu-1.4.2/sisu-inject/guice-plexus -path '*/src/test*' -type d | sort | sed -n '1,240p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/test/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/test/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/test/java/org/sonatype
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/test/java/org/sonatype/guice
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/test/java/org/sonatype/guice/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/test/java/org/sonatype/guice/plexus/binders
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters/src/test/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters/src/test/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters/src/test/java/org/sonatype
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters/src/test/java/org/sonatype/guice
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters/src/test/java/org/sonatype/guice/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-converters/src/test/java/org/sonatype/guice/plexus/converters
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators/src/test/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators/src/test/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators/src/test/java/org/sonatype
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators/src/test/java/org/sonatype/guice
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators/src/test/java/org/sonatype/guice/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-locators/src/test/java/org/sonatype/guice/plexus/locators
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src/test/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src/test/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src/test/java/org/sonatype
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src/test/java/org/sonatype/guice
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src/test/java/org/sonatype/guice/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src/test/java/org/sonatype/guice/plexus/annotations
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-metadata/src/test/java/org/sonatype/guice/plexus/config
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test/java/org/sonatype
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test/java/org/sonatype/guice
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test/java/org/sonatype/guice/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test/java/org/sonatype/guice/plexus/scanners
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test/resources
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test/resources/META-INF
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-scanners/src/test/resources/META-INF/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/component
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/component/composition
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/component/configurator
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/component/discovery
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/component/factory
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/component/factory/nonjava
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/component/manager
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/component/registry
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/component/repository
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/component/repository/io
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/components
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/configuration
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/configuration/io
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/configuration/xml
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/context
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/hierarchy
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/logging
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/logging/console
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/test/list
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/java/org/codehaus/plexus/test/map
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/META-INF
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/META-INF/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/application
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/jar-repository
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/component
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/component/composition
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/component/composition/autowire
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/component/composition/setter
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/component/factory
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/component/factory/nonjava
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/component/manager
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/configuration
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/configuration/source
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/embed
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/hierarchy
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/logging
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/logging/console
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/test
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/resources/org/codehaus/plexus/test/map
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-a
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-a/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-a/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-a/src/main/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-a/src/main/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-a/src/main/java/org/codehaus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-a/src/main/java/org/codehaus/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-a/src/main/java/org/codehaus/plexus/components
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-b
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-b/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-b/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-b/src/main/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-b/src/main/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-b/src/main/java/org/codehaus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-b/src/main/java/org/codehaus/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-b/src/main/java/org/codehaus/plexus/components
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-c
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-c/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-c/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-c/src/main/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-c/src/main/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-c/src/main/java/org/codehaus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-c/src/main/java/org/codehaus/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-c/src/main/java/org/codehaus/plexus/components
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0/src/main/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0/src/main/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0/src/main/java/org/codehaus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0/src/main/java/org/codehaus/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0/src/main/java/org/codehaus/plexus/plugins
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1/src
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1/src/main
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1/src/main/java
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1/src/main/java/org
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1/src/main/java/org/codehaus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1/src/main/java/org/codehaus/plexus
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1/src/main/java/org/codehaus/plexus/plugins
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-components
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' /tmp/sisu-1.4.2/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml && find /tmp/sisu-1.4.2/sisu-inject/guice-plexus/sisu-inject-plexus -maxdepth 4 -type f | sort | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu.inject</groupId>
+    <artifactId>guice-plexus</artifactId>
+    <version>1.4.2</version>
+  </parent>
+
+  <packaging>bundle</packaging>
+
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-inject-plexus</artifactId>
+
+  <name>Sisu - Inject (Plexus bean support)</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-classworlds</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-bean</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu.inject</groupId>
+      <artifactId>guice-plexus-shim</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <excludeDependencies>
+            <!-- fragment host and external dependencies -->
+            sisu-inject-bean,*;groupId=org.codehaus.plexus
+          </excludeDependencies>
+          <instructions>
+            <Bundle-SymbolicName>
+              org.sonatype.inject.plexus
+            </Bundle-SymbolicName>
+            <Fragment-Host>
+              org.sonatype.inject
+            </Fragment-Host>
+            <Export-Package>
+              org.codehaus.plexus.*;-noimport:=true;-split-package:=merge-first
+            </Export-Package>
+            <Private-Package>
+              META-INF.plexus,org.sonatype.guice.*,org.objectweb.asm
+            </Private-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>${project.groupId}:${project.artifactId}</include>
+                </includes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>org.objectweb</pattern>
+                  <shadedPattern>org.sonatype.guice</shadedPattern>
+                </relocation>
+              </relocations>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <includes>
+                    <include>META-INF/**</include>
+                    <include>org/codehaus/plexus/**</include>
+                    <include>org/sonatype/guice/plexus/**</include>
+                    <include>org/objectweb/asm/*Writer*</include>
+                  </includes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-source</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>unpack-dependencies</goal>
+                </goals>
+                <configuration>
+                  <classifier>sources</classifier>
+                  <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+                  <outputDirectory>${project.build.directory}/sources</outputDirectory>
+                  <excludeGroupIds>org.codehaus.plexus</excludeGroupIds>
+                  <includes>
+                    org/codehaus/plexus/**,org/sonatype/guice/plexus/**
+                  </includes>
+                  <silent>true</silent>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-source</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>${project.build.directory}/sources</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
+/tmp/sisu-1.4.2/sisu-inject/guice-plexus/sisu-inject-plexus/pom.xml
+
+exec
+/usr/bin/bash -lc "find /tmp/sisu-1.4.2 -maxdepth 3 -type f \\( -iname 'README*' -o -iname 'index.*' -o -iname 'site.xml' -o -iname '*.apt' -o -iname '*.xdoc' \\) | sort | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+/tmp/sisu-1.4.2/README
+
+exec
+/usr/bin/bash -lc "find /tmp/sisu-1.4.2/sisu-inject/guice-plexus -path '*/src/main/java/*' -type f | sed 's#/tmp/sisu-1.4.2/##' | sort | sed -n '1,260p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/OptionalPropertyBinding.java
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/PlexusAnnotatedBeanModule.java
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/PlexusBeanBinder.java
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/PlexusBeanManager.java
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/PlexusBindingModule.java
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/PlexusConfigurations.java
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/PlexusPropertyBinder.java
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/PlexusRequirements.java
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/PlexusTypeBinder.java
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/PlexusXmlBeanModule.java
+sisu-inject/guice-plexus/guice-plexus-binders/src/main/java/org/sonatype/guice/plexus/binders/ProvidedPropertyBinding.java
+sisu-inject/guice-plexus/guice-plexus-converters/src/main/java/org/sonatype/guice/plexus/converters/PlexusDateTypeConverter.java
+sisu-inject/guice-plexus/guice-plexus-converters/src/main/java/org/sonatype/guice/plexus/converters/PlexusXmlBeanConverter.java
+sisu-inject/guice-plexus/guice-plexus-locators/src/main/java/org/sonatype/guice/plexus/locators/ClassRealmUtils.java
+sisu-inject/guice-plexus/guice-plexus-locators/src/main/java/org/sonatype/guice/plexus/locators/DefaultPlexusBeanLocator.java
+sisu-inject/guice-plexus/guice-plexus-locators/src/main/java/org/sonatype/guice/plexus/locators/GlobalPlexusBeans.java
+sisu-inject/guice-plexus/guice-plexus-locators/src/main/java/org/sonatype/guice/plexus/locators/LazyPlexusBean.java
+sisu-inject/guice-plexus/guice-plexus-locators/src/main/java/org/sonatype/guice/plexus/locators/MissingPlexusBean.java
+sisu-inject/guice-plexus/guice-plexus-locators/src/main/java/org/sonatype/guice/plexus/locators/PlexusBeans.java
+sisu-inject/guice-plexus/guice-plexus-locators/src/main/java/org/sonatype/guice/plexus/locators/RealmPlexusBeans.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/annotations/ComponentImpl.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/annotations/ConfigurationImpl.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/annotations/RequirementImpl.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/config/Hints.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/config/PlexusBean.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/config/PlexusBeanConverter.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/config/PlexusBeanLocator.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/config/PlexusBeanMetadata.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/config/PlexusBeanModule.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/config/PlexusBeanSource.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/config/Roles.java
+sisu-inject/guice-plexus/guice-plexus-metadata/src/main/java/org/sonatype/guice/plexus/config/Strategies.java
+sisu-inject/guice-plexus/guice-plexus-scanners/src/main/java/org/sonatype/guice/plexus/scanners/CloningClassLoader.java
+sisu-inject/guice-plexus/guice-plexus-scanners/src/main/java/org/sonatype/guice/plexus/scanners/PlexusAnnotatedMetadata.java
+sisu-inject/guice-plexus/guice-plexus-scanners/src/main/java/org/sonatype/guice/plexus/scanners/PlexusTypeListener.java
+sisu-inject/guice-plexus/guice-plexus-scanners/src/main/java/org/sonatype/guice/plexus/scanners/PlexusTypeRegistry.java
+sisu-inject/guice-plexus/guice-plexus-scanners/src/main/java/org/sonatype/guice/plexus/scanners/PlexusTypeVisitor.java
+sisu-inject/guice-plexus/guice-plexus-scanners/src/main/java/org/sonatype/guice/plexus/scanners/PlexusXmlMetadata.java
+sisu-inject/guice-plexus/guice-plexus-scanners/src/main/java/org/sonatype/guice/plexus/scanners/PlexusXmlScanner.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/ComponentDescriptorBeanModule.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/ContainerConfiguration.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/DefaultContainerConfiguration.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/DefaultPlexusContainer.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/MutablePlexusContainer.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/PlexusConstants.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/PlexusContainer.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/PlexusContainerException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/PlexusLifecycleManager.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/PlexusTestCase.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/MapOrientedComponent.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/composition/CycleDetectedInComponentGraphException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/AbstractComponentConfigurator.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/BasicComponentConfigurator.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/ComponentConfigurationException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/ComponentConfigurator.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/ConfigurationListener.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/MapOrientedComponentConfigurator.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/AbstractConfigurationConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/ComponentValueSetter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/ConfigurationConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/AbstractBasicConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/BooleanConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/ByteConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/CharConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/ClassConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/Converter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/DateConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/DoubleConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/EnumConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/FileConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/FloatConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/IntConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/LongConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/ShortConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/StringBufferConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/StringConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/UriConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/basic/UrlConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/composite/ArrayConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/composite/CollectionConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/composite/MapConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/composite/ObjectWithFieldsConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/composite/PlexusConfigurationConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/composite/PropertiesConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/lookup/ConverterLookup.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/lookup/DefaultConverterLookup.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/converters/special/ClassRealmConverter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/expression/DefaultExpressionEvaluator.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/expression/ExpressionEvaluationException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/expression/ExpressionEvaluator.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/configurator/expression/TypeAwareExpressionEvaluator.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/factory/AbstractComponentFactory.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/factory/ComponentFactory.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/factory/ComponentInstantiationException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/repository/ComponentDependency.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/repository/ComponentDescriptor.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/repository/ComponentRequirement.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/repository/ComponentRequirementList.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/repository/ComponentSetDescriptor.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/repository/exception/ComponentLifecycleException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/repository/exception/ComponentLookupException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/component/repository/exception/ComponentRepositoryException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/configuration/DefaultPlexusConfiguration.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/configuration/PlexusConfiguration.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/configuration/PlexusConfigurationException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/configuration/xml/XmlPlexusConfiguration.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/context/Context.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/context/ContextException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/context/ContextMapAdapter.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/context/DefaultContext.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/logging/AbstractLogEnabled.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/logging/AbstractLogger.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/logging/AbstractLoggerManager.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/logging/BaseLoggerManager.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/logging/LogEnabled.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/logging/Logger.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/logging/LoggerManager.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/logging/console/ConsoleLogger.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/logging/console/ConsoleLoggerManager.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/personality/plexus/lifecycle/phase/Configurable.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/personality/plexus/lifecycle/phase/Contextualizable.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/personality/plexus/lifecycle/phase/Disposable.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/personality/plexus/lifecycle/phase/Initializable.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/personality/plexus/lifecycle/phase/InitializationException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/personality/plexus/lifecycle/phase/Serviceable.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/personality/plexus/lifecycle/phase/Startable.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/personality/plexus/lifecycle/phase/StartingException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/personality/plexus/lifecycle/phase/StoppingException.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/main/java/org/codehaus/plexus/personality/plexus/lifecycle/phase/Suspendable.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-a/src/main/java/org/codehaus/plexus/components/A.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-a/src/main/java/org/codehaus/plexus/components/DefaultA.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-b/src/main/java/org/codehaus/plexus/components/B.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-b/src/main/java/org/codehaus/plexus/components/DefaultB.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-c/src/main/java/org/codehaus/plexus/components/C.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/component-c/src/main/java/org/codehaus/plexus/components/DefaultC.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0/src/main/java/org/codehaus/plexus/plugins/AltPlugin0.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0/src/main/java/org/codehaus/plexus/plugins/DefaultPlugin0.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin0/src/main/java/org/codehaus/plexus/plugins/Plugin0.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1/src/main/java/org/codehaus/plexus/plugins/AltPlugin1.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1/src/main/java/org/codehaus/plexus/plugins/DefaultPlugin1.java
+sisu-inject/guice-plexus/guice-plexus-shim/src/test/test-component-builds/plugin1/src/main/java/org/codehaus/plexus/plugins/Plugin1.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2-sources.jar -o /tmp/sisu-inject-plexus-1.4.2-sources.jar && jar tf /tmp/sisu-inject-plexus-1.4.2-sources.jar | sed -n '1,220p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 170ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/codehaus/
+org/codehaus/plexus/
+org/codehaus/plexus/component/
+org/codehaus/plexus/component/composition/
+org/codehaus/plexus/component/configurator/
+org/codehaus/plexus/component/configurator/converters/
+org/codehaus/plexus/component/configurator/converters/basic/
+org/codehaus/plexus/component/configurator/converters/composite/
+org/codehaus/plexus/component/configurator/converters/lookup/
+org/codehaus/plexus/component/configurator/converters/special/
+org/codehaus/plexus/component/configurator/expression/
+org/codehaus/plexus/component/factory/
+org/codehaus/plexus/component/repository/
+org/codehaus/plexus/component/repository/exception/
+org/codehaus/plexus/configuration/
+org/codehaus/plexus/configuration/xml/
+org/codehaus/plexus/context/
+org/codehaus/plexus/logging/
+org/codehaus/plexus/logging/console/
+org/codehaus/plexus/personality/
+org/codehaus/plexus/personality/plexus/
+org/codehaus/plexus/personality/plexus/lifecycle/
+org/codehaus/plexus/personality/plexus/lifecycle/phase/
+org/sonatype/
+org/sonatype/guice/
+org/sonatype/guice/plexus/
+org/sonatype/guice/plexus/annotations/
+org/sonatype/guice/plexus/binders/
+org/sonatype/guice/plexus/config/
+org/sonatype/guice/plexus/converters/
+org/sonatype/guice/plexus/locators/
+org/sonatype/guice/plexus/scanners/
+org/codehaus/plexus/component/composition/CycleDetectedInComponentGraphException.java
+org/codehaus/plexus/component/configurator/AbstractComponentConfigurator.java
+org/codehaus/plexus/component/configurator/BasicComponentConfigurator.java
+org/codehaus/plexus/component/configurator/ComponentConfigurationException.java
+org/codehaus/plexus/component/configurator/ComponentConfigurator.java
+org/codehaus/plexus/component/configurator/ConfigurationListener.java
+org/codehaus/plexus/component/configurator/converters/AbstractConfigurationConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/AbstractBasicConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/BooleanConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/ByteConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/CharConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/ClassConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/Converter.java
+org/codehaus/plexus/component/configurator/converters/basic/DateConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/DoubleConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/EnumConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/FileConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/FloatConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/IntConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/LongConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/ShortConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/StringBufferConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/StringConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/UriConverter.java
+org/codehaus/plexus/component/configurator/converters/basic/UrlConverter.java
+org/codehaus/plexus/component/configurator/converters/ComponentValueSetter.java
+org/codehaus/plexus/component/configurator/converters/composite/ArrayConverter.java
+org/codehaus/plexus/component/configurator/converters/composite/CollectionConverter.java
+org/codehaus/plexus/component/configurator/converters/composite/MapConverter.java
+org/codehaus/plexus/component/configurator/converters/composite/ObjectWithFieldsConverter.java
+org/codehaus/plexus/component/configurator/converters/composite/PlexusConfigurationConverter.java
+org/codehaus/plexus/component/configurator/converters/composite/PropertiesConverter.java
+org/codehaus/plexus/component/configurator/converters/ConfigurationConverter.java
+org/codehaus/plexus/component/configurator/converters/lookup/ConverterLookup.java
+org/codehaus/plexus/component/configurator/converters/lookup/DefaultConverterLookup.java
+org/codehaus/plexus/component/configurator/converters/special/ClassRealmConverter.java
+org/codehaus/plexus/component/configurator/expression/DefaultExpressionEvaluator.java
+org/codehaus/plexus/component/configurator/expression/ExpressionEvaluationException.java
+org/codehaus/plexus/component/configurator/expression/ExpressionEvaluator.java
+org/codehaus/plexus/component/configurator/expression/TypeAwareExpressionEvaluator.java
+org/codehaus/plexus/component/configurator/MapOrientedComponentConfigurator.java
+org/codehaus/plexus/component/factory/AbstractComponentFactory.java
+org/codehaus/plexus/component/factory/ComponentFactory.java
+org/codehaus/plexus/component/factory/ComponentInstantiationException.java
+org/codehaus/plexus/component/MapOrientedComponent.java
+org/codehaus/plexus/component/repository/ComponentDependency.java
+org/codehaus/plexus/component/repository/ComponentDescriptor.java
+org/codehaus/plexus/component/repository/ComponentRequirement.java
+org/codehaus/plexus/component/repository/ComponentRequirementList.java
+org/codehaus/plexus/component/repository/ComponentSetDescriptor.java
+org/codehaus/plexus/component/repository/exception/ComponentLifecycleException.java
+org/codehaus/plexus/component/repository/exception/ComponentLookupException.java
+org/codehaus/plexus/component/repository/exception/ComponentRepositoryException.java
+org/codehaus/plexus/ComponentDescriptorBeanModule.java
+org/codehaus/plexus/configuration/DefaultPlexusConfiguration.java
+org/codehaus/plexus/configuration/PlexusConfiguration.java
+org/codehaus/plexus/configuration/PlexusConfigurationException.java
+org/codehaus/plexus/configuration/xml/XmlPlexusConfiguration.java
+org/codehaus/plexus/ContainerConfiguration.java
+org/codehaus/plexus/context/Context.java
+org/codehaus/plexus/context/ContextException.java
+org/codehaus/plexus/context/ContextMapAdapter.java
+org/codehaus/plexus/context/DefaultContext.java
+org/codehaus/plexus/DefaultContainerConfiguration.java
+org/codehaus/plexus/DefaultPlexusContainer.java
+org/codehaus/plexus/logging/AbstractLogEnabled.java
+org/codehaus/plexus/logging/AbstractLogger.java
+org/codehaus/plexus/logging/AbstractLoggerManager.java
+org/codehaus/plexus/logging/BaseLoggerManager.java
+org/codehaus/plexus/logging/console/ConsoleLogger.java
+org/codehaus/plexus/logging/console/ConsoleLoggerManager.java
+org/codehaus/plexus/logging/LogEnabled.java
+org/codehaus/plexus/logging/Logger.java
+org/codehaus/plexus/logging/LoggerManager.java
+org/codehaus/plexus/MutablePlexusContainer.java
+org/codehaus/plexus/personality/plexus/lifecycle/phase/Configurable.java
+org/codehaus/plexus/personality/plexus/lifecycle/phase/Contextualizable.java
+org/codehaus/plexus/personality/plexus/lifecycle/phase/Disposable.java
+org/codehaus/plexus/personality/plexus/lifecycle/phase/Initializable.java
+org/codehaus/plexus/personality/plexus/lifecycle/phase/InitializationException.java
+org/codehaus/plexus/personality/plexus/lifecycle/phase/Serviceable.java
+org/codehaus/plexus/personality/plexus/lifecycle/phase/Startable.java
+org/codehaus/plexus/personality/plexus/lifecycle/phase/StartingException.java
+org/codehaus/plexus/personality/plexus/lifecycle/phase/StoppingException.java
+org/codehaus/plexus/personality/plexus/lifecycle/phase/Suspendable.java
+org/codehaus/plexus/PlexusConstants.java
+org/codehaus/plexus/PlexusContainer.java
+org/codehaus/plexus/PlexusContainerException.java
+org/codehaus/plexus/PlexusLifecycleManager.java
+org/codehaus/plexus/PlexusTestCase.java
+org/sonatype/guice/plexus/annotations/ComponentImpl.java
+org/sonatype/guice/plexus/annotations/ConfigurationImpl.java
+org/sonatype/guice/plexus/annotations/RequirementImpl.java
+org/sonatype/guice/plexus/binders/OptionalPropertyBinding.java
+org/sonatype/guice/plexus/binders/PlexusAnnotatedBeanModule.java
+org/sonatype/guice/plexus/binders/PlexusBeanBinder.java
+org/sonatype/guice/plexus/binders/PlexusBeanManager.java
+org/sonatype/guice/plexus/binders/PlexusBindingModule.java
+org/sonatype/guice/plexus/binders/PlexusConfigurations.java
+org/sonatype/guice/plexus/binders/PlexusPropertyBinder.java
+org/sonatype/guice/plexus/binders/PlexusRequirements.java
+org/sonatype/guice/plexus/binders/PlexusTypeBinder.java
+org/sonatype/guice/plexus/binders/PlexusXmlBeanModule.java
+org/sonatype/guice/plexus/binders/ProvidedPropertyBinding.java
+org/sonatype/guice/plexus/config/Hints.java
+org/sonatype/guice/plexus/config/PlexusBean.java
+org/sonatype/guice/plexus/config/PlexusBeanConverter.java
+org/sonatype/guice/plexus/config/PlexusBeanLocator.java
+org/sonatype/guice/plexus/config/PlexusBeanMetadata.java
+org/sonatype/guice/plexus/config/PlexusBeanModule.java
+org/sonatype/guice/plexus/config/PlexusBeanSource.java
+org/sonatype/guice/plexus/config/Roles.java
+org/sonatype/guice/plexus/config/Strategies.java
+org/sonatype/guice/plexus/converters/PlexusDateTypeConverter.java
+org/sonatype/guice/plexus/converters/PlexusXmlBeanConverter.java
+org/sonatype/guice/plexus/locators/ClassRealmUtils.java
+org/sonatype/guice/plexus/locators/DefaultPlexusBeanLocator.java
+org/sonatype/guice/plexus/locators/GlobalPlexusBeans.java
+org/sonatype/guice/plexus/locators/LazyPlexusBean.java
+org/sonatype/guice/plexus/locators/MissingPlexusBean.java
+org/sonatype/guice/plexus/locators/PlexusBeans.java
+org/sonatype/guice/plexus/locators/RealmPlexusBeans.java
+org/sonatype/guice/plexus/scanners/CloningClassLoader.java
+org/sonatype/guice/plexus/scanners/PlexusAnnotatedMetadata.java
+org/sonatype/guice/plexus/scanners/PlexusTypeListener.java
+org/sonatype/guice/plexus/scanners/PlexusTypeRegistry.java
+org/sonatype/guice/plexus/scanners/PlexusTypeVisitor.java
+org/sonatype/guice/plexus/scanners/PlexusXmlMetadata.java
+org/sonatype/guice/plexus/scanners/PlexusXmlScanner.java
+
+exec
+/usr/bin/bash -lc "unzip -p /tmp/sisu-inject-plexus-1.4.2.jar META-INF/MANIFEST.MF | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Bundle-Name: Sisu - Inject (Plexus bean support)
+Bundle-DocURL: http://www.sonatype.com
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: com.google.inject;version="[1.3,2)",com.google.inject.
+ binder;version="[1.3,2)",com.google.inject.matcher;version="[1.3,2)",
+ com.google.inject.name;version="[1.3,2)",com.google.inject.spi;versio
+ n="[1.3,2)",com.google.inject.util;version="[1.3,2)",javax.enterprise
+ .inject,javax.inject,junit.framework,org.codehaus.classworlds,org.cod
+ ehaus.plexus.classworlds,org.codehaus.plexus.classworlds.realm,org.co
+ dehaus.plexus.component.annotations,org.codehaus.plexus.util,org.code
+ haus.plexus.util.xml,org.codehaus.plexus.util.xml.pull,org.osgi.frame
+ work,org.slf4j,org.sonatype.inject
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Sonatype, Inc.
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+Fragment-Host: org.sonatype.inject
+Bundle-SymbolicName: org.sonatype.inject.plexus
+Export-Package: org.codehaus.plexus.component.configurator.expression,
+ org.codehaus.plexus.component.configurator,org.codehaus.plexus.compon
+ ent.repository,org.codehaus.plexus.logging.console,org.codehaus.plexu
+ s.component.factory,org.codehaus.plexus.logging,org.codehaus.plexus.c
+ omponent.composition,org.codehaus.plexus.personality.plexus.lifecycle
+ .phase,org.codehaus.plexus.component.configurator.converters,org.code
+ haus.plexus.component,org.codehaus.plexus.component.repository.except
+ ion,org.codehaus.plexus.configuration,org.codehaus.plexus.component.c
+ onfigurator.converters.special,org.codehaus.plexus.configuration.xml,
+ org.codehaus.plexus.component.configurator.converters.lookup,org.code
+ haus.plexus.component.configurator.converters.basic,org.codehaus.plex
+ us,org.codehaus.plexus.component.configurator.converters.composite,or
+ g.codehaus.plexus.context
+Bundle-Version: 1.4.2
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' /tmp/sisu-1.4.2/README && find /tmp/sisu-1.4.2/sisu-inject/guice-plexus -maxdepth 3 -name README -o -name '*.apt' -o -name '*.txt' | sort | sed -n '1,200p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for u in \\
+  https://github.com/sonatype/sisu/tree/sisu-1.4.2/sisu-inject/guice-plexus \\
+  https://github.com/sonatype/sisu/tree/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test \\
+  https://github.com/sonatype/sisu/tree/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/test \\
+  https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2-sources.jar \\
+  https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2-javadoc.jar; do printf '%s -> ' \""'$u"; curl -fsSI -L "$u" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 2328ms:
+HTTP/2 200 
+https://github.com/sonatype/sisu/tree/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-shim/src/test -> HTTP/2 200 
+https://github.com/sonatype/sisu/tree/sisu-1.4.2/sisu-inject/guice-plexus/guice-plexus-binders/src/test -> HTTP/2 200 
+https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2-sources.jar -> HTTP/2 200 
+https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2-javadoc.jar -> HTTP/2 200 
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f -name '*.json' -maxdepth 1 | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+{
+  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2"
+}
+
+codex
+I found Maven-hosted sources and javadocs, but no Maven tests jar or source-release zip. I’ll use the tagged GitHub `guice-plexus` tree for the test suite because this published jar is assembled from that set of Plexus support modules rather than from a standalone test directory.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+diff --git a/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json b/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+index 2db31f629777f1c641160731a4ba0b4e85b0b9bd..cb49e5f267df8886fe6e16ae732f6fcd389157a4
+--- a/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
++++ b/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2"
++  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2",
++  "repository-url" : "https://github.com/sonatype/sisu",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-sources.jar",
++  "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-plexus",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-javadoc.jar",
++  "description" : "Sisu Inject Plexus provides Plexus container and component support on top of Sonatype Sisu and Guice dependency injection. It bundles Plexus APIs, component metadata scanning, configuration conversion, bean binding, and lookup utilities so Plexus-style components can be discovered, configured, and used through Sisu."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json b/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+index 2db31f629777f1c641160731a4ba0b4e85b0b9bd..cb49e5f267df8886fe6e16ae732f6fcd389157a4
+--- a/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
++++ b/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2"
++  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2",
++  "repository-url" : "https://github.com/sonatype/sisu",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-sources.jar",
++  "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-plexus",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-javadoc.jar",
++  "description" : "Sisu Inject Plexus provides Plexus container and component support on top of Sonatype Sisu and Guice dependency injection. It bundles Plexus APIs, component metadata scanning, configuration conversion, bean binding, and lookup utilities so Plexus-style components can be discovered, configured, and used through Sisu."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+{
+  "coordinates": "org.sonatype.sisu:sisu-inject-plexus:1.4.2",
+  "repository-url": "https://github.com/sonatype/sisu",
+  "source-code-url": "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-sources.jar",
+  "test-code-url": "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-plexus",
+  "documentation-url": "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-javadoc.jar",
+  "description": "Sisu Inject Plexus provides Plexus container and component support on top of Sonatype Sisu and Guice dependency injection. It bundles Plexus APIs, component metadata scanning, configuration conversion, bean binding, and lookup utilities so Plexus-style components can be discovered, configured, and used through Sisu."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for u in \\
+  https://github.com/sonatype/sisu \\
+  https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2-sources.jar \\
+  https://github.com/sonatype/sisu/tree/sisu-1.4.2/sisu-inject/guice-plexus \\
+  https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2-javadoc.jar; do printf '%s -> ' \""'$u"; curl -fsSI -L "$u" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+diff --git a/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json b/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+index 2db31f629777f1c641160731a4ba0b4e85b0b9bd..cb49e5f267df8886fe6e16ae732f6fcd389157a4
+--- a/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
++++ b/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2"
++  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2",
++  "repository-url" : "https://github.com/sonatype/sisu",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-sources.jar",
++  "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-plexus",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-javadoc.jar",
++  "description" : "Sisu Inject Plexus provides Plexus container and component support on top of Sonatype Sisu and Guice dependency injection. It bundles Plexus APIs, component metadata scanning, configuration conversion, bean binding, and lookup utilities so Plexus-style components can be discovered, configured, and used through Sisu."
+ }
+
+ succeeded in 956ms:
+HTTP/2 200 
+https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2-sources.jar -> HTTP/2 200 
+https://github.com/sonatype/sisu/tree/sisu-1.4.2/sisu-inject/guice-plexus -> HTTP/2 200 
+https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/1.4.2/sisu-inject-plexus-1.4.2-javadoc.jar -> HTTP/2 200 
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json" in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+ succeeded in 0ms:
+{
+  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2",
+  "repository-url" : "https://github.com/sonatype/sisu",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-sources.jar",
+  "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-plexus",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-javadoc.jar",
+  "description" : "Sisu Inject Plexus provides Plexus container and component support on top of Sonatype Sisu and Guice dependency injection. It bundles Plexus APIs, component metadata scanning, configuration conversion, bean binding, and lookup utilities so Plexus-style components can be discovered, configured, and used through Sisu."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json' in /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc
+diff --git a/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json b/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+index 2db31f629777f1c641160731a4ba0b4e85b0b9bd..cb49e5f267df8886fe6e16ae732f6fcd389157a4
+--- a/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
++++ b/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2"
++  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2",
++  "repository-url" : "https://github.com/sonatype/sisu",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-sources.jar",
++  "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-plexus",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-javadoc.jar",
++  "description" : "Sisu Inject Plexus provides Plexus container and component support on top of Sonatype Sisu and Guice dependency injection. It bundles Plexus APIs, component metadata scanning, configuration conversion, bean binding, and lookup utilities so Plexus-style components can be discovered, configured, and used through Sisu."
+ }
+
+ succeeded in 142ms:
+!! build/
+
+codex
+Updated [org.sonatype.sisu-sisu-inject-plexus-1.4.2.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json).
+
+I left `language` absent and did not set `not-for-native-image` because this is a JVM jar with class files. Verified the JSON parses and the substituted URLs for `1.4.2` return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json b/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+index 2db31f629777f1c641160731a4ba0b4e85b0b9bd..cb49e5f267df8886fe6e16ae732f6fcd389157a4
+--- a/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
++++ b/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2"
++  "coordinates" : "org.sonatype.sisu:sisu-inject-plexus:1.4.2",
++  "repository-url" : "https://github.com/sonatype/sisu",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-sources.jar",
++  "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-plexus",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-plexus/$version$/sisu-inject-plexus-$version$-javadoc.jar",
++  "description" : "Sisu Inject Plexus provides Plexus container and component support on top of Sonatype Sisu and Guice dependency injection. It bundles Plexus APIs, component metadata scanning, configuration conversion, bean binding, and lookup utilities so Plexus-style components can be discovered, configured, and used through Sisu."
+ }
+
+tokens used
+76,465
+Updated [org.sonatype.sisu-sisu-inject-plexus-1.4.2.json](/home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc/build/discovered-artifact-metadata/org.sonatype.sisu-sisu-inject-plexus-1.4.2.json).
+
+I left `language` absent and did not set `not-for-native-image` because this is a JVM jar with class files. Verified the JSON parses and the substituted URLs for `1.4.2` return HTTP 200.
+Ran agent for org.sonatype.sisu:sisu-inject-plexus:1.4.2 (exit 0). Log: /home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc/build/agent-artifact-discovery-logs/org.sonatype.sisu-sisu-inject-plexus-1.4.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge8/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2318-5b738bbc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 36s
+9 actionable tasks: 9 executed
