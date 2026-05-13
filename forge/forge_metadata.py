@@ -467,7 +467,7 @@ def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
         "issue", "view",
         str(issue_number),
         "--repo", REPO,
-        "--json", "number,title,url,labels,assignees",
+        "--json", "number,title,url,body,labels,assignees",
     )
     for label in data.get("labels", []):
         label_name = label.get("name") if isinstance(label, dict) else None
@@ -488,7 +488,7 @@ def get_issue_claim_payload(issue_number: int) -> dict:
         "issue", "view",
         str(issue_number),
         "--repo", REPO,
-        "--json", "number,title,url,state,labels,assignees",
+        "--json", "number,title,url,state,body,labels,assignees",
     )
 
 
