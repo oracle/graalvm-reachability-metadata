@@ -188,6 +188,23 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertIn("missing resource file config/app.properties", context)
         self.assertIn("Related coordinate", context)
 
+    def test_library_update_passes_issue_requested_metadata_context_to_workflow(self) -> None:
+        claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_UPDATE)
+        claimed_issue.issue["body"] = (
+            "Caused by: org.graalvm.nativeimage.MissingReflectionRegistrationError: "
+            "Cannot reflectively invoke method 'public void org.example.Demo.setName(java.lang.String)'."
+        )
+
+        with patch.object(forge_metadata, "require_claimed_issue_worktree"), \
+                patch.object(forge_metadata, "run_improve_library_coverage_workflow", return_value=0) as workflow:
+            self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "library_update_pi_gpt-5.5", False))
+
+        workflow.assert_called_once()
+        argv = workflow.call_args.args[0]
+        self.assertIn("--issue-requested-metadata-context", argv)
+        context = argv[argv.index("--issue-requested-metadata-context") + 1]
+        self.assertIn("org.example.Demo.setName", context)
+
 
 class IssueClaimPreflightTests(unittest.TestCase):
     def test_forge_gh_does_not_log_github_query_by_default(self) -> None:

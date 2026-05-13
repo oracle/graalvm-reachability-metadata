@@ -3574,6 +3574,9 @@ def invoke_pipeline(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        issue_requested_metadata_context = extract_issue_requested_metadata_context(claimed_issue.issue.get("body"))
+        if issue_requested_metadata_context:
+            pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         append_large_library_workflow_args(pipeline_argv, claimed_issue)
