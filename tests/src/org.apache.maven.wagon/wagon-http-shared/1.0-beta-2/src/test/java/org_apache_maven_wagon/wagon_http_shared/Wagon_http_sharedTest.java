@@ -110,6 +110,23 @@ public class Wagon_http_sharedTest {
     }
 
     @Test
+    void treatsBackslashPathSeparatorsLikeSlashWhenValidatingLinks() throws Exception {
+        String html = """
+                <html>
+                  <body>
+                    <a href="windows-directory\\">windows directory</a>
+                    <a href="nested\\artifact.jar">nested file</a>
+                    <a href="deep\\nested\\">deep directory</a>
+                  </body>
+                </html>
+                """;
+
+        List<String> links = parseFileList("http://repo.example.test/repository/releases/", html);
+
+        assertThat(links).containsExactly("windows-directory\\");
+    }
+
+    @Test
     void nullOutputStreamIgnoresAllWritesAndRemainsUsableAfterClose() {
         NullOutputStream outputStream = new NullOutputStream();
         byte[] bytes = "discarded data".getBytes(StandardCharsets.UTF_8);
