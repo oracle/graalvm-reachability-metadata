@@ -23,7 +23,7 @@ public class HTMLConfigurationInnerErrorReporterTest {
         configuration.setLocale(Locale.US);
         HTMLErrorReporter reporter = (HTMLErrorReporter) configuration.getProperty(ERROR_REPORTER);
 
-        String message = reporter.formatMessage("HTML2001", new Object[] { "section" });
+        String message = reporter.formatMessage("HTML2001", new Object[] {"section"});
 
         assertEquals("Element <section> not closed properly.", message);
     }

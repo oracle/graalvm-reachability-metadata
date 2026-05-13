@@ -26,7 +26,7 @@ public class HTMLConfigurationTest {
     void resetConnectsConfiguredFiltersThroughDocumentSourceMethod() throws Exception {
         HTMLConfiguration configuration = new HTMLConfiguration();
         RecordingDocumentFilter filter = new RecordingDocumentFilter();
-        XMLDocumentFilter[] filters = { filter };
+        XMLDocumentFilter[] filters = {filter};
 
         configuration.setProperty(FILTERS, filters);
         configuration.setInputSource(new XMLInputSource(null, "memory:sample.html", null,
