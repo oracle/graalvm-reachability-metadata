@@ -25,8 +25,27 @@ public class ClassMapTest {
         assertThat(method.getName()).isEqualTo("message");
     }
 
+    @Test
+    void upcastsMethodFromNonPublicInterfaceToPublicParentInterface() throws Exception {
+        ClassMap classMap = new ClassMap(PublicCompositeContract.class);
+
+        Method method = classMap.findMethod("message", "forge");
+
+        assertThat(method).isNotNull();
+        assertThat(method.getDeclaringClass()).isEqualTo(PublicContract.class);
+        assertThat(method.getName()).isEqualTo("message");
+    }
+
     public interface PublicContract {
         String message(String value);
+    }
+
+    interface PackagePrivateChildContract extends PublicContract {
+        @Override
+        String message(String value);
+    }
+
+    public interface PublicCompositeContract extends PackagePrivateChildContract {
     }
 
     static class PackagePrivateImplementation implements PublicContract {
