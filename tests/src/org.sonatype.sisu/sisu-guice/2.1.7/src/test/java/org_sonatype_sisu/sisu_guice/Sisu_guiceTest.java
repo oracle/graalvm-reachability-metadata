@@ -183,6 +183,26 @@ public class Sisu_guiceTest {
     }
 
     @Test
+    void optionalInjectionsUseDefaultsWhenBindingsAreMissingAndOverrideWhenPresent() {
+        Injector injectorWithoutAudit = Guice.createInjector();
+        OptionalAuditClient clientWithoutAudit = injectorWithoutAudit.getInstance(OptionalAuditClient.class);
+
+        Injector injectorWithAudit = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bindConstant().annotatedWith(Names.named("auditMode")).to("active");
+                bind(OptionalAuditSink.class).toInstance(message -> "recorded:" + message);
+            }
+        });
+        OptionalAuditClient clientWithAudit = injectorWithAudit.getInstance(OptionalAuditClient.class);
+
+        assertThat(clientWithoutAudit.summary())
+                .isEqualTo("fallback:none");
+        assertThat(clientWithAudit.summary())
+                .isEqualTo("recorded:configured:active");
+    }
+
+    @Test
     void childInjectorsInheritParentBindingsAndKeepChildBindingsIsolated() {
         SharedConfiguration sharedConfiguration = new SharedConfiguration("main");
         Injector parent = Guice.createInjector(new AbstractModule() {
@@ -407,6 +427,25 @@ public class Sisu_guiceTest {
 
         public String id() {
             return id;
+        }
+    }
+
+    public interface OptionalAuditSink {
+        String record(String message);
+    }
+
+    public static final class OptionalAuditClient {
+        private OptionalAuditSink sink = message -> "fallback";
+        private String mode = "none";
+
+        @Inject(optional = true)
+        public void configure(OptionalAuditSink sink, @Named("auditMode") String mode) {
+            this.sink = sink;
+            this.mode = mode;
+        }
+
+        public String summary() {
+            return sink.record("configured") + ":" + mode;
         }
     }
 
