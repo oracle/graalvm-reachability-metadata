@@ -6,11 +6,14 @@
  */
 package org_apache_maven_reporting.maven_reporting_api;
 
+import org.apache.maven.reporting.MavenReport;
 import org.junit.jupiter.api.Test;
 
-class Maven_reporting_apiTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class MavenReportAnonymous1Test {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void roleUsesTheMavenReportClassName() {
+        assertThat(MavenReport.ROLE).isEqualTo("org.apache.maven.reporting.MavenReport");
     }
 }
