@@ -148,6 +148,18 @@ class Scalatest_wordspec_3Test:
     assert(succeededEvents(fixtureResult.events).size == 1)
     assert(fixtureSuite.seenFixtures == Vector("async-fixture-used"))
 
+  @Test
+  def supportsPluralTheyWordSpecSubjects(): Unit =
+    val suite: PluralSubjectWordSpec = new PluralSubjectWordSpec
+    val names: Vector[String] = suite.testNames.toVector
+    val result: RunResult = runSuite(suite)
+
+    assert(names.exists(_.contains("return their head element")))
+    assert(names.exists(_.contains("preserve insertion order")))
+    assert(result.succeeded)
+    assert(succeededEvents(result.events).size == 2)
+    assert(suite.executed == Vector("head", "order"))
+
   private final class CalculatorWordSpec extends AnyWordSpec:
     var executed: Vector[String] = Vector.empty
 
@@ -326,6 +338,23 @@ class Scalatest_wordspec_3Test:
           assert(builder.toString() == "async-fixture-used")
           succeed
         }
+      }
+    }
+
+  private final class PluralSubjectWordSpec extends AnyWordSpec:
+    var executed: Vector[String] = Vector.empty
+
+    "Ordered collections" should {
+      "return their head element" in {
+        executed = executed :+ "head"
+        assert(Vector("alpha", "beta").head == "alpha")
+      }
+    }
+
+    they must {
+      "preserve insertion order" in {
+        executed = executed :+ "order"
+        assert(List(1, 2, 3).mkString(",") == "1,2,3")
       }
     }
 
