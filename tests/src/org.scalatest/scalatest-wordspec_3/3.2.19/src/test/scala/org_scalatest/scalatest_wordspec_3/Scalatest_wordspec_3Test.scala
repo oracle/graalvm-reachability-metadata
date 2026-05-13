@@ -160,6 +160,19 @@ class Scalatest_wordspec_3Test:
     assert(succeededEvents(result.events).size == 2)
     assert(suite.executed == Vector("head", "order"))
 
+  @Test
+  def supportsCanWordSpecClausesForCapabilityStyleExamples(): Unit =
+    val suite: CapabilityWordSpec = new CapabilityWordSpec
+    val names: Vector[String] = suite.testNames.toVector
+    val result: RunResult = runSuite(suite)
+
+    assert(names.exists(_.contains("return a cached value")))
+    assert(names.exists(_.contains("evict the oldest value")))
+    assert(names.forall(_.contains(" can ")))
+    assert(result.succeeded)
+    assert(succeededEvents(result.events).size == 2)
+    assert(suite.executed == Vector("return", "evict"))
+
   private final class CalculatorWordSpec extends AnyWordSpec:
     var executed: Vector[String] = Vector.empty
 
@@ -355,6 +368,23 @@ class Scalatest_wordspec_3Test:
       "preserve insertion order" in {
         executed = executed :+ "order"
         assert(List(1, 2, 3).mkString(",") == "1,2,3")
+      }
+    }
+
+  private final class CapabilityWordSpec extends AnyWordSpec:
+    var executed: Vector[String] = Vector.empty
+
+    "A small cache" can {
+      "return a cached value" in {
+        executed = executed :+ "return"
+        val cache: Map[String, Int] = Map("answer" -> 42)
+        assert(cache.get("answer").contains(42))
+      }
+
+      "evict the oldest value" in {
+        executed = executed :+ "evict"
+        val cacheAfterEviction: Vector[String] = Vector("second", "third")
+        assert(!cacheAfterEviction.contains("first"))
       }
     }
 
