@@ -30,7 +30,11 @@ public class HttpConnectionTest {
             Class<?> connectionClass = Class.forName(HTTP_CONNECTION_CLASS_NAME, true, classLoader);
 
             assertThat(connectionClass.getName()).isEqualTo(HTTP_CONNECTION_CLASS_NAME);
-            assertThat(connectionClass.getClassLoader()).isSameAs(classLoader);
+            if (NativeImageSupport.isNativeImageRuntime()) {
+                assertThat(connectionClass).isSameAs(HttpConnection.class);
+            } else {
+                assertThat(connectionClass.getClassLoader()).isSameAs(classLoader);
+            }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
