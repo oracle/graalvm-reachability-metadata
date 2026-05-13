@@ -11,7 +11,7 @@ Rules:
 - Follow idiomatic `{test_language_display_name}` coding conventions.
 - Don't duplicate tested features.
 - Use only the library's public API, no direct reflection or serialization.
-- Modify only the test file. Update build.gradle only if changes need adding missing dependencies on classpath, or adding runtime args.
+- Modify only the test file and any reachability metadata needed for reporter-requested metadata. Update build.gradle only if changes need adding missing dependencies on classpath, or adding runtime args.
 - Use only the features from the provided library version and avoid all deprecated APIs. Additional test dependencies are allowed only if they are necessary to exercise the tested library meaningfully and cannot be replaced with standard JDK or already-present dependencies.
 - You may inspect the repository only to learn local test style and structure.
 - If you are unsure about the library's API, look it up on the internet.
@@ -23,4 +23,4 @@ Rules:
 - Do not skip Native Image execution with `assumeFalse("runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")))`, early returns, `@DisabledInNativeImage`, `isNativeImageRuntime()`, `ImageInfo.inImageRuntimeCode()`, or equivalent guards.
 - Do not use this dynamic-class-loading pattern for ordinary reflection, resources, serialization, dynamic proxies, JNI, or missing reachability metadata; those tests must still run under Native Image.
 - After generating the tests, do NOT attempt to compile, run, or verify them. We will handle test execution externally.
-- Reporter snippets identify what is missing; any added or modified reachability metadata must include appropriate conditions, preferably `typeReached`.
+- Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`.
