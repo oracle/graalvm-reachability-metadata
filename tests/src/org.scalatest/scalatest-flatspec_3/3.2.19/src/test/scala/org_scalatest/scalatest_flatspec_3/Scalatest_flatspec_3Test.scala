@@ -17,6 +17,7 @@ import scala.util.Try
 
 import org.junit.jupiter.api.Test
 import org.scalatest.Args
+import org.scalatest.BeforeAndAfter
 import org.scalatest.Filter
 import org.scalatest.FutureOutcome
 import org.scalatest.Outcome
@@ -172,6 +173,15 @@ class Scalatest_flatspec_3Test:
     assert(result.succeeded)
     assert(succeededEvents(result.events).size == 2)
     assert(suite.executed == Vector("head", "order"))
+
+  @Test
+  def appliesBeforeAndAfterHooksAroundEachFlatSpecTest(): Unit =
+    val suite: HookedFlatSpec = new HookedFlatSpec
+    val result: RunResult = runSuite(suite)
+
+    assert(result.succeeded)
+    assert(succeededEvents(result.events).size == 2)
+    assert(suite.events == Vector("before", "first", "after", "before", "second", "after"))
 
   private final class CalculatorFlatSpec extends AnyFlatSpec:
     var executed: Vector[String] = Vector.empty
@@ -352,6 +362,27 @@ class Scalatest_flatspec_3Test:
     they must "preserve insertion order" in {
       executed = executed :+ "order"
       assert(List(1, 2, 3).mkString(",") == "1,2,3")
+    }
+
+  private final class HookedFlatSpec extends AnyFlatSpec with BeforeAndAfter:
+    var events: Vector[String] = Vector.empty
+
+    before {
+      events = events :+ "before"
+    }
+
+    after {
+      events = events :+ "after"
+    }
+
+    "A flat spec with hooks" should "wrap the first example" in {
+      events = events :+ "first"
+      assert(events.endsWith(Vector("before", "first")))
+    }
+
+    it should "wrap the second example independently" in {
+      events = events :+ "second"
+      assert(events.endsWith(Vector("before", "second")))
     }
 
   private def runSuite(
