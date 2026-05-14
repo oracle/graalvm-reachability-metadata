@@ -49,6 +49,9 @@ BASE_BRANCH = "master"
 REVIEWERS = get_configured_reviewers()
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
+IGNORED_FINALIZATION_DIRTY_PATHS = {
+    f"forge/{LIBRARY_UPDATE_TARGET_FILENAME}",
+}
 
 
 def build_pull_request_body(
@@ -194,31 +197,102 @@ def load_library_update_target_sidecar(metrics_repo_root: str) -> dict | None:
     return sidecar if isinstance(sidecar, dict) else None
 
 
+def _normalize_relative_path(path: str) -> str:
+    """Normalize a git relative path for scope comparisons."""
+    return os.path.normpath(path).replace(os.sep, "/")
+
+
+def _path_is_within(path: str, candidate_root: str) -> bool:
+    normalized_path = _normalize_relative_path(path)
+    normalized_root = _normalize_relative_path(candidate_root)
+    return normalized_path == normalized_root or normalized_path.startswith(f"{normalized_root}/")
+
+
+def expected_update_paths(
+        group: str,
+        artifact: str,
+        library_version: str,
+        repo_path: str,
+) -> list[str]:
+    """Return the resolved paths that belong in the generated coverage PR."""
+    test_version = resolve_test_version(repo_path, group, artifact, library_version)
+    metadata_version = resolve_metadata_version(repo_path, group, artifact, library_version)
+    candidate_paths = [
+        os.path.join("tests", "src", group, artifact, test_version),
+        os.path.join("metadata", group, artifact, "index.json"),
+        os.path.join("metadata", group, artifact, metadata_version),
+        os.path.relpath(stats_artifact_dir(repo_path, group, artifact), repo_path),
+    ]
+    return [
+        _normalize_relative_path(path)
+        for path in candidate_paths
+        if os.path.exists(os.path.join(repo_path, path))
+    ]
+
+
+def _status_paths(repo_path: str) -> list[str]:
+    """Return paths with pending git status entries."""
+    result = subprocess.run(
+        ["git", "status", "--porcelain=v1"],
+        cwd=repo_path,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    paths: list[str] = []
+    for line in result.stdout.splitlines():
+        if not line:
+            continue
+        path = line[3:].strip()
+        if " -> " in path:
+            paths.extend(part.strip() for part in path.split(" -> ", 1))
+        else:
+            paths.append(path)
+    return [_normalize_relative_path(path) for path in paths if path]
+
+
+def assert_no_out_of_scope_changes(repo_path: str, expected_paths: list[str]) -> None:
+    """Reject generated changes outside the resolved library-update target paths."""
+    unexpected_paths = sorted({
+        path
+        for path in _status_paths(repo_path)
+        if path not in IGNORED_FINALIZATION_DIRTY_PATHS
+        and not any(_path_is_within(path, expected_path) for expected_path in expected_paths)
+    })
+    if not unexpected_paths:
+        return
+
+    expected_lines = "\n".join(f"  - {path}" for path in expected_paths)
+    unexpected_lines = "\n".join(f"  - {path}" for path in unexpected_paths)
+    raise RuntimeError(
+        "Out-of-scope generated changes remain after staging expected PR paths; "
+        "refusing to rebase.\n"
+        "Expected PR paths:\n"
+        f"{expected_lines}\n"
+        "Unexpected dirty paths:\n"
+        f"{unexpected_lines}"
+    )
+
+
 def stage_and_commit(
         group: str,
         artifact: str,
         library_version: str,
         coordinates: str,
         repo_path: str,
-) -> None:
+) -> list[str]:
     """Stage the expected files/directories and commit."""
     test_version = resolve_test_version(repo_path, group, artifact, library_version)
-    metadata_version = resolve_metadata_version(repo_path, group, artifact, library_version)
     # Remove baseline stats snapshot before staging so it is not committed
     baseline_path = os.path.join(
         repo_path, "tests", "src", group, artifact, test_version, BASELINE_STATS_FILENAME,
     )
     if os.path.isfile(baseline_path):
         os.remove(baseline_path)
-    candidate_paths = [
-        str(os.path.join("tests", "src", group, artifact, test_version)),
-        str(os.path.join("metadata", group, artifact, "index.json")),
-        str(os.path.join("metadata", group, artifact, metadata_version)),
-        str(os.path.relpath(stats_artifact_dir(repo_path, group, artifact), repo_path)),
-    ]
-    candidate_paths = [path for path in candidate_paths if os.path.exists(os.path.join(repo_path, path))]
+    candidate_paths = expected_update_paths(group, artifact, library_version, repo_path)
     commit_message = f"Improve coverage for {coordinates}"
     stage_and_commit_common(candidate_paths, commit_message, cwd=repo_path)
+    return candidate_paths
 
 
 def _fetch_pr_base(repo_path: str) -> str:
@@ -398,7 +472,8 @@ def push_current_branch_to_origin(
     delete_remote_branch_if_exists(new_branch, cwd=repo_path)
     subprocess.run(["git", "switch", "-C", new_branch], check=True, cwd=repo_path)
 
-    stage_and_commit(group, artifact, library_version, coordinates, repo_path)
+    expected_paths = stage_and_commit(group, artifact, library_version, coordinates, repo_path)
+    assert_no_out_of_scope_changes(repo_path, expected_paths)
 
     base_ref = _fetch_pr_base(repo_path)
     subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)

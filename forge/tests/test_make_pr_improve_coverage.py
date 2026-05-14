@@ -7,8 +7,13 @@ import json
 import os
 import tempfile
 import unittest
+from unittest.mock import patch
 
-from git_scripts.make_pr_improve_coverage import build_pull_request_body, load_library_update_target_sidecar
+from git_scripts.make_pr_improve_coverage import (
+    assert_no_out_of_scope_changes,
+    build_pull_request_body,
+    load_library_update_target_sidecar,
+)
 
 
 class MakePrImproveCoverageTests(unittest.TestCase):
@@ -68,6 +73,38 @@ class MakePrImproveCoverageTests(unittest.TestCase):
                 "match_type": "tested-version",
             },
         )
+
+    def test_finalization_scope_check_allows_expected_target_and_sidecar_paths(self) -> None:
+        with patch(
+            "git_scripts.make_pr_improve_coverage._status_paths",
+            return_value=[
+                "tests/src/org.example/demo/1.0.1/src/test/java/DemoTest.java",
+                "metadata/org.example/demo/1.0.1/reachability-metadata.json",
+                "forge/.library_update_target.json",
+            ],
+        ):
+            assert_no_out_of_scope_changes(
+                "/repo",
+                [
+                    "tests/src/org.example/demo/1.0.1",
+                    "metadata/org.example/demo/1.0.1",
+                ],
+            )
+
+    def test_finalization_scope_check_rejects_old_version_test_edits(self) -> None:
+        with patch(
+            "git_scripts.make_pr_improve_coverage._status_paths",
+            return_value=[
+                "tests/src/org.example/demo/1.0.1/src/test/java/DemoTest.java",
+                "tests/src/org.example/demo/1.0.0/src/test/java/OldVersionTest.java",
+                "tests/src/org.example/demo/1.0.0/user-code-filter.json",
+            ],
+        ):
+            with self.assertRaisesRegex(RuntimeError, "Out-of-scope generated changes"):
+                assert_no_out_of_scope_changes(
+                    "/repo",
+                    ["tests/src/org.example/demo/1.0.1"],
+                )
 
 
 if __name__ == "__main__":

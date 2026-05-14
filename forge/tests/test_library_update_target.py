@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 from ai_workflows.improve_library_coverage import (
     format_issue_requested_metadata_context,
+    format_resolved_edit_scope_context,
     prepare_library_update_target,
     reset_failed_library_update_worktree,
 )
@@ -53,6 +54,19 @@ class LibraryUpdateTargetTests(unittest.TestCase):
         self.assertIn("Reporter-requested metadata requirements", context)
         self.assertIn("Infer the reachability metadata requested by the reporter", context)
         self.assertIn("prefer the narrowest valid `typeReached` condition", context)
+
+    def test_resolved_edit_scope_context_names_exact_target_paths(self) -> None:
+        repo_path = "/tmp/reachability"
+        test_dir = os.path.join(repo_path, "tests", "src", "org.example", "demo", "1.0.1")
+        source_root = os.path.join(test_dir, "src", "test", "java")
+        build_gradle = os.path.join(test_dir, "build.gradle")
+
+        context = format_resolved_edit_scope_context(repo_path, test_dir, source_root, build_gradle)
+
+        self.assertIn(f"Target test project directory: `{test_dir}`", context)
+        self.assertIn(f"Target test source root: `{source_root}`", context)
+        self.assertIn(f"Target build file: `{build_gradle}`", context)
+        self.assertIn("Do not edit cloned baseline test directories", context)
 
     def test_resolves_version_in_tested_versions(self) -> None:
         with tempfile.TemporaryDirectory() as repo:

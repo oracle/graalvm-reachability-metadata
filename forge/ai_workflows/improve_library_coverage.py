@@ -82,6 +82,28 @@ def list_all_files(directory_path: str) -> list[str]:
     return files
 
 
+def format_resolved_edit_scope_context(
+        repo_path: str,
+        test_dir: str,
+        test_source_root: str,
+        build_gradle_file: str,
+) -> str:
+    """Describe the resolved library-update edit scope for agent prompts."""
+    return (
+        "Resolved edit scope:\n"
+        f"- Repository root: `{repo_path}`\n"
+        f"- Target test project directory: `{test_dir}` "
+        f"(`{os.path.relpath(test_dir, repo_path)}`)\n"
+        f"- Target test source root: `{test_source_root}` "
+        f"(`{os.path.relpath(test_source_root, repo_path)}`)\n"
+        f"- Target build file: `{build_gradle_file}` "
+        f"(`{os.path.relpath(build_gradle_file, repo_path)}`)\n\n"
+        "Only create or update tests under the target test source root above. "
+        "Only update support files inside the target test project directory when the new tests require it. "
+        "Do not edit cloned baseline test directories, other versioned test directories, or metadata files directly."
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="improve_library_coverage.py",
@@ -751,6 +773,12 @@ def main(argv=None) -> int:
         source_context_available=prepared_source_context.is_available,
         source_context_files=prepared_source_context.read_only_files,
         issue_requested_metadata_context=format_issue_requested_metadata_context(issue_requested_metadata_context),
+        resolved_edit_scope_context=format_resolved_edit_scope_context(
+            reachability_repo_path,
+            tests_dir,
+            test_source_layout.source_root,
+            build_gradle_file,
+        ),
         test_language=test_source_layout.language,
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,

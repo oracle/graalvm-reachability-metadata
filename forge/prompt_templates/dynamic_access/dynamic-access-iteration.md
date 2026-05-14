@@ -6,6 +6,8 @@ Improve test coverage for the active dynamic-access class in `{library}`.
 Source Context:
 {source_context_overview}
 
+{resolved_edit_scope_context}
+
 Issue-Requested Metadata:
 {issue_requested_metadata_context}
 
@@ -22,4 +24,5 @@ Remaining uncovered dynamic-access call sites for this class:
 Rules:
 - Add or refine tests so execution reaches the remaining uncovered call sites for the active class.
 - Focus on the active class only.
+- Create or update tests only under the resolved target test source root listed above. Do not edit cloned baseline test directories or other versioned test directories.
 - Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`.

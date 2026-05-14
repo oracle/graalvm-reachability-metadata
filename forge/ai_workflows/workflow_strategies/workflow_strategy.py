@@ -103,6 +103,7 @@ class WorkflowStrategy(ABC):
             "issue_requested_metadata_context",
             NO_REPORTER_METADATA_CONTEXT,
         )
+        self.context.setdefault("resolved_edit_scope_context", "")
         self.model_name = self.strategy_obj.get("model")
         if not isinstance(self.model_name, str) or not self.model_name:
             raise ValueError("Strategy is missing required field: model")
