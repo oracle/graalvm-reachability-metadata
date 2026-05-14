@@ -13,6 +13,7 @@ import org.flywaydb.core.api.configuration.ClassicConfiguration;
 import org.flywaydb.core.extensibility.ConfigurationExtension;
 import org.flywaydb.core.internal.configuration.ConfigUtils;
 import org.flywaydb.core.internal.configuration.models.FlywayModel;
+import org.flywaydb.core.internal.util.ClassUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +40,8 @@ public class ConfigUtilsTest {
                 PrepareConfigurationExtension.class);
 
         assertThat(extension.getUndoFilename()).isEqualTo("U__undo.sql");
+        assertThat(ClassUtils.getGettableFieldValues(extension, "flyway.prepare."))
+                .containsEntry("flyway.prepare.undoFilename", "U__undo.sql");
     }
 
     public static class PrepareConfigurationExtension implements ConfigurationExtension {
