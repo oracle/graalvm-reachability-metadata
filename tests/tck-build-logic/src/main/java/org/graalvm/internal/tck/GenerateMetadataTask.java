@@ -118,7 +118,11 @@ public abstract class GenerateMetadataTask extends DefaultTask {
 
         String normalizedValue = agentAllowedPackages.trim();
         if (normalizedValue.equals(FROM_JAR)) {
-            return MetadataGenerationUtils.derivePackageRootsFromJar(getProject(), coordinatesValue);
+            return MetadataGenerationUtils.mergeWithAllowedPackagesInIndexJson(
+                    getLayout(),
+                    coordinatesValue,
+                    MetadataGenerationUtils.derivePackageRootsFromJar(getProject(), coordinatesValue)
+            );
         }
 
         List<String> packageList = Arrays.stream(agentAllowedPackages.split(","))

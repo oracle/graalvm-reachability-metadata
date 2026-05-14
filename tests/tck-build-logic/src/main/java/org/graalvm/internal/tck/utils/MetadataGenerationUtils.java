@@ -382,7 +382,7 @@ public final class MetadataGenerationUtils {
     }
 
     /**
-     * Sets packages on the matching index.json entry.
+     * Adds packages to the matching index.json entry without removing existing package roots.
      */
     public static void setAllowedPackagesInIndexJson(ProjectLayout layout, Coordinates coordinates, List<String> packages) throws IOException {
         if (packages.isEmpty()) {
@@ -404,9 +404,11 @@ public final class MetadataGenerationUtils {
                 continue;
             }
 
-            List<String> derivedPackages = new ArrayList<>(new LinkedHashSet<>(packages));
-            if (!derivedPackages.equals(entry.get("allowed-packages"))) {
-                entry.put("allowed-packages", derivedPackages);
+            LinkedHashSet<String> allowedPackages = readAllowedPackages(entry);
+            int originalSize = allowedPackages.size();
+            allowedPackages.addAll(packages);
+            if (allowedPackages.size() != originalSize) {
+                entry.put("allowed-packages", new ArrayList<>(allowedPackages));
                 updated = true;
             }
         }
@@ -422,6 +424,42 @@ public final class MetadataGenerationUtils {
             json = json + System.lineSeparator();
         }
         Files.writeString(indexFile, json, StandardCharsets.UTF_8);
+    }
+
+    public static List<String> mergeWithAllowedPackagesInIndexJson(
+            ProjectLayout layout,
+            Coordinates coordinates,
+            List<String> packages
+    ) throws IOException {
+        LinkedHashSet<String> mergedPackages = new LinkedHashSet<>();
+        Path indexFile = GeneralUtils.getPathFromProject(
+                layout,
+                CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", coordinates)
+        );
+        if (Files.isRegularFile(indexFile)) {
+            List<Map<String, Object>> entries = objectMapper.readValue(indexFile.toFile(), new TypeReference<>() {});
+            for (Map<String, Object> entry : entries) {
+                if (matchesGeneratedCoordinate(entry, coordinates)) {
+                    mergedPackages.addAll(readAllowedPackages(entry));
+                    break;
+                }
+            }
+        }
+        mergedPackages.addAll(packages);
+        return new ArrayList<>(mergedPackages);
+    }
+
+    private static LinkedHashSet<String> readAllowedPackages(Map<String, Object> entry) {
+        LinkedHashSet<String> allowedPackages = new LinkedHashSet<>();
+        Object currentPackages = entry.get("allowed-packages");
+        if (currentPackages instanceof List<?> currentPackageList) {
+            for (Object currentPackage : currentPackageList) {
+                if (currentPackage instanceof String packageName && !packageName.isBlank()) {
+                    allowedPackages.add(packageName);
+                }
+            }
+        }
+        return allowedPackages;
     }
 
     private static boolean matchesGeneratedCoordinate(Map<String, Object> entry, Coordinates coordinates) {

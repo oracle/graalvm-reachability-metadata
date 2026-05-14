@@ -67,6 +67,46 @@ class GenerateMetadataTaskTests {
     }
 
     @Test
+    void runWithFromJarPreservesExistingAllowedPackagesAndAddsDerivedPackages() throws IOException {
+        Coordinates coordinates = Coordinates.parse("ch.qos.logback:logback-classic:1.5.26");
+        installLibraryArtifact(coordinates, List.of(
+                "ch/qos/logback/classic/Logger.class",
+                "module-info.class"
+        ));
+        Project project = createProject();
+        prepareTestProject(coordinates, "plugins { id 'java' }\n");
+        writeMetadataIndex(
+                coordinates,
+                """
+                [
+                  {
+                    "metadata-version": "1.5.26",
+                    "tested-versions": ["1.5.26"],
+                    "allowed-packages": ["ch.qos.logback"]
+                  }
+                ]
+                """
+        );
+        TestGenerateMetadataTask task = registerGenerateMetadataTask(project, "generateMetadata", coordinates);
+        task.setAgentAllowedPackages("fromJar");
+
+        task.run();
+
+        assertGeneratedUserCodeFilter(
+                "tests/src/ch.qos.logback/logback-classic/1.5.26/user-code-filter.json",
+                List.of("ch.qos.logback", "ch.qos.logback.classic")
+        );
+        List<Map<String, Object>> entries = OBJECT_MAPPER.readValue(
+                tempDir.resolve("metadata/ch.qos.logback/logback-classic/index.json").toFile(),
+                new TypeReference<>() {}
+        );
+        assertThat(entries.get(0)).containsEntry(
+                "allowed-packages",
+                List.of("ch.qos.logback", "ch.qos.logback.classic")
+        );
+    }
+
+    @Test
     void runWithMetadataOutputDirCopiesAgentMetadataToStagingOnly() throws IOException {
         Coordinates coordinates = Coordinates.parse("org.lz4:lz4-java:1.8.0");
         installLibraryArtifact(coordinates, List.of("net/jpountz/lz4/LZ4Factory.class"));
@@ -130,6 +170,14 @@ class GenerateMetadataTaskTests {
         Files.createDirectories(testsDirectory);
         Files.writeString(testsDirectory.resolve("build.gradle"), buildGradleContent, StandardCharsets.UTF_8);
         createGradlewScript();
+    }
+
+    private void writeMetadataIndex(Coordinates coordinates, String content) throws IOException {
+        Path indexDirectory = tempDir.resolve("metadata")
+                .resolve(coordinates.group())
+                .resolve(coordinates.artifact());
+        Files.createDirectories(indexDirectory);
+        Files.writeString(indexDirectory.resolve("index.json"), content, StandardCharsets.UTF_8);
     }
 
     private String readTestBuildGradle(Coordinates coordinates) throws IOException {
