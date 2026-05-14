@@ -80,8 +80,9 @@ Every two weeks the `create-scheduled-release` workflow packages metadata if it 
 - `history/history.json` — append-only history.
 
 CI must keep the root [COVERAGE.md](../COVERAGE.md) on the source branch in
-sync with the generated coverage table. The same `COVERAGE.md` and the badge,
-graph, and history artifacts are published to the `stats/coverage` branch.
+sync with the generated coverage table through the bulk-update PRs created by
+`verify-new-library-version-compatibility.yml`. The same `COVERAGE.md` and the
+badge, graph, and history artifacts are published to the `stats/coverage` branch.
 
 ### 4.6 Metadata Forge automation
 
