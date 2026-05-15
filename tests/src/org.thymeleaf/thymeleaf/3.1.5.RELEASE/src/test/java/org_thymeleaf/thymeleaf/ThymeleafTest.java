@@ -4,7 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org.thymeleaf;
+package org_thymeleaf.thymeleaf;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.messageresolver.StandardMessageResolver;
 
