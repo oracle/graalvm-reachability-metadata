@@ -28,6 +28,20 @@ public class StandardJavaScriptSerializerInnerDefaultStandardJavaScriptSerialize
         assertThat(bean.messageReadCount()).isEqualTo(1);
     }
 
+    @Test
+    void serializeValueUsesRecordComponentsForRecords() {
+        StandardJavaScriptSerializer serializer = new StandardJavaScriptSerializer(false);
+        JavaScriptRecord record = new JavaScriptRecord("hello", 7);
+        StringWriter writer = new StringWriter();
+
+        serializer.serializeValue(record, writer);
+
+        assertThat(writer.toString()).isEqualTo("{\"message\":\"hello\",\"count\":7}");
+    }
+
+    public record JavaScriptRecord(String message, int count) {
+    }
+
     public static final class JavaScriptBean {
 
         private final AtomicInteger messageReadCount = new AtomicInteger();
