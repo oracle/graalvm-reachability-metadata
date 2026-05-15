@@ -247,7 +247,7 @@ class LibraryUpdateTargetTests(unittest.TestCase):
             self.assertEqual(baseline_entry["tested-versions"], ["0.9.9", "1.0.0"])
             self.assertNotIn("latest", baseline_entry)
             self.assertTrue(new_entry["latest"])
-            self.assertEqual(new_entry["tested-versions"], ["1.0.1"])
+            self.assertEqual(new_entry["tested-versions"], ["1.0.1", "1.0.2"])
             self.assertEqual(new_entry["source-code-url"], "https://example.test/demo-$version$-sources.jar")
             with open(
                     os.path.join(repo, "tests", "src", "org.example", "demo", "1.0.1", "build.gradle"),
@@ -318,7 +318,36 @@ class LibraryUpdateTargetTests(unittest.TestCase):
             baseline_entry = [entry for entry in entries if entry.get("metadata-version") == "1.0.0"][0]
             new_entry = [entry for entry in entries if entry.get("metadata-version") == "1.0.1"][0]
             self.assertEqual(baseline_entry["tested-versions"], ["1.0.1-RC1"])
-            self.assertEqual(new_entry["tested-versions"], ["1.0.1"])
+            self.assertEqual(new_entry["tested-versions"], ["1.0.1", "1.0.2"])
+
+    def test_new_version_split_moves_later_tested_versions_to_new_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            _write_index(repo, [
+                {
+                    "latest": True,
+                    "metadata-version": "12.3.0",
+                    "source-code-url": "https://example.test/demo-$version$-sources.jar",
+                    "tested-versions": ["12.3.0", "12.4.0", "12.6.0", "12.6.1"],
+                    "allowed-packages": ["org.example"],
+                }
+            ])
+            _write_file(
+                os.path.join(repo, "metadata", "org.example", "demo", "12.3.0", "reachability-metadata.json"),
+                '{"reflection":[{"type":"org.example.Demo"}]}\n',
+            )
+            _write_file(
+                os.path.join(repo, "tests", "src", "org.example", "demo", "12.3.0", "build.gradle"),
+                "implementation 'org.example:demo:12.3.0'\n",
+            )
+
+            prepare_library_update_target(repo, "org.example", "demo", "12.5.0")
+
+            with open(os.path.join(repo, "metadata", "org.example", "demo", "index.json"), encoding="utf-8") as file:
+                entries = json.load(file)
+            baseline_entry = [entry for entry in entries if entry.get("metadata-version") == "12.3.0"][0]
+            new_entry = [entry for entry in entries if entry.get("metadata-version") == "12.5.0"][0]
+            self.assertEqual(baseline_entry["tested-versions"], ["12.3.0", "12.4.0"])
+            self.assertEqual(new_entry["tested-versions"], ["12.5.0", "12.6.0", "12.6.1"])
 
     def test_failure_reset_restores_generated_target_files(self) -> None:
         with tempfile.TemporaryDirectory() as repo:

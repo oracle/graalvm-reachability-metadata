@@ -387,6 +387,7 @@ def _replace_version_in_value(value: Any, old_versions: set[str], new_version: s
 def _new_index_entry_from_baseline(
         baseline_entry: dict[str, Any],
         requested_version: str,
+        tested_versions: list[str] | None = None,
 ) -> dict[str, Any]:
     old_versions = {
         str(value)
@@ -404,8 +405,27 @@ def _new_index_entry_from_baseline(
     new_entry.pop("test-version", None)
     new_entry.pop("default-for", None)
     new_entry.pop("skipped-versions", None)
-    new_entry["tested-versions"] = [requested_version]
+    new_entry["tested-versions"] = tested_versions or [requested_version]
     return new_entry
+
+
+def _tested_versions_for_split_entry(
+        baseline_entry: dict[str, Any],
+        requested_version: str,
+) -> list[str]:
+    """Return tested versions that should move to the newly split metadata entry."""
+    tested_versions = baseline_entry.get("tested-versions")
+    moved_versions: list[str] = []
+    if isinstance(tested_versions, list):
+        moved_versions = [
+            str(version)
+            for version in tested_versions
+            if _version_is_at_or_after(str(version), requested_version)
+        ]
+    return [requested_version] + [
+        version for version in moved_versions
+        if version != requested_version
+    ]
 
 
 def _write_index_entries(repo_path: str, group: str, artifact: str, entries: list[dict[str, Any]]) -> None:
@@ -449,6 +469,7 @@ def clone_library_update_support(
     _rewrite_text_files(target_stats_dir, replacements)
 
     entries = load_index_entries(repo_path, group, artifact) or []
+    moved_tested_versions = _tested_versions_for_split_entry(baseline_entry, requested_version)
     updated_entries: list[dict[str, Any]] = []
     for entry in entries:
         if not isinstance(entry, dict):
@@ -464,7 +485,11 @@ def clone_library_update_support(
                     if not _version_is_at_or_after(str(version), requested_version)
                 ]
         updated_entries.append(entry_copy)
-    updated_entries.append(_new_index_entry_from_baseline(baseline_entry, requested_version))
+    updated_entries.append(_new_index_entry_from_baseline(
+        baseline_entry,
+        requested_version,
+        moved_tested_versions,
+    ))
     _write_index_entries(repo_path, group, artifact, updated_entries)
 
 
