@@ -52,6 +52,7 @@ supporting tests for the reachability repo.
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
+| **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate. Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
 
 ## 4. Configuration Contracts
 
@@ -240,8 +241,10 @@ labels after publishing the part PR.
   — version-bump fix workflow shared by `fix_javac_fail` and
   `fix_java_run_fail`. Strategies in this family route through the
   configured post-generation intervention when `nativeTest` still fails.
-- [Coverage improvement workflow](improve-library-coverage.md) — generates
-  additional tests to improve dynamic-access coverage on an existing library
-  version, without modifying existing tests or bumping versions. Triggered by
-  the `library-update-request` pipeline label.
+- [Coverage improvement workflow](improve-library-coverage.md) — resolves the
+  requested `library-update-request` coordinate against the artifact index,
+  reuses exact metadata-version targets in place, or creates requested-version
+  support by cloning the closest compatible metadata/tests before generating
+  additional tests and metadata. Triggered by the `library-update-request`
+  pipeline label.
 - (Future) Basic iterative workflow.
