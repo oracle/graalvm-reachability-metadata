@@ -28,7 +28,7 @@ public class StandardJavaScriptSerializerInnerJackson3StandardJavaScriptSerializ
         serializer.serializeValue(payload, writer);
 
         assertThat(writer.toString())
-                .isEqualTo("{\"message\":\"snowman ☃ \\u0026 \\/\",\"active\":true,\"count\":3}");
+                .isEqualTo("{\"message\":\"snowman \u2603 \\u0026 \\/\",\"active\":true,\"count\":3}");
     }
 
     @Test
@@ -46,12 +46,12 @@ public class StandardJavaScriptSerializerInnerJackson3StandardJavaScriptSerializ
                 context);
 
         assertThat(output)
-                .contains("const payload = {\"message\":\"snowman ☃ \\u0026 \\/\",\"active\":true,\"count\":3};");
+                .contains("const payload = {\"message\":\"snowman \u2603 \\u0026 \\/\",\"active\":true,\"count\":3};");
     }
 
     private static Map<String, Object> createPayload() {
         Map<String, Object> payload = new LinkedHashMap<>();
-        payload.put("message", "snowman ☃ & /");
+        payload.put("message", "snowman \u2603 & /");
         payload.put("active", true);
         payload.put("count", 3);
         return payload;
