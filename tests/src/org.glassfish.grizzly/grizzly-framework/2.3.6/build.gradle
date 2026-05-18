@@ -16,6 +16,15 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    systemProperty "org.glassfish.grizzly.DEFAULT_MEMORY_MANAGER",
+            "org.glassfish.grizzly.memory.ByteBufferManager"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dorg.glassfish.grizzly.DEFAULT_MEMORY_MANAGER=org.glassfish.grizzly.memory.ByteBufferManager")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
