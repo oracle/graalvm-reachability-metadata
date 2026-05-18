@@ -23,7 +23,6 @@ jobs:
       COVERAGE_BRANCH: stats/coverage
       COVERAGE_DIR: ${{ github.workspace }}/.tmp/stats-coverage
       COVERAGE_HISTORY_BACKUP: ${{ github.workspace }}/.tmp/stats-coverage-history.json
-      SOURCE_BRANCH: ${{ github.ref_name }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -65,21 +64,6 @@ jobs:
       - name: "🏷️ Generate coverage artifacts from exploded stats"
         run: |
           ./gradlew generateReadmeBadgeSummary -PreadmeMetricsOutputRoot="${COVERAGE_DIR}" --stacktrace
-
-      - name: "📝 Update root coverage markdown"
-        if: github.ref_type == 'branch' && github.ref_name != 'stats/coverage'
-        run: |
-          cp "${COVERAGE_DIR}/COVERAGE.md" COVERAGE.md
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add COVERAGE.md
-          if git diff --cached --quiet; then
-            echo "Root COVERAGE.md is already up to date."
-            exit 0
-          fi
-
-          git commit -m "Update root coverage for $(date -u +%F)"
-          git push origin "HEAD:${SOURCE_BRANCH}"
 
       - name: "🧹 Keep only published coverage data"
         run: |

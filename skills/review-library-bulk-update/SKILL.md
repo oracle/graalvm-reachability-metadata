@@ -5,13 +5,13 @@ description: Review automated pull requests with the `library-bulk-update` label
 
 # Review `library-bulk-update` PRs
 
-These PRs are created by the scheduled compatibility workflow and are expected to update supported library versions by changing `metadata/**/index.json`.
+These PRs are created by the scheduled compatibility workflow and are expected to update supported library versions by changing `metadata/**/index.json`. They may also refresh the generated root `COVERAGE.md` when tested-version changes affect the coverage table.
 
 ## Historical Review Logic
 
 Previous reviews follow a simple pattern:
 
-- Approve silently when the PR only updates the expected metadata index files and CI is green, then enable auto-merge.
+- Approve silently when the PR only updates the expected metadata index files, optionally with generated root `COVERAGE.md`, and CI is green, then enable auto-merge.
 - Close the PR when it contains unrelated changes such as workflow files, Gradle files, generated sources, or test code that clearly did not belong in a bulk version update.
 - Close stale PRs with merge conflicts instead of repairing them manually if a newer bulk-update PR will supersede them.
 - If CI looks flaky or inconsistent with the diff, ask for or trigger a rerun rather than approving blindly.
@@ -25,7 +25,7 @@ Previous reviews follow a simple pattern:
    - Gather files, reviews, issue comments, inline comments, and status checks.
 
 2. Validate the diff scope first.
-   - Expected files: `metadata/<group>/<artifact>/index.json`.
+   - Expected files: `metadata/<group>/<artifact>/index.json`, plus the generated root `COVERAGE.md` when the PR updates tested versions.
    - Normal change shape: new values appended to `tested-versions`, with formatting-only line movement around the surrounding JSON.
    - Be suspicious of changes to `latest`, `metadata-version`, `test-version`, `allowed-packages`, `requires`, or URL fields unless the PR clearly needs them.
    - A pure pre-release-to-release promotion produced by `addTestedVersion` is allowed when it is limited to the matching library and consists only of:
@@ -40,16 +40,17 @@ Previous reviews follow a simple pattern:
      - `tests/src/**` outside a pure matching pre-release promotion rename
      - `stats/**` outside a pure matching pre-release promotion rename
      - generated Java sources
-     - any other non-`metadata/**/index.json` file
+     - any other non-`metadata/**/index.json` file, except the generated root `COVERAGE.md`
 
 3. Check that the PR body matches the diff.
    - Every library listed in the body should correspond to an `index.json` diff.
    - Added tested versions should match the actual JSON changes.
-   - There should not be hidden updates outside the listed libraries.
+   - A `COVERAGE.md` refresh is allowed as generated fallout from the listed library updates; it does not need to be listed as a separate library change.
+   - There should not be hidden updates outside the listed libraries, except the generated root `COVERAGE.md`.
 
 4. Check CI before deciding.
    - Required baseline: JSON validation, metadata tests, and style checks must be green.
-   - If the PR unexpectedly triggered build-logic or workflow-heavy jobs, that is a sign the diff scope is wrong.
+   - If the PR unexpectedly triggered build-logic or workflow-heavy jobs, that is a sign the diff scope is wrong. A root `COVERAGE.md` change alone is not workflow-heavy.
    - If checks failed because the PR is contaminated by unrelated changes, close it.
    - If checks failed due to likely infra flakiness or a suspicious runner issue, request a rerun or rerun all relevant tests before approval.
 
@@ -88,8 +89,8 @@ Use the logic from `tests/tck-build-logic/src/main/groovy/org/graalvm/internal/t
 
 Approve when all of these are true:
 
-- The PR is limited to the expected `metadata/**/index.json` files.
-- Or the PR is a pure verified pre-release promotion rename limited to the matching `metadata/`, `tests/src/`, `stats/`, and `index.json` changes.
+- The PR is limited to the expected `metadata/**/index.json` files, optionally with generated root `COVERAGE.md`.
+- Or the PR is a pure verified pre-release promotion rename limited to the matching `metadata/`, `tests/src/`, `stats/`, `index.json`, and optional root `COVERAGE.md` changes.
 - The diff is only tested-version maintenance or clearly justified URL maintenance.
 - CI is green, or any rerun confirms green status.
 - Any changed URLs were verified against the exact version.

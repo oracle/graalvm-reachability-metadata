@@ -372,6 +372,15 @@ jobs:
             done < successful_updates.txt
           }
 
+          update_root_coverage_markdown() {
+            local coverage_dir="${RUNNER_TEMP}/root-coverage"
+            rm -rf "$coverage_dir"
+            mkdir -p "$coverage_dir"
+
+            ./gradlew generateReadmeBadgeSummary -PreadmeMetricsOutputRoot="$coverage_dir" --stacktrace
+            cp "$coverage_dir/COVERAGE.md" COVERAGE.md
+          }
+
           sleep $((RANDOM % 5 + 1))
 
           for i in {1..10}; do
@@ -381,9 +390,10 @@ jobs:
             update_new_versions
 
             git restore --source=HEAD --staged --worktree gradle/libs.versions.toml || true
+            update_root_coverage_markdown
 
             if git status --porcelain | grep -q .; then
-              git add -A -- metadata stats tests/src
+              git add -A -- metadata stats tests/src COVERAGE.md
               COMMIT_BODY_FILE="$(mktemp)"
               {
                 printf 'Update tested library versions\n\n'
