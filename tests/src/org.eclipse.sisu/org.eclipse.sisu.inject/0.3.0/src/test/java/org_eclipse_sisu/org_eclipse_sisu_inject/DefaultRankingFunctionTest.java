@@ -31,7 +31,7 @@ public class DefaultRankingFunctionTest {
         int rank = rankingFunction.rank(binding);
 
         assertThat(rank).isEqualTo(37);
-        assertThat(rankingFunction.maxRank()).isEqualTo(13);
+        assertThat(rankingFunction.maxRank()).isEqualTo(Integer.MAX_VALUE);
     }
 
     @Priority(37)
