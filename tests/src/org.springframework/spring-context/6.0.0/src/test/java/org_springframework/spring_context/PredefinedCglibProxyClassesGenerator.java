@@ -35,6 +35,7 @@ public final class PredefinedCglibProxyClassesGenerator {
             "org_springframework/spring_context/ConfigurationClassEnhancerInnerBeanMethodInterceptorTest$InterfaceProxyConfiguration$$SpringCGLIB$$0.class",
             "org_springframework/spring_context/ConfigurationClassEnhancerInnerBeanMethodInterceptorTest$InterfaceProxyConfiguration$$SpringCGLIB$$1.class",
             "org_springframework/spring_context/ConfigurationClassEnhancerInnerBeanMethodInterceptorTest$InterfaceProxyConfiguration$$SpringCGLIB$$2.class",
+            "org/springframework/cache/concurrent/ConcurrentMapCacheFactoryBean$$SpringCGLIB$$0.class",
             "org_springframework/spring_context/ConfigurationClassPostProcessorInnerConfigurationClassProxyBeanRegistrationCodeFragmentsTest$ProxyBackedConfiguration$$SpringCGLIB$$0.class",
             "org_springframework/spring_context/ConfigurationClassPostProcessorInnerConfigurationClassProxyBeanRegistrationCodeFragmentsTest$ProxyBackedConfiguration$$SpringCGLIB$$1.class",
             "org_springframework/spring_context/ConfigurationClassPostProcessorInnerConfigurationClassProxyBeanRegistrationCodeFragmentsTest$ProxyBackedConfiguration$$SpringCGLIB$$2.class"
@@ -71,11 +72,23 @@ public final class PredefinedCglibProxyClassesGenerator {
         generateConfigurationProxyClass(
                 ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.InterfaceProxyConfiguration.class
         );
+        generateFactoryBeanProxyClass();
         generateAheadOfTimeConfigurationProxyClass();
     }
 
     private static void generateConfigurationProxyClass(Class<?> configurationClass) {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(configurationClass)) {
+            context.getBean(configurationClass);
+        }
+    }
+
+    private static void generateFactoryBeanProxyClass() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+                ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.CglibProxyConfiguration.class
+        )) {
+            ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.CglibProxyConfiguration configuration =
+                    context.getBean(ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.CglibProxyConfiguration.class);
+            configuration.cglibFactoryBean();
         }
     }
 
