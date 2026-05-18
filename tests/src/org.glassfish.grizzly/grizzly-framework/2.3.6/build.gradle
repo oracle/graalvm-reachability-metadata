@@ -9,6 +9,8 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String configuredSelectionKeyHandlerClass =
+        'org_glassfish_grizzly.grizzly_framework.SelectionKeyHandlerInitializerTest$ConfiguredSelectionKeyHandler'
 
 dependencies {
     testImplementation "org.glassfish.grizzly:grizzly-framework:$libraryVersion"
@@ -19,13 +21,21 @@ dependencies {
 tasks.withType(Test).configureEach {
     systemProperty "org.glassfish.grizzly.DEFAULT_MEMORY_MANAGER",
             "org.glassfish.grizzly.memory.ByteBufferManager"
+    systemProperty "org.glassfish.grizzly.DEFAULT_SELECTION_KEY_HANDLER", configuredSelectionKeyHandlerClass
 }
 
 tasks.named("nativeTest") {
     runtimeArgs.add("-Dorg.glassfish.grizzly.DEFAULT_MEMORY_MANAGER=org.glassfish.grizzly.memory.ByteBufferManager")
+    runtimeArgs.add("-Dorg.glassfish.grizzly.DEFAULT_SELECTION_KEY_HANDLER=${configuredSelectionKeyHandlerClass}")
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Dorg.glassfish.grizzly.DEFAULT_SELECTION_KEY_HANDLER=${configuredSelectionKeyHandlerClass}")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
