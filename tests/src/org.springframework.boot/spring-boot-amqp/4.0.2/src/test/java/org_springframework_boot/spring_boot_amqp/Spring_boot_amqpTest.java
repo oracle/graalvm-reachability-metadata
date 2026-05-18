@@ -184,8 +184,7 @@ public class Spring_boot_amqpTest {
 
         try {
             configurer.configure(template, connectionFactory);
-        }
-        finally {
+        } finally {
             connectionFactory.destroy();
         }
 
@@ -211,8 +210,7 @@ public class Spring_boot_amqpTest {
 
         try {
             new RabbitTemplateConfigurer(properties).configure(template, connectionFactory);
-        }
-        finally {
+        } finally {
             connectionFactory.destroy();
         }
 
@@ -233,8 +231,7 @@ public class Spring_boot_amqpTest {
             assertThatThrownBy(() -> configurer.configure(template, connectionFactory))
                     .isInstanceOf(InvalidConfigurationPropertyValueException.class)
                     .hasMessageContaining("spring.rabbitmq.template.allowed-list-patterns");
-        }
-        finally {
+        } finally {
             connectionFactory.destroy();
         }
     }
@@ -257,8 +254,7 @@ public class Spring_boot_amqpTest {
 
         try {
             configurer.configure(connectionFactory);
-        }
-        finally {
+        } finally {
             connectionFactory.destroy();
         }
 
@@ -393,8 +389,7 @@ public class Spring_boot_amqpTest {
 
         try {
             configurer.configure(factory, connectionFactory);
-        }
-        finally {
+        } finally {
             connectionFactory.destroy();
         }
 
@@ -442,12 +437,10 @@ public class Spring_boot_amqpTest {
                 assertThat(container.isAutoStartup()).isFalse();
                 assertThat(container.getAcknowledgeMode()).isEqualTo(AcknowledgeMode.AUTO);
                 assertThat(container.getQueueNames()).containsExactly("orders.in");
-            }
-            finally {
+            } finally {
                 container.destroy();
             }
-        }
-        finally {
+        } finally {
             connectionFactory.destroy();
         }
     }
