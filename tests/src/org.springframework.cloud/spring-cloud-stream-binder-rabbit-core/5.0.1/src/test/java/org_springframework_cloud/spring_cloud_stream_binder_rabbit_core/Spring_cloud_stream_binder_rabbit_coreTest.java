@@ -421,6 +421,57 @@ public class Spring_cloud_stream_binder_rabbit_coreTest {
     }
 
     @Test
+    void provisionerBuildsMultiplexedPartitionedConsumerDestinations() {
+        CapturingDeclarableCustomizer customizer = new CapturingDeclarableCustomizer();
+        RabbitExchangeQueueProvisioner provisioner = new RabbitExchangeQueueProvisioner(
+                new FailingConnectionFactory(), List.of(customizer));
+        RabbitConsumerProperties rabbit = new RabbitConsumerProperties();
+        rabbit.setPrefix("multi.");
+
+        ExtendedConsumerProperties<RabbitConsumerProperties> consumer = new ExtendedConsumerProperties<>(rabbit);
+        consumer.setMultiplex(true);
+        consumer.setPartitioned(true);
+        consumer.setInstanceIndexList(List.of(0, 2));
+
+        ConsumerDestination destination = provisioner.provisionConsumerDestination("orders,returns", "workers", consumer);
+
+        assertThat(destination.getName()).isEqualTo(
+                "multi.orders.workers-0,multi.orders.workers-2,"
+                        + "multi.returns.workers-0,multi.returns.workers-2");
+        assertThat(customizer.exchanges()).extracting(Exchange::getName)
+                .containsExactly("multi.orders", "multi.orders", "multi.returns", "multi.returns");
+        assertThat(customizer.queues()).extracting(Queue::getName)
+                .containsExactly(
+                        "multi.orders.workers-0",
+                        "multi.orders.workers-2",
+                        "multi.returns.workers-0",
+                        "multi.returns.workers-2");
+        assertThat(customizer.bindings()).hasSize(4);
+        assertThat(customizer.bindings()).anySatisfy(binding -> {
+            assertThat(binding.getDestination()).isEqualTo("multi.orders.workers-0");
+            assertThat(binding.getExchange()).isEqualTo("multi.orders");
+            assertThat(binding.getRoutingKey()).isEqualTo("orders-0");
+        });
+        assertThat(customizer.bindings()).anySatisfy(binding -> {
+            assertThat(binding.getDestination()).isEqualTo("multi.orders.workers-2");
+            assertThat(binding.getExchange()).isEqualTo("multi.orders");
+            assertThat(binding.getRoutingKey()).isEqualTo("orders-2");
+        });
+        assertThat(customizer.bindings()).anySatisfy(binding -> {
+            assertThat(binding.getDestination()).isEqualTo("multi.returns.workers-0");
+            assertThat(binding.getExchange()).isEqualTo("multi.returns");
+            assertThat(binding.getRoutingKey()).isEqualTo("returns-0");
+        });
+        assertThat(customizer.bindings()).anySatisfy(binding -> {
+            assertThat(binding.getDestination()).isEqualTo("multi.returns.workers-2");
+            assertThat(binding.getExchange()).isEqualTo("multi.returns");
+            assertThat(binding.getRoutingKey()).isEqualTo("returns-2");
+        });
+
+        provisioner.cleanAutoDeclareContext(destination, consumer);
+    }
+
+    @Test
     void bindingCleanerDeletesOnlyQueuesAndExchangesForRequestedDestination() throws Exception {
         String authorization = "Basic " + Base64.getEncoder()
                 .encodeToString("cleaner:secret".getBytes(StandardCharsets.UTF_8));
