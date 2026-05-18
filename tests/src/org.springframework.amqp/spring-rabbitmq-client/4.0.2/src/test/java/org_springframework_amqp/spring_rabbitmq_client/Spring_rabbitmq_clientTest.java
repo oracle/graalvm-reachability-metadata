@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -23,10 +24,27 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.rabbitmq.client.amqp.ByteCapacity;
 import com.rabbitmq.client.amqp.Connection;
 import com.rabbitmq.client.amqp.Consumer;
 import com.rabbitmq.client.amqp.ConsumerBuilder;
 import com.rabbitmq.client.amqp.Management;
+import com.rabbitmq.client.amqp.Management.BindingSpecification;
+import com.rabbitmq.client.amqp.Management.ClassicQueueSpecification;
+import com.rabbitmq.client.amqp.Management.ClassicQueueVersion;
+import com.rabbitmq.client.amqp.Management.ExchangeDeletion;
+import com.rabbitmq.client.amqp.Management.ExchangeSpecification;
+import com.rabbitmq.client.amqp.Management.OverflowStrategy;
+import com.rabbitmq.client.amqp.Management.PurgeStatus;
+import com.rabbitmq.client.amqp.Management.QueueDeletion;
+import com.rabbitmq.client.amqp.Management.QueueInfo;
+import com.rabbitmq.client.amqp.Management.QueueLeaderLocator;
+import com.rabbitmq.client.amqp.Management.QueueSpecification;
+import com.rabbitmq.client.amqp.Management.QueueType;
+import com.rabbitmq.client.amqp.Management.QuorumQueueDeadLetterStrategy;
+import com.rabbitmq.client.amqp.Management.QuorumQueueSpecification;
+import com.rabbitmq.client.amqp.Management.StreamSpecification;
+import com.rabbitmq.client.amqp.Management.UnbindSpecification;
 import com.rabbitmq.client.amqp.Message;
 import com.rabbitmq.client.amqp.Publisher;
 import com.rabbitmq.client.amqp.PublisherBuilder;
@@ -37,10 +55,16 @@ import com.rabbitmq.client.amqp.ResponderBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.AmqpAcknowledgment;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbitmq.client.AmqpConnectionFactory;
+import org.springframework.amqp.rabbitmq.client.RabbitAmqpAdmin;
 import org.springframework.amqp.rabbitmq.client.RabbitAmqpTemplate;
 import org.springframework.amqp.rabbitmq.client.RabbitAmqpUtils;
 import org.springframework.amqp.rabbitmq.client.listener.RabbitAmqpListenerContainer;
@@ -265,6 +289,54 @@ public class Spring_rabbitmq_clientTest {
     }
 
     @Test
+    void adminDeclaresBindingsAndReportsQueueStateThroughManagementApi() {
+        FakeConnection connection = new FakeConnection();
+        RabbitAmqpAdmin admin = new RabbitAmqpAdmin(connectionFactory(connection));
+        Queue queue = new Queue("orders.queue", false, true, true, Map.of("x-message-ttl", 5_000));
+        DirectExchange exchange = new DirectExchange("orders.exchange", false, true,
+                Map.of("alternate-exchange", "orders.unrouted"));
+        Binding binding = BindingBuilder.bind(queue).to(exchange).with("orders.created");
+
+        String actualName = admin.declareQueue(queue);
+        admin.declareExchange(exchange);
+        admin.declareBinding(binding);
+        int purged = admin.purgeQueue(queue.getName());
+        Properties queueProperties = admin.getQueueProperties(queue.getName());
+        admin.removeBinding(binding);
+        admin.deleteQueue(queue.getName(), true, true);
+        admin.deleteExchange(exchange.getName());
+
+        assertThat(actualName).isEqualTo("orders.queue");
+        assertThat(queue.getActualName()).isEqualTo("orders.queue");
+        assertThat(purged).isEqualTo(4);
+        assertThat(queueProperties)
+                .containsEntry(RabbitAdmin.QUEUE_NAME, "orders.queue")
+                .containsEntry(RabbitAdmin.QUEUE_MESSAGE_COUNT, 0L)
+                .containsEntry(RabbitAdmin.QUEUE_CONSUMER_COUNT, 0)
+                .containsEntry(RabbitAmqpAdmin.QUEUE_TYPE, "classic");
+        assertThat(connection.management.closed).isTrue();
+        assertThat(connection.management.queueSpecification.name).isEqualTo("orders.queue");
+        assertThat(connection.management.queueSpecification.autoDelete).isTrue();
+        assertThat(connection.management.queueSpecification.exclusive).isTrue();
+        assertThat(connection.management.queueSpecification.arguments).containsEntry("x-message-ttl", 5_000);
+        assertThat(connection.management.exchangeSpecification.name).isEqualTo("orders.exchange");
+        assertThat(connection.management.exchangeSpecification.type).isEqualTo("direct");
+        assertThat(connection.management.exchangeSpecification.autoDelete).isTrue();
+        assertThat(connection.management.exchangeSpecification.declared).isTrue();
+        assertThat(connection.management.exchangeSpecification.arguments)
+                .containsEntry("alternate-exchange", "orders.unrouted");
+        assertThat(connection.management.bindingSpecification.sourceExchange).isEqualTo("orders.exchange");
+        assertThat(connection.management.bindingSpecification.destinationQueue).isEqualTo("orders.queue");
+        assertThat(connection.management.bindingSpecification.key).isEqualTo("orders.created");
+        assertThat(connection.management.bindingSpecification.bound).isTrue();
+        FakeBindingSpecification unbindSpecification = connection.management.unbindSpecification;
+        assertThat(unbindSpecification.destinationQueue).isEqualTo("orders.queue");
+        assertThat(unbindSpecification.unbound).isTrue();
+        assertThat(connection.management.deletedQueues).containsExactly("orders.queue");
+        assertThat(connection.management.deletedExchanges).containsExactly("orders.exchange");
+    }
+
+    @Test
     void templateRequiresDefaultQueueForReceiveOperations() {
         RabbitAmqpTemplate template = new RabbitAmqpTemplate(connectionFactory(new FakeConnection()));
 
@@ -293,6 +365,7 @@ public class Spring_rabbitmq_clientTest {
     }
 
     private static final class FakeConnection implements Connection {
+        private final FakeManagement management = new FakeManagement();
         private final FakePublisher publisher = new FakePublisher();
         private final FakePublisherBuilder publisherBuilder = new FakePublisherBuilder(this.publisher);
         private final FakeConsumer consumer = new FakeConsumer();
@@ -313,7 +386,7 @@ public class Spring_rabbitmq_clientTest {
 
         @Override
         public Management management() {
-            throw new UnsupportedOperationException("Management is not used by these tests");
+            return this.management;
         }
 
         @Override
@@ -340,6 +413,462 @@ public class Spring_rabbitmq_clientTest {
         public void close() {
             this.closed = true;
         }
+    }
+
+    private static final class FakeManagement implements Management {
+        private final FakeQueueSpecification queueSpecification = new FakeQueueSpecification();
+        private final FakeExchangeSpecification exchangeSpecification = new FakeExchangeSpecification();
+        private final FakeBindingSpecification bindingSpecification = new FakeBindingSpecification();
+        private final FakeUnbindSpecification unbindSpecification = new FakeUnbindSpecification();
+        private final List<String> deletedQueues = new ArrayList<>();
+        private final List<String> deletedExchanges = new ArrayList<>();
+        private boolean closed;
+
+        @Override
+        public QueueSpecification queue() {
+            this.queueSpecification.name = null;
+            return this.queueSpecification;
+        }
+
+        @Override
+        public QueueSpecification queue(String name) {
+            this.queueSpecification.name = name;
+            return this.queueSpecification;
+        }
+
+        @Override
+        public QueueInfo queueInfo(String name) {
+            return new FakeQueueInfo(name, QueueType.CLASSIC, 0L, 0);
+        }
+
+        @Override
+        public QueueDeletion queueDeletion() {
+            return this::queueDelete;
+        }
+
+        @Override
+        public void queueDelete(String name) {
+            this.deletedQueues.add(name);
+        }
+
+        @Override
+        public PurgeStatus queuePurge(String name) {
+            return () -> 4L;
+        }
+
+        @Override
+        public ExchangeSpecification exchange() {
+            this.exchangeSpecification.name = null;
+            return this.exchangeSpecification;
+        }
+
+        @Override
+        public ExchangeSpecification exchange(String name) {
+            this.exchangeSpecification.name = name;
+            return this.exchangeSpecification;
+        }
+
+        @Override
+        public ExchangeDeletion exchangeDeletion() {
+            return this::exchangeDelete;
+        }
+
+        @Override
+        public void exchangeDelete(String name) {
+            this.deletedExchanges.add(name);
+        }
+
+        @Override
+        public BindingSpecification binding() {
+            return this.bindingSpecification;
+        }
+
+        @Override
+        public UnbindSpecification unbind() {
+            return this.unbindSpecification;
+        }
+
+        @Override
+        public void close() {
+            this.closed = true;
+        }
+    }
+
+    private static final class FakeQueueSpecification implements QueueSpecification, ClassicQueueSpecification,
+            QuorumQueueSpecification, StreamSpecification {
+        private String name;
+        private boolean exclusive;
+        private boolean autoDelete;
+        private QueueType type = QueueType.CLASSIC;
+        private final Map<String, Object> arguments = new LinkedHashMap<>();
+
+        @Override
+        public QueueSpecification name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        @Override
+        public QueueSpecification exclusive(boolean exclusive) {
+            this.exclusive = exclusive;
+            return this;
+        }
+
+        @Override
+        public QueueSpecification autoDelete(boolean autoDelete) {
+            this.autoDelete = autoDelete;
+            return this;
+        }
+
+        @Override
+        public QueueSpecification type(QueueType type) {
+            this.type = type;
+            return this;
+        }
+
+        @Override
+        public QueueSpecification deadLetterExchange(String exchange) {
+            this.arguments.put("x-dead-letter-exchange", exchange);
+            return this;
+        }
+
+        @Override
+        public QueueSpecification deadLetterRoutingKey(String key) {
+            this.arguments.put("x-dead-letter-routing-key", key);
+            return this;
+        }
+
+        @Override
+        public QueueSpecification overflowStrategy(String strategy) {
+            this.arguments.put("x-overflow", strategy);
+            return this;
+        }
+
+        @Override
+        public QueueSpecification overflowStrategy(OverflowStrategy strategy) {
+            return overflowStrategy(strategy.strategy());
+        }
+
+        @Override
+        public QueueSpecification expires(Duration expires) {
+            this.arguments.put("x-expires", expires);
+            return this;
+        }
+
+        @Override
+        public QueueSpecification maxLength(long maxLength) {
+            this.arguments.put("x-max-length", maxLength);
+            return this;
+        }
+
+        @Override
+        public QueueSpecification maxLengthBytes(ByteCapacity maxLengthBytes) {
+            this.arguments.put("x-max-length-bytes", maxLengthBytes);
+            return this;
+        }
+
+        @Override
+        public QueueSpecification singleActiveConsumer(boolean singleActiveConsumer) {
+            this.arguments.put("x-single-active-consumer", singleActiveConsumer);
+            return this;
+        }
+
+        @Override
+        public QueueSpecification messageTtl(Duration ttl) {
+            this.arguments.put("x-message-ttl", ttl);
+            return this;
+        }
+
+        @Override
+        public QueueSpecification leaderLocator(QueueLeaderLocator leaderLocator) {
+            this.arguments.put("x-queue-leader-locator", leaderLocator.locator());
+            return this;
+        }
+
+        @Override
+        public QuorumQueueSpecification quorum() {
+            this.type = QueueType.QUORUM;
+            return this;
+        }
+
+        @Override
+        public ClassicQueueSpecification classic() {
+            this.type = QueueType.CLASSIC;
+            return this;
+        }
+
+        @Override
+        public StreamSpecification stream() {
+            this.type = QueueType.STREAM;
+            return this;
+        }
+
+        @Override
+        public QueueSpecification argument(String key, Object value) {
+            this.arguments.put(key, value);
+            return this;
+        }
+
+        @Override
+        public QueueSpecification arguments(Map<String, Object> arguments) {
+            this.arguments.clear();
+            if (arguments != null) {
+                this.arguments.putAll(arguments);
+            }
+            return this;
+        }
+
+        @Override
+        public QueueInfo declare() {
+            return new FakeQueueInfo(this.name, this.type, 0L, 0);
+        }
+
+        @Override
+        public ClassicQueueSpecification maxPriority(int maxPriority) {
+            this.arguments.put("x-max-priority", maxPriority);
+            return this;
+        }
+
+        @Override
+        public ClassicQueueSpecification version(ClassicQueueVersion version) {
+            this.arguments.put("x-queue-version", version);
+            return this;
+        }
+
+        @Override
+        public QueueSpecification queue() {
+            return this;
+        }
+
+        @Override
+        public QuorumQueueSpecification deadLetterStrategy(String strategy) {
+            this.arguments.put("x-dead-letter-strategy", strategy);
+            return this;
+        }
+
+        @Override
+        public QuorumQueueSpecification deadLetterStrategy(QuorumQueueDeadLetterStrategy strategy) {
+            return deadLetterStrategy(strategy.strategy());
+        }
+
+        @Override
+        public QuorumQueueSpecification deliveryLimit(int deliveryLimit) {
+            this.arguments.put("x-delivery-limit", deliveryLimit);
+            return this;
+        }
+
+        @Override
+        public QuorumQueueSpecification quorumInitialGroupSize(int size) {
+            this.arguments.put("x-quorum-initial-group-size", size);
+            return this;
+        }
+
+        @Override
+        public FakeQueueSpecification initialMemberCount(int count) {
+            this.arguments.put("x-initial-member-count", count);
+            return this;
+        }
+
+        @Override
+        public StreamSpecification maxAge(Duration maxAge) {
+            this.arguments.put("x-max-age", maxAge);
+            return this;
+        }
+
+        @Override
+        public StreamSpecification maxSegmentSizeBytes(ByteCapacity maxSegmentSize) {
+            this.arguments.put("x-max-segment-size-bytes", maxSegmentSize);
+            return this;
+        }
+
+        @Override
+        public StreamSpecification initialClusterSize(int size) {
+            this.arguments.put("x-initial-cluster-size", size);
+            return this;
+        }
+    }
+
+    private static final class FakeQueueInfo implements QueueInfo {
+        private final String name;
+        private final QueueType type;
+        private final long messageCount;
+        private final int consumerCount;
+
+        private FakeQueueInfo(String name, QueueType type, long messageCount, int consumerCount) {
+            this.name = name;
+            this.type = type;
+            this.messageCount = messageCount;
+            this.consumerCount = consumerCount;
+        }
+
+        @Override
+        public String name() {
+            return this.name;
+        }
+
+        @Override
+        public boolean durable() {
+            return false;
+        }
+
+        @Override
+        public boolean autoDelete() {
+            return true;
+        }
+
+        @Override
+        public boolean exclusive() {
+            return true;
+        }
+
+        @Override
+        public QueueType type() {
+            return this.type;
+        }
+
+        @Override
+        public Map<String, Object> arguments() {
+            return Map.of();
+        }
+
+        @Override
+        public String leader() {
+            return "node-1";
+        }
+
+        @Override
+        public List<String> replicas() {
+            return List.of();
+        }
+
+        @Override
+        public List<String> members() {
+            return List.of("node-1");
+        }
+
+        @Override
+        public long messageCount() {
+            return this.messageCount;
+        }
+
+        @Override
+        public int consumerCount() {
+            return this.consumerCount;
+        }
+    }
+
+    private static final class FakeExchangeSpecification implements ExchangeSpecification {
+        private String name;
+        private boolean autoDelete;
+        private String type;
+        private final Map<String, Object> arguments = new LinkedHashMap<>();
+        private boolean declared;
+
+        @Override
+        public ExchangeSpecification name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        @Override
+        public ExchangeSpecification autoDelete(boolean autoDelete) {
+            this.autoDelete = autoDelete;
+            return this;
+        }
+
+        @Override
+        public ExchangeSpecification type(Management.ExchangeType type) {
+            this.type = type.name().toLowerCase();
+            return this;
+        }
+
+        @Override
+        public ExchangeSpecification type(String type) {
+            this.type = type;
+            return this;
+        }
+
+        @Override
+        public ExchangeSpecification argument(String key, Object value) {
+            this.arguments.put(key, value);
+            return this;
+        }
+
+        @Override
+        public ExchangeSpecification arguments(Map<String, Object> arguments) {
+            this.arguments.clear();
+            if (arguments != null) {
+                this.arguments.putAll(arguments);
+            }
+            return this;
+        }
+
+        @Override
+        public void declare() {
+            this.declared = true;
+        }
+    }
+
+    private static class FakeBindingSpecification implements BindingSpecification, UnbindSpecification {
+        private String sourceExchange;
+        private String destinationQueue;
+        private String destinationExchange;
+        private String key;
+        private final Map<String, Object> arguments = new LinkedHashMap<>();
+        private boolean bound;
+        private boolean unbound;
+
+        @Override
+        public FakeBindingSpecification sourceExchange(String sourceExchange) {
+            this.sourceExchange = sourceExchange;
+            return this;
+        }
+
+        @Override
+        public FakeBindingSpecification destinationQueue(String queue) {
+            this.destinationQueue = queue;
+            return this;
+        }
+
+        @Override
+        public FakeBindingSpecification destinationExchange(String exchange) {
+            this.destinationExchange = exchange;
+            return this;
+        }
+
+        @Override
+        public FakeBindingSpecification key(String key) {
+            this.key = key;
+            return this;
+        }
+
+        @Override
+        public FakeBindingSpecification argument(String key, Object value) {
+            this.arguments.put(key, value);
+            return this;
+        }
+
+        @Override
+        public FakeBindingSpecification arguments(Map<String, Object> arguments) {
+            this.arguments.clear();
+            if (arguments != null) {
+                this.arguments.putAll(arguments);
+            }
+            return this;
+        }
+
+        @Override
+        public void bind() {
+            this.bound = true;
+        }
+
+        @Override
+        public void unbind() {
+            this.unbound = true;
+        }
+    }
+
+    private static final class FakeUnbindSpecification extends FakeBindingSpecification {
     }
 
     private static final class FakePublisherBuilder implements PublisherBuilder {
