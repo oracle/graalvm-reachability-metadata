@@ -199,7 +199,7 @@ public class Httpcore5_h2Test {
                 new BasicHeader(H2PseudoRequestHeaders.AUTHORITY, "example.test"),
                 new BasicHeader(H2PseudoRequestHeaders.PATH, "/resource"),
                 new BasicHeader("accept", "text/plain"),
-                new BasicHeader("x-unicode", "hällo"),
+                new BasicHeader("x-unicode", "h\u00e4llo"),
                 new BasicHeader("authorization", "secret", true));
         HPackEncoder encoder = new HPackEncoder(StandardCharsets.UTF_8);
         HPackDecoder decoder = new HPackDecoder(StandardCharsets.UTF_8);
@@ -225,7 +225,7 @@ public class Httpcore5_h2Test {
                 "example.test",
                 "/resource",
                 "text/plain",
-                "hällo",
+                "h\u00e4llo",
                 "secret");
         assertThat(decoded.get(6).isSensitive()).isTrue();
 
