@@ -24,18 +24,20 @@ public class NIOTransportBuilderTest {
         TCPNIOTransportBuilder builder = TCPNIOTransportBuilder.newInstance();
 
         TCPNIOTransport transport = builder.build();
-        ThreadPoolConfig selectorConfig = builder.getSelectorThreadPoolConfig();
-        int expectedSelectorRunnerCount = Runtime.getRuntime().availableProcessors();
+        ThreadPoolConfig workerConfig = transport.getWorkerThreadPoolConfig();
+        ThreadPoolConfig kernelConfig = transport.getKernelThreadPoolConfig();
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
 
         assertThat(transport).isNotNull();
-        assertThat(builder.getIOStrategy()).isSameAs(WorkerThreadIOStrategy.getInstance());
-        assertThat(builder.getMemoryManager()).isSameAs(MemoryManager.DEFAULT_MEMORY_MANAGER);
-        assertThat(builder.getAttributeBuilder()).isSameAs(AttributeBuilder.DEFAULT_ATTRIBUTE_BUILDER);
-        assertThat(builder.getSelectorHandler()).isSameAs(SelectorHandler.DEFAULT_SELECTOR_HANDLER);
-        assertThat(builder.getSelectionKeyHandler()).isSameAs(SelectionKeyHandler.DEFAULT_SELECTION_KEY_HANDLER);
-        assertThat(builder.getWorkerThreadPoolConfig()).isNotNull();
-        assertThat(selectorConfig.getCorePoolSize()).isEqualTo(expectedSelectorRunnerCount);
-        assertThat(selectorConfig.getMaxPoolSize()).isEqualTo(expectedSelectorRunnerCount);
-        assertThat(transport.getSelectorRunnersCount()).isEqualTo(expectedSelectorRunnerCount);
+        assertThat(transport.getIOStrategy()).isSameAs(WorkerThreadIOStrategy.getInstance());
+        assertThat(transport.getMemoryManager()).isSameAs(MemoryManager.DEFAULT_MEMORY_MANAGER);
+        assertThat(transport.getAttributeBuilder()).isSameAs(AttributeBuilder.DEFAULT_ATTRIBUTE_BUILDER);
+        assertThat(transport.getSelectorHandler()).isSameAs(SelectorHandler.DEFAULT_SELECTOR_HANDLER);
+        assertThat(transport.getSelectionKeyHandler()).isSameAs(SelectionKeyHandler.DEFAULT_SELECTION_KEY_HANDLER);
+        assertThat(workerConfig).isNotNull();
+        assertThat(workerConfig.getCorePoolSize()).isEqualTo(availableProcessors * 2);
+        assertThat(workerConfig.getMaxPoolSize()).isEqualTo(availableProcessors * 2);
+        assertThat(kernelConfig).isNotNull();
+        assertThat(transport.getSelectorRunnersCount()).isEqualTo(availableProcessors + 1);
     }
 }
