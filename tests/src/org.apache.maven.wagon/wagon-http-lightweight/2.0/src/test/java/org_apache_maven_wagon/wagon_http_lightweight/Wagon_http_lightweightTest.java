@@ -33,11 +33,15 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
+import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -58,6 +62,26 @@ public class Wagon_http_lightweightTest {
 
     @TempDir
     Path tempDirectory;
+
+    private DefaultPlexusContainer container;
+    private Authenticator originalAuthenticator;
+
+    @BeforeEach
+    void captureAuthenticator() {
+        originalAuthenticator = Authenticator.getDefault();
+    }
+
+    @AfterEach
+    void disposePlexusContainer() {
+        try {
+            if (container != null) {
+                container.dispose();
+                container = null;
+            }
+        } finally {
+            Authenticator.setDefault(originalAuthenticator);
+        }
+    }
 
     @Test
     void downloadsPlainAndGzipResourcesAndHonorsFreshnessChecks() throws Exception {
@@ -156,7 +180,6 @@ public class Wagon_http_lightweightTest {
                     AuthenticationInfo authenticationInfo = new AuthenticationInfo();
                     authenticationInfo.setUserName(AUTH_USERNAME);
                     authenticationInfo.setPassword(AUTH_PASSWORD);
-                    Authenticator originalAuthenticator = Authenticator.getDefault();
 
                     LightweightHttpWagon wagon = connectedWagon(server.repositoryUrl(), authenticationInfo);
                     try {
@@ -169,11 +192,7 @@ public class Wagon_http_lightweightTest {
                                 .anySatisfy(headers -> assertThat(headers)
                                         .containsEntry("authorization", List.of(expectedAuthorizationHeader())));
                     } finally {
-                        try {
-                            wagon.disconnect();
-                        } finally {
-                            Authenticator.setDefault(originalAuthenticator);
-                        }
+                        wagon.disconnect();
                     }
                 }
             });
@@ -191,7 +210,6 @@ public class Wagon_http_lightweightTest {
                     proxyInfo.setPort(server.port());
                     proxyInfo.setUserName(PROXY_USERNAME);
                     proxyInfo.setPassword(PROXY_PASSWORD);
-                    Authenticator originalAuthenticator = Authenticator.getDefault();
 
                     LightweightHttpWagon wagon = connectedWagon("http://upstream.example.test/repository", proxyInfo);
                     try {
@@ -204,11 +222,7 @@ public class Wagon_http_lightweightTest {
                                 .anySatisfy(headers -> assertThat(headers).containsEntry(
                                         "proxy-authorization", List.of(expectedProxyAuthorizationHeader())));
                     } finally {
-                        try {
-                            wagon.disconnect();
-                        } finally {
-                            Authenticator.setDefault(originalAuthenticator);
-                        }
+                        wagon.disconnect();
                     }
                 }
             });
@@ -216,7 +230,7 @@ public class Wagon_http_lightweightTest {
     }
 
     @Test
-    void connectionAppliesAndRestoresProxySystemProperties() throws Exception {
+    void connectionKeepsProxySystemPropertiesUnchanged() throws Exception {
         synchronized (SYSTEM_PROPERTY_LOCK) {
             Map<String, String> originalProperties = snapshotProxyProperties();
             try {
@@ -226,23 +240,25 @@ public class Wagon_http_lightweightTest {
                 System.setProperty("https.proxyPort", "18443");
                 System.setProperty("http.nonProxyHosts", "original.example|localhost");
 
-                LightweightHttpWagon wagon = new LightweightHttpWagon();
+                LightweightHttpWagon wagon = newWagon();
                 ProxyInfo proxyInfo = new ProxyInfo();
                 proxyInfo.setType("http");
                 proxyInfo.setHost("proxy.example.test");
                 proxyInfo.setPort(3128);
                 proxyInfo.setNonProxyHosts("127.0.0.1|localhost");
 
-                wagon.connect(new Repository("test", "http://repo.example.test/base"), proxyInfo);
-                assertThat(System.getProperty("http.proxyHost")).isEqualTo("proxy.example.test");
-                assertThat(System.getProperty("http.proxyPort")).isEqualTo("3128");
-                assertThat(System.getProperty("https.proxyHost")).isEqualTo("original-https-host");
-                assertThat(System.getProperty("https.proxyPort")).isEqualTo("18443");
-                assertThat(System.getProperty("http.nonProxyHosts")).isEqualTo("127.0.0.1|localhost");
-                assertThat(wagon.getRepository().getUrl()).isEqualTo("http://repo.example.test/base");
-                assertThat(wagon.getProxyInfo()).isSameAs(proxyInfo);
-
-                wagon.disconnect();
+                try {
+                    wagon.connect(new Repository("test", "http://repo.example.test/base"), proxyInfo);
+                    assertThat(System.getProperty("http.proxyHost")).isEqualTo("original-http-host");
+                    assertThat(System.getProperty("http.proxyPort")).isEqualTo("18000");
+                    assertThat(System.getProperty("https.proxyHost")).isEqualTo("original-https-host");
+                    assertThat(System.getProperty("https.proxyPort")).isEqualTo("18443");
+                    assertThat(System.getProperty("http.nonProxyHosts")).isEqualTo("original.example|localhost");
+                    assertThat(wagon.getRepository().getUrl()).isEqualTo("http://repo.example.test/base");
+                    assertThat(wagon.getProxyInfo()).isSameAs(proxyInfo);
+                } finally {
+                    wagon.disconnect();
+                }
                 assertThat(System.getProperty("http.proxyHost")).isEqualTo("original-http-host");
                 assertThat(System.getProperty("http.proxyPort")).isEqualTo("18000");
                 assertThat(System.getProperty("https.proxyHost")).isEqualTo("original-https-host");
@@ -254,23 +270,30 @@ public class Wagon_http_lightweightTest {
         }
     }
 
-    private static LightweightHttpWagon connectedWagon(String repositoryUrl) throws Exception {
-        LightweightHttpWagon wagon = new LightweightHttpWagon();
+    private LightweightHttpWagon connectedWagon(String repositoryUrl) throws Exception {
+        LightweightHttpWagon wagon = newWagon();
         wagon.connect(new Repository("test", repositoryUrl));
         return wagon;
     }
 
-    private static LightweightHttpWagon connectedWagon(String repositoryUrl, AuthenticationInfo authenticationInfo)
+    private LightweightHttpWagon connectedWagon(String repositoryUrl, AuthenticationInfo authenticationInfo)
             throws Exception {
-        LightweightHttpWagon wagon = new LightweightHttpWagon();
+        LightweightHttpWagon wagon = newWagon();
         wagon.connect(new Repository("test", repositoryUrl), authenticationInfo);
         return wagon;
     }
 
-    private static LightweightHttpWagon connectedWagon(String repositoryUrl, ProxyInfo proxyInfo) throws Exception {
-        LightweightHttpWagon wagon = new LightweightHttpWagon();
+    private LightweightHttpWagon connectedWagon(String repositoryUrl, ProxyInfo proxyInfo) throws Exception {
+        LightweightHttpWagon wagon = newWagon();
         wagon.connect(new Repository("test", repositoryUrl), proxyInfo);
         return wagon;
+    }
+
+    private LightweightHttpWagon newWagon() throws Exception {
+        if (container == null) {
+            container = new DefaultPlexusContainer();
+        }
+        return (LightweightHttpWagon) container.lookup(Wagon.ROLE, "http");
     }
 
     private static String expectedAuthorizationHeader() {
