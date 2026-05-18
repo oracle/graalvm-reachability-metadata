@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -244,7 +245,7 @@ public class Spring_rabbitmq_clientTest {
     }
 
     @Test
-    void listenerContainerBuildsConsumersDeliversSpringMessageAndAutoSettles() {
+    void listenerContainerBuildsConsumersDeliversSpringMessageAndAutoSettles() throws Exception {
         FakeMessage delivery = textMessage("container-message");
         RecordingConsumerContext deliveryContext = new RecordingConsumerContext();
         FakeConnection connection = new FakeConnection();
@@ -284,7 +285,55 @@ public class Spring_rabbitmq_clientTest {
         assertThat(connection.consumerBuilder.priority).isEqualTo(5);
         assertThat(connection.createdConsumers).hasSize(2);
 
-        container.stop();
+        CountDownLatch stopped = new CountDownLatch(1);
+        container.stop(stopped::countDown);
+        assertThat(stopped.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(connection.createdConsumers).allSatisfy(consumer -> assertThat(consumer.closed).isTrue());
+    }
+
+    @Test
+    void listenerContainerPausesAndResumesConsumersForSelectedQueue() throws Exception {
+        FakeConnection connection = new FakeConnection();
+        RabbitAmqpListenerContainer container = new RabbitAmqpListenerContainer(connectionFactory(connection));
+        container.setQueueNames("billing.high", "billing.low");
+        container.setConsumersPerQueue(2);
+        container.setGracefulShutdownPeriod(Duration.ofMillis(250));
+        container.setupMessageListener(message -> assertThat(message).isNotNull());
+
+        container.afterPropertiesSet();
+        container.start();
+
+        assertThat(container.isRunning()).isTrue();
+        assertThat(connection.createdConsumers).hasSize(4);
+        List<FakeConsumer> highPriorityConsumers = connection.createdConsumers.stream()
+                .filter(consumer -> "billing.high".equals(consumer.queue))
+                .toList();
+        List<FakeConsumer> lowPriorityConsumers = connection.createdConsumers.stream()
+                .filter(consumer -> "billing.low".equals(consumer.queue))
+                .toList();
+        assertThat(highPriorityConsumers).hasSize(2);
+        assertThat(lowPriorityConsumers).hasSize(2);
+
+        container.pause("billing.high");
+
+        assertThat(highPriorityConsumers).allSatisfy(consumer -> assertThat(consumer.paused).isTrue());
+        assertThat(lowPriorityConsumers).allSatisfy(consumer -> assertThat(consumer.paused).isFalse());
+
+        container.resume("billing.high");
+
+        assertThat(connection.createdConsumers).allSatisfy(consumer -> assertThat(consumer.paused).isFalse());
+
+        container.pause();
+
+        assertThat(connection.createdConsumers).allSatisfy(consumer -> assertThat(consumer.paused).isTrue());
+
+        container.resume();
+
+        assertThat(connection.createdConsumers).allSatisfy(consumer -> assertThat(consumer.paused).isFalse());
+
+        CountDownLatch stopped = new CountDownLatch(1);
+        container.stop(stopped::countDown);
+        assertThat(stopped.await(1, TimeUnit.SECONDS)).isTrue();
         assertThat(connection.createdConsumers).allSatisfy(consumer -> assertThat(consumer.closed).isTrue());
     }
 
@@ -1029,7 +1078,7 @@ public class Spring_rabbitmq_clientTest {
 
         @Override
         public Consumer build() {
-            FakeConsumer builtConsumer = this.owner == null ? this.consumer : new FakeConsumer();
+            FakeConsumer builtConsumer = this.owner == null ? this.consumer : new FakeConsumer(this.queue);
             if (this.owner != null) {
                 this.owner.createdConsumers.add(builtConsumer);
             }
@@ -1043,8 +1092,17 @@ public class Spring_rabbitmq_clientTest {
     }
 
     private static final class FakeConsumer implements Consumer {
+        private final String queue;
         private boolean paused;
         private boolean closed;
+
+        private FakeConsumer() {
+            this(null);
+        }
+
+        private FakeConsumer(String queue) {
+            this.queue = queue;
+        }
 
         @Override
         public void pause() {
