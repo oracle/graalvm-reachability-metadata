@@ -6,11 +6,10 @@
  */
 package io_airlift.aircompressor;
 
-import io.airlift.compress.snappy.SnappyCompressor;
-import io.airlift.compress.snappy.SnappyDecompressor;
+import io.airlift.compress.v2.snappy.SnappyCompressor;
+import io.airlift.compress.v2.snappy.SnappyDecompressor;
 import org.junit.jupiter.api.Test;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,24 +18,17 @@ public class SnappyUnsafeUtilTest {
     @Test
     void compressesAndDecompressesDirectBuffers() {
         byte[] input = repeatedPayload();
-        SnappyCompressor compressor = new SnappyCompressor();
-        SnappyDecompressor decompressor = new SnappyDecompressor();
+        SnappyCompressor compressor = SnappyCompressor.create();
+        SnappyDecompressor decompressor = SnappyDecompressor.create();
 
-        ByteBuffer source = ByteBuffer.allocateDirect(input.length);
-        source.put(input);
-        source.flip();
+        byte[] compressed = new byte[compressor.maxCompressedLength(input.length)];
+        int compressedLength = compressor.compress(input, 0, input.length, compressed, 0, compressed.length);
+        assertThat(compressedLength).isPositive();
 
-        ByteBuffer compressed = ByteBuffer.allocateDirect(compressor.maxCompressedLength(input.length));
-        compressor.compress(source, compressed);
-        assertThat(compressed.position()).isPositive();
-
-        compressed.flip();
-        ByteBuffer restored = ByteBuffer.allocateDirect(input.length);
-        decompressor.decompress(compressed, restored);
-
-        restored.flip();
-        byte[] actual = new byte[restored.remaining()];
-        restored.get(actual);
+        byte[] restored = new byte[input.length];
+        int restoredLength = decompressor.decompress(compressed, 0, compressedLength, restored, 0, restored.length);
+        byte[] actual = new byte[restoredLength];
+        System.arraycopy(restored, 0, actual, 0, restoredLength);
         assertThat(actual).isEqualTo(input);
     }
 

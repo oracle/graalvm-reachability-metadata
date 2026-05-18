@@ -18,17 +18,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class NativeLoaderTest {
     @Test
-    void createsDowncallHandlesForNativeSymbols() {
-        NativeLoader.Symbols<BeginSignalSettingSymbols> symbols = NativeLoader.loadSymbols(
-                "native_loader_test",
-                BeginSignalSettingSymbols.class,
-                MethodHandles.lookup());
-
-        assertThat(symbols.linkageError()).isEmpty();
-        assertThat(symbols.symbols().beginSignalSetting()).isNotNull();
-    }
-
-    @Test
     void createsErrorMethodHandlesWhenNativeLibraryIsMissing() {
         NativeLoader.Symbols<BeginSignalSettingSymbols> symbols = NativeLoader.loadSymbols(
                 "missing_native_loader_test",

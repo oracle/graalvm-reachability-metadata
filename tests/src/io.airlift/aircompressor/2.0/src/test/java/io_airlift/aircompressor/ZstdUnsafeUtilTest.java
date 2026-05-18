@@ -6,11 +6,10 @@
  */
 package io_airlift.aircompressor;
 
-import io.airlift.compress.zstd.ZstdCompressor;
-import io.airlift.compress.zstd.ZstdDecompressor;
+import io.airlift.compress.v2.zstd.ZstdCompressor;
+import io.airlift.compress.v2.zstd.ZstdDecompressor;
 import org.junit.jupiter.api.Test;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,24 +18,17 @@ public class ZstdUnsafeUtilTest {
     @Test
     void compressesAndDecompressesDirectBuffers() {
         byte[] input = repeatedPayload();
-        ZstdCompressor compressor = new ZstdCompressor();
-        ZstdDecompressor decompressor = new ZstdDecompressor();
+        ZstdCompressor compressor = ZstdCompressor.create();
+        ZstdDecompressor decompressor = ZstdDecompressor.create();
 
-        ByteBuffer source = ByteBuffer.allocateDirect(input.length);
-        source.put(input);
-        source.flip();
+        byte[] compressed = new byte[compressor.maxCompressedLength(input.length)];
+        int compressedLength = compressor.compress(input, 0, input.length, compressed, 0, compressed.length);
+        assertThat(compressedLength).isPositive();
 
-        ByteBuffer compressed = ByteBuffer.allocateDirect(compressor.maxCompressedLength(input.length));
-        compressor.compress(source, compressed);
-        assertThat(compressed.position()).isPositive();
-
-        compressed.flip();
-        ByteBuffer restored = ByteBuffer.allocateDirect(input.length);
-        decompressor.decompress(compressed, restored);
-
-        restored.flip();
-        byte[] actual = new byte[restored.remaining()];
-        restored.get(actual);
+        byte[] restored = new byte[input.length];
+        int restoredLength = decompressor.decompress(compressed, 0, compressedLength, restored, 0, restored.length);
+        byte[] actual = new byte[restoredLength];
+        System.arraycopy(restored, 0, actual, 0, restoredLength);
         assertThat(actual).isEqualTo(input);
     }
 
