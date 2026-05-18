@@ -29,6 +29,7 @@ import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.AttributeAccessorSupport;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
+import org.springframework.integration.amqp.channel.PollableAmqpChannel;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.integration.amqp.outbound.AmqpOutboundEndpoint;
 import org.springframework.integration.amqp.support.AmqpMessageHeaderErrorMessageStrategy;
@@ -241,6 +242,52 @@ public class Spring_integration_amqpTest {
     }
 
     @Test
+    void pollableAmqpChannelSendsAndReceivesMappedMessagesThroughRabbitTemplate() {
+        RecordingRabbitTemplate rabbitTemplate = new RecordingRabbitTemplate();
+        MessageProperties receivedProperties = new MessageProperties();
+        receivedProperties.setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN);
+        receivedProperties.setContentEncoding(StandardCharsets.UTF_8.name());
+        receivedProperties.setReceivedRoutingKey("orders.queue");
+        receivedProperties.setHeader("tenant", "acme");
+        rabbitTemplate.messageToReceive = new org.springframework.amqp.core.Message(
+                "from queue".getBytes(StandardCharsets.UTF_8), receivedProperties);
+
+        PollableAmqpChannel channel = new PollableAmqpChannel("ordersChannel", rabbitTemplate);
+        channel.setQueueName("orders.queue");
+        channel.setExtractPayload(true);
+        channel.setDefaultDeliveryMode(MessageDeliveryMode.PERSISTENT);
+        channel.setBeanFactory(new DefaultListableBeanFactory());
+        channel.afterPropertiesSet();
+
+        Message<String> messageToSend = MessageBuilder.withPayload("to queue")
+                .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.TEXT_PLAIN)
+                .setHeader("businessKey", "order-456")
+                .build();
+        boolean sent = channel.send(messageToSend, 0L);
+
+        assertThat(sent).isTrue();
+        assertThat(rabbitTemplate.exchange).isEmpty();
+        assertThat(rabbitTemplate.routingKey).isEqualTo("orders.queue");
+        assertThat(new String(rabbitTemplate.sentMessage.getBody(), StandardCharsets.UTF_8)).isEqualTo("to queue");
+        assertThat(rabbitTemplate.sentMessage.getMessageProperties().getContentType())
+                .isEqualTo(MimeTypeUtils.TEXT_PLAIN.toString());
+        assertThat(rabbitTemplate.sentMessage.getMessageProperties().getDeliveryMode())
+                .isEqualTo(MessageDeliveryMode.PERSISTENT);
+        assertThat(rabbitTemplate.sentMessage.getMessageProperties().getHeaders())
+                .containsEntry("businessKey", "order-456");
+
+        Message<?> received = channel.receive(10L);
+
+        assertThat(received).isNotNull();
+        assertThat(rabbitTemplate.receiveQueue).isEqualTo("orders.queue");
+        assertThat(rabbitTemplate.receiveTimeout).isEqualTo(10L);
+        assertThat(received.getPayload()).isEqualTo("from queue");
+        assertThat(received.getHeaders())
+                .containsEntry(AmqpHeaders.RECEIVED_ROUTING_KEY, "orders.queue")
+                .containsEntry("tenant", "acme");
+    }
+
+    @Test
     void errorMessageStrategyAddsRawAmqpMessageAndOriginalInputMessage() {
         Message<String> inputMessage = MessageBuilder.withPayload("failed").build();
         org.springframework.amqp.core.Message rawMessage = new org.springframework.amqp.core.Message(
@@ -294,9 +341,23 @@ public class Spring_integration_amqpTest {
 
         private CorrelationData correlationData;
 
+        private org.springframework.amqp.core.Message messageToReceive;
+
+        private String receiveQueue;
+
+        private long receiveTimeout;
+
         private RecordingRabbitTemplate() {
             super(new NoOpConnectionFactory());
             setMessageConverter(new SimpleMessageConverter());
+        }
+
+        @Override
+        public void send(String exchange, String routingKey, org.springframework.amqp.core.Message message)
+                throws AmqpException {
+            this.exchange = exchange;
+            this.routingKey = routingKey;
+            this.sentMessage = message;
         }
 
         @Override
@@ -306,6 +367,13 @@ public class Spring_integration_amqpTest {
             this.routingKey = routingKey;
             this.sentMessage = message;
             this.correlationData = correlationData;
+        }
+
+        @Override
+        public org.springframework.amqp.core.Message receive(String queueName, long timeoutMillis) throws AmqpException {
+            this.receiveQueue = queueName;
+            this.receiveTimeout = timeoutMillis;
+            return this.messageToReceive;
         }
     }
 
