@@ -9,9 +9,12 @@ package org_springframework_boot.spring_boot_amqp;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.rabbitmq.client.impl.CredentialsProvider;
+import com.rabbitmq.client.impl.CredentialsRefreshService;
 import org.aopalliance.aop.Advice;
 import org.junit.jupiter.api.Test;
 
@@ -304,6 +307,27 @@ public class Spring_boot_amqpTest {
     }
 
     @Test
+    void rabbitConnectionFactoryBeanConfigurerAppliesCredentialsProviderAndRefreshService() {
+        RabbitProperties properties = new RabbitProperties();
+        RabbitConnectionDetails details = connectionDetails(
+                List.of(new RabbitConnectionDetails.Address("credentials.example.test", 6300)));
+        CredentialsProvider credentialsProvider = new StaticCredentialsProvider("rotating-user", "rotating-password");
+        CredentialsRefreshService credentialsRefreshService = new NoOpCredentialsRefreshService();
+        CapturingRabbitConnectionFactoryBean factoryBean = new CapturingRabbitConnectionFactoryBean();
+        RabbitConnectionFactoryBeanConfigurer configurer = new RabbitConnectionFactoryBeanConfigurer(
+                new DefaultResourceLoader(), properties, details);
+
+        configurer.setCredentialsProvider(credentialsProvider);
+        configurer.setCredentialsRefreshService(credentialsRefreshService);
+        configurer.configure(factoryBean);
+
+        assertThat(factoryBean.credentialsProvider).isSameAs(credentialsProvider);
+        assertThat(factoryBean.credentialsRefreshService).isSameAs(credentialsRefreshService);
+        assertThat(factoryBean.credentialsProvider.getUsername()).isEqualTo("rotating-user");
+        assertThat(factoryBean.credentialsProvider.getPassword()).isEqualTo("rotating-password");
+    }
+
+    @Test
     void simpleListenerContainerFactoryConfigurerAppliesCommonSimpleAndRetrySettings() {
         RabbitProperties properties = new RabbitProperties();
         RabbitProperties.SimpleContainer simple = properties.getListener().getSimple();
@@ -471,6 +495,26 @@ public class Spring_boot_amqpTest {
         public void setRetryTemplate(RetryTemplate retryTemplate) {
             super.setRetryTemplate(retryTemplate);
             this.retryTemplate = retryTemplate;
+        }
+
+    }
+
+    private static class CapturingRabbitConnectionFactoryBean extends RabbitConnectionFactoryBean {
+
+        private CredentialsProvider credentialsProvider;
+
+        private CredentialsRefreshService credentialsRefreshService;
+
+        @Override
+        public void setCredentialsProvider(CredentialsProvider credentialsProvider) {
+            super.setCredentialsProvider(credentialsProvider);
+            this.credentialsProvider = credentialsProvider;
+        }
+
+        @Override
+        public void setCredentialsRefreshService(CredentialsRefreshService credentialsRefreshService) {
+            super.setCredentialsRefreshService(credentialsRefreshService);
+            this.credentialsRefreshService = credentialsRefreshService;
         }
 
     }
@@ -754,6 +798,53 @@ public class Spring_boot_amqpTest {
         @Override
         public Executor taskExecutor() {
             return this.taskExecutor;
+        }
+
+    }
+
+    private static final class StaticCredentialsProvider implements CredentialsProvider {
+
+        private final String username;
+
+        private final String password;
+
+        private StaticCredentialsProvider(String username, String password) {
+            this.username = username;
+            this.password = password;
+        }
+
+        @Override
+        public String getUsername() {
+            return this.username;
+        }
+
+        @Override
+        public String getPassword() {
+            return this.password;
+        }
+
+    }
+
+    private static final class NoOpCredentialsRefreshService implements CredentialsRefreshService {
+
+        private CredentialsProvider unregisteredCredentialsProvider;
+
+        private String unregisteredRegistrationId;
+
+        @Override
+        public String register(CredentialsProvider credentialsProvider, Callable<Boolean> refreshAction) {
+            return "registration";
+        }
+
+        @Override
+        public void unregister(CredentialsProvider credentialsProvider, String registrationId) {
+            this.unregisteredCredentialsProvider = credentialsProvider;
+            this.unregisteredRegistrationId = registrationId;
+        }
+
+        @Override
+        public boolean isApproachingExpiration(Duration timeBeforeExpiration) {
+            return false;
         }
 
     }
