@@ -12,6 +12,9 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.apache.activemq:activemq-client-jakarta:$libraryVersion"
+    testImplementation("org.apache.activemq:activemq-broker:$libraryVersion") {
+        exclude group: "org.apache.activemq", module: "activemq-client"
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
