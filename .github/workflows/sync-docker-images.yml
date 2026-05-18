@@ -30,11 +30,19 @@ jobs:
           # get new FROM lines from PR branch
           NEW_LINES=$(git grep '^FROM ' HEAD -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/.*:FROM //')
 
+          escape_sed_pattern() {
+            printf '%s' "$1" | sed 's/[][\\.^$*|]/\\&/g'
+          }
+
+          escape_sed_replacement() {
+            printf '%s' "$1" | sed 's/[|&\\/]/\\&/g'
+          }
+
           # replace all occurrences across repo
-          paste <(echo "$OLD_LINES") <(echo "$NEW_LINES") | while read OLD NEW; do
+          paste <(echo "$OLD_LINES") <(echo "$NEW_LINES") | while IFS=$'\t' read -r OLD NEW; do
             if [[ -n "$OLD" && -n "$NEW" && "$OLD" != "$NEW" ]]; then
               echo "Replacing $OLD → $NEW"
-              grep -rl "$OLD" . | xargs sed -i "s|$OLD|$NEW|g" || true
+              grep -rlZF -- "$OLD" . | xargs -0r sed -i "s|$(escape_sed_pattern "$OLD")|$(escape_sed_replacement "$NEW")|g" || true
             fi
           done
 
