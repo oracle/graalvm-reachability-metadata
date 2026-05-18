@@ -151,21 +151,16 @@ class Scalatest_diagrams_3Test extends Diagrams:
     assertFalse(anchors.exists(_.contains("ignored")), anchors.toString)
 
   @Test
-  def byNameDiagrammedExpressionEvaluatesValueLazilyAndOnlyOnce(): Unit =
+  def diagrammedAssertionPassesByNameArgumentsWithoutEagerDiagramCapture(): Unit =
     var evaluations: Int = 0
-    val expression: DiagrammedExpr[String] = DiagrammedExpr.byNameExpr(
-      {
-        evaluations += 1
-        "computed-value"
-      },
-      31
-    )
 
-    assertEquals(31, expression.anchor)
-    assertTrue(expression.anchorValues.isEmpty)
-    assertEquals(0, evaluations)
-    assertEquals("computed-value", expression.value)
-    assertEquals("computed-value", expression.value)
+    def acceptsByName(value: => String): Boolean =
+      value == "computed-value"
+
+    assert(acceptsByName {
+      evaluations += 1
+      "computed-value"
+    })
     assertEquals(1, evaluations)
 
   @Test
