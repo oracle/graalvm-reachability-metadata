@@ -119,8 +119,7 @@ public class Spring_boot_reactor_nettyTest {
             assertThat(response.body()).isEqualTo("GET /hello");
             assertThat(webServer.getPort()).isPositive();
             assertThat(customizerInvocations.get()).isEqualTo(1);
-        }
-        finally {
+        } finally {
             webServer.stop();
         }
 
@@ -143,8 +142,7 @@ public class Spring_boot_reactor_nettyTest {
 
             assertThat(get(webServer, "/route").body()).isEqualTo("route-provider");
             assertThat(get(webServer, "/fallback").body()).isEqualTo("handler:/fallback");
-        }
-        finally {
+        } finally {
             webServer.stop();
         }
     }
@@ -168,12 +166,10 @@ public class Spring_boot_reactor_nettyTest {
                     .block(TIMEOUT);
 
             assertThat(response).isEqualTo("200 h2c response");
-        }
-        finally {
+        } finally {
             try {
                 webServer.stop();
-            }
-            finally {
+            } finally {
                 connectionProvider.disposeLater().block(TIMEOUT);
                 loopResources.disposeLater().block(TIMEOUT);
             }
@@ -196,8 +192,7 @@ public class Spring_boot_reactor_nettyTest {
 
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.body()).isEqualTo("https://example.com:8443/forwarded?q=1");
-        }
-        finally {
+        } finally {
             webServer.stop();
         }
     }
@@ -223,12 +218,10 @@ public class Spring_boot_reactor_nettyTest {
 
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.body()).contains("boot-netty-test");
-        }
-        finally {
+        } finally {
             try {
                 webServer.stop();
-            }
-            finally {
+            } finally {
                 resourceFactory.destroy();
             }
         }
@@ -239,7 +232,7 @@ public class Spring_boot_reactor_nettyTest {
         NettyReactiveWebServerFactory factory = loopbackFactory();
         Compression compression = new Compression();
         compression.setEnabled(true);
-        compression.setMimeTypes(new String[] { MediaType.TEXT_PLAIN_VALUE });
+        compression.setMimeTypes(new String[] {MediaType.TEXT_PLAIN_VALUE });
         compression.setMinResponseSize(DataSize.ofBytes(1));
         factory.setCompression(compression);
         WebServer webServer = factory.getWebServer(textHandler("compressible response body"));
@@ -251,8 +244,7 @@ public class Spring_boot_reactor_nettyTest {
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.headers().firstValue(HttpHeaders.CONTENT_ENCODING)).isEqualTo(Optional.of("gzip"));
             assertThat(response.body()).isNotEmpty();
-        }
-        finally {
+        } finally {
             webServer.stop();
         }
     }
@@ -289,8 +281,7 @@ public class Spring_boot_reactor_nettyTest {
 
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.body()).isEqualTo("https://configured.example");
-        }
-        finally {
+        } finally {
             webServer.stop();
         }
     }
