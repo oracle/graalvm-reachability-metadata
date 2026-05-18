@@ -328,6 +328,44 @@ public class Spring_boot_amqpTest {
     }
 
     @Test
+    void rabbitConnectionFactoryBeanConfigurerAppliesSslSettings() {
+        RabbitProperties properties = new RabbitProperties();
+        RabbitProperties.Ssl ssl = properties.getSsl();
+        ssl.setEnabled(true);
+        ssl.setAlgorithm("TLSv1.3");
+        ssl.setKeyStore("classpath:client.p12");
+        ssl.setKeyStoreType("PKCS12");
+        ssl.setKeyStorePassword("key-password");
+        ssl.setKeyStoreAlgorithm("SunX509");
+        ssl.setTrustStore("classpath:trust.p12");
+        ssl.setTrustStoreType("PKCS12");
+        ssl.setTrustStorePassword("trust-password");
+        ssl.setTrustStoreAlgorithm("SunX509");
+        ssl.setValidateServerCertificate(false);
+        ssl.setVerifyHostname(true);
+        RabbitConnectionDetails details = connectionDetails(
+                List.of(new RabbitConnectionDetails.Address("secure.example.test", 5671)));
+        CapturingRabbitConnectionFactoryBean factoryBean = new CapturingRabbitConnectionFactoryBean();
+        RabbitConnectionFactoryBeanConfigurer configurer = new RabbitConnectionFactoryBeanConfigurer(
+                new DefaultResourceLoader(), properties, details);
+
+        configurer.configure(factoryBean);
+
+        assertThat(factoryBean.useSsl).isTrue();
+        assertThat(factoryBean.sslAlgorithm).isEqualTo("TLSv1.3");
+        assertThat(factoryBean.keyStore).isEqualTo("classpath:client.p12");
+        assertThat(factoryBean.keyStoreType).isEqualTo("PKCS12");
+        assertThat(factoryBean.keyStorePassphrase).isEqualTo("key-password");
+        assertThat(factoryBean.keyStoreAlgorithm).isEqualTo("SunX509");
+        assertThat(factoryBean.trustStore).isEqualTo("classpath:trust.p12");
+        assertThat(factoryBean.trustStoreType).isEqualTo("PKCS12");
+        assertThat(factoryBean.trustStorePassphrase).isEqualTo("trust-password");
+        assertThat(factoryBean.trustStoreAlgorithm).isEqualTo("SunX509");
+        assertThat(factoryBean.skipServerCertificateValidation).isTrue();
+        assertThat(factoryBean.enableHostnameVerification).isTrue();
+    }
+
+    @Test
     void simpleListenerContainerFactoryConfigurerAppliesCommonSimpleAndRetrySettings() {
         RabbitProperties properties = new RabbitProperties();
         RabbitProperties.SimpleContainer simple = properties.getListener().getSimple();
@@ -505,6 +543,30 @@ public class Spring_boot_amqpTest {
 
         private CredentialsRefreshService credentialsRefreshService;
 
+        private boolean useSsl;
+
+        private String sslAlgorithm;
+
+        private String keyStore;
+
+        private String keyStoreType;
+
+        private String keyStorePassphrase;
+
+        private String keyStoreAlgorithm;
+
+        private String trustStore;
+
+        private String trustStoreType;
+
+        private String trustStorePassphrase;
+
+        private String trustStoreAlgorithm;
+
+        private boolean skipServerCertificateValidation;
+
+        private boolean enableHostnameVerification;
+
         @Override
         public void setCredentialsProvider(CredentialsProvider credentialsProvider) {
             super.setCredentialsProvider(credentialsProvider);
@@ -515,6 +577,78 @@ public class Spring_boot_amqpTest {
         public void setCredentialsRefreshService(CredentialsRefreshService credentialsRefreshService) {
             super.setCredentialsRefreshService(credentialsRefreshService);
             this.credentialsRefreshService = credentialsRefreshService;
+        }
+
+        @Override
+        public void setUseSSL(boolean useSsl) {
+            super.setUseSSL(useSsl);
+            this.useSsl = useSsl;
+        }
+
+        @Override
+        public void setSslAlgorithm(String sslAlgorithm) {
+            super.setSslAlgorithm(sslAlgorithm);
+            this.sslAlgorithm = sslAlgorithm;
+        }
+
+        @Override
+        public void setKeyStore(String keyStore) {
+            super.setKeyStore(keyStore);
+            this.keyStore = keyStore;
+        }
+
+        @Override
+        public void setKeyStoreType(String keyStoreType) {
+            super.setKeyStoreType(keyStoreType);
+            this.keyStoreType = keyStoreType;
+        }
+
+        @Override
+        public void setKeyStorePassphrase(String keyStorePassphrase) {
+            super.setKeyStorePassphrase(keyStorePassphrase);
+            this.keyStorePassphrase = keyStorePassphrase;
+        }
+
+        @Override
+        public void setKeyStoreAlgorithm(String keyStoreAlgorithm) {
+            super.setKeyStoreAlgorithm(keyStoreAlgorithm);
+            this.keyStoreAlgorithm = keyStoreAlgorithm;
+        }
+
+        @Override
+        public void setTrustStore(String trustStore) {
+            super.setTrustStore(trustStore);
+            this.trustStore = trustStore;
+        }
+
+        @Override
+        public void setTrustStoreType(String trustStoreType) {
+            super.setTrustStoreType(trustStoreType);
+            this.trustStoreType = trustStoreType;
+        }
+
+        @Override
+        public void setTrustStorePassphrase(String trustStorePassphrase) {
+            super.setTrustStorePassphrase(trustStorePassphrase);
+            this.trustStorePassphrase = trustStorePassphrase;
+        }
+
+        @Override
+        public void setTrustStoreAlgorithm(String trustStoreAlgorithm) {
+            super.setTrustStoreAlgorithm(trustStoreAlgorithm);
+            this.trustStoreAlgorithm = trustStoreAlgorithm;
+        }
+
+        @Override
+        public void setSkipServerCertificateValidation(boolean skipServerCertificateValidation) {
+            super.setSkipServerCertificateValidation(skipServerCertificateValidation);
+            this.skipServerCertificateValidation = skipServerCertificateValidation;
+        }
+
+        @Override
+        public void setEnableHostnameVerification(boolean enableHostnameVerification) {
+            super.setEnableHostnameVerification(enableHostnameVerification);
+            this.enableHostnameVerification = enableHostnameVerification;
         }
 
     }
