@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
+import reactor.netty.resources.LoopResources;
 
 import org.springframework.boot.reactor.netty.NettyReactiveWebServerFactory;
 import org.springframework.boot.reactor.netty.NettyServerCustomizer;
@@ -36,6 +37,7 @@ import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.ReactorResourceFactory;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.util.unit.DataSize;
@@ -163,6 +165,38 @@ public class Spring_boot_reactor_nettyTest {
         }
         finally {
             webServer.stop();
+        }
+    }
+
+    @Test
+    void webServerUsesConfiguredReactorResourceFactoryLoopResources() throws Exception {
+        NettyReactiveWebServerFactory factory = loopbackFactory();
+        ReactorResourceFactory resourceFactory = new ReactorResourceFactory();
+        resourceFactory.setUseGlobalResources(false);
+        resourceFactory.setShutdownQuietPeriod(Duration.ZERO);
+        resourceFactory.setShutdownTimeout(Duration.ofSeconds(5));
+        resourceFactory.setLoopResources(LoopResources.create("boot-netty-test", 1, false));
+        resourceFactory.afterPropertiesSet();
+        factory.setResourceFactory(resourceFactory);
+        WebServer webServer = factory.getWebServer((request, response) -> {
+            response.getHeaders().setContentType(MediaType.TEXT_PLAIN);
+            return write(response, Thread.currentThread().getName());
+        });
+
+        try {
+            webServer.start();
+            HttpResponse<String> response = get(webServer, "/resources");
+
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).contains("boot-netty-test");
+        }
+        finally {
+            try {
+                webServer.stop();
+            }
+            finally {
+                resourceFactory.destroy();
+            }
         }
     }
 
