@@ -29,7 +29,7 @@ public class BinderFactoryAutoConfigurationTest {
             BinderType binderType = registry.get("coverage");
             assertNotNull(binderType);
             assertEquals("coverage", binderType.getDefaultName());
-            assertArrayEquals(new Class<?>[] { TestBinderConfiguration.class },
+            assertArrayEquals(new Class<?>[] {TestBinderConfiguration.class },
                     binderType.getConfigurationClasses());
         }
     }

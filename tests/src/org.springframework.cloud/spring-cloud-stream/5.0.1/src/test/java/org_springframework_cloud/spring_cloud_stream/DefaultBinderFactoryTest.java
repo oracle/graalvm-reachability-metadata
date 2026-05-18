@@ -36,7 +36,7 @@ public class DefaultBinderFactoryTest {
         binderProperties.put("spring.main.sources", UserSourceConfiguration.class.getName());
         Map<String, BinderConfiguration> binderConfigurations = Collections.singletonMap("testBinder",
                 new BinderConfiguration("testType", binderProperties, false, true));
-        BinderType binderType = new BinderType("testBinder", new Class<?>[] { TestBinderConfiguration.class });
+        BinderType binderType = new BinderType("testBinder", new Class<?>[] {TestBinderConfiguration.class });
         DefaultBinderFactory binderFactory = new DefaultBinderFactory(binderConfigurations,
                 new SingleBinderTypeRegistry("testType", binderType), null);
 
@@ -48,8 +48,7 @@ public class DefaultBinderFactoryTest {
 
                 assertNotNull(binder);
                 assertSame(TestMessageChannelBinder.class, binder.getClass());
-            }
-            finally {
+            } finally {
                 binderFactory.destroy();
             }
         }
