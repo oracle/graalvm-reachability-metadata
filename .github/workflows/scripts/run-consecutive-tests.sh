@@ -54,11 +54,14 @@ run_multiple_attempts() {
   local result=0
 
   while [ $attempt -lt "$max_attempts" ]; do
-    local native_image_mode_prefix=""
+    local -a environment=("GVM_TCK_LV=$VERSION")
     if [ -n "${GVM_TCK_NATIVE_IMAGE_MODE:-}" ]; then
-      native_image_mode_prefix="GVM_TCK_NATIVE_IMAGE_MODE=\"$GVM_TCK_NATIVE_IMAGE_MODE\" "
+      environment+=("GVM_TCK_NATIVE_IMAGE_MODE=$GVM_TCK_NATIVE_IMAGE_MODE")
     fi
-    local cmd_str="${native_image_mode_prefix}GVM_TCK_LV=\"$VERSION\" ./gradlew clean $gradle_command -Pcoordinates=\"$TEST_COORDINATES\""
+    local -a command=("./gradlew" "clean" "$gradle_command" "-Pcoordinates=$TEST_COORDINATES")
+    local cmd_str
+    printf -v cmd_str '%q ' "env" "${environment[@]}" "${command[@]}"
+    cmd_str="${cmd_str% }"
     if [ $attempt -gt 0 ]; then
       echo "Re-running stage '$stage' (attempt $((attempt + 1))/$max_attempts)"
     fi
@@ -69,7 +72,7 @@ run_multiple_attempts() {
     echo "Starting stage '$stage' for $VERSION at $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
     echo "Command: $cmd_str"
 
-    timeout --signal=QUIT --kill-after=20s "$TIMEOUT" bash -c "$cmd_str"
+    timeout --signal=QUIT --kill-after=20s "$TIMEOUT" env "${environment[@]}" "${command[@]}"
     result=$?
 
     finished_at=$(date +%s)
