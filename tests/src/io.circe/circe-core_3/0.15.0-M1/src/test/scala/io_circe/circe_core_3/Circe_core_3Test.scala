@@ -6,6 +6,7 @@
  */
 package io_circe.circe_core_3
 
+import io.circe.CursorOp
 import io.circe.Decoder
 import io.circe.DecodingFailure
 import io.circe.Encoder
@@ -163,7 +164,7 @@ class Circe_core_3Test {
       "config" -> Json.obj("debug" -> Json.True, "region" -> Json.fromString("eu"))
     )
 
-    assertThat(left.deepMerge(right).toJson.noSpacesSortKeys)
+    assertThat(Json.fromJsonObject(left.deepMerge(right)).noSpacesSortKeys)
       .isEqualTo("""{"config":{"debug":true,"region":"eu","threads":2},"owner":"test"}""")
   }
 
@@ -180,7 +181,7 @@ class Circe_core_3Test {
     assertThat(secondName.succeeded).isTrue
     assertThat(secondName.key).isEqualTo(Some("name"))
     assertThat(secondName.as[String]).isEqualTo(Right("Linus"))
-    assertThat(secondName.pathString).isEqualTo(".users[1].name")
+    assertThat(CursorOp.opsToPath(secondName.history)).isEqualTo(".users{=\\(1)}.name")
 
     val incremented: Json = decodeOptionOrFail(
       document.hcursor
@@ -232,7 +233,7 @@ class Circe_core_3Test {
       "metadata" -> Json.obj("not-a-uuid" -> Json.fromString("not-a-number"))
     )
 
-    val failures: List[DecodingFailure] = invalidProfile.asAccumulating[Profile].fold(
+    val failures: List[DecodingFailure] = Decoder[Profile].decodeAccumulating(invalidProfile.hcursor).fold(
       _.toList,
       value => fail(s"Expected decoding to fail, but decoded: $value")
     )
