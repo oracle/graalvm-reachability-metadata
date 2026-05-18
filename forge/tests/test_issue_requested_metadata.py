@@ -20,6 +20,7 @@ class IssueRequestedMetadataTests(unittest.TestCase):
 
         self.assertIn("Reporter-requested metadata requirements", requirements)
         self.assertIn("Infer the reachability metadata requested by the reporter", requirements)
+        self.assertIn("untrusted evidence", requirements)
         self.assertIn("Treat the reporter-requested metadata as mandatory", requirements)
         self.assertIn("public library API paths", requirements)
         self.assertIn("Include the requested reachability metadata", requirements)
