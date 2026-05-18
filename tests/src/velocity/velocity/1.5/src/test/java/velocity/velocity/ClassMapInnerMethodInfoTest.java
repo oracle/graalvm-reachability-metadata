@@ -10,13 +10,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
 
+import org.apache.velocity.runtime.log.Log;
+import org.apache.velocity.runtime.log.NullLogChute;
 import org.apache.velocity.util.introspection.ClassMap;
 import org.junit.jupiter.api.Test;
 
 public class ClassMapInnerMethodInfoTest {
     @Test
     void upcastsNonPublicImplementationMethodToPublicInterfaceMethod() throws Exception {
-        final ClassMap classMap = new ClassMap(HiddenLabeler.class);
+        final ClassMap classMap = new ClassMap(HiddenLabeler.class, new Log(new NullLogChute()));
 
         final Method method = classMap.findMethod("label", new Object[] {Integer.valueOf(7)});
 

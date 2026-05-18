@@ -6,55 +6,94 @@
  */
 package velocity.velocity;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Field;
+import java.io.IOException;
 import java.lang.reflect.Method;
 
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.RuntimeSingleton;
-import org.apache.velocity.runtime.log.NullLogSystem;
-import org.apache.velocity.test.IntrospectorTestCase2;
+import org.apache.velocity.runtime.log.Log;
+import org.apache.velocity.runtime.log.NullLogChute;
+import org.apache.velocity.util.introspection.Introspector;
 import org.junit.jupiter.api.Test;
 
 public class IntrospectorTestCase2Test {
     @Test
     void resolvesMostSpecificOverloadAndRejectsAmbiguousMatch() throws Exception {
-        RuntimeSingleton.setProperty(
-                RuntimeConstants.RUNTIME_LOG_LOGSYSTEM,
-                new NullLogSystem());
-        resolveNestedClassThroughCompilerGeneratedHelper();
-        clearClassLiteralCache("class$org$apache$velocity$test$IntrospectorTestCase2$Tester");
-        clearClassLiteralCache("class$org$apache$velocity$test$IntrospectorTestCase2$Tester2");
+        final Introspector introspector = new Introspector(new Log(new NullLogChute()));
 
-        IntrospectorTestCase2 testCase = new IntrospectorTestCase2("runTest");
-        testCase.runTest();
+        final Method specificMethod = introspector.getMethod(
+                OverloadedTester.class,
+                "find",
+                new Object[] {Integer.valueOf(7)});
+        final Object specificResult = specificMethod.invoke(new OverloadedTester(), Integer.valueOf(7));
+
+        assertThat(specificMethod.getParameterTypes()).containsExactly(Integer.class);
+        assertThat(specificResult).isEqualTo("integer:7");
+        assertThat(introspector.getMethod(
+                AmbiguousTester.class,
+                "match",
+                new Object[] {new AmbiguousValue()})).isNull();
     }
 
-    private static void resolveNestedClassThroughCompilerGeneratedHelper() throws Exception {
-        /*
-         * `IntrospectorTestCase2` was compiled with a package-private synthetic
-         * `class$(String)` helper for nested class literals. Calling the helper
-         * verifies the same class resolution path used by `runTest()`.
-         */
-        Method classResolver = IntrospectorTestCase2.class.getDeclaredMethod("class$", String.class);
-        classResolver.setAccessible(true);
+    public static final class OverloadedTester {
+        public String find(final Number value) {
+            return "number:" + value;
+        }
 
-        Object resolvedClass = classResolver.invoke(
-                null,
-                "org.apache.velocity.test.IntrospectorTestCase2$Tester");
-
-        assertSame(IntrospectorTestCase2.Tester.class, resolvedClass);
+        public String find(final Integer value) {
+            return "integer:" + value;
+        }
     }
 
-    private static void clearClassLiteralCache(String fieldName) throws Exception {
-        /*
-         * The Velocity 1.4 artifact was compiled with synthetic `Class` caches for
-         * the nested overload test classes. Clear them so `runTest()` exercises
-         * the original `Class.forName(String)` resolution path.
-         */
-        Field classCache = IntrospectorTestCase2.class.getDeclaredField(fieldName);
-        classCache.setAccessible(true);
-        classCache.set(null, null);
+    public static final class AmbiguousTester {
+        public String match(final CharSequence value) {
+            return "chars:" + value;
+        }
+
+        public String match(final Appendable value) {
+            return "appendable:" + value;
+        }
+    }
+
+    public static final class AmbiguousValue implements CharSequence, Appendable {
+        private final StringBuilder text = new StringBuilder("ambiguous");
+
+        @Override
+        public int length() {
+            return text.length();
+        }
+
+        @Override
+        public char charAt(final int index) {
+            return text.charAt(index);
+        }
+
+        @Override
+        public CharSequence subSequence(final int start, final int end) {
+            return text.subSequence(start, end);
+        }
+
+        @Override
+        public Appendable append(final CharSequence value) throws IOException {
+            text.append(value);
+            return this;
+        }
+
+        @Override
+        public Appendable append(final CharSequence value, final int start, final int end) throws IOException {
+            text.append(value, start, end);
+            return this;
+        }
+
+        @Override
+        public Appendable append(final char value) throws IOException {
+            text.append(value);
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return text.toString();
+        }
     }
 }

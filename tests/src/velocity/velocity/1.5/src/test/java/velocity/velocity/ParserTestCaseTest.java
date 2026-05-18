@@ -8,33 +8,39 @@ package velocity.velocity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Field;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Properties;
 
-import junit.framework.TestSuite;
-
-import org.apache.velocity.test.ParserTestCase;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.log.NullLogChute;
 import org.junit.jupiter.api.Test;
 
 public class ParserTestCaseTest {
     @Test
-    public void createsJUnitThreeSuiteForParserRegressionTests() throws Exception {
-        clearParserTestCaseClassCache();
+    public void parsesForeachAndSetDirectives() throws Exception {
+        final VelocityEngine engine = newVelocityEngine();
+        final VelocityContext context = new VelocityContext();
+        context.put("items", Arrays.asList("alpha", "beta", "gamma"));
+        final StringWriter writer = new StringWriter();
 
-        TestSuite suite = (TestSuite) ParserTestCase.suite();
+        final boolean rendered = engine.evaluate(
+                context,
+                writer,
+                "parser-regression",
+                "#foreach($item in $items)$velocityCount:$item;#end#set($status = 'done')$status");
 
-        assertThat(suite).isNotNull();
-        assertThat(suite.getName()).isEqualTo(ParserTestCase.class.getName());
+        assertThat(rendered).isTrue();
+        assertThat(writer).hasToString("1:alpha;2:beta;3:gamma;done");
     }
 
-    private static void clearParserTestCaseClassCache() throws Exception {
-        /*
-         * The Velocity 1.4 artifact was compiled with a synthetic `Class` cache for
-         * `ParserTestCase.class`. Clear it so `suite()` exercises the original
-         * `Class.forName(String)` resolution path even if discovery initialized it.
-         */
-        Field classCache = ParserTestCase.class.getDeclaredField(
-                "class$org$apache$velocity$test$ParserTestCase");
-        classCache.setAccessible(true);
-        classCache.set(null, null);
+    private static VelocityEngine newVelocityEngine() throws Exception {
+        final Properties properties = new Properties();
+        properties.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, NullLogChute.class.getName());
+        final VelocityEngine engine = new VelocityEngine();
+        engine.init(properties);
+        return engine;
     }
 }

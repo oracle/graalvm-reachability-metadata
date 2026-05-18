@@ -8,30 +8,32 @@ package velocity.velocity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import org.apache.velocity.runtime.RuntimeLogger;
+import org.apache.velocity.runtime.log.Log;
+import org.apache.velocity.runtime.log.NullLogChute;
 import org.apache.velocity.util.introspection.Info;
 import org.apache.velocity.util.introspection.UberspectImpl;
+import org.apache.velocity.util.introspection.VelMethod;
 import org.apache.velocity.util.introspection.VelPropertySet;
 import org.junit.jupiter.api.Test;
 
 public class UberspectImplTest {
     @Test
-    void resolvesVelocityClassThroughCompilerGeneratedClassLiteralHelper() throws Exception {
-        final Method classResolver = UberspectImpl.class.getDeclaredMethod("class$", String.class);
-        classResolver.setAccessible(true);
+    void resolvesMethodUsingConfiguredIntrospector() throws Exception {
+        final UberspectImpl uberspect = newUberspect();
+        final Info info = new Info("method.vm", 1, 1);
 
-        final Object resolvedClass = classResolver.invoke(null, "org.apache.velocity.util.introspection.Info");
+        final VelMethod method = uberspect.getMethod(new Greeter(), "greet", new Object[] {"Ada"}, info);
 
-        assertThat(resolvedClass).isSameAs(Info.class);
+        assertThat(method).isNotNull();
+        assertThat(method.getMethodName()).isEqualTo("greet");
+        assertThat(method.invoke(new Greeter(), new Object[] {"Ada"})).isEqualTo("Hello Ada");
     }
 
     @Test
     void resolvesMapClassLiteralWhenCreatingMapBackedPropertySetter() throws Exception {
-        final UberspectImpl uberspect = new UberspectImpl();
-        uberspect.setRuntimeLogger(new NoOpRuntimeLogger());
+        final UberspectImpl uberspect = newUberspect();
         final RecordingMap values = new RecordingMap();
         final Info info = new Info("map-put.vm", 1, 1);
 
@@ -43,30 +45,25 @@ public class UberspectImplTest {
         assertThat(values).containsEntry("answer", "forty-two");
     }
 
+    private static UberspectImpl newUberspect() {
+        final UberspectImpl uberspect = new UberspectImpl();
+        uberspect.setLog(new Log(new NullLogChute()));
+        uberspect.init();
+        return uberspect;
+    }
+
+    public static final class Greeter {
+        public String greet(final String name) {
+            return "Hello " + name;
+        }
+    }
+
     public static final class RecordingMap extends HashMap<Object, Object> {
         private static final long serialVersionUID = 1L;
 
         @Override
         public Object put(final Object key, final Object value) {
             return super.put(key, value);
-        }
-    }
-
-    private static final class NoOpRuntimeLogger implements RuntimeLogger {
-        @Override
-        public void warn(final Object message) {
-        }
-
-        @Override
-        public void info(final Object message) {
-        }
-
-        @Override
-        public void error(final Object message) {
-        }
-
-        @Override
-        public void debug(final Object message) {
         }
     }
 }
