@@ -12,15 +12,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.HttpVersion;
 import org.apache.hc.core5.http.Method;
 import org.apache.hc.core5.http.ProtocolException;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
+import org.apache.hc.core5.http.message.BasicClassicHttpResponse;
 import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.http.message.BasicHttpRequest;
 import org.apache.hc.core5.http.message.BasicHttpResponse;
+import org.apache.hc.core5.http.protocol.HttpCoreContext;
+import org.apache.hc.core5.http.protocol.HttpProcessor;
 import org.apache.hc.core5.http2.H2Error;
 import org.apache.hc.core5.http2.H2PseudoRequestHeaders;
 import org.apache.hc.core5.http2.H2PseudoResponseHeaders;
@@ -37,9 +43,10 @@ import org.apache.hc.core5.http2.hpack.HPackDecoder;
 import org.apache.hc.core5.http2.hpack.HPackEncoder;
 import org.apache.hc.core5.http2.hpack.HeaderListConstraintException;
 import org.apache.hc.core5.http2.impl.DefaultH2RequestConverter;
+import org.apache.hc.core5.http2.impl.DefaultH2ResponseConverter;
+import org.apache.hc.core5.http2.impl.H2Processors;
 import org.apache.hc.core5.http2.nio.command.PingCommand;
 import org.apache.hc.core5.http2.nio.support.BasicPingHandler;
-import org.apache.hc.core5.http2.impl.DefaultH2ResponseConverter;
 import org.apache.hc.core5.net.URIAuthority;
 import org.apache.hc.core5.util.ByteArrayBuffer;
 import org.junit.jupiter.api.Test;
@@ -308,6 +315,45 @@ public class Httpcore5_h2Test {
         assertThatThrownBy(() -> converter.convert(invalidTe))
                 .isInstanceOf(ProtocolException.class)
                 .hasMessageContaining("illegal for HTTP/2 messages");
+    }
+
+    @Test
+    void h2ProcessorsAddEntityMetadataAndProtocolHeadersWithoutHttp1ConnectionHeaders() throws Exception {
+        HttpCoreContext context = HttpCoreContext.create();
+        context.setProtocolVersion(HttpVersion.HTTP_2);
+
+        StringEntity requestEntity = new StringEntity("", ContentType.APPLICATION_JSON, "br", false);
+        BasicClassicHttpRequest request = new BasicClassicHttpRequest(Method.POST, "/submit");
+        request.setScheme("https");
+        request.setAuthority(new URIAuthority("example.test"));
+
+        HttpProcessor clientProcessor = H2Processors.client("test-agent");
+        clientProcessor.process(request, requestEntity, context);
+
+        assertThat(request.getFirstHeader("content-type").getValue())
+                .isEqualTo(ContentType.APPLICATION_JSON.toString());
+        assertThat(request.getFirstHeader("content-encoding").getValue()).isEqualTo("br");
+        assertThat(request.getFirstHeader("user-agent").getValue()).isEqualTo("test-agent");
+        assertThat(request.containsHeader("host")).isFalse();
+        assertThat(request.containsHeader("connection")).isFalse();
+        assertThat(request.containsHeader("content-length")).isFalse();
+        assertThat(request.containsHeader("transfer-encoding")).isFalse();
+        assertThat(request.containsHeader("expect")).isFalse();
+
+        StringEntity responseEntity = new StringEntity("", ContentType.TEXT_PLAIN, "gzip", false);
+        BasicClassicHttpResponse response = new BasicClassicHttpResponse(200);
+
+        HttpProcessor serverProcessor = H2Processors.server("test-server");
+        serverProcessor.process(response, responseEntity, context);
+
+        assertThat(response.getFirstHeader("content-type").getValue())
+                .isEqualTo(ContentType.TEXT_PLAIN.toString());
+        assertThat(response.getFirstHeader("content-encoding").getValue()).isEqualTo("gzip");
+        assertThat(response.getFirstHeader("server").getValue()).isEqualTo("test-server");
+        assertThat(response.containsHeader("date")).isTrue();
+        assertThat(response.containsHeader("connection")).isFalse();
+        assertThat(response.containsHeader("content-length")).isFalse();
+        assertThat(response.containsHeader("transfer-encoding")).isFalse();
     }
 
     @Test
