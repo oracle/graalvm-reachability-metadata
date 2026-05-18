@@ -8,6 +8,7 @@ package org_apache_httpcomponents_core5.httpcore5_h2;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +37,8 @@ import org.apache.hc.core5.http2.hpack.HPackDecoder;
 import org.apache.hc.core5.http2.hpack.HPackEncoder;
 import org.apache.hc.core5.http2.hpack.HeaderListConstraintException;
 import org.apache.hc.core5.http2.impl.DefaultH2RequestConverter;
+import org.apache.hc.core5.http2.nio.command.PingCommand;
+import org.apache.hc.core5.http2.nio.support.BasicPingHandler;
 import org.apache.hc.core5.http2.impl.DefaultH2ResponseConverter;
 import org.apache.hc.core5.net.URIAuthority;
 import org.apache.hc.core5.util.ByteArrayBuffer;
@@ -225,6 +228,29 @@ public class Httpcore5_h2Test {
                 ByteBuffer.wrap(encoded.array(), 0, encoded.length())))
                 .isInstanceOf(HeaderListConstraintException.class)
                 .hasMessageContaining("Maximum header list size exceeded");
+    }
+
+    @Test
+    void basicPingHandlerReportsSuccessfulFailedAndCancelledPings() throws Exception {
+        List<Boolean> results = new ArrayList<>();
+        BasicPingHandler successfulHandler = new BasicPingHandler(results::add);
+        ByteBuffer expectedPayload = successfulHandler.getData();
+
+        assertThat(expectedPayload.remaining()).isEqualTo(8);
+        successfulHandler.consumeResponse(expectedPayload);
+        assertThat(results).containsExactly(Boolean.TRUE);
+        assertThat(successfulHandler.getData().position()).isZero();
+
+        BasicPingHandler failedHandler = new BasicPingHandler(results::add);
+        failedHandler.consumeResponse(ByteBuffer.wrap(new byte[] {0, 0, 0, 0, 0, 0, 0, 0}));
+        failedHandler.failed(new RuntimeException("ping failed"));
+        assertThat(results).containsExactly(Boolean.TRUE, Boolean.FALSE, Boolean.FALSE);
+
+        BasicPingHandler cancelledHandler = new BasicPingHandler(results::add);
+        PingCommand pingCommand = new PingCommand(cancelledHandler);
+        assertThat(pingCommand.getHandler()).isSameAs(cancelledHandler);
+        assertThat(pingCommand.cancel()).isTrue();
+        assertThat(results).containsExactly(Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE);
     }
 
     @Test
