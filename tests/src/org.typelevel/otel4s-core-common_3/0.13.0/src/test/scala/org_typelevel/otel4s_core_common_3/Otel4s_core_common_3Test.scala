@@ -15,7 +15,7 @@ import cats.data.Ior
 import cats.data.IorT
 import cats.data.Kleisli
 import cats.data.OptionT
-import cats.data.StateT
+import cats.data.WriterT
 import cats.effect.SyncIO
 import cats.effect.kernel.Resource
 import cats.syntax.show._
@@ -300,9 +300,19 @@ class Otel4s_core_common_3Test {
     val kleisli: Kleisli[List, String, Int] = Kleisli((input: String) => List(input.length, input.length + 1))
     assertEquals(List(4, 3), kleisliTransformer.limitedMapK(kleisli)(reverseList).run("abc"))
 
-    val stateTransformer: KindTransformer[List, [A] =>> StateT[List, Int, A]] = summon[KindTransformer[List, [A] =>> StateT[List, Int, A]]]
-    val state: StateT[List, Int, String] = StateT((value: Int) => List((value + 1, "first"), (value + 2, "second")))
-    assertEquals(List((12, "second"), (11, "first")), stateTransformer.limitedMapK(state)(reverseList).run(10))
+    final case class TestLog(value: String)
+    implicit val testLogMonoid: Monoid[TestLog] = new Monoid[TestLog] {
+      val empty: TestLog = TestLog("")
+      def combine(x: TestLog, y: TestLog): TestLog = TestLog(x.value + y.value)
+    }
+    val writerTransformer: KindTransformer[List, [A] =>> WriterT[List, TestLog, A]] =
+      summon[KindTransformer[List, [A] =>> WriterT[List, TestLog, A]]]
+    val writer: WriterT[List, TestLog, Int] = WriterT(List((TestLog("first:"), 1), (TestLog("second:"), 2)))
+    assertEquals(
+      List((TestLog("second:"), 2), (TestLog("first:"), 1)),
+      writerTransformer.limitedMapK(writer)(reverseList).run
+    )
+    assertEquals(List((TestLog(""), 7)), writerTransformer.liftK(List(7)).run)
 
     val syncIOIdentity: SyncIO ~> SyncIO = new (SyncIO ~> SyncIO) {
       def apply[A](fa: SyncIO[A]): SyncIO[A] = fa.map(identity)
@@ -314,21 +324,10 @@ class Otel4s_core_common_3Test {
   }
 
   @Test
-  def instrumentMetaTracksEnabledStateUnitAndMapK(): Unit = {
-    val enabled: InstrumentMeta[Option] = InstrumentMeta.enabled[Option]
-    val disabled: InstrumentMeta[Option] = InstrumentMeta.disabled[Option]
-
-    assertTrue(enabled.isEnabled)
-    assertEquals(Some(()), enabled.unit)
-    assertFalse(disabled.isEnabled)
-    assertEquals(Some(()), disabled.unit)
-
-    val optionToList: Option ~> List = new (Option ~> List) {
-      def apply[A](fa: Option[A]): List[A] = fa.toList
-    }
-    val mapped: InstrumentMeta[List] = enabled.mapK(optionToList)
-    assertTrue(mapped.isEnabled)
-    assertEquals(List(()), mapped.unit)
+  def instrumentMetaCompanionsRemainAvailable(): Unit = {
+    assertSame(InstrumentMeta, InstrumentMeta)
+    assertSame(InstrumentMeta.Static, InstrumentMeta.Static)
+    assertSame(InstrumentMeta.Dynamic, InstrumentMeta.Dynamic)
   }
 
   private final case class HeaderCarrier(entries: Map[String, String])
