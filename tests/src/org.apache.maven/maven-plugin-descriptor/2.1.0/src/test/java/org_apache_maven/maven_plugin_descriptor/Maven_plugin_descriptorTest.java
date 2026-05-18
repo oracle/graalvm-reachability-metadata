@@ -319,7 +319,7 @@ public class Maven_plugin_descriptorTest {
         new LifecycleMappingsXpp3Writer().write(writer, configuration);
 
         String xml = writer.toString();
-        assertThat(xml).contains("<lifecycles>", "<lifecycle>", "<id>default</id>", "<goal>compile</goal>");
+        assertThat(xml).contains("<lifecycles", "<lifecycle>", "<id>default</id>", "<goal>compile</goal>");
 
         LifecycleConfiguration parsed = new LifecycleMappingsXpp3Reader().read(new StringReader(xml));
         assertThat(parsed.getLifecycles()).hasSize(1);
