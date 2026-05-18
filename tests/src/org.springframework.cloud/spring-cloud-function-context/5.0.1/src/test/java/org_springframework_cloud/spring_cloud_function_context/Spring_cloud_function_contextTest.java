@@ -8,7 +8,7 @@ package org_springframework_cloud.spring_cloud_function_context;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_cloud_function_contextTest {
+public class Spring_cloud_function_contextTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
