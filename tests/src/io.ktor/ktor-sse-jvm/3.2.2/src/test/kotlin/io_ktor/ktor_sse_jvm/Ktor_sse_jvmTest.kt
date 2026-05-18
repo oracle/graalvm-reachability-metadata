@@ -33,11 +33,11 @@ public class Ktor_sse_jvmTest {
             expectedComments = "keep-alive\nclient-visible",
         )
         assertThat(event.toString()).isEqualTo(
-            "data: first line\r\n" +
+            "event: inventory-update\r\n" +
+                "data: first line\r\n" +
                 "data: second line\r\n" +
                 "data: third line\r\n" +
                 "data: fourth line\r\n" +
-                "event: inventory-update\r\n" +
                 "id: event-42\r\n" +
                 "retry: 1500\r\n" +
                 ": keep-alive\r\n" +
@@ -64,11 +64,11 @@ public class Ktor_sse_jvmTest {
             expectedComments = "\nheartbeat\n",
         )
         assertThat(event.toString()).isEqualTo(
-            "data: first line\r\n" +
+            "event: \r\n" +
+                "data: first line\r\n" +
                 "data: \r\n" +
                 "data: third line\r\n" +
                 "data: \r\n" +
-                "event: \r\n" +
                 "id: \r\n" +
                 "retry: 0\r\n" +
                 ": \r\n" +
@@ -112,8 +112,8 @@ public class Ktor_sse_jvmTest {
         )
         assertThat(changedCopy).isNotEqualTo(original)
         assertThat(changedCopy.toString()).isEqualTo(
-            "data: updated\r\n" +
-                "event: created\r\n" +
+            "event: created\r\n" +
+                "data: updated\r\n" +
                 "id: 1\r\n" +
                 "retry: 500\r\n",
         )
@@ -162,9 +162,9 @@ public class Ktor_sse_jvmTest {
 
         assertThat(serializedPayloads).isEqualTo(1)
         assertThat(wireFormat).isEqualTo(
-            "data: 12:serialized\r\n" +
+            "event: payload-ready\r\n" +
+                "data: 12:serialized\r\n" +
                 "data: confirmed\r\n" +
-                "event: payload-ready\r\n" +
                 "id: payload-12\r\n" +
                 "retry: 3000\r\n" +
                 ": serialized-comment\r\n",
