@@ -10,8 +10,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.scalactic.source.ObjectMeta
 
-import scala.annotation.targetName
-
 class ObjectMetaAnonymous1Test {
   @Test
   def fieldNamesAndPublicValuesUseJavaReflection(): Unit = {
@@ -39,9 +37,4 @@ class ObjectMetaAnonymous1Test {
 
 final case class ObjectMetaVisibleFixture(name: String, count: Int)
 
-final class ObjectMetaPrivateFixture(secretInput: String) {
-  private[this] val secret: String = secretInput
-
-  @targetName("secret")
-  private def hiddenSecret: String = secret
-}
+final class ObjectMetaPrivateFixture(private val secret: String)
