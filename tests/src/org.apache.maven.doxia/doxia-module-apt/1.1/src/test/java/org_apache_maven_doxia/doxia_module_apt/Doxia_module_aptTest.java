@@ -9,10 +9,11 @@ package org_apache_maven_doxia.doxia_module_apt;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +21,9 @@ import java.util.List;
 import org.apache.maven.doxia.module.apt.AptParseException;
 import org.apache.maven.doxia.module.apt.AptParser;
 import org.apache.maven.doxia.module.apt.AptReaderSource;
-import org.apache.maven.doxia.module.apt.AptSink;
+import org.apache.maven.doxia.module.apt.AptSinkFactory;
 import org.apache.maven.doxia.module.apt.AptSiteModule;
+import org.apache.maven.doxia.module.apt.AptUtils;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.sink.SinkAdapter;
 import org.junit.jupiter.api.Test;
@@ -128,29 +130,17 @@ public class Doxia_module_aptTest {
                 "sectionTitle2_",
                 "list",
                 "listItem",
-                "paragraph",
                 "text:bullet one",
-                "paragraph_",
                 "listItem_",
                 "listItem",
-                "paragraph",
-                "text:bullet two",
-                "paragraph_",
-                "listItem_",
-                "list_");
+                "text:bullet two");
         assertThat(sink.events).containsSubsequence(
                 "numberedList:0",
                 "numberedListItem",
-                "paragraph",
                 "text:first numbered",
-                "paragraph_",
                 "numberedListItem_",
                 "numberedListItem",
-                "paragraph",
-                "text:second numbered",
-                "paragraph_",
-                "numberedListItem_",
-                "numberedList_");
+                "text:second numbered");
         assertThat(sink.events).containsSubsequence(
                 "definitionList",
                 "definitionListItem",
@@ -158,14 +148,9 @@ public class Doxia_module_aptTest {
                 "text:Term",
                 "definedTerm_",
                 "definition",
-                "paragraph",
                 "text:definition text with non",
                 "nbsp",
-                "text:breaking space",
-                "paragraph_",
-                "definition_",
-                "definitionListItem_",
-                "definitionList_");
+                "text:breaking space");
         assertThat(sink.events).containsSubsequence(
                 "verbatim:true",
                 "text:boxed\n  code",
@@ -200,7 +185,19 @@ public class Doxia_module_aptTest {
                 "text:Table caption text",
                 "tableCaption_",
                 "table_");
-        assertThat(sink.events).containsSubsequence("horizontalRule", "section2_", "section1_", "body_");
+        assertThat(sink.events).containsSubsequence(
+                "horizontalRule",
+                "pageBreak",
+                "definition_",
+                "definitionListItem_",
+                "definitionList_",
+                "numberedListItem_",
+                "numberedList_",
+                "listItem_",
+                "list_",
+                "section2_",
+                "section1_",
+                "body_");
     }
 
     @Test
@@ -283,24 +280,16 @@ public class Doxia_module_aptTest {
         assertThat(sink.events).containsSubsequence(
                 "numberedList:" + Sink.NUMBERING_LOWER_ALPHA,
                 "numberedListItem",
-                "paragraph",
                 "text:lower alpha item",
-                "paragraph_",
                 "numberedList:" + Sink.NUMBERING_UPPER_ALPHA,
                 "numberedListItem",
-                "paragraph",
                 "text:upper alpha item",
-                "paragraph_",
                 "numberedList:" + Sink.NUMBERING_LOWER_ROMAN,
                 "numberedListItem",
-                "paragraph",
                 "text:lower roman item",
-                "paragraph_",
                 "numberedList:" + Sink.NUMBERING_UPPER_ROMAN,
                 "numberedListItem",
-                "paragraph",
                 "text:upper roman item",
-                "paragraph_",
                 "numberedListItem_",
                 "numberedList_",
                 "numberedListItem_",
@@ -325,9 +314,9 @@ public class Doxia_module_aptTest {
     }
 
     @Test
-    void aptSinkWritesAptMarkupAndEscapesText() {
-        StringWriter writer = new StringWriter();
-        AptSink sink = new AptSink(writer);
+    void aptSinkWritesAptMarkupAndEscapesText() throws Exception {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Sink sink = new AptSinkFactory().createSink(output);
 
         sink.head();
         sink.title();
@@ -363,17 +352,19 @@ public class Doxia_module_aptTest {
         sink.pageBreak();
         sink.flush();
 
-        String rendered = writer.toString();
+        String rendered = output.toString(StandardCharsets.UTF_8);
         assertThat(rendered).contains(" -----\n Demo\n -----\n Author\n -----\n Today\n -----");
         assertThat(rendered).contains("\n*Nested\n");
-        assertThat(rendered).contains("reserved \\* \\+ \\- \\< \\> \\[ \\] \\{ \\} \\\\ and \\u03a9");
+        assertThat(rendered).contains("reserved \\* \\+ \\- \\< \\> \\[ \\] \\{ \\} \\\\ and Ω");
         assertThat(rendered).contains("\\ {{{https://example.test/path}Example}}");
         assertThat(rendered).contains("\\\nraw");
         assertThat(rendered).contains("\n * bullet\n");
         assertThat(rendered).contains("\n+------+\nliteral \\* text\n+------+");
         assertThat(rendered).contains("\n\f\n");
-        assertThat(AptSink.encodeFragment("a b#c")).doesNotContain(" ");
-        assertThat(AptSink.encodeURL("a b?c=d")).doesNotContain(" ");
+        assertThat(AptUtils.encodeAnchor(" a b#c ")).isEqualTo("a_bc");
+        assertThat(AptUtils.isExternalLink("https://example.test/path")).isTrue();
+        assertThat(AptUtils.isLocalLink("../guide.apt")).isTrue();
+        assertThat(AptUtils.isInternalLink("section-one")).isTrue();
     }
 
     @Test
