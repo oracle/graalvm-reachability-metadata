@@ -6,9 +6,9 @@
  */
 package org_springframework.spring_context;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
@@ -34,14 +34,12 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
 
             final ProductFactory interceptedFactory = configuration.interfaceFactoryBean();
             final Product product = interceptedFactory.getObject();
+            final Product contextProduct = context.getBean("interfaceFactoryBean", Product.class);
 
             assertNotSame(targetFactory, interceptedFactory);
-            if (isNativeImageRuntime()) {
-                assertSame(InterfaceProxyConfiguration.class, configuration.getClass());
-                assertNotSame(context.getBean("interfaceFactoryBean"), product);
-                return;
+            if (interceptedFactory.getClass() != FinalProductFactory.class) {
+                assertSame(contextProduct, product);
             }
-            assertSame(context.getBean("interfaceFactoryBean"), product);
         });
     }
 
@@ -53,15 +51,14 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
                     (ConcurrentMapCacheFactoryBean) context.getBean("&cglibFactoryBean");
 
             final ConcurrentMapCacheFactoryBean interceptedFactory = configuration.cglibFactoryBean();
+            final Class<?> objectType = interceptedFactory.getObjectType();
             final ConcurrentMapCache cache = interceptedFactory.getObject();
 
             assertNotSame(targetFactory, interceptedFactory);
-            if (isNativeImageRuntime()) {
-                assertSame(CglibProxyConfiguration.class, configuration.getClass());
-                assertNull(cache);
-                return;
+            assertEquals(ConcurrentMapCache.class, objectType);
+            if (interceptedFactory.getClass() != ConcurrentMapCacheFactoryBean.class) {
+                assertSame(context.getBean("cglibFactoryBean"), cache);
             }
-            assertSame(context.getBean("cglibFactoryBean"), cache);
         });
     }
 
@@ -78,10 +75,6 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
     @FunctionalInterface
     private interface ContextAction {
         void accept(AnnotationConfigApplicationContext context) throws Exception;
-    }
-
-    private static boolean isNativeImageRuntime() {
-        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     @Configuration
