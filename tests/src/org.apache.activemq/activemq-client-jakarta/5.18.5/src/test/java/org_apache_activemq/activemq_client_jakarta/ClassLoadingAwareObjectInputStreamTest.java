@@ -61,6 +61,20 @@ public class ClassLoadingAwareObjectInputStreamTest {
     }
 
     @Test
+    void resolvesProxyClassWithInputLoaderWhenContextLoaderCannotDefineIt() throws Exception {
+        ClassLoader rejectingClassLoader = new RejectingClassLoader(COMMAND_INTERFACE_NAME, currentClassLoader());
+
+        try (ExposedClassLoadingAwareObjectInputStream inputStream = newObjectInputStreamWithApplicationLoadedInput()) {
+            inputStream.setTrustAllPackages(true);
+
+            Class<?> resolvedClass = withThreadContextClassLoader(
+                    rejectingClassLoader, () -> inputStream.resolveProxy(COMMAND_INTERFACE_NAME));
+
+            assertThat(resolvedClass.getInterfaces()).containsExactly(Command.class);
+        }
+    }
+
+    @Test
     void resolvesProxyClassWithFallbackLoaderWhenContextAndInputLoadersCannotDefineIt() throws Exception {
         ClassLoader rejectingClassLoader = new RejectingClassLoader(COMMAND_INTERFACE_NAME, currentClassLoader());
 
@@ -75,7 +89,13 @@ public class ClassLoadingAwareObjectInputStreamTest {
     }
 
     private static ExposedClassLoadingAwareObjectInputStream newObjectInputStream() throws IOException {
-        return new ExposedClassLoadingAwareObjectInputStream(emptyObjectStreamBytes());
+        return new ExposedClassLoadingAwareObjectInputStream(new ByteArrayInputStream(emptyObjectStreamBytes()));
+    }
+
+    private static ExposedClassLoadingAwareObjectInputStream newObjectInputStreamWithApplicationLoadedInput()
+            throws IOException {
+        return new ExposedClassLoadingAwareObjectInputStream(
+                new ApplicationLoadedByteArrayInputStream(emptyObjectStreamBytes()));
     }
 
     private static byte[] emptyObjectStreamBytes() throws IOException {
@@ -110,8 +130,8 @@ public class ClassLoadingAwareObjectInputStreamTest {
     }
 
     private static final class ExposedClassLoadingAwareObjectInputStream extends ClassLoadingAwareObjectInputStream {
-        private ExposedClassLoadingAwareObjectInputStream(byte[] streamBytes) throws IOException {
-            super(new ByteArrayInputStream(streamBytes));
+        private ExposedClassLoadingAwareObjectInputStream(ByteArrayInputStream inputStream) throws IOException {
+            super(inputStream);
         }
 
         private Class<?> resolve(ObjectStreamClass classDesc) throws IOException, ClassNotFoundException {
@@ -120,6 +140,12 @@ public class ClassLoadingAwareObjectInputStreamTest {
 
         private Class<?> resolveProxy(String interfaceName) throws IOException, ClassNotFoundException {
             return super.resolveProxyClass(new String[] {interfaceName});
+        }
+    }
+
+    private static final class ApplicationLoadedByteArrayInputStream extends ByteArrayInputStream {
+        private ApplicationLoadedByteArrayInputStream(byte[] buf) {
+            super(buf);
         }
     }
 
