@@ -30,7 +30,6 @@ import org.gradle.api.tasks.options.Option;
 import org.gradle.util.internal.VersionNumber;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -48,19 +47,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 @SuppressWarnings("unused")
 public abstract class TestedVersionUpdaterTask extends DefaultTask {
     private static final String VERSION_PLACEHOLDER = "$version$";
     private static final Duration URL_VERIFICATION_TIMEOUT = Duration.ofSeconds(20);
-    private static final int MAX_VERIFICATION_DOWNLOAD_BYTES = 25 * 1024 * 1024;
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
             .followRedirects(HttpClient.Redirect.NORMAL)
             .connectTimeout(URL_VERIFICATION_TIMEOUT)
             .build();
-    private static final List<String> SOURCE_FILE_EXTENSIONS = List.of(".java", ".kt", ".scala", ".groovy");
     private static final Pattern URL_VERSION_TOKEN_PATTERN = Pattern.compile(
             "(?i)(?<![A-Za-z0-9])\\d+(?:\\.\\d+)+(?:\\.Final|\\.RELEASE)?(?:[-.](?:alpha\\d*|beta\\d*|rc\\d*|cr\\d*|m\\d+|ea\\d*|b\\d+|\\d+|preview))?(?![A-Za-z0-9])"
     );
@@ -226,23 +221,23 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
 
     private PromotedUrls promoteArtifactUrls(MetadataVersionsIndexEntry entry, String oldVersion, String newVersion) {
         return new PromotedUrls(
-                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion, UrlVerification.ARCHIVE_WITH_SOURCES),
-                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion, UrlVerification.TEST_CODE),
-                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion, UrlVerification.RESOLVES)
+                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion),
+                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion),
+                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion)
         );
     }
 
-    private String promoteUrl(String fieldName, String currentUrl, String oldVersion, String newVersion, UrlVerification verification) {
+    private String promoteUrl(String fieldName, String currentUrl, String oldVersion, String newVersion) {
         if (!hasText(currentUrl) || "N/A".equals(currentUrl)) {
             return currentUrl;
         }
 
         String promotedUrl = renderVersionTemplate(currentUrl, oldVersion, newVersion);
-        verifyPromotedUrl(fieldName, promotedUrl, oldVersion, newVersion, verification);
+        verifyPromotedUrl(fieldName, promotedUrl, oldVersion, newVersion);
         return toStoredVersionTemplate(promotedUrl, newVersion);
     }
 
-    private void verifyPromotedUrl(String fieldName, String promotedUrl, String oldVersion, String newVersion, UrlVerification verification) {
+    private void verifyPromotedUrl(String fieldName, String promotedUrl, String oldVersion, String newVersion) {
         if (!promotedUrl.contains(newVersion)) {
             throw staleUrlException(fieldName, promotedUrl, oldVersion, newVersion, "URL does not contain the promoted metadata version");
         }
@@ -251,13 +246,7 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         }
 
         try {
-            if (verification == UrlVerification.ARCHIVE_WITH_SOURCES) {
-                verifySourceUrl(promotedUrl);
-            } else if (verification == UrlVerification.TEST_CODE && isArchiveUrl(promotedUrl)) {
-                verifyArchiveContainsSourceFiles(promotedUrl);
-            } else {
-                verifyUrlResolves(promotedUrl);
-            }
+            verifyUrlResolves(promotedUrl);
         } catch (IOException | InterruptedException | IllegalArgumentException e) {
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
@@ -314,14 +303,6 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         return value.toLowerCase(Locale.ROOT).contains(token.toLowerCase(Locale.ROOT));
     }
 
-    private void verifySourceUrl(String url) throws IOException, InterruptedException {
-        if (isArchiveUrl(url)) {
-            verifyArchiveContainsSourceFiles(url);
-        } else {
-            verifyUrlResolves(url);
-        }
-    }
-
     private GradleException staleUrlException(String fieldName, String promotedUrl, String oldVersion, String newVersion, String reason) {
         return new GradleException(
                 "Cannot promote " + fieldName + " from " + oldVersion + " to " + newVersion + ". " +
@@ -337,30 +318,6 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         verifySuccessStatus(url, response.statusCode());
     }
 
-    private void verifyArchiveContainsSourceFiles(String url) throws IOException, InterruptedException {
-        HttpResponse<byte[]> response = sendRequest(url, "GET", HttpResponse.BodyHandlers.ofByteArray());
-        verifySuccessStatus(url, response.statusCode());
-        byte[] archiveBytes = response.body();
-        if (archiveBytes.length > MAX_VERIFICATION_DOWNLOAD_BYTES) {
-            throw new IOException("archive is too large to verify (" + archiveBytes.length + " bytes)");
-        }
-
-        boolean hasSourceFiles = false;
-        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(archiveBytes))) {
-            ZipEntry zipEntry;
-            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                if (!zipEntry.isDirectory() && isSourceFile(zipEntry.getName())) {
-                    hasSourceFiles = true;
-                    break;
-                }
-            }
-        }
-
-        if (!hasSourceFiles) {
-            throw new IOException("archive does not contain .java, .kt, .scala, or .groovy source files");
-        }
-    }
-
     private <T> HttpResponse<T> sendRequest(String url, String method, HttpResponse.BodyHandler<T> bodyHandler) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create(url))
                 .timeout(URL_VERIFICATION_TIMEOUT)
@@ -373,15 +330,6 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         if (statusCode < 200 || statusCode >= 300) {
             throw new IOException("URL did not resolve successfully: HTTP " + statusCode + " for " + url);
         }
-    }
-
-    private static boolean isArchiveUrl(String url) {
-        String normalizedUrl = url.toLowerCase(Locale.ROOT);
-        return normalizedUrl.endsWith(".jar") || normalizedUrl.endsWith(".zip");
-    }
-
-    private static boolean isSourceFile(String path) {
-        return SOURCE_FILE_EXTENSIONS.stream().anyMatch(path::endsWith);
     }
 
     private static boolean hasText(String value) {
@@ -626,12 +574,6 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 entries.set(i, updatedEntry);
             }
         }
-    }
-
-    private enum UrlVerification {
-        ARCHIVE_WITH_SOURCES,
-        TEST_CODE,
-        RESOLVES
     }
 
     private record PromotedUrls(

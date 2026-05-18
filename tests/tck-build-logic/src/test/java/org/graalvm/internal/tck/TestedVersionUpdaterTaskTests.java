@@ -177,14 +177,13 @@ class TestedVersionUpdaterTaskTests {
     }
 
     @Test
-    void runPromotesMavenSourceAndJavadocUrlsWhenRenderedCandidatesVerify() throws IOException {
+    void runPromotesMavenSourceAndJavadocUrlsWhenRenderedCandidatesResolve() throws IOException {
         String group = "com.example";
         String artifact = "demo";
         String oldVersion = "1.0.0-M20";
         String newVersion = "1.0.0";
-        byte[] sourceJar = zipArchive("com/example/Demo.java", "package com.example; class Demo {}");
         HttpServer server = startServer(Map.of(
-                "/maven/com/example/demo/1.0.0/demo-1.0.0-sources.jar", sourceJar,
+                "/maven/com/example/demo/1.0.0/demo-1.0.0-sources.jar", zipArchive("com/example/Demo.class", "compiled"),
                 "/maven/com/example/demo/1.0.0/demo-1.0.0-javadoc.jar", zipArchive("index.html", "<html></html>")
         ));
 
@@ -223,9 +222,8 @@ class TestedVersionUpdaterTaskTests {
         String oldVersion = "1.0.0-RC1";
         String urlVersion = "1.0.0-M20";
         String newVersion = "1.0.0";
-        byte[] sourceJar = zipArchive("com/example/Demo.java", "package com.example; class Demo {}");
         HttpServer server = startServer(Map.of(
-                "/maven/com/example/demo/1.0.0/demo-1.0.0-sources.jar", sourceJar,
+                "/maven/com/example/demo/1.0.0/demo-1.0.0-sources.jar", zipArchive("com/example/Demo.class", "compiled"),
                 "/maven/com/example/demo/1.0.0/demo-1.0.0-javadoc.jar", zipArchive("index.html", "<html></html>")
         ));
 
@@ -251,6 +249,41 @@ class TestedVersionUpdaterTaskTests {
                     .containsEntry("metadata-version", newVersion)
                     .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
                     .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
+    void runPromotesCompiledTestJarUrlWhenRenderedCandidateResolves() throws IOException {
+        String group = "com.example";
+        String artifact = "demo";
+        String oldVersion = "2.0.0-Beta1";
+        String newVersion = "2.0.0";
+        HttpServer server = startServer(Map.of(
+                "/maven/com/example/demo/2.0.0/demo-2.0.0-tests.jar", zipArchive("com/example/DemoTest.class", "compiled")
+        ));
+
+        try {
+            String baseUrl = "http://localhost:" + server.getAddress().getPort();
+            writeIndex(
+                    group,
+                    artifact,
+                    oldVersion,
+                    "N/A",
+                    baseUrl + "/maven/com/example/demo/2.0.0-Beta1/demo-2.0.0-Beta1-tests.jar",
+                    "N/A"
+            );
+
+            TestTestedVersionUpdaterTask task = createTask();
+            task.setCoordinates(group + ":" + artifact + ":" + newVersion);
+            task.getLastSupportedVersion().set(oldVersion);
+
+            task.run();
+
+            assertThat(readIndex(group, artifact).get(0))
+                    .containsEntry("metadata-version", newVersion)
+                    .containsEntry("test-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-tests.jar");
         } finally {
             server.stop(0);
         }
