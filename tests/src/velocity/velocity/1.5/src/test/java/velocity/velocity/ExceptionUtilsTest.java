@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 public class ExceptionUtilsTest {
     @BeforeEach
     public void enableCauseSupport() throws Exception {
+        resetGeneratedClassLiteralCaches();
         setCausesAllowed(true);
     }
 
@@ -51,10 +52,23 @@ public class ExceptionUtilsTest {
         assertThat(fallbackException.getCause()).isNull();
     }
 
+    private static void resetGeneratedClassLiteralCaches() throws Exception {
+        setClassLiteralCache("class$java$lang$RuntimeException", null);
+        setClassLiteralCache("class$java$lang$String", null);
+        setClassLiteralCache("class$java$lang$Throwable", null);
+    }
+
     private static void setCausesAllowed(boolean causesAllowed) throws Exception {
         Field field = ExceptionUtils.class.getDeclaredField("causesAllowed");
         field.setAccessible(true);
         field.setBoolean(null, causesAllowed);
+    }
+
+    private static void setClassLiteralCache(
+            String fieldName, Class<?> cachedClass) throws Exception {
+        Field field = ExceptionUtils.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(null, cachedClass);
     }
 
     public static final class MessageOnlyException extends Exception {
