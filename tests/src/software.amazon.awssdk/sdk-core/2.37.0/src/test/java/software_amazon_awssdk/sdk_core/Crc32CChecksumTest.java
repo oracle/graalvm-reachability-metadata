@@ -9,9 +9,9 @@ package software_amazon_awssdk.sdk_core;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.charset.StandardCharsets;
+import java.util.zip.CRC32C;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.core.checksums.Crc32CChecksum;
-import software.amazon.awssdk.crt.checksums.CRC32C;
 
 @SuppressWarnings("deprecation")
 public class Crc32CChecksumTest {
@@ -20,7 +20,7 @@ public class Crc32CChecksumTest {
     private static final byte[] REPLACEMENT_SUFFIX = "cat naps".getBytes(StandardCharsets.UTF_8);
 
     @Test
-    void markAndResetCloneTheCrtChecksumState() {
+    void markAndResetRestoreTheDelegatedChecksumState() {
         Crc32CChecksum checksum = new Crc32CChecksum();
         checksum.update(PREFIX, 0, PREFIX.length);
         long markedValue = checksum.getValue();
@@ -37,7 +37,7 @@ public class Crc32CChecksumTest {
         CRC32C expected = new CRC32C();
         expected.update(PREFIX, 0, PREFIX.length);
         expected.update(REPLACEMENT_SUFFIX, 0, REPLACEMENT_SUFFIX.length);
-        assertThat(checksum.getValue()).isEqualTo(expected.getValue());
+        assertThat(checksum.getValue() & 0xFFFF_FFFFL).isEqualTo(expected.getValue());
         assertThat(checksum.getChecksumBytes()).hasSize(Integer.BYTES);
     }
 }
