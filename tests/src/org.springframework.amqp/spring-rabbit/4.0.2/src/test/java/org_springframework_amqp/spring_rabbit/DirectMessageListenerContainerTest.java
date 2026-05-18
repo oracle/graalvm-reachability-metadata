@@ -29,8 +29,7 @@ public class DirectMessageListenerContainerTest {
 
             AmqpAdmin amqpAdmin = container.getConfiguredAmqpAdmin();
             assertThat(amqpAdmin).isInstanceOf(RabbitAdmin.class);
-        }
-        finally {
+        } finally {
             container.stop();
             connectionFactory.destroy();
         }

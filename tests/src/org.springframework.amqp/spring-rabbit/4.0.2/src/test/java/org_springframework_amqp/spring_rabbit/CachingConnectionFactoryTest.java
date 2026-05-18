@@ -66,8 +66,7 @@ public class CachingConnectionFactoryTest {
             assertThat(((ChannelProxy) channel).getTargetChannel())
                     .isSameAs(rabbitConnectionFactory.connection.channel);
             channel.close();
-        }
-        finally {
+        } finally {
             connectionFactory.destroy();
         }
     }

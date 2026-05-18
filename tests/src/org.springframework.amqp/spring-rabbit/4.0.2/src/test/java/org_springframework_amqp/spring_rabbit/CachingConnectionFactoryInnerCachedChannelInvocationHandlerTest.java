@@ -29,8 +29,7 @@ public class CachingConnectionFactoryInnerCachedChannelInvocationHandlerTest {
             assertThat(cachedChannel.getChannelNumber()).isEqualTo(1);
 
             cachedChannel.close();
-        }
-        finally {
+        } finally {
             connectionFactory.destroy();
         }
     }
