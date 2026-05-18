@@ -83,7 +83,7 @@ jobs:
         id: set-matrix
         run: |
           LATEST_TAG=$(git tag --list | sort -V | tail -1)
-          ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=$(git show-ref -s $LATEST_TAG) -PnewCommit=$(git rev-parse HEAD)
+          ./gradlew generateChangedCoordinatesMatrix -PbaseCommit="$(git show-ref -s "$LATEST_TAG")" -PnewCommit="$(git rev-parse HEAD)"
 
   release:
     needs: get-changed-metadata
@@ -107,10 +107,16 @@ jobs:
       - name: "Get tags"
         run: |
           PREVIOUS_RELEASE_TAG=$(git tag --list | sort -V | tail -1)
-          echo "PREVIOUS_RELEASE_TAG=$PREVIOUS_RELEASE_TAG" >> ${GITHUB_ENV}
+          if [[ ! "$PREVIOUS_RELEASE_TAG" =~ ^[0-9]+[.][0-9]+[.][0-9]+$ ]]; then
+            echo "Unexpected release tag format: $PREVIOUS_RELEASE_TAG" >&2
+            exit 1
+          fi
 
-          CURRENT_RELEASE_TAG=$(sed -E 's/^([0-9]+\.)([0-9]+\.)([0-9]+)/echo \1\2$((\3+1))/e' <<< $PREVIOUS_RELEASE_TAG)
-          echo "CURRENT_RELEASE_TAG=$CURRENT_RELEASE_TAG" >> ${GITHUB_ENV}
+          IFS=. read -r MAJOR MINOR PATCH <<< "$PREVIOUS_RELEASE_TAG"
+          CURRENT_RELEASE_TAG="${MAJOR}.${MINOR}.$((PATCH + 1))"
+
+          printf 'PREVIOUS_RELEASE_TAG=%s\n' "$PREVIOUS_RELEASE_TAG" >> "$GITHUB_ENV"
+          printf 'CURRENT_RELEASE_TAG=%s\n' "$CURRENT_RELEASE_TAG" >> "$GITHUB_ENV"
 
       - name: "⬆️ Update version"
         run: |
@@ -130,9 +136,9 @@ jobs:
           git config --local user.name "Github Actions"
           git add .
           git commit -m "Release version ${{ env.CURRENT_RELEASE_TAG }}"
-          git tag ${{ env.CURRENT_RELEASE_TAG }}
-          git push origin ${{ env.CURRENT_RELEASE_TAG }}
+          git tag "${{ env.CURRENT_RELEASE_TAG }}"
+          git push origin "${{ env.CURRENT_RELEASE_TAG }}"
 
       - name: "📝 Publish a release"
         run: |
-          gh release create ${{ env.CURRENT_RELEASE_TAG }} build/graalvm-reachability-metadata-*.zip --generate-notes --notes-start-tag ${{ env.PREVIOUS_RELEASE_TAG }}
+          gh release create "${{ env.CURRENT_RELEASE_TAG }}" build/graalvm-reachability-metadata-*.zip --generate-notes --notes-start-tag "${{ env.PREVIOUS_RELEASE_TAG }}"
