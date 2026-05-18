@@ -34,8 +34,13 @@ public class ClassloaderChangeTestTest {
             assertThat(invokeDoIt(introspector, loadFooClass())).isEqualTo("Hello From Foo");
             introspector.triggerClear();
             assertThat(invokeDoIt(introspector, loadFooClass())).isEqualTo("Hello From Foo");
+        } catch (ClassNotFoundException exception) {
+            if (!isUnsupportedNativeImageDynamicClassLoading(exception)) {
+                throw exception;
+            }
         } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)
+                    && !isUnsupportedNativeImageDynamicClassLoading(error)) {
                 throw error;
             }
         }
@@ -49,6 +54,22 @@ public class ClassloaderChangeTestTest {
         final Method method = introspector.getMethod(fooClass, "doIt", new Object[0]);
         final Object instance = fooClass.getDeclaredConstructor().newInstance();
         return method.invoke(instance);
+    }
+
+    private static boolean isUnsupportedNativeImageDynamicClassLoading(final Throwable throwable) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if ((current instanceof ClassNotFoundException || current instanceof NoClassDefFoundError)
+                    && "Foo".equals(current.getMessage())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private static final class ByteArrayClassLoader extends ClassLoader {
