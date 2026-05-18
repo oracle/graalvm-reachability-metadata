@@ -8,7 +8,7 @@ package org_springframework_amqp.spring_rabbit;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_rabbitTest {
+public class Spring_rabbitTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
