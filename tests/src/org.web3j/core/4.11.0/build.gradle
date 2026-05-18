@@ -10,6 +10,15 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+repositories {
+    maven {
+        url = uri("https://artifacts.consensys.net/public/maven/maven/")
+        content {
+            includeGroup "tech.pegasys"
+        }
+    }
+}
+
 dependencies {
     testImplementation "org.web3j:core:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
