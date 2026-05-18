@@ -206,6 +206,54 @@ public class Spring_integration_amqpTest {
     }
 
     @Test
+    void outboundGatewayConvertsRequestAndPublishesReplyMessage() {
+        RecordingRabbitTemplate rabbitTemplate = new RecordingRabbitTemplate();
+        MessageProperties replyProperties = new MessageProperties();
+        replyProperties.setContentType(MessageProperties.CONTENT_TYPE_TEXT_PLAIN);
+        replyProperties.setContentEncoding(StandardCharsets.UTF_8.name());
+        replyProperties.setReceivedExchange("rpc.reply.exchange");
+        replyProperties.setReceivedRoutingKey("orders.status.reply");
+        replyProperties.setHeader("replyHeader", "reply-value");
+        rabbitTemplate.replyMessage = new org.springframework.amqp.core.Message(
+                "accepted".getBytes(StandardCharsets.UTF_8), replyProperties);
+
+        QueueChannel outputChannel = new QueueChannel(1);
+        AmqpOutboundEndpoint gateway = new AmqpOutboundEndpoint(rabbitTemplate);
+        gateway.setExpectReply(true);
+        gateway.setExchangeName("rpc.exchange");
+        gateway.setRoutingKey("orders.status");
+        gateway.setDefaultDeliveryMode(MessageDeliveryMode.NON_PERSISTENT);
+        gateway.setOutputChannel(outputChannel);
+        gateway.setBeanFactory(new DefaultListableBeanFactory());
+        gateway.afterPropertiesSet();
+
+        Message<String> request = MessageBuilder.withPayload("status?")
+                .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.TEXT_PLAIN)
+                .setHeader("requestHeader", "request-value")
+                .build();
+        gateway.handleMessage(request);
+
+        Message<?> reply = outputChannel.receive(1_000L);
+        assertThat(reply).isNotNull();
+        assertThat(gateway.getComponentType()).isEqualTo("amqp:outbound-gateway");
+        assertThat(rabbitTemplate.exchange).isEqualTo("rpc.exchange");
+        assertThat(rabbitTemplate.routingKey).isEqualTo("orders.status");
+        assertThat(rabbitTemplate.correlationData).isNull();
+        assertThat(new String(rabbitTemplate.sentMessage.getBody(), StandardCharsets.UTF_8)).isEqualTo("status?");
+        assertThat(rabbitTemplate.sentMessage.getMessageProperties().getContentType())
+                .isEqualTo(MimeTypeUtils.TEXT_PLAIN.toString());
+        assertThat(rabbitTemplate.sentMessage.getMessageProperties().getDeliveryMode())
+                .isEqualTo(MessageDeliveryMode.NON_PERSISTENT);
+        assertThat(rabbitTemplate.sentMessage.getMessageProperties().getHeaders())
+                .containsEntry("requestHeader", "request-value");
+        assertThat(reply.getPayload()).isEqualTo("accepted");
+        assertThat(reply.getHeaders())
+                .containsEntry(AmqpHeaders.RECEIVED_EXCHANGE, "rpc.reply.exchange")
+                .containsEntry(AmqpHeaders.RECEIVED_ROUTING_KEY, "orders.status.reply")
+                .containsEntry("replyHeader", "reply-value");
+    }
+
+    @Test
     void inboundChannelAdapterConvertsAmqpMessageAndSendsSpringMessage() throws Exception {
         RecordingMessageListenerContainer listenerContainer = new RecordingMessageListenerContainer();
         QueueChannel outputChannel = new QueueChannel(1);
@@ -341,6 +389,8 @@ public class Spring_integration_amqpTest {
 
         private CorrelationData correlationData;
 
+        private org.springframework.amqp.core.Message replyMessage;
+
         private org.springframework.amqp.core.Message messageToReceive;
 
         private String receiveQueue;
@@ -367,6 +417,16 @@ public class Spring_integration_amqpTest {
             this.routingKey = routingKey;
             this.sentMessage = message;
             this.correlationData = correlationData;
+        }
+
+        @Override
+        public org.springframework.amqp.core.Message sendAndReceive(String exchange, String routingKey,
+                org.springframework.amqp.core.Message message, CorrelationData correlationData) throws AmqpException {
+            this.exchange = exchange;
+            this.routingKey = routingKey;
+            this.sentMessage = message;
+            this.correlationData = correlationData;
+            return this.replyMessage;
         }
 
         @Override
