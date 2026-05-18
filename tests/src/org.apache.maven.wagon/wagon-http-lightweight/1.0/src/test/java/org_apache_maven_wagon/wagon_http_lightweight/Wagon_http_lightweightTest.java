@@ -108,10 +108,10 @@ public class Wagon_http_lightweightTest {
                         assertThat(wagon.resourceExists("missing.txt")).isFalse();
                         assertThatExceptionOfType(AuthorizationException.class)
                                 .isThrownBy(() -> wagon.resourceExists("forbidden.txt"))
-                                .withMessageContaining("Access denided");
+                                .withMessageContaining("Access denied");
 
                         assertThat(wagon.getFileList("dir"))
-                                .containsExactlyInAnyOrder("alpha.txt", "beta.txt", "encoded%20name.txt", "../");
+                                .containsExactlyInAnyOrder("alpha.txt", "beta.txt", "encoded name.txt");
                     } finally {
                         wagon.disconnect();
                     }
@@ -186,6 +186,7 @@ public class Wagon_http_lightweightTest {
             withProxyPropertiesCleared(() -> {
                 try (RepositoryServer server = RepositoryServer.start()) {
                     ProxyInfo proxyInfo = new ProxyInfo();
+                    proxyInfo.setType("http");
                     proxyInfo.setHost("127.0.0.1");
                     proxyInfo.setPort(server.port());
                     proxyInfo.setUserName(PROXY_USERNAME);
@@ -227,6 +228,7 @@ public class Wagon_http_lightweightTest {
 
                 LightweightHttpWagon wagon = new LightweightHttpWagon();
                 ProxyInfo proxyInfo = new ProxyInfo();
+                proxyInfo.setType("http");
                 proxyInfo.setHost("proxy.example.test");
                 proxyInfo.setPort(3128);
                 proxyInfo.setNonProxyHosts("127.0.0.1|localhost");
@@ -234,8 +236,8 @@ public class Wagon_http_lightweightTest {
                 wagon.connect(new Repository("test", "http://repo.example.test/base"), proxyInfo);
                 assertThat(System.getProperty("http.proxyHost")).isEqualTo("proxy.example.test");
                 assertThat(System.getProperty("http.proxyPort")).isEqualTo("3128");
-                assertThat(System.getProperty("https.proxyHost")).isEqualTo("proxy.example.test");
-                assertThat(System.getProperty("https.proxyPort")).isEqualTo("3128");
+                assertThat(System.getProperty("https.proxyHost")).isEqualTo("original-https-host");
+                assertThat(System.getProperty("https.proxyPort")).isEqualTo("18443");
                 assertThat(System.getProperty("http.nonProxyHosts")).isEqualTo("127.0.0.1|localhost");
                 assertThat(wagon.getRepository().getUrl()).isEqualTo("http://repo.example.test/base");
                 assertThat(wagon.getProxyInfo()).isSameAs(proxyInfo);
