@@ -8,6 +8,7 @@ package org_glassfish_grizzly.grizzly_framework;
 
 import org.glassfish.grizzly.attributes.Attribute;
 import org.glassfish.grizzly.attributes.AttributeBuilder;
+import org.glassfish.grizzly.attributes.AttributeBuilderTestAccess;
 import org.glassfish.grizzly.attributes.DefaultAttributeBuilder;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +24,7 @@ public class AttributeBuilderInitializerTest {
         System.setProperty(DEFAULT_ATTRIBUTE_BUILDER_PROPERTY, ConfiguredAttributeBuilder.class.getName());
 
         try {
-            AttributeBuilder builder = AttributeBuilder.DEFAULT_ATTRIBUTE_BUILDER;
+            AttributeBuilder builder = AttributeBuilderTestAccess.initBuilder();
             Attribute<String> attribute = builder.createAttribute("configured-builder-attribute", "configured-value");
 
             assertThat(builder).isExactlyInstanceOf(ConfiguredAttributeBuilder.class);
