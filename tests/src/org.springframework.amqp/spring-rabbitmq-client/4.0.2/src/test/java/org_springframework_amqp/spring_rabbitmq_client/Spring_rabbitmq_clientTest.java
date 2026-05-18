@@ -1775,8 +1775,7 @@ public class Spring_rabbitmq_clientTest {
         public Message.MessageAddressBuilder queue(String queue) {
             if (this.replyTo) {
                 this.message.replyTo = queue;
-            }
-            else {
+            } else {
                 this.message.addressQueue = queue;
             }
             return this;
