@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.HttpProtocol;
+import reactor.netty.resources.ConnectionProvider;
 import reactor.netty.resources.LoopResources;
 
 import org.springframework.boot.reactor.netty.NettyReactiveWebServerFactory;
@@ -30,6 +32,7 @@ import org.springframework.boot.reactor.netty.autoconfigure.NettyServerPropertie
 import org.springframework.boot.reactor.netty.autoconfigure.ReactorNettyProperties;
 import org.springframework.boot.web.server.Compression;
 import org.springframework.boot.web.server.GracefulShutdownResult;
+import org.springframework.boot.web.server.Http2;
 import org.springframework.boot.web.server.Shutdown;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.server.autoconfigure.ServerProperties;
@@ -143,6 +146,37 @@ public class Spring_boot_reactor_nettyTest {
         }
         finally {
             webServer.stop();
+        }
+    }
+
+    @Test
+    void http2ClearTextRequestsAreServedWhenHttp2IsEnabled() throws Exception {
+        NettyReactiveWebServerFactory factory = loopbackFactory();
+        Http2 http2 = new Http2();
+        http2.setEnabled(true);
+        factory.setHttp2(http2);
+        WebServer webServer = factory.getWebServer(textHandler("h2c response"));
+        ConnectionProvider connectionProvider = ConnectionProvider.create("boot-h2c-test", 1);
+        LoopResources loopResources = LoopResources.create("boot-h2c-client", 1, false);
+
+        try {
+            webServer.start();
+            String response = reactor.netty.http.client.HttpClient.create(connectionProvider).runOn(loopResources)
+                    .protocol(HttpProtocol.H2C).baseUrl("http://127.0.0.1:" + webServer.getPort()).get().uri("/h2c")
+                    .responseSingle((httpResponse, content) -> content.asString(StandardCharsets.UTF_8)
+                            .map((body) -> httpResponse.status().code() + " " + body))
+                    .block(TIMEOUT);
+
+            assertThat(response).isEqualTo("200 h2c response");
+        }
+        finally {
+            try {
+                webServer.stop();
+            }
+            finally {
+                connectionProvider.disposeLater().block(TIMEOUT);
+                loopResources.disposeLater().block(TIMEOUT);
+            }
         }
     }
 
