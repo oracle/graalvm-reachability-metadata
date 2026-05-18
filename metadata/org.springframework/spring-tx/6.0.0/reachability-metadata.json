@@ -2,6 +2,39 @@
   "reflection" : [
     {
       "condition" : {
+        "typeReached" : "org.springframework.transaction.interceptor.TransactionInterceptor"
+      },
+      "type" : "org.springframework.transaction.interceptor.TransactionInterceptor",
+      "serializable" : true,
+      "methods" : [
+        {
+          "name" : "readObject",
+          "parameterTypes" : [
+            "java.io.ObjectInputStream"
+          ]
+        },
+        {
+          "name" : "writeObject",
+          "parameterTypes" : [
+            "java.io.ObjectOutputStream"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.springframework.transaction.interceptor.TransactionInterceptor"
+      },
+      "type" : "org.springframework.transaction.interceptor.TransactionAspectSupport",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.springframework.transaction.jta.WebLogicJtaTransactionManager"
       },
       "type" : "weblogic.transaction.TransactionHelper",
@@ -69,6 +102,14 @@
           ]
         }
       ]
+    }
+  ],
+  "serialization" : [
+    {
+      "condition" : {
+        "typeReached" : "org.springframework.transaction.interceptor.TransactionInterceptor"
+      },
+      "type" : "org.springframework.transaction.interceptor.TransactionInterceptor"
     }
   ]
 }
