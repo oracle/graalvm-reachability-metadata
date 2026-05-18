@@ -1,0 +1,1241 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e3cc4-d6b8-7f23-98fc-cadfe3366dd7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.codehaus.plexus:plexus-interactivity-api:1.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.2].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+- Entry selector: "metadata-version" = "1.2"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.2
+- Entry metadata-version: 1.2
+- Entry test-version: 1.2
+- Entry tested-versions: [1.2]
+codex
+I’ll inspect the existing metadata entry first, then verify artifact-backed URLs against Maven Central and the upstream project before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.codehaus.plexus/plexus-interactivity-api/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/codehaus-plexus/plexus-interactivity",
+    "test-code-url" : "N/A",
+    "documentation-url" : "N/A",
+    "description" : "Plexus Interactivity API provides interfaces and default components for prompting users and handling console input and output within Plexus-based tools. It exposes Prompter, InputHandler, and OutputHandler abstractions plus simple default implementations used by Maven and Plexus components.",
+    "tested-versions" : [
+      "1.0",
+      "1.1"
+    ],
+    "allowed-packages" : [
+      "org.codehaus.plexus.components.interactivity"
+    ]
+  },
+  {
+    "metadata-version" : "1.2",
+    "tested-versions" : [
+      "1.2"
+    ],
+    "allowed-packages" : [
+      "org.codehaus.plexus.components.interactivity"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'find metadata/org.codehaus.plexus -maxdepth 2 -name index.json | sort | head -40' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+metadata/org.codehaus.plexus/plexus-archiver/index.json
+metadata/org.codehaus.plexus/plexus-cipher/index.json
+metadata/org.codehaus.plexus/plexus-classworlds/index.json
+metadata/org.codehaus.plexus/plexus-compiler-api/index.json
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json
+metadata/org.codehaus.plexus/plexus-container-default/index.json
+metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+metadata/org.codehaus.plexus/plexus-interpolation/index.json
+metadata/org.codehaus.plexus/plexus-io/index.json
+metadata/org.codehaus.plexus/plexus-java/index.json
+metadata/org.codehaus.plexus/plexus-resources/index.json
+metadata/org.codehaus.plexus/plexus-sec-dispatcher/index.json
+metadata/org.codehaus.plexus/plexus-utils/index.json
+metadata/org.codehaus.plexus/plexus-xml/index.json
+
+exec
+/usr/bin/bash -lc "rg -n \"plexus-interactivity-api|org.codehaus.plexus\" metadata/org.codehaus.plexus -g 'index.json'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+metadata/org.codehaus.plexus/plexus-compiler-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-api/$version$/plexus-compiler-api-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-compiler-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-api/$version$/plexus-compiler-api-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-compiler-api/index.json:24:      "org.codehaus.plexus.compiler"
+metadata/org.codehaus.plexus/plexus-sec-dispatcher/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-sec-dispatcher/$version$/plexus-sec-dispatcher-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-sec-dispatcher/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-sec-dispatcher/$version$/plexus-sec-dispatcher-$version$-source-release.zip",
+metadata/org.codehaus.plexus/plexus-sec-dispatcher/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-sec-dispatcher/$version$/plexus-sec-dispatcher-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-container-default/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-container-default/$version$/plexus-container-default-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-container-default/index.json:14:      "org.codehaus.plexus"
+metadata/org.codehaus.plexus/plexus-container-default/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-container-default/$version$/plexus-container-default-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-container-default/index.json:28:      "org.codehaus.plexus"
+metadata/org.codehaus.plexus/plexus-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/$version$/plexus-io-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/$version$/plexus-io-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-io/index.json:16:      "org.codehaus.plexus.components.io"
+metadata/org.codehaus.plexus/plexus-cipher/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-cipher/$version$/plexus-cipher-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-cipher/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-cipher/$version$/plexus-cipher-$version$-source-release.zip",
+metadata/org.codehaus.plexus/plexus-cipher/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-cipher/$version$/plexus-cipher-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-resources/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-resources/$version$/plexus-resources-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-resources/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-resources/$version$/plexus-resources-$version$-source-release.zip",
+metadata/org.codehaus.plexus/plexus-resources/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-resources/$version$/plexus-resources-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-resources/index.json:16:      "org.codehaus.plexus.resource"
+metadata/org.codehaus.plexus/plexus-xml/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-source-release.zip",
+metadata/org.codehaus.plexus/plexus-xml/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:20:      "org.codehaus.plexus.util.xml"
+metadata/org.codehaus.plexus/plexus-xml/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:27:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-source-release.zip",
+metadata/org.codehaus.plexus/plexus-xml/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-xml/$version$/plexus-xml-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-xml/index.json:36:      "org.codehaus.plexus.util.xml"
+metadata/org.codehaus.plexus/plexus-classworlds/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-classworlds/$version$/plexus-classworlds-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-classworlds/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-classworlds/$version$/plexus-classworlds-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-classworlds/index.json:17:      "org.codehaus.plexus.classworlds"
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/$version$/plexus-component-annotations-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-component-annotations/$version$/plexus-component-annotations-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-component-annotations/index.json:23:      "org.codehaus.plexus.component.annotations"
+metadata/org.codehaus.plexus/plexus-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-java/$version$/plexus-java-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-java/$version$/plexus-java-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-java/index.json:14:      "org.codehaus.plexus.languages.java"
+metadata/org.codehaus.plexus/plexus-interactivity-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-interactivity-api/index.json:15:      "org.codehaus.plexus.components.interactivity"
+metadata/org.codehaus.plexus/plexus-interactivity-api/index.json:24:      "org.codehaus.plexus.components.interactivity"
+metadata/org.codehaus.plexus/plexus-archiver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-archiver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-archiver/index.json:22:      "org.codehaus.plexus.archiver"
+metadata/org.codehaus.plexus/plexus-interpolation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/$version$/plexus-interpolation-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-interpolation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/$version$/plexus-interpolation-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-interpolation/index.json:44:      "org.codehaus.plexus.interpolation"
+metadata/org.codehaus.plexus/plexus-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:14:      "org.codehaus.plexus.util"
+metadata/org.codehaus.plexus/plexus-utils/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:28:      "org.codehaus.plexus.util"
+metadata/org.codehaus.plexus/plexus-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:42:      "org.codehaus.plexus.util"
+metadata/org.codehaus.plexus/plexus-utils/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:50:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:56:      "org.codehaus.plexus.util"
+metadata/org.codehaus.plexus/plexus-utils/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:64:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:70:      "org.codehaus.plexus.util"
+metadata/org.codehaus.plexus/plexus-utils/index.json:75:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:78:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:84:      "org.codehaus.plexus.util"
+metadata/org.codehaus.plexus/plexus-utils/index.json:89:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:92:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:98:      "org.codehaus.plexus.util"
+metadata/org.codehaus.plexus/plexus-utils/index.json:103:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:106:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:112:      "org.codehaus.plexus.util"
+metadata/org.codehaus.plexus/plexus-utils/index.json:117:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/$version$/plexus-utils-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-utils/index.json:120:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:147:      "org.codehaus.plexus.util"
+
+web search: 
+web search: org.codehaus.plexus plexus-interactivity-api 1.2 Maven Central sources javadoc source-release
+codex
+The existing 1.0 entry already points at the `codehaus-plexus/plexus-interactivity` repo, but for 1.2 I’m checking Maven Central directly because artifact sources, tests, and javadocs are preferred when published.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.2/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/codehaus/plexus/plexus-interactivity-api/1.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/codehaus/plexus/plexus-interactivity-api/1.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="plexus-interactivity-api-1.2-javadoc.jar" title="plexus-interactivity-api-1.2-javadoc.jar">plexus-interactivity-api-1.2-javadoc.jar</a>          2023-12-31 18:55    144823      
+<a href="plexus-interactivity-api-1.2-javadoc.jar.asc" title="plexus-interactivity-api-1.2-javadoc.jar.asc">plexus-interactivity-api-1.2-javadoc.jar.asc</a>      2023-12-31 18:55       833      
+<a href="plexus-interactivity-api-1.2-javadoc.jar.md5" title="plexus-interactivity-api-1.2-javadoc.jar.md5">plexus-interactivity-api-1.2-javadoc.jar.md5</a>      2023-12-31 18:55        32      
+<a href="plexus-interactivity-api-1.2-javadoc.jar.sha1" title="plexus-interactivity-api-1.2-javadoc.jar.sha1">plexus-interactivity-api-1.2-javadoc.jar.sha1</a>     2023-12-31 18:55        40      
+<a href="plexus-interactivity-api-1.2-sources.jar" title="plexus-interactivity-api-1.2-sources.jar">plexus-interactivity-api-1.2-sources.jar</a>          2023-12-31 18:55     13673      
+<a href="plexus-interactivity-api-1.2-sources.jar.asc" title="plexus-interactivity-api-1.2-sources.jar.asc">plexus-interactivity-api-1.2-sources.jar.asc</a>      2023-12-31 18:55       833      
+<a href="plexus-interactivity-api-1.2-sources.jar.md5" title="plexus-interactivity-api-1.2-sources.jar.md5">plexus-interactivity-api-1.2-sources.jar.md5</a>      2023-12-31 18:55        32      
+<a href="plexus-interactivity-api-1.2-sources.jar.sha1" title="plexus-interactivity-api-1.2-sources.jar.sha1">plexus-interactivity-api-1.2-sources.jar.sha1</a>     2023-12-31 18:55        40      
+<a href="plexus-interactivity-api-1.2.jar" title="plexus-interactivity-api-1.2.jar">plexus-interactivity-api-1.2.jar</a>                  2023-12-31 18:55     10221      
+<a href="plexus-interactivity-api-1.2.jar.asc" title="plexus-interactivity-api-1.2.jar.asc">plexus-interactivity-api-1.2.jar.asc</a>              2023-12-31 18:55       833      
+<a href="plexus-interactivity-api-1.2.jar.md5" title="plexus-interactivity-api-1.2.jar.md5">plexus-interactivity-api-1.2.jar.md5</a>              2023-12-31 18:55        32      
+<a href="plexus-interactivity-api-1.2.jar.sha1" title="plexus-interactivity-api-1.2.jar.sha1">plexus-interactivity-api-1.2.jar.sha1</a>             2023-12-31 18:55        40      
+<a href="plexus-interactivity-api-1.2.pom" title="plexus-interactivity-api-1.2.pom">plexus-interactivity-api-1.2.pom</a>                  2023-12-31 18:55      1824      
+<a href="plexus-interactivity-api-1.2.pom.asc" title="plexus-interactivity-api-1.2.pom.asc">plexus-interactivity-api-1.2.pom.asc</a>              2023-12-31 18:55       833      
+<a href="plexus-interactivity-api-1.2.pom.md5" title="plexus-interactivity-api-1.2.pom.md5">plexus-interactivity-api-1.2.pom.md5</a>              2023-12-31 18:55        32      
+<a href="plexus-interactivity-api-1.2.pom.sha1" title="plexus-interactivity-api-1.2.pom.sha1">plexus-interactivity-api-1.2.pom.sha1</a>             2023-12-31 18:55        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.2/plexus-interactivity-api-1.2.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codehaus.plexus</groupId>
+    <artifactId>plexus-interactivity</artifactId>
+    <version>1.2</version>
+  </parent>
+
+  <artifactId>plexus-interactivity-api</artifactId>
+
+  <name>Plexus Default Interactivity Handler</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>4.0.0</version>
+    </dependency>
+
+    <!-- JLine is optional -->
+    <dependency>
+      <groupId>org.jline</groupId>
+      <artifactId>jline</artifactId>
+      <version>3.23.0</version>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Test -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.inject</artifactId>
+      <version>0.9.0.M2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>6.0.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.2/plexus-interactivity-api-1.2-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.2/plexus-interactivity-api-1.2-javadoc.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.2/plexus-interactivity-api-1.2-source-release.zip' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ exited 22 in 1088ms:
+HTTP/2 200 
+date: Mon, 18 May 2026 20:26:48 GMT
+content-type: application/java-archive
+content-length: 13673
+cf-ray: 9fdd9952c87dedb6-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "538004c82fcd25fc609866dca59c7d17"
+last-modified: Sun, 31 Dec 2023 18:55:56 GMT
+x-checksum-md5: 538004c82fcd25fc609866dca59c7d17
+x-checksum-sha1: 4f3c86674747cf89eb530527414a1bef8b190e82
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Mon, 18 May 2026 20:26:48 GMT
+content-type: application/java-archive
+content-length: 144823
+cf-ray: 9fdd99558f4fbab1-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "e824455ef710ba50032f83df5e45fb97"
+last-modified: Sun, 31 Dec 2023 18:55:56 GMT
+x-checksum-md5: e824455ef710ba50032f83df5e45fb97
+x-checksum-sha1: 0fc01c717ee0612046ce731337079ccab1b4cbcc
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 18 May 2026 20:26:49 GMT
+content-type: text/html
+cf-ray: 9fdd99580c3fedd7-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/codehaus/plexus/plexus-interactivity-api/1.2/plexus-interactivity-api-1.2-source-release.zip
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: 
+web search: 
+web search: org.codehaus.plexus plexus-interactivity-api 1.2 Maven Central
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/codehaus-plexus/plexus-interactivity/tree/plexus-interactivity-1.2/plexus-interactivity-api/src/test' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tags?per_page=100' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/codehaus-plexus/plexus-interactivity/tree/plexus-interactivity-1.2/plexus-interactivity-api/src/main/java' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 255ms:
+[
+  {
+    "name": "plexus-interactivity-1.5.1",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/zipball/refs/tags/plexus-interactivity-1.5.1",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tarball/refs/tags/plexus-interactivity-1.5.1",
+    "commit": {
+      "sha": "5310468c1ac18bc9a31307d52e46ea3b089c9fc1",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/commits/5310468c1ac18bc9a31307d52e46ea3b089c9fc1"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyNTg6cmVmcy90YWdzL3BsZXh1cy1pbnRlcmFjdGl2aXR5LTEuNS4x"
+  },
+  {
+    "name": "plexus-interactivity-1.4",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/zipball/refs/tags/plexus-interactivity-1.4",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tarball/refs/tags/plexus-interactivity-1.4",
+    "commit": {
+      "sha": "1790b3a6dc8d1da072651a3c237f065773631f2d",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/commits/1790b3a6dc8d1da072651a3c237f065773631f2d"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyNTg6cmVmcy90YWdzL3BsZXh1cy1pbnRlcmFjdGl2aXR5LTEuNA=="
+  },
+  {
+    "name": "plexus-interactivity-1.3",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/zipball/refs/tags/plexus-interactivity-1.3",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tarball/refs/tags/plexus-interactivity-1.3",
+    "commit": {
+      "sha": "c4f05e2651c9479ad2819911abc1559bd417d84b",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/commits/c4f05e2651c9479ad2819911abc1559bd417d84b"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyNTg6cmVmcy90YWdzL3BsZXh1cy1pbnRlcmFjdGl2aXR5LTEuMw=="
+  },
+  {
+    "name": "plexus-interactivity-1.2",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/zipball/refs/tags/plexus-interactivity-1.2",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tarball/refs/tags/plexus-interactivity-1.2",
+    "commit": {
+      "sha": "558b3bbcac0564cab42b5af0e943b1563f4f3994",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/commits/558b3bbcac0564cab42b5af0e943b1563f4f3994"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyNTg6cmVmcy90YWdzL3BsZXh1cy1pbnRlcmFjdGl2aXR5LTEuMg=="
+  },
+  {
+    "name": "plexus-interactivity-1.1",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/zipball/refs/tags/plexus-interactivity-1.1",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tarball/refs/tags/plexus-interactivity-1.1",
+    "commit": {
+      "sha": "d2bc83549cedf6bc82ca23b592b8d50ada5b7726",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/commits/d2bc83549cedf6bc82ca23b592b8d50ada5b7726"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyNTg6cmVmcy90YWdzL3BsZXh1cy1pbnRlcmFjdGl2aXR5LTEuMQ=="
+  },
+  {
+    "name": "plexus-interactivity-1.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/zipball/refs/tags/plexus-interactivity-1.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tarball/refs/tags/plexus-interactivity-1.0",
+    "commit": {
+      "sha": "6ab40b55cc7c7f3ae7dde68973cb032ffe380223",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/commits/6ab40b55cc7c7f3ae7dde68973cb032ffe380223"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyNTg6cmVmcy90YWdzL3BsZXh1cy1pbnRlcmFjdGl2aXR5LTEuMA=="
+  },
+  {
+    "name": "plexus-interactivity-1.0-alpha-7",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/zipball/refs/tags/plexus-interactivity-1.0-alpha-7",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tarball/refs/tags/plexus-interactivity-1.0-alpha-7",
+    "commit": {
+      "sha": "1751524ec56b423878c7fdf5f0e52d3be9e3a29c",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/commits/1751524ec56b423878c7fdf5f0e52d3be9e3a29c"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyNTg6cmVmcy90YWdzL3BsZXh1cy1pbnRlcmFjdGl2aXR5LTEuMC1hbHBoYS03"
+  },
+  {
+    "name": "plexus-interactivity-1.0-alpha-6",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/zipball/refs/tags/plexus-interactivity-1.0-alpha-6",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tarball/refs/tags/plexus-interactivity-1.0-alpha-6",
+    "commit": {
+      "sha": "e548f219775cf2e1ac2f6b2925feb0104ba2a039",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/commits/e548f219775cf2e1ac2f6b2925feb0104ba2a039"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyNTg6cmVmcy90YWdzL3BsZXh1cy1pbnRlcmFjdGl2aXR5LTEuMC1hbHBoYS02"
+  },
+  {
+    "name": "plexus-interactivity-1.0-alpha-5",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/zipball/refs/tags/plexus-interactivity-1.0-alpha-5",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tarball/refs/tags/plexus-interactivity-1.0-alpha-5",
+    "commit": {
+      "sha": "485bff7cd7db3da988b6ba101bdf4cf1b3440778",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/commits/485bff7cd7db3da988b6ba101bdf4cf1b3440778"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyNTg6cmVmcy90YWdzL3BsZXh1cy1pbnRlcmFjdGl2aXR5LTEuMC1hbHBoYS01"
+  },
+  {
+    "name": "plexus-interactivity-1.0-alpha-4",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/zipball/refs/tags/plexus-interactivity-1.0-alpha-4",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/tarball/refs/tags/plexus-interactivity-1.0-alpha-4",
+    "commit": {
+      "sha": "a8212c742b947b686370527de43199e4d2c493e1",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/commits/a8212c742b947b686370527de43199e4d2c493e1"
+    },
+    "node_id": "MDM6UmVmMjk5MjQyNTg6cmVmcy90YWdzL3BsZXh1cy1pbnRlcmFjdGl2aXR5LTEuMC1hbHBoYS00"
+  }
+]
+
+ succeeded in 635ms:
+HTTP/2 200 
+date: Mon, 18 May 2026 20:26:57 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"fb0e7701c419f770978e0262583ede0d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=UJPCOZGuUbYYXUFvUnazcxofaJR8mI6IXq%2BOt3m%2ByvrzRl4T6Oqt%2BfR1LGXCDgUXrNSq5lzGz4SxfjrBe2mMsy5lcN7bM55oUFt3FWmAHV1qRADsaTWAuHP9Ft3UNqMw9Z0r5KV4qlnZrfyyeArG8YRpMN9rzDXtdapfIlRiEG0Po0XpTYTHVyoTKwU%2Fe4ZP2owx9IPAonPZcvd1s9Rc6WMVFCplvSMjQcd23WdwKmw%2BuN63boHFiPho3jv62KMIVpS%2FTJDqprPsR3QI%2B6gnHg%3D%3D--YQVXGzJWHuRGc%2BWH--2X9tHetj6Lg0Ba9tWCNVyw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.352831927.1779136017; expires=Tue, 18 May 2027 20:26:57 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 18 May 2027 20:26:57 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6217:34E9BF:103378C:C2A495:6A0B7611
+
+
+ succeeded in 698ms:
+HTTP/2 200 
+date: Mon, 18 May 2026 20:26:57 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a85adda5fbe4e8ecbf7e00bd13b7bf46"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Hm5tLfCtRxYj5QXCl%2BzCYI14xI4dg4OR0KD0j2MihFTDT1ilU2i71vwGpWg11MW6iC%2BZazhUue4IgGDVm2e0HA6eQUQR8RsMoa%2BUKyB9HnbYqWoXV0vhFTq4lxk0HtAqp9hnfToJHY4PWvafIPPKx0sZAUp5Q1OeCiTqyoNPAbJymCmvkdVNpgrak1%2FyI7DDRjCTJ%2F6xHvleY%2BB0y%2FITTiluvKZG%2BmvkG%2BXFyQI%2FEQqDlNiU%2FsmkmdswU6YsJLvO252%2Fwk0AIzIS2PIucBiwnw%3D%3D--%2BwY%2Bu1mWdpT2CJxR--7CbU12%2BRJBgia9blLfH0%2BQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.821762524.1779136017; expires=Tue, 18 May 2027 20:26:57 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 18 May 2027 20:26:57 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6218:325DA3:1057DF3:C47880:6A0B7611
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/1.2/plexus-interactivity-1.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codehaus.plexus</groupId>
+    <artifactId>plexus</artifactId>
+    <version>16</version>
+  </parent>
+
+  <artifactId>plexus-interactivity</artifactId>
+  <version>1.2</version>
+  <packaging>pom</packaging>
+
+  <name>Plexus Interactivity Handler Component</name>
+
+  <modules>
+    <module>plexus-interactivity-api</module>
+  </modules>
+
+  <scm>
+    <connection>${scm.url}</connection>
+    <developerConnection>${scm.url}</developerConnection>
+    <tag>plexus-interactivity-1.2</tag>
+    <url>https://github.com/codehaus-plexus/plexus-interactivity</url>
+  </scm>
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/codehaus-plexus/plexus-interactivity/issues</url>
+  </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>github:gh-pages</id>
+      <url>${scm.url}</url>
+    </site>
+  </distributionManagement>
+
+  <properties>
+    <scm.url>scm:git:https://github.com/codehaus-plexus/plexus-interactivity.git</scm.url>
+    <project.build.outputTimestamp>2023-12-31T18:53:45Z</project.build.outputTimestamp>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <proc>none</proc>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <topSiteURL>${scm.url}</topSiteURL>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/1.2/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/1.2/plexus-interactivity-1.2-source-release.zip' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 203ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/codehaus/plexus/plexus-interactivity/1.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/codehaus/plexus/plexus-interactivity/1.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="plexus-interactivity-1.2-site.xml" title="plexus-interactivity-1.2-site.xml">plexus-interactivity-1.2-site.xml</a>                 2023-12-31 18:55       313      
+<a href="plexus-interactivity-1.2-site.xml.asc" title="plexus-interactivity-1.2-site.xml.asc">plexus-interactivity-1.2-site.xml.asc</a>             2023-12-31 18:55       833      
+<a href="plexus-interactivity-1.2-site.xml.md5" title="plexus-interactivity-1.2-site.xml.md5">plexus-interactivity-1.2-site.xml.md5</a>             2023-12-31 18:55        32      
+<a href="plexus-interactivity-1.2-site.xml.sha1" title="plexus-interactivity-1.2-site.xml.sha1">plexus-interactivity-1.2-site.xml.sha1</a>            2023-12-31 18:55        40      
+<a href="plexus-interactivity-1.2-source-release.zip" title="plexus-interactivity-1.2-source-release.zip">plexus-interactivity-1.2-source-release.zip</a>       2023-12-31 18:55     22572      
+<a href="plexus-interactivity-1.2-source-release.zip.asc" title="plexus-interactivity-1.2-source-release.zip.asc">plexus-interactivity-1.2-source-release.zip.a...</a>  2023-12-31 18:55       833      
+<a href="plexus-interactivity-1.2-source-release.zip.md5" title="plexus-interactivity-1.2-source-release.zip.md5">plexus-interactivity-1.2-source-release.zip.m...</a>  2023-12-31 18:55        32      
+<a href="plexus-interactivity-1.2-source-release.zip.sha1" title="plexus-interactivity-1.2-source-release.zip.sha1">plexus-interactivity-1.2-source-release.zip.s...</a>  2023-12-31 18:55        40      
+<a href="plexus-interactivity-1.2.pom" title="plexus-interactivity-1.2.pom">plexus-interactivity-1.2.pom</a>                      2023-12-31 18:55      1868      
+<a href="plexus-interactivity-1.2.pom.asc" title="plexus-interactivity-1.2.pom.asc">plexus-interactivity-1.2.pom.asc</a>                  2023-12-31 18:55       833      
+<a href="plexus-interactivity-1.2.pom.md5" title="plexus-interactivity-1.2.pom.md5">plexus-interactivity-1.2.pom.md5</a>                  2023-12-31 18:55        32      
+<a href="plexus-interactivity-1.2.pom.sha1" title="plexus-interactivity-1.2.pom.sha1">plexus-interactivity-1.2.pom.sha1</a>                 2023-12-31 18:55        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 305ms:
+HTTP/2 200 
+date: Mon, 18 May 2026 20:27:03 GMT
+content-type: application/zip
+content-length: 22572
+cf-ray: 9fdd99b29b2a4c6c-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "00e7f39f999181fea8817f96289cc75f"
+last-modified: Sun, 31 Dec 2023 18:55:48 GMT
+x-checksum-md5: 00e7f39f999181fea8817f96289cc75f
+x-checksum-sha1: 914bd40e2f5466c55c9f54603c7d00be24176437
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents?ref=plexus-interactivity-1.2' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/1.2/plexus-interactivity-1.2-source-release.zip -o /tmp/plexus-interactivity-1.2-source-release.zip && unzip -l /tmp/plexus-interactivity-1.2-source-release.zip | rg 'plexus-interactivity-api/src/(main|test)|README|site|xdoc|apt'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/plexus-interactivity-api/src/test?ref=plexus-interactivity-1.2' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 201ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "4594a9d78663160bb8f2fd6adf104f4e251cd221",
+    "size": 0,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/.github?ref=plexus-interactivity-1.2",
+    "html_url": "https://github.com/codehaus-plexus/plexus-interactivity/tree/plexus-interactivity-1.2/.github",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/trees/4594a9d78663160bb8f2fd6adf104f4e251cd221",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/.github?ref=plexus-interactivity-1.2",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/trees/4594a9d78663160bb8f2fd6adf104f4e251cd221",
+      "html": "https://github.com/codehaus-plexus/plexus-interactivity/tree/plexus-interactivity-1.2/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "ece20beba27a0ef79301ba0f2df2c16050422a76",
+    "size": 55,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/.gitignore?ref=plexus-interactivity-1.2",
+    "html_url": "https://github.com/codehaus-plexus/plexus-interactivity/blob/plexus-interactivity-1.2/.gitignore",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/blobs/ece20beba27a0ef79301ba0f2df2c16050422a76",
+    "download_url": "https://raw.githubusercontent.com/codehaus-plexus/plexus-interactivity/plexus-interactivity-1.2/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/.gitignore?ref=plexus-interactivity-1.2",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/blobs/ece20beba27a0ef79301ba0f2df2c16050422a76",
+      "html": "https://github.com/codehaus-plexus/plexus-interactivity/blob/plexus-interactivity-1.2/.gitignore"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "4386f9b22253f2330e5f89372cabb59c624203ce",
+    "size": 670,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/README.md?ref=plexus-interactivity-1.2",
+    "html_url": "https://github.com/codehaus-plexus/plexus-interactivity/blob/plexus-interactivity-1.2/README.md",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/blobs/4386f9b22253f2330e5f89372cabb59c624203ce",
+    "download_url": "https://raw.githubusercontent.com/codehaus-plexus/plexus-interactivity/plexus-interactivity-1.2/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/README.md?ref=plexus-interactivity-1.2",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/blobs/4386f9b22253f2330e5f89372cabb59c624203ce",
+      "html": "https://github.com/codehaus-plexus/plexus-interactivity/blob/plexus-interactivity-1.2/README.md"
+    }
+  },
+  {
+    "name": "plexus-interactivity-api",
+    "path": "plexus-interactivity-api",
+    "sha": "569ce45b4f7b14892782d5b9be59dbf723e8839f",
+    "size": 0,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/plexus-interactivity-api?ref=plexus-interactivity-1.2",
+    "html_url": "https://github.com/codehaus-plexus/plexus-interactivity/tree/plexus-interactivity-1.2/plexus-interactivity-api",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/trees/569ce45b4f7b14892782d5b9be59dbf723e8839f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/plexus-interactivity-api?ref=plexus-interactivity-1.2",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/trees/569ce45b4f7b14892782d5b9be59dbf723e8839f",
+      "html": "https://github.com/codehaus-plexus/plexus-interactivity/tree/plexus-interactivity-1.2/plexus-interactivity-api"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "bb6b4b765c1d6c5e2981b33816cdec9ccf3bffd6",
+    "size": 1868,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/pom.xml?ref=plexus-interactivity-1.2",
+    "html_url": "https://github.com/codehaus-plexus/plexus-interactivity/blob/plexus-interactivity-1.2/pom.xml",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/blobs/bb6b4b765c1d6c5e2981b33816cdec9ccf3bffd6",
+    "download_url": "https://raw.githubusercontent.com/codehaus-plexus/plexus-interactivity/plexus-interactivity-1.2/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/pom.xml?ref=plexus-interactivity-1.2",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/blobs/bb6b4b765c1d6c5e2981b33816cdec9ccf3bffd6",
+      "html": "https://github.com/codehaus-plexus/plexus-interactivity/blob/plexus-interactivity-1.2/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "2bf732a8df646ebbc0ec797962d1d1e7e529767a",
+    "size": 0,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/src?ref=plexus-interactivity-1.2",
+    "html_url": "https://github.com/codehaus-plexus/plexus-interactivity/tree/plexus-interactivity-1.2/src",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/trees/2bf732a8df646ebbc0ec797962d1d1e7e529767a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/src?ref=plexus-interactivity-1.2",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/trees/2bf732a8df646ebbc0ec797962d1d1e7e529767a",
+      "html": "https://github.com/codehaus-plexus/plexus-interactivity/tree/plexus-interactivity-1.2/src"
+    }
+  }
+]
+
+ succeeded in 206ms:
+[
+  {
+    "name": "java",
+    "path": "plexus-interactivity-api/src/test/java",
+    "sha": "8de1d3ad51f730c2486cf33f1dbc01924848f2e6",
+    "size": 0,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/plexus-interactivity-api/src/test/java?ref=plexus-interactivity-1.2",
+    "html_url": "https://github.com/codehaus-plexus/plexus-interactivity/tree/plexus-interactivity-1.2/plexus-interactivity-api/src/test/java",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/trees/8de1d3ad51f730c2486cf33f1dbc01924848f2e6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/contents/plexus-interactivity-api/src/test/java?ref=plexus-interactivity-1.2",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-interactivity/git/trees/8de1d3ad51f730c2486cf33f1dbc01924848f2e6",
+      "html": "https://github.com/codehaus-plexus/plexus-interactivity/tree/plexus-interactivity-1.2/plexus-interactivity-api/src/test/java"
+    }
+  }
+]
+
+ succeeded in 5075ms:
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/jline/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/site/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/test/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/test/java/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/test/java/org/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/test/java/org/codehaus/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/test/java/org/codehaus/plexus/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/test/java/org/codehaus/plexus/components/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/test/java/org/codehaus/plexus/components/interactivity/
+        0  2023-12-31 18:53   plexus-interactivity-1.2/src/site/
+      670  2023-12-31 18:53   plexus-interactivity-1.2/README.md
+     1784  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/AbstractInputHandler.java
+     1823  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/DefaultInputHandler.java
+     1719  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/DefaultOutputHandler.java
+     5923  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/DefaultPrompter.java
+     2271  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/InputHandler.java
+     1727  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/OutputHandler.java
+     1849  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/Prompter.java
+     1544  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/PrompterException.java
+     1888  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/main/java/org/codehaus/plexus/components/interactivity/jline/JLineInputHandler.java
+      563  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/site/site.xml
+     1574  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/test/java/org/codehaus/plexus/components/interactivity/DefaultPrompterComponentTest.java
+     3308  2023-12-31 18:53   plexus-interactivity-1.2/plexus-interactivity-api/src/test/java/org/codehaus/plexus/components/interactivity/DefaultPrompterTest.java
+      313  2023-12-31 18:53   plexus-interactivity-1.2/src/site/site.xml
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org org/codehaus/plexus/plexus-interactivity-api/1.2 plexus-interactivity-api-1.2-sources.jar
+web search: 
+web search: https://mvnrepository.com/artifact/org.codehaus.plexus/plexus-interactivity-api
+codex
+The module artifact publishes `sources.jar` and `javadoc.jar`; the module itself has no source-release ZIP, but the parent `plexus-interactivity` release ZIP is on Maven Central and contains the module’s `src/test/java`, so I’ll use that as the versioned test URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+diff --git a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+index 2edcec4e075aa4ce8e1dd6a982e58aefdced1732..cadd588e60d8f441b25a1a0c308cd9bd01432eee
+--- a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
++++ b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "1.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-interactivity",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/$version$/plexus-interactivity-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-javadoc.jar",
++    "description" : "Plexus Interactivity API provides interfaces and default components for prompting users and handling console input and output within Plexus-based tools. It exposes Prompter, InputHandler, and OutputHandler abstractions plus simple default implementations used by Maven and Plexus components.",
+     "tested-versions" : [
+       "1.2"
+     ],
+
+diff --git a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+index 2edcec4e075aa4ce8e1dd6a982e58aefdced1732..cadd588e60d8f441b25a1a0c308cd9bd01432eee
+--- a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
++++ b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "1.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-interactivity",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/$version$/plexus-interactivity-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-javadoc.jar",
++    "description" : "Plexus Interactivity API provides interfaces and default components for prompting users and handling console input and output within Plexus-based tools. It exposes Prompter, InputHandler, and OutputHandler abstractions plus simple default implementations used by Maven and Plexus components.",
+     "tested-versions" : [
+       "1.2"
+     ],
+
+codex
+The metadata entry is patched. I’ll do a quick JSON parse plus the targeted metadata validation so the repository format and field schema are checked, not just the edit.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.codehaus.plexus/plexus-interactivity-api/index.json >/dev/null' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.2/plexus-interactivity-api-1.2-sources.jar >/dev/null && curl -I -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/1.2/plexus-interactivity-1.2-source-release.zip >/dev/null && curl -I -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/1.2/plexus-interactivity-api-1.2-javadoc.jar >/dev/null && curl -I -fsSL https://github.com/codehaus-plexus/plexus-interactivity >/dev/null' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.codehaus.plexus:plexus-interactivity-api:1.2 --stacktrace' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 946ms:
+diff --git a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+index 2edcec4e075aa4ce8e1dd6a982e58aefdced1732..cadd588e60d8f441b25a1a0c308cd9bd01432eee
+--- a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
++++ b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "1.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-interactivity",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/$version$/plexus-interactivity-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-javadoc.jar",
++    "description" : "Plexus Interactivity API provides interfaces and default components for prompting users and handling console input and output within Plexus-based tools. It exposes Prompter, InputHandler, and OutputHandler abstractions plus simple default implementations used by Maven and Plexus components.",
+     "tested-versions" : [
+       "1.2"
+     ],
+
+diff --git a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+index 2edcec4e075aa4ce8e1dd6a982e58aefdced1732..cadd588e60d8f441b25a1a0c308cd9bd01432eee
+--- a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
++++ b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "1.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-interactivity",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/$version$/plexus-interactivity-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-javadoc.jar",
++    "description" : "Plexus Interactivity API provides interfaces and default components for prompting users and handling console input and output within Plexus-based tools. It exposes Prompter, InputHandler, and OutputHandler abstractions plus simple default implementations used by Maven and Plexus components.",
+     "tested-versions" : [
+       "1.2"
+     ],
+
+ exited 1 in 5663ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.codehaus.plexus:plexus-interactivity-api:1.2: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe/metadata/org.codehaus.plexus/plexus-interactivity-api/1.2/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.codehaus.plexus:plexus-interactivity-api:1.2: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe/metadata/org.codehaus.plexus/plexus-interactivity-api/1.2/
+
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.codehaus.plexus:plexus-interactivity-api:1.2: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe/metadata/org.codehaus.plexus/plexus-interactivity-api/1.2/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+BUILD FAILED in 5s
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+Targeted `checkMetadataFiles` fails because this repository has no `metadata/org.codehaus.plexus/plexus-interactivity-api/1.2/reachability-metadata.json` directory/file for that coordinate. That is outside the requested index-field update; the JSON parse and URL existence checks passed.
+exec
+/usr/bin/bash -lc 'find metadata/org.codehaus.plexus/plexus-interactivity-api -maxdepth 2 -type f -print | sort' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+metadata/org.codehaus.plexus/plexus-interactivity-api/1.0/reachability-metadata.json
+metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.codehaus.plexus/plexus-interactivity-api/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+diff --git i/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json w/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+index 2edcec4e07..cadd588e60 100644
+--- i/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
++++ w/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "1.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-interactivity",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/$version$/plexus-interactivity-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-javadoc.jar",
++    "description" : "Plexus Interactivity API provides interfaces and default components for prompting users and handling console input and output within Plexus-based tools. It exposes Prompter, InputHandler, and OutputHandler abstractions plus simple default implementations used by Maven and Plexus components.",
+     "tested-versions" : [
+       "1.2"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.codehaus.plexus/plexus-interactivity-api/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+ M metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+
+diff --git a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+index 2edcec4e075aa4ce8e1dd6a982e58aefdced1732..cadd588e60d8f441b25a1a0c308cd9bd01432eee
+--- a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
++++ b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "1.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-interactivity",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/$version$/plexus-interactivity-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-javadoc.jar",
++    "description" : "Plexus Interactivity API provides interfaces and default components for prompting users and handling console input and output within Plexus-based tools. It exposes Prompter, InputHandler, and OutputHandler abstractions plus simple default implementations used by Maven and Plexus components.",
+     "tested-versions" : [
+       "1.2"
+     ],
+
+web search: 
+web search: https://github.com/codehaus-plexus/plexus-interactivity
+web search: 
+web search: "plexus-interactivity-api-1.2-sources.jar"
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.codehaus.plexus/plexus-interactivity-api/index.json | sed -n '15,34p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe
+ succeeded in 0ms:
+    15	      "org.codehaus.plexus.components.interactivity"
+    16	    ]
+    17	  },
+    18	  {
+    19	    "metadata-version" : "1.2",
+    20	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
+    21	    "repository-url" : "https://github.com/codehaus-plexus/plexus-interactivity",
+    22	    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/$version$/plexus-interactivity-$version$-source-release.zip",
+    23	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-javadoc.jar",
+    24	    "description" : "Plexus Interactivity API provides interfaces and default components for prompting users and handling console input and output within Plexus-based tools. It exposes Prompter, InputHandler, and OutputHandler abstractions plus simple default implementations used by Maven and Plexus components.",
+    25	    "tested-versions" : [
+    26	      "1.2"
+    27	    ],
+    28	    "allowed-packages" : [
+    29	      "org.codehaus.plexus.components.interactivity"
+    30	    ]
+    31	  }
+    32	]
+
+diff --git a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+index 2edcec4e075aa4ce8e1dd6a982e58aefdced1732..cadd588e60d8f441b25a1a0c308cd9bd01432eee
+--- a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
++++ b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "1.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-interactivity",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/$version$/plexus-interactivity-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-javadoc.jar",
++    "description" : "Plexus Interactivity API provides interfaces and default components for prompting users and handling console input and output within Plexus-based tools. It exposes Prompter, InputHandler, and OutputHandler abstractions plus simple default implementations used by Maven and Plexus components.",
+     "tested-versions" : [
+       "1.2"
+     ],
+
+web search: 
+web search: site:github.com/codehaus-plexus/plexus-interactivity plexus-interactivity-1.2
+web search: 
+web search: github.com/codehaus-plexus/plexus-interactivity "plexus-interactivity-1.2"
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json:19) for metadata version `1.2`: source, repository, test, documentation, and the two-sentence description are now filled. I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. Maven Central lists the artifact, and version `1.2` is published as `Plexus Default Interactivity Handler`. ([central.sonatype.com](https://central.sonatype.com/artifact/org.codehaus.plexus/plexus-interactivity-api?utm_source=openai))
+
+Verification:
+- `jq` JSON parse passed.
+- Rendered `1.2` URL checks passed for source, test source-release ZIP, javadoc, and repository root.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.codehaus.plexus:plexus-interactivity-api:1.2 --stacktrace` failed because `metadata/org.codehaus.plexus/plexus-interactivity-api/1.2/reachability-metadata.json` is missing, which is outside the requested index update.
+diff --git a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+index 2edcec4e075aa4ce8e1dd6a982e58aefdced1732..cadd588e60d8f441b25a1a0c308cd9bd01432eee
+--- a/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
++++ b/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "1.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-interactivity",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity/$version$/plexus-interactivity-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interactivity-api/$version$/plexus-interactivity-api-$version$-javadoc.jar",
++    "description" : "Plexus Interactivity API provides interfaces and default components for prompting users and handling console input and output within Plexus-based tools. It exposes Prompter, InputHandler, and OutputHandler abstractions plus simple default implementations used by Maven and Plexus components.",
+     "tested-versions" : [
+       "1.2"
+     ],
+
+tokens used
+77,475
+Updated [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe/metadata/org.codehaus.plexus/plexus-interactivity-api/index.json:19) for metadata version `1.2`: source, repository, test, documentation, and the two-sentence description are now filled. I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. Maven Central lists the artifact, and version `1.2` is published as `Plexus Default Interactivity Handler`. ([central.sonatype.com](https://central.sonatype.com/artifact/org.codehaus.plexus/plexus-interactivity-api?utm_source=openai))
+
+Verification:
+- `jq` JSON parse passed.
+- Rendered `1.2` URL checks passed for source, test source-release ZIP, javadoc, and repository root.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.codehaus.plexus:plexus-interactivity-api:1.2 --stacktrace` failed because `metadata/org.codehaus.plexus/plexus-interactivity-api/1.2/reachability-metadata.json` is missing, which is outside the requested index update.
+Ran agent for org.codehaus.plexus:plexus-interactivity-api:1.2 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe/build/agent-url-discovery-logs/org.codehaus.plexus-plexus-interactivity-api-1.2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7035-f05f9bfe/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 53s
+9 actionable tasks: 1 executed, 8 up-to-date
