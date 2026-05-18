@@ -60,6 +60,19 @@ import org.neo4j.bolt.connection.TelemetryApi;
 import org.neo4j.bolt.connection.TransactionType;
 import org.neo4j.bolt.connection.exception.BoltFailureException;
 import org.neo4j.bolt.connection.exception.MinVersionAcquisitionException;
+import org.neo4j.bolt.connection.message.BeginMessage;
+import org.neo4j.bolt.connection.message.CommitMessage;
+import org.neo4j.bolt.connection.message.DiscardMessage;
+import org.neo4j.bolt.connection.message.LogoffMessage;
+import org.neo4j.bolt.connection.message.LogonMessage;
+import org.neo4j.bolt.connection.message.Message;
+import org.neo4j.bolt.connection.message.Messages;
+import org.neo4j.bolt.connection.message.PullMessage;
+import org.neo4j.bolt.connection.message.ResetMessage;
+import org.neo4j.bolt.connection.message.RollbackMessage;
+import org.neo4j.bolt.connection.message.RouteMessage;
+import org.neo4j.bolt.connection.message.RunMessage;
+import org.neo4j.bolt.connection.message.TelemetryMessage;
 import org.neo4j.bolt.connection.pooled.PooledBoltConnectionProvider;
 import org.neo4j.bolt.connection.summary.ResetSummary;
 import org.neo4j.bolt.connection.values.IsoDuration;
@@ -98,12 +111,12 @@ public class Neo4j_bolt_connection_pooledTest {
             assertThat(first.serverSideRoutingEnabled()).isTrue();
             assertThat(first.defaultReadTimeout()).contains(Duration.ofSeconds(30));
             assertThat(await(first.authInfo()).authToken()).isEqualTo(AUTH_TOKEN);
-            assertThat(await(first.onLoop(() -> "loop-value"))).isEqualTo("loop-value");
             assertThat(await(first.setReadTimeout(Duration.ofSeconds(3)))).isNull();
-            assertThat(await(first.run("RETURN 1", Map.of()))).isSameAs(first);
-            assertThat(await(first.pull(10, -1))).isSameAs(first);
-            assertThat(await(first.telemetry(TelemetryApi.AUTO_COMMIT_TRANSACTION))).isSameAs(first);
-            assertThat(delegate.operations()).contains("run:RETURN 1", "pull:10:-1", "telemetry:AUTO_COMMIT_TRANSACTION");
+            assertThat(await(first.write(Messages.run("RETURN 1", Collections.emptyMap())))).isNull();
+            assertThat(await(first.write(Messages.pull(-1, 10)))).isNull();
+            assertThat(await(first.write(Messages.telemetry(TelemetryApi.AUTO_COMMIT_TRANSACTION)))).isNull();
+            assertThat(delegate.operations())
+                    .contains("run:RETURN 1", "pull:10:-1", "telemetry:AUTO_COMMIT_TRANSACTION");
             assertThat(delegate.lastReadTimeout()).isEqualTo(Duration.ofSeconds(3));
             assertThat(delegateProvider.connectCalls()).hasSize(1);
             assertThat(delegateProvider.connectCalls().get(0).address()).isEqualTo(ADDRESS);
@@ -148,19 +161,19 @@ public class Neo4j_bolt_connection_pooledTest {
             BoltConnection connection = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
             FakeBoltConnection delegate = delegateProvider.connections().get(0);
 
-            await(connection.route(DATABASE_NAME, "neo4j-user", Set.of("bookmark-2")));
-            await(connection.beginTransaction(
-                    DATABASE_NAME,
+            String databaseName = DATABASE_NAME.databaseName().orElse(null);
+            await(connection.write(Messages.route(databaseName, "neo4j-user", Set.of("bookmark-2"))));
+            await(connection.write(Messages.beginTransaction(
+                    databaseName,
                     AccessMode.READ,
                     "neo4j-user",
                     Set.of("bookmark-2"),
                     TransactionType.UNCONSTRAINED,
                     Duration.ofSeconds(2),
                     metadata,
-                    "tx-2",
-                    NotificationConfig.defaultConfig()));
-            await(connection.runInAutoCommitTransaction(
-                    DATABASE_NAME,
+                    NotificationConfig.defaultConfig())));
+            await(connection.write(Messages.run(
+                    databaseName,
                     AccessMode.WRITE,
                     "neo4j-user",
                     Set.of("bookmark-3"),
@@ -168,11 +181,11 @@ public class Neo4j_bolt_connection_pooledTest {
                     parameters,
                     Duration.ofSeconds(3),
                     metadata,
-                    NotificationConfig.defaultConfig()));
-            await(connection.discard(5, 42));
-            await(connection.commit());
-            await(connection.rollback());
-            await(connection.clear());
+                    NotificationConfig.defaultConfig())));
+            await(connection.write(Messages.discard(42, 5)));
+            await(connection.write(Messages.commit()));
+            await(connection.write(Messages.rollback()));
+            await(connection.write(Messages.reset()));
 
             assertThat(delegate.operations()).containsExactly(
                     "route",
@@ -181,7 +194,7 @@ public class Neo4j_bolt_connection_pooledTest {
                     "discard:5:42",
                     "commit",
                     "rollback",
-                    "clear");
+                    "reset");
 
             await(connection.close());
         } finally {
@@ -315,7 +328,7 @@ public class Neo4j_bolt_connection_pooledTest {
             RecordingResponseHandler responseHandler = new RecordingResponseHandler();
 
             delegate.nextFlushError(authExpired);
-            await(first.flush(responseHandler));
+            await(first.writeAndFlush(responseHandler, Messages.pull(1, -1)));
             await(first.close());
 
             assertThat(responseHandler.errors()).containsExactly(authExpired);
@@ -642,113 +655,7 @@ public class Neo4j_bolt_connection_pooledTest {
         }
 
         @Override
-        public <T> CompletionStage<T> onLoop(Supplier<T> supplier) {
-            return CompletableFuture.completedStage(supplier.get());
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> route(DatabaseName databaseName, String impersonatedUser,
-                Set<String> bookmarks) {
-            operations.add("route");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> beginTransaction(
-                DatabaseName databaseName,
-                AccessMode mode,
-                String impersonatedUser,
-                Set<String> bookmarks,
-                TransactionType transactionType,
-                Duration timeout,
-                Map<String, Value> metadata,
-                String transactionId,
-                NotificationConfig notificationConfig) {
-            operations.add("begin:" + transactionType);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> runInAutoCommitTransaction(
-                DatabaseName databaseName,
-                AccessMode mode,
-                String impersonatedUser,
-                Set<String> bookmarks,
-                String query,
-                Map<String, Value> parameters,
-                Duration timeout,
-                Map<String, Value> metadata,
-                NotificationConfig notificationConfig) {
-            operations.add("auto:" + query);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> run(String query, Map<String, Value> parameters) {
-            operations.add("run:" + query);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> pull(long n, long queryId) {
-            operations.add("pull:" + n + ":" + queryId);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> discard(long n, long queryId) {
-            operations.add("discard:" + n + ":" + queryId);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> commit() {
-            operations.add("commit");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> rollback() {
-            operations.add("rollback");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> reset() {
-            resetCount++;
-            operations.add("reset");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> logoff() {
-            logoffCount++;
-            operations.add("logoff");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> logon(AuthToken authToken) {
-            logonTokens.add(authToken);
-            authInfo = new TestAuthInfo(authToken, System.currentTimeMillis());
-            operations.add("logon");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> telemetry(TelemetryApi telemetryApi) {
-            operations.add("telemetry:" + telemetryApi);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> clear() {
-            operations.add("clear");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<Void> flush(ResponseHandler handler) {
+        public CompletionStage<Void> writeAndFlush(ResponseHandler handler, List<Message> messages) {
             flushCount++;
             if (nextFlushError != null) {
                 Throwable error = nextFlushError;
@@ -757,9 +664,53 @@ public class Neo4j_bolt_connection_pooledTest {
                 handler.onComplete();
                 return CompletableFuture.completedStage(null);
             }
-            handler.onResetSummary(new TestResetSummary());
+            recordMessages(messages);
+            if (messages.stream().anyMatch(ResetMessage.class::isInstance)) {
+                handler.onResetSummary(new TestResetSummary());
+            }
             handler.onComplete();
             return CompletableFuture.completedStage(null);
+        }
+
+        @Override
+        public CompletionStage<Void> write(List<Message> messages) {
+            recordMessages(messages);
+            return CompletableFuture.completedStage(null);
+        }
+
+        private void recordMessages(List<Message> messages) {
+            messages.forEach(this::recordMessage);
+        }
+
+        private void recordMessage(Message message) {
+            if (message instanceof RouteMessage) {
+                operations.add("route");
+            } else if (message instanceof BeginMessage beginMessage) {
+                operations.add("begin:" + beginMessage.transactionType());
+            } else if (message instanceof RunMessage runMessage) {
+                String prefix = runMessage.extra().isPresent() ? "auto:" : "run:";
+                operations.add(prefix + runMessage.query());
+            } else if (message instanceof PullMessage pullMessage) {
+                operations.add("pull:" + pullMessage.request() + ":" + pullMessage.qid());
+            } else if (message instanceof DiscardMessage discardMessage) {
+                operations.add("discard:" + discardMessage.number() + ":" + discardMessage.qid());
+            } else if (message instanceof CommitMessage) {
+                operations.add("commit");
+            } else if (message instanceof RollbackMessage) {
+                operations.add("rollback");
+            } else if (message instanceof ResetMessage) {
+                resetCount++;
+                operations.add("reset");
+            } else if (message instanceof LogoffMessage) {
+                logoffCount++;
+                operations.add("logoff");
+            } else if (message instanceof LogonMessage logonMessage) {
+                logonTokens.add(logonMessage.authToken());
+                authInfo = new TestAuthInfo(logonMessage.authToken(), System.currentTimeMillis());
+                operations.add("logon");
+            } else if (message instanceof TelemetryMessage telemetryMessage) {
+                operations.add("telemetry:" + telemetryMessage.api());
+            }
         }
 
         @Override
@@ -820,10 +771,6 @@ public class Neo4j_bolt_connection_pooledTest {
         @Override
         public Optional<Duration> defaultReadTimeout() {
             return Optional.of(Duration.ofSeconds(30));
-        }
-
-        private CompletionStage<BoltConnection> completedThis() {
-            return CompletableFuture.completedStage(this);
         }
     }
 
