@@ -124,7 +124,7 @@ class Fansi_2_13Test {
     assertEquals(s"\u001b[38;2;12;34;56mrgb$ForegroundReset", trueForeground.render)
     assertEquals(s"\u001b[48;2;1;2;3mback$BackgroundReset", trueBackground.render)
 
-    val parsed: Str = Str.Throw("A\u001b[38;2;12;34;56mB\u001b[48;2;1;2;3mC\u001b[0mD")
+    val parsed: Str = Str.Throw("A\u001b[38;2;12;34;56mB\u001b[48;2;1;2;3mC\u001b[49m\u001b[39mD")
     assertEquals("ABCD", parsed.plainText)
     assertEquals(0L, parsed.getColor(0))
     assertEquals(Color.True(12, 34, 56).transform(0L), parsed.getColor(1))
@@ -252,9 +252,10 @@ class Fansi_2_13Test {
   def selectiveResetAttributesClearOnlyMatchingStyleCategories(): Unit = {
     val allStyles: Attrs = Color.Red ++ Back.Blue ++ Bold.On ++ Underlined.On ++ Reversed.On
     val styled: Str = allStyles(Str("x"))
+    val resettableStyled: Str = (Color.Red ++ Back.Black ++ Bold.On ++ Underlined.On ++ Reversed.On)(Str("x"))
     val withoutForeground: Str = Color.Reset(styled)
     val foregroundOnly: Str = (Back.Reset ++ Bold.Off ++ Underlined.Off ++ Reversed.Off)(styled)
-    val plainAgain: Str = Attr.Reset(styled)
+    val plainAgain: Str = Attr.Reset(resettableStyled)
 
     assertEquals((Back.Blue ++ Bold.On ++ Underlined.On ++ Reversed.On).transform(0L), withoutForeground.getColor(0))
     assertEquals(s"$BlueBackground$BoldOn$UnderlinedOn${ReversedOn}x$ResetAll", withoutForeground.render)
