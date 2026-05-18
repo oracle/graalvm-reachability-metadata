@@ -72,7 +72,7 @@ public class CachingConnectionFactoryTest {
         }
     }
 
-    private static final class TestRabbitConnectionFactory extends com.rabbitmq.client.ConnectionFactory {
+    static final class TestRabbitConnectionFactory extends com.rabbitmq.client.ConnectionFactory {
 
         private final TestRabbitConnection connection = new TestRabbitConnection();
 
