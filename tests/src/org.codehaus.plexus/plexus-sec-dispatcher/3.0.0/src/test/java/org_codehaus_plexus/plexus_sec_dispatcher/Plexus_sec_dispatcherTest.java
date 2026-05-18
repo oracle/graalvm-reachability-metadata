@@ -18,167 +18,191 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import javax.xml.stream.XMLStreamException;
+
+import org.codehaus.plexus.components.cipher.internal.AESGCMNoPadding;
+import org.codehaus.plexus.components.cipher.internal.Cipher;
+import org.codehaus.plexus.components.cipher.internal.DefaultPlexusCipher;
+import org.codehaus.plexus.components.secdispatcher.SecDispatcher;
+import org.codehaus.plexus.components.secdispatcher.SecDispatcherException;
+import org.codehaus.plexus.components.secdispatcher.internal.DefaultSecDispatcher;
+import org.codehaus.plexus.components.secdispatcher.internal.Dispatcher;
+import org.codehaus.plexus.components.secdispatcher.internal.MasterPasswordSource;
+import org.codehaus.plexus.components.secdispatcher.internal.SecUtil;
+import org.codehaus.plexus.components.secdispatcher.model.Config;
+import org.codehaus.plexus.components.secdispatcher.model.ConfigProperty;
+import org.codehaus.plexus.components.secdispatcher.model.SettingsSecurity;
+import org.codehaus.plexus.components.secdispatcher.model.io.stax.SecurityConfigurationStaxReader;
+import org.codehaus.plexus.components.secdispatcher.model.io.stax.SecurityConfigurationStaxWriter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.sonatype.plexus.components.cipher.DefaultPlexusCipher;
-import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
-import org.sonatype.plexus.components.sec.dispatcher.PasswordDecryptor;
-import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
-import org.sonatype.plexus.components.sec.dispatcher.SecUtil;
-import org.sonatype.plexus.components.sec.dispatcher.model.Config;
-import org.sonatype.plexus.components.sec.dispatcher.model.ConfigProperty;
-import org.sonatype.plexus.components.sec.dispatcher.model.SettingsSecurity;
-import org.sonatype.plexus.components.sec.dispatcher.model.io.xpp3.SecurityConfigurationXpp3Reader;
-import org.sonatype.plexus.components.sec.dispatcher.model.io.xpp3.SecurityConfigurationXpp3Writer;
 
 public class Plexus_sec_dispatcherTest {
+    private static final String MASTER_SOURCE_NAME = "literal";
+    private static final String MASTER_SOURCE_PREFIX = MASTER_SOURCE_NAME + ":";
+
     @TempDir
     Path temporaryDirectory;
 
     @Test
     void dispatcherDecryptsDecoratedPasswordsWithMasterPasswordFromSettingsSecurity() throws Exception {
-        DefaultPlexusCipher cipher = new DefaultPlexusCipher();
+        DefaultPlexusCipher cipher = cipher();
         String masterPassword = "master-password";
         String serverPassword = "server-password";
-        String encryptedMaster = cipher.encryptAndDecorate(masterPassword, "settings.security");
-        String encryptedServerPassword = cipher.encryptAndDecorate(serverPassword, masterPassword);
+        String encryptedServerPassword = cipher.encryptAndDecorate(AESGCMNoPadding.CIPHER_ALG, serverPassword,
+                masterPassword);
         Path configurationFile = temporaryDirectory.resolve("settings-security.xml");
-        writeSettingsSecurity(configurationFile, settingsSecurity(encryptedMaster));
+        writeSettingsSecurity(configurationFile, settingsSecurity(masterPassword));
 
-        DefaultSecDispatcher dispatcher = new DefaultSecDispatcher(cipher);
-        dispatcher.setConfigurationFile(configurationFile.toString());
+        DefaultSecDispatcher dispatcher = dispatcher(cipher, new HashMap<>(), configurationFile);
 
         assertThat(dispatcher.getConfigurationFile()).isEqualTo(configurationFile.toString());
+        assertThat(dispatcher.availableCiphers()).contains(AESGCMNoPadding.CIPHER_ALG);
         assertThat(dispatcher.decrypt("not encrypted")).isEqualTo("not encrypted");
         assertThat(dispatcher.decrypt(encryptedServerPassword)).isEqualTo(serverPassword);
+        assertThat(dispatcher.encrypt(serverPassword, null)).startsWith("{");
     }
 
     @Test
-    void dispatcherDelegatesTypedPasswordsToConfiguredPasswordDecryptor() throws Exception {
-        DefaultPlexusCipher cipher = new DefaultPlexusCipher();
+    void dispatcherDelegatesTypedPasswordsToConfiguredDispatcher() throws Exception {
+        DefaultPlexusCipher cipher = cipher();
         Path configurationFile = temporaryDirectory.resolve("typed-settings-security.xml");
-        SettingsSecurity settingsSecurity = settingsSecurity(null);
+        SettingsSecurity settingsSecurity = settingsSecurity("master-password");
         settingsSecurity.addConfiguration(
                 config("vault", property("endpoint", "local-vault"), property("profile", "test")));
         writeSettingsSecurity(configurationFile, settingsSecurity);
-        Map<String, PasswordDecryptor> decryptors = new HashMap<>();
-        decryptors.put("vault", (password, attributes, configuration) -> {
-            assertThat(password).isEqualTo("credential-id");
-            assertThat(attributes).containsEntry("type", "vault").containsEntry("alias", "database");
-            assertThat(configuration).containsEntry("endpoint", "local-vault").containsEntry("profile", "test");
-            return configuration.get("endpoint") + ":" + attributes.get("alias") + ":" + password;
-        });
-        DefaultSecDispatcher dispatcher = new DefaultSecDispatcher(cipher, decryptors, configurationFile.toString());
-        String typedPassword = cipher.decorate("[type=vault,alias=database]credential-id");
+        Map<String, Dispatcher> dispatchers = new HashMap<>();
+        dispatchers.put("vault", new Dispatcher() {
+            @Override
+            public String encrypt(String str, Map<String, String> attributes, Map<String, String> config) {
+                return config.get("endpoint") + ":" + attributes.get("alias") + ":" + str;
+            }
 
+            @Override
+            public String decrypt(String str, Map<String, String> attributes, Map<String, String> config) {
+                assertThat(str).isEqualTo("credential-id");
+                assertThat(attributes).containsEntry("name", "vault").containsEntry("alias", "database");
+                assertThat(config)
+                        .containsEntry("endpoint", "local-vault")
+                        .containsEntry("profile", "test")
+                        .containsEntry(Dispatcher.CONF_MASTER_PASSWORD, "master-password");
+                return config.get("endpoint") + ":" + attributes.get("alias") + ":" + str;
+            }
+        });
+        DefaultSecDispatcher dispatcher = dispatcher(cipher, dispatchers, configurationFile);
+        String typedPassword = cipher.decorate("[name=vault,alias=database]credential-id");
+
+        Map<String, String> attributes = new LinkedHashMap<>();
+        attributes.put("name", "vault");
+        attributes.put("alias", "database");
+
+        assertThat(dispatcher.availableDispatchers()).containsExactlyInAnyOrder("vault");
         assertThat(dispatcher.decrypt(typedPassword)).isEqualTo("local-vault:database:credential-id");
+        assertThat(dispatcher.encrypt("credential-id", attributes))
+                .isEqualTo(cipher.decorate("[name=vault,alias=database]local-vault:database:credential-id"));
     }
 
     @Test
-    void dispatcherReportsMissingTypedPasswordDecryptor() throws Exception {
-        DefaultPlexusCipher cipher = new DefaultPlexusCipher();
+    void dispatcherReportsMissingTypedPasswordDispatcher() throws Exception {
+        DefaultPlexusCipher cipher = cipher();
         Path configurationFile = temporaryDirectory.resolve("missing-dispatcher-settings-security.xml");
-        writeSettingsSecurity(configurationFile, settingsSecurity(null));
-        DefaultSecDispatcher dispatcher = new DefaultSecDispatcher(
-                cipher, new HashMap<>(), configurationFile.toString());
-        String typedPassword = cipher.decorate("[type=missing]credential-id");
+        writeSettingsSecurity(configurationFile, settingsSecurity("master-password"));
+        DefaultSecDispatcher dispatcher = dispatcher(cipher, new HashMap<>(), configurationFile);
+        String typedPassword = cipher.decorate("[name=missing]credential-id");
 
         assertThatThrownBy(() -> dispatcher.decrypt(typedPassword))
                 .isInstanceOf(SecDispatcherException.class)
-                .hasMessageContaining("no dispatcher for hint missing");
+                .hasMessageContaining("no dispatcher for name missing");
     }
 
     @Test
     void dispatcherUsesSystemPropertyConfigurationLocationOverride() throws Exception {
-        DefaultPlexusCipher cipher = new DefaultPlexusCipher();
+        DefaultPlexusCipher cipher = cipher();
         String configuredMasterPassword = "configured-master-password";
         String overrideMasterPassword = "override-master-password";
         Path configuredFile = temporaryDirectory.resolve("configured-settings-security.xml");
         Path overrideFile = temporaryDirectory.resolve("override-settings-security.xml");
-        writeSettingsSecurity(configuredFile, settingsSecurity(cipher.encryptAndDecorate(
-                configuredMasterPassword, "settings.security")));
-        writeSettingsSecurity(overrideFile, settingsSecurity(cipher.encryptAndDecorate(
-                overrideMasterPassword, "settings.security")));
-        DefaultSecDispatcher dispatcher = new DefaultSecDispatcher(cipher, new HashMap<>(), configuredFile.toString());
-        String previousLocation = System.getProperty(DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION);
+        writeSettingsSecurity(configuredFile, settingsSecurity(configuredMasterPassword));
+        writeSettingsSecurity(overrideFile, settingsSecurity(overrideMasterPassword));
+        DefaultSecDispatcher dispatcher = dispatcher(cipher, new HashMap<>(), configuredFile);
+        String previousLocation = System.getProperty(SecDispatcher.SYSTEM_PROPERTY_CONFIGURATION_LOCATION);
 
         try {
-            System.setProperty(DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION, overrideFile.toString());
+            System.setProperty(SecDispatcher.SYSTEM_PROPERTY_CONFIGURATION_LOCATION, overrideFile.toString());
 
-            assertThat(dispatcher.decrypt(cipher.encryptAndDecorate("server-password", overrideMasterPassword)))
-                    .isEqualTo("server-password");
+            assertThat(dispatcher.decrypt(cipher.encryptAndDecorate(AESGCMNoPadding.CIPHER_ALG, "server-password",
+                    overrideMasterPassword))).isEqualTo("server-password");
         } finally {
             if (previousLocation == null) {
-                System.clearProperty(DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION);
+                System.clearProperty(SecDispatcher.SYSTEM_PROPERTY_CONFIGURATION_LOCATION);
             } else {
-                System.setProperty(DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION, previousLocation);
+                System.setProperty(SecDispatcher.SYSTEM_PROPERTY_CONFIGURATION_LOCATION, previousLocation);
             }
         }
     }
 
     @Test
-    void secUtilReadsFilesFollowsRelocationAndExtractsNamedConfiguration() throws Exception {
-        Path relocatedFile = temporaryDirectory.resolve("relocated-settings-security.xml");
-        SettingsSecurity relocated = settingsSecurity("relocated-master");
-        relocated.addConfiguration(config("relocated", property("one", "first"), property("two", "second")));
-        writeSettingsSecurity(relocatedFile, relocated);
-        Path primaryFile = temporaryDirectory.resolve("primary-settings-security.xml");
-        SettingsSecurity primary = settingsSecurity("primary-master");
-        primary.setRelocation(relocatedFile.toString());
-        writeSettingsSecurity(primaryFile, primary);
+    void secUtilReadsWritesBacksUpAndExtractsNamedConfiguration() throws Exception {
+        Path configurationFile = temporaryDirectory.resolve("written-settings-security.xml");
+        SettingsSecurity initial = settingsSecurity("initial-master");
+        initial.addConfiguration(config("initial", property("one", "first")));
+        SecUtil.write(configurationFile, initial, true);
 
-        SettingsSecurity withoutRelocation = SecUtil.read(primaryFile.toString(), false);
-        SettingsSecurity withRelocation = SecUtil.read(primaryFile.toString(), true);
+        SettingsSecurity replacement = settingsSecurity("replacement-master");
+        replacement.addConfiguration(config("replacement", property("two", "second"), property("three", "third")));
+        SecUtil.write(configurationFile, replacement, true);
 
-        assertThat(withoutRelocation.getMaster()).isEqualTo("primary-master");
-        assertThat(withoutRelocation.getRelocation()).isEqualTo(relocatedFile.toString());
-        assertThat(withRelocation.getMaster()).isEqualTo("relocated-master");
-        assertThat(SecUtil.getConfig(withRelocation, "relocated"))
-                .containsEntry("one", "first")
-                .containsEntry("two", "second");
-        assertThat(SecUtil.getConfig(withRelocation, "absent")).isNull();
-        assertThat(SecUtil.getConfig(withRelocation, null)).isNull();
+        SettingsSecurity actual = SecUtil.read(configurationFile);
+
+        assertThat(actual.getMasterSource()).isEqualTo(MASTER_SOURCE_PREFIX + "replacement-master");
+        assertThat(actual.getMasterCipher()).isEqualTo(AESGCMNoPadding.CIPHER_ALG);
+        assertThat(SecUtil.getConfig(actual, "replacement"))
+                .containsEntry("two", "second")
+                .containsEntry("three", "third");
+        assertThat(SecUtil.getConfig(actual, "absent")).isNull();
+        assertThat(SecUtil.getConfig(actual, null)).isNull();
+        assertThat(SecUtil.read(temporaryDirectory.resolve("missing-settings-security.xml"))).isNull();
+        assertThat(Files.exists(configurationFile.resolveSibling(configurationFile.getFileName() + ".bak"))).isTrue();
     }
 
     @Test
-    void secUtilReadsSettingsSecurityFromFileUrlLocation() throws Exception {
-        Path configurationFile = temporaryDirectory.resolve("url-settings-security.xml");
-        SettingsSecurity expected = settingsSecurity("url-master");
-        expected.addConfiguration(config("url-config", property("location", "file-url")));
-        writeSettingsSecurity(configurationFile, expected);
+    void secDispatcherReadsAndWritesEffectiveConfiguration() throws Exception {
+        DefaultPlexusCipher cipher = cipher();
+        Path configurationFile = temporaryDirectory.resolve("effective-settings-security.xml");
+        DefaultSecDispatcher dispatcher = dispatcher(cipher, new HashMap<>(), configurationFile);
+        SettingsSecurity configuration = settingsSecurity("effective-master");
+        configuration.addConfiguration(config("server", property("url", "https://repo.example")));
 
-        SettingsSecurity actual = SecUtil.read(configurationFile.toUri().toString(), false);
+        assertThat(dispatcher.readConfiguration(false)).isNull();
+        assertThat(dispatcher.readConfiguration(true).getConfigurations()).isEmpty();
+        dispatcher.writeConfiguration(configuration);
+        SettingsSecurity actual = dispatcher.readConfiguration(false);
 
-        assertThat(actual.getMaster()).isEqualTo("url-master");
-        assertThat(actual.getConfigurations()).hasSize(1);
-        Config actualConfig = actual.getConfigurations().get(0);
-        assertThat(actualConfig.getName()).isEqualTo("url-config");
-        assertThat(actualConfig.getProperties()).hasSize(1);
-        ConfigProperty actualProperty = actualConfig.getProperties().get(0);
-        assertThat(actualProperty.getName()).isEqualTo("location");
-        assertThat(actualProperty.getValue()).isEqualTo("file-url");
+        assertThat(actual.getMasterSource()).isEqualTo(MASTER_SOURCE_PREFIX + "effective-master");
+        assertThat(SecUtil.getConfig(actual, "server")).containsEntry("url", "https://repo.example");
     }
 
     @Test
-    void xpp3WriterAndReaderRoundTripSettingsSecurityFromStreams() throws Exception {
+    void staxWriterAndReaderRoundTripSettingsSecurityFromStreams() throws Exception {
         SettingsSecurity expected = settingsSecurity("master<&>value");
-        expected.setRelocation("file:///tmp/other-settings-security.xml");
+        expected.setModelVersion("test-model-version");
         expected.setModelEncoding(StandardCharsets.UTF_8.name());
         expected.addConfiguration(config("server", property("url", "https://repo.example/path?a=1&b=2")));
         expected.addConfiguration(config("token", property("id", "abc-123"), property("scope", "read")));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        new SecurityConfigurationXpp3Writer().write(outputStream, expected);
+        new SecurityConfigurationStaxWriter().write(outputStream, expected);
         String xml = outputStream.toString(StandardCharsets.UTF_8.name());
-        SettingsSecurity actual = new SecurityConfigurationXpp3Reader()
+        SettingsSecurity actual = new SecurityConfigurationStaxReader()
                 .read(new ByteArrayInputStream(outputStream.toByteArray()));
 
-        assertThat(xml).contains("<settingsSecurity>", "<master>master&lt;&amp;>value</master>");
-        assertThat(actual.getMaster()).isEqualTo(expected.getMaster());
-        assertThat(actual.getRelocation()).isEqualTo(expected.getRelocation());
+        assertThat(xml).contains("<settingsSecurity", "<masterSource>");
+        assertThat(actual.getMasterSource()).isEqualTo(expected.getMasterSource());
+        assertThat(actual.getMasterCipher()).isEqualTo(expected.getMasterCipher());
+        assertThat(actual.getModelVersion()).isEqualTo("test-model-version");
         assertThat(actual.getModelEncoding()).isEqualTo(StandardCharsets.UTF_8.name());
         assertThat(SecUtil.getConfig(actual, "server"))
                 .containsEntry("url", "https://repo.example/path?a=1&b=2");
@@ -186,11 +210,12 @@ public class Plexus_sec_dispatcherTest {
     }
 
     @Test
-    void xpp3ReaderTransformsContentAndCanIgnoreUnknownMarkupInLenientMode() throws Exception {
+    void staxReaderTrimsContentAndCanIgnoreUnknownMarkupInLenientMode() throws Exception {
         String xml = """
-                <settingsSecurity unexpected="ignored">
+                <settingsSecurity>
                   <unknown><nested>ignored</nested></unknown>
-                  <master> raw-master </master>
+                  <masterSource> literal:raw-master </masterSource>
+                  <masterCipher> AES/GCM/NoPadding </masterCipher>
                   <configurations>
                     <configuration>
                       <name> vault </name>
@@ -204,19 +229,16 @@ public class Plexus_sec_dispatcherTest {
                   </configurations>
                 </settingsSecurity>
                 """;
-        SecurityConfigurationXpp3Reader reader = new SecurityConfigurationXpp3Reader(
-                (source, fieldName) -> fieldName + "=" + source);
-        reader.setAddDefaultEntities(false);
+        SecurityConfigurationStaxReader reader = new SecurityConfigurationStaxReader();
 
-        assertThat(reader.getAddDefaultEntities()).isFalse();
-        assertThatThrownBy(() -> new SecurityConfigurationXpp3Reader().read(new StringReader(xml), true))
-                .isInstanceOf(XmlPullParserException.class)
-                .hasMessageContaining("Unknown attribute 'unexpected'");
+        assertThatThrownBy(() -> reader.read(new StringReader(xml), true))
+                .isInstanceOf(XMLStreamException.class)
+                .hasMessageContaining("Unrecognised tag: 'unknown'");
         SettingsSecurity settingsSecurity = reader.read(new StringReader(xml), false);
 
-        assertThat(settingsSecurity.getMaster()).isEqualTo("master= raw-master");
-        assertThat(SecUtil.getConfig(settingsSecurity, "name= vault"))
-                .containsEntry("name= endpoint", "value= local");
+        assertThat(settingsSecurity.getMasterSource()).isEqualTo("literal:raw-master");
+        assertThat(settingsSecurity.getMasterCipher()).isEqualTo(AESGCMNoPadding.CIPHER_ALG);
+        assertThat(SecUtil.getConfig(settingsSecurity, "vault")).containsEntry("endpoint", "local");
     }
 
     @Test
@@ -234,28 +256,50 @@ public class Plexus_sec_dispatcherTest {
         assertThat(first.getValue()).isEqualTo("one");
         assertThat(config.getName()).isEqualTo("sample");
         assertThat(config.getProperties()).containsExactly(second);
-        assertThat(settingsSecurity.getMaster()).isEqualTo("master");
+        assertThat(settingsSecurity.getMasterSource()).isEqualTo(MASTER_SOURCE_PREFIX + "master");
         assertThat(settingsSecurity.getConfigurations()).isEmpty();
     }
 
     @Test
     void writerOmitsNullOptionalFieldsAndSupportsWriterOutput() throws Exception {
-        SettingsSecurity security = settingsSecurity(null);
+        SettingsSecurity security = new SettingsSecurity();
         StringWriter writer = new StringWriter();
-        SecurityConfigurationXpp3Writer xpp3Writer = new SecurityConfigurationXpp3Writer();
+        SecurityConfigurationStaxWriter staxWriter = new SecurityConfigurationStaxWriter();
 
-        xpp3Writer.setFileComment("not emitted by this model writer");
-        xpp3Writer.write(writer, security);
-        SettingsSecurity parsed = new SecurityConfigurationXpp3Reader().read(new StringReader(writer.toString()));
+        staxWriter.write(writer, security);
+        SettingsSecurity parsed = new SecurityConfigurationStaxReader().read(new StringReader(writer.toString()));
 
-        assertThat(writer.toString()).contains("<settingsSecurity").doesNotContain("<master>", "<configurations>");
-        assertThat(parsed.getMaster()).isNull();
+        assertThat(writer.toString())
+                .contains("<settingsSecurity")
+                .doesNotContain("<masterSource>", "<masterCipher>", "<configurations>");
+        assertThat(parsed.getMasterSource()).isNull();
+        assertThat(parsed.getMasterCipher()).isNull();
         assertThat(parsed.getConfigurations()).isEmpty();
     }
 
-    private static SettingsSecurity settingsSecurity(String master) {
+    private static DefaultPlexusCipher cipher() {
+        Map<String, Cipher> ciphers = Map.of(AESGCMNoPadding.CIPHER_ALG, new AESGCMNoPadding());
+        return new DefaultPlexusCipher(ciphers);
+    }
+
+    private static DefaultSecDispatcher dispatcher(
+            DefaultPlexusCipher cipher, Map<String, Dispatcher> dispatchers, Path configurationFile) {
+        return new DefaultSecDispatcher(cipher, masterPasswordSources(), dispatchers, configurationFile.toString());
+    }
+
+    private static Map<String, MasterPasswordSource> masterPasswordSources() {
+        return Map.of(MASTER_SOURCE_NAME, masterSource -> {
+            if (masterSource == null || !masterSource.startsWith(MASTER_SOURCE_PREFIX)) {
+                return null;
+            }
+            return masterSource.substring(MASTER_SOURCE_PREFIX.length());
+        });
+    }
+
+    private static SettingsSecurity settingsSecurity(String masterPassword) {
         SettingsSecurity settingsSecurity = new SettingsSecurity();
-        settingsSecurity.setMaster(master);
+        settingsSecurity.setMasterSource(MASTER_SOURCE_PREFIX + masterPassword);
+        settingsSecurity.setMasterCipher(AESGCMNoPadding.CIPHER_ALG);
         return settingsSecurity;
     }
 
@@ -277,7 +321,7 @@ public class Plexus_sec_dispatcherTest {
 
     private static void writeSettingsSecurity(Path file, SettingsSecurity settingsSecurity) throws Exception {
         try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
-            new SecurityConfigurationXpp3Writer().write(writer, settingsSecurity);
+            new SecurityConfigurationStaxWriter().write(writer, settingsSecurity);
         }
     }
 }
