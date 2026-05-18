@@ -17,6 +17,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArraySetTest {
     @Test
+    void addInitializesTypedBackingArray() {
+        ArraySet<String> set = new ArraySet<>(String.class);
+
+        boolean changed = set.add("direct");
+
+        assertThat(changed).isTrue();
+        assertThat(set.getArray())
+                .isInstanceOf(String[].class)
+                .containsExactly("direct");
+    }
+
+    @Test
     void createsTypedEmptyArrayForElementClass() {
         ArraySet<String> set = new ArraySet<>(String.class);
 
