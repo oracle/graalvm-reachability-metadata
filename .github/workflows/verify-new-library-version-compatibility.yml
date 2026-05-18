@@ -6,8 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  actions: write
+  contents: read
 
 concurrency:
   group: "workflow=${{ github.workflow }},ref=${{ github.event.ref }},pr=${{ github.event.pull_request.id }}"
@@ -20,9 +19,9 @@ jobs:
     if: github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ubuntu-22.04
     timeout-minutes: 20
-    permissions: write-all
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+      issues: read
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       none-found: ${{ steps.set-matrix.outputs.none-found }}
@@ -45,6 +44,8 @@ jobs:
 
       - name: "🕸️ Populate matrix"
         id: set-matrix
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -o pipefail
           MATRIX_OUTPUT_FILE="$(mktemp)"
@@ -113,11 +114,10 @@ jobs:
     if: needs.get-all-libraries.outputs.none-found != 'true'
     runs-on: ${{ matrix.os }}
     needs: get-all-libraries
-    permissions: write-all
+    permissions:
+      contents: read
     env:
-      CURRENT_JOB_NAME: "🧪 ${{ matrix.name }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
       GVM_TCK_NATIVE_IMAGE_MODE: ${{ matrix.nativeImageMode }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       LOG_LINES: "300"
     strategy:
       fail-fast: false
@@ -171,16 +171,7 @@ jobs:
             FAILED_COMMAND="$(printf '%s\n' "$FAILED_LINE" | awk -F'[][]' '{print $6}')"
           fi
 
-          JOB_ID=$(
-            gh run view "${{ github.run_id }}" --repo "${{ github.repository }}" --json jobs \
-              --jq ".jobs[] | select(.name == \"$CURRENT_JOB_NAME\") | .databaseId" \
-              | head -n1
-          )
-          if [[ -z "$JOB_ID" || "$JOB_ID" == "null" ]]; then
-            RUNNER_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          else
-            RUNNER_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/$JOB_ID"
-          fi
+          RUNNER_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
           SUCCESSFUL_VERSIONS_JSON="$(jq -R -s 'split("\n") | map(select(length > 0))' successful_versions.txt)"
 
@@ -235,10 +226,12 @@ jobs:
   process-results:
     name: "🧪 Process results"
     runs-on: ubuntu-22.04
-    permissions: write-all
+    permissions:
+      actions: read
+      contents: write
+      issues: write
+      pull-requests: write
     env:
-      GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ISSUE_TITLE_PREFIX: "[Automation] "
       ISSUE_TITLE_MIDDLE: " fails for "
       ISSUE_BODY_CHAR_LIMIT: "60000"
@@ -435,6 +428,8 @@ jobs:
 
       - name: "❗ Create aggregated issues for unsupported library versions"
         if: steps.aggregate.outputs.has-failures == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
         run: |
           set -euo pipefail
 
@@ -616,6 +611,7 @@ jobs:
       - name: "🧹 Close old pre-release issues for tested versions"
         if: steps.aggregate.outputs.has-successful-updates == 'true' || steps.aggregate.outputs.has-failures == 'true'
         env:
+          GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
           REPO: ${{ github.repository }}
           PRE_RELEASE_SUFFIX: "(alpha[0-9]*|beta[0-9]*|rc[0-9]*|cr[0-9]*|m[0-9]+|ea[0-9]*|b[0-9]+|[0-9]+|preview)"
         run: |
@@ -676,6 +672,8 @@ jobs:
 
       - name: "✏️ PR for supported versions"
         if: steps.aggregate.outputs.has-successful-updates == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
         run: |
           git fetch origin "${{ needs.get-all-libraries.outputs.branch }}"
           git checkout "${{ needs.get-all-libraries.outputs.branch }}"
