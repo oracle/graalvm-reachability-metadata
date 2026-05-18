@@ -9,11 +9,27 @@ package org_springframework_cloud.spring_cloud_stream_binder_rabbit_core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.ConnectException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,6 +50,7 @@ import org.springframework.boot.context.properties.source.MapConfigurationProper
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.rabbit.admin.RabbitAdminException;
+import org.springframework.cloud.stream.binder.rabbit.admin.RabbitBindingCleaner;
 import org.springframework.cloud.stream.binder.rabbit.properties.RabbitBinderConfigurationProperties;
 import org.springframework.cloud.stream.binder.rabbit.properties.RabbitBindingProperties;
 import org.springframework.cloud.stream.binder.rabbit.properties.RabbitCommonProperties.QuorumConfig;
@@ -404,6 +421,60 @@ public class Spring_cloud_stream_binder_rabbit_coreTest {
     }
 
     @Test
+    void bindingCleanerDeletesOnlyQueuesAndExchangesForRequestedDestination() throws Exception {
+        String authorization = "Basic " + Base64.getEncoder()
+                .encodeToString("cleaner:secret".getBytes(StandardCharsets.UTF_8));
+        List<StubResponse> responses = List.of(
+                new StubResponse("GET", "/api/queues/%2F/", 200, """
+                        [
+                          {"name":"binder.orders.group-one","consumers":0},
+                          {"name":"binder.orders.group-two","consumers":0},
+                          {"name":"binder.other.group","consumers":0}
+                        ]
+                        """),
+                new StubResponse("GET", "/api/exchanges/%2F/", 200, """
+                        [
+                          {"name":"binder.orders.exchange"},
+                          {"name":"binder.other.exchange"}
+                        ]
+                        """),
+                new StubResponse("GET", "/api/exchanges/%2F/binder.orders.exchange/bindings/source", 200, """
+                        [
+                          {"destination_type":"queue","destination":"binder.orders.group-one"},
+                          {"destination_type":"queue","destination":"binder.orders.group-two"}
+                        ]
+                        """),
+                new StubResponse("GET", "/api/exchanges/%2F/binder.orders.exchange/bindings/destination", 200, "[]"),
+                new StubResponse("DELETE", "/api/queues/%2F/binder.orders.group-two", 204, ""),
+                new StubResponse("DELETE", "/api/queues/%2F/binder.orders.group-one", 204, ""),
+                new StubResponse("DELETE", "/api/exchanges/%2F/binder.orders.exchange", 204, ""));
+
+        try (ManagementApiServer server = ManagementApiServer.start(responses, authorization)) {
+            RabbitBindingCleaner cleaner = new RabbitBindingCleaner();
+
+            Map<String, List<String>> deleted = cleaner.clean(server.baseUrl(), "cleaner", "secret", "/",
+                    RabbitBindingCleaner.BINDER_PREFIX, "orders", false);
+
+            assertThat(deleted.get("queues"))
+                    .containsExactly("binder.orders.group-one", "binder.orders.group-two");
+            assertThat(deleted.get("exchanges")).containsExactly("binder.orders.exchange");
+            assertThat(server.requests()).extracting(RecordedRequest::method)
+                    .containsExactly("GET", "GET", "GET", "GET", "DELETE", "DELETE", "DELETE");
+            assertThat(server.requests()).extracting(RecordedRequest::path)
+                    .containsExactly(
+                            "/api/queues/%2F/",
+                            "/api/exchanges/%2F/",
+                            "/api/exchanges/%2F/binder.orders.exchange/bindings/source",
+                            "/api/exchanges/%2F/binder.orders.exchange/bindings/destination",
+                            "/api/queues/%2F/binder.orders.group-two",
+                            "/api/queues/%2F/binder.orders.group-one",
+                            "/api/exchanges/%2F/binder.orders.exchange");
+            assertThat(server.requests()).allSatisfy(request ->
+                    assertThat(request.authorization()).isEqualTo(authorization));
+        }
+    }
+
+    @Test
     void alternateExchangeAndExceptionTypesRemainUsableThroughPublicApi() {
         AlternateExchange alternate = alternateExchange("fallback", "fallback.queue");
         alternate.setExists(true);
@@ -473,6 +544,121 @@ public class Spring_cloud_stream_binder_rabbit_coreTest {
                 }
             }
             return bindings;
+        }
+    }
+
+    private record StubResponse(String method, String path, int status, String body) {
+    }
+
+    private record RecordedRequest(String method, String path, String authorization) {
+    }
+
+    private static final class ManagementApiServer implements AutoCloseable {
+
+        private final ServerSocket serverSocket;
+
+        private final ConcurrentLinkedQueue<StubResponse> responses;
+
+        private final String expectedAuthorization;
+
+        private final List<RecordedRequest> requests = new CopyOnWriteArrayList<>();
+
+        private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        private final Future<?> serverTask;
+
+        private ManagementApiServer(List<StubResponse> responses, String expectedAuthorization) throws IOException {
+            this.serverSocket = new ServerSocket(0);
+            this.serverSocket.setSoTimeout(5_000);
+            this.responses = new ConcurrentLinkedQueue<>(responses);
+            this.expectedAuthorization = expectedAuthorization;
+            this.serverTask = this.executor.submit(this::serveRequests);
+        }
+
+        private static ManagementApiServer start(List<StubResponse> responses, String expectedAuthorization)
+                throws IOException {
+            return new ManagementApiServer(responses, expectedAuthorization);
+        }
+
+        private String baseUrl() {
+            return "http://127.0.0.1:" + this.serverSocket.getLocalPort();
+        }
+
+        private List<RecordedRequest> requests() {
+            return List.copyOf(this.requests);
+        }
+
+        private void serveRequests() {
+            while (!this.responses.isEmpty()) {
+                StubResponse response = this.responses.remove();
+                try (Socket socket = this.serverSocket.accept()) {
+                    RecordedRequest request = readRequest(socket);
+                    this.requests.add(request);
+                    if (!response.method().equals(request.method()) || !response.path().equals(request.path())
+                            || !this.expectedAuthorization.equals(request.authorization())) {
+                        writeResponse(socket, 500, "Unexpected request: " + request);
+                        continue;
+                    }
+                    writeResponse(socket, response.status(), response.body());
+                }
+                catch (SocketTimeoutException ex) {
+                    throw new IllegalStateException("Timed out waiting for management API request", ex);
+                }
+                catch (IOException ex) {
+                    if (this.serverSocket.isClosed()) {
+                        break;
+                    }
+                    throw new IllegalStateException("Failed to serve management API request", ex);
+                }
+            }
+        }
+
+        private static RecordedRequest readRequest(Socket socket) throws IOException {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(),
+                    StandardCharsets.UTF_8));
+            String requestLine = reader.readLine();
+            if (requestLine == null) {
+                throw new IOException("Missing HTTP request line");
+            }
+            String[] parts = requestLine.split(" ");
+            String authorization = null;
+            String header = reader.readLine();
+            while (header != null && !header.isEmpty()) {
+                int separator = header.indexOf(':');
+                if (separator > 0 && "authorization".equalsIgnoreCase(header.substring(0, separator))) {
+                    authorization = header.substring(separator + 1).trim();
+                }
+                header = reader.readLine();
+            }
+            return new RecordedRequest(parts[0], parts[1], authorization);
+        }
+
+        private static void writeResponse(Socket socket, int status, String body) throws IOException {
+            byte[] bodyBytes = body.getBytes(StandardCharsets.UTF_8);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(),
+                    StandardCharsets.UTF_8));
+            writer.write("HTTP/1.1 " + status + " " + reasonPhrase(status) + "\r\n");
+            writer.write("Content-Type: application/json\r\n");
+            writer.write("Content-Length: " + bodyBytes.length + "\r\n");
+            writer.write("Connection: close\r\n");
+            writer.write("\r\n");
+            writer.flush();
+            socket.getOutputStream().write(bodyBytes);
+            socket.getOutputStream().flush();
+        }
+
+        private static String reasonPhrase(int status) {
+            return status == 204 ? "No Content" : "OK";
+        }
+
+        @Override
+        public void close() throws Exception {
+            this.serverSocket.close();
+            this.executor.shutdown();
+            if (!this.executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                this.executor.shutdownNow();
+            }
+            this.serverTask.get(5, TimeUnit.SECONDS);
         }
     }
 
