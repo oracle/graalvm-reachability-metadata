@@ -151,7 +151,7 @@ public class Spring_cloud_stream_binder_rabbit_coreTest {
         producer.setBatchTimeout(250);
         producer.setTransacted(true);
         producer.setDeliveryMode(MessageDeliveryMode.NON_PERSISTENT);
-        producer.setHeaderPatterns(new String[] { "foo*", "bar" });
+        producer.setHeaderPatterns(new String[] {"foo*", "bar" });
         producer.setRoutingKey("orders.created");
         producer.setDelayExpression(new SpelExpressionParser().parseExpression("100 + 23"));
         producer.setConfirmAckChannel("acks");
@@ -651,11 +651,9 @@ public class Spring_cloud_stream_binder_rabbit_coreTest {
                         continue;
                     }
                     writeResponse(socket, response.status(), response.body());
-                }
-                catch (SocketTimeoutException ex) {
+                } catch (SocketTimeoutException ex) {
                     throw new IllegalStateException("Timed out waiting for management API request", ex);
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     if (this.serverSocket.isClosed()) {
                         break;
                     }
