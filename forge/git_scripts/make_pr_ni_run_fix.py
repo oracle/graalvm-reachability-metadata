@@ -40,6 +40,7 @@ REPO = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = 'master'
 REVIEWERS = get_configured_reviewers()
 SEVERE_METADATA_DROP_RATIO = 0.25
+TEST_SOURCE_DIR_NAMES: tuple[str, ...] = ("java", "kotlin", "groovy", "scala")
 
 
 def is_severe_metadata_drop(previous_entries: int, new_entries: int) -> bool:
@@ -78,7 +79,6 @@ def stage_and_commit(
 ) -> None:
     """Stage the expected files/directories and commit with the required message."""
     test_version_dir = os.path.join("tests", "src", group, artifact, test_version)
-    test_sources_dir = os.path.join(test_version_dir, "src", "test", "java")
     test_native_image_metadata_dir = os.path.join(
         test_version_dir,
         "src",
@@ -94,8 +94,10 @@ def stage_and_commit(
         str(os.path.relpath(stats_artifact_dir(repo_path, group, artifact), repo_path)),
     ]
 
-    if os.path.exists(os.path.join(repo_path, test_sources_dir)):
-        candidate_paths.append(str(test_sources_dir))
+    for test_source_dir_name in TEST_SOURCE_DIR_NAMES:
+        test_sources_dir = os.path.join(test_version_dir, "src", "test", test_source_dir_name)
+        if os.path.exists(os.path.join(repo_path, test_sources_dir)):
+            candidate_paths.append(str(test_sources_dir))
     if os.path.exists(os.path.join(repo_path, test_native_image_metadata_dir)):
         candidate_paths.append(str(test_native_image_metadata_dir))
 

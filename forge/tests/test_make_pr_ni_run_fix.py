@@ -62,6 +62,50 @@ class SevereMetadataDropGuardrailTests(unittest.TestCase):
 
 
 class NativeImageRunFinalizationTests(unittest.TestCase):
+    def test_stage_and_commit_includes_jvm_test_source_directories(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            test_version_dir = os.path.join(
+                repo_path,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+            )
+            for test_source_dir_name in ("java", "kotlin", "groovy", "scala"):
+                os.makedirs(os.path.join(test_version_dir, "src", "test", test_source_dir_name))
+
+            with patch.object(make_pr_ni_run_fix, "stage_and_commit_common") as stage_and_commit, \
+                    patch.object(
+                        make_pr_ni_run_fix,
+                        "stats_artifact_dir",
+                        return_value=os.path.join(repo_path, "stats", "org.example", "demo"),
+                    ):
+                make_pr_ni_run_fix.stage_and_commit(
+                    group="org.example",
+                    artifact="demo",
+                    test_version="1.0.0",
+                    metadata_version="2.0.0",
+                    coordinates="org.example:demo:2.0.0",
+                    repo_path=repo_path,
+                )
+
+        staged_paths = stage_and_commit.call_args.args[0]
+        for test_source_dir_name in ("java", "kotlin", "groovy", "scala"):
+            self.assertIn(
+                os.path.join(
+                    "tests",
+                    "src",
+                    "org.example",
+                    "demo",
+                    "1.0.0",
+                    "src",
+                    "test",
+                    test_source_dir_name,
+                ),
+                staged_paths,
+            )
+
     def test_stage_and_commit_includes_test_native_image_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             native_image_metadata_dir = os.path.join(
