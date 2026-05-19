@@ -1,0 +1,54 @@
+{
+  "reflection" : [
+    {
+      "type" : "org.slf4j.Logger"
+    },
+    {
+      "type" : "org.apache.commons.logging.Log"
+    },
+    {
+      "type" : "org.apache.logging.log4j.Logger"
+    },
+    {
+      "type" : "org.slf4j.spi.SLF4JServiceProvider"
+    },
+    {
+      "type" : "org.apache.logging.log4j.util.EnvironmentPropertySource"
+    },
+    {
+      "type" : "org.apache.logging.log4j.util.SystemPropertiesPropertySource"
+    },
+    {
+      "type" : "org.apache.logging.slf4j.SLF4JProvider"
+    }
+  ],
+  "resources" : [
+    {
+      "glob" : "META-INF/services/org.apache.commons.logging.LogFactory"
+    },
+    {
+      "glob" : "commons-logging.properties"
+    },
+    {
+      "glob" : "META-INF/services/org.apache.logging.log4j.spi.Provider"
+    },
+    {
+      "glob" : "META-INF/services/org.apache.logging.log4j.util.PropertySource"
+    },
+    {
+      "glob" : "META-INF/services/org.slf4j.spi.SLF4JServiceProvider"
+    },
+    {
+      "glob" : "db/migration"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.springframework.boot.flyway.autoconfigure.NativeImageResourceProvider"
+      },
+      "glob" : "db/migration/V999__missing.sql"
+    },
+    {
+      "glob" : "db/callback"
+    }
+  ]
+}
