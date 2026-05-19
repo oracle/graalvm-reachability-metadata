@@ -10,6 +10,34 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+configurations {
+    web3jAndroidAars {
+        canBeConsumed = false
+    }
+}
+
+File extractedWeb3jAarJarsDirectory = layout.buildDirectory.dir("extracted-web3j-aar-jars").get().asFile
+def extractWeb3jAndroidAars = tasks.register("extractWeb3jAndroidAars") {
+    inputs.files(configurations.web3jAndroidAars)
+    outputs.dir(extractedWeb3jAarJarsDirectory)
+
+    doLast {
+        delete(extractedWeb3jAarJarsDirectory)
+        extractedWeb3jAarJarsDirectory.mkdirs()
+        configurations.web3jAndroidAars.files.each { File aar ->
+            copy {
+                from(zipTree(aar)) {
+                    include "classes.jar"
+                    rename { String ignored -> aar.name.replace(".aar", ".jar") }
+                }
+                into extractedWeb3jAarJarsDirectory
+            }
+        }
+    }
+}
+def extractedWeb3jAarJars = fileTree(dir: extractedWeb3jAarJarsDirectory, include: "*.jar")
+extractedWeb3jAarJars.builtBy(extractWeb3jAndroidAars)
+
 repositories {
     maven {
         url = uri("https://artifacts.consensys.net/public/maven/maven/")
@@ -20,7 +48,26 @@ repositories {
 }
 
 dependencies {
-    testImplementation "org.web3j:core:$libraryVersion"
+    web3jAndroidAars "org.web3j:core:$libraryVersion@aar"
+    web3jAndroidAars "org.web3j:abi:$libraryVersion@aar"
+    web3jAndroidAars "org.web3j:crypto:$libraryVersion@aar"
+    web3jAndroidAars "org.web3j:rlp:$libraryVersion@aar"
+    web3jAndroidAars "org.web3j:tuples:$libraryVersion@aar"
+    web3jAndroidAars "org.web3j:utils:$libraryVersion@aar"
+
+    testImplementation extractedWeb3jAarJars
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+    testImplementation 'com.github.jnr:jnr-unixsocket:0.38.22'
+    testImplementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    testImplementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    testImplementation 'io.consensys.protocols:jc-kzg-4844:2.0.0'
+    testImplementation 'io.github.adraffy:ens-normalize:0.2.0'
+    testImplementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+    testImplementation 'io.tmio:tuweni-bytes:2.4.2'
+    testImplementation 'io.tmio:tuweni-units:2.4.2'
+    testImplementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
+    testImplementation 'org.java-websocket:Java-WebSocket:1.5.6'
+    testImplementation 'org.slf4j:slf4j-api:2.0.13'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
