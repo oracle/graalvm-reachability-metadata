@@ -319,6 +319,32 @@ public class Spring_cloud_circuitbreaker_resilience4jTest {
     }
 
     @Test
+    void reactiveFactoryAppliesTimeLimiterFallbackWhenMonoExceedsTimeout() {
+        CircuitBreakerRegistry circuitBreakerRegistry = CircuitBreakerRegistry.ofDefaults();
+        TimeLimiterRegistry timeLimiterRegistry = TimeLimiterRegistry.ofDefaults();
+        ReactiveResilience4JCircuitBreakerFactory factory = new ReactiveResilience4JCircuitBreakerFactory(
+                circuitBreakerRegistry, timeLimiterRegistry, null, new Resilience4JConfigurationProperties());
+        factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
+            .circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
+            .timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofMillis(100)).build())
+            .build());
+        AtomicReference<Throwable> fallbackThrowable = new AtomicReference<>();
+
+        ReactiveCircuitBreaker circuitBreaker = factory.create("slow-reactive-service");
+        String value = circuitBreaker
+            .run(Mono.delay(Duration.ofSeconds(1)).thenReturn("slow response"), throwable -> {
+                fallbackThrowable.set(throwable);
+                return Mono.just("fallback");
+            })
+            .block(Duration.ofSeconds(2));
+
+        assertThat(value).isEqualTo("fallback");
+        assertThat(fallbackThrowable.get()).isInstanceOf(TimeoutException.class);
+        assertThat(timeLimiterRegistry.find("slow-reactive-service")).isPresent();
+        assertThat(circuitBreakerRegistry.find("slow-reactive-service")).isPresent();
+    }
+
+    @Test
     void reactiveBulkheadProviderDecoratesMonoAndFlux() {
         BulkheadRegistry bulkheadRegistry = BulkheadRegistry.ofDefaults();
         ReactiveResilience4jBulkheadProvider provider = new ReactiveResilience4jBulkheadProvider(bulkheadRegistry);
