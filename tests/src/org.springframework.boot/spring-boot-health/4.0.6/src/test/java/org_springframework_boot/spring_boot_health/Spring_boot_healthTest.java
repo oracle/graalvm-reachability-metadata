@@ -6,8 +6,29 @@
  */
 package org_springframework_boot.spring_boot_health;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.KeyStoreSpi;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.time.Clock;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +64,7 @@ import org.springframework.boot.health.application.AvailabilityStateHealthIndica
 import org.springframework.boot.health.application.DiskSpaceHealthIndicator;
 import org.springframework.boot.health.application.LivenessStateHealthIndicator;
 import org.springframework.boot.health.application.ReadinessStateHealthIndicator;
+import org.springframework.boot.health.application.SslHealthIndicator;
 import org.springframework.boot.health.autoconfigure.actuate.endpoint.HealthEndpointProperties;
 import org.springframework.boot.health.autoconfigure.application.DiskSpaceHealthIndicatorProperties;
 import org.springframework.boot.health.autoconfigure.application.SslHealthIndicatorProperties;
@@ -60,6 +82,13 @@ import org.springframework.boot.health.contributor.Status;
 import org.springframework.boot.health.registry.DefaultHealthContributorRegistry;
 import org.springframework.boot.health.registry.DefaultReactiveHealthContributorRegistry;
 import org.springframework.boot.health.registry.HealthContributorNameValidator;
+import org.springframework.boot.info.SslInfo;
+import org.springframework.boot.info.SslInfo.CertificateChainInfo;
+import org.springframework.boot.info.SslInfo.CertificateInfo;
+import org.springframework.boot.info.SslInfo.CertificateValidityInfo;
+import org.springframework.boot.ssl.DefaultSslBundleRegistry;
+import org.springframework.boot.ssl.SslBundle;
+import org.springframework.boot.ssl.SslStoreBundle;
 import org.springframework.util.unit.DataSize;
 
 import reactor.core.publisher.Mono;
@@ -249,6 +278,36 @@ public class Spring_boot_healthTest {
     }
 
     @Test
+    void sslHealthIndicatorReportsInvalidCertificateChains() throws Exception {
+        KeyStore keyStore = keyStoreWithCertificate("server", expiredCertificate());
+        DefaultSslBundleRegistry sslBundles = new DefaultSslBundleRegistry("web", SslBundle.of(
+            SslStoreBundle.of(keyStore, null, null)));
+        SslInfo sslInfo = new SslInfo(sslBundles, Clock.fixed(Instant.parse("2030-01-01T00:00:00Z"), ZoneOffset.UTC));
+        SslHealthIndicator indicator = new SslHealthIndicator(sslInfo, Duration.ofDays(30));
+
+        Health health = indicator.health();
+        List<?> invalidChains = (List<?>) health.getDetails().get("invalidChains");
+        List<?> validChains = (List<?>) health.getDetails().get("validChains");
+        List<?> expiringChains = (List<?>) health.getDetails().get("expiringChains");
+
+        assertThat(health.getStatus()).isEqualTo(Status.OUT_OF_SERVICE);
+        assertThat(validChains).isEmpty();
+        assertThat(expiringChains).isEmpty();
+        assertThat(invalidChains).hasSize(1);
+        CertificateChainInfo invalidChain = (CertificateChainInfo) invalidChains.get(0);
+        assertThat(invalidChain.getAlias()).isEqualTo("server");
+        assertThat(invalidChain.getCertificates()).hasSize(1);
+        CertificateInfo certificate = invalidChain.getCertificates().get(0);
+        assertThat(certificate.getSubject()).contains("expired.example");
+        assertThat(certificate.getIssuer()).contains("expired.example");
+        CertificateValidityInfo validity = certificate.getValidity();
+        assertThat(validity.getStatus()).isEqualTo(CertificateValidityInfo.Status.EXPIRED);
+        assertThat(validity.getMessage()).contains("Not valid after");
+        assertThat(sslInfo.getBundle("web").getCertificateChains()).extracting(CertificateChainInfo::getAlias)
+            .containsExactly("server");
+    }
+
+    @Test
     void reactiveHealthContributorsAdaptAndExposeWebResponses() {
         ReactiveHealthIndicator search = () -> Mono.just(Health.up().withDetail("index", "ready").build());
         ReactiveFailingHealthIndicator queue = new ReactiveFailingHealthIndicator();
@@ -330,6 +389,39 @@ public class Spring_boot_healthTest {
         assertThat(endpoint.getLogging().getSlowIndicatorThreshold()).isEqualTo(Duration.ofMillis(250));
     }
 
+    private static KeyStore keyStoreWithCertificate(String alias, Certificate certificate) throws Exception {
+        KeyStore keyStore = new TestKeyStore(Map.of(alias, new Certificate[] { certificate }));
+        keyStore.load(null, null);
+        return keyStore;
+    }
+
+    private static Certificate expiredCertificate() throws CertificateException {
+        String pem = """
+            -----BEGIN CERTIFICATE-----
+            MIIDFTCCAf2gAwIBAgIUVVj8cnxm1PkljT2U68Qpoy8Lg4YwDQYJKoZIhvcNAQEL
+            BQAwGjEYMBYGA1UEAwwPZXhwaXJlZC5leGFtcGxlMB4XDTI2MDUxOTE4MDIwM1oX
+            DTI2MDUyMDE4MDIwM1owGjEYMBYGA1UEAwwPZXhwaXJlZC5leGFtcGxlMIIBIjAN
+            BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArtg7n/9CjqDRr6EupshrlQeLVp3L
+            f3XOO3mXbyjgcCD1PdSteqt9MW4aHLcpmMF+Gy3L4RNZeHZ5HdUybrYgE6RoL/7d
+            Du3CpJzXQi6w3EqGklqeZA05fEvhazgLP5IP7GLsQ4eoHYYyjA67o4PrmjqghmOh
+            7tKcFvYILuiLU6woG4BVPKAQowOgStNXz1SHPwJBUTKkfS5gIkjTc4mTfG0+j9+S
+            8c7AiO8fCHHzvQJThiynDeo65SiHLx/jJwn4GTNen8oY7JrL5/QOrQ1wV/HKoYrg
+            rTzGBxmV4tco/iujjx4i4AdpaI5zGOG+X2Q8bOB38+RU50aJcHeks/RAZQIDAQAB
+            o1MwUTAdBgNVHQ4EFgQUEronZIfgpGz29nLD+EUFyQqZlygwHwYDVR0jBBgwFoAU
+            EronZIfgpGz29nLD+EUFyQqZlygwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0B
+            AQsFAAOCAQEAE37f7sOtfeNRpt6oc4XQS1E+QCs34MHoiBcE7Yo5GTgETL4ZLJlg
+            UhQOq3mtT3/hjzpR71GFx+pYZ98SGXE8A8arc7XIPkJNhZ9awrJhGQl0zl3qpIG6
+            WI0GTfD49qe6QEFfxiDyA+sDAQEx60YDMlrJaurmxKu7Pa2gIbVuArbuGxsCyKAz
+            pZd+j5HP1cEjurgyiuKv2DvH0eKXH6xa/7W5rvvJkklFg+XXeJgu/pfflHNqRH85
+            bUzWXuG+eD2jBpjwVr7xELLSCH7cwZZtNmlGbzExg9eSpsCD2PpU/KKjL2hfmze8
+            oAN2vblsL1HlfMPn5ICwHDxNE5D05bJ/8A==
+            -----END CERTIFICATE-----
+            """;
+        CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+        byte[] bytes = pem.getBytes(StandardCharsets.US_ASCII);
+        return certificateFactory.generateCertificate(new ByteArrayInputStream(bytes));
+    }
+
     private static DefaultHealthContributorRegistry endpointRegistry() {
         DefaultHealthContributorRegistry registry = new DefaultHealthContributorRegistry();
         registry.registerContributor("database", (HealthIndicator) () -> Health.down()
@@ -374,6 +466,124 @@ public class Spring_boot_healthTest {
         @Override
         public AdditionalHealthEndpointPath getAdditionalPath() {
             return this.additionalPath;
+        }
+
+    }
+
+    private static final class TestKeyStore extends KeyStore {
+
+        private TestKeyStore(Map<String, Certificate[]> certificateChains) {
+            super(new TestKeyStoreSpi(certificateChains), new TestProvider(), "test");
+        }
+
+    }
+
+    private static final class TestProvider extends Provider {
+
+        private static final long serialVersionUID = 1L;
+
+        private TestProvider() {
+            super("test", "1", "test");
+        }
+
+    }
+
+    private static final class TestKeyStoreSpi extends KeyStoreSpi {
+
+        private final Map<String, Certificate[]> certificateChains;
+
+        private TestKeyStoreSpi(Map<String, Certificate[]> certificateChains) {
+            this.certificateChains = certificateChains;
+        }
+
+        @Override
+        public Key engineGetKey(String alias, char[] password)
+                throws NoSuchAlgorithmException, UnrecoverableKeyException {
+            return null;
+        }
+
+        @Override
+        public Certificate[] engineGetCertificateChain(String alias) {
+            return this.certificateChains.get(alias);
+        }
+
+        @Override
+        public Certificate engineGetCertificate(String alias) {
+            Certificate[] certificates = this.certificateChains.get(alias);
+            return (certificates != null && certificates.length > 0) ? certificates[0] : null;
+        }
+
+        @Override
+        public Date engineGetCreationDate(String alias) {
+            return new Date(0);
+        }
+
+        @Override
+        public void engineSetKeyEntry(String alias, Key key, char[] password, Certificate[] chain)
+                throws KeyStoreException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void engineSetKeyEntry(String alias, byte[] key, Certificate[] chain) throws KeyStoreException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void engineSetCertificateEntry(String alias, Certificate cert) throws KeyStoreException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void engineDeleteEntry(String alias) throws KeyStoreException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Enumeration<String> engineAliases() {
+            return Collections.enumeration(this.certificateChains.keySet());
+        }
+
+        @Override
+        public boolean engineContainsAlias(String alias) {
+            return this.certificateChains.containsKey(alias);
+        }
+
+        @Override
+        public int engineSize() {
+            return this.certificateChains.size();
+        }
+
+        @Override
+        public boolean engineIsKeyEntry(String alias) {
+            return this.certificateChains.containsKey(alias);
+        }
+
+        @Override
+        public boolean engineIsCertificateEntry(String alias) {
+            return false;
+        }
+
+        @Override
+        public String engineGetCertificateAlias(Certificate cert) {
+            return this.certificateChains.entrySet()
+                .stream()
+                .filter((entry) -> List.of(entry.getValue()).contains(cert))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+        }
+
+        @Override
+        public void engineStore(OutputStream stream, char[] password)
+                throws IOException, NoSuchAlgorithmException, CertificateException {
+            // This in-memory key store is read-only and has no external representation.
+        }
+
+        @Override
+        public void engineLoad(InputStream stream, char[] password)
+                throws IOException, NoSuchAlgorithmException, CertificateException {
+            // The certificate chains are supplied directly when the key store is created.
         }
 
     }
