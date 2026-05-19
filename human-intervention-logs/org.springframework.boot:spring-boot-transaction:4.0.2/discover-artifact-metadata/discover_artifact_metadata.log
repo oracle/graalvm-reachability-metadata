@@ -1,0 +1,683 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e3e04-6630-7cd1-815f-5b23fa6a32f7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-transaction:4.0.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.0.2" when "$version$" is replaced with "4.0.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+- Set "coordinates" to "org.springframework.boot:spring-boot-transaction:4.0.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and Spring Boot’s upstream tags before editing the generated JSON. Then I’ll update only the requested file and check that the JSON stays valid.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/diagrams-test/src/test/scala/org/scalatest/diagrams",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test/src/test/scala/org/scalatest/featurespec",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funspec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_3/$version$/scalatest-funspec_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funspec_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funspec-test/src/test/scala/org/scalatest/funspec",
+metadata/org.scalatest/scalatest-funspec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_3/$version$/scalatest-funspec_3-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-jdbc/$version$/exposed-jdbc-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/tree/$version$/docs/api/exposed-jdbc",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:25:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:26:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:43:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:44:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:59:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:61:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:62:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.jetbrains.exposed/exposed-core/index.json:77:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-core/$version$/exposed-core-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-core/index.json:79:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-tests/src/test",
+metadata/org.jetbrains.exposed/exposed-core/index.json:80:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/docs/api/exposed-core/index.html",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/com.sun.jersey.contribs/jersey-guice/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/contribs/jersey-guice/$version$/jersey-guice-$version$-sources.jar",
+metadata/com.sun.jersey.contribs/jersey-guice/index.json:7:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/contribs/jersey-guice/src/test/java",
+metadata/com.sun.jersey.contribs/jersey-guice/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/contribs/jersey-guice/$version$/jersey-guice-$version$-javadoc.jar",
+metadata/com.sun.jersey.contribs/jersey-guice/index.json:30:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/contribs/jersey-guice/$version$/jersey-guice-$version$-sources.jar",
+metadata/com.sun.jersey.contribs/jersey-guice/index.json:32:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/post-$version$/contribs/jersey-guice/src/test/java",
+metadata/com.sun.jersey.contribs/jersey-guice/index.json:33:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/contribs/jersey-guice/$version$/jersey-guice-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-json/$version$/exposed-json-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-json/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-json/src/test",
+metadata/org.jetbrains.exposed/exposed-json/index.json:8:    "documentation-url" : "https://github.com/JetBrains/Exposed/blob/$version$/documentation-website/Writerside/topics/JSON-And-JSONB-types.topic",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-sources.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/Exposed/tree/$version$/exposed-kotlin-datetime/src/test/kotlin",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-javadoc.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:7:    "test-code-url" : "https://github.com/eclipse-sisu/sisu-project/tree/milestones/$version$/org.eclipse.sisu.inject.tests",
+
+exec
+/usr/bin/bash -lc "rg -n 'spring-boot-transaction|spring-boot-starter|spring-boot["'^-]'"' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json:2:  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2"
+metadata/org.springframework.boot/spring-boot-starter-json/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-json:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-jpa:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-actuator-autoconfigure/src/test",
+metadata/org.springframework.boot/spring-boot-starter-tomcat/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-tomcat:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-redis:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-aop:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-validation:3.4.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:5:    "replacement": "Use class-bearing dependencies such as org.hibernate.validator:hibernate-validator:8.0.2.Final, org.apache.tomcat.embed:tomcat-embed-el:10.1.36, org.springframework.boot:spring-boot:3.4.3, and org.springframework.boot:spring-boot-autoconfigure:3.4.3."
+metadata/library-and-framework-list.json:2007:    "artifact": "org.springframework.boot:spring-boot-starter-actuator",
+metadata/library-and-framework-list.json:2013:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/health/HealthEndpointWebExtensionRuntimeHints.java"
+metadata/library-and-framework-list.json:2023:    "artifact": "org.springframework.boot:spring-boot-starter-amqp",
+metadata/library-and-framework-list.json:2039:    "artifact": "org.springframework.boot:spring-boot-starter-cache",
+metadata/library-and-framework-list.json:2055:    "artifact": "org.springframework.boot:spring-boot-starter-data-jdbc",
+metadata/library-and-framework-list.json:2071:    "artifact": "org.springframework.boot:spring-boot-starter-data-jpa",
+metadata/library-and-framework-list.json:2089:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb",
+metadata/library-and-framework-list.json:2108:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb-reactive",
+metadata/library-and-framework-list.json:2127:    "artifact": "org.springframework.boot:spring-boot-starter-data-r2dbc",
+metadata/library-and-framework-list.json:2143:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis",
+metadata/library-and-framework-list.json:2160:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis-reactive",
+metadata/library-and-framework-list.json:2177:    "artifact": "org.springframework.boot:spring-boot-starter-data-rest",
+metadata/library-and-framework-list.json:2194:    "artifact": "org.springframework.boot:spring-boot-starter-freemarker",
+metadata/library-and-framework-list.json:2200:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2210:    "artifact": "org.springframework.boot:spring-boot-starter-graphql",
+metadata/library-and-framework-list.json:2227:    "artifact": "org.springframework.boot:spring-boot-starter-hateoas",
+metadata/library-and-framework-list.json:2246:    "artifact": "org.springframework.boot:spring-boot-starter-integration",
+metadata/library-and-framework-list.json:2266:    "artifact": "org.springframework.boot:spring-boot-starter-jdbc",
+metadata/library-and-framework-list.json:2282:    "artifact": "org.springframework.boot:spring-boot-starter-jetty",
+metadata/library-and-framework-list.json:2283:    "description": "Starter for using Jetty as the embedded servlet container. An alternative to spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2288:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2298:    "artifact": "org.springframework.boot:spring-boot-starter-json",
+metadata/library-and-framework-list.json:2304:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/jackson/JsonMixinModuleEntriesBeanRegistrationAotProcessor.java",
+metadata/library-and-framework-list.json:2305:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/json/JacksonRuntimeHints.java"
+metadata/library-and-framework-list.json:2315:    "artifact": "org.springframework.boot:spring-boot-starter-logging",
+metadata/library-and-framework-list.json:2321:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/logging/java/JavaLoggingSystemRuntimeHints.java",
+metadata/library-and-framework-list.json:2322:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/logging/logback/LogbackRuntimeHints.java"
+metadata/library-and-framework-list.json:2332:    "artifact": "org.springframework.boot:spring-boot-starter-mail",
+metadata/library-and-framework-list.json:2348:    "artifact": "org.springframework.boot:spring-boot-starter-mustache",
+metadata/library-and-framework-list.json:2354:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2364:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-client",
+metadata/library-and-framework-list.json:2380:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
+metadata/library-and-framework-list.json:2396:    "artifact": "org.springframework.boot:spring-boot-starter-quartz",
+metadata/library-and-framework-list.json:2412:    "artifact": "org.springframework.boot:spring-boot-starter-reactor-netty",
+metadata/library-and-framework-list.json:2429:    "artifact": "org.springframework.boot:spring-boot-starter-rsocket",
+metadata/library-and-framework-list.json:2446:    "artifact": "org.springframework.boot:spring-boot-starter-security",
+metadata/library-and-framework-list.json:2463:    "artifact": "org.springframework.boot:spring-boot-starter-test",
+metadata/library-and-framework-list.json:2479:    "artifact": "org.springframework.boot:spring-boot-starter-thymeleaf",
+metadata/library-and-framework-list.json:2485:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2495:    "artifact": "org.springframework.boot:spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2496:    "description": "Starter for using Tomcat as the embedded servlet container. Default servlet container starter used by spring-boot-starter-web",
+metadata/library-and-framework-list.json:2501:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2511:    "artifact": "org.springframework.boot:spring-boot-starter-undertow",
+metadata/library-and-framework-list.json:2512:    "description": "Starter for using Undertow as the embedded servlet container. An alternative to spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2517:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2527:    "artifact": "org.springframework.boot:spring-boot-starter-validation",
+metadata/library-and-framework-list.json:2543:    "artifact": "org.springframework.boot:spring-boot-starter-web",
+metadata/library-and-framework-list.json:2551:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/web/client/ClientHttpRequestFactoriesRuntimeHints.java",
+metadata/library-and-framework-list.json:2552:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2562:    "artifact": "org.springframework.boot:spring-boot-starter-webflux",
+metadata/library-and-framework-list.json:2570:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2580:    "artifact": "org.springframework.boot:spring-boot-starter-websocket",
+
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-transaction 4.0.2
+web search: 
+web search: 
+web search: 
+web search: site:github.com/spring-projects/spring-boot/tree/v4.0.2 spring-boot-transaction
+codex
+The first repository search confirmed this is a Spring Boot module under the Spring Boot GitHub project, but the obvious old module path is not valid for `v4.0.2`. I’m checking Maven Central classifiers first because this repo prefers Maven-hosted source and javadoc/test artifacts when they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/4.0.2/spring-boot-transaction-4.0.2.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-transaction</artifactId>
+  <version>4.0.2</version>
+  <name>spring-boot-transaction</name>
+  <description>Spring Boot Transaction</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-persistence</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>7.0.3</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/4.0.2/spring-boot-transaction-4.0.2-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 02:16:00 GMT
+content-type: application/java-archive
+content-length: 123915
+cf-ray: 9fdf98db3babbc66-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1765692
+etag: "e4bf684f71f3d54bd3f2471694ab6b9f"
+last-modified: Thu, 22 Jan 2026 14:25:29 GMT
+x-checksum-md5: e4bf684f71f3d54bd3f2471694ab6b9f
+x-checksum-sha1: 22cc1bdbca1f98a0f3e45712a64cb010fd28a319
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/4.0.2/spring-boot-transaction-4.0.2-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/4.0.2/spring-boot-transaction-4.0.2-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 188ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 02:16:00 GMT
+content-type: application/java-archive
+content-length: 13693
+cf-ray: 9fdf98db3cc1bb15-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "4f6abe186764ddd253498dfbe4eda136"
+last-modified: Thu, 22 Jan 2026 14:25:29 GMT
+x-checksum-md5: 4f6abe186764ddd253498dfbe4eda136
+x-checksum-sha1: f8c62f64185497fe215371e1f75589f7e6c85d91
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 241ms:
+HTTP/2 404 
+date: Tue, 19 May 2026 02:16:00 GMT
+content-type: text/html
+cf-ray: 9fdf98db3810bc6b-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/boot/spring-boot-transaction/4.0.2/spring-boot-transaction-4.0.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d) && curl -fsSL -o "$tmpdir/app.jar" https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/4.0.2/spring-boot-transaction-4.0.2.jar && jar tf "$tmpdir/app.jar" | head -100' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/spring-autoconfigure-metadata.properties
+META-INF/spring-configuration-metadata.json
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/transaction/
+org/springframework/boot/transaction/autoconfigure/
+org/springframework/boot/transaction/autoconfigure/ExecutionListenersTransactionManagerCustomizer.class
+org/springframework/boot/transaction/autoconfigure/TransactionAutoConfiguration$AspectJTransactionManagementConfiguration.class
+org/springframework/boot/transaction/autoconfigure/TransactionAutoConfiguration$EnableTransactionManagementConfiguration$CglibAutoProxyConfiguration.class
+org/springframework/boot/transaction/autoconfigure/TransactionAutoConfiguration$EnableTransactionManagementConfiguration$JdkDynamicAutoProxyConfiguration.class
+org/springframework/boot/transaction/autoconfigure/TransactionAutoConfiguration$EnableTransactionManagementConfiguration.class
+org/springframework/boot/transaction/autoconfigure/TransactionAutoConfiguration$TransactionTemplateConfiguration.class
+org/springframework/boot/transaction/autoconfigure/TransactionAutoConfiguration.class
+org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizationAutoConfiguration.class
+org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizer.class
+org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizers.class
+org/springframework/boot/transaction/autoconfigure/TransactionProperties.class
+org/springframework/boot/transaction/autoconfigure/package-info.class
+org/springframework/boot/transaction/jta/
+org/springframework/boot/transaction/jta/autoconfigure/
+org/springframework/boot/transaction/jta/autoconfigure/JndiJtaConfiguration.class
+org/springframework/boot/transaction/jta/autoconfigure/JtaAutoConfiguration.class
+org/springframework/boot/transaction/jta/autoconfigure/package-info.class
+META-INF/additional-spring-configuration-metadata.json
+META-INF/spring/
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d) && curl -fsSL -o "$tmpdir/sources.jar" https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/4.0.2/spring-boot-transaction-4.0.2-sources.jar && jar tf "$tmpdir/sources.jar"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/additional-spring-configuration-metadata.json
+META-INF/spring/
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/transaction/
+org/springframework/boot/transaction/autoconfigure/
+org/springframework/boot/transaction/autoconfigure/ExecutionListenersTransactionManagerCustomizer.java
+org/springframework/boot/transaction/autoconfigure/TransactionAutoConfiguration.java
+org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizationAutoConfiguration.java
+org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizer.java
+org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizers.java
+org/springframework/boot/transaction/autoconfigure/TransactionProperties.java
+org/springframework/boot/transaction/autoconfigure/package-info.java
+org/springframework/boot/transaction/jta/
+org/springframework/boot/transaction/jta/autoconfigure/
+org/springframework/boot/transaction/jta/autoconfigure/JndiJtaConfiguration.java
+org/springframework/boot/transaction/jta/autoconfigure/JtaAutoConfiguration.java
+org/springframework/boot/transaction/jta/autoconfigure/package-info.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/git/trees/v4.0.2?recursive=1 | jq -r '.tree[].path' | rg 'spring-boot-transaction|transaction.*src/(main|test)'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 1415ms:
+module/spring-boot-transaction
+module/spring-boot-transaction/build.gradle
+module/spring-boot-transaction/src
+module/spring-boot-transaction/src/main
+module/spring-boot-transaction/src/main/java
+module/spring-boot-transaction/src/main/java/org
+module/spring-boot-transaction/src/main/java/org/springframework
+module/spring-boot-transaction/src/main/java/org/springframework/boot
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/autoconfigure
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/autoconfigure/ExecutionListenersTransactionManagerCustomizer.java
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/autoconfigure/TransactionAutoConfiguration.java
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizationAutoConfiguration.java
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizer.java
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizers.java
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/autoconfigure/TransactionProperties.java
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/autoconfigure/package-info.java
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/jta
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/jta/autoconfigure
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/jta/autoconfigure/JndiJtaConfiguration.java
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/jta/autoconfigure/JtaAutoConfiguration.java
+module/spring-boot-transaction/src/main/java/org/springframework/boot/transaction/jta/autoconfigure/package-info.java
+module/spring-boot-transaction/src/main/resources
+module/spring-boot-transaction/src/main/resources/META-INF
+module/spring-boot-transaction/src/main/resources/META-INF/additional-spring-configuration-metadata.json
+module/spring-boot-transaction/src/main/resources/META-INF/spring
+module/spring-boot-transaction/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+module/spring-boot-transaction/src/test
+module/spring-boot-transaction/src/test/java
+module/spring-boot-transaction/src/test/java/org
+module/spring-boot-transaction/src/test/java/org/springframework
+module/spring-boot-transaction/src/test/java/org/springframework/boot
+module/spring-boot-transaction/src/test/java/org/springframework/boot/transaction
+module/spring-boot-transaction/src/test/java/org/springframework/boot/transaction/autoconfigure
+module/spring-boot-transaction/src/test/java/org/springframework/boot/transaction/autoconfigure/ExecutionListenersTransactionManagerCustomizerTests.java
+module/spring-boot-transaction/src/test/java/org/springframework/boot/transaction/autoconfigure/TransactionAutoConfigurationTests.java
+module/spring-boot-transaction/src/test/java/org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizationAutoConfigurationTests.java
+module/spring-boot-transaction/src/test/java/org/springframework/boot/transaction/autoconfigure/TransactionManagerCustomizersTests.java
+module/spring-boot-transaction/src/test/java/org/springframework/boot/transaction/jta
+module/spring-boot-transaction/src/test/java/org/springframework/boot/transaction/jta/autoconfigure
+module/spring-boot-transaction/src/test/java/org/springframework/boot/transaction/jta/autoconfigure/JtaAutoConfigurationTests.java
+module/spring-boot-transaction/src/test/resources
+module/spring-boot-transaction/src/test/resources/jndi.properties
+module/spring-boot-transaction/src/test/resources/simple-jndi
+
+codex
+Maven Central has `sources` and `javadoc` classifiers for `4.0.2`; there is no `tests` classifier, so the test URL needs to come from the tagged GitHub tree. The published jar contains JVM `.class` files, so this remains a Native Image metadata target.
+codex
+I’ve got the concrete paths now: `v4.0.2` uses `module/spring-boot-transaction`, and the artifact has Java class files plus Maven-hosted source and javadoc jars. I’m updating the JSON with Maven URLs where available and the tagged GitHub test path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+index 94fac0286498b3ec271c5cff47d99840df644c46..e0ac1b12222d4ac2e26e5ae9b8fb37fb8cd74e88
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2"
++  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-transaction/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
++  "description" : "Spring Boot Transaction provides transaction auto-configuration and customization support for Spring Boot applications. It configures transaction management infrastructure, TransactionTemplate support, transaction manager customizers, and JTA integration when the relevant Spring components are present."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+index 94fac0286498b3ec271c5cff47d99840df644c46..e0ac1b12222d4ac2e26e5ae9b8fb37fb8cd74e88
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2"
++  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-transaction/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
++  "description" : "Spring Boot Transaction provides transaction auto-configuration and customization support for Spring Boot applications. It configures transaction management infrastructure, TransactionTemplate support, transaction manager customizers, and JTA integration when the relevant Spring components are present."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot-transaction:4.0.2",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-transaction/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
+  "description": "Spring Boot Transaction provides transaction auto-configuration and customization support for Spring Boot applications. It configures transaction management infrastructure, TransactionTemplate support, transaction manager customizers, and JTA integration when the relevant Spring components are present."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/4.0.2/spring-boot-transaction-4.0.2-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 02:16:26 GMT
+content-type: application/java-archive
+content-length: 13693
+cf-ray: 9fdf99806e88be5a-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 503025
+etag: "4f6abe186764ddd253498dfbe4eda136"
+last-modified: Thu, 22 Jan 2026 14:25:29 GMT
+x-checksum-md5: 4f6abe186764ddd253498dfbe4eda136
+x-checksum-sha1: f8c62f64185497fe215371e1f75589f7e6c85d91
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/4.0.2/spring-boot-transaction-4.0.2-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 02:16:26 GMT
+content-type: application/java-archive
+content-length: 123915
+cf-ray: 9fdf99806d7dbc00-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1765719
+etag: "e4bf684f71f3d54bd3f2471694ab6b9f"
+last-modified: Thu, 22 Jan 2026 14:25:29 GMT
+x-checksum-md5: e4bf684f71f3d54bd3f2471694ab6b9f
+x-checksum-sha1: 22cc1bdbca1f98a0f3e45712a64cb010fd28a319
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-transaction/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+index 94fac0286498b3ec271c5cff47d99840df644c46..e0ac1b12222d4ac2e26e5ae9b8fb37fb8cd74e88
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2"
++  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-transaction/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
++  "description" : "Spring Boot Transaction provides transaction auto-configuration and customization support for Spring Boot applications. It configures transaction management infrastructure, TransactionTemplate support, transaction manager customizers, and JTA integration when the relevant Spring components are present."
+ }
+
+ succeeded in 606ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 02:16:27 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"dbb7e1b04d5b1ff334e6f44f872e216b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=KaX%2BwELscwYIGz0IupEv3RfXY4wU3SxfgoDPfC2Uw07Su4MZXITCvGWvQIeGcssxY76ak9wY%2BhuVsqNBiY8W33DOZ57CcNEr%2BYPGj1c%2FXJcEAcU1Kp74zK8QaqZ%2FHcc9UHJ8Xh%2B6z4giSlGgByJWJjZp0alaFmc5HpcO2akZyaxlGRTz1FC6VUhGSDpCSZAqXU5dORZXepmexMaMvOVT%2FFhVy8EaAdAByonaz6b1%2F5%2FxwM4e06e9CqgQMKrE9%2B0i9Pq9Dbl5CpZVlpzKBWrTVg%3D%3D--ARq2Cq9CSR3paBa2--UD5%2FhkdC9QcH2MvjYsdw3g%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1593178943.1779156986; expires=Wed, 19 May 2027 02:16:26 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 19 May 2027 02:16:26 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621B:3866B5:35BFB5B:2A6A974:6A0BC7FA
+
+
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-transaction/src/test
+web search: 
+web search: repo.maven.apache.org org.springframework.boot spring-boot-transaction 4.0.2 sources javadoc pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/
+web search: 
+web search: "spring-boot-transaction-4.0.2"
+web search: 
+web search: central.sonatype.com artifact org.springframework.boot spring-boot-transaction 4.0.2
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2",
+     3	  "repository-url" : "https://github.com/spring-projects/spring-boot",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-transaction/src/test",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
+     7	  "description" : "Spring Boot Transaction provides transaction auto-configuration and customization support for Spring Boot applications. It configures transaction management infrastructure, TransactionTemplate support, transaction manager customizers, and JTA integration when the relevant Spring components are present."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+index 94fac0286498b3ec271c5cff47d99840df644c46..e0ac1b12222d4ac2e26e5ae9b8fb37fb8cd74e88
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2"
++  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-transaction/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
++  "description" : "Spring Boot Transaction provides transaction auto-configuration and customization support for Spring Boot applications. It configures transaction management infrastructure, TransactionTemplate support, transaction manager customizers, and JTA integration when the relevant Spring components are present."
+ }
+
+web search: 
+web search: "Spring Boot Transaction" "4.0.2" "spring-boot-transaction"
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-transaction/src/test
+web search: 
+web search: 
+codex
+Updated [the metadata JSON](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json:1) with the repository, Maven source/javadoc URLs, tagged GitHub test URL, and two-sentence description. I left `language` absent and did not set `not-for-native-image`; this is a JVM Spring Boot Maven artifact, and the tagged test path exists under `module/spring-boot-transaction/src/test`. ([mvnrepository.com](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-transaction?utm_source=openai))
+
+Validation passed with `jq`; the Maven source and javadoc URLs returned `200`, and the GitHub test URL returned `200`.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+index 94fac0286498b3ec271c5cff47d99840df644c46..e0ac1b12222d4ac2e26e5ae9b8fb37fb8cd74e88
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2"
++  "coordinates" : "org.springframework.boot:spring-boot-transaction:4.0.2",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-transaction/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
++  "description" : "Spring Boot Transaction provides transaction auto-configuration and customization support for Spring Boot applications. It configures transaction management infrastructure, TransactionTemplate support, transaction manager customizers, and JTA integration when the relevant Spring components are present."
+ }
+
+tokens used
+78,139
+Updated [the metadata JSON](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-transaction-4.0.2.json:1) with the repository, Maven source/javadoc URLs, tagged GitHub test URL, and two-sentence description. I left `language` absent and did not set `not-for-native-image`; this is a JVM Spring Boot Maven artifact, and the tagged test path exists under `module/spring-boot-transaction/src/test`. ([mvnrepository.com](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-transaction?utm_source=openai))
+
+Validation passed with `jq`; the Maven source and javadoc URLs returned `200`, and the GitHub test URL returned `200`.
+Ran agent for org.springframework.boot:spring-boot-transaction:4.0.2 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-transaction-4.0.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7052-2cad6281/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 48s
+9 actionable tasks: 9 executed
