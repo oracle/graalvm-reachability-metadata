@@ -71,7 +71,7 @@ public class BareCommandTest {
         CountDownLatch closeLatch = new CountDownLatch(1);
         AtomicReference<AsyncResult<Void>> closeResult = new AtomicReference<>();
 
-        vertx.close(result -> {
+        vertx.close().onComplete(result -> {
             closeResult.set(result);
             closeLatch.countDown();
         });

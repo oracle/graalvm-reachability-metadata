@@ -9,10 +9,9 @@ package io_vertx.vertx_core;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.impl.VertxInternal;
-import io.vertx.core.impl.VertxWrapper;
+import io.vertx.core.internal.VertxInternal;
+import io.vertx.core.internal.VertxWrapper;
 import io.vertx.core.impl.launcher.VertxCommandLauncher;
 import io.vertx.core.impl.launcher.commands.ClasspathHandler;
 import io.vertx.core.spi.launcher.ExecutionContext;
@@ -73,13 +72,6 @@ public class ClasspathHandlerTest {
             return delegate.unavailableNativeTransportCause();
         }
 
-        @Override
-        public void deployVerticle(
-                String name,
-                DeploymentOptions options,
-                Handler<AsyncResult<String>> completionHandler) {
-            completionHandler.handle(Future.succeededFuture("deployment-id"));
-        }
     }
 
     private static class TestClasspathHandler extends ClasspathHandler {
@@ -92,7 +84,7 @@ public class ClasspathHandlerTest {
         CountDownLatch closeLatch = new CountDownLatch(1);
         AtomicReference<AsyncResult<Void>> closeResult = new AtomicReference<>();
 
-        vertx.close(result -> {
+        vertx.close().onComplete(result -> {
             closeResult.set(result);
             closeLatch.countDown();
         });

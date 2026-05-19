@@ -22,7 +22,7 @@ public class FileResolverImplTest {
     void resolveFileCopiesClasspathResourceToCache() throws Exception {
         FileResolverImpl resolver = new FileResolverImpl();
         try {
-            File resolved = resolver.resolveFile("file-resolver-valid-classpath-resource.txt");
+            File resolved = resolver.resolve("file-resolver-valid-classpath-resource.txt");
 
             assertTrue(resolved.isFile());
             assertEquals("resolved from the test classpath", Files.readString(resolved.toPath(), StandardCharsets.UTF_8));
