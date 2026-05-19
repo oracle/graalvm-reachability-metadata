@@ -1,0 +1,768 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.131.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e4152-6142-77f0-8542-ed50ca027c3e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven.wagon:wagon-http-shared:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+- Entry selector: "metadata-version" = "1.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0
+- Entry metadata-version: 1.0
+- Entry test-version: 1.0
+- Entry tested-versions: [1.0]
+codex
+I’ll verify the artifact coordinates and rendered URLs before touching the JSON, then update only the blank fields in the target entry.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.apache.maven.wagon/wagon-http-shared/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
+6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
+7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
+9:    "description" : "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations.",
+18:    "metadata-version" : "1.0",
+
+exec
+/usr/bin/bash -lc "rg -n 'wagon-http-shared|wagon-http' metadata/org.apache.maven.wagon -g 'index.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:9:    "description" : "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations.",
+metadata/org.apache.maven.wagon/wagon-http/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:22:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-http-lightweight/src/test",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org|maven.apache.org/wagon|maven-wagon' metadata -g 'index.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-tests.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-sources.jar",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-tests.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:38:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-tests.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-javadoc.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-sources.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:44:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:46:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:47:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-sources.jar",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-javadoc.jar",
+metadata/org.antlr/antlr-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr-runtime/$version$/antlr-runtime-$version$-sources.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-sources.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/$version$/javax.el-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/javax.validation/validation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/org.antlr/antlr/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr/$version$/antlr-$version$-sources.jar",
+
+codex
+The target file already has non-blank values at the top-level entry; I’m checking the full structure now so I don’t overwrite a populated field that only looked missing from the prompt.
+exec
+/usr/bin/bash -lc 'nl -ba metadata/org.apache.maven.wagon/wagon-http-shared/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.0-beta-2",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
+     6	    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
+     7	    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
+     9	    "description" : "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations.",
+    10	    "tested-versions" : [
+    11	      "1.0-beta-2"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.apache.maven.wagon.shared.http"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.0",
+    19	    "tested-versions" : [
+    20	      "1.0"
+    21	    ],
+    22	    "allowed-packages" : [
+    23	      "org.apache.maven.wagon.shared.http"
+    24	    ]
+    25	  }
+    26	]
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/1.0/wagon-http-shared-1.0-sources.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/1.0/wagon-http-shared-1.0-sources.jar
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/1.0/wagon-http-shared-1.0-tests.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/1.0/wagon-http-shared-1.0-test-sources.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/1.0/wagon-http-shared-1.0-javadoc.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 248ms:
+404 https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/1.0/wagon-http-shared-1.0-tests.jar
+
+ succeeded in 256ms:
+404 https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/1.0/wagon-http-shared-1.0-test-sources.jar
+
+ succeeded in 301ms:
+200 https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/1.0/wagon-http-shared-1.0-javadoc.jar
+
+web search: 
+web search: 
+web search: 
+web search: org.apache.maven.wagon wagon-http-shared 1.0 pom scm source jar javadoc jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/wagon/tags/
+web search: 
+web search: "wagon-http-shared-1.0-sources.jar"
+codex
+Maven Central has the source and javadoc artifacts for `1.0`, but no test artifact under the usual classifiers. I’m checking the artifact POM and the Apache SVN tag for the canonical repository and test path.
+exec
+/usr/bin/bash -lc 'curl -L -s https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/1.0/wagon-http-shared-1.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven.wagon</groupId>
+    <artifactId>wagon-providers</artifactId>
+    <version>1.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>wagon-http-shared</artifactId>
+  <name>Maven Wagon HTTP Shared Library</name>
+  <description>
+    Shared Library for the wagon-http, and wagon-http-lightweight wagon
+    providers.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
+      <!--
+        The version of commons-logging that comes transitively has class loader
+        problems. So we exclude it here and add a newer version below.
+      -->
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!--
+      This dependency is here to upgrade to a version of commons-logging that is
+      newer than the one that comes transitively from commons-httpclient above.
+    -->
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>commons-io</groupId>
+    	<artifactId>commons-io</artifactId>
+    	<version>2.0.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.jsoup</groupId>
+    	<artifactId>jsoup</artifactId>
+    	<version>1.6.1</version>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0/wagon-providers/wagon-http-shared/src/test/" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+exec
+/usr/bin/bash -lc "curl -L -s https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0/wagon-providers/wagon-http-shared/src/test/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/apache/maven-wagon/tree/wagon-1.0/wagon-providers/wagon-http-shared/src/test" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/apache/maven-wagon" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 158ms:
+200 https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0/wagon-providers/wagon-http-shared/src/test/
+
+ succeeded in 141ms:
+<html><head><title>asf - Revision 1934408: /maven/wagon/tags/wagon-1.0/wagon-providers/wagon-http-shared/src/test</title></head>
+<body>
+ <h2>asf - Revision 1934408: /maven/wagon/tags/wagon-1.0/wagon-providers/wagon-http-shared/src/test</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="java/">java/</a></li>
+  <li><a href="resources/">resources/</a></li>
+ </ul>
+</body></html>
+ succeeded in 709ms:
+200 https://github.com/apache/maven-wagon
+
+ succeeded in 742ms:
+200 https://github.com/apache/maven-wagon/tree/wagon-1.0/wagon-providers/wagon-http-shared/src/test
+
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-providers/1.0/wagon-providers-1.0.pom | sed -n '/<scm>/,/<\\/scm>/p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/1.0/wagon-1.0.pom | sed -n '/<scm>/,/<\\/scm>/p; /<url>/p; /<name>/p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+  <name>Maven Wagon</name>
+  <url>http://maven.apache.org/wagon</url>
+      <name>Michal Maczka</name>
+      <name>James William Dumay</name>
+      <name>Nathan Beyer</name>
+      <name>Gregory Block</name>
+      <name>Thomas Recloux</name>
+      <name>Trustin Lee</name>
+      <name>John Wells</name>
+      <name>Marcel Schutte</name>
+      <name>David Hawkins</name>
+      <name>Juan F. Codagnone</name>
+      <name>ysoonleo</name>
+      <name>Thomas Champagne</name>
+      <name>M. van der Plas</name>
+      <name>Jason Dillon</name>
+      <name>Jochen Wiedmann</name>
+      <name>Gilles Scokart</name>
+      <name>Wolfgang Glas</name>
+      <name>Kohsuke Kawaguchi</name>
+      <name>Antti Virtanen</name>
+      <name>Thorsten Heit</name>
+      <name>Benson Margulies</name>
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/wagon/tags/wagon-1.0</url>
+    <url>http://svn.apache.org/viewvc/maven/wagon/tags/wagon-1.0</url>
+  </scm>
+    <url>http://jira.codehaus.org/browse/WAGON</url>
+    <url>https://builds.apache.org/hudson/job/maven-wagon/</url>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://svn.apache.org/repos/asf/maven/wagon" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0/wagon-providers/wagon-http-shared/src/main/java/" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 161ms:
+200 https://svn.apache.org/repos/asf/maven/wagon/
+
+ succeeded in 118ms:
+200 https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-1.0/wagon-providers/wagon-http-shared/src/main/java/
+
+codex
+The `1.0` entry is the missing one. I’m adding the verified Maven Central source/javadoc URLs, the SVN test path from the `wagon-1.0` tag, the repository root, and the two-sentence description; I’m leaving `language` absent because this is a Java library, not Kotlin/Groovy/Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+diff --git a/metadata/org.apache.maven.wagon/wagon-http-shared/index.json b/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+index 2f16434136c33ff6c5ef55bb25adc397ed44859d..3ed05fa3a76ed0b4727283d061ff210a17cc66c9
+--- a/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations.",
+     "tested-versions" : [
+       "1.0"
+     ],
+
+diff --git a/metadata/org.apache.maven.wagon/wagon-http-shared/index.json b/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+index 2f16434136c33ff6c5ef55bb25adc397ed44859d..3ed05fa3a76ed0b4727283d061ff210a17cc66c9
+--- a/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations.",
+     "tested-versions" : [
+       "1.0"
+     ],
+
+codex
+The JSON edit is in place. I’m validating the file and running the repository’s metadata check for this coordinate so the change is not just syntactically valid.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.apache.maven.wagon/wagon-http-shared/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.maven.wagon:wagon-http-shared:1.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+diff --git a/metadata/org.apache.maven.wagon/wagon-http-shared/index.json b/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+index 2f16434136c33ff6c5ef55bb25adc397ed44859d..3ed05fa3a76ed0b4727283d061ff210a17cc66c9
+--- a/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations.",
+     "tested-versions" : [
+       "1.0"
+     ],
+
+ exited 1 in 3244ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILEDMetadata files check failed for org.apache.maven.wagon:wagon-http-shared:1.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805/metadata/org.apache.maven.wagon/wagon-http-shared/1.0/
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805/build/reports/problems/problems-report.html
+   - org.apache.maven.wagon:wagon-http-shared:1.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805/metadata/org.apache.maven.wagon/wagon-http-shared/1.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.apache.maven.wagon:wagon-http-shared:1.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805/metadata/org.apache.maven.wagon/wagon-http-shared/1.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+`jq` accepted the JSON. The repository metadata check fails because this coordinate has no `metadata/.../1.0/reachability-metadata.json` directory/file, which is outside the requested URL/description edit; I’m checking the final diff now.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.maven.wagon/wagon-http-shared/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.maven.wagon/wagon-http-shared/index.json w/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+index 2f16434136..3ed05fa3a7 100644
+--- i/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
++++ w/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations.",
+     "tested-versions" : [
+       "1.0"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805
+ succeeded in 0ms:
+ M metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+
+diff --git a/metadata/org.apache.maven.wagon/wagon-http-shared/index.json b/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+index 2f16434136c33ff6c5ef55bb25adc397ed44859d..3ed05fa3a76ed0b4727283d061ff210a17cc66c9
+--- a/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations.",
+     "tested-versions" : [
+       "1.0"
+     ],
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org apache maven wagon wagon-http-shared 1.0 wagon-http-shared-1.0.pom
+web search: 
+web search: "Central Repository: org/apache/maven/wagon/wagon-http-shared/1.0"
+web search: 
+web search: Maven Wagon HTTP Shared Library source repository wagon-1.0 wagon-providers wagon-http-shared
+web search: 
+web search: https://maven.apache.org/components/wagon-archives/wagon-1.0/wagon-providers/wagon-http-shared/apidocs/org/apache/maven/wagon/shared/http/HttpMethodConfiguration.html
+web search: 
+web search: "/maven/wagon/tags/wagon-1.0/wagon-providers/wagon-http-shared/src/test"
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805/metadata/org.apache.maven.wagon/wagon-http-shared/index.json:18) for `metadata-version: 1.0`.
+
+Added:
+```json
+"source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
+"repository-url": "https://svn.apache.org/repos/asf/maven/wagon",
+"test-code-url": "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
+"documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
+"description": "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations."
+```
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific. The description is based on the archived Maven Wagon 1.0 project metadata, which identifies this artifact as the HTTP shared library for the HTTP Wagon providers. ([maven.apache.org](https://maven.apache.org/components/wagon-archives/wagon-1.0/wagon-providers/wagon-http-shared/dependencies.html))
+
+Validation:
+- `jq` JSON validation passed.
+- Rendered URL checks passed for source, documentation, repository root, and SVN test path.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.maven.wagon:wagon-http-shared:1.0 --stacktrace` failed because `metadata/org.apache.maven.wagon/wagon-http-shared/1.0/reachability-metadata.json` is missing, unrelated to the requested index metadata update.
+diff --git a/metadata/org.apache.maven.wagon/wagon-http-shared/index.json b/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+index 2f16434136c33ff6c5ef55bb25adc397ed44859d..3ed05fa3a76ed0b4727283d061ff210a17cc66c9
+--- a/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http-shared/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations.",
+     "tested-versions" : [
+       "1.0"
+     ],
+
+tokens used
+89,730
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805/metadata/org.apache.maven.wagon/wagon-http-shared/index.json:18) for `metadata-version: 1.0`.
+
+Added:
+```json
+"source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
+"repository-url": "https://svn.apache.org/repos/asf/maven/wagon",
+"test-code-url": "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
+"documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
+"description": "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations."
+```
+
+I left `language` absent because this is not Kotlin/Groovy/Scala-specific. The description is based on the archived Maven Wagon 1.0 project metadata, which identifies this artifact as the HTTP shared library for the HTTP Wagon providers. ([maven.apache.org](https://maven.apache.org/components/wagon-archives/wagon-1.0/wagon-providers/wagon-http-shared/dependencies.html))
+
+Validation:
+- `jq` JSON validation passed.
+- Rendered URL checks passed for source, documentation, repository root, and SVN test path.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.maven.wagon:wagon-http-shared:1.0 --stacktrace` failed because `metadata/org.apache.maven.wagon/wagon-http-shared/1.0/reachability-metadata.json` is missing, unrelated to the requested index metadata update.
+Ran agent for org.apache.maven.wagon:wagon-http-shared:1.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805/build/agent-url-discovery-logs/org.apache.maven.wagon-wagon-http-shared-1.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6914-5f05d805/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 54s
+9 actionable tasks: 1 executed, 8 up-to-date
