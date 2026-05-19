@@ -32,6 +32,8 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
 import org.springframework.boot.http.client.HttpRedirects;
+import org.springframework.boot.http.client.autoconfigure.imperative.ImperativeHttpClientAutoConfiguration;
+import org.springframework.boot.http.client.autoconfigure.service.HttpServiceClientPropertiesAutoConfiguration;
 import org.springframework.boot.http.converter.autoconfigure.ClientHttpMessageConvertersCustomizer;
 import org.springframework.boot.restclient.RestClientCustomizer;
 import org.springframework.boot.restclient.RestTemplateBuilder;
@@ -49,6 +51,7 @@ import org.springframework.boot.restclient.autoconfigure.service.HttpServiceClie
 import org.springframework.boot.restclient.observation.ObservationRestClientCustomizer;
 import org.springframework.boot.restclient.observation.ObservationRestTemplateCustomizer;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequest;
@@ -58,9 +61,15 @@ import org.springframework.http.client.observation.ClientRequestObservationConte
 import org.springframework.http.client.observation.ClientRequestObservationConvention;
 import org.springframework.http.client.observation.DefaultClientRequestObservationConvention;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.service.annotation.GetExchange;
+import org.springframework.web.service.registry.HttpServiceGroup.ClientType;
+import org.springframework.web.service.registry.HttpServiceProxyRegistry;
+import org.springframework.web.service.registry.ImportHttpServices;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 public class Spring_boot_restclientTest {
@@ -80,6 +89,39 @@ public class Spring_boot_restclientTest {
                 RestClientObservationAutoConfiguration.class.getName(), RestTemplateAutoConfiguration.class.getName(),
                 RestTemplateObservationAutoConfiguration.class.getName(),
                 HttpServiceClientAutoConfiguration.class.getName());
+    }
+
+    @Test
+    void httpServiceClientAutoConfigurationBuildsRestClientBackedServiceProxy() throws IOException {
+        try (TestHttpServer server = TestHttpServer.start(exchange -> {
+            Headers requestHeaders = exchange.getRequestHeaders();
+            String response = "method=%s, uri=%s, customizer=%s".formatted(exchange.getRequestMethod(),
+                    exchange.getRequestURI(), requestHeaders.getFirst("X-Service-Customizer"));
+            send(exchange, HttpStatus.OK.value(), response);
+        })) {
+            new ApplicationContextRunner()
+                    .withUserConfiguration(GreetingHttpServiceConfiguration.class)
+                    .withConfiguration(AutoConfigurations.of(HttpServiceClientPropertiesAutoConfiguration.class,
+                            ImperativeHttpClientAutoConfiguration.class, RestClientAutoConfiguration.class,
+                            HttpServiceClientAutoConfiguration.class))
+                    .withPropertyValues("spring.http.serviceclient.greeting.base-url=" + server.url("/api"))
+                    .withBean(RestClientCustomizer.class,
+                            () -> builder -> builder.defaultHeader("X-Service-Customizer", "applied")
+                                    .requestFactory(requestFactory()))
+                    .run(context -> {
+                        assertThat(context).hasSingleBean(HttpServiceProxyRegistry.class);
+                        HttpServiceProxyRegistry registry = context.getBean(HttpServiceProxyRegistry.class);
+
+                        GreetingHttpService client = registry.getClient(GreetingHttpService.class);
+                        String body = client.greeting("boot", "done");
+
+                        assertThat(registry.getGroupNames()).containsExactly("greeting");
+                        assertThat(registry.getClientTypesInGroup("greeting"))
+                                .containsExactly(GreetingHttpService.class);
+                        assertThat(body).isEqualTo("method=GET, uri=/api/greeting/boot?punctuation=done, "
+                                + "customizer=applied");
+                    });
+        }
     }
 
     @Test
@@ -432,6 +474,18 @@ public class Spring_boot_restclientTest {
         exchange.getResponseHeaders().set("Location", location);
         exchange.sendResponseHeaders(HttpStatus.FOUND.value(), -1);
         exchange.close();
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ImportHttpServices(group = "greeting", types = GreetingHttpService.class, clientType = ClientType.REST_CLIENT)
+    public static class GreetingHttpServiceConfiguration {
+    }
+
+    public interface GreetingHttpService {
+
+        @GetExchange("/greeting/{name}")
+        String greeting(@PathVariable("name") String name, @RequestParam("punctuation") String punctuation);
+
     }
 
     public static final class InstrumentedRestTemplate extends RestTemplate {
