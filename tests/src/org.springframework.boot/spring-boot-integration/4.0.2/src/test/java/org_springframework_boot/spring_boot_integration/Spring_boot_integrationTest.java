@@ -24,6 +24,9 @@ import org.springframework.boot.integration.autoconfigure.PollerMetadataCustomiz
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
+import org.springframework.integration.annotation.Gateway;
+import org.springframework.integration.annotation.MessagingGateway;
+import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.scheduling.PollerMetadata;
@@ -173,6 +176,17 @@ public class Spring_boot_integrationTest {
         }
     }
 
+    @Test
+    void autoConfigurationScansMessagingGateways() {
+        try (ConfigurableApplicationContext context = run(GatewayApplication.class)) {
+            TextGateway gateway = context.getBean(TextGateway.class);
+
+            String reply = gateway.clean("  component scan  ");
+
+            assertThat(reply).isEqualTo("component scan");
+        }
+    }
+
     private static ConfigurableApplicationContext run(Class<?> source, String... properties) {
         return new SpringApplicationBuilder(source)
                 .web(WebApplicationType.NONE)
@@ -251,6 +265,31 @@ public class Spring_boot_integrationTest {
                     .<String, String>transform((payload) -> payload.trim().toUpperCase(Locale.ROOT))
                     .channel("replies")
                     .get();
+        }
+    }
+
+    @SpringBootConfiguration
+    @EnableAutoConfiguration
+    public static class GatewayApplication {
+
+        @Bean
+        public TextHandler textHandler() {
+            return new TextHandler();
+        }
+    }
+
+    @MessagingGateway
+    public interface TextGateway {
+
+        @Gateway(requestChannel = "textRequests")
+        String clean(String text);
+    }
+
+    public static class TextHandler {
+
+        @ServiceActivator(inputChannel = "textRequests")
+        public String clean(String text) {
+            return text.trim();
         }
     }
 }
