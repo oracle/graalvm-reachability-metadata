@@ -31,10 +31,12 @@ public class MainClassModuleNameExtractorTest {
     @Test
     void getsAutomaticModuleNameFromJarManifest() throws Exception {
         Path moduleJar = createAutomaticModuleJar();
+        MainClassModuleNameExtractor extractor =
+                new MainClassModuleNameExtractor(Path.of(System.getProperty("java.home")));
 
-        String moduleName = MainClassModuleNameExtractor.getModuleName(moduleJar);
+        Map<Path, String> moduleNames = extractor.extract(Map.of(moduleJar, moduleJar));
 
-        assertThat(moduleName).isEqualTo(MODULE_NAME);
+        assertThat(moduleNames).containsEntry(moduleJar, MODULE_NAME);
     }
 
     @Test
