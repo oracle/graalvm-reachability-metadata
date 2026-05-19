@@ -38,6 +38,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -173,6 +174,17 @@ public class Spring_boot_validationTest {
         }
     }
 
+    @Test
+    void autoConfiguredValidatorIsPrimaryWhenAdditionalSpringValidatorBeanExists() {
+        try (AnnotationConfigApplicationContext context = contextWith(AdditionalSpringValidatorConfiguration.class)) {
+            Validator validator = context.getBean(Validator.class);
+
+            assertThat(validator).isInstanceOf(LocalValidatorFactoryBean.class);
+            assertThat(context.getBean("additionalSpringValidator", Validator.class))
+                    .isInstanceOf(NoOpSpringValidator.class);
+        }
+    }
+
     private static AnnotationConfigApplicationContext contextWith(Class<?>... configurationClasses) {
         return contextWithProperties(Map.of(), configurationClasses);
     }
@@ -272,6 +284,16 @@ public class Spring_boot_validationTest {
 
     }
 
+    @Configuration(proxyBeanMethods = false)
+    public static class AdditionalSpringValidatorConfiguration {
+
+        @Bean
+        Validator additionalSpringValidator() {
+            return new NoOpSpringValidator();
+        }
+
+    }
+
     public interface GreetingService {
 
         String greet(@NotBlank String name);
@@ -354,6 +376,20 @@ public class Spring_boot_validationTest {
 
         public int getAge() {
             return this.age;
+        }
+
+    }
+
+    public static class NoOpSpringValidator implements Validator {
+
+        @Override
+        public boolean supports(Class<?> clazz) {
+            return true;
+        }
+
+        @Override
+        public void validate(Object target, Errors errors) {
+            // Intentionally does not add errors; selection of the primary Validator bean is the behavior under test.
         }
 
     }
