@@ -100,12 +100,65 @@ public class Spring_boot_http_codecTest {
         }
     }
 
+    @Test
+    void userCodecCustomizerCanOverrideAutoConfiguredDefaultCodecSettings() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("testProperties", Map.of(
+                    "spring.http.codecs.max-in-memory-size", "256KB")));
+            context.register(UserCodecCustomizerConfiguration.class, CodecsAutoConfiguration.class);
+            context.refresh();
+
+            List<CodecCustomizer> customizers = context.getBean(CodecCustomizers.class).customizers;
+            assertThat(customizers).hasSize(2);
+            assertThat(customizers.get(1)).isInstanceOf(OverridingCodecCustomizer.class);
+
+            CapturingCodecConfigurer configurer = new CapturingCodecConfigurer();
+            customizers.forEach((customizer) -> customizer.customize(configurer));
+
+            assertThat(configurer.defaultCodecs.maxInMemorySize).isEqualTo(512);
+        }
+    }
+
     @Configuration(proxyBeanMethods = false)
     static class JsonMapperConfiguration {
 
         @Bean
         JsonMapper jsonMapper() {
             return new JsonMapper();
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class UserCodecCustomizerConfiguration {
+
+        @Bean
+        CodecCustomizer overridingCodecCustomizer() {
+            return new OverridingCodecCustomizer();
+        }
+
+        @Bean
+        CodecCustomizers codecCustomizers(List<CodecCustomizer> customizers) {
+            return new CodecCustomizers(customizers);
+        }
+
+    }
+
+    private static final class OverridingCodecCustomizer implements CodecCustomizer {
+
+        @Override
+        public void customize(CodecConfigurer configurer) {
+            configurer.defaultCodecs().maxInMemorySize(512);
+        }
+
+    }
+
+    private static final class CodecCustomizers {
+
+        private final List<CodecCustomizer> customizers;
+
+        private CodecCustomizers(List<CodecCustomizer> customizers) {
+            this.customizers = customizers;
         }
 
     }
