@@ -62,6 +62,7 @@ import io.github.resilience4j.springboot3.micrometer.monitoring.endpoint.TimerEv
 import io.github.resilience4j.springboot3.ratelimiter.autoconfigure.RateLimiterProperties;
 import io.github.resilience4j.springboot3.ratelimiter.monitoring.endpoint.RateLimiterEndpoint;
 import io.github.resilience4j.springboot3.ratelimiter.monitoring.endpoint.RateLimiterEventsEndpoint;
+import io.github.resilience4j.springboot3.ratelimiter.monitoring.health.RateLimitersHealthIndicator;
 import io.github.resilience4j.springboot3.retry.autoconfigure.RetryProperties;
 import io.github.resilience4j.springboot3.retry.monitoring.endpoint.RetryEndpoint;
 import io.github.resilience4j.springboot3.retry.monitoring.endpoint.RetryEventsEndpoint;
@@ -79,6 +80,10 @@ import org.springframework.boot.actuate.health.Status;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -283,6 +288,69 @@ public class Resilience4j_spring_boot3Test {
     }
 
     @Test
+    void rateLimiterHealthIndicatorReportsRateLimitedBackends() throws InterruptedException {
+        RateLimiterConfig onePermitPerRefreshPeriod = RateLimiterConfig.custom()
+                .limitForPeriod(1)
+                .limitRefreshPeriod(Duration.ofSeconds(2))
+                .timeoutDuration(Duration.ofSeconds(5))
+                .build();
+        RateLimiterRegistry rateLimiters = RateLimiterRegistry.of(onePermitPerRefreshPeriod);
+        RateLimiter api = rateLimiters.rateLimiter("api");
+        RateLimiter background = rateLimiters.rateLimiter("background");
+        rateLimiters.rateLimiter("ignored");
+
+        RateLimiterProperties rateLimiterProperties = new RateLimiterProperties();
+        CommonRateLimiterConfigurationProperties.InstanceProperties apiInstance =
+                new CommonRateLimiterConfigurationProperties.InstanceProperties();
+        apiInstance.setRegisterHealthIndicator(true);
+        apiInstance.setAllowHealthIndicatorToFail(true);
+        rateLimiterProperties.getInstances().put("api", apiInstance);
+        CommonRateLimiterConfigurationProperties.InstanceProperties backgroundInstance =
+                new CommonRateLimiterConfigurationProperties.InstanceProperties();
+        backgroundInstance.setRegisterHealthIndicator(true);
+        backgroundInstance.setAllowHealthIndicatorToFail(false);
+        rateLimiterProperties.getInstances().put("background", backgroundInstance);
+        CommonRateLimiterConfigurationProperties.InstanceProperties ignoredInstance =
+                new CommonRateLimiterConfigurationProperties.InstanceProperties();
+        ignoredInstance.setRegisterHealthIndicator(false);
+        rateLimiterProperties.getInstances().put("ignored", ignoredInstance);
+
+        assertThat(api.acquirePermission()).isTrue();
+        assertThat(background.acquirePermission()).isTrue();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Future<Boolean> apiPermission = executorService.submit((Callable<Boolean>) api::acquirePermission);
+        Future<Boolean> backgroundPermission = executorService.submit((Callable<Boolean>) background::acquirePermission);
+        try {
+            assertThat(waitingThreadsAreVisible(api, background)).isTrue();
+            api.changeTimeoutDuration(Duration.ZERO);
+            background.changeTimeoutDuration(Duration.ZERO);
+
+            RateLimitersHealthIndicator healthIndicator = new RateLimitersHealthIndicator(rateLimiters,
+                    rateLimiterProperties, statuses -> statuses.contains(Status.DOWN) ? Status.DOWN : Status.UP);
+            Health health = healthIndicator.health();
+
+            assertThat(health.getStatus()).isEqualTo(Status.DOWN);
+            assertThat(health.getDetails()).containsOnlyKeys("api", "background");
+            Health apiHealth = (Health) health.getDetails().get("api");
+            assertThat(apiHealth.getStatus()).isEqualTo(Status.DOWN);
+            assertThat(apiHealth.getDetails()).containsEntry("numberOfWaitingThreads", 1);
+            assertThat(((Number) apiHealth.getDetails().get("availablePermissions")).intValue())
+                    .isLessThanOrEqualTo(0);
+            Health backgroundHealth = (Health) health.getDetails().get("background");
+            assertThat(backgroundHealth.getStatus()).isEqualTo(new Status("RATE_LIMITED"));
+            assertThat(backgroundHealth.getDetails()).containsEntry("numberOfWaitingThreads", 1);
+            assertThat(((Number) backgroundHealth.getDetails().get("availablePermissions")).intValue())
+                    .isLessThanOrEqualTo(0);
+        } finally {
+            apiPermission.cancel(true);
+            backgroundPermission.cancel(true);
+            executorService.shutdownNow();
+            assertThat(executorService.awaitTermination(3, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
     void springBootPropertiesCreateResilience4jCoreConfigs() {
         CircuitBreakerProperties circuitBreakerProperties = new CircuitBreakerProperties();
         CommonCircuitBreakerConfigurationProperties.InstanceProperties circuitBreakerInstance =
@@ -444,6 +512,24 @@ public class Resilience4j_spring_boot3Test {
                     }
                 })), "outbound");
         assertThat(timerConfig.getMetricNames()).isEqualTo("custom.calls");
+    }
+
+    private static boolean waitingThreadsAreVisible(RateLimiter... rateLimiters) throws InterruptedException {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(1);
+        while (System.nanoTime() < deadline) {
+            boolean allWaiting = true;
+            for (RateLimiter rateLimiter : rateLimiters) {
+                if (rateLimiter.getMetrics().getNumberOfWaitingThreads() == 0) {
+                    allWaiting = false;
+                    break;
+                }
+            }
+            if (allWaiting) {
+                return true;
+            }
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        return false;
     }
 
     private static CircuitBreaker circuitBreakerWithEvents() {
