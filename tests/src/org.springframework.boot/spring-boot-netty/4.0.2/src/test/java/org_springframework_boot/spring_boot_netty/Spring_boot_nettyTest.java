@@ -6,6 +6,7 @@
  */
 package org_springframework_boot.spring_boot_netty;
 
+import io.netty.util.NettyRuntime;
 import io.netty.util.ResourceLeakDetector;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.LazyInitializationExcludeFilter;
@@ -15,6 +16,7 @@ import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.netty.autoconfigure.NettyAutoConfiguration;
 import org.springframework.boot.netty.autoconfigure.NettyProperties;
 import org.springframework.boot.netty.autoconfigure.NettyProperties.LeakDetection;
+import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,6 +47,17 @@ public class Spring_boot_nettyTest {
         ImportCandidates candidates = ImportCandidates.load(AutoConfiguration.class, getClass().getClassLoader());
 
         assertThat(candidates.getCandidates()).contains(NettyAutoConfiguration.class.getName());
+    }
+
+    @Test
+    void autoConfigurationBacksOffWhenNettyRuntimeIsUnavailable() {
+        new ApplicationContextRunner().withClassLoader(new FilteredClassLoader(NettyRuntime.class))
+            .withConfiguration(AutoConfigurations.of(NettyAutoConfiguration.class))
+            .run((context) -> {
+                assertThat(context.getBeanNamesForType(NettyAutoConfiguration.class)).isEmpty();
+                assertThat(context.getBeanNamesForType(NettyProperties.class)).isEmpty();
+                assertThat(context.getBeanNamesForType(LazyInitializationExcludeFilter.class)).isEmpty();
+            });
     }
 
     @Test
