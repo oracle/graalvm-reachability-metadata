@@ -31,6 +31,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
+import org.springframework.boot.http.client.HttpClientSettings;
 import org.springframework.boot.http.client.HttpRedirects;
 import org.springframework.boot.http.client.autoconfigure.imperative.ImperativeHttpClientAutoConfiguration;
 import org.springframework.boot.http.client.autoconfigure.service.HttpServiceClientPropertiesAutoConfiguration;
@@ -44,17 +45,22 @@ import org.springframework.boot.restclient.autoconfigure.HttpMessageConvertersRe
 import org.springframework.boot.restclient.autoconfigure.RestClientAutoConfiguration;
 import org.springframework.boot.restclient.autoconfigure.RestClientBuilderConfigurer;
 import org.springframework.boot.restclient.autoconfigure.RestClientObservationAutoConfiguration;
+import org.springframework.boot.restclient.autoconfigure.RestClientSsl;
 import org.springframework.boot.restclient.autoconfigure.RestTemplateAutoConfiguration;
 import org.springframework.boot.restclient.autoconfigure.RestTemplateBuilderConfigurer;
 import org.springframework.boot.restclient.autoconfigure.RestTemplateObservationAutoConfiguration;
 import org.springframework.boot.restclient.autoconfigure.service.HttpServiceClientAutoConfiguration;
 import org.springframework.boot.restclient.observation.ObservationRestClientCustomizer;
 import org.springframework.boot.restclient.observation.ObservationRestTemplateCustomizer;
+import org.springframework.boot.ssl.DefaultSslBundleRegistry;
+import org.springframework.boot.ssl.SslBundle;
+import org.springframework.boot.ssl.SslStoreBundle;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.client.observation.ClientRequestObservationContext;
@@ -375,6 +381,36 @@ public class Spring_boot_restclientTest {
     }
 
     @Test
+    void restClientSslAppliesNamedSslBundleToRestClientRequestFactory() throws IOException {
+        try (TestHttpServer server = TestHttpServer.start(exchange -> send(exchange, HttpStatus.OK.value(),
+                "ssl=" + exchange.getRequestURI()))) {
+            SslBundle sslBundle = SslBundle.of(SslStoreBundle.NONE);
+            RecordingClientHttpRequestFactoryBuilder requestFactoryBuilder =
+                    new RecordingClientHttpRequestFactoryBuilder();
+
+            this.restClientContextRunner
+                    .withBean(DefaultSslBundleRegistry.class,
+                            () -> new DefaultSslBundleRegistry("test-client", sslBundle))
+                    .withBean(ClientHttpRequestFactoryBuilder.class, () -> requestFactoryBuilder)
+                    .run(context -> {
+                        assertThat(context).hasSingleBean(RestClientSsl.class);
+                        RestClientSsl restClientSsl = context.getBean(RestClientSsl.class);
+
+                        RestClient.Builder builder = RestClient.builder().baseUrl(server.url("/secure"));
+                        restClientSsl.fromBundle("test-client").accept(builder);
+                        RestClient restClient = builder.build();
+
+                        String body = restClient.get().uri("/status").retrieve().body(String.class);
+
+                        assertThat(body).isEqualTo("ssl=/secure/status");
+                        HttpClientSettings settings = requestFactoryBuilder.settings.get();
+                        assertThat(settings).isNotNull();
+                        assertThat(settings.sslBundle()).isSameAs(sslBundle);
+                    });
+        }
+    }
+
+    @Test
     void observationRestClientCustomizerAppliesRegistryAndConventionToRestClient() throws IOException {
         try (TestHttpServer server = TestHttpServer.start(
                 exchange -> send(exchange, HttpStatus.OK.value(), "observed"))) {
@@ -489,6 +525,19 @@ public class Spring_boot_restclientTest {
     }
 
     public static final class InstrumentedRestTemplate extends RestTemplate {
+    }
+
+    private static final class RecordingClientHttpRequestFactoryBuilder
+            implements ClientHttpRequestFactoryBuilder<ClientHttpRequestFactory> {
+
+        private final AtomicReference<HttpClientSettings> settings = new AtomicReference<>();
+
+        @Override
+        public ClientHttpRequestFactory build(HttpClientSettings settings) {
+            this.settings.set(settings);
+            return requestFactory();
+        }
+
     }
 
     private static final class TestHttpServer implements AutoCloseable {
