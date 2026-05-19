@@ -1,0 +1,168 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.boot:spring-boot-integration:4.0.2
+Command: `/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7104-878e8098/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 4 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+SpringBootIntegrationTest > graphEndpointAutoConfigurationCreatesEndpointAndGraphServerBeans() FAILED
+    java.lang.AssertionError: 
+    Expecting:
+     <Unstarted application context org.springframework.boot.test.context.assertj.AssertableApplicationContext[startupFailure=java.lang.IllegalStateException]>
+    to have a single bean of type:
+     <org.springframework.integration.graph.IntegrationGraphServer>:
+    but context failed to start:
+     java.lang.IllegalStateException: Error processing condition on org.springframework.boot.integration.autoconfigure.IntegrationGraphEndpointAutoConfiguration
+     	at org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(SpringBootCondition.java:60)
+     	at org.springframework.context.annotation.ConditionEvaluator.shouldSkip(ConditionEvaluator.java:100)
+     	at org.springframework.context.annotation.ConditionEvaluator.shouldSkip(ConditionEvaluator.java:89)
+     	at org.springframework.context.annotation.ConditionEvaluator.shouldSkip(ConditionEvaluator.java:72)
+     	at org.springframework.context.annotation.AnnotatedBeanDefinitionReader.doRegisterBean(AnnotatedBeanDefinitionReader.java:255)
+     	at org.springframework.context.annotation.AnnotatedBeanDefinitionReader.registerBean(AnnotatedBeanDefinitionReader.java:160)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.configureContext(AbstractApplicationContextRunner.java:439)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAndLoadContext(AbstractApplicationContextRunner.java:414)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$createAssertableContext$0(AbstractApplicationContextRunner.java:399)
+     	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getContextOrStartupFailure(AssertProviderApplicationContextInvocationHandler.java:63)
+     	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.<init>(AssertProviderApplicationContextInvocationHandler.java:50)
+     	at org.springframework.boot.test.context.assertj.ApplicationContextAssertProvider.get(ApplicationContextAssertProvider.java:136)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAssertableContext(AbstractApplicationContextRunner.java:399)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:370)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+     	at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:177)
+     	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:191)
+     	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:176)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+     	at org_springframework_boot.spring_boot_integration.SpringBootIntegrationTest.graphEndpointAutoConfigurationCreatesEndpointAndGraphServerBeans(SpringBootIntegrationTest.java:200)
+     	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+     	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+     	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+     	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+     	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+     	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+     	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+
+     	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+7 tests completed, 1 failed
+     	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+     	at java.base/java.lang.Thread.run(Thread.java:1474)
+
+     Caused by: org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [org.springframework.boot.actuate.endpoint.Access] for value [unrestricted]
+FAILURE: Build failed with an exception.
+     	at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:47)
+
+     	at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:181)
+* What went wrong:
+     	at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:165)
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7104-878e8098/tests/src/org.springframework.boot/spring-boot-integration/4.0.2/build/reports/tests/test/index.html
+     	at org.springframework.core.env.AbstractPropertyResolver.convertValueIfNecessary(AbstractPropertyResolver.java:311)
+
+     	at org.springframework.core.env.PropertySourcesPropertyResolver.getProperty(PropertySourcesPropertyResolver.java:92)
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+     	at org.springframework.core.env.PropertySourcesPropertyResolver.getProperty(PropertySourcesPropertyResolver.java:65)
+     	at org.springframework.core.env.AbstractEnvironment.getProperty(AbstractEnvironment.java:562)
+
+     	at org.springframework.boot.actuate.autoconfigure.endpoint.PropertiesEndpointAccessResolver.resolveAccess(PropertiesEndpointAccessResolver.java:91)
+BUILD FAILED in 5s
+     	at org.springframework.boot.actuate.autoconfigure.endpoint.PropertiesEndpointAccessResolver.lambda$accessFor$0(PropertiesEndpointAccessResolver.java:85)
+     	at java.base/java.util.concurrent.ConcurrentHashMap.computeIfAbsent(ConcurrentHashMap.java:1724)
+     	at org.springframework.boot.actuate.autoconfigure.endpoint.PropertiesEndpointAccessResolver.accessFor(PropertiesEndpointAccessResolver.java:84)
+     	at org.springframework.boot.actuate.autoconfigure.endpoint.condition.OnAvailableEndpointCondition.getAccess(OnAvailableEndpointCondition.java:137)
+     	at org.springframework.boot.actuate.autoconfigure.endpoint.condition.OnAvailableEndpointCondition.getAccessOutcome(OnAvailableEndpointCondition.java:130)
+     	at org.springframework.boot.actuate.autoconfigure.endpoint.condition.OnAvailableEndpointCondition.getMatchOutcome(OnAvailableEndpointCondition.java:118)
+     	at org.springframework.boot.actuate.autoconfigure.endpoint.condition.OnAvailableEndpointCondition.getMatchOutcome(OnAvailableEndpointCondition.java:79)
+     	at org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(SpringBootCondition.java:47)
+     	... 31 more
+     Caused by: java.lang.IllegalArgumentException: No enum constant org.springframework.boot.actuate.endpoint.Access.unrestricted
+     	at java.base/java.lang.Enum.valueOf(Enum.java:293)
+     	at org.springframework.core.convert.support.StringToEnumConverterFactory$StringToEnum.convert(StringToEnumConverterFactory.java:54)
+     	at org.springframework.core.convert.support.StringToEnumConverterFactory$StringToEnum.convert(StringToEnumConverterFactory.java:40)
+     	at org.springframework.core.convert.support.GenericConversionService$ConverterFactoryAdapter.convert(GenericConversionService.java:406)
+     	at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:41)
+     	... 46 more
+        at org_springframework_boot.spring_boot_integration.SpringBootIntegrationTest.lambda$graphEndpointAutoConfigurationCreatesEndpointAndGraphServerBeans$0(SpringBootIntegrationTest.java:201)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+        at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:177)
+        at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:191)
+        at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:176)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+        at org_springframework_boot.spring_boot_integration.SpringBootIntegrationTest.graphEndpointAutoConfigurationCreatesEndpointAndGraphServerBeans(SpringBootIntegrationTest.java:200)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7104-878e8098/tests/src/org.springframework.boot/spring-boot-integration/4.0.2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7104-878e8098/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.boot:spring-boot-integration:4.0.2 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 6s
+9 actionable tasks: 1 executed, 8 up-to-date

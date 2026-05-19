@@ -17,18 +17,17 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.source.MutuallyExclusiveConfigurationPropertiesException;
+import org.springframework.boot.integration.autoconfigure.IntegrationAutoConfiguration;
 import org.springframework.boot.integration.autoconfigure.IntegrationProperties;
 import org.springframework.boot.integration.autoconfigure.PollerMetadataCustomizer;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.integration.annotation.Gateway;
+import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.QueueChannel;
@@ -47,6 +46,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Spring_boot_integrationTest {
+
+    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(IntegrationAutoConfiguration.class))
+            .withPropertyValues(commonProperties());
 
     @Test
     void integrationPropertiesExposeDefaultsAndStoreConfiguredValues() {
@@ -110,7 +113,7 @@ public class Spring_boot_integrationTest {
 
     @Test
     void autoConfigurationBindsBootPropertiesAndMapsThemToSpringIntegrationGlobalProperties() {
-        try (ConfigurableApplicationContext context = run(IntegrationTestApplication.class,
+        runner(IntegrationTestApplication.class,
                 "spring.integration.channel.auto-create=false",
                 "spring.integration.channel.max-unicast-subscribers=6",
                 "spring.integration.channel.max-broadcast-subscribers=7",
@@ -119,7 +122,8 @@ public class Spring_boot_integrationTest {
                 "spring.integration.endpoint.read-only-headers=foo,bar",
                 "spring.integration.endpoint.no-auto-startup=inputAdapter,scheduled*",
                 "spring.integration.error.require-subscribers=false",
-                "spring.integration.error.ignore-failures=false")) {
+                "spring.integration.error.ignore-failures=false")
+            .run((context) -> {
 
             IntegrationProperties bootProperties = context.getBean(IntegrationProperties.class);
             org.springframework.integration.context.IntegrationProperties integrationProperties = context
@@ -137,16 +141,17 @@ public class Spring_boot_integrationTest {
             assertThat(integrationProperties.getNoAutoStartupEndpoints()).containsExactly("inputAdapter", "scheduled*");
             assertThat(integrationProperties.isErrorChannelRequireSubscribers()).isFalse();
             assertThat(integrationProperties.isErrorChannelIgnoreFailures()).isFalse();
-        }
+        });
     }
 
     @Test
     void defaultPollerMetadataUsesConfiguredTriggerTimeoutAndOrderedCustomizers() {
-        try (ConfigurableApplicationContext context = run(PollerApplication.class,
+        runner(PollerApplication.class,
                 "spring.integration.poller.fixed-rate=250ms",
                 "spring.integration.poller.initial-delay=50ms",
                 "spring.integration.poller.max-messages-per-poll=8",
-                "spring.integration.poller.receive-timeout=40ms")) {
+                "spring.integration.poller.receive-timeout=40ms")
+            .run((context) -> {
 
             PollerMetadata pollerMetadata = context.getBean(PollerMetadata.DEFAULT_POLLER_METADATA_BEAN_NAME,
                     PollerMetadata.class);
@@ -157,20 +162,22 @@ public class Spring_boot_integrationTest {
             assertThat(trigger.isFixedRate()).isTrue();
             assertThat(pollerMetadata.getReceiveTimeout()).isEqualTo(40L);
             assertThat(pollerMetadata.getMaxMessagesPerPoll()).isEqualTo(10L);
-        }
+        });
     }
 
     @Test
     void defaultPollerRejectsMutuallyExclusiveTriggerProperties() {
-        assertThatThrownBy(() -> run(PollerApplication.class,
+        runner(PollerApplication.class,
                 "spring.integration.poller.fixed-rate=250ms",
-                "spring.integration.poller.fixed-delay=250ms"))
-            .hasRootCauseInstanceOf(MutuallyExclusiveConfigurationPropertiesException.class);
+                "spring.integration.poller.fixed-delay=250ms")
+            .run((context) -> assertThat(context.getStartupFailure())
+                    .hasRootCauseInstanceOf(MutuallyExclusiveConfigurationPropertiesException.class));
     }
 
     @Test
     void autoConfigurationProvidesTaskSchedulerForIntegrationInfrastructure() throws InterruptedException {
-        try (ConfigurableApplicationContext context = run(TaskSchedulerApplication.class)) {
+        runner(TaskSchedulerApplication.class)
+            .run((context) -> {
             TaskScheduler taskScheduler = context.getBean(IntegrationContextUtils.TASK_SCHEDULER_BEAN_NAME,
                     TaskScheduler.class);
             CountDownLatch taskRan = new CountDownLatch(1);
@@ -179,12 +186,13 @@ public class Spring_boot_integrationTest {
             assertThat(taskScheduler).isInstanceOf(ThreadPoolTaskScheduler.class);
             assertThat(future.isCancelled()).isFalse();
             assertThat(taskRan.await(1, TimeUnit.SECONDS)).isTrue();
-        }
+        });
     }
 
     @Test
     void integrationFlowBeanIsDiscoveredAndProcessesMessages() {
-        try (ConfigurableApplicationContext context = run(FlowApplication.class)) {
+        runner(FlowApplication.class)
+            .run((context) -> {
             MessageChannel requests = context.getBean("requests", MessageChannel.class);
             PollableChannel replies = context.getBean("replies", PollableChannel.class);
 
@@ -194,28 +202,23 @@ public class Spring_boot_integrationTest {
             assertThat(sent).isTrue();
             assertThat(reply).isNotNull();
             assertThat(reply.getPayload()).isEqualTo("NATIVE IMAGE");
-        }
+        });
     }
 
     @Test
     void autoConfigurationScansMessagingGateways() {
-        try (ConfigurableApplicationContext context = run(GatewayApplication.class)) {
+        runner(GatewayApplication.class)
+            .run((context) -> {
             TextGateway gateway = context.getBean(TextGateway.class);
 
             String reply = gateway.clean("  component scan  ");
 
             assertThat(reply).isEqualTo("component scan");
-        }
+        });
     }
 
-    private static ConfigurableApplicationContext run(Class<?> source, String... properties) {
-        return new SpringApplicationBuilder(source)
-                .web(WebApplicationType.NONE)
-                .bannerMode(Banner.Mode.OFF)
-                .logStartupInfo(false)
-                .properties(commonProperties())
-                .properties(properties)
-                .run();
+    private ApplicationContextRunner runner(Class<?> source, String... properties) {
+        return this.contextRunner.withUserConfiguration(source).withPropertyValues(properties);
     }
 
     private static String[] commonProperties() {
@@ -225,8 +228,7 @@ public class Spring_boot_integrationTest {
         };
     }
 
-    @SpringBootConfiguration
-    @EnableAutoConfiguration
+    @Configuration(proxyBeanMethods = false)
     public static class IntegrationTestApplication {
     }
 
@@ -256,8 +258,7 @@ public class Spring_boot_integrationTest {
         }
     }
 
-    @SpringBootConfiguration
-    @EnableAutoConfiguration
+    @Configuration(proxyBeanMethods = false)
     public static class PollerApplication {
 
         @Bean
@@ -271,13 +272,11 @@ public class Spring_boot_integrationTest {
         }
     }
 
-    @SpringBootConfiguration
-    @EnableAutoConfiguration
+    @Configuration(proxyBeanMethods = false)
     public static class TaskSchedulerApplication {
     }
 
-    @SpringBootConfiguration
-    @EnableAutoConfiguration
+    @Configuration(proxyBeanMethods = false)
     public static class FlowApplication {
 
         @Bean
@@ -294,8 +293,8 @@ public class Spring_boot_integrationTest {
         }
     }
 
-    @SpringBootConfiguration
-    @EnableAutoConfiguration
+    @Configuration(proxyBeanMethods = false)
+    @IntegrationComponentScan(basePackageClasses = TextGateway.class)
     public static class GatewayApplication {
 
         @Bean
