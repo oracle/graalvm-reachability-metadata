@@ -28,6 +28,8 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
+import org.springframework.data.jdbc.core.dialect.JdbcDialect;
+import org.springframework.data.jdbc.core.dialect.JdbcH2Dialect;
 import org.springframework.data.jdbc.core.mapping.JdbcMappingContext;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -109,6 +111,22 @@ public class Spring_boot_data_jdbcTest {
 
                     repository.delete(grace);
                     assertThat(repository.findAll()).extracting(Person::getName).containsExactly("Ada");
+                    jdbcTemplate.execute("SHUTDOWN");
+                });
+    }
+
+    @Test
+    void autoConfigurationDetectsJdbcDialectFromDataSourceWhenDialectIsNotConfigured() {
+        this.contextRunner.withPropertyValues(dataSourceProperties())
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(DataJdbcProperties.class);
+                    assertThat(context).hasSingleBean(JdbcDialect.class);
+
+                    DataJdbcProperties properties = context.getBean(DataJdbcProperties.class);
+                    assertThat(properties.getDialect()).isNull();
+                    assertThat(context.getBean(JdbcDialect.class)).isInstanceOf(JdbcH2Dialect.class);
+
+                    JdbcTemplate jdbcTemplate = context.getBean(JdbcTemplate.class);
                     jdbcTemplate.execute("SHUTDOWN");
                 });
     }
