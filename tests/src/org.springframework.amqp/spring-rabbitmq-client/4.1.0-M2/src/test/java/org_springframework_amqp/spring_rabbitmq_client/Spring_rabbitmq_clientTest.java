@@ -1067,6 +1067,11 @@ public class Spring_rabbitmq_clientTest {
         }
 
         @Override
+        public ConsumerBuilder preSettled() {
+            return this;
+        }
+
+        @Override
         public ConsumerBuilder.StreamOptions stream() {
             throw new UnsupportedOperationException("Streams are not used by these tests");
         }
