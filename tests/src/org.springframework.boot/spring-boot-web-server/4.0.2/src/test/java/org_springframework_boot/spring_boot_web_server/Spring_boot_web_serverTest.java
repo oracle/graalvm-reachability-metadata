@@ -88,8 +88,8 @@ public class Spring_boot_web_serverTest {
 
         Compression compression = properties.getCompression();
         compression.setEnabled(true);
-        compression.setMimeTypes(new String[] { "application/json", "text/plain" });
-        compression.setExcludedUserAgents(new String[] { "legacy-client" });
+        compression.setMimeTypes(new String[] {"application/json", "text/plain" });
+        compression.setExcludedUserAgents(new String[] {"legacy-client" });
         compression.setMinResponseSize(DataSize.ofKilobytes(2));
 
         Http2 http2 = properties.getHttp2();
@@ -97,8 +97,8 @@ public class Spring_boot_web_serverTest {
 
         Ssl ssl = Ssl.forBundle("server-bundle");
         ssl.setClientAuth(Ssl.ClientAuth.NEED);
-        ssl.setCiphers(new String[] { "TLS_AES_128_GCM_SHA256" });
-        ssl.setEnabledProtocols(new String[] { "TLSv1.3" });
+        ssl.setCiphers(new String[] {"TLS_AES_128_GCM_SHA256" });
+        ssl.setEnabledProtocols(new String[] {"TLSv1.3" });
         ssl.setKeyAlias("server");
         ssl.setKeyPassword("key-password");
         ssl.setKeyStore("classpath:server.p12");
@@ -367,8 +367,8 @@ public class Spring_boot_web_serverTest {
         inlineSsl.setKeyStorePassword("store-password");
         inlineSsl.setKeyStoreType("PKCS12");
         inlineSsl.setProtocol("TLSv1.3");
-        inlineSsl.setCiphers(new String[] { "TLS_AES_128_GCM_SHA256" });
-        inlineSsl.setEnabledProtocols(new String[] { "TLSv1.3" });
+        inlineSsl.setCiphers(new String[] {"TLS_AES_128_GCM_SHA256" });
+        inlineSsl.setEnabledProtocols(new String[] {"TLSv1.3" });
 
         SslBundle inlineBundle = WebServerSslBundle.get(inlineSsl);
 
@@ -452,12 +452,10 @@ public class Spring_boot_web_serverTest {
         WebServerPortFileWriter writer;
         try {
             writer = new WebServerPortFileWriter(new File(tempDir, "ignored.port"));
-        }
-        finally {
+        } finally {
             if (previousPortFile != null) {
                 System.setProperty("PORTFILE", previousPortFile);
-            }
-            else {
+            } else {
                 System.clearProperty("PORTFILE");
             }
         }
