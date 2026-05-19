@@ -72,6 +72,15 @@ public class Spring_boot_persistenceTest {
     }
 
     @Test
+    void entityScanValueAttributeAliasesBasePackages() {
+        try (AnnotationConfigApplicationContext context = contextWith(ValueAliasEntityScanConfiguration.class)) {
+            EntityScanPackages packages = EntityScanPackages.get(context);
+
+            assertThat(packages.getPackageNames()).containsExactly("com.example.orders", "com.example.inventory");
+        }
+    }
+
+    @Test
     void entityScanPackagesRegisterMergesPackageNamesAndIgnoresBlankEntries() {
         DefaultListableBeanFactory registry = new DefaultListableBeanFactory();
 
@@ -181,6 +190,12 @@ public class Spring_boot_persistenceTest {
     @Configuration(proxyBeanMethods = false)
     @EntityScan(basePackages = "${entity.packages}", basePackageClasses = EntityPackageMarker.class)
     static class ExplicitEntityScanConfiguration {
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @EntityScan({ "com.example.orders", "com.example.inventory" })
+    static class ValueAliasEntityScanConfiguration {
 
     }
 
