@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.transaction.autoconfigure.TransactionAutoConfiguration;
 import org.springframework.boot.transaction.autoconfigure.TransactionManagerCustomizationAutoConfiguration;
 import org.springframework.boot.transaction.autoconfigure.TransactionManagerCustomizer;
@@ -25,8 +26,10 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionExecution;
 import org.springframework.transaction.TransactionExecutionListener;
 import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionStatus;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -117,6 +120,24 @@ public class Spring_boot_transactionTest {
         }
     }
 
+    @Test
+    void transactionAutoConfigurationEnablesDeclarativeTransactionManagementWithJdkProxies() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test", Map.of(
+                    "spring.aop.proxy-target-class", "false")));
+            context.register(DeclarativeTransactionConfiguration.class);
+            context.refresh();
+
+            TransactionalService service = context.getBean(TransactionalService.class);
+            RecordingTransactionManager transactionManager = context.getBean(RecordingTransactionManager.class);
+
+            assertThat(service.process()).isEqualTo("transaction-active");
+            assertThat(transactionManager.begins).isEqualTo(1);
+            assertThat(transactionManager.commits).isEqualTo(1);
+            assertThat(transactionManager.rollbacks).isZero();
+        }
+    }
+
     private static AnnotationConfigApplicationContext newContext(
             String defaultTimeout, String rollbackOnCommitFailure) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
@@ -129,6 +150,33 @@ public class Spring_boot_transactionTest {
                 TransactionManagerCustomizationAutoConfiguration.class);
         context.refresh();
         return context;
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ImportAutoConfiguration(TransactionAutoConfiguration.class)
+    static class DeclarativeTransactionConfiguration {
+        @Bean
+        RecordingTransactionManager transactionManager() {
+            return new RecordingTransactionManager();
+        }
+
+        @Bean
+        TransactionalService transactionalService() {
+            return new TransactionalServiceImpl();
+        }
+    }
+
+    interface TransactionalService {
+        @Transactional
+        String process();
+    }
+
+    static class TransactionalServiceImpl implements TransactionalService {
+        @Override
+        public String process() {
+            return TransactionSynchronizationManager.isActualTransactionActive()
+                    ? "transaction-active" : "transaction-inactive";
+        }
     }
 
     @Configuration(proxyBeanMethods = false)
