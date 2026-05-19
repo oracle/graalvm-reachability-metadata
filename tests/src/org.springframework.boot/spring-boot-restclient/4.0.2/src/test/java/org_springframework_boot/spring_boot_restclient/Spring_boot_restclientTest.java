@@ -16,11 +16,15 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationHandler;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.http.converter.autoconfigure.ClientHttpMessageConvertersCustomizer;
@@ -30,11 +34,13 @@ import org.springframework.boot.restclient.RootUriBuilderFactory;
 import org.springframework.boot.restclient.autoconfigure.HttpMessageConvertersRestClientCustomizer;
 import org.springframework.boot.restclient.autoconfigure.RestClientBuilderConfigurer;
 import org.springframework.boot.restclient.autoconfigure.RestTemplateBuilderConfigurer;
+import org.springframework.boot.restclient.observation.ObservationRestClientCustomizer;
 import org.springframework.boot.restclient.observation.ObservationRestTemplateCustomizer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.observation.ClientRequestObservationContext;
 import org.springframework.http.client.observation.ClientRequestObservationConvention;
 import org.springframework.http.client.observation.DefaultClientRequestObservationConvention;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -168,6 +174,66 @@ public class Spring_boot_restclientTest {
 
             assertThat(convertersCustomizerCalled).isTrue();
             assertThat(body).isEqualTo("GET /rest/hello/boot configured");
+        }
+    }
+
+    @Test
+    void observationRestClientCustomizerAppliesRegistryAndConventionToRestClient() throws IOException {
+        try (TestHttpServer server = TestHttpServer.start(
+                exchange -> send(exchange, HttpStatus.OK.value(), "observed"))) {
+            ObservationRegistry observationRegistry = ObservationRegistry.create();
+            AtomicInteger startedObservations = new AtomicInteger();
+            AtomicInteger stoppedObservations = new AtomicInteger();
+            AtomicReference<String> observationName = new AtomicReference<>();
+            AtomicReference<String> contextualName = new AtomicReference<>();
+            observationRegistry.observationConfig().observationHandler(new ObservationHandler<Observation.Context>() {
+                @Override
+                public void onStart(Observation.Context context) {
+                    startedObservations.incrementAndGet();
+                    observationName.set(context.getName());
+                }
+
+                @Override
+                public void onStop(Observation.Context context) {
+                    stoppedObservations.incrementAndGet();
+                    contextualName.set(context.getContextualName());
+                }
+
+                @Override
+                public boolean supportsContext(Observation.Context context) {
+                    return context instanceof ClientRequestObservationContext;
+                }
+            });
+            ClientRequestObservationConvention observationConvention = new ClientRequestObservationConvention() {
+                @Override
+                public boolean supportsContext(Observation.Context context) {
+                    return context instanceof ClientRequestObservationContext;
+                }
+
+                @Override
+                public String getName() {
+                    return "test.rest.client";
+                }
+
+                @Override
+                public String getContextualName(ClientRequestObservationContext context) {
+                    return "test request";
+                }
+            };
+
+            RestClient.Builder builder = RestClient.builder()
+                    .baseUrl(server.url("/observed"))
+                    .requestFactory(requestFactory());
+            new ObservationRestClientCustomizer(observationRegistry, observationConvention).customize(builder);
+            RestClient restClient = builder.build();
+
+            String body = restClient.get().uri("/resource").retrieve().body(String.class);
+
+            assertThat(body).isEqualTo("observed");
+            assertThat(startedObservations).hasValue(1);
+            assertThat(stoppedObservations).hasValue(1);
+            assertThat(observationName).hasValue("test.rest.client");
+            assertThat(contextualName).hasValue("test request");
         }
     }
 
