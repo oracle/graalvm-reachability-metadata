@@ -7,6 +7,10 @@
 package org_codehaus_plexus.plexus_archiver;
 
 import java.io.File;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
 import java.nio.file.Path;
 
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
@@ -44,6 +48,30 @@ public class ArchiveEntryUtilsTest {
             }
         } finally {
             ArchiveEntryUtils.jvmFilePermAvailable = originalJvmFilePermAvailable;
+        }
+    }
+
+    @Test
+    void legacyJvmPermissionHelperInvokesAllFilePermissionMethods() throws Throwable {
+        File file = temporaryDirectory.resolve("archive-entry-utils-legacy-permissions.txt").toFile();
+        assertThat(file.createNewFile()).isTrue();
+
+        Logger logger = new ConsoleLogger(Logger.LEVEL_DISABLED, "archive-entry-utils-legacy-test");
+        Lookup lookup = MethodHandles.privateLookupIn(ArchiveEntryUtils.class, MethodHandles.lookup());
+        MethodHandle method = lookup.findStatic(
+            ArchiveEntryUtils.class,
+            "applyPermissionsWithJvm",
+            MethodType.methodType(Void.TYPE, File.class, String.class, Logger.class));
+
+        // The public chmod entry point routes to the Java 7 NIO implementation on current JDKs.
+        method.invokeExact(file, "700", logger);
+
+        assertThat(file)
+            .isFile()
+            .canRead()
+            .canWrite();
+        if (Os.isFamily(Os.FAMILY_UNIX)) {
+            assertThat(file.canExecute()).isTrue();
         }
     }
 }
