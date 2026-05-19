@@ -11,7 +11,12 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
     testImplementation "org.springframework.boot:spring-boot-transaction:$libraryVersion"
+    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+    testImplementation "org.springframework:spring-aspects"
+    testImplementation "io.projectreactor:reactor-core"
+    testImplementation "jakarta.transaction:jakarta.transaction-api"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
