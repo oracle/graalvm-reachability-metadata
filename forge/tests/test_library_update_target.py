@@ -236,6 +236,12 @@ class LibraryUpdateTargetTests(unittest.TestCase):
                 "implementation 'org.example:demo:1.0'\nimplementation 'org.other:dep:1.0'\n",
             )
             _write_file(
+                os.path.join(repo, "tests", "src", "org.example", "demo", "1.0", "gradle.properties"),
+                "library.coordinates = org.example:demo:1.0\n"
+                "library.version = 1.0\n"
+                "metadata.dir = org.example/demo/1.0/\n"
+            )
+            _write_file(
                 os.path.join(
                     repo,
                     "tests",
@@ -272,6 +278,14 @@ class LibraryUpdateTargetTests(unittest.TestCase):
                 build_file = file.read()
             self.assertIn("implementation 'org.example:demo:1.1'", build_file)
             self.assertIn("implementation 'org.other:dep:1.0'", build_file)
+            with open(
+                    os.path.join(repo, "tests", "src", "org.example", "demo", "1.1", "gradle.properties"),
+                    encoding="utf-8",
+            ) as file:
+                gradle_properties = file.read()
+            self.assertIn("library.coordinates = org.example:demo:1.1", gradle_properties)
+            self.assertIn("library.version = 1.1", gradle_properties)
+            self.assertIn("metadata.dir = org.example/demo/1.1/", gradle_properties)
             with open(
                     os.path.join(
                         repo,
