@@ -334,11 +334,9 @@ public class Spring_boot_restclientTest {
             server.createContext("/", exchange -> {
                 try {
                     handler.handle(exchange);
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     throw ex;
-                }
-                catch (RuntimeException ex) {
+                } catch (RuntimeException ex) {
                     throw ex;
                 }
             });
