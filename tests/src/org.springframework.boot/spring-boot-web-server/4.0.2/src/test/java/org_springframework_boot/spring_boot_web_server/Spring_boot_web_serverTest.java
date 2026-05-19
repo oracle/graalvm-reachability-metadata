@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.net.BindException;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.KeyStore;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ import org.springframework.boot.web.server.autoconfigure.ServerProperties;
 import org.springframework.boot.web.server.context.MissingWebServerFactoryBeanException;
 import org.springframework.boot.web.server.context.ServerPortInfoApplicationContextInitializer;
 import org.springframework.boot.web.server.context.WebServerInitializedEvent;
+import org.springframework.boot.web.server.context.WebServerPortFileWriter;
 import org.springframework.boot.web.server.servlet.ConfigurableServletWebServerFactory;
 import org.springframework.boot.web.server.servlet.ContextPath;
 import org.springframework.boot.web.server.servlet.CookieSameSiteSupplier;
@@ -64,6 +66,7 @@ import org.springframework.boot.web.server.servlet.Session;
 import org.springframework.boot.web.server.servlet.Session.SessionTrackingMode;
 import org.springframework.boot.web.server.servlet.context.AnnotationConfigServletWebServerApplicationContext;
 import org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.boot.web.server.servlet.context.ServletWebServerInitializedEvent;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.unit.DataSize;
@@ -437,6 +440,37 @@ public class Spring_boot_web_serverTest {
                 ServletWebServerApplicationContext.class, ServletWebServerFactory.class, WebApplicationType.SERVLET);
         assertThat(missing.getWebApplicationType()).isEqualTo(WebApplicationType.SERVLET);
         assertThat(missing.getBeanType()).isEqualTo(ServletWebServerFactory.class);
+    }
+
+    @Test
+    void webServerPortFileWriterWritesNamespaceSpecificPortFile(@TempDir File tempDir) throws Exception {
+        File portFile = new File(tempDir, "application.port");
+        File managementPortFile = new File(tempDir, "application-management.port");
+        RecordingWebServer server = new RecordingWebServer(49494);
+        String previousPortFile = System.getProperty("PORTFILE");
+        System.setProperty("PORTFILE", portFile.getAbsolutePath());
+        WebServerPortFileWriter writer;
+        try {
+            writer = new WebServerPortFileWriter(new File(tempDir, "ignored.port"));
+        }
+        finally {
+            if (previousPortFile != null) {
+                System.setProperty("PORTFILE", previousPortFile);
+            }
+            else {
+                System.clearProperty("PORTFILE");
+            }
+        }
+
+        try (ServletWebServerApplicationContext context = new ServletWebServerApplicationContext()) {
+            context.setServerNamespace("management");
+
+            writer.onApplicationEvent(new ServletWebServerInitializedEvent(server, context));
+        }
+
+        assertThat(portFile).doesNotExist();
+        assertThat(managementPortFile).isFile();
+        assertThat(Files.readString(managementPortFile.toPath(), StandardCharsets.UTF_8)).isEqualTo("49494");
     }
 
     @Test
