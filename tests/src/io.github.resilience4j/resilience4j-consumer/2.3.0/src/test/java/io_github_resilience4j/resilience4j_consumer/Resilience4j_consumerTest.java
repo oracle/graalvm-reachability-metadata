@@ -14,6 +14,7 @@ import java.util.List;
 import io.github.resilience4j.consumer.CircularEventConsumer;
 import io.github.resilience4j.consumer.DefaultEventConsumerRegistry;
 import io.github.resilience4j.consumer.EventConsumerRegistry;
+import io.github.resilience4j.core.EventProcessor;
 import org.junit.jupiter.api.Test;
 
 public class Resilience4j_consumerTest {
@@ -41,6 +42,22 @@ public class Resilience4j_consumerTest {
 
         assertThat(bufferedEvents).containsExactly(10, 20);
         assertThat(consumer.getBufferedEvents()).containsExactly(20, 30);
+    }
+
+    @Test
+    void circularEventConsumerBuffersEventsPublishedThroughEventProcessor() {
+        EventProcessor<CharSequence> eventProcessor = new EventProcessor<>();
+        CircularEventConsumer<CharSequence> consumer = new CircularEventConsumer<>(2);
+        eventProcessor.onEvent(consumer);
+
+        boolean firstEventConsumed = eventProcessor.processEvent("published-first");
+        boolean secondEventConsumed = eventProcessor.processEvent("published-second");
+        boolean thirdEventConsumed = eventProcessor.processEvent("published-third");
+
+        assertThat(firstEventConsumed).isTrue();
+        assertThat(secondEventConsumed).isTrue();
+        assertThat(thirdEventConsumed).isTrue();
+        assertThat(consumer.getBufferedEvents()).containsExactly("published-second", "published-third");
     }
 
     @Test
