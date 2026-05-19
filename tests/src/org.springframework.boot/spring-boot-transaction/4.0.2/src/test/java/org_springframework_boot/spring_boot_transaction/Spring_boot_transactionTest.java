@@ -36,6 +36,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionExecution;
 import org.springframework.transaction.TransactionExecutionListener;
 import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.reactive.TransactionalOperator;
@@ -148,6 +149,24 @@ public class Spring_boot_transactionTest {
     }
 
     @Test
+    void transactionAutoConfigurationHonorsUserProvidedTransactionManagementConfiguration() {
+        try (AnnotationConfigApplicationContext context = contextWithProperties(
+                Map.of("spring.aop.proxy-target-class", "true"),
+                TransactionAutoConfigurationImport.class, ExplicitJdkTransactionManagementConfiguration.class)) {
+            RecordingTransactionManager transactionManager = context.getBean(RecordingTransactionManager.class);
+            TransactionalService service = context.getBean(TransactionalService.class);
+
+            service.performInTransaction();
+
+            assertThat(AopUtils.isJdkDynamicProxy(service)).isTrue();
+            assertThat(AopUtils.isCglibProxy(service)).isFalse();
+            assertThat(transactionManager.beginCount).isEqualTo(1);
+            assertThat(transactionManager.commitCount).isEqualTo(1);
+            assertThat(transactionManager.rollbackCount).isZero();
+        }
+    }
+
+    @Test
     void transactionAutoConfigurationBacksOffWhenUserProvidesTransactionOperations() {
         try (AnnotationConfigApplicationContext context = contextWithProperties(
                 Map.of("spring.aop.proxy-target-class", "false"),
@@ -208,6 +227,22 @@ public class Spring_boot_transactionTest {
 
     @Configuration(proxyBeanMethods = false)
     public static class TransactionalServiceConfiguration {
+
+        @Bean
+        RecordingTransactionManager transactionManager() {
+            return new RecordingTransactionManager();
+        }
+
+        @Bean
+        TransactionalService transactionalService() {
+            return new DefaultTransactionalService();
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @EnableTransactionManagement(proxyTargetClass = false)
+    public static class ExplicitJdkTransactionManagementConfiguration {
 
         @Bean
         RecordingTransactionManager transactionManager() {
