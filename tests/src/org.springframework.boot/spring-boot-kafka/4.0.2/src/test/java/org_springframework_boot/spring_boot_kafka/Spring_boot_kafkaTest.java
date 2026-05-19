@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.annotation.ImportCandidates;
+import org.springframework.boot.kafka.autoconfigure.DefaultKafkaConsumerFactoryCustomizer;
+import org.springframework.boot.kafka.autoconfigure.DefaultKafkaProducerFactoryCustomizer;
 import org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration;
 import org.springframework.boot.kafka.autoconfigure.KafkaConnectionDetails;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
@@ -162,6 +164,29 @@ public class Spring_boot_kafkaTest {
                             .containsEntry(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, List.of("localhost:9092"));
 
                     assertListenerContainerProperties(context.getBean(ConcurrentKafkaListenerContainerFactory.class));
+                });
+    }
+
+    @Test
+    void factoryCustomizersContributeAdditionalClientConfiguration() {
+        this.contextRunner
+                .withBean(DefaultKafkaConsumerFactoryCustomizer.class,
+                        () -> (factory) -> factory
+                                .updateConfigs(Map.of(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "25")))
+                .withBean(DefaultKafkaProducerFactoryCustomizer.class,
+                        () -> (factory) -> factory.updateConfigs(Map.of(ProducerConfig.LINGER_MS_CONFIG, "7")))
+                .withPropertyValues("spring.kafka.bootstrap-servers=localhost:9092",
+                        "spring.kafka.admin.auto-create=false")
+                .run((context) -> {
+                    DefaultKafkaConsumerFactory<?, ?> consumerFactory = context
+                            .getBean(DefaultKafkaConsumerFactory.class);
+                    DefaultKafkaProducerFactory<?, ?> producerFactory = context
+                            .getBean(DefaultKafkaProducerFactory.class);
+
+                    assertThat(consumerFactory.getConfigurationProperties())
+                            .containsEntry(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "25");
+                    assertThat(producerFactory.getConfigurationProperties())
+                            .containsEntry(ProducerConfig.LINGER_MS_CONFIG, "7");
                 });
     }
 
