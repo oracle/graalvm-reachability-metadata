@@ -24,6 +24,21 @@ import com.google.inject.Module;
 
 public class ElementAnalyzerTest {
     @Test
+    void wireModuleInitializesLegacyAliasDiscovery() {
+        Module applicationModule = new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(NeedsCollaborator.class);
+                bind(Collaborator.class).to(WiredCollaborator.class);
+            }
+        };
+
+        Injector injector = Guice.createInjector(new WireModule(applicationModule));
+
+        assertThat(injector.getInstance(NeedsCollaborator.class).collaborator()).isInstanceOf(WiredCollaborator.class);
+    }
+
+    @Test
     void wireModuleRoutesUnresolvedConstructorDependenciesToCustomWiring() {
         Collaborator collaborator = new WiredCollaborator();
         List<Key<?>> wiredKeys = new ArrayList<>();
