@@ -116,6 +116,22 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
     }
 
     @Test
+    void swaggerConfigResourceUsesExplicitOpenApiUrlWithoutConfiguredGroups() {
+        SwaggerUiConfigProperties swaggerUiProperties = createSwaggerUiConfig();
+        swaggerUiProperties.setUrl("/external/openapi.yaml");
+        SwaggerWelcomeWebMvc welcome = new SwaggerWelcomeWebMvc(swaggerUiProperties, new SpringDocConfigProperties(),
+                new FixedSpringWebProvider(""));
+        SwaggerConfigResource resource = new SwaggerConfigResource(welcome);
+        MockHttpServletRequest request = request("/service", "/swagger-ui/swagger-config");
+
+        Map<String, Object> configuration = resource.openapiJson(request);
+
+        assertThat(configuration).containsEntry("configUrl", "/service/v3/api-docs/swagger-config")
+                .containsEntry("url", "/service/external/openapi.yaml")
+                .doesNotContainKey("urls");
+    }
+
+    @Test
     void indexPageTransformerInjectsSwaggerUiAndOAuthConfiguration() throws IOException {
         SwaggerUiConfigProperties swaggerUiProperties = createSwaggerUiConfig();
         swaggerUiProperties.setConfigUrl("/gateway/swagger-config");
