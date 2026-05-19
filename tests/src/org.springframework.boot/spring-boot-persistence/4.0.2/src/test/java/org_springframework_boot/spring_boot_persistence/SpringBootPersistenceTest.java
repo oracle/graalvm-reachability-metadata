@@ -97,6 +97,20 @@ public class SpringBootPersistenceTest {
     }
 
     @Test
+    void entityScannerFindsAnnotatedTypesForEachAnnotationFilter() throws ClassNotFoundException {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            EntityScanPackages.register(context, SampleAccount.class.getPackageName());
+            context.refresh();
+
+            Set<Class<?>> scannedTypes = new EntityScanner(context).scan(SamplePersistentType.class,
+                    SampleAuditedPersistentType.class);
+
+            assertThat(scannedTypes).containsExactlyInAnyOrder(SampleAccount.class, SampleOrder.class,
+                    SampleInvoice.class);
+        }
+    }
+
+    @Test
     void persistenceExceptionTranslationAutoConfigurationCreatesPostProcessorWhenEnabled() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             context.getEnvironment().getPropertySources().addFirst(
@@ -164,5 +178,16 @@ final class SampleAccount {
 
 @SamplePersistentType
 final class SampleOrder {
+
+}
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@interface SampleAuditedPersistentType {
+
+}
+
+@SampleAuditedPersistentType
+final class SampleInvoice {
 
 }
