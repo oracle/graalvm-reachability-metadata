@@ -6,15 +6,21 @@
  */
 package org_apache_maven.maven_project;
 
-import org.apache.maven.project.injection.ModelDefaultsInjector;
+import org.apache.maven.model.Model;
+import org.apache.maven.project.builder.impl.DefaultProjectBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ModelDefaultsInjectorAnonymous1Test {
     @Test
-    void roleInitializesThroughSyntheticClassLiteralHelper() {
-        assertThat(ModelDefaultsInjector.ROLE)
-                .isEqualTo("org.apache.maven.project.injection.ModelDefaultsInjector");
+    void superPomSuppliesModelDefaults() {
+        DefaultProjectBuilder builder = new DefaultProjectBuilder();
+
+        Model superModel = builder.getSuperModel();
+
+        assertThat(superModel.getModelVersion()).isEqualTo("4.0.0");
+        assertThat(superModel.getBuild().getSourceDirectory()).isEqualTo("${project.basedir}/src/main/java");
+        assertThat(superModel.getBuild().getTestSourceDirectory()).isEqualTo("${project.basedir}/src/test/java");
     }
 }

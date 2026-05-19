@@ -6,7 +6,7 @@
  */
 package org_apache_maven.maven_project;
 
-import org.apache.maven.project.injection.ProfileInjector;
+import org.apache.maven.profiles.injection.ProfileInjector;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,6 +15,6 @@ public class ProfileInjectorAnonymous1Test {
     @Test
     void roleInitializesThroughSyntheticClassLiteralHelper() {
         assertThat(ProfileInjector.ROLE)
-                .isEqualTo("org.apache.maven.project.injection.ProfileInjector");
+                .isEqualTo("org.apache.maven.profiles.injection.ProfileInjector");
     }
 }
