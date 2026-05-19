@@ -18,8 +18,8 @@ import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebDriver.Options;
 import org.openqa.selenium.WebDriver.TargetLocator;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.events.EventFiringDecorator;
+import org.openqa.selenium.support.events.WebDriverListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,8 +28,8 @@ public class EventFiringWebDriverTest {
     void delegatesDriverCallsAndDispatchesNavigationEvents() {
         RecordingWebDriver driver = new RecordingWebDriver();
         RecordingEventListener listener = new RecordingEventListener();
-        EventFiringWebDriver eventFiringDriver = new EventFiringWebDriver(driver)
-                .register(listener);
+        WebDriver eventFiringDriver = new EventFiringDecorator<WebDriver>(listener)
+                .decorate(driver);
 
         eventFiringDriver.get("https://example.test/page");
         String currentUrl = eventFiringDriver.getCurrentUrl();
@@ -41,7 +41,6 @@ public class EventFiringWebDriverTest {
         assertThat(listener.events()).containsExactly(
                 "beforeNavigateTo:https://example.test/page",
                 "afterNavigateTo:https://example.test/page");
-        assertThat(eventFiringDriver.getWrappedDriver()).isSameAs(driver);
     }
 
     private static final class RecordingWebDriver implements WebDriver {
@@ -119,16 +118,16 @@ public class EventFiringWebDriverTest {
         }
     }
 
-    private static final class RecordingEventListener extends AbstractWebDriverEventListener {
+    public static final class RecordingEventListener implements WebDriverListener {
         private final List<String> events = new ArrayList<>();
 
         @Override
-        public void beforeNavigateTo(String url, WebDriver driver) {
+        public void beforeGet(WebDriver driver, String url) {
             events.add("beforeNavigateTo:" + url);
         }
 
         @Override
-        public void afterNavigateTo(String url, WebDriver driver) {
+        public void afterGet(WebDriver driver, String url) {
             events.add("afterNavigateTo:" + url);
         }
 
