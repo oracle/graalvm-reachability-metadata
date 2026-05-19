@@ -28,11 +28,10 @@ public class ForeignStrategyTest {
     @Test
     void getResourceConsultsForeignClassLoaderFirst() throws Exception {
         RecordingClassLoader foreignClassLoader = new RecordingClassLoader();
-        ClassRealm realm = newRealm(foreignClassLoader);
+        ForeignStrategy strategy = newForeignStrategy(foreignClassLoader);
 
-        URL resource = realm.getResource("/" + RESOURCE_NAME);
+        URL resource = strategy.getResource("/" + RESOURCE_NAME);
 
-        assertThat(realm.getStrategy()).isInstanceOf(ForeignStrategy.class);
         assertThat(resource).isEqualTo(foreignClassLoader.resource);
         assertThat(foreignClassLoader.resourceLookups).containsExactly(RESOURCE_NAME);
     }
@@ -40,20 +39,21 @@ public class ForeignStrategyTest {
     @Test
     void findResourcesIncludesResourcesFromForeignClassLoader() throws Exception {
         RecordingClassLoader foreignClassLoader = new RecordingClassLoader();
-        ClassRealm realm = newRealm(foreignClassLoader);
+        ForeignStrategy strategy = newForeignStrategy(foreignClassLoader);
 
-        List<URL> resources = resources(realm.findResources("/" + RESOURCE_NAME));
+        List<URL> resources = resources(strategy.findResources("/" + RESOURCE_NAME));
 
         assertThat(resources).containsExactly(foreignClassLoader.enumeratedResource);
         assertThat(foreignClassLoader.resourcesLookups).containsExactly(RESOURCE_NAME);
     }
 
-    private static ClassRealm newRealm(ClassLoader foreignClassLoader) throws Exception {
+    private static ForeignStrategy newForeignStrategy(ClassLoader foreignClassLoader) throws Exception {
         ClassWorld world = new ClassWorld();
-        return world.newRealm(REALM_ID, foreignClassLoader);
+        ClassRealm realm = world.newRealm(REALM_ID);
+        return new ForeignStrategy(realm, foreignClassLoader);
     }
 
-    private static List<URL> resources(Enumeration enumeration) {
+    private static List<URL> resources(Enumeration<?> enumeration) {
         List<URL> resources = new ArrayList<>();
         while (enumeration.hasMoreElements()) {
             resources.add((URL) enumeration.nextElement());

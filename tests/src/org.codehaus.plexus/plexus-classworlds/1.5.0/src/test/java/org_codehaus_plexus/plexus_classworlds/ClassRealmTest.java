@@ -9,6 +9,7 @@ package org_codehaus_plexus.plexus_classworlds;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URL;
+import java.util.Enumeration;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -33,6 +34,25 @@ public class ClassRealmTest {
         URL resource = realm.getRealmResource("classworlds.conf");
 
         assertThat(resource).isNotNull();
+    }
+
+    @Test
+    void loadResourceFromParentUsesForeignClassLoader() throws Exception {
+        ClassRealm realm = newRealm();
+
+        URL resource = realm.loadResourceFromParent("classworlds.conf");
+
+        assertThat(resource).isNotNull();
+    }
+
+    @Test
+    void loadResourcesFromParentUsesForeignClassLoader() throws Exception {
+        ClassRealm realm = newRealm();
+
+        Enumeration<?> resources = realm.loadResourcesFromParent("classworlds.conf");
+
+        assertThat(resources).isNotNull();
+        assertThat(resources.hasMoreElements()).isTrue();
     }
 
     private static ClassRealm newRealm() throws Exception {
