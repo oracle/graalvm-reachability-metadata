@@ -15,6 +15,7 @@ import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.FactoryDescriptors;
 import org.glassfish.hk2.api.Filter;
 import org.glassfish.hk2.api.MultiException;
+import org.glassfish.hk2.api.TwoPhaseResource;
 import org.glassfish.hk2.utilities.DescriptorImpl;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.junit.jupiter.api.Test;
@@ -98,6 +99,11 @@ public class AbstractBinderAnonymous2Test {
         @Override
         public void addIdempotentFilter(Filter... unbindFilter) throws IllegalArgumentException {
             throw new UnsupportedOperationException("Idempotent filters are not used by this test");
+        }
+
+        @Override
+        public void registerTwoPhaseResources(TwoPhaseResource... resources) {
+            throw new UnsupportedOperationException("Two-phase resources are not used by this test");
         }
 
         @Override
