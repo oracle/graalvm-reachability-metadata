@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.sisu.inject.BindingSubscriber;
-import org.eclipse.sisu.inject.InjectorPublisher;
+import org.eclipse.sisu.inject.InjectorBindings;
 import org.eclipse.sisu.inject.RankingFunction;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +39,7 @@ public class InjectorPublisherTest {
     void subscribePublishesBindingDeclaredThroughGuiceElementSource() {
         Binding<Service> binding = serviceBindingFromModule();
         RecordingSubscriber<Service> subscriber = new RecordingSubscriber<>(TypeLiteral.get(Service.class));
-        InjectorPublisher publisher = new InjectorPublisher(new SingleBindingInjector<>(binding), fixedRanking(19));
+        InjectorBindings publisher = new InjectorBindings(new SingleBindingInjector<>(binding), fixedRanking(19));
 
         publisher.subscribe(subscriber);
 
