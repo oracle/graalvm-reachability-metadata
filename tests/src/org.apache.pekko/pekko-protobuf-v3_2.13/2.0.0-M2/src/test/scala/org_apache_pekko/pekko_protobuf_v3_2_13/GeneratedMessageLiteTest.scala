@@ -39,6 +39,29 @@ class GeneratedMessageLiteTest {
   }
 
   @Test
+  def defaultInstanceLookupInitializesUnregisteredLiteClassByName(): Unit = {
+    val lookup: MethodHandles.Lookup = MethodHandles.privateLookupIn(
+      classOf[GeneratedMessageLite[_, _]],
+      MethodHandles.lookup()
+    )
+    val getDefaultInstance: MethodHandle = lookup.findStatic(
+      classOf[GeneratedMessageLite[_, _]],
+      "getDefaultInstance",
+      methodType(
+        classOf[GeneratedMessageLite[_, _]],
+        classOf[Class[_]]
+      )
+    )
+
+    val defaultInstance: Object = getDefaultInstance.invokeWithArguments(
+      classOf[GeneratedMessageLiteLazyDefaultInstanceMessage]
+    )
+
+    assertThat(defaultInstance)
+      .isInstanceOf(classOf[GeneratedMessageLiteLazyDefaultInstanceMessage])
+  }
+
+  @Test
   def generatedMethodHelpersResolveAndInvokeGeneratedAccessors(): Unit = {
     val lookup: MethodHandles.Lookup = MethodHandles.privateLookupIn(
       classOf[GeneratedMessageLite[_, _]],
