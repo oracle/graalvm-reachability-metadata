@@ -45,6 +45,25 @@ public class Resilience4j_consumerTest {
     }
 
     @Test
+    void circularEventConsumerRejectsInvalidCapacities() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> new CircularEventConsumer<String>(0));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> new CircularEventConsumer<String>(-1));
+    }
+
+    @Test
+    void circularEventConsumerRejectsNullEventsAndKeepsExistingEvents() {
+        CircularEventConsumer<String> consumer = new CircularEventConsumer<>(2);
+        consumer.consumeEvent("accepted");
+
+        assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> consumer.consumeEvent(null));
+
+        assertThat(consumer.getBufferedEvents()).containsExactly("accepted");
+    }
+
+    @Test
     void circularEventConsumerBuffersEventsPublishedThroughEventProcessor() {
         EventProcessor<CharSequence> eventProcessor = new EventProcessor<>();
         CircularEventConsumer<CharSequence> consumer = new CircularEventConsumer<>(2);
