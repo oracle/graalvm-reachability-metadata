@@ -15,7 +15,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JcommanderTest {
     @Test
     void createsConsoleThroughJdkConsoleLookup() {
-        assertThat(JCommander.getConsole()).isNotNull();
+        JCommander commander = new JCommander();
+
+        assertThat(commander.getConsole()).isNotNull();
     }
 
     @Test
@@ -23,7 +25,7 @@ public class JcommanderTest {
         JCommander commander = new JCommander(new RootCommand());
         commander.addCommand(new LocalizedCommand());
 
-        String description = commander.getCommandDescription("localized");
+        String description = commander.getUsageFormatter().getCommandDescription("localized");
 
         assertThat(description).isEqualTo("localized command description");
     }
