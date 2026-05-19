@@ -1,0 +1,1057 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.131.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e40c9-4e71-7e72-bd5f-552f386b7520
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework:spring-messaging:7.0.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "7.0.3" when "$version$" is replaced with "7.0.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+- Set "coordinates" to "org.springframework:spring-messaging:7.0.3".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "7.0.3".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/Spring sources first, then patch the JSON in place. After that I’ll do a quick validity check on the file.
+web search: 
+web search: org.springframework spring-messaging 7.0.3 Maven Central sources test jar documentation repository
+codex
+The initial search points to Spring Framework 7.0.3 and Maven Central for `spring-messaging`. I’m checking the published artifact contents now so the source/test/doc links match the exact release rather than a moving branch.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json && sed -n '1,200p' build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+-rw-rw-r-- 1 vjovanov vjovanov 67 May 19 17:09 build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+{
+  "coordinates" : "org.springframework:spring-messaging:7.0.3"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/7.0.3/spring-messaging-7.0.3.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework</groupId>
+  <artifactId>spring-messaging</artifactId>
+  <version>7.0.3</version>
+  <name>Spring Messaging</name>
+  <description>Spring Messaging</description>
+  <url>https://github.com/spring-projects/spring-framework</url>
+  <organization>
+    <name>Spring IO</name>
+    <url>https://spring.io/projects/spring-framework</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>jhoeller</id>
+      <name>Juergen Hoeller</name>
+      <email>juergen.hoeller@broadcom.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-framework</connection>
+    <developerConnection>scm:git:git://github.com/spring-projects/spring-framework</developerConnection>
+    <url>https://github.com/spring-projects/spring-framework</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-framework/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>7.0.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>7.0.3</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/7.0.3/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://docs.spring.io/spring-framework/docs/7.0.3/javadoc-api/org/springframework/messaging/package-summary.html && curl -fsSL -I https://github.com/spring-projects/spring-framework/tree/v7.0.3/spring-messaging/src/test' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 222ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/spring-messaging/7.0.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/spring-messaging/7.0.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-messaging-7.0.3-javadoc.jar" title="spring-messaging-7.0.3-javadoc.jar">spring-messaging-7.0.3-javadoc.jar</a>                2026-01-15 08:18   5795133      
+<a href="spring-messaging-7.0.3-javadoc.jar.asc" title="spring-messaging-7.0.3-javadoc.jar.asc">spring-messaging-7.0.3-javadoc.jar.asc</a>            2026-01-15 08:18       833      
+<a href="spring-messaging-7.0.3-javadoc.jar.md5" title="spring-messaging-7.0.3-javadoc.jar.md5">spring-messaging-7.0.3-javadoc.jar.md5</a>            2026-01-15 08:18        32      
+<a href="spring-messaging-7.0.3-javadoc.jar.sha1" title="spring-messaging-7.0.3-javadoc.jar.sha1">spring-messaging-7.0.3-javadoc.jar.sha1</a>           2026-01-15 08:18        40      
+<a href="spring-messaging-7.0.3-sources.jar" title="spring-messaging-7.0.3-sources.jar">spring-messaging-7.0.3-sources.jar</a>                2026-01-15 08:18    430248      
+<a href="spring-messaging-7.0.3-sources.jar.asc" title="spring-messaging-7.0.3-sources.jar.asc">spring-messaging-7.0.3-sources.jar.asc</a>            2026-01-15 08:18       833      
+<a href="spring-messaging-7.0.3-sources.jar.md5" title="spring-messaging-7.0.3-sources.jar.md5">spring-messaging-7.0.3-sources.jar.md5</a>            2026-01-15 08:18        32      
+<a href="spring-messaging-7.0.3-sources.jar.sha1" title="spring-messaging-7.0.3-sources.jar.sha1">spring-messaging-7.0.3-sources.jar.sha1</a>           2026-01-15 08:18        40      
+<a href="spring-messaging-7.0.3.jar" title="spring-messaging-7.0.3.jar">spring-messaging-7.0.3.jar</a>                        2026-01-15 08:18    611714      
+<a href="spring-messaging-7.0.3.jar.asc" title="spring-messaging-7.0.3.jar.asc">spring-messaging-7.0.3.jar.asc</a>                    2026-01-15 08:18       833      
+<a href="spring-messaging-7.0.3.jar.md5" title="spring-messaging-7.0.3.jar.md5">spring-messaging-7.0.3.jar.md5</a>                    2026-01-15 08:18        32      
+<a href="spring-messaging-7.0.3.jar.sha1" title="spring-messaging-7.0.3.jar.sha1">spring-messaging-7.0.3.jar.sha1</a>                   2026-01-15 08:18        40      
+<a href="spring-messaging-7.0.3.module" title="spring-messaging-7.0.3.module">spring-messaging-7.0.3.module</a>                     2026-01-15 08:18      2867      
+<a href="spring-messaging-7.0.3.module.asc" title="spring-messaging-7.0.3.module.asc">spring-messaging-7.0.3.module.asc</a>                 2026-01-15 08:18       833      
+<a href="spring-messaging-7.0.3.module.md5" title="spring-messaging-7.0.3.module.md5">spring-messaging-7.0.3.module.md5</a>                 2026-01-15 08:18        32      
+<a href="spring-messaging-7.0.3.module.sha1" title="spring-messaging-7.0.3.module.sha1">spring-messaging-7.0.3.module.sha1</a>                2026-01-15 08:18        40      
+<a href="spring-messaging-7.0.3.pom" title="spring-messaging-7.0.3.pom">spring-messaging-7.0.3.pom</a>                        2026-01-15 08:18      2224      
+<a href="spring-messaging-7.0.3.pom.asc" title="spring-messaging-7.0.3.pom.asc">spring-messaging-7.0.3.pom.asc</a>                    2026-01-15 08:18       833      
+<a href="spring-messaging-7.0.3.pom.md5" title="spring-messaging-7.0.3.pom.md5">spring-messaging-7.0.3.pom.md5</a>                    2026-01-15 08:18        32      
+<a href="spring-messaging-7.0.3.pom.sha1" title="spring-messaging-7.0.3.pom.sha1">spring-messaging-7.0.3.pom.sha1</a>                   2026-01-15 08:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 1036ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 15:10:11 GMT
+content-type: text/html
+last-modified: Fri, 01 Feb 1980 00:00:00 GMT
+strict-transport-security: max-age=15552000; includeSubDomains
+vary: Accept-Encoding
+set-cookie: __cf_bm=Jf7Ap_.HsLCc6MKFwVoUQeKnmVe_R3Y8s3nFGJNF7wU-1779203411.2481887-1.0.1.1-aMM1_ALYudg43DSGtTYrWVgC23fokaJOB5SoNm.MMsWFLXuUp9WpTjJnOztpIwxPqVU5H9LWwa_PivHg_IYUA7SyqoF1FZ5G1JsQXQln71.79mLmVTfRFaHHxyoZLQK8; HttpOnly; SameSite=None; Secure; Path=/; Domain=spring.io; Expires=Tue, 19 May 2026 15:40:11 GMT
+server: cloudflare
+expires: Tue, 19 May 2026 16:10:11 GMT
+cache-control: public, max-age=3600
+cf-cache-status: MISS
+link: <https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/messaging/package-summary.html>; rel="canonical"
+cf-ray: 9fe406e84f743b57-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 19 May 2026 15:10:12 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"30f296fa37f29b61979a8b4718dae7c0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Rt8VCGMiYIObH6VhPL3%2Fx6Xjeckk0PnirPH6WH%2Be91Z0G4%2FaA7NKVJK9fB5BkCQZdPE7PJIATbTvDSYEF8SZ2twtdXCtmt%2B74HdE%2F0ZOPpTMi3UCKHLcxAp%2F0qRr0xuw3C3uuu75i2W4T74gK786gpRtkX5o%2FBOuIcO9gWxdJxifhgYS6T%2F6j9VJDWUeEOCjWqn3JcbRfHIIJLPLqOPNenEo5ey4%2FRfbmYUhBoatMsVSAmI9M4IDLOlK8EugTXATuUWHq20oJ4kziMb2Xo6V5Q%3D%3D--njg3Lv%2FPB5r8EkJ8--6FgM0k3IUj7aLESDRks%2BmA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1232641783.1779203411; expires=Wed, 19 May 2027 15:10:11 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 19 May 2027 15:10:11 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620C:16DC:A1A2B24:80BDC50:6A0C7D53
+
+
+exec
+/usr/bin/bash -lc "rg -n 'spring-messaging|spring-framework|documentation-url.*docs.spring.io|source-code-url.*repo.maven' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json:2:  "coordinates" : "org.springframework:spring-messaging:7.0.3"
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/org.apache.orc/orc-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-core/$version$/orc-core-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/$version$/failureaccess-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/com.google.guava/guava/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-sources.jar",
+metadata/com.google.guava/guava/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/guava/$version$/guava-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-parsing_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-parsing_3/$version$/akka-parsing_3-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:26:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/com.univocity/univocity-parsers/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/$version$/univocity-parsers-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-parsing_2.13/$version$/akka-parsing_2.13-$version$-sources.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/$version$/akka-protobuf-v3_3-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/akka/akka-protobuf-v3_2.13/$version$/akka-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/$version$/opengauss-jdbc-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:27:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:41:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/$version$/artemis-log-annotation-processor-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:38:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:114:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/org.slf4j/slf4j-ext/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/$version$/slf4j-ext-$version$-sources.jar",
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-generic-base_3/$version$/pureconfig-generic-base_3-$version$-sources.jar",
+metadata/org.json4s/json4s-native-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-native-core_3/$version$/json4s-native-core_3-$version$-sources.jar",
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-core_3/$version$/pureconfig-core_3-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/$version$/animal-sniffer-annotations-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:45:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:63:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.eclipse.jdt.core.compiler/ecj/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jdt/core/compiler/ecj/$version$/ecj-$version$-sources.jar",
+metadata/org.json4s/json4s-jackson_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-jackson_2.13/$version$/json4s-jackson_2.13-$version$-sources.jar",
+metadata/org.json4s/json4s-jackson_2.13/index.json:28:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-jackson_2.13/$version$/json4s-jackson_2.13-$version$-sources.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+metadata/org.json4s/json4s-ast_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-ast_3/$version$/json4s-ast_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-sources.jar",
+metadata/org.json4s/json4s-ast_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-ast_2.13/$version$/json4s-ast_2.13-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/com.android.databinding/baseLibrary/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/com.diffplug.durian/durian-collect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-collect/$version$/durian-collect-$version$-sources.jar",
+metadata/io.suzaku/boopickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+metadata/org.json4s/json4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-core_3/$version$/json4s-core_3-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:82:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:108:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"https://repo.maven.apache.org/maven2/.+tests|\"test-code-url\" : \"https://github.com/.+/src/test' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.github.ghostdogpr/caliban_3/index.json:7:    "test-code-url" : "https://github.com/ghostdogpr/caliban/tree/v$version$/core/src/test",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:7:    "test-code-url" : "https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test/java/org/apache/pulsar/client/api",
+metadata/net.javacrumbs.json-unit/json-unit-core/index.json:7:    "test-code-url" : "https://github.com/lukas-krecan/JsonUnit/tree/json-unit-parent-$version$/json-unit-core/src/test",
+metadata/org.log4s/log4s_3/index.json:7:    "test-code-url" : "https://github.com/Log4s/log4s/tree/v$version$/core/shared/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:8:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:23:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:7:    "test-code-url" : "https://github.com/microsoft/mssql-jdbc/tree/v12.2.0/src/test",
+metadata/org.attoparser/attoparser/index.json:7:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-$version$/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/commons-logging/commons-logging-api/index.json:7:    "test-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/test",
+metadata/org.antlr/antlr-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr3/tree/$version$/runtime/Java/src/test",
+metadata/com.github.jknack/handlebars-helpers/index.json:7:    "test-code-url" : "https://github.com/jknack/handlebars.java/tree/v4.4.0/tests/src/test/java/com/github/jknack/handlebars/helper/ext",
+metadata/com.github.jknack/handlebars-helpers/index.json:23:    "test-code-url" : "https://github.com/jknack/handlebars.java/tree/v$version$/handlebars-helpers/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/org.antlr/antlr/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr3/tree/$version$/tool/src/test",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+metadata/org.eclipse.jetty.http2/http2-hpack/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http2/http2-hpack/src/test",
+metadata/org.keycloak/keycloak-admin-client/index.json:7:    "test-code-url" : "https://github.com/keycloak/keycloak/tree/$version$/testsuite/integration-arquillian/tests/base/src/test/java/org/keycloak/testsuite/admin/client",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/forms/src/test",
+metadata/org.web3j/core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/web3j/core/$version$/core-$version$-tests.jar",
+metadata/org.web3j/core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/web3j/core/$version$/core-$version$-tests.jar",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:7:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh/src/test",
+metadata/io.nats/jnats/index.json:7:    "test-code-url" : "https://github.com/nats-io/nats.java/tree/$version$/src/test",
+metadata/com.ibm.async/asyncutil/index.json:7:    "test-code-url" : "https://github.com/IBM/java-async-util/tree/v$version$/asyncutil/src/test",
+metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/layout/src/test",
+metadata/org.jline/jline-terminal-jni/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/org.jline/jline-terminal-jni/index.json:42:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/me.tongfei/progressbar/index.json:7:    "test-code-url" : "https://github.com/ctongfei/progressbar/tree/$version$/src/test/java",
+metadata/com.github.fd4s/fs2-kafka_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/fs2-kafka/tree/v$version$/modules/core/src/test",
+metadata/io.github.resilience4j/resilience4j-ratelimiter/index.json:7:    "test-code-url" : "https://github.com/resilience4j/resilience4j/tree/v$version$/resilience4j-ratelimiter/src/test",
+metadata/com.itextpdf/svg/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/svg/src/test",
+metadata/org.apache.camel/camel-util-json/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/camel-util-json/src/test",
+metadata/org.apache.maven.wagon/wagon-ssh-common/index.json:7:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh-common/src/test",
+metadata/io.github.resilience4j/resilience4j-spring-boot3/index.json:7:    "test-code-url" : "https://github.com/resilience4j/resilience4j/tree/v$version$/resilience4j-spring-boot3/src/test",
+metadata/com.itextpdf/io/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/io/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/io.smallrye.beanbag/smallrye-beanbag-sisu/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-beanbag/tree/$version$/maven/src/test",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+metadata/io.scalaland/chimney_3/index.json:7:    "test-code-url" : "https://github.com/scalalandio/chimney/tree/$version$/chimney/src/test",
+metadata/org.apache.camel/camel-support/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-support/src/test",
+metadata/io.github.resilience4j/resilience4j-bulkhead/index.json:7:    "test-code-url" : "https://github.com/resilience4j/resilience4j/tree/v$version$/resilience4j-bulkhead/src/test",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/io.smallrye.beanbag/smallrye-beanbag/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-beanbag/tree/$version$/maven/src/test",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:22:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-http-lightweight/src/test",
+metadata/io.github.resilience4j/resilience4j-reactor/index.json:7:    "test-code-url" : "https://github.com/resilience4j/resilience4j/tree/v$version$/resilience4j-reactor/src/test",
+metadata/org.apache.bookkeeper/bookkeeper-common-allocator/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/bookkeeper/bookkeeper-common-allocator/$version$/bookkeeper-common-allocator-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/io.github.resilience4j/resilience4j-circuitbreaker/index.json:7:    "test-code-url" : "https://github.com/resilience4j/resilience4j/tree/v$version$/resilience4j-circuitbreaker/src/test",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:7:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-provider-api/src/test",
+metadata/org.apache.camel/apt/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/tooling/apt/src/test",
+metadata/org.jline/jline-console/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/console/src/test",
+metadata/org.jline/jline-console/index.json:54:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/console/src/test",
+metadata/commons-net/commons-net/index.json:7:    "test-code-url" : "https://github.com/apache/commons-net/tree/NET_3_1/src/test",
+metadata/io.github.resilience4j/resilience4j-micrometer/index.json:7:    "test-code-url" : "https://github.com/resilience4j/resilience4j/tree/v$version$/resilience4j-micrometer/src/test/java",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:37:    "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/test/java",
+metadata/io.github.resilience4j/resilience4j-core/index.json:7:    "test-code-url" : "https://github.com/resilience4j/resilience4j/tree/v$version$/resilience4j-core/src/test",
+metadata/org.apache.camel/camel-util/index.json:7:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-util/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:7:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/$version$/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:24:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/$version$/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:39:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/$version$/src/test",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-$version$/okio/src/test",
+metadata/io.github.resilience4j/resilience4j-retry/index.json:7:    "test-code-url" : "https://github.com/resilience4j/resilience4j/tree/v$version$/resilience4j-retry/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.springframework.integration/spring-integration-kafka/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-integration/tree/v$version$/spring-integration-kafka/src/test",
+metadata/junit/junit/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit4/tree/r4.13.2/src/test/java",
+metadata/com.esotericsoftware/minlog/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/esotericsoftware/minlog/$version$/minlog-$version$-tests.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:7:    "test-code-url" : "https://github.com/lemire/javaewah/tree/JavaEWAH-$version$/src/test",
+metadata/org.jline/jline-reader/index.json:8:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/org.jline/jline-reader/index.json:49:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/reader/src/test",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:6:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-xml-jaxp-util/src/test",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:22:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-xml-jaxp-util/src/test/java",
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:7:    "test-code-url" : "https://github.com/plokhotnyuk/jsoniter-scala/tree/v$version$/jsoniter-scala-core/shared/src/test",
+metadata/org.springframework.integration/spring-integration-core/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-integration/tree/v$version$/spring-integration-core/src/test",
+metadata/org.codehaus.jackson/jackson-xc/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-1/tree/8b0ff4837b7fe509b9e96c1857392dea3ecd364d/$version$/src/test/org/codehaus/jackson/jaxb",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/io.suzaku/boopickle_2.13/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/jakarta.el/jakarta.el-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RI-COMB-RELEASE/src/test",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/7.0.3/spring-messaging-7.0.3-sources.jar && curl -fsSL -I https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/7.0.3/spring-messaging-7.0.3-javadoc.jar && curl -fsSL -I https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/7.0.3/spring-messaging-7.0.3-test-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-framework/git/ref/tags/v7.0.3 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 229ms:
+{
+  "ref": "refs/tags/v7.0.3",
+  "node_id": "MDM6UmVmMTE0ODc1MzpyZWZzL3RhZ3MvdjcuMC4z",
+  "url": "https://api.github.com/repos/spring-projects/spring-framework/git/refs/tags/v7.0.3",
+  "object": {
+    "sha": "02cdd3615e8ad8e5e4eaf54b7a2ff8cffa83e29d",
+    "type": "commit",
+    "url": "https://api.github.com/repos/spring-projects/spring-framework/git/commits/02cdd3615e8ad8e5e4eaf54b7a2ff8cffa83e29d"
+  }
+}
+
+ exited 22 in 430ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 15:10:19 GMT
+content-type: application/java-archive
+content-length: 5795133
+cf-ray: 9fe4071d6fe1ed53-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1231140
+etag: "66b659af1dd085d453498e44a7fbeac6"
+last-modified: Thu, 15 Jan 2026 08:18:59 GMT
+x-checksum-md5: 66b659af1dd085d453498e44a7fbeac6
+x-checksum-sha1: cccfd889c70fb9196428a1b550a33f5158fe4117
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 19 May 2026 15:10:20 GMT
+content-type: text/html
+cf-ray: 9fe4071dd9fbee6c-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/spring-messaging/7.0.3/spring-messaging-7.0.3-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.springframework spring-messaging 7.0.3 spring-messaging-7.0.3.pom
+web search: 
+web search: https://github.com/spring-projects/spring-framework/tree/v7.0.3/spring-messaging/src/test
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/spring-messaging/
+web search: 
+web search: 
+codex
+Maven Central publishes the main JAR, sources JAR, and javadocs JAR for `7.0.3`, but no test-sources/tests artifact is present. I’ll use Maven for source and documentation, and the `v7.0.3` Spring Framework tag for the test suite path.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.springframework.integration/spring-integration-kafka/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "7.0.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-kafka/$version$/spring-integration-kafka-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-integration",
+    "test-code-url" : "https://github.com/spring-projects/spring-integration/tree/v$version$/spring-integration-kafka/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-kafka/$version$/spring-integration-kafka-$version$-javadoc.jar",
+    "description" : "Spring Integration Kafka provides inbound and outbound channel adapters, gateways, channels, and DSL support for connecting Spring Integration message flows with Apache Kafka. It builds on Spring Integration Core and Spring for Apache Kafka so applications can publish, consume, and route Kafka records through Spring Integration endpoints.",
+    "tested-versions" : [
+      "7.0.2"
+    ],
+    "allowed-packages" : [
+      "org.springframework.integration.kafka"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.springframework.integration/spring-integration-core/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "7.0.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-core/$version$/spring-integration-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-integration",
+    "test-code-url" : "https://github.com/spring-projects/spring-integration/tree/v$version$/spring-integration-core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-core/$version$/spring-integration-core-$version$-javadoc.jar",
+    "description" : "Spring Integration Core provides the central messaging and Enterprise Integration Patterns infrastructure for building Spring-based integration applications. It includes abstractions and runtime support for messages, channels, endpoints, routers, filters, transformers, service activators, scheduling, and application events.",
+    "tested-versions" : [
+      "7.0.2"
+    ],
+    "allowed-packages" : [
+      "org.springframework.integration"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://repo.maven.apache.org/maven2/.+-javadoc.jar\"' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:29:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-javadoc.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-javadoc.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+metadata/com.github.ghostdogpr/caliban_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ghostdogpr/caliban_3/$version$/caliban_3-$version$-javadoc.jar",
+metadata/io.getquill/quill-util_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/org.playframework/play-configuration_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/spring-projects/spring-framework/tree/v7.0.3/spring-messaging/src/main/java/org/springframework/messaging && curl -fsSL -I https://github.com/spring-projects/spring-framework/tree/v7.0.3/spring-messaging/src/test' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 983ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 15:10:40 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a8f116d05d6011c7d69394cd5ec6c2bb"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=sry5oClQM4I3cAyuzFDUBIDCQWjgBtqs3bZBZYKj6GxtzEzoFBY50pEi76Q1qkT4YCiK49firy%2FLahWfIpaB3PV64cmqyA3YoUKAorUKhvHG9VvqDUiTMXKwwu4x5kdeUpxXINqJvTtgIdD4%2FhACNY6kgaLfgVcfo5PJbPqowH5AKlIbj0XvGQIVyLJOFmvqhlr9bTWR5m3bemmMWW%2FZlBrlvhPVb1Fq6zaHdjjvbIqxApH%2BUtMLX5mJollTyhCSNeCvPHlzG2CZ6N4HVobwSw%3D%3D--Ybp99RQucFMjCRyb--bb6jinMTYelbdrL5fUlhrQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2070975933.1779203440; expires=Wed, 19 May 2027 15:10:40 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 19 May 2027 15:10:40 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620C:16DC:A1BD701:80D2CD7:6A0C7D70
+
+HTTP/2 200 
+date: Tue, 19 May 2026 15:10:12 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"30f296fa37f29b61979a8b4718dae7c0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=vHPqgEKzfbNoL6LHJls4OEIN3PzULtc2qMvlfHlXicxYcpVUTlEutdgoCkGa1lj%2FMBC6cZ6tHm6P%2Bm%2BDsxTY1A5PU1dHjVP0ECmWrC6%2B9darjHNnjiagtlCnEm5fUHtMUM7WYc1iAlnR8GkHjp5bypxzLFp5AeHl7NuPw%2BUnMYlnOKfsuQnjK6QYoMcgPNuMXzklDvn%2BbzO%2FRfq9qWqvN2eMn0TTb87%2FCHqoaKq5Iqtnm%2F3fXQgi4tundDQ1MMI5XRmN2PSAeVZfem7YwioNrA%3D%3D--9lGx8bs41AMl4ns0--a7MqYG33YAbDpvXWlQQxbg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.886623884.1779203441; expires=Wed, 19 May 2027 15:10:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 19 May 2027 15:10:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620D:19FF7D:C68437A:9D69189:6A0C7D71
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/7.0.3/spring-messaging-7.0.3-sources.jar -o /tmp/spring-messaging-7.0.3-sources.jar && jar tf /tmp/spring-messaging-7.0.3-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.3/spring-messaging/src/main/java/org/springframework/messaging/Message.java | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/7.0.3/spring-messaging-7.0.3.jar -o /tmp/spring-messaging-7.0.3.jar && jar tf /tmp/spring-messaging-7.0.3.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.3/framework-docs/modules/ROOT/pages/integration.adoc | rg -n "spring-messaging|Message|messaging" | head -20' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 154ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/springframework/
+org/springframework/messaging/
+org/springframework/messaging/Message.class
+org/springframework/messaging/MessageChannel.class
+org/springframework/messaging/MessageDeliveryException.class
+org/springframework/messaging/MessageHandler.class
+org/springframework/messaging/MessageHandlingException.class
+org/springframework/messaging/MessageHeaders.class
+org/springframework/messaging/MessagingException.class
+org/springframework/messaging/PollableChannel.class
+org/springframework/messaging/ReactiveMessageHandler.class
+org/springframework/messaging/SubscribableChannel.class
+org/springframework/messaging/package-info.class
+org/springframework/messaging/converter/
+org/springframework/messaging/converter/AbstractJsonMessageConverter.class
+org/springframework/messaging/converter/AbstractMessageConverter.class
+org/springframework/messaging/converter/ByteArrayMessageConverter.class
+org/springframework/messaging/converter/CompositeMessageConverter.class
+org/springframework/messaging/converter/ContentTypeResolver.class
+org/springframework/messaging/converter/DefaultContentTypeResolver.class
+org/springframework/messaging/converter/GenericMessageConverter.class
+org/springframework/messaging/converter/GsonMessageConverter.class
+org/springframework/messaging/converter/JacksonJsonMessageConverter.class
+org/springframework/messaging/converter/JsonbMessageConverter.class
+org/springframework/messaging/converter/KotlinSerializationJsonMessageConverter.class
+org/springframework/messaging/converter/MappingJackson2MessageConverter.class
+org/springframework/messaging/converter/MarshallingMessageConverter.class
+org/springframework/messaging/converter/MessageConversionException.class
+org/springframework/messaging/converter/MessageConverter.class
+org/springframework/messaging/converter/ProtobufJsonFormatMessageConverter.class
+org/springframework/messaging/converter/ProtobufMessageConverter$ProtobufFormatSupport.class
+org/springframework/messaging/converter/ProtobufMessageConverter$ProtobufJavaUtilSupport.class
+org/springframework/messaging/converter/ProtobufMessageConverter.class
+org/springframework/messaging/converter/SimpleMessageConverter.class
+org/springframework/messaging/converter/SmartMessageConverter.class
+org/springframework/messaging/converter/StringMessageConverter.class
+org/springframework/messaging/converter/package-info.class
+org/springframework/messaging/core/
+org/springframework/messaging/core/AbstractDestinationResolvingMessagingTemplate.class
+org/springframework/messaging/core/AbstractMessageReceivingTemplate.class
+org/springframework/messaging/core/AbstractMessageSendingTemplate.class
+org/springframework/messaging/core/AbstractMessagingTemplate.class
+org/springframework/messaging/core/BeanFactoryMessageChannelDestinationResolver.class
+org/springframework/messaging/core/CachingDestinationResolverProxy.class
+org/springframework/messaging/core/CompositeMessagePostProcessor.class
+org/springframework/messaging/core/DestinationResolutionException.class
+org/springframework/messaging/core/DestinationResolver.class
+org/springframework/messaging/core/DestinationResolvingMessageReceivingOperations.class
+org/springframework/messaging/core/DestinationResolvingMessageRequestReplyOperations.class
+org/springframework/messaging/core/DestinationResolvingMessageSendingOperations.class
+org/springframework/messaging/core/GenericMessagingTemplate$TemporaryReplyChannel.class
+org/springframework/messaging/core/GenericMessagingTemplate.class
+org/springframework/messaging/core/MessagePostProcessor.class
+org/springframework/messaging/core/MessageReceivingOperations.class
+org/springframework/messaging/core/MessageRequestReplyOperations.class
+org/springframework/messaging/core/MessageSendingOperations.class
+org/springframework/messaging/core/package-info.class
+org/springframework/messaging/handler/
+org/springframework/messaging/handler/AbstractMessageCondition.class
+org/springframework/messaging/handler/CompositeMessageCondition.class
+org/springframework/messaging/handler/DestinationPatternsMessageCondition.class
+org/springframework/messaging/handler/HandlerMethod.class
+org/springframework/messaging/handler/MessageCondition.class
+org/springframework/messaging/handler/MessagingAdviceBean.class
+org/springframework/messaging/handler/package-info.class
+org/springframework/messaging/handler/annotation/
+org/springframework/messaging/handler/annotation/DestinationVariable.class
+org/springframework/messaging/handler/annotation/Header.class
+org/springframework/messaging/handler/annotation/Headers.class
+org/springframework/messaging/handler/annotation/MessageExceptionHandler.class
+org/springframework/messaging/handler/annotation/MessageMapping.class
+org/springframework/messaging/handler/annotation/MessageMappingReflectiveProcessor.class
+org/springframework/messaging/handler/annotation/Payload.class
+org/springframework/messaging/handler/annotation/SendTo.class
+org/springframework/messaging/handler/annotation/ValueConstants.class
+org/springframework/messaging/handler/annotation/package-info.class
+org/springframework/messaging/handler/annotation/reactive/
+
+ succeeded in 173ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/spring/
+META-INF/spring/aot.factories
+org/
+org/springframework/
+org/springframework/messaging/
+org/springframework/messaging/Message.java
+org/springframework/messaging/MessageChannel.java
+org/springframework/messaging/MessageDeliveryException.java
+org/springframework/messaging/MessageHandler.java
+org/springframework/messaging/MessageHandlingException.java
+org/springframework/messaging/MessageHeaders.java
+org/springframework/messaging/MessagingException.java
+org/springframework/messaging/PollableChannel.java
+org/springframework/messaging/ReactiveMessageHandler.java
+org/springframework/messaging/SubscribableChannel.java
+org/springframework/messaging/package-info.java
+org/springframework/messaging/converter/
+org/springframework/messaging/converter/AbstractJsonMessageConverter.java
+org/springframework/messaging/converter/AbstractMessageConverter.java
+org/springframework/messaging/converter/ByteArrayMessageConverter.java
+org/springframework/messaging/converter/CompositeMessageConverter.java
+org/springframework/messaging/converter/ContentTypeResolver.java
+org/springframework/messaging/converter/DefaultContentTypeResolver.java
+org/springframework/messaging/converter/GenericMessageConverter.java
+org/springframework/messaging/converter/GsonMessageConverter.java
+org/springframework/messaging/converter/JacksonJsonMessageConverter.java
+org/springframework/messaging/converter/JsonbMessageConverter.java
+org/springframework/messaging/converter/KotlinSerializationJsonMessageConverter.java
+org/springframework/messaging/converter/MappingJackson2MessageConverter.java
+org/springframework/messaging/converter/MarshallingMessageConverter.java
+org/springframework/messaging/converter/MessageConversionException.java
+org/springframework/messaging/converter/MessageConverter.java
+org/springframework/messaging/converter/ProtobufJsonFormatMessageConverter.java
+org/springframework/messaging/converter/ProtobufMessageConverter.java
+org/springframework/messaging/converter/SimpleMessageConverter.java
+org/springframework/messaging/converter/SmartMessageConverter.java
+org/springframework/messaging/converter/StringMessageConverter.java
+org/springframework/messaging/converter/package-info.java
+org/springframework/messaging/core/
+org/springframework/messaging/core/AbstractDestinationResolvingMessagingTemplate.java
+org/springframework/messaging/core/AbstractMessageReceivingTemplate.java
+org/springframework/messaging/core/AbstractMessageSendingTemplate.java
+org/springframework/messaging/core/AbstractMessagingTemplate.java
+org/springframework/messaging/core/BeanFactoryMessageChannelDestinationResolver.java
+org/springframework/messaging/core/CachingDestinationResolverProxy.java
+org/springframework/messaging/core/CompositeMessagePostProcessor.java
+org/springframework/messaging/core/DestinationResolutionException.java
+org/springframework/messaging/core/DestinationResolver.java
+org/springframework/messaging/core/DestinationResolvingMessageReceivingOperations.java
+org/springframework/messaging/core/DestinationResolvingMessageRequestReplyOperations.java
+org/springframework/messaging/core/DestinationResolvingMessageSendingOperations.java
+org/springframework/messaging/core/GenericMessagingTemplate.java
+org/springframework/messaging/core/MessagePostProcessor.java
+org/springframework/messaging/core/MessageReceivingOperations.java
+org/springframework/messaging/core/MessageRequestReplyOperations.java
+org/springframework/messaging/core/MessageSendingOperations.java
+org/springframework/messaging/core/package-info.java
+org/springframework/messaging/handler/
+org/springframework/messaging/handler/AbstractMessageCondition.java
+org/springframework/messaging/handler/CompositeMessageCondition.java
+org/springframework/messaging/handler/DestinationPatternsMessageCondition.java
+org/springframework/messaging/handler/HandlerMethod.java
+org/springframework/messaging/handler/MessageCondition.java
+org/springframework/messaging/handler/MessagingAdviceBean.java
+org/springframework/messaging/handler/package-info.java
+org/springframework/messaging/handler/annotation/
+org/springframework/messaging/handler/annotation/DestinationVariable.java
+org/springframework/messaging/handler/annotation/Header.java
+org/springframework/messaging/handler/annotation/Headers.java
+org/springframework/messaging/handler/annotation/MessageExceptionHandler.java
+org/springframework/messaging/handler/annotation/MessageMapping.java
+org/springframework/messaging/handler/annotation/MessageMappingReflectiveProcessor.java
+org/springframework/messaging/handler/annotation/Payload.java
+org/springframework/messaging/handler/annotation/SendTo.java
+org/springframework/messaging/handler/annotation/ValueConstants.java
+org/springframework/messaging/handler/annotation/package-info.java
+org/springframework/messaging/handler/annotation/reactive/
+org/springframework/messaging/handler/annotation/reactive/AbstractNamedValueMethodArgumentResolver.java
+
+ succeeded in 215ms:
+/*
+ * Copyright 2002-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.springframework.messaging;
+
+/**
+ * A generic message representation with headers and body.
+ *
+ * @author Mark Fisher
+ * @author Arjen Poutsma
+ * @since 4.0
+ * @param <T> the payload type
+ * @see org.springframework.messaging.support.MessageBuilder
+ */
+public interface Message<T> {
+
+	/**
+	 * Return the message payload.
+	 */
+	T getPayload();
+
+	/**
+	 * Return message headers for the message (never {@code null} but may be empty).
+	 */
+	MessageHeaders getHeaders();
+
+}
+
+ succeeded in 479ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.3/spring-messaging/src/main/java/org/springframework/messaging/core/package-info.java | sed -n '1,140p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.3/spring-messaging/src/main/java/org/springframework/messaging/handler/package-info.java | sed -n '1,140p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.3/spring-messaging/src/main/java/org/springframework/messaging/package-info.java | sed -n '1,140p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.3/spring-messaging/src/main/java/org/springframework/messaging/simp/package-info.java | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 190ms:
+/**
+ * Basic abstractions for working with message handler methods.
+ */
+@NullMarked
+package org.springframework.messaging.handler;
+
+import org.jspecify.annotations.NullMarked;
+
+ succeeded in 230ms:
+/**
+ * Support for working with messaging APIs and protocols.
+ */
+@NullMarked
+package org.springframework.messaging;
+
+import org.jspecify.annotations.NullMarked;
+
+ succeeded in 232ms:
+/**
+ * Defines interfaces and implementation classes for messaging templates.
+ */
+@NullMarked
+package org.springframework.messaging.core;
+
+import org.jspecify.annotations.NullMarked;
+
+ succeeded in 320ms:
+/**
+ * Generic support for Simple Messaging Protocols including protocols such as STOMP.
+ */
+@NullMarked
+package org.springframework.messaging.simp;
+
+import org.jspecify.annotations.NullMarked;
+
+codex
+I’m going to patch the discovered metadata as a single JSON object, leaving out `language` and `not-for-native-image` because this is a regular JVM JAR with class files and not a Kotlin/Groovy/Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+index 5c8b3bad5e32cda305afeb92cce5f63e0679918b..7eb5e4b00eb14b2a7dd6615bc184a9ef09418532
+--- a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-messaging:7.0.3"
++  "coordinates" : "org.springframework:spring-messaging:7.0.3",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-messaging/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-javadoc.jar",
++  "description" : "Spring Messaging provides core Spring abstractions for message payloads, headers, channels, handlers, converters, and messaging templates. It also includes annotation-based handling and simple messaging protocol support, including STOMP-oriented infrastructure used by Spring applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+index 5c8b3bad5e32cda305afeb92cce5f63e0679918b..7eb5e4b00eb14b2a7dd6615bc184a9ef09418532
+--- a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-messaging:7.0.3"
++  "coordinates" : "org.springframework:spring-messaging:7.0.3",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-messaging/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-javadoc.jar",
++  "description" : "Spring Messaging provides core Spring abstractions for message payloads, headers, channels, handlers, converters, and messaging templates. It also includes annotation-based handling and simple messaging protocol support, including STOMP-oriented infrastructure used by Spring applications."
+ }
+
+codex
+The file is updated. I’m validating JSON syntax and checking the rendered URLs for `7.0.3` before I close this out.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework:spring-messaging:7.0.3",
+  "repository-url": "https://github.com/spring-projects/spring-framework",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-messaging/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-javadoc.jar",
+  "description": "Spring Messaging provides core Spring abstractions for message payloads, headers, channels, handlers, converters, and messaging templates. It also includes annotation-based handling and simple messaging protocol support, including STOMP-oriented infrastructure used by Spring applications."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/7.0.3/spring-messaging-7.0.3-sources.jar >/tmp/spring-messaging-sources-head.txt && sed -n '1,12p' /tmp/spring-messaging-sources-head.txt" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 15:11:07 GMT
+content-type: application/java-archive
+content-length: 430248
+cf-ray: 9fe40848af054c6f-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 481779
+etag: "8483f37542a9aca6c3f436a1ffc605be"
+last-modified: Thu, 15 Jan 2026 08:19:00 GMT
+x-checksum-md5: 8483f37542a9aca6c3f436a1ffc605be
+x-checksum-sha1: ea7b7f0008c98aaa687859d8047ad48bafe76ad0
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/7.0.3/spring-messaging-7.0.3-javadoc.jar >/tmp/spring-messaging-javadoc-head.txt && sed -n '1,12p' /tmp/spring-messaging-javadoc-head.txt" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 15:11:07 GMT
+content-type: application/java-archive
+content-length: 5795133
+cf-ray: 9fe40848b90f4beb-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1231188
+etag: "66b659af1dd085d453498e44a7fbeac6"
+last-modified: Thu, 15 Jan 2026 08:18:59 GMT
+x-checksum-md5: 66b659af1dd085d453498e44a7fbeac6
+x-checksum-sha1: cccfd889c70fb9196428a1b550a33f5158fe4117
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://github.com/spring-projects/spring-framework/tree/v7.0.3/spring-messaging/src/test >/tmp/spring-messaging-test-head.txt && sed -n '1,12p' /tmp/spring-messaging-test-head.txt" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 15:10:41 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6c97da32ff258c6734943f3dbe2a76cf"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+index 5c8b3bad5e32cda305afeb92cce5f63e0679918b..7eb5e4b00eb14b2a7dd6615bc184a9ef09418532
+--- a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-messaging:7.0.3"
++  "coordinates" : "org.springframework:spring-messaging:7.0.3",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-messaging/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-javadoc.jar",
++  "description" : "Spring Messaging provides core Spring abstractions for message payloads, headers, channels, handlers, converters, and messaging templates. It also includes annotation-based handling and simple messaging protocol support, including STOMP-oriented infrastructure used by Spring applications."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+index 5c8b3bad5e32cda305afeb92cce5f63e0679918b..7eb5e4b00eb14b2a7dd6615bc184a9ef09418532
+--- a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-messaging:7.0.3"
++  "coordinates" : "org.springframework:spring-messaging:7.0.3",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-messaging/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-javadoc.jar",
++  "description" : "Spring Messaging provides core Spring abstractions for message payloads, headers, channels, handlers, converters, and messaging templates. It also includes annotation-based handling and simple messaging protocol support, including STOMP-oriented infrastructure used by Spring applications."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json && sed -n '1,120p' build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+index 5c8b3bad5e32cda305afeb92cce5f63e0679918b..7eb5e4b00eb14b2a7dd6615bc184a9ef09418532
+--- a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-messaging:7.0.3"
++  "coordinates" : "org.springframework:spring-messaging:7.0.3",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-messaging/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-javadoc.jar",
++  "description" : "Spring Messaging provides core Spring abstractions for message payloads, headers, channels, handlers, converters, and messaging templates. It also includes annotation-based handling and simple messaging protocol support, including STOMP-oriented infrastructure used by Spring applications."
+ }
+
+ succeeded in 283ms:
+{
+  "coordinates" : "org.springframework:spring-messaging:7.0.3",
+  "repository-url" : "https://github.com/spring-projects/spring-framework",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-sources.jar",
+  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-messaging/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-javadoc.jar",
+  "description" : "Spring Messaging provides core Spring abstractions for message payloads, headers, channels, handlers, converters, and messaging templates. It also includes annotation-based handling and simple messaging protocol support, including STOMP-oriented infrastructure used by Spring applications."
+}
+
+web search: 
+web search: spring-messaging 7.0.3 repo.maven.apache.org
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/spring-messaging/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://github.com/spring-projects/spring-framework
+codex
+Updated [org.springframework-spring-messaging-7.0.3.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json:1).
+
+I used Maven Central for sources and javadocs, and the Spring Framework `v$version$` tag for tests. Maven Central lists `7.0.3`, and the Spring Framework repo contains the `spring-messaging` module. ([repo1.maven.org](https://repo1.maven.org/maven2/org/springframework/spring-messaging/))
+
+Validation done: JSON parses with `jq`, and the rendered source, documentation, and test URLs returned HTTP 200. I omitted `language` and `not-for-native-image` because this is a regular JVM JAR with `.class` files.
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+index 5c8b3bad5e32cda305afeb92cce5f63e0679918b..7eb5e4b00eb14b2a7dd6615bc184a9ef09418532
+--- a/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-messaging:7.0.3"
++  "coordinates" : "org.springframework:spring-messaging:7.0.3",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-messaging/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-messaging/$version$/spring-messaging-$version$-javadoc.jar",
++  "description" : "Spring Messaging provides core Spring abstractions for message payloads, headers, channels, handlers, converters, and messaging templates. It also includes annotation-based handling and simple messaging protocol support, including STOMP-oriented infrastructure used by Spring applications."
+ }
+
+tokens used
+77,548
+Updated [org.springframework-spring-messaging-7.0.3.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568/build/discovered-artifact-metadata/org.springframework-spring-messaging-7.0.3.json:1).
+
+I used Maven Central for sources and javadocs, and the Spring Framework `v$version$` tag for tests. Maven Central lists `7.0.3`, and the Spring Framework repo contains the `spring-messaging` module. ([repo1.maven.org](https://repo1.maven.org/maven2/org/springframework/spring-messaging/))
+
+Validation done: JSON parses with `jq`, and the rendered source, documentation, and test URLs returned HTTP 200. I omitted `language` and `not-for-native-image` because this is a regular JVM JAR with `.class` files.
+Ran agent for org.springframework:spring-messaging:7.0.3 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568/build/agent-artifact-discovery-logs/org.springframework-spring-messaging-7.0.3.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7076-4572e568/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 56s
+9 actionable tasks: 9 executed
