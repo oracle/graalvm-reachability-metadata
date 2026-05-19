@@ -25,6 +25,7 @@ import org.springframework.boot.webflux.autoconfigure.ReactiveMultipartPropertie
 import org.springframework.boot.webflux.autoconfigure.WebFluxProperties;
 import org.springframework.boot.webflux.error.DefaultErrorAttributes;
 import org.springframework.boot.webflux.filter.OrderedHiddenHttpMethodFilter;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
@@ -40,6 +41,7 @@ import org.springframework.http.server.reactive.SslInfo;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.unit.DataSize;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ResponseStatusException;
@@ -177,6 +179,30 @@ public class Spring_boot_webfluxTest {
         assertThat(result).doesNotContainKey("trace");
     }
 
+    @Test
+    void defaultErrorAttributesIncludeBindingErrorsWhenRequested() {
+        DefaultErrorAttributes attributes = new DefaultErrorAttributes();
+        ServerWebExchange exchange = createExchange(HttpMethod.POST, "/registrations", "");
+        BindException failure = new BindException(new RegistrationForm(), "registrationForm");
+        failure.reject("registration.invalid", "Registration is invalid");
+        attributes.storeErrorInformation(failure, exchange);
+        ServerRequest request = createServerRequest(exchange);
+
+        Map<String, Object> result = attributes.getErrorAttributes(request,
+                ErrorAttributeOptions.of(Include.STATUS, Include.ERROR, Include.PATH, Include.MESSAGE,
+                        Include.EXCEPTION, Include.BINDING_ERRORS));
+
+        assertThat(result).containsEntry("status", 500)
+                .containsEntry("error", "Internal Server Error")
+                .containsEntry("path", "/registrations")
+                .containsEntry("message", failure.getMessage())
+                .containsEntry("exception", BindException.class.getName());
+        assertThat(result.get("errors")).asList()
+                .singleElement()
+                .satisfies((error) -> assertThat(((MessageSourceResolvable) error).getDefaultMessage())
+                        .isEqualTo("Registration is invalid"));
+    }
+
     private static ServerRequest createServerRequest(ServerWebExchange exchange) {
         return ServerRequest.create(exchange, ServerCodecConfigurer.create().getReaders());
     }
@@ -201,6 +227,10 @@ public class Spring_boot_webfluxTest {
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "invalid annotated request")
     static final class AnnotatedBadRequestException extends RuntimeException {
+
+    }
+
+    static final class RegistrationForm {
 
     }
 
