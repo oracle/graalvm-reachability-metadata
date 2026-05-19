@@ -9,13 +9,20 @@ package org_springframework_cloud.spring_cloud_stream_binder_kafka_core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.math.BigInteger;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,6 +32,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.PartitionInfo;
+import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
@@ -605,6 +613,48 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
     }
 
     @Test
+    void kafkaBinderConfigurationCopiesCertificateResourcesToConfiguredStoreDirectory() throws IOException {
+        Path sourceDirectory = Files.createTempDirectory("kafka-cert-source");
+        Path targetDirectory = Files.createTempDirectory("kafka-cert-target");
+        try {
+            Path truststore = writeCertificateResource(sourceDirectory, "truststore.jks", "truststore");
+            Path keystore = writeCertificateResource(sourceDirectory, "keystore.jks", "keystore");
+            Path schemaRegistryTruststore = writeCertificateResource(sourceDirectory, "schema-truststore.jks",
+                    "schema-truststore");
+            Path existingSchemaRegistryKeystore = writeCertificateResource(sourceDirectory,
+                    "existing-schema-keystore.jks", "existing-schema-keystore");
+            KafkaBinderConfigurationProperties binderProperties = kafkaBinderProperties();
+            Map<String, String> configuration = new LinkedHashMap<>();
+            configuration.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, truststore.toUri().toString());
+            configuration.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keystore.toUri().toString());
+            configuration.put("schema.registry.ssl.truststore.location", schemaRegistryTruststore.toUri().toString());
+            configuration.put("schema.registry.ssl.keystore.location", existingSchemaRegistryKeystore.toString());
+            binderProperties.setConfiguration(configuration);
+            binderProperties.setCertificateStoreDirectory(targetDirectory.toString());
+
+            assertThat(binderProperties.getKafkaConnectionString()).isNotBlank();
+
+            Path copiedTruststore = targetDirectory.resolve("truststore.jks");
+            Path copiedKeystore = targetDirectory.resolve("keystore.jks");
+            Path copiedSchemaRegistryTruststore = targetDirectory.resolve("schema-truststore.jks");
+            assertThat(binderProperties.getConfiguration())
+                    .containsEntry(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, copiedTruststore.toString())
+                    .containsEntry(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, copiedKeystore.toString())
+                    .containsEntry("schema.registry.ssl.truststore.location",
+                            copiedSchemaRegistryTruststore.toString())
+                    .containsEntry("schema.registry.ssl.keystore.location", existingSchemaRegistryKeystore.toString());
+            assertThat(Files.readString(copiedTruststore, StandardCharsets.UTF_8)).isEqualTo("truststore");
+            assertThat(Files.readString(copiedKeystore, StandardCharsets.UTF_8)).isEqualTo("keystore");
+            assertThat(Files.readString(copiedSchemaRegistryTruststore, StandardCharsets.UTF_8))
+                    .isEqualTo("schema-truststore");
+        }
+        finally {
+            deleteRecursively(targetDirectory);
+            deleteRecursively(sourceDirectory);
+        }
+    }
+
+    @Test
     void transactionJaasTopicAndCustomizerTypesRemainUsableThroughPublicApi() {
         KafkaBinderConfigurationProperties binderProperties = kafkaBinderProperties();
         CombinedProducerProperties combined = binderProperties.getTransaction().getProducer();
@@ -782,6 +832,31 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         assertThat(consumerTopic.isConsumerTopic()).isTrue();
         assertThat(producerTopic.isTopicPattern()).isTrue();
         assertThat(producerTopic.isConsumerTopic()).isFalse();
+    }
+
+    private static Path writeCertificateResource(Path directory, String fileName, String content) throws IOException {
+        Path path = directory.resolve(fileName);
+        Files.writeString(path, content, StandardCharsets.UTF_8);
+        return path;
+    }
+
+    private static void deleteRecursively(Path path) throws IOException {
+        if (Files.notExists(path)) {
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(path)) {
+            paths.sorted(Comparator.reverseOrder()).forEach(file -> {
+                try {
+                    Files.deleteIfExists(file);
+                }
+                catch (IOException ex) {
+                    throw new UncheckedIOException(ex);
+                }
+            });
+        }
+        catch (UncheckedIOException ex) {
+            throw ex.getCause();
+        }
     }
 
     private static KafkaTopicProperties topicProperties() {
