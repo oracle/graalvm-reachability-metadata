@@ -29,6 +29,7 @@ import org.springdoc.core.providers.ObjectMapperProvider;
 import org.springdoc.core.providers.SpringWebProvider;
 import org.springdoc.webmvc.ui.SwaggerConfigResource;
 import org.springdoc.webmvc.ui.SwaggerIndexPageTransformer;
+import org.springdoc.webmvc.ui.SwaggerResourceResolver;
 import org.springdoc.webmvc.ui.SwaggerWelcomeWebMvc;
 
 import org.springframework.beans.BeansException;
@@ -129,6 +130,27 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
         assertThat(configuration).containsEntry("configUrl", "/service/v3/api-docs/swagger-config")
                 .containsEntry("url", "/service/external/openapi.yaml")
                 .doesNotContainKey("urls");
+    }
+
+    @Test
+    void swaggerResourceResolverServesVersionlessSwaggerUiAssetsFromVersionedLocation() throws IOException {
+        SwaggerUiConfigProperties swaggerUiProperties = createSwaggerUiConfig();
+        SwaggerResourceResolver resolver = new SwaggerResourceResolver(swaggerUiProperties);
+        Path stylesheet = temporaryDirectory.resolve("swagger-ui").resolve(swaggerUiProperties.getVersion())
+                .resolve("swagger-ui.css");
+        Files.createDirectories(stylesheet.getParent());
+        Files.writeString(stylesheet, "body { color: #173647; }", StandardCharsets.UTF_8);
+        Resource location = new FileSystemResource(temporaryDirectory.toAbsolutePath() + "/");
+        String versionlessStylesheet = "swagger-ui/swagger-ui.css";
+
+        Resource resolvedResource = resolver.resolveResource(request("", "/webjars/" + versionlessStylesheet),
+                versionlessStylesheet, List.of(location), new FileSystemResourceResolverChain());
+        String resolvedUrlPath = resolver.resolveUrlPath(versionlessStylesheet, List.of(location),
+                new FileSystemResourceResolverChain());
+
+        assertThat(resolvedResource).isNotNull();
+        assertThat(resolvedResource.getContentAsString(StandardCharsets.UTF_8)).isEqualTo("body { color: #173647; }");
+        assertThat(resolvedUrlPath).isEqualTo("swagger-ui/" + swaggerUiProperties.getVersion() + "/swagger-ui.css");
     }
 
     @Test
@@ -264,6 +286,34 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
         @Override
         public Set<String> getActivePatterns(Object requestMappingInfo) {
             return Set.of();
+        }
+    }
+
+    private static final class FileSystemResourceResolverChain implements ResourceResolverChain {
+
+        @Override
+        public Resource resolveResource(HttpServletRequest request, String requestPath,
+                List<? extends Resource> locations) {
+            for (Resource location : locations) {
+                try {
+                    Resource resource = location.createRelative(requestPath);
+                    if (resource.exists() && resource.isReadable()) {
+                        return resource;
+                    }
+                } catch (IOException ex) {
+                    throw new IllegalStateException("Unable to resolve test resource " + requestPath, ex);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String resolveUrlPath(String resourceUrlPath, List<? extends Resource> locations) {
+            Resource resource = resolveResource(null, resourceUrlPath, locations);
+            if (resource == null) {
+                return null;
+            }
+            return resourceUrlPath;
         }
     }
 
