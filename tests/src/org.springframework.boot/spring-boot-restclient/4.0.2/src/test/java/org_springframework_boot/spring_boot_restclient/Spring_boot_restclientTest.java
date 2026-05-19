@@ -27,17 +27,28 @@ import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationHandler;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
 import org.springframework.boot.http.client.HttpRedirects;
 import org.springframework.boot.http.converter.autoconfigure.ClientHttpMessageConvertersCustomizer;
+import org.springframework.boot.restclient.RestClientCustomizer;
 import org.springframework.boot.restclient.RestTemplateBuilder;
+import org.springframework.boot.restclient.RestTemplateCustomizer;
 import org.springframework.boot.restclient.RestTemplateRequestCustomizer;
 import org.springframework.boot.restclient.RootUriBuilderFactory;
 import org.springframework.boot.restclient.autoconfigure.HttpMessageConvertersRestClientCustomizer;
+import org.springframework.boot.restclient.autoconfigure.RestClientAutoConfiguration;
 import org.springframework.boot.restclient.autoconfigure.RestClientBuilderConfigurer;
+import org.springframework.boot.restclient.autoconfigure.RestClientObservationAutoConfiguration;
+import org.springframework.boot.restclient.autoconfigure.RestTemplateAutoConfiguration;
 import org.springframework.boot.restclient.autoconfigure.RestTemplateBuilderConfigurer;
+import org.springframework.boot.restclient.autoconfigure.RestTemplateObservationAutoConfiguration;
+import org.springframework.boot.restclient.autoconfigure.service.HttpServiceClientAutoConfiguration;
 import org.springframework.boot.restclient.observation.ObservationRestClientCustomizer;
 import org.springframework.boot.restclient.observation.ObservationRestTemplateCustomizer;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequest;
@@ -54,6 +65,107 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 
 public class Spring_boot_restclientTest {
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(2);
+
+    private final ApplicationContextRunner restClientContextRunner = new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(RestClientAutoConfiguration.class));
+
+    private final ApplicationContextRunner restTemplateContextRunner = new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(RestTemplateAutoConfiguration.class));
+
+    @Test
+    void autoConfigurationsAreAdvertisedForSpringBootDiscovery() {
+        ImportCandidates candidates = ImportCandidates.load(AutoConfiguration.class, getClass().getClassLoader());
+
+        assertThat(candidates.getCandidates()).contains(RestClientAutoConfiguration.class.getName(),
+                RestClientObservationAutoConfiguration.class.getName(), RestTemplateAutoConfiguration.class.getName(),
+                RestTemplateObservationAutoConfiguration.class.getName(),
+                HttpServiceClientAutoConfiguration.class.getName());
+    }
+
+    @Test
+    void restClientAutoConfigurationCreatesPrototypeBuilderAndAppliesCustomizers() throws IOException {
+        try (TestHttpServer server = TestHttpServer.start(exchange -> send(exchange, HttpStatus.OK.value(),
+                exchange.getRequestMethod() + " " + exchange.getRequestURI() + " "
+                        + exchange.getRequestHeaders().getFirst("X-Auto-Configured")))) {
+            this.restClientContextRunner
+                    .withBean(RestClientCustomizer.class,
+                            () -> builder -> builder.baseUrl(server.url("/auto"))
+                                    .defaultHeader("X-Auto-Configured", "true")
+                                    .requestFactory(requestFactory()))
+                    .run(context -> {
+                        assertThat(context).hasSingleBean(RestClientBuilderConfigurer.class);
+                        assertThat(context).hasSingleBean(RestClient.Builder.class);
+                        RestClient.Builder firstBuilder = context.getBean(RestClient.Builder.class);
+                        RestClient.Builder secondBuilder = context.getBean(RestClient.Builder.class);
+                        RestClient restClient = firstBuilder.build();
+
+                        String body = restClient.get().uri("/orders/{id}", 99).retrieve().body(String.class);
+
+                        assertThat(firstBuilder).isNotSameAs(secondBuilder);
+                        assertThat(body).isEqualTo("GET /auto/orders/99 true");
+                    });
+        }
+    }
+
+    @Test
+    void restTemplateAutoConfigurationCreatesBuilderWithConvertersAndCustomizers() throws IOException {
+        try (TestHttpServer server = TestHttpServer.start(exchange -> {
+            String requestBody = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+            String response = "body=" + requestBody + ", template="
+                    + exchange.getRequestHeaders().getFirst("X-Template-Customizer") + ", request="
+                    + exchange.getRequestHeaders().getFirst("X-Request-Customizer");
+            send(exchange, HttpStatus.OK.value(), response);
+        })) {
+            AtomicBoolean convertersCustomizerCalled = new AtomicBoolean();
+            RestTemplateRequestCustomizer<ClientHttpRequest> requestCustomizer = request -> request.getHeaders()
+                    .set("X-Request-Customizer", "called");
+            ClientHttpMessageConvertersCustomizer convertersCustomizer = converters -> {
+                convertersCustomizerCalled.set(true);
+                converters.withStringConverter(new StringHttpMessageConverter(StandardCharsets.UTF_8));
+            };
+
+            this.restTemplateContextRunner
+                    .withBean(ClientHttpMessageConvertersCustomizer.class, () -> convertersCustomizer)
+                    .withBean(RestTemplateRequestCustomizer.class, () -> requestCustomizer)
+                    .withBean(RestTemplateCustomizer.class,
+                            () -> template -> template.getInterceptors().add((request, body, execution) -> {
+                                request.getHeaders().set("X-Template-Customizer", "called");
+                                return execution.execute(request, body);
+                            }))
+                    .run(context -> {
+                        assertThat(context).hasSingleBean(RestTemplateBuilderConfigurer.class);
+                        assertThat(context).hasSingleBean(RestTemplateBuilder.class);
+                        RestTemplateBuilder builder = context.getBean(RestTemplateBuilder.class)
+                                .requestFactory(Spring_boot_restclientTest::requestFactory)
+                                .rootUri(server.url("/root"));
+                        RestTemplate restTemplate = builder.build();
+
+                        String body = restTemplate.postForObject("/echo", "payload", String.class);
+
+                        assertThat(convertersCustomizerCalled).isTrue();
+                        assertThat(body).isEqualTo("body=payload, template=called, request=called");
+                    });
+        }
+    }
+
+    @Test
+    void restTemplateBuilderInstantiatesCustomTemplateAndRequestFactoryTypes() {
+        AtomicBoolean customizerCalled = new AtomicBoolean();
+
+        InstrumentedRestTemplate restTemplate = new RestTemplateBuilder(template -> {
+            customizerCalled.set(true);
+            assertThat(template).isInstanceOf(InstrumentedRestTemplate.class);
+        })
+                .requestFactory(SimpleClientHttpRequestFactory.class)
+                .additionalMessageConverters(new StringHttpMessageConverter(StandardCharsets.UTF_8))
+                .build(InstrumentedRestTemplate.class);
+
+        assertThat(customizerCalled).isTrue();
+        assertThat(restTemplate).isInstanceOf(InstrumentedRestTemplate.class);
+        assertThat(restTemplate.getRequestFactory()).isInstanceOf(SimpleClientHttpRequestFactory.class);
+        assertThat(restTemplate.getMessageConverters()).anySatisfy(
+                converter -> assertThat(converter).isInstanceOf(StringHttpMessageConverter.class));
+    }
 
     @Test
     void restTemplateBuilderAppliesRootUriAuthenticationHeadersInterceptorsAndRequestCustomizers() throws IOException {
@@ -320,6 +432,9 @@ public class Spring_boot_restclientTest {
         exchange.getResponseHeaders().set("Location", location);
         exchange.sendResponseHeaders(HttpStatus.FOUND.value(), -1);
         exchange.close();
+    }
+
+    public static final class InstrumentedRestTemplate extends RestTemplate {
     }
 
     private static final class TestHttpServer implements AutoCloseable {
