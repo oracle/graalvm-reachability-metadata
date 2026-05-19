@@ -200,6 +200,30 @@ public class Jackson_datatype_jodaTest {
         assertThat(parsed.localTime).isEqualTo(payload.localTime);
     }
 
+    @Test
+    void honorsPropertyLevelJsonFormatTimezoneAndFeatureOverrides() throws Exception {
+        ObjectMapper mapper = JsonMapper.builder()
+                .addModule(new JodaModule())
+                .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .disable(DateTimeFeature.WRITE_DATES_WITH_ZONE_ID)
+                .enable(DateTimeFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+                .defaultTimeZone(TimeZone.getTimeZone("UTC"))
+                .build();
+        PropertyFormatOverridePayload payload = PropertyFormatOverridePayload.sample();
+
+        JsonNode tree = mapper.readTree(mapper.writeValueAsString(payload));
+
+        assertThat(tree.path("tokyoDateTime").asString()).isEqualTo("2024-05-06 16:08:09 +0900");
+        assertThat(tree.path("dateTimeWithZoneId").asString()).contains("[Europe/Paris]");
+
+        ContextAdjustmentOverridePayload parsed = mapper.readValue("""
+                {"preservedOffsetDateTime":"2024-05-06T07:08:09.010+02:00"}
+                """, ContextAdjustmentOverridePayload.class);
+
+        assertThat(parsed.preservedOffsetDateTime.getZone()).isEqualTo(DateTimeZone.forOffsetHours(2));
+        assertThat(parsed.preservedOffsetDateTime.getHourOfDay()).isEqualTo(7);
+    }
+
     private static <K> Map<K, String> readMapWithKeys(ObjectMapper mapper, String json, Class<K> keyType)
             throws Exception {
         return mapper.readValue(json,
@@ -316,6 +340,33 @@ public class Jackson_datatype_jodaTest {
             payload.localDate = new LocalDate(2024, 5, 6);
             payload.localTime = new LocalTime(7, 8, 9);
             return payload;
+        }
+    }
+
+    public static final class PropertyFormatOverridePayload {
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss Z", timezone = "Asia/Tokyo")
+        public DateTime tokyoDateTime;
+
+        @JsonFormat(with = JsonFormat.Feature.WRITE_DATES_WITH_ZONE_ID)
+        public DateTime dateTimeWithZoneId;
+
+        public PropertyFormatOverridePayload() {
+        }
+
+        static PropertyFormatOverridePayload sample() {
+            PropertyFormatOverridePayload payload = new PropertyFormatOverridePayload();
+            payload.tokyoDateTime = new DateTime(2024, 5, 6, 7, 8, 9, DateTimeZone.UTC);
+            payload.dateTimeWithZoneId = new DateTime(2024, 5, 6, 7, 8, 9, 10,
+                    DateTimeZone.forID("Europe/Paris"));
+            return payload;
+        }
+    }
+
+    public static final class ContextAdjustmentOverridePayload {
+        @JsonFormat(without = JsonFormat.Feature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+        public DateTime preservedOffsetDateTime;
+
+        public ContextAdjustmentOverridePayload() {
         }
     }
 }
