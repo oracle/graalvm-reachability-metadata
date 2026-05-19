@@ -37,6 +37,7 @@ import org.springframework.integration.endpoint.EventDrivenConsumer;
 import org.springframework.integration.filter.MessageFilter;
 import org.springframework.integration.handler.MessageProcessor;
 import org.springframework.integration.handler.ServiceActivatingHandler;
+import org.springframework.integration.router.RecipientListRouter;
 import org.springframework.integration.splitter.DefaultMessageSplitter;
 import org.springframework.integration.store.MessageGroup;
 import org.springframework.integration.store.SimpleMessageStore;
@@ -213,6 +214,28 @@ public class Spring_integration_coreTest {
         finally {
             transformingHandler.stop();
         }
+    }
+
+    @Test
+    void recipientListRouterSendsMessagesToMatchingRecipientsAndDefaultChannel() {
+        QueueChannel stringMessages = new QueueChannel();
+        QueueChannel springMessages = new QueueChannel();
+        QueueChannel unmatchedMessages = new QueueChannel();
+        RecipientListRouter router = new RecipientListRouter();
+        router.addRecipient(stringMessages, message -> message.getPayload() instanceof String);
+        router.addRecipient(springMessages, message -> message.getPayload().toString().contains("spring"));
+        router.setDefaultOutputChannel(unmatchedMessages);
+        initialize(router);
+
+        router.handleMessage(MessageBuilder.withPayload("spring integration").build());
+        router.handleMessage(MessageBuilder.withPayload(7).build());
+
+        assertThat(stringMessages.receive(0).getPayload()).isEqualTo("spring integration");
+        assertThat(springMessages.receive(0).getPayload()).isEqualTo("spring integration");
+        assertThat(unmatchedMessages.receive(0).getPayload()).isEqualTo(7);
+        assertThat(stringMessages.receive(0)).isNull();
+        assertThat(springMessages.receive(0)).isNull();
+        assertThat(unmatchedMessages.receive(0)).isNull();
     }
 
     @Test
