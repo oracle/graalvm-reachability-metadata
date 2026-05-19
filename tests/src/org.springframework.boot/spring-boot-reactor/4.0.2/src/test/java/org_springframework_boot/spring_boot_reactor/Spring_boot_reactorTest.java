@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Hooks;
 
 import org.springframework.boot.EnvironmentPostProcessor;
+import org.springframework.boot.LazyInitializationBeanFactoryPostProcessor;
 import org.springframework.boot.LazyInitializationExcludeFilter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.annotation.ImportCandidates;
@@ -143,9 +144,31 @@ public class Spring_boot_reactorTest {
         }
     }
 
+    @Test
+    void autoConfigurationEnablesAutomaticContextPropagationWhenLazyInitializationIsEnabled() {
+        Hooks.disableAutomaticContextPropagation();
+
+        try (AnnotationConfigApplicationContext context = lazyAutoConfigurationContext(
+                Map.of(REACTOR_CONTEXT_PROPAGATION, "auto"))) {
+            assertThat(context.getBeanFactory().getBeanDefinition("lazyTestBean").isLazyInit()).isTrue();
+            assertThat(context.getBeanFactory().containsSingleton("lazyTestBean")).isFalse();
+            assertThat(Hooks.isAutomaticContextPropagationEnabled()).isTrue();
+        }
+    }
+
     private static AnnotationConfigApplicationContext autoConfigurationContext(Map<String, Object> properties) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test", properties));
+        context.register(ReactorAutoConfiguration.class);
+        context.refresh();
+        return context;
+    }
+
+    private static AnnotationConfigApplicationContext lazyAutoConfigurationContext(Map<String, Object> properties) {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test", properties));
+        context.addBeanFactoryPostProcessor(new LazyInitializationBeanFactoryPostProcessor());
+        context.registerBean("lazyTestBean", Object.class, Object::new);
         context.register(ReactorAutoConfiguration.class);
         context.refresh();
         return context;
