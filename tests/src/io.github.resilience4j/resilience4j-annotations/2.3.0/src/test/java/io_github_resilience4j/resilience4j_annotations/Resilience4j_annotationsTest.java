@@ -78,6 +78,17 @@ public class Resilience4j_annotationsTest {
     }
 
     @Test
+    void annotationsCanBeDeclaredOnServiceInterfaceContractsAndDefaultMethods() {
+        InterfaceInventoryGateway gateway = new InterfaceBackedInventoryGateway("ap-south");
+
+        assertThat(gateway.loadProduct(" sku-7 ")).isEqualTo("ap-south:sku-7");
+        assertThat(gateway.rateLimitedLookup("sku-8")).isEqualTo("interface-lookup:sku-8");
+        assertThat(gateway.bulkheadProtectedRefresh()).isEqualTo("interface-refreshed");
+        assertThat(gateway.timedLookup("sku-9").toCompletableFuture()).isCompletedWithValue("interface-timed:sku-9");
+        assertThat(gateway.measuredOperation()).isEqualTo(4);
+    }
+
+    @Test
     void configuredAnnotationValuesAreReadableAtRuntimeForTypeAndMethodUse() throws NoSuchMethodException {
         CircuitBreaker typeCircuitBreaker = AnnotatedInventoryClient.class.getAnnotation(CircuitBreaker.class);
         Retry typeRetry = AnnotatedInventoryClient.class.getAnnotation(Retry.class);
@@ -135,6 +146,50 @@ public class Resilience4j_annotationsTest {
     private static void assertDefaultValue(Class<? extends Annotation> annotationType, String memberName, Object value)
             throws NoSuchMethodException {
         assertThat(annotationType.getDeclaredMethod(memberName).getDefaultValue()).isEqualTo(value);
+    }
+
+    @CircuitBreaker(name = "interfaceInventoryCircuitBreaker", fallbackMethod = "interfaceCircuitBreakerFallback")
+    @Retry(name = "interfaceInventoryRetry", fallbackMethod = "interfaceRetryFallback")
+    private interface InterfaceInventoryGateway {
+        @CircuitBreaker(name = "interfaceProductCircuitBreaker", fallbackMethod = "interfaceProductFallback")
+        @Retry(name = "interfaceProductRetry", fallbackMethod = "interfaceProductRetryFallback")
+        String loadProduct(String productId);
+
+        @RateLimiter(name = "interfaceLookupRateLimiter", fallbackMethod = "interfaceLookupFallback", permits = 3)
+        String rateLimitedLookup(String productId);
+
+        @Bulkhead(name = "interfaceRefreshBulkhead", fallbackMethod = "interfaceRefreshFallback")
+        default String bulkheadProtectedRefresh() {
+            return "interface-refreshed";
+        }
+
+        @TimeLimiter(name = "interfaceAsyncLookupTimeLimiter", fallbackMethod = "interfaceAsyncLookupFallback")
+        default CompletionStage<String> timedLookup(String productId) {
+            return CompletableFuture.completedFuture("interface-timed:" + productId);
+        }
+
+        @Timer(name = "interfaceMeasuredInventoryTimer", fallbackMethod = "interfaceTimerFallback")
+        default int measuredOperation() {
+            return 4;
+        }
+    }
+
+    private static final class InterfaceBackedInventoryGateway implements InterfaceInventoryGateway {
+        private final String region;
+
+        private InterfaceBackedInventoryGateway(String region) {
+            this.region = region;
+        }
+
+        @Override
+        public String loadProduct(String productId) {
+            return region + ":" + productId.trim();
+        }
+
+        @Override
+        public String rateLimitedLookup(String productId) {
+            return "interface-lookup:" + productId;
+        }
     }
 
     @CircuitBreaker(name = "inventoryCircuitBreaker", fallbackMethod = "circuitBreakerFallback")
