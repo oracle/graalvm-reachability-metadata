@@ -6,11 +6,146 @@
  */
 package io_github_resilience4j.resilience4j_annotations;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.micrometer.annotation.Timer;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import org.junit.jupiter.api.Test;
 
-class Resilience4j_annotationsTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Resilience4j_annotationsTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void annotationsExposeRuntimeMethodAndTypeContracts() {
+        assertRuntimeMethodAndTypeAnnotation(Bulkhead.class);
+        assertRuntimeMethodAndTypeAnnotation(CircuitBreaker.class);
+        assertRuntimeMethodAndTypeAnnotation(RateLimiter.class);
+        assertRuntimeMethodAndTypeAnnotation(Retry.class);
+        assertRuntimeMethodAndTypeAnnotation(TimeLimiter.class);
+        assertRuntimeMethodAndTypeAnnotation(Timer.class);
+    }
+
+    @Test
+    void annotationsExposeExpectedRequiredMembersAndDefaults() throws NoSuchMethodException {
+        assertRequiredName(Bulkhead.class);
+        assertRequiredName(CircuitBreaker.class);
+        assertRequiredName(RateLimiter.class);
+        assertRequiredName(Retry.class);
+        assertRequiredName(TimeLimiter.class);
+        assertRequiredName(Timer.class);
+
+        assertDefaultValue(Bulkhead.class, "fallbackMethod", "");
+        assertDefaultValue(Bulkhead.class, "type", Bulkhead.Type.SEMAPHORE);
+        assertDefaultValue(CircuitBreaker.class, "fallbackMethod", "");
+        assertDefaultValue(RateLimiter.class, "fallbackMethod", "");
+        assertDefaultValue(RateLimiter.class, "permits", 1);
+        assertDefaultValue(Retry.class, "fallbackMethod", "");
+        assertDefaultValue(TimeLimiter.class, "fallbackMethod", "");
+        assertDefaultValue(Timer.class, "fallbackMethod", "");
+    }
+
+    @Test
+    void bulkheadTypeEnumCoversSemaphoreAndThreadPoolPolicies() {
+        assertThat(Bulkhead.Type.values()).containsExactly(Bulkhead.Type.SEMAPHORE, Bulkhead.Type.THREADPOOL);
+        assertThat(Bulkhead.Type.valueOf("SEMAPHORE")).isSameAs(Bulkhead.Type.SEMAPHORE);
+        assertThat(Bulkhead.Type.valueOf("THREADPOOL")).isSameAs(Bulkhead.Type.THREADPOOL);
+    }
+
+    @Test
+    void annotatedCodeExecutesAsPlainJavaUntilAFrameworkInterpretsTheAnnotations() {
+        AnnotatedInventoryClient client = new AnnotatedInventoryClient("eu-west");
+
+        assertThat(client.loadProduct("sku-1")).isEqualTo("eu-west:sku-1");
+        assertThat(client.loadProduct(" sku-2 ")).isEqualTo("eu-west:sku-2");
+        assertThat(client.rateLimitedLookup("sku-3")).isEqualTo("lookup:sku-3");
+        assertThat(client.bulkheadProtectedRefresh()).isEqualTo("refreshed");
+        assertThat(client.timedLookup("sku-4").toCompletableFuture()).isCompletedWithValue("timed:sku-4");
+        assertThat(client.measuredOperation()).isEqualTo(2);
+        assertThat(client.invocationCount()).isEqualTo(6);
+    }
+
+    private static void assertRuntimeMethodAndTypeAnnotation(Class<? extends Annotation> annotationType) {
+        Retention retention = annotationType.getAnnotation(Retention.class);
+        Target target = annotationType.getAnnotation(Target.class);
+
+        assertThat(annotationType.getAnnotation(Documented.class)).isNotNull();
+        assertThat(retention).isNotNull();
+        assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(target).isNotNull();
+        assertThat(Set.of(target.value())).containsExactlyInAnyOrder(ElementType.METHOD, ElementType.TYPE);
+    }
+
+    private static void assertRequiredName(Class<? extends Annotation> annotationType) throws NoSuchMethodException {
+        assertThat(annotationType.getDeclaredMethod("name").getReturnType()).isSameAs(String.class);
+        assertThat(annotationType.getDeclaredMethod("name").getDefaultValue()).isNull();
+    }
+
+    private static void assertDefaultValue(Class<? extends Annotation> annotationType, String memberName, Object value)
+            throws NoSuchMethodException {
+        assertThat(annotationType.getDeclaredMethod(memberName).getDefaultValue()).isEqualTo(value);
+    }
+
+    @CircuitBreaker(name = "inventoryCircuitBreaker", fallbackMethod = "circuitBreakerFallback")
+    @Retry(name = "inventoryRetry", fallbackMethod = "retryFallback")
+    private static final class AnnotatedInventoryClient {
+        private final String region;
+        private int invocationCount;
+
+        private AnnotatedInventoryClient(String region) {
+            this.region = region;
+        }
+
+        @CircuitBreaker(name = "productCircuitBreaker", fallbackMethod = "productFallback")
+        @Retry(name = "productRetry", fallbackMethod = "productRetryFallback")
+        private String loadProduct(String productId) {
+            invocationCount++;
+            return region + ":" + productId.trim();
+        }
+
+        @RateLimiter(name = "lookupRateLimiter", fallbackMethod = "lookupFallback", permits = 2)
+        private String rateLimitedLookup(String productId) {
+            invocationCount++;
+            return "lookup:" + productId;
+        }
+
+        @Bulkhead(name = "refreshBulkhead", fallbackMethod = "refreshFallback", type = Bulkhead.Type.THREADPOOL)
+        private String bulkheadProtectedRefresh() {
+            invocationCount++;
+            return "refreshed";
+        }
+
+        @TimeLimiter(name = "asyncLookupTimeLimiter", fallbackMethod = "asyncLookupFallback")
+        private CompletionStage<String> timedLookup(String productId) {
+            invocationCount++;
+            return CompletableFuture.completedFuture("timed:" + productId);
+        }
+
+        @Timer(name = "measuredInventoryTimer", fallbackMethod = "timerFallback")
+        private int measuredOperation() {
+            invocationCount++;
+            return invocationCount / 3;
+        }
+
+        @Bulkhead(name = "defaultBulkhead")
+        @CircuitBreaker(name = "defaultCircuitBreaker")
+        @RateLimiter(name = "defaultRateLimiter")
+        @Retry(name = "defaultRetry")
+        @TimeLimiter(name = "defaultTimeLimiter")
+        @Timer(name = "defaultTimer")
+        private int invocationCount() {
+            return invocationCount;
+        }
     }
 }
