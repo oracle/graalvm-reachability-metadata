@@ -31,7 +31,10 @@ internal object MockkNativeImageSupport {
 
     private fun hasByteBuddyAttachmentFailure(throwable: Throwable): Boolean =
         throwable.causeSequence().any { current: Throwable ->
-            current is IllegalStateException && current.message?.startsWith("Error during attachment using:") == true
+            current is IllegalStateException && (
+                current.message?.startsWith("Error during attachment using:") == true ||
+                    current.message == "No compatible attachment provider is available"
+                )
         }
 
     private fun hasJavaDispatcherInitializationFailure(throwable: Throwable): Boolean =
