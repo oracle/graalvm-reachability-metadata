@@ -152,6 +152,118 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
         ])
 
 
+class LibraryUpdateIssueTests(unittest.TestCase):
+    def test_issue_lookup_does_not_request_body_for_generic_claiming(self) -> None:
+        issue_payload = {
+            "number": 1412,
+            "title": "Update support for org.example:lib:1.0.0",
+            "labels": [{"name": forge_metadata.LABEL_LIBRARY_UPDATE}],
+            "assignees": [],
+        }
+
+        with patch.object(forge_metadata, "gh_json", return_value=issue_payload) as gh_json:
+            issue, label = forge_metadata.get_issue_by_number(1412)
+
+        self.assertEqual(label, forge_metadata.LABEL_LIBRARY_UPDATE)
+        self.assertNotIn("body", issue)
+        self.assertNotIn("body", gh_json.call_args.args[-1])
+
+    def test_claim_payload_does_not_request_body_for_generic_claiming(self) -> None:
+        issue_payload = {
+            "number": 1412,
+            "title": "Update support for org.example:lib:1.0.0",
+            "state": "OPEN",
+            "labels": [{"name": forge_metadata.LABEL_LIBRARY_UPDATE}],
+            "assignees": [],
+        }
+
+        with patch.object(forge_metadata, "gh_json", return_value=issue_payload) as gh_json:
+            issue = forge_metadata.get_issue_claim_payload(1412)
+
+        self.assertNotIn("body", issue)
+        self.assertNotIn("body", gh_json.call_args.args[-1])
+
+    def test_issue_body_fetch_is_explicit_for_reporter_metadata_context(self) -> None:
+        with patch.object(forge_metadata, "gh_json", return_value={"body": "Missing reflection metadata"}) as gh_json:
+            body = forge_metadata.get_issue_body(1412)
+
+        self.assertEqual(body, "Missing reflection metadata")
+        self.assertEqual(gh_json.call_args.args[-1], "body")
+
+    def test_library_update_uses_title_coordinate_when_body_mentions_other_coordinates(self) -> None:
+        issue = {
+            "number": 1412,
+            "title": "Update support for org.example:title-lib:1.2.3",
+            "body": (
+                "The failure also mentions org.other:body-lib:9.9.9 and "
+                "com.acme:context:4.5.6 in the stack trace."
+            ),
+        }
+
+        claim_metadata = forge_metadata.build_claim_metadata(
+            issue,
+            forge_metadata.LABEL_LIBRARY_UPDATE,
+            "/tmp/reachability",
+        )
+
+        self.assertEqual(claim_metadata, ("org.example:title-lib:1.2.3", None, None))
+
+    def test_extract_issue_requested_metadata_context_keeps_full_issue_body(self) -> None:
+        body = """
+        The reporter may describe the missing metadata in arbitrary prose.
+
+        Related coordinate: org.other:body-lib:9.9.9
+
+        ```json
+        {"reflection":[{"type":"org.example.Missing"}]}
+        ```
+
+        native-image reports missing resource file config/app.properties.
+        """
+
+        context = forge_metadata.extract_issue_requested_metadata_context(body)
+
+        self.assertIn("arbitrary prose", context)
+        self.assertIn("org.example.Missing", context)
+        self.assertIn("missing resource file config/app.properties", context)
+        self.assertIn("Related coordinate", context)
+
+    def test_library_update_passes_issue_requested_metadata_context_to_workflow(self) -> None:
+        claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_UPDATE)
+
+        with patch.object(forge_metadata, "require_claimed_issue_worktree"), \
+                patch.object(
+                    forge_metadata,
+                    "get_issue_body",
+                    return_value=(
+                        "Caused by: org.graalvm.nativeimage.MissingReflectionRegistrationError: "
+                        "Cannot reflectively invoke method 'public void org.example.Demo.setName(java.lang.String)'."
+                    ),
+                ) as issue_body, \
+                patch.object(forge_metadata, "run_improve_library_coverage_workflow", return_value=0) as workflow:
+            self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "library_update_pi_gpt-5.5", False))
+
+        issue_body.assert_called_once_with(1412)
+        workflow.assert_called_once()
+        argv = workflow.call_args.args[0]
+        self.assertIn("--issue-requested-metadata-context", argv)
+        context = argv[argv.index("--issue-requested-metadata-context") + 1]
+        self.assertIn("org.example.Demo.setName", context)
+
+    def test_library_new_does_not_read_issue_body_or_pass_reporter_context(self) -> None:
+        claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_NEW)
+
+        with patch.object(forge_metadata, "require_claimed_issue_worktree"), \
+                patch.object(forge_metadata, "get_issue_body") as issue_body, \
+                patch.object(forge_metadata, "run_add_new_library_support_workflow", return_value=0) as workflow:
+            self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "basic_iterative_pi_gpt-5.4", False))
+
+        issue_body.assert_not_called()
+        workflow.assert_called_once()
+        argv = workflow.call_args.args[0]
+        self.assertNotIn("--issue-requested-metadata-context", argv)
+
+
 class IssueClaimPreflightTests(unittest.TestCase):
     def test_forge_gh_does_not_log_github_query_by_default(self) -> None:
         completed_process = subprocess.CompletedProcess(

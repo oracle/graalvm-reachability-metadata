@@ -5,6 +5,9 @@ Task:
 - Identify additional uncovered features of `{library}` and add tests for it.
 - Keep the new patch focused and incremental.
 
+Issue-Requested Metadata:
+{issue_requested_metadata_context}
+
 Rules:
 - Do not change test logic that already works unless it is required to support the new test.
 - Do not re-test classes or logic flows already present in the file.
@@ -15,3 +18,4 @@ Rules:
 - You may inspect the repository only to learn local test style and structure.
 - The tests must execute under native image. Do not skip, disable, or short-circuit test logic in native image using assumptions, `@DisabledInNativeImage`, `isNativeImageRuntime()`, `ImageInfo.inImageRuntimeCode()`, or equivalent guards.
 - Do NOT compile or run tests yourself. The workflow will do that externally.
+- Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`.

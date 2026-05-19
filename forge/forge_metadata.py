@@ -492,6 +492,18 @@ def get_issue_claim_payload(issue_number: int) -> dict:
     )
 
 
+def get_issue_body(issue_number: int) -> str:
+    """Fetch an issue body only for workflows that explicitly need reporter context."""
+    data = gh_json(
+        "issue", "view",
+        str(issue_number),
+        "--repo", REPO,
+        "--json", "body",
+    )
+    body = data.get("body")
+    return body if isinstance(body, str) else ""
+
+
 def build_issue_search_query(
         label: str,
         extra_labels: list[str] | None = None,
@@ -3570,6 +3582,9 @@ def invoke_pipeline(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
+        if issue_requested_metadata_context:
+            pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         append_large_library_workflow_args(pipeline_argv, claimed_issue)
@@ -4023,6 +4038,17 @@ def build_claim_metadata(
 
     current_coordinates = f"{group}:{artifact}:{current_version}"
     return issue_coordinates, current_coordinates, new_version
+
+
+def extract_issue_requested_metadata_context(issue_body: str | None, max_chars: int = 50000) -> str:
+    """Return reporter-provided missing metadata context from an issue body."""
+    if not issue_body:
+        return ""
+
+    context = issue_body.strip()
+    if len(context) > max_chars:
+        context = context[:max_chars].rstrip() + "\n[truncated]"
+    return context
 
 
 def resolve_large_library_resume_artifact(issue: dict, canonical_metrics_repo_path: str) -> str | None:

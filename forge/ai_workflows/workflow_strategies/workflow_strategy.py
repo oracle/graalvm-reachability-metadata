@@ -22,6 +22,13 @@ from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.metadata_index import (
+    coordinate_parts,
+    find_index_entry_for_version,
+    resolve_metadata_version,
+    resolve_test_version,
+)
+from utility_scripts.issue_requested_metadata import NO_REPORTER_METADATA_CONTEXT
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_persistent_instructions, load_prompt_template
@@ -92,6 +99,11 @@ class WorkflowStrategy(ABC):
         """Initialize the strategy from a configuration dict and context substitutions."""
         self.strategy_obj = strategy_obj or {}
         self.context = context
+        self.context.setdefault(
+            "issue_requested_metadata_context",
+            NO_REPORTER_METADATA_CONTEXT,
+        )
+        self.context.setdefault("resolved_edit_scope_context", "")
         self.model_name = self.strategy_obj.get("model")
         if not isinstance(self.model_name, str) or not self.model_name:
             raise ValueError("Strategy is missing required field: model")
@@ -268,6 +280,18 @@ class WorkflowStrategy(ABC):
         # local CI verification after generation.
         return final_status
 
+    def _finalization_libraries(self) -> list[str]:
+        """Return requested and resolved metadata coordinates that must stay valid."""
+        libraries = [self.library]
+        metadata_version = str(
+            self.context.get("metadata_version")
+            or resolve_metadata_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
+        metadata_library = f"{self.group}:{self.artifact}:{metadata_version}"
+        if metadata_library not in libraries:
+            libraries.append(metadata_library)
+        return libraries
+
     def _run_gradle_command_with_output(self, command: list[str]) -> subprocess.CompletedProcess[str]:
         """Run a Gradle command in the reachability repo and capture combined output."""
         require_complete_reachability_repo(self.reachability_repo_path)
@@ -306,6 +330,15 @@ class WorkflowStrategy(ABC):
 
     def _resolve_index_entry_for_current_version(self, index_entries: list[dict]) -> dict | None:
         """Return the metadata index entry that should receive allowed-package updates."""
+        resolved_entry = find_index_entry_for_version(
+            self.reachability_repo_path,
+            self.group,
+            self.artifact,
+            self.version,
+        )
+        if resolved_entry is not None:
+            return resolved_entry
+
         matching_version_entries = [
             entry for entry in index_entries if str(entry.get("metadata-version") or "") == self.version
         ]
@@ -403,23 +436,32 @@ class WorkflowStrategy(ABC):
         """Generate metadata, run follow-up Gradle tasks, and commit the iteration."""
         log_stage("generate-metadata", f"Running generateMetadata for {self.library}")
         self._run_command(f"./gradlew generateMetadata -Pcoordinates={self.library} --agentAllowedPackages=fromJar")
-        test_retry_status = self._run_test_with_retry(self.library)
-        if test_retry_status == RUN_STATUS_FAILURE:
-            return test_retry_status, None
-        if not run_library_finalization(
-            repo_path=self.reachability_repo_path,
-            library=self.library,
-            group=self.group,
-            artifact=self.artifact,
-            library_version=self.version,
-            model_name=self.model_name,
-        ):
-            return RUN_STATUS_FAILURE, None
+        final_status = RUN_STATUS_SUCCESS
+        finalization_libraries = self._finalization_libraries()
+        for library in finalization_libraries:
+            test_retry_status = self._run_test_with_retry(library)
+            if test_retry_status == RUN_STATUS_FAILURE:
+                return test_retry_status, None
+            if test_retry_status == SUCCESS_WITH_INTERVENTION_STATUS:
+                final_status = SUCCESS_WITH_INTERVENTION_STATUS
+        for library in finalization_libraries:
+            group, artifact, library_version = coordinate_parts(library)
+            if library_version is None:
+                return RUN_STATUS_FAILURE, None
+            if not run_library_finalization(
+                repo_path=self.reachability_repo_path,
+                library=library,
+                group=group,
+                artifact=artifact,
+                library_version=library_version,
+                model_name=self.model_name,
+            ):
+                return RUN_STATUS_FAILURE, None
         log_stage("commit-iteration", f"Running commit iteration for {self.library}")
         if not self._commit_library_iteration():
             return RUN_STATUS_FAILURE, None
         checkpoint_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-        return test_retry_status, checkpoint_commit_hash
+        return final_status, checkpoint_commit_hash
 
     def _run_split_test_only_metadata(self, library: str) -> bool:
         """Split test-only metadata before stats generation or committing."""
@@ -431,6 +473,14 @@ class WorkflowStrategy(ABC):
 
     def _commit_library_iteration(self) -> bool:
         """Stage and commit generated library files for an iteration."""
+        test_version = str(
+            self.context.get("test_version")
+            or resolve_test_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
+        metadata_version = str(
+            self.context.get("metadata_version")
+            or resolve_metadata_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
         stage_paths = [
             os.path.join(
                 self.reachability_repo_path,
@@ -438,13 +488,21 @@ class WorkflowStrategy(ABC):
                 "src",
                 self.group,
                 self.artifact,
-                self.version,
+                test_version,
             ),
             os.path.join(
                 self.reachability_repo_path,
                 "metadata",
                 self.group,
                 self.artifact,
+                "index.json",
+            ),
+            os.path.join(
+                self.reachability_repo_path,
+                "metadata",
+                self.group,
+                self.artifact,
+                metadata_version,
             ),
             stats_artifact_dir(self.reachability_repo_path, self.group, self.artifact),
         ]

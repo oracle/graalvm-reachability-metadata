@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 from ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy import IncreaseDynamicAccessCoverageStrategy
 from ai_workflows.workflow_strategies.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
-from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY
+from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.large_library_progress import LargeLibraryProgressState, find_progress_state_path
 
@@ -191,6 +191,41 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             os.path.join("tests", "src", "org.example", "lib", "1.0.0", "build", "reports"),
             strategy.dynamic_access_report_path,
         )
+
+    def test_issue_requested_metadata_phase_commits_when_native_test_is_reached(self) -> None:
+        class FakeAgent:
+            def __init__(self) -> None:
+                self.prompts: list[str] = []
+                self.cleared = False
+
+            def send_prompt(self, prompt: str) -> None:
+                self.prompts.append(prompt)
+
+            def run_test_command(self, command: str) -> str:
+                return "> Task :nativeTest FAILED"
+
+            def clear_context(self) -> None:
+                self.cleared = True
+
+        strategy = self._strategy(
+            issue_requested_metadata_context="Reporter-provided missing metadata context:\nmissing resource",
+        )
+        strategy.prompts["issue-requested-metadata"] = "unused"
+        agent = FakeAgent()
+
+        with patch.object(strategy, "_render_prompt", return_value="prompt"), \
+                patch.object(strategy, "_commit_test_sources") as commit_tests, \
+                patch(
+                    "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.check_output",
+                    return_value="checkpoint\n",
+                ):
+            phase_ok, iterations = strategy._run_issue_requested_metadata_phase(agent)
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(iterations, 1)
+        self.assertEqual(agent.prompts, ["prompt"])
+        self.assertTrue(agent.cleared)
+        commit_tests.assert_called_once_with("Issue-requested metadata coverage for org.example:lib:1.0.0")
 
     def test_native_test_gate_flushes_leftover_classes_at_end(self) -> None:
         class FakeAgent:
@@ -529,6 +564,9 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             def __init__(self, strategy_obj: dict, **context) -> None:
                 self._last_phase_status = RUN_STATUS_CHUNK_READY
 
+            def has_issue_requested_metadata_context(self) -> bool:
+                return False
+
             def _run_dynamic_access_phase(self, agent) -> tuple[bool, int]:
                 return True, 3
 
@@ -547,6 +585,70 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                 ChunkReadyDynamicAccess,
         ):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_CHUNK_READY, 3))
+
+    def test_increase_coverage_strategy_runs_issue_requested_phase_after_dynamic_access(self) -> None:
+        calls: list[str] = []
+
+        class ReporterRequestedDynamicAccess:
+            def __init__(self, strategy_obj: dict, **context) -> None:
+                self._last_phase_status = RUN_STATUS_SUCCESS
+
+            def has_issue_requested_metadata_context(self) -> bool:
+                return True
+
+            def _run_issue_requested_metadata_phase(self, agent) -> tuple[bool, int]:
+                calls.append("issue-requested")
+                return True, 1
+
+            def _run_dynamic_access_phase(self, agent) -> tuple[bool, int]:
+                calls.append("dynamic-access")
+                return False, 0
+
+        strategy = IncreaseDynamicAccessCoverageStrategy(
+            {
+                "model": "test-model",
+                "parameters": {},
+                "prompts": {},
+            },
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:lib:1.0.0",
+            issue_requested_metadata_context="Reporter-provided missing metadata context:\nmissing resource",
+        )
+
+        with patch(
+                "ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                ReporterRequestedDynamicAccess,
+        ):
+            self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_SUCCESS, 1))
+
+        self.assertEqual(calls, ["dynamic-access", "issue-requested"])
+
+    def test_increase_coverage_strategy_fails_when_no_primary_dynamic_access_or_issue_work_succeeds(self) -> None:
+        class NoProgressDynamicAccess:
+            def __init__(self, strategy_obj: dict, **context) -> None:
+                self._last_phase_status = RUN_STATUS_SUCCESS
+
+            def has_issue_requested_metadata_context(self) -> bool:
+                return False
+
+            def _run_dynamic_access_phase(self, agent) -> tuple[bool, int]:
+                return False, 0
+
+        strategy = IncreaseDynamicAccessCoverageStrategy(
+            {
+                "model": "test-model",
+                "parameters": {},
+                "prompts": {},
+            },
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:lib:1.0.0",
+        )
+
+        with patch(
+                "ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                NoProgressDynamicAccess,
+        ):
+            self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_FAILURE, 0))
 
     @staticmethod
     def _class_coverage(class_name: str, total_calls: int, covered_calls: int) -> DynamicAccessClass:

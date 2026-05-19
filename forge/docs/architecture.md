@@ -16,6 +16,7 @@ forge/
 ├─ forge_metadata.py           # Top-level dispatcher (issues, PRs, reviews)
 ├─ ai_workflows/
 │  ├─ add_new_library_support.py   # Entry: new-library generation
+│  ├─ improve_library_coverage.py  # Entry: library-update coverage
 │  ├─ fix_javac_fail.py            # Entry: fix Java compile failures
 │  ├─ fix_java_run_fail.py         # Entry: fix JVM runtime failures
 │  ├─ fix_ni_run.py                # Entry: fix native-image runtime failures
@@ -44,6 +45,7 @@ flowchart TB
 
     subgraph Workflows["AI Workflows (entry scripts)"]
         AddNew["add_new_library_support"]
+        Improve["improve_library_coverage"]
         FixJavac["fix_javac_fail"]
         FixJavaRun["fix_java_run_fail"]
         FixNI["fix_ni_run"]
@@ -97,6 +99,7 @@ flowchart TB
     DoWork --> DoCycle --> Dispatcher
     Dispatcher -->|claim issue + label| GH
     Dispatcher --> AddNew
+    Dispatcher --> Improve
     Dispatcher --> FixJavac
     Dispatcher --> FixJavaRun
     Dispatcher --> FixNI
@@ -104,6 +107,7 @@ flowchart TB
     ReviewPRs -->|submit review| GH
 
     AddNew --> Strategies
+    Improve --> Inc
     FixJavac --> JFix
     FixJavaRun --> JFix
     FixNI --> Strategies
@@ -164,6 +168,7 @@ metrics.
 | Script | GitHub label | Workflow concern |
 | --- | --- | --- |
 | [add_new_library_support.py](../ai_workflows/add_new_library_support.py) | `library-new-request` | Generate tests + metadata for an unsupported library. |
+| [improve_library_coverage.py](../ai_workflows/improve_library_coverage.py) | `library-update-request` | Resolve an existing-library update target, clone/split support when needed, then generate tests + metadata to improve coverage for the requested coordinate. |
 | [fix_javac_fail.py](../ai_workflows/fix_javac_fail.py) | `fixes-javac-fail` | Repair test sources that no longer compile. |
 | [fix_java_run_fail.py](../ai_workflows/fix_java_run_fail.py) | `fixes-java-run-fail` | Repair JVM runtime test failures. |
 | [fix_ni_run.py](../ai_workflows/fix_ni_run.py) | `fixes-native-image-run-fail` | Refresh metadata for `nativeTest` failures. |
