@@ -49,10 +49,8 @@ public class JerseyTestTest implements TestContainerFactory {
     }
 
     @Override
-    public <T extends AppDescriptor> Class<T> supports() {
-        @SuppressWarnings("unchecked")
-        Class<T> descriptorClass = (Class<T>) LowLevelAppDescriptor.class;
-        return descriptorClass;
+    public Class<? extends AppDescriptor> supports() {
+        return LowLevelAppDescriptor.class;
     }
 
     @Override
