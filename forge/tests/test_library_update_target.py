@@ -349,6 +349,54 @@ class LibraryUpdateTargetTests(unittest.TestCase):
             ) as file:
                 self.assertIn("org.example:demo:1.0.1", file.read())
 
+    def test_library_update_splits_shared_test_version_target(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            _write_index(repo, [
+                {
+                    "latest": True,
+                    "metadata-version": "3.22.0",
+                    "test-version": "3.19.0",
+                    "source-code-url": "https://example.test/demo-$version$-sources.jar",
+                    "tested-versions": ["3.22.0", "3.23.0"],
+                    "allowed-packages": ["org.example"],
+                }
+            ])
+            _write_file(
+                os.path.join(repo, "metadata", "org.example", "demo", "3.22.0", "reachability-metadata.json"),
+                '{"reflection":[{"type":"org.example.Demo"}]}\n',
+            )
+            _write_file(
+                os.path.join(repo, "tests", "src", "org.example", "demo", "3.19.0", "build.gradle"),
+                'String libraryVersion = "3.19.0"\nimplementation "org.example:demo:$libraryVersion"\n',
+            )
+            _write_file(
+                os.path.join(repo, "tests", "src", "org.example", "demo", "3.19.0", "gradle.properties"),
+                "library.coordinates = org.example:demo:3.19.0\n"
+                "library.version = 3.19.0\n"
+                "metadata.dir = org.example/demo/3.22.0/\n",
+            )
+
+            target = prepare_library_update_target(repo, "org.example", "demo", "3.22.0")
+
+            self.assertEqual(target.match_type, MATCH_NEW_VERSION)
+            self.assertEqual(target.resolved_metadata_version, "3.22.0")
+            self.assertEqual(target.resolved_test_version, "3.22.0")
+            self.assertTrue(os.path.isdir(os.path.join(repo, "tests", "src", "org.example", "demo", "3.22.0")))
+            with open(
+                    os.path.join(repo, "tests", "src", "org.example", "demo", "3.22.0", "gradle.properties"),
+                    encoding="utf-8",
+            ) as file:
+                gradle_properties = file.read()
+            self.assertIn("library.coordinates = org.example:demo:3.22.0", gradle_properties)
+            self.assertIn("library.version = 3.22.0", gradle_properties)
+            self.assertIn("metadata.dir = org.example/demo/3.22.0/", gradle_properties)
+            with open(os.path.join(repo, "metadata", "org.example", "demo", "index.json"), encoding="utf-8") as file:
+                entries = json.load(file)
+            matching_entries = [entry for entry in entries if entry.get("metadata-version") == "3.22.0"]
+            self.assertEqual(len(matching_entries), 1)
+            self.assertNotIn("test-version", matching_entries[0])
+            self.assertEqual(matching_entries[0]["tested-versions"], ["3.22.0", "3.23.0"])
+
     def test_library_update_splits_default_for_target(self) -> None:
         with tempfile.TemporaryDirectory() as repo:
             _write_index(repo, [

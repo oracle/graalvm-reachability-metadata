@@ -345,6 +345,8 @@ def select_clone_baseline_entry(
 
 
 def _copytree_replace(destination: str, source: str) -> None:
+    if os.path.abspath(destination) == os.path.abspath(source):
+        return
     if os.path.exists(destination):
         shutil.rmtree(destination)
     shutil.copytree(source, destination)
@@ -565,7 +567,17 @@ def clone_library_update_support(
 
     entries = load_index_entries(repo_path, group, artifact) or []
     moved_tested_versions = _tested_versions_for_split_entry(baseline_entry, requested_version)
+    new_entry_tested_versions = moved_tested_versions
+    if baseline_metadata_version == requested_version:
+        tested_versions = baseline_entry.get("tested-versions")
+        if isinstance(tested_versions, list):
+            new_entry_tested_versions = [str(version) for version in tested_versions]
     updated_entries: list[dict[str, Any]] = []
+    new_entry = _new_index_entry_from_baseline(
+        baseline_entry,
+        requested_version,
+        new_entry_tested_versions,
+    )
     for entry in entries:
         if not isinstance(entry, dict):
             continue
@@ -573,6 +585,9 @@ def clone_library_update_support(
         if entry_copy.get("latest") is True:
             entry_copy.pop("latest", None)
         if entry_copy.get("metadata-version") == baseline_metadata_version:
+            if baseline_metadata_version == requested_version:
+                updated_entries.append(new_entry)
+                continue
             tested_versions = entry_copy.get("tested-versions")
             if isinstance(tested_versions, list):
                 entry_copy["tested-versions"] = [
@@ -580,11 +595,8 @@ def clone_library_update_support(
                     if not _version_is_at_or_after(str(version), requested_version)
                 ]
         updated_entries.append(entry_copy)
-    updated_entries.append(_new_index_entry_from_baseline(
-        baseline_entry,
-        requested_version,
-        moved_tested_versions,
-    ))
+    if baseline_metadata_version != requested_version:
+        updated_entries.append(new_entry)
     _write_index_entries(repo_path, group, artifact, updated_entries)
 
 
@@ -599,7 +611,10 @@ def prepare_library_update_target(
     target = resolve_library_update_target(repo_path, group, artifact, requested_version)
     must_split_shared_target = (
         target.match_type != MATCH_NEW_VERSION
-        and target.resolved_metadata_version != requested_version
+        and (
+            target.resolved_metadata_version != requested_version
+            or target.resolved_test_version != requested_version
+        )
     )
     if must_split_shared_target and target.matched_entry is not None:
         clone_library_update_support(repo_path, group, artifact, requested_version, target.matched_entry)

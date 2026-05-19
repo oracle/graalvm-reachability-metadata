@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 from ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy import IncreaseDynamicAccessCoverageStrategy
 from ai_workflows.workflow_strategies.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
-from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_SUCCESS
+from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.large_library_progress import LargeLibraryProgressState, find_progress_state_path
 
@@ -622,6 +622,33 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_SUCCESS, 1))
 
         self.assertEqual(calls, ["dynamic-access", "issue-requested"])
+
+    def test_increase_coverage_strategy_fails_when_no_primary_dynamic_access_or_issue_work_succeeds(self) -> None:
+        class NoProgressDynamicAccess:
+            def __init__(self, strategy_obj: dict, **context) -> None:
+                self._last_phase_status = RUN_STATUS_SUCCESS
+
+            def has_issue_requested_metadata_context(self) -> bool:
+                return False
+
+            def _run_dynamic_access_phase(self, agent) -> tuple[bool, int]:
+                return False, 0
+
+        strategy = IncreaseDynamicAccessCoverageStrategy(
+            {
+                "model": "test-model",
+                "parameters": {},
+                "prompts": {},
+            },
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:lib:1.0.0",
+        )
+
+        with patch(
+                "ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                NoProgressDynamicAccess,
+        ):
+            self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_FAILURE, 0))
 
     @staticmethod
     def _class_coverage(class_name: str, total_calls: int, covered_calls: int) -> DynamicAccessClass:

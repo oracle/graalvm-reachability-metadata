@@ -69,12 +69,21 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             )
         )
 
+        has_issue_requested_metadata = da.has_issue_requested_metadata_context()
         if not phase_ok:
-            self._print_message("keeping primary workflow result because dynamic-access coverage phase did not succeed")
+            if self.primary is None and not has_issue_requested_metadata:
+                self._print_message(
+                    "dynamic-access coverage phase did not succeed and no reporter-requested metadata phase is available"
+                )
+                status = RUN_STATUS_FAILURE
+            else:
+                self._print_message(
+                    "continuing with existing workflow result because dynamic-access coverage phase did not succeed"
+                )
         elif da._last_phase_status == RUN_STATUS_CHUNK_READY:
             status = RUN_STATUS_CHUNK_READY
 
-        if da.has_issue_requested_metadata_context():
+        if has_issue_requested_metadata:
             self._print_message("starting reporter-requested metadata phase")
             issue_phase_ok, issue_iterations = da._run_issue_requested_metadata_phase(agent)
             iterations += issue_iterations
@@ -92,6 +101,8 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 if len(result) == 2:
                     return status, iterations
                 return (status, iterations) + result[2:]
+            if status != RUN_STATUS_CHUNK_READY:
+                status = RUN_STATUS_SUCCESS
 
         if self.primary is None:
             return status, iterations
