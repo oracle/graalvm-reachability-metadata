@@ -188,8 +188,7 @@ public class Spring_integration_kafkaTest {
             assertThat(received.getHeaders().get(KafkaHeaders.RAW_DATA)).isInstanceOf(ConsumerRecord.class);
             assertThat(source.getComponentType()).isEqualTo("kafka:message-source");
             assertThat(source.getAssignedPartitions()).containsExactly(topicPartition);
-        }
-        finally {
+        } finally {
             source.destroy();
             kafkaTemplate.destroy();
         }
@@ -236,8 +235,7 @@ public class Spring_integration_kafkaTest {
             assertThat(firstAcknowledgment.isAcknowledged()).isTrue();
             assertThat(committedOffset).isNotNull();
             assertThat(committedOffset.offset()).isEqualTo(2L);
-        }
-        finally {
+        } finally {
             source.destroy();
         }
     }
