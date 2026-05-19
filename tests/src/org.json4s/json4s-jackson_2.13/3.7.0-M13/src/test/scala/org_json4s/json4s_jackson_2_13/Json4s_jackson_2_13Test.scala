@@ -125,7 +125,11 @@ class Json4s_jackson_2_13Test {
 
     try {
       val preservingFormats: Formats = DefaultFormats.withEscapeUnicode.preservingEmptyValues
-      val renderedWithNulls: JValue = render(value)(preservingFormats)
+      val renderedWithNulls: JValue = render(
+        value,
+        alwaysEscapeUnicode = preservingFormats.alwaysEscapeUnicode,
+        emptyValueStrategy = preservingFormats.emptyValueStrategy
+      )
       assertEquals(
         JObject(
           JField("name", JString("café")),
@@ -146,11 +150,20 @@ class Json4s_jackson_2_13Test {
       assertTrue(prettyText.contains("\"nested\""))
       assertTrue(prettyText.contains("caf\\u00E9"))
 
-      val renderedSkippingEmptyValues: JValue = render(value)(DefaultFormats.skippingEmptyValues)
+      val skippingFormats: Formats = DefaultFormats.skippingEmptyValues
+      val renderedSkippingEmptyValues: JValue = render(
+        value,
+        alwaysEscapeUnicode = skippingFormats.alwaysEscapeUnicode,
+        emptyValueStrategy = skippingFormats.emptyValueStrategy
+      )
       assertEquals(JNothing, renderedSkippingEmptyValues \ "missing")
       assertEquals(JArray(List(JInt(1), JNothing, JNull)), renderedSkippingEmptyValues \ "items")
     } finally {
-      render(JNothing)(DefaultFormats)
+      render(
+        JNothing,
+        alwaysEscapeUnicode = DefaultFormats.alwaysEscapeUnicode,
+        emptyValueStrategy = DefaultFormats.emptyValueStrategy
+      )
     }
   }
 
@@ -197,7 +210,11 @@ class Json4s_jackson_2_13Test {
       assertEquals(Some(parsed), parseJsonOpt("""{"ok":true,"numbers":[1,2,3]}"""))
       assertEquals(None, parseJsonOpt("""{"ok":]}"""))
     } finally {
-      render(JNothing)(DefaultFormats)
+      render(
+        JNothing,
+        alwaysEscapeUnicode = DefaultFormats.alwaysEscapeUnicode,
+        emptyValueStrategy = DefaultFormats.emptyValueStrategy
+      )
     }
   }
 

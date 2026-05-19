@@ -12,7 +12,9 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.json4s:json4s-jackson_2.13:$libraryVersion"
+    testImplementation("org.json4s:json4s-jackson_2.13:$libraryVersion") {
+        exclude group: 'org.scala-native'
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'org.scala-lang:scala-library:2.13.16'
     testImplementation 'org.scala-lang:scala-compiler:2.13.16'
