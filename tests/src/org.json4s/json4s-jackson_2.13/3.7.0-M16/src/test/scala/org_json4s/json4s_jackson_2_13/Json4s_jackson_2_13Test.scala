@@ -437,19 +437,21 @@ class Json4s_jackson_2_13Test {
     implicit def listWriter[T](implicit valueWriter: Writer[T]): Writer[List[T]] = new Writer[List[T]] {
       override def write(values: List[T]): JValue = JArray(values.map(valueWriter.write))
     }
-    implicit val accountReader: Reader[JacksonAccount] = new Reader[JacksonAccount] {
-      override def read(value: JValue): JacksonAccount = {
-        val name: String = (value \ "name") match {
-          case JString(text) => text
-          case other => fail(s"Expected account name string but got $other")
-        }
-        val score: Int = (value \ "score") match {
-          case JInt(number) => number.intValue
-          case JLong(number) => number.toInt
-          case other => fail(s"Expected account score integer but got $other")
-        }
-        JacksonAccount(name, score)
+    implicit val accountReader: Reader[JacksonAccount] = Reader.from { value =>
+      val nameEither: Either[MappingException, String] = (value \ "name") match {
+        case JString(text) => Right(text)
+        case other => Left(new MappingException(s"Expected account name string but got $other"))
       }
+      val scoreEither: Either[MappingException, Int] = (value \ "score") match {
+        case JInt(number) => Right(number.intValue)
+        case JLong(number) => Right(number.toInt)
+        case other => Left(new MappingException(s"Expected account score integer but got $other"))
+      }
+
+      for {
+        name <- nameEither
+        score <- scoreEither
+      } yield JacksonAccount(name, score)
     }
 
     val account: JacksonAccount = JacksonAccount("jackson", 42)
