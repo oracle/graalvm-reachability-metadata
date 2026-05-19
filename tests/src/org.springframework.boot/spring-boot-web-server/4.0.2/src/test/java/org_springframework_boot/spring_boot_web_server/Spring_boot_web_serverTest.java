@@ -67,6 +67,7 @@ import org.springframework.boot.web.server.reactive.AbstractReactiveWebServerFac
 import org.springframework.boot.web.server.reactive.ConfigurableReactiveWebServerFactory;
 import org.springframework.boot.web.server.reactive.ReactiveWebServerFactory;
 import org.springframework.boot.web.server.reactive.context.AnnotationConfigReactiveWebServerApplicationContext;
+import org.springframework.boot.web.server.reactive.context.ReactiveWebServerApplicationContext;
 import org.springframework.boot.web.server.reactive.context.ReactiveWebServerInitializedEvent;
 import org.springframework.boot.web.server.servlet.ConfigurableServletWebServerFactory;
 import org.springframework.boot.web.server.servlet.ContextPath;
@@ -540,6 +541,27 @@ public class Spring_boot_web_serverTest {
         }
 
         assertThat(webServer.stopped).isTrue();
+    }
+
+    @Test
+    void reactiveWebServerApplicationContextDelegatesToHttpHandlerAfterRefresh() {
+        TestReactiveWebServerFactory factory = new TestReactiveWebServerFactory();
+        factory.webServer = new RecordingWebServer(0);
+        AtomicBoolean handled = new AtomicBoolean();
+        HttpHandler handler = (request, response) -> {
+            handled.set(true);
+            return Mono.empty();
+        };
+
+        try (ReactiveWebServerApplicationContext context = new ReactiveWebServerApplicationContext()) {
+            context.registerBean(ReactiveWebServerFactory.class, () -> factory);
+            context.registerBean(HttpHandler.class, () -> handler);
+
+            context.refresh();
+            factory.httpHandler.handle(null, null).block(Duration.ofSeconds(1));
+
+            assertThat(handled).isTrue();
+        }
     }
 
     @Test
