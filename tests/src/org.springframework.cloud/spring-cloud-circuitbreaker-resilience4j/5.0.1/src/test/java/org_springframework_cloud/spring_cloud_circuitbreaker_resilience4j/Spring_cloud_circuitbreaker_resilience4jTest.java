@@ -13,8 +13,11 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -139,6 +142,49 @@ public class Spring_cloud_circuitbreaker_resilience4jTest {
                 .isEqualTo(io.github.resilience4j.circuitbreaker.CircuitBreaker.State.OPEN);
         } finally {
             executorService.shutdownNow();
+        }
+    }
+
+    @Test
+    void circuitBreakerAppliesTimeLimiterFallbackWhenSupplierExceedsTimeout() throws InterruptedException {
+        CircuitBreakerRegistry circuitBreakerRegistry = CircuitBreakerRegistry.ofDefaults();
+        TimeLimiterRegistry timeLimiterRegistry = TimeLimiterRegistry.ofDefaults();
+        Resilience4JCircuitBreakerFactory factory = new Resilience4JCircuitBreakerFactory(circuitBreakerRegistry,
+                timeLimiterRegistry, null, new Resilience4JConfigurationProperties());
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        factory.configureExecutorService(executorService);
+        factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
+            .circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
+            .timeLimiterConfig(TimeLimiterConfig.custom()
+                .timeoutDuration(Duration.ofMillis(100))
+                .cancelRunningFuture(true)
+                .build())
+            .build());
+
+        try {
+            CircuitBreaker circuitBreaker = factory.create("slow-service");
+            AtomicReference<Throwable> fallbackThrowable = new AtomicReference<>();
+
+            String value = circuitBreaker.run(() -> {
+                try {
+                    Thread.sleep(1_000);
+                    return "slow response";
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    return "interrupted";
+                }
+            }, throwable -> {
+                fallbackThrowable.set(throwable);
+                return "fallback";
+            });
+
+            assertThat(value).isEqualTo("fallback");
+            assertThat(fallbackThrowable.get()).isInstanceOf(TimeoutException.class);
+            assertThat(timeLimiterRegistry.find("slow-service")).isPresent();
+            assertThat(circuitBreakerRegistry.find("slow-service")).isPresent();
+        } finally {
+            executorService.shutdownNow();
+            executorService.awaitTermination(2, TimeUnit.SECONDS);
         }
     }
 
