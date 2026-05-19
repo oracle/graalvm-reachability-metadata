@@ -133,7 +133,8 @@ public class Jdbc_v2Test {
                     .isInstanceOf(SQLFeatureNotSupportedException.class);
             assertThatThrownBy(connection::commit).isInstanceOf(SQLFeatureNotSupportedException.class);
             assertThatThrownBy(connection::rollback).isInstanceOf(SQLFeatureNotSupportedException.class);
-            assertThatThrownBy(() -> connection.setReadOnly(true)).isInstanceOf(SQLFeatureNotSupportedException.class);
+            connection.setReadOnly(true);
+            assertThat(connection.isReadOnly()).isTrue();
             assertThatThrownBy(() -> connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED))
                     .isInstanceOf(SQLFeatureNotSupportedException.class);
             assertThatThrownBy(() -> connection.isValid(-1)).isInstanceOf(SQLException.class);
@@ -149,7 +150,7 @@ public class Jdbc_v2Test {
             assertThat(statement.getMoreResults()).isFalse();
             assertThat(statement.getWarnings() == null).isTrue();
             assertThat(statement.getFetchDirection()).isEqualTo(ResultSet.FETCH_FORWARD);
-            assertThat(statement.getFetchSize()).isZero();
+            assertThat(statement.getFetchSize()).isEqualTo(1);
             assertThat(statement.getResultSetConcurrency()).isEqualTo(ResultSet.CONCUR_READ_ONLY);
             assertThat(statement.getResultSetType()).isEqualTo(ResultSet.TYPE_FORWARD_ONLY);
             assertThat(statement.getResultSetHoldability()).isEqualTo(ResultSet.HOLD_CURSORS_OVER_COMMIT);
@@ -170,6 +171,7 @@ public class Jdbc_v2Test {
             assertThat(statement.getMaxRows()).isEqualTo(42);
             assertThat(statement.getLargeMaxRows()).isEqualTo(42L);
             assertThat(statement.getQueryTimeout()).isEqualTo(3);
+            assertThat(statement.getFetchSize()).isEqualTo(128);
             assertThat(statement.isPoolable()).isTrue();
             assertThat(statement.isWrapperFor(Statement.class)).isTrue();
             assertThat(statement.unwrap(Statement.class)).isSameAs(statement);
@@ -239,7 +241,7 @@ public class Jdbc_v2Test {
             statement.setObject(7, OffsetDateTime.parse("2024-02-03T04:05:06Z"));
             statement.setObject(8, Instant.parse("2024-02-03T04:05:06Z"));
             statement.setObject(9, InetAddress.getByName("127.0.0.1"));
-            statement.setArray(10, new Array(Arrays.asList("x", "y"), "String", Types.VARCHAR));
+            statement.setArray(10, new Array(ClickHouseColumn.of("tags", "Array(String)"), new Object[] {"x", "y"}));
             statement.setObject(11, map);
             statement.setNull(12, Types.NULL);
             statement.addBatch();
@@ -266,7 +268,7 @@ public class Jdbc_v2Test {
                 assertThat((Object[]) emptyArray.getArray()).isEmpty();
 
                 assertThatThrownBy(() -> connection.createArrayOf("NotAClickHouseType", new Object[] {"value"}))
-                        .isInstanceOf(SQLException.class);
+                        .isInstanceOf(IllegalArgumentException.class);
             } finally {
                 stringArray.free();
                 integerArray.free();
@@ -319,7 +321,7 @@ public class Jdbc_v2Test {
 
     @Test
     void clickHouseArrayAndTupleExposeValueObjects() throws Exception {
-        Array array = new Array(Arrays.asList("one", "two", "three"), "String", Types.VARCHAR);
+        Array array = new Array(ClickHouseColumn.of("tags", "Array(String)"), new Object[] {"one", "two", "three"});
         Tuple tuple = new Tuple("name", 42, true);
 
         assertThat(array.getBaseTypeName()).isEqualTo("String");
@@ -329,13 +331,13 @@ public class Jdbc_v2Test {
         assertThatThrownBy(() -> array.getArray(Map.of())).isInstanceOf(SQLFeatureNotSupportedException.class);
         assertThatThrownBy(array::getResultSet).isInstanceOf(SQLFeatureNotSupportedException.class);
         array.free();
-        assertThat(array.getArray()).isNull();
+        assertThatThrownBy(array::getArray).isInstanceOf(SQLFeatureNotSupportedException.class);
 
         assertThat(tuple.size()).isEqualTo(3);
         assertThat(tuple.getValue(0)).isEqualTo("name");
         assertThat(tuple.getValues()).containsExactly("name", 42, true);
         assertThat(tuple).hasToString("(name, 42, true)");
-        assertThatThrownBy(() -> new Array(null, "String", Types.VARCHAR)).isInstanceOf(SQLException.class);
+        assertThatThrownBy(() -> new Array(null, new Object[] {"value"})).isInstanceOf(NullPointerException.class);
     }
 
     @Test
