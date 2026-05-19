@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -309,6 +310,7 @@ public class Jakarta_persistence_apiTest {
         TypedQuery<String> untypedQueryAsTyped = query.ofType(String.class);
         RecordingTypedQuery<String> typedQuery = new RecordingTypedQuery<>(List.of("one", "two"), "one");
         SimpleParameter<String> titleParameter = new SimpleParameter<>("title", null, String.class);
+        Timeout timeout = Timeout.ms(250);
         assertThat(untypedQueryAsTyped.getResultStream().toList()).containsExactly("alpha", "beta");
         assertThat(untypedQueryAsTyped.getSingleResultOrNull()).isEqualTo("alpha");
         assertThat(untypedQueryAsTyped.getResultCount()).isEqualTo(2);
@@ -327,7 +329,8 @@ public class Jakarta_persistence_apiTest {
         assertThat(typedQuery.setLockScope(PessimisticLockScope.EXTENDED)).isSameAs(typedQuery);
         assertThat(typedQuery.setCacheRetrieveMode(CacheRetrieveMode.BYPASS)).isSameAs(typedQuery);
         assertThat(typedQuery.setCacheStoreMode(CacheStoreMode.REFRESH)).isSameAs(typedQuery);
-        assertThat(typedQuery.setTimeout(Timeout.ms(250))).isSameAs(typedQuery);
+        assertThat(typedQuery.setTimeout(timeout)).isSameAs(typedQuery);
+        assertThat(typedQuery.addOption(CustomTypedQueryOption.INSTANCE)).isSameAs(typedQuery);
 
         assertThat(typedQuery.getMaxResults()).isEqualTo(25);
         assertThat(typedQuery.getFirstResult()).isEqualTo(5);
@@ -341,6 +344,16 @@ public class Jakarta_persistence_apiTest {
         assertThat(typedQuery.getCacheRetrieveMode()).isEqualTo(CacheRetrieveMode.BYPASS);
         assertThat(typedQuery.getCacheStoreMode()).isEqualTo(CacheStoreMode.REFRESH);
         assertThat(typedQuery.getTimeout()).isEqualTo(250);
+        assertThat(typedQuery.getOptions())
+                .containsExactlyInAnyOrder(
+                        QueryFlushMode.FLUSH,
+                        LockModeType.PESSIMISTIC_READ,
+                        PessimisticLockScope.EXTENDED,
+                        CacheRetrieveMode.BYPASS,
+                        CacheStoreMode.REFRESH,
+                        timeout,
+                        CustomTypedQueryOption.INSTANCE
+                );
     }
 
     @Test
@@ -773,6 +786,10 @@ public class Jakarta_persistence_apiTest {
         }
     }
 
+    private enum CustomTypedQueryOption implements TypedQuery.Option {
+        INSTANCE
+    }
+
     @SuppressWarnings({"deprecation", "removal"})
     private static class RecordingQuery implements Query {
         private final List<Object> results;
@@ -1112,6 +1129,7 @@ public class Jakarta_persistence_apiTest {
     private static final class RecordingTypedQuery<T> extends RecordingQuery implements TypedQuery<T> {
         private final List<T> typedResults;
         private final T typedSingleResult;
+        private final Set<TypedQuery.Option> options = new LinkedHashSet<>();
         private EntityGraph<? super T> entityGraph;
         private PessimisticLockScope lockScope;
 
@@ -1139,6 +1157,17 @@ public class Jakarta_persistence_apiTest {
         @Override
         public long getResultCount() {
             return typedResults.size();
+        }
+
+        @Override
+        public TypedQuery<T> addOption(TypedQuery.Option option) {
+            recordOption(option);
+            return this;
+        }
+
+        @Override
+        public Set<TypedQuery.Option> getOptions() {
+            return Set.copyOf(options);
         }
 
         public TypedQuery<T> setEntityGraph(EntityGraph<? super T> entityGraph) {
@@ -1269,6 +1298,7 @@ public class Jakarta_persistence_apiTest {
         @Override
         public TypedQuery<T> setQueryFlushMode(QueryFlushMode flushMode) {
             super.setQueryFlushMode(flushMode);
+            recordOption(flushMode);
             return this;
         }
 
@@ -1281,12 +1311,14 @@ public class Jakarta_persistence_apiTest {
         @Override
         public TypedQuery<T> setLockMode(LockModeType lockMode) {
             super.setLockMode(lockMode);
+            recordOption(lockMode);
             return this;
         }
 
         @Override
         public TypedQuery<T> setLockScope(PessimisticLockScope lockScope) {
             this.lockScope = lockScope;
+            recordOption(lockScope);
             return this;
         }
 
@@ -1298,51 +1330,60 @@ public class Jakarta_persistence_apiTest {
         @Override
         public TypedQuery<T> setCacheRetrieveMode(CacheRetrieveMode cacheRetrieveMode) {
             super.setCacheRetrieveMode(cacheRetrieveMode);
+            recordOption(cacheRetrieveMode);
             return this;
         }
 
         @Override
         public TypedQuery<T> setCacheStoreMode(CacheStoreMode cacheStoreMode) {
             super.setCacheStoreMode(cacheStoreMode);
+            recordOption(cacheStoreMode);
             return this;
         }
 
         @Override
         public TypedQuery<T> setTimeout(Integer timeout) {
             super.setTimeout(timeout);
+            if (timeout != null) {
+                recordOption(Timeout.ms(timeout));
+            }
             return this;
         }
 
         @Override
         public TypedQuery<T> setTimeout(Timeout timeout) {
             super.setTimeout(timeout);
+            if (timeout != null) {
+                recordOption(timeout);
+            }
             return this;
+        }
+
+        private void recordOption(TypedQuery.Option option) {
+            Objects.requireNonNull(option);
+            options.removeIf(existingOption -> existingOption.getClass().equals(option.getClass()));
+            options.add(option);
         }
     }
 
     private static final class StubEntityManagerFactory implements EntityManagerFactory {
         @Override
-        public EntityManager createEntityManager() {
+        public EntityManager createEntityManager(EntityManager.CreationOption... options) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public EntityManager createEntityManager(Map map) {
+        public EntityManager createEntityManager(Map<?, ?> map) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public EntityManager createEntityManager(SynchronizationType synchronizationType) {
+        public EntityManager createEntityManager(SynchronizationType synchronizationType, Map<?, ?> map) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public EntityManager createEntityManager(SynchronizationType synchronizationType, Map map) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public EntityAgent createEntityAgent() {
+        public EntityAgent createEntityAgent(EntityAgent.CreationOption... options) {
             throw new UnsupportedOperationException();
         }
 
