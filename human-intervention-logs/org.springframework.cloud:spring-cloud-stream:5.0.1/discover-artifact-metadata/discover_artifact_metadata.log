@@ -1,0 +1,855 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e3f37-9e8f-7912-96c4-a7198421bab2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.cloud:spring-cloud-stream:5.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "5.0.1" when "$version$" is replaced with "5.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+- Set "coordinates" to "org.springframework.cloud:spring-cloud-stream:5.0.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "5.0.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/GitHub and then update the JSON in place. First I’m checking the current file and nearby metadata conventions so the URL shapes match this repo’s expectations.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json && sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+-rw-rw-r-- 1 vjovanov vjovanov 76 May 19 09:51 build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+{
+  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1"
+}
+
+exec
+/usr/bin/bash -lc "rg 'spring-cloud-stream' -n ." in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 0ms:
+./metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream-binder-rabbit-core/$version$/spring-cloud-stream-binder-rabbit-core-$version$-sources.jar",
+./metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:6:    "repository-url": "https://github.com/spring-cloud/spring-cloud-stream",
+./metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:7:    "test-code-url": "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/binders/rabbit-binder/spring-cloud-stream-binder-rabbit-core/src/test",
+./metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream-binder-rabbit-core/$version$/spring-cloud-stream-binder-rabbit-core-$version$-javadoc.jar",
+./metadata/org.springframework.cloud/spring-cloud-stream/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-sources.jar",
+./metadata/org.springframework.cloud/spring-cloud-stream/index.json:6:    "repository-url" : "https://github.com/spring-cloud/spring-cloud-stream",
+./metadata/org.springframework.cloud/spring-cloud-stream/index.json:7:    "test-code-url" : "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/core/spring-cloud-stream/src/test",
+./metadata/org.springframework.cloud/spring-cloud-stream/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-javadoc.jar",
+./tests/src/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/build.gradle:14:    testImplementation "org.springframework.cloud:spring-cloud-stream-binder-rabbit-core:$libraryVersion"
+./tests/src/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/settings.gradle:20:rootProject.name = 'org.springframework.cloud.spring-cloud-stream-binder-rabbit-core_tests'
+./tests/src/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/gradle.properties:4:library.coordinates = org.springframework.cloud:spring-cloud-stream-binder-rabbit-core:5.0.1
+./tests/src/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/gradle.properties:6:metadata.dir = org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/
+./tests/src/org.springframework.cloud/spring-cloud-stream/5.0.1/build.gradle:14:    testImplementation "org.springframework.cloud:spring-cloud-stream:$libraryVersion"
+./tests/src/org.springframework.cloud/spring-cloud-stream/5.0.1/settings.gradle:20:rootProject.name = 'org.springframework.cloud.spring-cloud-stream_tests'
+./tests/src/org.springframework.cloud/spring-cloud-stream/5.0.1/gradle.properties:4:library.coordinates = org.springframework.cloud:spring-cloud-stream:5.0.1
+./tests/src/org.springframework.cloud/spring-cloud-stream/5.0.1/gradle.properties:6:metadata.dir = org.springframework.cloud/spring-cloud-stream/5.0.1/
+./stats/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/execution-metrics.json:4:    "library": "org.springframework.cloud:spring-cloud-stream-binder-rabbit-core:5.0.1",
+./stats/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/execution-metrics.json:52:      "test_file": "tests/src/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/src/test/java/org_springframework_cloud/spring_cloud_stream_binder_rabbit_core/Spring_cloud_stream_binder_rabbit_coreTest.java",
+./stats/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/execution-metrics.json:53:      "metadata_file": "metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/reachability-metadata.json"
+./stats/org.springframework.cloud/spring-cloud-stream/5.0.1/execution-metrics.json:4:    "library": "org.springframework.cloud:spring-cloud-stream:5.0.1",
+./stats/org.springframework.cloud/spring-cloud-stream/5.0.1/execution-metrics.json:64:      "test_file": "tests/src/org.springframework.cloud/spring-cloud-stream/5.0.1/src/test/java/org_springframework_cloud/spring_cloud_stream/DefaultBinderFactoryTest.java",
+./stats/org.springframework.cloud/spring-cloud-stream/5.0.1/execution-metrics.json:65:      "metadata_file": "metadata/org.springframework.cloud/spring-cloud-stream/5.0.1/reachability-metadata.json"
+
+exec
+/usr/bin/bash -lc "rg 'documentation-url.*spring' build/discovered-artifact-metadata metadata -n" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 0ms:
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-function-context/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream-binder-rabbit-core/$version$/spring-cloud-stream-binder-rabbit-core-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-stream/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:103:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:95:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:112:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-webflux/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:8:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/reference/html/core.html#aop",
+metadata/org.springframework/spring-aop/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:57:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:76:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/org.springframework/spring-context/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context/$version$/spring-context-$version$-javadoc.jar",
+metadata/com.clearspring.analytics/stream/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/clearspring/analytics/stream/$version$/stream-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-netty/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-amqp/$version$/spring-boot-amqp-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-reactor/$version$/spring-boot-reactor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-webflux/$version$/spring-boot-webflux-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-reactor-netty/$version$/spring-boot-reactor-netty-$version$-javadoc.jar",
+metadata/org.springframework.integration/spring-integration-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-core/$version$/spring-integration-core-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.springframework.integration/spring-integration-amqp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-amqp/$version$/spring-integration-amqp-$version$-javadoc.jar",
+metadata/org.springframework.amqp/spring-rabbit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/amqp/spring-rabbit/$version$/spring-rabbit-$version$-javadoc.jar",
+metadata/org.springframework.amqp/spring-amqp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/amqp/spring-amqp/$version$/spring-amqp-$version$-javadoc.jar",
+metadata/org.springframework.amqp/spring-rabbitmq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/amqp/spring-rabbitmq-client/$version$/spring-rabbitmq-client-$version$-javadoc.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:8:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-$version$/lib/thymeleaf-extras-springsecurity6/README.markdown",
+metadata/org.thymeleaf/thymeleaf-spring6/index.json:8:    "documentation-url" : "https://www.thymeleaf.org/apidocs/thymeleaf-spring6/$version$/",
+
+web search: 
+web search: Maven Central org.springframework.cloud spring-cloud-stream 5.0.1 sources jar javadoc jar
+web search: 
+web search: https://github.com/spring-cloud/spring-cloud-stream/tree/v5.0.1/core/spring-cloud-stream/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/5.0.1/spring-cloud-stream-5.0.1-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/
+web search: 
+web search: 
+codex
+The repository already has an `index.json` for this coordinate family, which gives a strong local convention: Maven Central for sources/javadocs, GitHub tag `v$version$` for tests. I’m still checking the actual 5.0.1 artifacts so I don’t copy a stale pattern blindly.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/5.0.1/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/cloud/spring-cloud-stream/5.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/cloud/spring-cloud-stream/5.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-cloud-stream-5.0.1-javadoc.jar" title="spring-cloud-stream-5.0.1-javadoc.jar">spring-cloud-stream-5.0.1-javadoc.jar</a>             2026-01-28 20:37    886210      
+<a href="spring-cloud-stream-5.0.1-javadoc.jar.asc" title="spring-cloud-stream-5.0.1-javadoc.jar.asc">spring-cloud-stream-5.0.1-javadoc.jar.asc</a>         2026-01-28 20:37       833      
+<a href="spring-cloud-stream-5.0.1-javadoc.jar.md5" title="spring-cloud-stream-5.0.1-javadoc.jar.md5">spring-cloud-stream-5.0.1-javadoc.jar.md5</a>         2026-01-28 20:37        32      
+<a href="spring-cloud-stream-5.0.1-javadoc.jar.sha1" title="spring-cloud-stream-5.0.1-javadoc.jar.sha1">spring-cloud-stream-5.0.1-javadoc.jar.sha1</a>        2026-01-28 20:37        40      
+<a href="spring-cloud-stream-5.0.1-javadoc.jar.sha256" title="spring-cloud-stream-5.0.1-javadoc.jar.sha256">spring-cloud-stream-5.0.1-javadoc.jar.sha256</a>      2026-01-28 20:37        64      
+<a href="spring-cloud-stream-5.0.1-javadoc.jar.sha512" title="spring-cloud-stream-5.0.1-javadoc.jar.sha512">spring-cloud-stream-5.0.1-javadoc.jar.sha512</a>      2026-01-28 20:37       128      
+<a href="spring-cloud-stream-5.0.1-sources.jar" title="spring-cloud-stream-5.0.1-sources.jar">spring-cloud-stream-5.0.1-sources.jar</a>             2026-01-28 20:37    196405      
+<a href="spring-cloud-stream-5.0.1-sources.jar.asc" title="spring-cloud-stream-5.0.1-sources.jar.asc">spring-cloud-stream-5.0.1-sources.jar.asc</a>         2026-01-28 20:37       833      
+<a href="spring-cloud-stream-5.0.1-sources.jar.md5" title="spring-cloud-stream-5.0.1-sources.jar.md5">spring-cloud-stream-5.0.1-sources.jar.md5</a>         2026-01-28 20:37        32      
+<a href="spring-cloud-stream-5.0.1-sources.jar.sha1" title="spring-cloud-stream-5.0.1-sources.jar.sha1">spring-cloud-stream-5.0.1-sources.jar.sha1</a>        2026-01-28 20:37        40      
+<a href="spring-cloud-stream-5.0.1-sources.jar.sha256" title="spring-cloud-stream-5.0.1-sources.jar.sha256">spring-cloud-stream-5.0.1-sources.jar.sha256</a>      2026-01-28 20:37        64      
+<a href="spring-cloud-stream-5.0.1-sources.jar.sha512" title="spring-cloud-stream-5.0.1-sources.jar.sha512">spring-cloud-stream-5.0.1-sources.jar.sha512</a>      2026-01-28 20:37       128      
+<a href="spring-cloud-stream-5.0.1.jar" title="spring-cloud-stream-5.0.1.jar">spring-cloud-stream-5.0.1.jar</a>                     2026-01-28 20:37    297389      
+<a href="spring-cloud-stream-5.0.1.jar.asc" title="spring-cloud-stream-5.0.1.jar.asc">spring-cloud-stream-5.0.1.jar.asc</a>                 2026-01-28 20:37       833      
+<a href="spring-cloud-stream-5.0.1.jar.md5" title="spring-cloud-stream-5.0.1.jar.md5">spring-cloud-stream-5.0.1.jar.md5</a>                 2026-01-28 20:37        32      
+<a href="spring-cloud-stream-5.0.1.jar.sha1" title="spring-cloud-stream-5.0.1.jar.sha1">spring-cloud-stream-5.0.1.jar.sha1</a>                2026-01-28 20:37        40      
+<a href="spring-cloud-stream-5.0.1.jar.sha256" title="spring-cloud-stream-5.0.1.jar.sha256">spring-cloud-stream-5.0.1.jar.sha256</a>              2026-01-28 20:37        64      
+<a href="spring-cloud-stream-5.0.1.jar.sha512" title="spring-cloud-stream-5.0.1.jar.sha512">spring-cloud-stream-5.0.1.jar.sha512</a>              2026-01-28 20:37       128      
+<a href="spring-cloud-stream-5.0.1.pom" title="spring-cloud-stream-5.0.1.pom">spring-cloud-stream-5.0.1.pom</a>                     2026-01-28 20:37      5346      
+<a href="spring-cloud-stream-5.0.1.pom.asc" title="spring-cloud-stream-5.0.1.pom.asc">spring-cloud-stream-5.0.1.pom.asc</a>                 2026-01-28 20:37       833      
+<a href="spring-cloud-stream-5.0.1.pom.md5" title="spring-cloud-stream-5.0.1.pom.md5">spring-cloud-stream-5.0.1.pom.md5</a>                 2026-01-28 20:37        32      
+<a href="spring-cloud-stream-5.0.1.pom.sha1" title="spring-cloud-stream-5.0.1.pom.sha1">spring-cloud-stream-5.0.1.pom.sha1</a>                2026-01-28 20:37        40      
+<a href="spring-cloud-stream-5.0.1.pom.sha256" title="spring-cloud-stream-5.0.1.pom.sha256">spring-cloud-stream-5.0.1.pom.sha256</a>              2026-01-28 20:37        64      
+<a href="spring-cloud-stream-5.0.1.pom.sha512" title="spring-cloud-stream-5.0.1.pom.sha512">spring-cloud-stream-5.0.1.pom.sha512</a>              2026-01-28 20:37       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/5.0.1/spring-cloud-stream-5.0.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-stream-core</artifactId>
+    <version>5.0.1</version>
+  </parent>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-stream</artifactId>
+  <version>5.0.1</version>
+  <name>spring-cloud-stream</name>
+  <description>Messaging Microservices with Spring Integration</description>
+  <url>https://github.com/spring-cloud/spring-cloud-stream/spring-cloud-stream-core/spring-cloud-stream</url>
+  <organization>
+    <name>Pivotal Software, Inc.</name>
+    <url>https://www.spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>olegz</id>
+      <name>Oleg Zhurakousky</name>
+      <email>oleg.zhurakousky at broadcom.com</email>
+      <organization>Broadcom, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+      <roles>
+        <role>Project lead</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>sobychacko</id>
+      <name>Soby Chacko</name>
+      <email>soby.chacko at broadcom.com</email>
+      <organization>Broadcom, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+      <roles>
+        <role>Engineer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-cloud/spring-cloud-stream.git/spring-cloud-stream-core/spring-cloud-stream</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-cloud/spring-cloud-stream.git/spring-cloud-stream-core/spring-cloud-stream</developerConnection>
+    <url>https://github.com/spring-cloud/spring-cloud-stream/spring-cloud-stream-core/spring-cloud-stream</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-integration</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-messaging</artifactId>
+      <version>7.0.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-core</artifactId>
+      <version>7.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-jmx</artifactId>
+      <version>7.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-function-context</artifactId>
+      <version>5.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>context-propagation</artifactId>
+      <version>1.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure-processor</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>2.2.21</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>3.0.4</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.20</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-reflect</artifactId>
+      <version>2.2.21</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-reactor</artifactId>
+      <version>1.10.2</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/5.0.1/spring-cloud-stream-5.0.1-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/5.0.1/spring-cloud-stream-5.0.1-javadoc.jar && curl -fsI https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/5.0.1/spring-cloud-stream-5.0.1-tests.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ exited 22 in 356ms:
+HTTP/2 404 
+date: Tue, 19 May 2026 07:51:33 GMT
+content-type: text/html
+cf-ray: 9fe18462adc7bafa-MXP
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/cloud/spring-cloud-stream/5.0.1/spring-cloud-stream-5.0.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://github.com/spring-cloud/spring-cloud-stream/tree/v5.0.1/core/spring-cloud-stream/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/5.0.1/
+web search: 
+web search: https://central.sonatype.com/artifact/org.springframework.cloud/spring-cloud-stream
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.springframework.cloud/spring-cloud-stream/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.0.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-cloud/spring-cloud-stream",
+    "test-code-url" : "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/core/spring-cloud-stream/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-javadoc.jar",
+    "description" : "Spring Cloud Stream is a framework for building message-driven microservices on Spring Boot using function-based application logic. It provides binding, conversion, partitioning, and lifecycle infrastructure that connects application functions to messaging middleware through binder implementations such as Kafka, RabbitMQ, and Pulsar.",
+    "tested-versions" : [
+      "5.0.1"
+    ],
+    "allowed-packages" : [
+      "org.springframework.cloud.stream"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "jar tf <(curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/5.0.1/spring-cloud-stream-5.0.1.jar) | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 1ms:
+t to destination
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-cloud/spring-cloud-stream/git/ref/tags/v5.0.1 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 240ms:
+{
+  "ref": "refs/tags/v5.0.1",
+  "node_id": "MDM6UmVmMzg3NjQwMjk6cmVmcy90YWdzL3Y1LjAuMQ==",
+  "url": "https://api.github.com/repos/spring-cloud/spring-cloud-stream/git/refs/tags/v5.0.1",
+  "object": {
+    "sha": "dc0ca5178ff3b3009514129db5354198e92b2509",
+    "type": "commit",
+    "url": "https://api.github.com/repos/spring-cloud/spring-cloud-stream/git/commits/dc0ca5178ff3b3009514129db5354198e92b2509"
+  }
+}
+
+codex
+The Maven directory confirms a 5.0.1 source jar and javadoc jar, and there is no Maven tests jar for this artifact. I also found the Git tag for `v5.0.1`, so the test URL can point at that tagged source tree.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/5.0.1/spring-cloud-stream-5.0.1.jar -o "$tmp"; jar tf "$tmp" | sed -n '"'1,120p'; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-cloud/spring-cloud-stream/contents/core/spring-cloud-stream/src/test?ref=v5.0.1 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-cloud/spring-cloud-stream/v5.0.1/README.adoc | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 159ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/springframework/
+org/springframework/cloud/
+org/springframework/cloud/stream/
+org/springframework/cloud/stream/converter/
+org/springframework/cloud/stream/aot/
+org/springframework/cloud/stream/endpoint/
+org/springframework/cloud/stream/config/
+org/springframework/cloud/stream/annotation/
+org/springframework/cloud/stream/binder/
+org/springframework/cloud/stream/utils/
+org/springframework/cloud/stream/reflection/
+org/springframework/cloud/stream/binding/
+org/springframework/cloud/stream/function/
+org/springframework/cloud/stream/provisioning/
+org/springframework/cloud/stream/messaging/
+META-INF/spring/
+META-INF/maven/
+META-INF/maven/org.springframework.cloud/
+META-INF/maven/org.springframework.cloud/spring-cloud-stream/
+org/springframework/cloud/stream/converter/CustomMimeTypeConverter.class
+org/springframework/cloud/stream/converter/ObjectStringMessageConverter.class
+org/springframework/cloud/stream/converter/CompositeMessageConverterFactory.class
+org/springframework/cloud/stream/converter/CompositeMessageConverterFactory$3.class
+org/springframework/cloud/stream/converter/CompositeMessageConverterFactory$2.class
+org/springframework/cloud/stream/converter/CompositeMessageConverterFactory$1.class
+org/springframework/cloud/stream/converter/ConversionException.class
+org/springframework/cloud/stream/converter/MessageConverterUtils.class
+org/springframework/cloud/stream/aot/StreamRuntimeHints.class
+org/springframework/cloud/stream/endpoint/ChannelsEndpoint$1.class
+org/springframework/cloud/stream/endpoint/BindingsEndpoint.class
+org/springframework/cloud/stream/endpoint/ChannelsEndpoint.class
+org/springframework/cloud/stream/endpoint/ChannelsEndpoint$ChannelsMetaData.class
+org/springframework/cloud/stream/config/BinderFactoryAutoConfiguration.class
+org/springframework/cloud/stream/config/BindingsEndpointAutoConfiguration.class
+org/springframework/cloud/stream/config/BindingServiceConfiguration$1.class
+org/springframework/cloud/stream/config/SpringIntegrationProperties.class
+org/springframework/cloud/stream/config/ContentTypeConfiguration.class
+org/springframework/cloud/stream/config/BindingProperties.class
+org/springframework/cloud/stream/config/BindingHandlerAdvise$1.class
+org/springframework/cloud/stream/config/BinderProperties.class
+org/springframework/cloud/stream/config/BindingHandlerAdvise$MappingsProvider.class
+org/springframework/cloud/stream/config/SpelExpressionConverterConfiguration$AbstractSpelConverter.class
+org/springframework/cloud/stream/config/ProducerMessageHandlerCustomizer.class
+org/springframework/cloud/stream/config/VersionExtractor.class
+org/springframework/cloud/stream/config/SmartMessageMethodArgumentResolver.class
+org/springframework/cloud/stream/config/BindersHealthIndicatorAutoConfiguration$BindersHealthIndicatorListener.class
+org/springframework/cloud/stream/config/SmartPayloadArgumentResolver.class
+org/springframework/cloud/stream/config/SpelExpressionConverterConfiguration$NumberToStringSpelConverter.class
+org/springframework/cloud/stream/config/ChannelsEndpointAutoConfiguration.class
+org/springframework/cloud/stream/config/BindersHealthIndicatorAutoConfiguration$BindersHealthContributor.class
+org/springframework/cloud/stream/config/SpelExpressionConverterConfiguration.class
+org/springframework/cloud/stream/config/PollerConfigEnvironmentPostProcessor.class
+org/springframework/cloud/stream/config/ConsumerEndpointCustomizer.class
+org/springframework/cloud/stream/config/BindingServiceConfiguration.class
+org/springframework/cloud/stream/config/BindersHealthIndicatorAutoConfiguration.class
+org/springframework/cloud/stream/config/ListenerContainerCustomizer.class
+org/springframework/cloud/stream/config/SpelExpressionConverterConfiguration$SpelConverter.class
+org/springframework/cloud/stream/config/BindingServiceProperties.class
+org/springframework/cloud/stream/config/MessageSourceCustomizer.class
+org/springframework/cloud/stream/config/SpelExpressionConverterConfiguration$BooleanToStringSpelConverter.class
+org/springframework/cloud/stream/config/BindingHandlerAdvise.class
+org/springframework/cloud/stream/annotation/StreamRetryTemplate.class
+org/springframework/cloud/stream/binder/PartitionKeyExtractorStrategy.class
+org/springframework/cloud/stream/binder/PartitionSelectorStrategy.class
+org/springframework/cloud/stream/binder/AbstractMessageChannelBinder$PolledConsumerResources.class
+org/springframework/cloud/stream/binder/ExtendedPropertiesBinder.class
+org/springframework/cloud/stream/binder/PollableSource.class
+org/springframework/cloud/stream/binder/BinderHeaders.class
+org/springframework/cloud/stream/binder/DirectHandler.class
+org/springframework/cloud/stream/binder/AbstractMessageChannelBinder$3.class
+org/springframework/cloud/stream/binder/DefaultPollableMessageSource.class
+org/springframework/cloud/stream/binder/DefaultBinding.class
+org/springframework/cloud/stream/binder/BinderErrorChannel.class
+org/springframework/cloud/stream/binder/AbstractMessageChannelBinder$1.class
+org/springframework/cloud/stream/binder/PartitionHandler.class
+org/springframework/cloud/stream/binder/AbstractExtendedBindingProperties.class
+org/springframework/cloud/stream/binder/LastSubscriberAwareChannel.class
+org/springframework/cloud/stream/binder/FinalRethrowingErrorMessageHandler.class
+org/springframework/cloud/stream/binder/ExtendedConsumerProperties.class
+org/springframework/cloud/stream/binder/BinderWrapper.class
+org/springframework/cloud/stream/binder/AbstractMessageChannelBinder$SendingHandler.class
+org/springframework/cloud/stream/binder/LastSubscriberMessageHandler.class
+org/springframework/cloud/stream/binder/DefaultBinderFactory$Listener.class
+org/springframework/cloud/stream/binder/BinderFactory.class
+org/springframework/cloud/stream/binder/AbstractBinder.class
+org/springframework/cloud/stream/binder/ExtendedBindingProperties.class
+org/springframework/cloud/stream/binder/BinderChildContextInitializer.class
+org/springframework/cloud/stream/binder/BinderConfiguration.class
+org/springframework/cloud/stream/binder/ProducerProperties$PollerProperties.class
+org/springframework/cloud/stream/binder/MessageValues.class
+org/springframework/cloud/stream/binder/DefaultBinderTypeRegistry.class
+org/springframework/cloud/stream/binder/AbstractExtendedBindingProperties$Jsr303Validator.class
+org/springframework/cloud/stream/binder/BinderChildContextInitializer$DeclaredBinders.class
+org/springframework/cloud/stream/binder/Binder.class
+org/springframework/cloud/stream/binder/BindingCreatedEvent.class
+org/springframework/cloud/stream/binder/ExtendedProducerProperties.class
+org/springframework/cloud/stream/binder/BindingCleaner.class
+org/springframework/cloud/stream/binder/BinderTypeRegistry.class
+org/springframework/cloud/stream/binder/ProducerProperties$ExpressionSerializer.class
+org/springframework/cloud/stream/binder/DefaultBinderFactory.class
+org/springframework/cloud/stream/binder/PollableMessageSource.class
+org/springframework/cloud/stream/binder/DefaultPollableMessageSource$1ReceiveAdvice.class
+org/springframework/cloud/stream/binder/BinderCustomizer.class
+org/springframework/cloud/stream/binder/AbstractMessageChannelBinder$ExpressionSerializer.class
+org/springframework/cloud/stream/binder/AbstractMessageChannelBinder$2.class
+org/springframework/cloud/stream/binder/ConsumerProperties.class
+org/springframework/cloud/stream/binder/BinderSpecificPropertiesProvider.class
+org/springframework/cloud/stream/binder/JavaClassMimeTypeUtils.class
+org/springframework/cloud/stream/binder/HeaderMode.class
+org/springframework/cloud/stream/binder/PartitionHandler$DefaultPartitionSelector.class
+org/springframework/cloud/stream/binder/AbstractMessageChannelBinder$EmbeddedHeadersChannelInterceptor.class
+org/springframework/cloud/stream/binder/EmbeddedHeaderUtils.class
+org/springframework/cloud/stream/binder/AbstractMessageChannelBinder$ErrorInfrastructure.class
+org/springframework/cloud/stream/binder/BinderChildContextInitializer$BinderChildContextAotContribution.class
+org/springframework/cloud/stream/binder/AbstractExtendedBindingProperties$Jsr303Validator$Delegate.class
+org/springframework/cloud/stream/binder/AbstractMessageChannelBinder.class
+org/springframework/cloud/stream/binder/PollableConsumerBinder.class
+
+ succeeded in 162ms:
+////
+DO NOT EDIT THIS FILE. IT WAS GENERATED.
+Manual changes to this file will be lost when it is generated again.
+Edit the files in the src/main/asciidoc/ directory instead.
+////
+
+
+:jdkversion: 17
+:github-tag: master
+:github-repo: spring-cloud/spring-cloud-stream
+
+:github-raw: https://raw.githubusercontent.com/{github-repo}/{github-tag}
+:github-code: https://github.com/{github-repo}/tree/{github-tag}
+
+image::https://circleci.com/gh/spring-cloud/spring-cloud-stream.svg?style=svg["CircleCI", link="https://circleci.com/gh/spring-cloud/spring-cloud-stream"]
+image::https://codecov.io/gh/spring-cloud/spring-cloud-stream/branch/{github-tag}/graph/badge.svg["codecov", link="https://codecov.io/gh/spring-cloud/spring-cloud-stream"]
+image::https://badges.gitter.im/spring-cloud/spring-cloud-stream.svg[Gitter, link="https://gitter.im/spring-cloud/spring-cloud-stream?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
+
+// ======================================================================================
+
+== Introduction
+Spring Cloud Stream is a framework for building message-driven microservice applications.
+Spring Cloud Stream builds upon Spring Boot to create standalone, production-grade Spring applications and uses Spring Integration to provide connectivity to message brokers.
+It provides opinionated configuration of middleware from several vendors, introducing the concepts of persistent publish-subscribe semantics, consumer groups, and partitions.
+These are called binder implementations in the parlance of Spring Cloud Stream.
+Out of the box, Spring Cloud Stream provides binder implementations for Apache Kafka and RabbitMQ.
+While these two binder implementations are based on Message Channels, Spring Cloud Stream also provides another binder implementation for Kafka Streams that does not use message channels, but native Kafka Streams types such as KStream, KTable etc.
+
+Below, you can find more information on how to use these various out-of-the-box binder implementations in your applications.
+
+== Apache Kafka Binder
+
+=== Usage
+
+To use Apache Kafka binder, you need to add `spring-cloud-stream-binder-kafka` as a dependency to your Spring Cloud Stream application, as shown in the following example for Maven:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+</dependency>
+----
+
+Alternatively, you can also use the Spring Cloud Stream Kafka Starter, as shown in the following example for Maven:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-stream-kafka</artifactId>
+</dependency>
+----
+
+== Apache Kafka Streams Binder
+
+=== Usage
+
+To use Apache Kafka Streams binder, you need to add `spring-cloud-stream-binder-kafka-streams` as a dependency to your Spring Cloud Stream application, as shown in the following example for Maven:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-stream-binder-kafka-streams</artifactId>
+</dependency>
+----
+
+== RabbitMQ Binder
+=== Usage
+
+To use the RabbitMQ binder, you can add it to your Spring Cloud Stream application, by using the following Maven coordinates:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+</dependency>
+----
+
+Alternatively, you can use the Spring Cloud Stream RabbitMQ Starter, as follows:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
+</dependency>
+----
+
+== Resources
+
+For more information, please visit the https://spring.io/projects/spring-cloud-stream[project website]:
+
+== Building
+
+:jdkversion: 17
+
+=== Basic Compile and Test
+
+To build the source you will need to install JDK {jdkversion}.
+
+Spring Cloud uses Maven for most build-related activities, and you
+should be able to get off the ground quite quickly by cloning the
+project you are interested in and typing
+
+----
+$ ./mvnw install
+----
+
+NOTE: You can also install Maven (>=3.3.3) yourself and run the `mvn` command
+in place of `./mvnw` in the examples below. If you do that you also
+might need to add `-P spring` if your local Maven settings do not
+contain repository declarations for spring pre-release artifacts.
+
+NOTE: Be aware that you might need to increase the amount of memory
+available to Maven by setting a `MAVEN_OPTS` environment variable with
+a value like `-Xmx512m -XX:MaxPermSize=128m`. We try to cover this in
+the `.mvn` configuration, so if you find you have to do it to make a
+
+ succeeded in 200ms:
+[
+  {
+    "name": "java",
+    "path": "core/spring-cloud-stream/src/test/java",
+    "sha": "3fd9a45311894455abd3ef6beb81e5eda00f247c",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-cloud/spring-cloud-stream/contents/core/spring-cloud-stream/src/test/java?ref=v5.0.1",
+    "html_url": "https://github.com/spring-cloud/spring-cloud-stream/tree/v5.0.1/core/spring-cloud-stream/src/test/java",
+    "git_url": "https://api.github.com/repos/spring-cloud/spring-cloud-stream/git/trees/3fd9a45311894455abd3ef6beb81e5eda00f247c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-cloud/spring-cloud-stream/contents/core/spring-cloud-stream/src/test/java?ref=v5.0.1",
+      "git": "https://api.github.com/repos/spring-cloud/spring-cloud-stream/git/trees/3fd9a45311894455abd3ef6beb81e5eda00f247c",
+      "html": "https://github.com/spring-cloud/spring-cloud-stream/tree/v5.0.1/core/spring-cloud-stream/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "core/spring-cloud-stream/src/test/resources",
+    "sha": "79ce3ac49525c6440715ada3ba9c90485791f521",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-cloud/spring-cloud-stream/contents/core/spring-cloud-stream/src/test/resources?ref=v5.0.1",
+    "html_url": "https://github.com/spring-cloud/spring-cloud-stream/tree/v5.0.1/core/spring-cloud-stream/src/test/resources",
+    "git_url": "https://api.github.com/repos/spring-cloud/spring-cloud-stream/git/trees/79ce3ac49525c6440715ada3ba9c90485791f521",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-cloud/spring-cloud-stream/contents/core/spring-cloud-stream/src/test/resources?ref=v5.0.1",
+      "git": "https://api.github.com/repos/spring-cloud/spring-cloud-stream/git/trees/79ce3ac49525c6440715ada3ba9c90485791f521",
+      "html": "https://github.com/spring-cloud/spring-cloud-stream/tree/v5.0.1/core/spring-cloud-stream/src/test/resources"
+    }
+  }
+]
+
+codex
+I’ve got enough evidence to edit: this is a normal JVM jar with `.class` files, so it remains a Native Image metadata target and does not get `not-for-native-image`. It is not a Kotlin/Groovy/Scala-specific artifact despite optional Kotlin dependencies, so I’ll leave `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+index f116c6510ab76ef1a27172d47774f634eceadab2..4282e0a259af50c8aa22580af58af0907f19a703
+--- a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
++++ b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1"
++  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1",
++  "repository-url" : "https://github.com/spring-cloud/spring-cloud-stream",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/core/spring-cloud-stream/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-javadoc.jar",
++  "description" : "Spring Cloud Stream is a framework for building message-driven microservices on Spring Boot using function-based application logic. It provides binding, conversion, partitioning, and lifecycle infrastructure that connects application functions to messaging middleware through binder implementations such as Kafka, RabbitMQ, and Pulsar."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+index f116c6510ab76ef1a27172d47774f634eceadab2..4282e0a259af50c8aa22580af58af0907f19a703
+--- a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
++++ b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1"
++  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1",
++  "repository-url" : "https://github.com/spring-cloud/spring-cloud-stream",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/core/spring-cloud-stream/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-javadoc.jar",
++  "description" : "Spring Cloud Stream is a framework for building message-driven microservices on Spring Boot using function-based application logic. It provides binding, conversion, partitioning, and lifecycle infrastructure that connects application functions to messaging middleware through binder implementations such as Kafka, RabbitMQ, and Pulsar."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.cloud:spring-cloud-stream:5.0.1",
+  "repository-url": "https://github.com/spring-cloud/spring-cloud-stream",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/core/spring-cloud-stream/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-javadoc.jar",
+  "description": "Spring Cloud Stream is a framework for building message-driven microservices on Spring Boot using function-based application logic. It provides binding, conversion, partitioning, and lifecycle infrastructure that connects application functions to messaging middleware through binder implementations such as Kafka, RabbitMQ, and Pulsar."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+index f116c6510ab76ef1a27172d47774f634eceadab2..4282e0a259af50c8aa22580af58af0907f19a703
+--- a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
++++ b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1"
++  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1",
++  "repository-url" : "https://github.com/spring-cloud/spring-cloud-stream",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/core/spring-cloud-stream/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-javadoc.jar",
++  "description" : "Spring Cloud Stream is a framework for building message-driven microservices on Spring Boot using function-based application logic. It provides binding, conversion, partitioning, and lifecycle infrastructure that connects application functions to messaging middleware through binder implementations such as Kafka, RabbitMQ, and Pulsar."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json && sed -n '1,120p' build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1",
+  "repository-url" : "https://github.com/spring-cloud/spring-cloud-stream",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-sources.jar",
+  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/core/spring-cloud-stream/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-javadoc.jar",
+  "description" : "Spring Cloud Stream is a framework for building message-driven microservices on Spring Boot using function-based application logic. It provides binding, conversion, partitioning, and lifecycle infrastructure that connects application functions to messaging middleware through binder implementations such as Kafka, RabbitMQ, and Pulsar."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+index f116c6510ab76ef1a27172d47774f634eceadab2..4282e0a259af50c8aa22580af58af0907f19a703
+--- a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
++++ b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1"
++  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1",
++  "repository-url" : "https://github.com/spring-cloud/spring-cloud-stream",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/core/spring-cloud-stream/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-javadoc.jar",
++  "description" : "Spring Cloud Stream is a framework for building message-driven microservices on Spring Boot using function-based application logic. It provides binding, conversion, partitioning, and lifecycle infrastructure that connects application functions to messaging middleware through binder implementations such as Kafka, RabbitMQ, and Pulsar."
+ }
+
+web search: 
+web search: Maven Central org.springframework.cloud spring-cloud-stream 5.0.1
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/5.0.1 spring-cloud-stream-5.0.1-sources.jar javadoc.jar
+codex
+Updated [org.springframework.cloud-spring-cloud-stream-5.0.1.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json) with the repository, Maven Central source/javadoc URLs, GitHub test-suite URL, and two-sentence description.
+
+I left `language` absent because the artifact is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the jar contains JVM `.class` files. I also verified the JSON with `jq .`; no Gradle task was needed for this metadata-only update.
+diff --git a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+index f116c6510ab76ef1a27172d47774f634eceadab2..4282e0a259af50c8aa22580af58af0907f19a703
+--- a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
++++ b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1"
++  "coordinates" : "org.springframework.cloud:spring-cloud-stream:5.0.1",
++  "repository-url" : "https://github.com/spring-cloud/spring-cloud-stream",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/core/spring-cloud-stream/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream/$version$/spring-cloud-stream-$version$-javadoc.jar",
++  "description" : "Spring Cloud Stream is a framework for building message-driven microservices on Spring Boot using function-based application logic. It provides binding, conversion, partitioning, and lifecycle infrastructure that connects application functions to messaging middleware through binder implementations such as Kafka, RabbitMQ, and Pulsar."
+ }
+
+tokens used
+66,637
+Updated [org.springframework.cloud-spring-cloud-stream-5.0.1.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-stream-5.0.1.json) with the repository, Maven Central source/javadoc URLs, GitHub test-suite URL, and two-sentence description.
+
+I left `language` absent because the artifact is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because the jar contains JVM `.class` files. I also verified the JSON with `jq .`; no Gradle task was needed for this metadata-only update.
+Ran agent for org.springframework.cloud:spring-cloud-stream:5.0.1 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69/build/agent-artifact-discovery-logs/org.springframework.cloud-spring-cloud-stream-5.0.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7093-bb906d69/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 32s
+9 actionable tasks: 9 executed
