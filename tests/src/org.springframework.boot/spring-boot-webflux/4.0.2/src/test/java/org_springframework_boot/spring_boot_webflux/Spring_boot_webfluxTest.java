@@ -23,6 +23,7 @@ import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
 import org.springframework.boot.webflux.autoconfigure.ReactiveMultipartProperties;
 import org.springframework.boot.webflux.autoconfigure.WebFluxProperties;
+import org.springframework.boot.webflux.autoconfigure.WebHttpHandlerBuilderCustomizer;
 import org.springframework.boot.webflux.error.DefaultErrorAttributes;
 import org.springframework.boot.webflux.filter.OrderedHiddenHttpMethodFilter;
 import org.springframework.context.MessageSourceResolvable;
@@ -37,6 +38,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.server.reactive.AbstractServerHttpRequest;
 import org.springframework.http.server.reactive.AbstractServerHttpResponse;
+import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.SslInfo;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -48,6 +50,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
 import org.springframework.web.server.adapter.DefaultServerWebExchange;
+import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 import org.springframework.web.server.i18n.AcceptHeaderLocaleContextResolver;
 import org.springframework.web.server.session.DefaultWebSessionManager;
 
@@ -120,6 +123,28 @@ public class Spring_boot_webfluxTest {
         assertThat(properties.getMaxParts()).isEqualTo(12);
         assertThat(properties.getFileStorageDirectory()).isEqualTo("/tmp/uploads");
         assertThat(properties.getHeadersCharset()).isEqualTo(StandardCharsets.ISO_8859_1);
+    }
+
+    @Test
+    void webHttpHandlerBuilderCustomizerCanAddWebFilter() {
+        WebHttpHandlerBuilderCustomizer customizer = (builder) -> builder.filters((filters) ->
+                filters.add((exchange, chain) -> {
+                    exchange.getResponse().getHeaders().add("X-Customized", "true");
+                    return chain.filter(exchange);
+                }));
+        WebHttpHandlerBuilder builder = WebHttpHandlerBuilder.webHandler((exchange) -> {
+            exchange.getResponse().setStatusCode(HttpStatus.ACCEPTED);
+            return Mono.empty();
+        });
+        customizer.customize(builder);
+        HttpHandler handler = builder.build();
+        TestServerHttpResponse response = new TestServerHttpResponse();
+
+        handler.handle(new TestServerHttpRequest(HttpMethod.GET, URI.create("https://example.test/customizer"),
+                new HttpHeaders(), ""), response).block(TIMEOUT);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+        assertThat(response.getHeaders().getFirst("X-Customized")).isEqualTo("true");
     }
 
     @Test
