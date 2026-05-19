@@ -8,7 +8,7 @@ package org_springframework_data.spring_data_jdbc;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_data_jdbcTest {
+public class Spring_data_jdbcTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
