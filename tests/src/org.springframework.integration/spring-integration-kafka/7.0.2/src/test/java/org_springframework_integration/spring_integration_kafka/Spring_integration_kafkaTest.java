@@ -11,11 +11,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.MockConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -27,6 +29,8 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.AttributeAccessor;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.integration.IntegrationMessageHeaderAccessor;
+import org.springframework.integration.acks.AcknowledgmentCallback;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.kafka.channel.PollableKafkaChannel;
 import org.springframework.integration.kafka.channel.PublishSubscribeKafkaChannel;
@@ -146,6 +150,53 @@ public class Spring_integration_kafkaTest {
         finally {
             source.destroy();
             kafkaTemplate.destroy();
+        }
+    }
+
+    @Test
+    void messageSourceAcknowledgmentCallbackDefersOutOfOrderCommits() {
+        TrackingConsumerFactory consumerFactory = new TrackingConsumerFactory();
+        TopicPartition topicPartition = new TopicPartition(TOPIC, 0);
+        KafkaMessageSource<String, String> source = new KafkaMessageSource<>(consumerFactory,
+                assignedPartitionConsumerProperties());
+        source.setPayloadType(String.class);
+
+        try {
+            consumerFactory.consumer().updateBeginningOffsets(Map.of(topicPartition, 0L));
+            consumerFactory.consumer().updateEndOffsets(Map.of(topicPartition, 2L));
+            source.start();
+            consumerFactory.consumer().schedulePollTask(() -> {
+                consumerFactory.consumer().addRecord(new ConsumerRecord<>(TOPIC, 0, 0L, "order-5", "packed"));
+                consumerFactory.consumer().addRecord(new ConsumerRecord<>(TOPIC, 0, 1L, "order-6", "shipped"));
+            });
+
+            Message<?> first = source.receive();
+            Message<?> second = source.receive();
+            AcknowledgmentCallback firstAcknowledgment = acknowledgmentCallback(first);
+            AcknowledgmentCallback secondAcknowledgment = acknowledgmentCallback(second);
+            firstAcknowledgment.noAutoAck();
+            secondAcknowledgment.noAutoAck();
+
+            assertThat(first.getPayload()).isEqualTo("packed");
+            assertThat(second.getPayload()).isEqualTo("shipped");
+            assertThat(first.getHeaders()).containsEntry(KafkaMessageSource.REMAINING_RECORDS, 1);
+            assertThat(second.getHeaders()).containsEntry(KafkaMessageSource.REMAINING_RECORDS, 0);
+
+            secondAcknowledgment.acknowledge(AcknowledgmentCallback.Status.ACCEPT);
+
+            assertThat(secondAcknowledgment.isAcknowledged()).isTrue();
+            assertThat(consumerFactory.consumer().committed(Set.of(topicPartition))).doesNotContainKey(topicPartition);
+
+            firstAcknowledgment.acknowledge(AcknowledgmentCallback.Status.ACCEPT);
+
+            OffsetAndMetadata committedOffset = consumerFactory.consumer().committed(Set.of(topicPartition))
+                    .get(topicPartition);
+            assertThat(firstAcknowledgment.isAcknowledged()).isTrue();
+            assertThat(committedOffset).isNotNull();
+            assertThat(committedOffset.offset()).isEqualTo(2L);
+        }
+        finally {
+            source.destroy();
         }
     }
 
@@ -300,6 +351,15 @@ public class Spring_integration_kafkaTest {
         assertThat(exception.getRecord()).isSameAs(record);
         assertThat(exception.getCause()).hasMessage("send failed");
         assertThat(exception.toString()).contains(TOPIC);
+    }
+
+    private static AcknowledgmentCallback acknowledgmentCallback(Message<?> message) {
+        assertThat(message).isNotNull();
+        AcknowledgmentCallback acknowledgmentCallback = new IntegrationMessageHeaderAccessor(message)
+                .getAcknowledgmentCallback();
+        assertThat(acknowledgmentCallback).isNotNull();
+        assertThat(acknowledgmentCallback.isAcknowledged()).isFalse();
+        return acknowledgmentCallback;
     }
 
     private static ConsumerProperties assignedPartitionConsumerProperties() {
