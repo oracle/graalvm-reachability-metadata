@@ -48,4 +48,14 @@ public class ConstructorReferenceTest {
         assertThat(values)
                 .containsExactly(1, 2, 3);
     }
+
+    @Test
+    void createsReferenceTypeArrayFromInlineInitializer() {
+        Expression expression = this.parser.parseExpression("new String[] {'alpha', 'beta'}");
+
+        String[] values = expression.getValue(String[].class);
+
+        assertThat(values)
+                .containsExactly("alpha", "beta");
+    }
 }
