@@ -68,6 +68,32 @@ public class Context_propagationTest {
     }
 
     @Test
+    void appliesCapturedThreadLocalValuesOnlyForSelectedKeys() {
+        ThreadLocal<String> firstThreadLocal = new ThreadLocal<>();
+        ThreadLocal<String> secondThreadLocal = new ThreadLocal<>();
+        ContextRegistry registry = new ContextRegistry()
+                .registerThreadLocalAccessor(FIRST_KEY, firstThreadLocal)
+                .registerThreadLocalAccessor(SECOND_KEY, secondThreadLocal);
+        ContextSnapshotFactory factory = ContextSnapshotFactory.builder()
+                .contextRegistry(registry)
+                .build();
+
+        firstThreadLocal.set("captured-first");
+        secondThreadLocal.set("captured-second");
+        ContextSnapshot snapshot = factory.captureAll();
+
+        firstThreadLocal.set("previous-first");
+        secondThreadLocal.set("previous-second");
+        try (ContextSnapshot.Scope scope = snapshot.setThreadLocals(FIRST_KEY::equals)) {
+            assertThat(firstThreadLocal.get()).isEqualTo("captured-first");
+            assertThat(secondThreadLocal.get()).isEqualTo("previous-second");
+        }
+
+        assertThat(firstThreadLocal.get()).isEqualTo("previous-first");
+        assertThat(secondThreadLocal.get()).isEqualTo("previous-second");
+    }
+
+    @Test
     void capturesContextValuesAndUpdatesAnotherContextWithKeyFiltering() {
         ContextRegistry registry = new ContextRegistry().registerContextAccessor(new TestContextAccessor());
         ContextSnapshotFactory factory = ContextSnapshotFactory.builder()
