@@ -29,6 +29,7 @@ import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionStatus;
+import org.springframework.transaction.support.TransactionOperations;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -121,6 +122,27 @@ public class Spring_boot_transactionTest {
     }
 
     @Test
+    void transactionAutoConfigurationCreatesTransactionTemplateForSingleTransactionManager() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+                AutoConfiguredTemplateConfiguration.class)) {
+            RecordingTransactionManager transactionManager = context.getBean(RecordingTransactionManager.class);
+            TransactionTemplate transactionTemplate = context.getBean(TransactionTemplate.class);
+
+            String result = transactionTemplate.execute((status) -> {
+                assertThat(status.isNewTransaction()).isTrue();
+                return "auto-configured";
+            });
+
+            assertThat(result).isEqualTo("auto-configured");
+            assertThat(context.getBean(TransactionOperations.class)).isSameAs(transactionTemplate);
+            assertThat(transactionTemplate.getTransactionManager()).isSameAs(transactionManager);
+            assertThat(transactionManager.begins).isEqualTo(1);
+            assertThat(transactionManager.commits).isEqualTo(1);
+            assertThat(transactionManager.rollbacks).isZero();
+        }
+    }
+
+    @Test
     void transactionAutoConfigurationEnablesDeclarativeTransactionManagementWithJdkProxies() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test", Map.of(
@@ -150,6 +172,15 @@ public class Spring_boot_transactionTest {
                 TransactionManagerCustomizationAutoConfiguration.class);
         context.refresh();
         return context;
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ImportAutoConfiguration(TransactionAutoConfiguration.class)
+    static class AutoConfiguredTemplateConfiguration {
+        @Bean
+        RecordingTransactionManager transactionManager() {
+            return new RecordingTransactionManager();
+        }
     }
 
     @Configuration(proxyBeanMethods = false)
