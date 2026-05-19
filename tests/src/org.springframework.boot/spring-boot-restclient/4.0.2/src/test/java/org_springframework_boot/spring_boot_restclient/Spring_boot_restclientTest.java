@@ -27,6 +27,8 @@ import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationHandler;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
+import org.springframework.boot.http.client.HttpRedirects;
 import org.springframework.boot.http.converter.autoconfigure.ClientHttpMessageConvertersCustomizer;
 import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.boot.restclient.RestTemplateRequestCustomizer;
@@ -37,6 +39,7 @@ import org.springframework.boot.restclient.autoconfigure.RestTemplateBuilderConf
 import org.springframework.boot.restclient.observation.ObservationRestClientCustomizer;
 import org.springframework.boot.restclient.observation.ObservationRestTemplateCustomizer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -129,6 +132,46 @@ public class Spring_boot_restclientTest {
                     .isInstanceOf(StringHttpMessageConverter.class);
             assertThat(restTemplate.getErrorHandler()).isSameAs(ignoreServerErrors);
             assertThat(body).isEqualTo("body=payload, customizer=called");
+        }
+    }
+
+    @Test
+    void restTemplateBuilderAppliesRedirectSettingsToRequestFactoryBuilder() throws IOException {
+        AtomicInteger targetRequests = new AtomicInteger();
+        try (TestHttpServer server = TestHttpServer.start(exchange -> {
+            if ("/redirect".equals(exchange.getRequestURI().getPath())) {
+                sendRedirect(exchange, "http://127.0.0.1:" + exchange.getLocalAddress().getPort() + "/target");
+                return;
+            }
+            targetRequests.incrementAndGet();
+            send(exchange, HttpStatus.OK.value(), "target=" + exchange.getRequestURI());
+        })) {
+            RestTemplate followingRestTemplate = new RestTemplateBuilder()
+                    .requestFactoryBuilder(ClientHttpRequestFactoryBuilder.simple())
+                    .connectTimeout(REQUEST_TIMEOUT)
+                    .readTimeout(REQUEST_TIMEOUT)
+                    .redirects(HttpRedirects.FOLLOW)
+                    .build();
+
+            ResponseEntity<String> followedResponse = followingRestTemplate.getForEntity(server.url("/redirect"),
+                    String.class);
+
+            assertThat(followedResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(followedResponse.getBody()).isEqualTo("target=/target");
+            assertThat(targetRequests).hasValue(1);
+
+            RestTemplate nonFollowingRestTemplate = new RestTemplateBuilder()
+                    .requestFactoryBuilder(ClientHttpRequestFactoryBuilder.simple())
+                    .connectTimeout(REQUEST_TIMEOUT)
+                    .readTimeout(REQUEST_TIMEOUT)
+                    .redirects(HttpRedirects.DONT_FOLLOW)
+                    .build();
+
+            ResponseEntity<String> redirectResponse = nonFollowingRestTemplate.getForEntity(server.url("/redirect"),
+                    String.class);
+
+            assertThat(redirectResponse.getStatusCode()).isEqualTo(HttpStatus.FOUND);
+            assertThat(targetRequests).hasValue(1);
         }
     }
 
@@ -270,6 +313,12 @@ public class Spring_boot_restclientTest {
         exchange.getResponseHeaders().set("Content-Type", "text/plain;charset=UTF-8");
         exchange.sendResponseHeaders(statusCode, bytes.length);
         exchange.getResponseBody().write(bytes);
+        exchange.close();
+    }
+
+    private static void sendRedirect(HttpExchange exchange, String location) throws IOException {
+        exchange.getResponseHeaders().set("Location", location);
+        exchange.sendResponseHeaders(HttpStatus.FOUND.value(), -1);
         exchange.close();
     }
 
