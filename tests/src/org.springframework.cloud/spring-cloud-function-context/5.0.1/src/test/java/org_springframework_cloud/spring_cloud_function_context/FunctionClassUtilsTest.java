@@ -23,8 +23,7 @@ public class FunctionClassUtilsTest {
             Class<?> startClass = FunctionClassUtils.getStartClass();
 
             assertThat(startClass).isEqualTo(FunctionClassUtilsTest.class);
-        }
-        finally {
+        } finally {
             if (previousMainClass != null) {
                 System.setProperty("MAIN_CLASS", previousMainClass);
             }

@@ -39,8 +39,7 @@ public class BeanFactoryAwareFunctionRegistryAnonymous1Test {
             Object result = function.apply("spring");
 
             assertThat(result).isEqualTo("Hello spring");
-        }
-        finally {
+        } finally {
             applicationContext.close();
         }
     }
