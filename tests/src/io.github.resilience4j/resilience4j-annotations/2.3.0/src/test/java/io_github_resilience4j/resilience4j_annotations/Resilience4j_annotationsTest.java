@@ -12,6 +12,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -74,6 +75,45 @@ public class Resilience4j_annotationsTest {
         assertThat(client.timedLookup("sku-4").toCompletableFuture()).isCompletedWithValue("timed:sku-4");
         assertThat(client.measuredOperation()).isEqualTo(2);
         assertThat(client.invocationCount()).isEqualTo(6);
+    }
+
+    @Test
+    void configuredAnnotationValuesAreReadableAtRuntimeForTypeAndMethodUse() throws NoSuchMethodException {
+        CircuitBreaker typeCircuitBreaker = AnnotatedInventoryClient.class.getAnnotation(CircuitBreaker.class);
+        Retry typeRetry = AnnotatedInventoryClient.class.getAnnotation(Retry.class);
+
+        assertThat(typeCircuitBreaker.name()).isEqualTo("inventoryCircuitBreaker");
+        assertThat(typeCircuitBreaker.fallbackMethod()).isEqualTo("circuitBreakerFallback");
+        assertThat(typeRetry.name()).isEqualTo("inventoryRetry");
+        assertThat(typeRetry.fallbackMethod()).isEqualTo("retryFallback");
+
+        Method loadProduct = AnnotatedInventoryClient.class.getDeclaredMethod("loadProduct", String.class);
+        assertThat(loadProduct.getAnnotation(CircuitBreaker.class).name()).isEqualTo("productCircuitBreaker");
+        assertThat(loadProduct.getAnnotation(CircuitBreaker.class).fallbackMethod()).isEqualTo("productFallback");
+        assertThat(loadProduct.getAnnotation(Retry.class).name()).isEqualTo("productRetry");
+        assertThat(loadProduct.getAnnotation(Retry.class).fallbackMethod()).isEqualTo("productRetryFallback");
+
+        Method rateLimitedLookup = AnnotatedInventoryClient.class.getDeclaredMethod("rateLimitedLookup", String.class);
+        RateLimiter rateLimiter = rateLimitedLookup.getAnnotation(RateLimiter.class);
+        assertThat(rateLimiter.name()).isEqualTo("lookupRateLimiter");
+        assertThat(rateLimiter.fallbackMethod()).isEqualTo("lookupFallback");
+        assertThat(rateLimiter.permits()).isEqualTo(2);
+
+        Method bulkheadProtectedRefresh = AnnotatedInventoryClient.class.getDeclaredMethod("bulkheadProtectedRefresh");
+        Bulkhead bulkhead = bulkheadProtectedRefresh.getAnnotation(Bulkhead.class);
+        assertThat(bulkhead.name()).isEqualTo("refreshBulkhead");
+        assertThat(bulkhead.fallbackMethod()).isEqualTo("refreshFallback");
+        assertThat(bulkhead.type()).isEqualTo(Bulkhead.Type.THREADPOOL);
+
+        Method timedLookup = AnnotatedInventoryClient.class.getDeclaredMethod("timedLookup", String.class);
+        TimeLimiter timeLimiter = timedLookup.getAnnotation(TimeLimiter.class);
+        assertThat(timeLimiter.name()).isEqualTo("asyncLookupTimeLimiter");
+        assertThat(timeLimiter.fallbackMethod()).isEqualTo("asyncLookupFallback");
+
+        Method measuredOperation = AnnotatedInventoryClient.class.getDeclaredMethod("measuredOperation");
+        Timer timer = measuredOperation.getAnnotation(Timer.class);
+        assertThat(timer.name()).isEqualTo("measuredInventoryTimer");
+        assertThat(timer.fallbackMethod()).isEqualTo("timerFallback");
     }
 
     private static void assertRuntimeMethodAndTypeAnnotation(Class<? extends Annotation> annotationType) {
