@@ -8,7 +8,7 @@ package org_springframework_boot.spring_boot_flyway;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_boot_flywayTest {
+public class Spring_boot_flywayTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
