@@ -168,8 +168,7 @@ public class Spring_boot_reactorTest {
 
             assertThat(context.getBean(ReactorAutoConfiguration.class)).isNotNull();
             assertThat(observedThreadLocalValue.get()).isEqualTo("updated");
-        }
-        finally {
+        } finally {
             registry.removeThreadLocalAccessor(THREAD_LOCAL_ACCESSOR_KEY);
             threadLocal.remove();
         }
@@ -230,12 +229,10 @@ public class Spring_boot_reactorTest {
         try {
             System.clearProperty(name);
             action.run();
-        }
-        finally {
+        } finally {
             if (previousValue != null) {
                 System.setProperty(name, previousValue);
-            }
-            else {
+            } else {
                 System.clearProperty(name);
             }
         }
