@@ -215,8 +215,7 @@ public class Context_propagationTest {
             assertThat(futures).hasSize(2);
             assertThat(futures.get(0).get(5, TimeUnit.SECONDS)).isEqualTo("invoke-all");
             assertThat(futures.get(1).get(5, TimeUnit.SECONDS)).isEqualTo("invoke-all");
-        }
-        finally {
+        } finally {
             executor.shutdownNow();
             assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
         }
@@ -237,8 +236,7 @@ public class Context_propagationTest {
             threadLocal.set("changed-after-schedule");
 
             assertThat(scheduled.get(5, TimeUnit.SECONDS)).isEqualTo("scheduled");
-        }
-        finally {
+        } finally {
             executor.shutdownNow();
             assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
         }
