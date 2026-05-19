@@ -25,9 +25,17 @@ import org.springframework.boot.integration.autoconfigure.IntegrationProperties;
 import org.springframework.boot.integration.autoconfigure.PollerMetadataCustomizer;
 import org.springframework.boot.task.ThreadPoolTaskSchedulerBuilder;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.channel.QueueChannel;
+import org.springframework.integration.core.MessagingTemplate;
+import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.graph.Graph;
 import org.springframework.integration.graph.IntegrationGraphServer;
 import org.springframework.integration.scheduling.PollerMetadata;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.PollableChannel;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.PeriodicTrigger;
 
@@ -192,6 +200,22 @@ public class SpringBootIntegrationTest {
     }
 
     @Test
+    void autoConfigurationEnablesIntegrationFlowBeans() {
+        this.contextRunner.withUserConfiguration(SimpleIntegrationFlowConfiguration.class).run((context) -> {
+            MessagingTemplate messagingTemplate = new MessagingTemplate();
+            messagingTemplate.setReceiveTimeout(1_000);
+            MessageChannel input = context.getBean("input", MessageChannel.class);
+            PollableChannel output = context.getBean("output", PollableChannel.class);
+
+            messagingTemplate.convertAndSend(input, "spring boot");
+            Message<?> message = messagingTemplate.receive(output);
+
+            assertThat(message).isNotNull();
+            assertThat(message.getPayload()).isEqualTo("SPRING BOOT");
+        });
+    }
+
+    @Test
     void integrationGraphEndpointReturnsCurrentGraphAndCanRebuildIt() {
         TestIntegrationGraphServer graphServer = new TestIntegrationGraphServer();
         IntegrationGraphEndpoint endpoint = new IntegrationGraphEndpoint(graphServer);
@@ -226,6 +250,24 @@ public class SpringBootIntegrationTest {
         assertThat(properties.getRsocket().getClient().getPort()).isEqualTo(7000);
         assertThat(properties.getRsocket().getClient().getUri()).isEqualTo(URI.create("ws://localhost:7001/rsocket"));
         assertThat(properties.getRsocket().getServer().isMessageMappingEnabled()).isTrue();
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    public static class SimpleIntegrationFlowConfiguration {
+
+        @Bean
+        public IntegrationFlow uppercaseFlow() {
+            return IntegrationFlow.from("input")
+                .transform(String.class, String::toUpperCase)
+                .channel("output")
+                .get();
+        }
+
+        @Bean
+        public QueueChannel output() {
+            return new QueueChannel();
+        }
+
     }
 
     static final class TestIntegrationGraphServer extends IntegrationGraphServer {
