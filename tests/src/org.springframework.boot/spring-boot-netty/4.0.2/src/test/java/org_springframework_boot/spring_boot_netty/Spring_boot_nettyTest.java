@@ -9,6 +9,7 @@ package org_springframework_boot.spring_boot_netty;
 import io.netty.util.NettyRuntime;
 import io.netty.util.ResourceLeakDetector;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.LazyInitializationBeanFactoryPostProcessor;
 import org.springframework.boot.LazyInitializationExcludeFilter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -84,6 +85,16 @@ public class Spring_boot_nettyTest {
             assertThat(filter.isExcluded("nettyAutoConfiguration", null, NettyAutoConfiguration.class)).isTrue();
             assertThat(filter.isExcluded("nettyProperties", null, NettyProperties.class)).isFalse();
         });
+    }
+
+    @Test
+    void leakDetectionIsAppliedWhenSpringLazyInitializationIsEnabled() throws Throwable {
+        runWithRestoredLeakDetectionLevel(() -> this.contextRunner
+                .withInitializer((context) -> context
+                    .addBeanFactoryPostProcessor(new LazyInitializationBeanFactoryPostProcessor()))
+                .withPropertyValues("spring.netty.leak-detection=advanced")
+                .run((context) -> assertThat(ResourceLeakDetector.getLevel())
+                    .isEqualTo(ResourceLeakDetector.Level.ADVANCED)));
     }
 
     @Test
