@@ -54,9 +54,11 @@ import org.springframework.cloud.commons.publisher.CloudFlux;
 import org.springframework.cloud.commons.util.IdUtils;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.commons.util.InetUtilsProperties;
+import org.springframework.cloud.configuration.TlsProperties;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
@@ -323,12 +325,52 @@ public class Spring_cloud_commonsTest {
         })).withMessage("No fallback available.");
     }
 
+    @Test
+    void tlsPropertiesInferStoreTypesAndExposePasswords() {
+        TlsProperties properties = new TlsProperties();
+
+        properties.setEnabled(true);
+        properties.setKeyStore(new NamedByteArrayResource("client-certificate.p12"));
+        properties.setTrustStore(new NamedByteArrayResource("trusted-ca.jks"));
+        properties.setKeyStorePassword("store-secret");
+        properties.setKeyPassword("key-secret");
+        properties.setTrustStorePassword("trust-secret");
+
+        assertThat(properties.isEnabled()).isTrue();
+        assertThat(properties.getKeyStoreType()).isEqualTo("PKCS12");
+        assertThat(properties.getTrustStoreType()).isEqualTo("JKS");
+        assertThat(String.valueOf(properties.keyStorePassword())).isEqualTo("store-secret");
+        assertThat(String.valueOf(properties.keyPassword())).isEqualTo("key-secret");
+        assertThat(String.valueOf(properties.trustStorePassword())).isEqualTo("trust-secret");
+
+        TlsProperties unknownExtension = new TlsProperties();
+        unknownExtension.setKeyStore(new NamedByteArrayResource("client-certificate.pem"));
+
+        assertThat(unknownExtension.getKeyStoreType()).isEqualTo("PKCS12");
+    }
+
     private static InstanceProperties instance(String instanceId, String uri, Map<String, String> metadata) {
         InstanceProperties instance = new InstanceProperties();
         instance.setInstanceId(instanceId);
         instance.setUri(URI.create(uri));
         instance.setMetadata(new LinkedHashMap<>(metadata));
         return instance;
+    }
+
+    private static final class NamedByteArrayResource extends ByteArrayResource {
+
+        private final String filename;
+
+        private NamedByteArrayResource(String filename) {
+            super(new byte[0]);
+            this.filename = filename;
+        }
+
+        @Override
+        public String getFilename() {
+            return filename;
+        }
+
     }
 
     private static final class SimpleHttpRequest implements HttpRequest {
