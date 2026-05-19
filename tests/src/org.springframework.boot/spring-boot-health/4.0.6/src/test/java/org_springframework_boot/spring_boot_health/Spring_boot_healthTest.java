@@ -390,7 +390,7 @@ public class Spring_boot_healthTest {
     }
 
     private static KeyStore keyStoreWithCertificate(String alias, Certificate certificate) throws Exception {
-        KeyStore keyStore = new TestKeyStore(Map.of(alias, new Certificate[] { certificate }));
+        KeyStore keyStore = new TestKeyStore(Map.of(alias, new Certificate[] {certificate }));
         keyStore.load(null, null);
         return keyStore;
     }
