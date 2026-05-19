@@ -28,6 +28,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
@@ -215,6 +216,51 @@ public class Context_propagationTest {
             executor.shutdownNow();
             assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
         }
+    }
+
+    @Test
+    void supplierBasedThreadLocalAccessorUsesProvidedCallbacksForPropagationAndClearing() {
+        AtomicReference<String> storage = new AtomicReference<>();
+        AtomicInteger setCalls = new AtomicInteger();
+        AtomicInteger resetCalls = new AtomicInteger();
+        ContextRegistry registry = new ContextRegistry().registerThreadLocalAccessor(FIRST_KEY, storage::get, value -> {
+            setCalls.incrementAndGet();
+            storage.set(value);
+        }, () -> {
+            resetCalls.incrementAndGet();
+            storage.set(null);
+        });
+        ContextSnapshotFactory factory = ContextSnapshotFactory.builder()
+                .contextRegistry(registry)
+                .clearMissing(true)
+                .build();
+
+        storage.set("captured");
+        ContextSnapshot snapshot = factory.captureAll();
+
+        storage.set("previous");
+        try (ContextSnapshot.Scope scope = snapshot.setThreadLocals()) {
+            assertThat(storage).hasValue("captured");
+        }
+
+        assertThat(storage).hasValue("previous");
+        assertThat(setCalls).hasValue(2);
+        assertThat(resetCalls).hasValue(0);
+
+        ContextSnapshot emptySnapshot = ContextSnapshotFactory.builder()
+                .contextRegistry(registry)
+                .clearMissing(true)
+                .captureKeyPredicate(key -> false)
+                .build()
+                .captureAll();
+
+        try (ContextSnapshot.Scope scope = emptySnapshot.setThreadLocals()) {
+            assertThat(storage.get()).isNull();
+        }
+
+        assertThat(storage).hasValue("previous");
+        assertThat(setCalls).hasValue(3);
+        assertThat(resetCalls).hasValue(1);
     }
 
     @Test
