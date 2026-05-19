@@ -51,6 +51,6 @@ public class ConfigurationDynaBeanTest {
                 .withMessage("Property 'missing' does not exist.");
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> bean.get("missing", 0))
-                .withMessage("Indexed property 'missing' does not exist.");
+                .withMessage("Property 'missing' does not exist.");
     }
 }

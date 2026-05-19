@@ -15,7 +15,23 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+String defaultFileSystemClass = "org.apache.commons.configuration.DefaultFileSystem"
+
+tasks.withType(Test).configureEach {
+    systemProperty "org.apache.commons.configuration.filesystem", defaultFileSystemClass
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dorg.apache.commons.configuration.filesystem=$defaultFileSystemClass")
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Dorg.apache.commons.configuration.filesystem=$defaultFileSystemClass")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
