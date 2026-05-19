@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
@@ -178,6 +179,27 @@ public class Jackson_datatype_jodaTest {
         assertThat(readablePeriod).isEqualTo(Period.hours(2));
     }
 
+    @Test
+    void honorsJsonFormatPatternsOnJodaProperties() throws Exception {
+        ObjectMapper mapper = formattingMapper();
+        FormattedPayload payload = FormattedPayload.sample();
+
+        String json = mapper.writeValueAsString(payload);
+        JsonNode tree = mapper.readTree(json);
+
+        assertThat(tree.path("dateTime").asString()).isEqualTo("2024/05/06 07:08:09 +0200");
+        assertThat(tree.path("localDate").asString()).isEqualTo("06.05.2024");
+        assertThat(tree.path("localTime").asString()).isEqualTo("07*08*09");
+
+        FormattedPayload parsed = mapper.readValue("""
+                {"dateTime":"2024/05/06 07:08:09 +0200","localDate":"06.05.2024","localTime":"07*08*09"}
+                """, FormattedPayload.class);
+
+        assertThat(parsed.dateTime.getMillis()).isEqualTo(payload.dateTime.getMillis());
+        assertThat(parsed.localDate).isEqualTo(payload.localDate);
+        assertThat(parsed.localTime).isEqualTo(payload.localTime);
+    }
+
     private static <K> Map<K, String> readMapWithKeys(ObjectMapper mapper, String json, Class<K> keyType)
             throws Exception {
         return mapper.readValue(json,
@@ -201,6 +223,16 @@ public class Jackson_datatype_jodaTest {
                 .disable(DateTimeFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
                 .enable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .enable(DateTimeFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
+                .defaultTimeZone(TimeZone.getTimeZone("UTC"))
+                .build();
+    }
+
+    private static ObjectMapper formattingMapper() {
+        return JsonMapper.builder()
+                .addModule(new JodaModule())
+                .disable(DateTimeFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+                .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .disable(DateTimeFeature.WRITE_DATES_WITH_CONTEXT_TIME_ZONE)
                 .defaultTimeZone(TimeZone.getTimeZone("UTC"))
                 .build();
     }
@@ -261,6 +293,28 @@ public class Jackson_datatype_jodaTest {
             payload.seconds = Seconds.seconds(6);
             payload.weeks = Weeks.weeks(7);
             payload.years = Years.years(8);
+            return payload;
+        }
+    }
+
+    public static final class FormattedPayload {
+        @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss Z")
+        public DateTime dateTime;
+
+        @JsonFormat(pattern = "dd.MM.yyyy")
+        public LocalDate localDate;
+
+        @JsonFormat(pattern = "HH*mm*ss")
+        public LocalTime localTime;
+
+        public FormattedPayload() {
+        }
+
+        static FormattedPayload sample() {
+            FormattedPayload payload = new FormattedPayload();
+            payload.dateTime = new DateTime(2024, 5, 6, 7, 8, 9, DateTimeZone.forID("Europe/Paris"));
+            payload.localDate = new LocalDate(2024, 5, 6);
+            payload.localTime = new LocalTime(7, 8, 9);
             return payload;
         }
     }
