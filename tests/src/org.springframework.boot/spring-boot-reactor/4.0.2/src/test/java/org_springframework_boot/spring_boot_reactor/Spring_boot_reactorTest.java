@@ -12,10 +12,14 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
+import io.micrometer.context.ContextRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Hooks;
+import reactor.core.publisher.Mono;
+import reactor.util.context.Context;
 
 import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.LazyInitializationBeanFactoryPostProcessor;
@@ -46,6 +50,8 @@ public class Spring_boot_reactorTest {
 
     private static final String BOUNDED_ELASTIC_ON_VIRTUAL_THREADS =
             "reactor.schedulers.defaultBoundedElasticOnVirtualThreads";
+
+    private static final String THREAD_LOCAL_ACCESSOR_KEY = Spring_boot_reactorTest.class.getName() + ".threadLocal";
 
     @AfterEach
     void resetReactorHooks() {
@@ -141,6 +147,31 @@ public class Spring_boot_reactorTest {
                     .isEqualTo(ContextPropagationMode.AUTO);
             assertThat(context.getBeansOfType(LazyInitializationExcludeFilter.class)).hasSize(1);
             assertThat(Hooks.isAutomaticContextPropagationEnabled()).isTrue();
+        }
+    }
+
+    @Test
+    void autoConfigurationPropagatesRegisteredThreadLocalAccessorInAutoMode() {
+        Hooks.disableAutomaticContextPropagation();
+        ThreadLocal<String> threadLocal = ThreadLocal.withInitial(() -> "initial");
+        ContextRegistry registry = ContextRegistry.getInstance();
+        registry.registerThreadLocalAccessor(THREAD_LOCAL_ACCESSOR_KEY, threadLocal);
+
+        try (AnnotationConfigApplicationContext context = autoConfigurationContext(
+                Map.of(REACTOR_CONTEXT_PROPAGATION, "auto"))) {
+            AtomicReference<String> observedThreadLocalValue = new AtomicReference<>();
+
+            Mono.just("test")
+                    .doOnNext((element) -> observedThreadLocalValue.set(threadLocal.get()))
+                    .contextWrite(Context.of(THREAD_LOCAL_ACCESSOR_KEY, "updated"))
+                    .block();
+
+            assertThat(context.getBean(ReactorAutoConfiguration.class)).isNotNull();
+            assertThat(observedThreadLocalValue.get()).isEqualTo("updated");
+        }
+        finally {
+            registry.removeThreadLocalAccessor(THREAD_LOCAL_ACCESSOR_KEY);
+            threadLocal.remove();
         }
     }
 
