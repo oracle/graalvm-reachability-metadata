@@ -8,8 +8,12 @@ package org_springframework_boot.spring_boot_integration;
 
 import java.net.URI;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,12 +32,15 @@ import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.QueueChannel;
+import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.scheduling.PollerMetadata;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.PeriodicTrigger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -162,6 +169,20 @@ public class Spring_boot_integrationTest {
     }
 
     @Test
+    void autoConfigurationProvidesTaskSchedulerForIntegrationInfrastructure() throws InterruptedException {
+        try (ConfigurableApplicationContext context = run(TaskSchedulerApplication.class)) {
+            TaskScheduler taskScheduler = context.getBean(IntegrationContextUtils.TASK_SCHEDULER_BEAN_NAME,
+                    TaskScheduler.class);
+            CountDownLatch taskRan = new CountDownLatch(1);
+            ScheduledFuture<?> future = taskScheduler.schedule(taskRan::countDown, Instant.now().plusMillis(10));
+
+            assertThat(taskScheduler).isInstanceOf(ThreadPoolTaskScheduler.class);
+            assertThat(future.isCancelled()).isFalse();
+            assertThat(taskRan.await(1, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
     void integrationFlowBeanIsDiscoveredAndProcessesMessages() {
         try (ConfigurableApplicationContext context = run(FlowApplication.class)) {
             MessageChannel requests = context.getBean("requests", MessageChannel.class);
@@ -248,6 +269,11 @@ public class Spring_boot_integrationTest {
         public SecondPollerCustomizer secondPollerCustomizer() {
             return new SecondPollerCustomizer();
         }
+    }
+
+    @SpringBootConfiguration
+    @EnableAutoConfiguration
+    public static class TaskSchedulerApplication {
     }
 
     @SpringBootConfiguration
