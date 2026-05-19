@@ -9,7 +9,9 @@ package io_github_resilience4j.resilience4j_framework_common;
 import io.github.resilience4j.bulkhead.BulkheadConfig;
 import io.github.resilience4j.bulkhead.event.BulkheadOnCallPermittedEvent;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.event.CircuitBreakerOnErrorEvent;
+import io.github.resilience4j.circuitbreaker.event.CircuitBreakerOnSuccessEvent;
 import io.github.resilience4j.common.CompositeCustomizer;
 import io.github.resilience4j.common.bulkhead.configuration.BulkheadConfigCustomizer;
 import io.github.resilience4j.common.bulkhead.configuration.CommonBulkheadConfigurationProperties;
@@ -22,6 +24,7 @@ import io.github.resilience4j.common.circuitbreaker.monitoring.endpoint.CircuitB
 import io.github.resilience4j.common.circuitbreaker.monitoring.endpoint.CircuitBreakerEventDTO;
 import io.github.resilience4j.common.circuitbreaker.monitoring.endpoint.CircuitBreakerEventDTOFactory;
 import io.github.resilience4j.common.circuitbreaker.monitoring.endpoint.CircuitBreakerEventsEndpointResponse;
+import io.github.resilience4j.common.circuitbreaker.monitoring.endpoint.CircuitBreakerHystrixStreamEventsDTO;
 import io.github.resilience4j.common.circuitbreaker.monitoring.endpoint.CircuitBreakerUpdateStateResponse;
 import io.github.resilience4j.common.circuitbreaker.monitoring.endpoint.UpdateState;
 import io.github.resilience4j.common.ratelimiter.configuration.CommonRateLimiterConfigurationProperties;
@@ -48,6 +51,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -155,6 +159,29 @@ public class Resilience4j_framework_commonTest {
         TimeLimiterEventDTO timeLimiterDto = TimeLimiterEventDTO.createTimeLimiterEventDTO(timeLimiterEvent);
         assertThat(timeLimiterDto.getTimeLimiterName()).isEqualTo("timeout");
         assertThat(timeLimiterDto.getType()).isEqualTo(timeLimiterEvent.getEventType());
+    }
+
+    @Test
+    void exposesCircuitBreakerHystrixStreamEventPayload() {
+        CircuitBreakerConfig config = CircuitBreakerConfig.custom()
+                .failureRateThreshold(35.0f)
+                .slowCallRateThreshold(65.0f)
+                .build();
+        CircuitBreaker circuitBreaker = CircuitBreaker.of("orders", config);
+        circuitBreaker.onSuccess(15, TimeUnit.MILLISECONDS);
+        CircuitBreaker.Metrics metrics = circuitBreaker.getMetrics();
+        CircuitBreakerOnSuccessEvent recentEvent = new CircuitBreakerOnSuccessEvent(
+                circuitBreaker.getName(), Duration.ofMillis(15));
+
+        CircuitBreakerHystrixStreamEventsDTO dto = new CircuitBreakerHystrixStreamEventsDTO(
+                recentEvent, circuitBreaker.getState(), metrics, config);
+
+        assertThat(dto.getCircuitBreakerRecentEvent()).isSameAs(recentEvent);
+        assertThat(dto.getCurrentState()).isEqualTo(CircuitBreaker.State.CLOSED);
+        assertThat(dto.getMetrics()).isSameAs(metrics);
+        assertThat(dto.getMetrics().getNumberOfBufferedCalls()).isEqualTo(1);
+        assertThat(dto.getFailureRateThreshold()).isEqualTo(35.0f);
+        assertThat(dto.getSlowCallRateThreshold()).isEqualTo(65.0f);
     }
 
     @Test
