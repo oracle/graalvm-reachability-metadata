@@ -6,8 +6,10 @@
  */
 package org_springframework_boot.spring_boot_http_codec;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -20,10 +22,15 @@ import org.springframework.boot.http.codec.autoconfigure.HttpCodecsProperties;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.codec.Decoder;
 import org.springframework.core.codec.Encoder;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.codec.CodecConfigurer;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.HttpMessageWriter;
@@ -31,6 +38,7 @@ import org.springframework.http.codec.json.JacksonJsonDecoder;
 import org.springframework.http.codec.json.JacksonJsonEncoder;
 import org.springframework.util.unit.DataSize;
 
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,6 +88,50 @@ public class Spring_boot_http_codecTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    void jacksonCodecCustomizerUsesApplicationJsonMapperForJsonPayloads() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.register(SortedJsonMapperConfiguration.class, CodecsAutoConfiguration.class);
+            context.refresh();
+
+            CapturingCodecConfigurer configurer = new CapturingCodecConfigurer();
+            context.getBean("jacksonCodecCustomizer", CodecCustomizer.class).customize(configurer);
+
+            Encoder<Object> encoder = (Encoder<Object>) configurer.defaultCodecs.jacksonJsonEncoder;
+            Decoder<Object> decoder = (Decoder<Object>) configurer.defaultCodecs.jacksonJsonDecoder;
+            Map<String, Object> payload = new LinkedHashMap<>();
+            payload.put("message", "hello");
+            payload.put("count", 2);
+
+            DefaultDataBufferFactory bufferFactory = DefaultDataBufferFactory.sharedInstance;
+            DataBuffer encoded = encoder.encodeValue(payload, bufferFactory, ResolvableType.forInstance(payload),
+                    MediaType.APPLICATION_JSON, Collections.emptyMap());
+            String json;
+            try {
+                json = encoded.toString(StandardCharsets.UTF_8);
+            }
+            finally {
+                DataBufferUtils.release(encoded);
+            }
+            assertThat(json).isEqualTo("{\"count\":2,\"message\":\"hello\"}");
+
+            DataBuffer input = bufferFactory.wrap(json.getBytes(StandardCharsets.UTF_8));
+            Object decoded;
+            try {
+                decoded = decoder.decode(input, ResolvableType.forClass(Map.class), MediaType.APPLICATION_JSON,
+                        Collections.emptyMap());
+            }
+            finally {
+                DataBufferUtils.release(input);
+            }
+            assertThat(decoded).isInstanceOf(Map.class);
+            Map<?, ?> decodedMap = (Map<?, ?>) decoded;
+            assertThat(decodedMap.get("message")).isEqualTo("hello");
+            assertThat(decodedMap.get("count")).isEqualTo(2);
+        }
+    }
+
+    @Test
     void autoConfigurationBacksOffJacksonCustomizerWhenJsonMapperBeanIsAbsent() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             context.register(CodecsAutoConfiguration.class);
@@ -125,6 +177,16 @@ public class Spring_boot_http_codecTest {
         @Bean
         JsonMapper jsonMapper() {
             return new JsonMapper();
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class SortedJsonMapperConfiguration {
+
+        @Bean
+        JsonMapper jsonMapper() {
+            return JsonMapper.builder().enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS).build();
         }
 
     }
