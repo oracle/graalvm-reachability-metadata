@@ -54,7 +54,30 @@ public class FunctionInvocationHelperTest {
         assertThat(postProcessedResult).isSameAs(normalizedResult);
     }
 
+    @Test
+    void implementationsCanOverrideOnlySelectedInvocationHooks() {
+        InvocationInput originalInput = new InvocationInput(" incoming ");
+        InvocationResult result = new InvocationResult("result");
+        FunctionInvocationHelper<InvocationInput> helper = new InputTrimmingFunctionInvocationHelper();
+
+        InvocationInput preProcessedInput = helper.preProcessInput(originalInput, "conversion-context");
+        Object postProcessedResult = helper.postProcessResult(result, preProcessedInput);
+
+        assertThat(helper.isRetainOutputAsMessage(originalInput)).isTrue();
+        assertThat(preProcessedInput.value()).isEqualTo("incoming");
+        assertThat(postProcessedResult).isSameAs(result);
+    }
+
     private static final class DefaultFunctionInvocationHelper<I> implements FunctionInvocationHelper<I> {
+    }
+
+    private static final class InputTrimmingFunctionInvocationHelper
+            implements FunctionInvocationHelper<InvocationInput> {
+        @Override
+        public InvocationInput preProcessInput(InvocationInput input, Object conversionContext) {
+            assertThat(conversionContext).isEqualTo("conversion-context");
+            return new InvocationInput(input.value().trim());
+        }
     }
 
     private static final class CustomFunctionInvocationHelper implements FunctionInvocationHelper<InvocationInput> {
