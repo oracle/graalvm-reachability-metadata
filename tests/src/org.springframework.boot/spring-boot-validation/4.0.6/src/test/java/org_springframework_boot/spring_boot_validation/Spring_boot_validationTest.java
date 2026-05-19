@@ -6,6 +6,10 @@
  */
 package org_springframework_boot.spring_boot_validation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -27,6 +31,7 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.boot.validation.autoconfigure.ValidationAutoConfiguration;
 import org.springframework.boot.validation.autoconfigure.ValidationConfigurationCustomizer;
 import org.springframework.boot.validation.autoconfigure.ValidatorAdapter;
+import org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -112,6 +117,17 @@ public class Spring_boot_validationTest {
                                 .extracting(ParameterValidationResult::getArgument)
                                 .isEqualTo("");
                     });
+        }
+    }
+
+    @Test
+    void methodValidationExcludeFilterPreventsProxyingMatchedBeans() {
+        try (AnnotationConfigApplicationContext context = contextWithProperties(
+                Map.of("spring.aop.proxy-target-class", (Object) "false"), ExcludedMethodValidationConfiguration.class)) {
+            GreetingService service = context.getBean(GreetingService.class);
+
+            assertThat(AopUtils.isAopProxy(service)).isFalse();
+            assertThat(service.greet("")).isEqualTo("Hello ");
         }
     }
 
@@ -227,6 +243,21 @@ public class Spring_boot_validationTest {
     }
 
     @Configuration(proxyBeanMethods = false)
+    public static class ExcludedMethodValidationConfiguration {
+
+        @Bean
+        GreetingService greetingService() {
+            return new ExcludedGreetingService();
+        }
+
+        @Bean
+        MethodValidationExcludeFilter noMethodValidationFilter() {
+            return MethodValidationExcludeFilter.byAnnotation(NoMethodValidation.class);
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
     public static class ExistingJakartaValidatorConfiguration {
 
         @Bean(destroyMethod = "close")
@@ -254,6 +285,23 @@ public class Spring_boot_validationTest {
         public String greet(String name) {
             return "Hello " + name;
         }
+
+    }
+
+    @Validated
+    @NoMethodValidation
+    public static class ExcludedGreetingService implements GreetingService {
+
+        @Override
+        public String greet(String name) {
+            return "Hello " + name;
+        }
+
+    }
+
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface NoMethodValidation {
 
     }
 
