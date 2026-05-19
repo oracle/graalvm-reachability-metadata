@@ -9,12 +9,12 @@ package org_apache_pekko.pekko_protobuf_v3_2_13;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.pekko.protobufv3.internal.CodedInputStream;
 import org.apache.pekko.protobufv3.internal.DescriptorProtos;
 import org.apache.pekko.protobufv3.internal.DescriptorProtos.FieldDescriptorProto.Label;
 import org.apache.pekko.protobufv3.internal.DescriptorProtos.FieldDescriptorProto.Type;
 import org.apache.pekko.protobufv3.internal.Descriptors;
-import org.apache.pekko.protobufv3.internal.ExtensionRegistryLite;
+import org.apache.pekko.protobufv3.internal.DynamicMessage;
+import org.apache.pekko.protobufv3.internal.ExtensionRegistry;
 import org.apache.pekko.protobufv3.internal.GeneratedMessageV3;
 import org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException;
 import org.apache.pekko.protobufv3.internal.Message;
@@ -84,9 +84,13 @@ public final class DescriptorMessageInfoFactoryCoverageMessage extends Generated
     }
 
     public void parseEmptyInputThroughSchema() throws InvalidProtocolBufferException {
-        mergeFromAndMakeImmutableInternal(
-                CodedInputStream.newInstance(new byte[0]),
-                ExtensionRegistryLite.getEmptyRegistry());
+        DynamicMessage parsed = DynamicMessage.parseFrom(
+                getDescriptorForType(),
+                new byte[0],
+                ExtensionRegistry.getEmptyRegistry());
+        if (!parsed.getAllFields().isEmpty()) {
+            throw new InvalidProtocolBufferException("Empty input produced fields");
+        }
     }
 
     @Override
