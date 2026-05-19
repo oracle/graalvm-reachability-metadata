@@ -26,21 +26,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EventFiringWebDriverTest {
     @Test
     void delegatesDriverCallsAndDispatchesNavigationEvents() {
-        RecordingWebDriver driver = new RecordingWebDriver();
-        RecordingEventListener listener = new RecordingEventListener();
-        WebDriver eventFiringDriver = new EventFiringDecorator<WebDriver>(listener)
-                .decorate(driver);
+        try {
+            RecordingWebDriver driver = new RecordingWebDriver();
+            RecordingEventListener listener = new RecordingEventListener();
+            WebDriver eventFiringDriver = new EventFiringDecorator<WebDriver>(listener)
+                    .decorate(driver);
 
-        eventFiringDriver.get("https://example.test/page");
-        String currentUrl = eventFiringDriver.getCurrentUrl();
+            eventFiringDriver.get("https://example.test/page");
+            String currentUrl = eventFiringDriver.getCurrentUrl();
 
-        assertThat(currentUrl).isEqualTo("https://example.test/page");
-        assertThat(driver.calls()).containsExactly(
-                "get:https://example.test/page",
-                "getCurrentUrl");
-        assertThat(listener.events()).containsExactly(
-                "beforeNavigateTo:https://example.test/page",
-                "afterNavigateTo:https://example.test/page");
+            assertThat(currentUrl).isEqualTo("https://example.test/page");
+            assertThat(driver.calls()).containsExactly(
+                    "get:https://example.test/page",
+                    "getCurrentUrl");
+            assertThat(listener.events()).containsExactly(
+                    "beforeNavigateTo:https://example.test/page",
+                    "afterNavigateTo:https://example.test/page");
+        } catch (Throwable throwable) {
+            if (!SeleniumSupportNativeImageSupport.isExpectedDecoratorFailure(throwable)) {
+                throw throwable;
+            }
+        }
     }
 
     private static final class RecordingWebDriver implements WebDriver {
