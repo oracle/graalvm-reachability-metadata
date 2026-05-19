@@ -10,8 +10,25 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+repositories {
+    exclusiveContent {
+        forRepository {
+            mavenCentral {
+                metadataSources {
+                    artifact()
+                }
+            }
+        }
+        filter {
+            includeGroup "jakarta.servlet.jsp.jstl"
+        }
+    }
+}
+
 dependencies {
-    testImplementation "jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:$libraryVersion"
+    testImplementation "jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:$libraryVersion@jar"
+    testImplementation 'jakarta.el:jakarta.el-api:5.0.1'
+    testImplementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     testImplementation 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.0'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
