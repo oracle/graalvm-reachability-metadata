@@ -932,7 +932,7 @@ public class ProviderBaseTest {
 
     private static final class TestEndpointConfig extends EndpointConfigBase<TestEndpointConfig> {
         private TestEndpointConfig() {
-            super();
+            super(new ObjectMapper().getDeserializationConfig());
         }
 
         private TestEndpointConfig addForReading(Annotation[] annotations) {
