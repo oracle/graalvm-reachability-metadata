@@ -38,7 +38,6 @@ import io.grpc.SynchronizationContext;
 import io.grpc.xds.CdsLoadBalancerProvider;
 import io.grpc.xds.ClusterImplLoadBalancerProvider;
 import io.grpc.xds.ClusterManagerLoadBalancerProvider;
-import io.grpc.xds.ClusterResolverLoadBalancerProvider;
 import io.grpc.xds.CsdsService;
 import io.grpc.xds.EnvoyServerProtoData;
 import io.grpc.xds.LeastRequestLoadBalancerProvider;
@@ -115,7 +114,6 @@ public class Grpc_xdsTest {
         assertRegisteredProvider(loadBalancerRegistry, new LeastRequestLoadBalancerProvider());
         assertRegisteredProvider(loadBalancerRegistry, new WeightedRoundRobinLoadBalancerProvider());
         assertRegisteredProvider(loadBalancerRegistry, new CdsLoadBalancerProvider());
-        assertRegisteredProvider(loadBalancerRegistry, new ClusterResolverLoadBalancerProvider());
         assertRegisteredProvider(loadBalancerRegistry, new ClusterImplLoadBalancerProvider());
         assertRegisteredProvider(loadBalancerRegistry, new PriorityLoadBalancerProvider());
         assertRegisteredProvider(loadBalancerRegistry, new WeightedTargetLoadBalancerProvider());
@@ -186,7 +184,6 @@ public class Grpc_xdsTest {
         assertConfigRejected(new WeightedTargetLoadBalancerProvider(), Map.of("targets", Map.of()));
         assertConfigRejected(new WrrLocalityLoadBalancerProvider(), Map.of("childPolicy", List.of()));
         assertConfigRejected(new PriorityLoadBalancerProvider(), Map.of());
-        assertConfigRejected(new ClusterResolverLoadBalancerProvider(), Map.of());
         assertConfigRejected(new ClusterImplLoadBalancerProvider(), Map.of());
     }
 
