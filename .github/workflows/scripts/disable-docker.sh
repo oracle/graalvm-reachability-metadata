@@ -18,13 +18,15 @@
 #   - This script is designed for GitHub Actions Ubuntu runners with sudo.
 #   - It is idempotent: re-running it won't duplicate config lines or unnecessarily restart Docker.
 
+set -euo pipefail
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 sudo apt-get install openbsd-inetd
-sudo bash -c "cat ${SCRIPT_DIR}/discard-port.conf >> /etc/inetd.conf"
+sudo tee -a /etc/inetd.conf < "${SCRIPT_DIR}/discard-port.conf" > /dev/null
 sudo systemctl start inetd
-sudo mkdir /etc/systemd/system/docker.service.d
-sudo bash -c "cat ${SCRIPT_DIR}/dockerd.service > /etc/systemd/system/docker.service.d/http-proxy.conf"
+sudo mkdir -p /etc/systemd/system/docker.service.d
+sudo install -D -m 0644 "${SCRIPT_DIR}/dockerd.service" /etc/systemd/system/docker.service.d/http-proxy.conf
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 echo "Docker outbound network effectively disabled via proxy=http(s)://localhost:9 backed by inetd discard service."
