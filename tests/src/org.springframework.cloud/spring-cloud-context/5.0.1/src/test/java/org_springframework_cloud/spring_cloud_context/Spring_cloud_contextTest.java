@@ -200,8 +200,7 @@ public class Spring_cloud_contextTest {
             assertThat(services).containsKeys("clientService", "preferredClientService");
             assertThat(factory.getConfigurations()).containsKey("default.shared");
             assertThat(factory.getContextNames()).containsExactlyInAnyOrder("alpha", "beta");
-        }
-        finally {
+        } finally {
             factory.destroy();
         }
 
