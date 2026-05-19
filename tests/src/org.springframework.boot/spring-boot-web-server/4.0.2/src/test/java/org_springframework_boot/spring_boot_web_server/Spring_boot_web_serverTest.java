@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -29,6 +32,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import reactor.core.publisher.Mono;
+
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.ssl.NoSuchSslBundleException;
@@ -50,10 +55,16 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor;
 import org.springframework.boot.web.server.WebServerSslBundle;
 import org.springframework.boot.web.server.autoconfigure.ServerProperties;
+import org.springframework.boot.web.server.autoconfigure.reactive.ReactiveWebServerFactoryCustomizer;
+import org.springframework.boot.web.server.autoconfigure.servlet.ServletWebServerFactoryCustomizer;
 import org.springframework.boot.web.server.context.MissingWebServerFactoryBeanException;
 import org.springframework.boot.web.server.context.ServerPortInfoApplicationContextInitializer;
+import org.springframework.boot.web.server.context.WebServerApplicationContext;
+import org.springframework.boot.web.server.context.WebServerGracefulShutdownLifecycle;
 import org.springframework.boot.web.server.context.WebServerInitializedEvent;
 import org.springframework.boot.web.server.context.WebServerPortFileWriter;
+import org.springframework.boot.web.server.reactive.AbstractReactiveWebServerFactory;
+import org.springframework.boot.web.server.reactive.ConfigurableReactiveWebServerFactory;
 import org.springframework.boot.web.server.servlet.ConfigurableServletWebServerFactory;
 import org.springframework.boot.web.server.servlet.ContextPath;
 import org.springframework.boot.web.server.servlet.CookieSameSiteSupplier;
@@ -69,6 +80,7 @@ import org.springframework.boot.web.server.servlet.context.ServletWebServerAppli
 import org.springframework.boot.web.server.servlet.context.ServletWebServerInitializedEvent;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.util.unit.DataSize;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -344,6 +356,76 @@ public class Spring_boot_web_serverTest {
     }
 
     @Test
+    void autoConfigurationCustomizersApplyServerPropertiesToFactories() throws Exception {
+        ServerProperties properties = new ServerProperties();
+        properties.setPort(9090);
+        properties.setAddress(InetAddress.getLoopbackAddress());
+        properties.setServerHeader("customized-server");
+        properties.setShutdown(Shutdown.GRACEFUL);
+        properties.setMimeMappings(Map.of("br", "application/brotli"));
+        properties.getCompression().setEnabled(true);
+        properties.getCompression().setMinResponseSize(DataSize.ofBytes(512));
+        properties.getHttp2().setEnabled(true);
+        properties.setSsl(Ssl.forBundle("customizer-bundle"));
+        properties.getServlet().setContextPath("/custom");
+        properties.getServlet().setApplicationDisplayName("customized-app");
+        properties.getServlet().setRegisterDefaultServlet(true);
+        properties.getServlet().getContextParameters().put("from", "server-properties");
+        properties.getServlet().getJsp().setClassName("org.example.CustomJspServlet");
+        properties.getServlet().getSession().setTimeout(Duration.ofSeconds(45));
+        properties.getServlet().getSession().getCookie().setName("CUSTOMSESSION");
+        properties.getServlet().getEncoding().setMapping(Map.of(Locale.GERMAN, StandardCharsets.ISO_8859_1));
+        TestSslBundles sslBundles = new TestSslBundles();
+        CookieSameSiteSupplier sameSiteSupplier = CookieSameSiteSupplier.ofStrict().whenHasName("CUSTOMSESSION");
+
+        TestServletWebServerFactory servletFactory = new TestServletWebServerFactory();
+        ServletWebServerFactoryCustomizer servletCustomizer = new ServletWebServerFactoryCustomizer(properties,
+                List.of(registry -> registry.addWebListeners("org.example.CustomListener")),
+                List.of(sameSiteSupplier), sslBundles);
+        servletCustomizer.customize(servletFactory);
+
+        assertThat(servletCustomizer.getOrder()).isZero();
+        assertThat(servletFactory.getPort()).isEqualTo(9090);
+        assertThat(servletFactory.getAddress()).isEqualTo(InetAddress.getLoopbackAddress());
+        assertThat(servletFactory.getServerHeader()).isEqualTo("customized-server");
+        assertThat(servletFactory.getShutdown()).isEqualTo(Shutdown.GRACEFUL);
+        assertThat(servletFactory.getSsl().getBundle()).isEqualTo("customizer-bundle");
+        assertThat(servletFactory.getSslBundles()).isSameAs(sslBundles);
+        assertThat(servletFactory.getCompression().getEnabled()).isTrue();
+        assertThat(servletFactory.getCompression().getMinResponseSize()).isEqualTo(DataSize.ofBytes(512));
+        assertThat(servletFactory.getHttp2().isEnabled()).isTrue();
+        assertThat(servletFactory.getContextPath()).isEqualTo("/custom");
+        assertThat(servletFactory.getSettings().getDisplayName()).isEqualTo("customized-app");
+        assertThat(servletFactory.getSettings().isRegisterDefaultServlet()).isTrue();
+        assertThat(servletFactory.getSettings().getMimeMappings().get("br")).isEqualTo("application/brotli");
+        assertThat(servletFactory.getSettings().getInitParameters()).containsEntry("from", "server-properties");
+        assertThat(servletFactory.getSettings().getJsp().getClassName()).isEqualTo("org.example.CustomJspServlet");
+        assertThat(servletFactory.getSettings().getSession().getTimeout()).isEqualTo(Duration.ofSeconds(45));
+        assertThat(servletFactory.getSettings().getSession().getCookie().getName()).isEqualTo("CUSTOMSESSION");
+        assertThat(servletFactory.getSettings().getLocaleCharsetMappings())
+                .containsEntry(Locale.GERMAN, StandardCharsets.ISO_8859_1);
+        assertThat(servletFactory.getSettings().getCookieSameSiteSuppliers()).hasSize(1);
+        assertThat(servletFactory.getSettings().getCookieSameSiteSuppliers().get(0)).isSameAs(sameSiteSupplier);
+        assertThat(servletFactory.getSettings().getWebListenerClassNames())
+                .containsExactly("org.example.CustomListener");
+
+        TestReactiveWebServerFactory reactiveFactory = new TestReactiveWebServerFactory();
+        ReactiveWebServerFactoryCustomizer reactiveCustomizer = new ReactiveWebServerFactoryCustomizer(properties,
+                sslBundles);
+        reactiveCustomizer.customize(reactiveFactory);
+
+        assertThat(reactiveCustomizer.getOrder()).isZero();
+        assertThat(reactiveFactory.getPort()).isEqualTo(9090);
+        assertThat(reactiveFactory.getAddress()).isEqualTo(InetAddress.getLoopbackAddress());
+        assertThat(reactiveFactory.getServerHeader()).isNull();
+        assertThat(reactiveFactory.getShutdown()).isEqualTo(Shutdown.GRACEFUL);
+        assertThat(reactiveFactory.getSsl().getBundle()).isEqualTo("customizer-bundle");
+        assertThat(reactiveFactory.getSslBundles()).isSameAs(sslBundles);
+        assertThat(reactiveFactory.getCompression().getEnabled()).isTrue();
+        assertThat(reactiveFactory.getHttp2().isEnabled()).isTrue();
+    }
+
+    @Test
     void webServerSslBundleResolvesNamedBundlesAndInlineConfiguration(@TempDir File tempDir) throws Exception {
         SslBundle namedBundle = SslBundle.of(SslStoreBundle.NONE);
         Ssl namedSsl = Ssl.forBundle("test-bundle");
@@ -414,6 +496,67 @@ public class Spring_boot_web_serverTest {
         }
 
         assertThat(webServer.stopped).isTrue();
+    }
+
+    @Test
+    void webServerApplicationContextNamespaceUtilitiesInspectCurrentContext() {
+        TestServletWebServerFactory factory = new TestServletWebServerFactory();
+        factory.webServer = new RecordingWebServer(49200);
+
+        try (AnnotationConfigServletWebServerApplicationContext parent =
+                new AnnotationConfigServletWebServerApplicationContext()) {
+            parent.setServerNamespace("parent");
+            parent.registerBean(ServletWebServerFactory.class, () -> factory);
+            parent.refresh();
+
+            try (AnnotationConfigServletWebServerApplicationContext child =
+                    new AnnotationConfigServletWebServerApplicationContext()) {
+                child.setParent(parent);
+                child.setServerNamespace("child");
+
+                assertThat(WebServerApplicationContext.getServerNamespace(parent)).isEqualTo("parent");
+                assertThat(WebServerApplicationContext.getServerNamespace(child)).isEqualTo("child");
+                assertThat(WebServerApplicationContext.hasServerNamespace(child, "child")).isTrue();
+                assertThat(WebServerApplicationContext.hasServerNamespace(child, "parent")).isFalse();
+                assertThat(WebServerApplicationContext.hasServerNamespace(child, "missing")).isFalse();
+            }
+        }
+    }
+
+    @Test
+    void gracefulShutdownLifecycleStopsServerAndInvokesCallback() throws Exception {
+        RecordingWebServer server = new RecordingWebServer(0);
+        WebServerGracefulShutdownLifecycle lifecycle = new WebServerGracefulShutdownLifecycle(server);
+        CountDownLatch stopped = new CountDownLatch(1);
+
+        lifecycle.start();
+        lifecycle.stop(stopped::countDown);
+
+        assertThat(lifecycle.getPhase()).isEqualTo(WebServerApplicationContext.GRACEFUL_SHUTDOWN_PHASE);
+        assertThat(lifecycle.isPauseable()).isFalse();
+        assertThat(lifecycle.isRunning()).isFalse();
+        assertThat(stopped.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(server.stopped).isFalse();
+    }
+
+    @Test
+    void reactiveWebServerFactoryCanCreateServerFromHttpHandler() {
+        TestReactiveWebServerFactory factory = new TestReactiveWebServerFactory();
+        RecordingWebServer webServer = new RecordingWebServer(49300);
+        factory.webServer = webServer;
+        AtomicBoolean handled = new AtomicBoolean();
+        HttpHandler handler = (request, response) -> {
+            handled.set(true);
+            return Mono.empty();
+        };
+
+        WebServer createdServer = factory.getWebServer(handler);
+        createdServer.start();
+
+        assertThat(createdServer).isSameAs(webServer);
+        assertThat(factory.httpHandler).isSameAs(handler);
+        assertThat(webServer.started).isTrue();
+        assertThat(handled).isFalse();
     }
 
     @Test
@@ -574,6 +717,18 @@ public class Spring_boot_web_serverTest {
         @Override
         public void addWebListeners(String... webListenerClassNames) {
             this.settings.addWebListenerClassNames(webListenerClassNames);
+        }
+    }
+
+    static final class TestReactiveWebServerFactory extends AbstractReactiveWebServerFactory
+            implements ConfigurableReactiveWebServerFactory {
+        private WebServer webServer = new RecordingWebServer(0);
+        private HttpHandler httpHandler;
+
+        @Override
+        public WebServer getWebServer(HttpHandler httpHandler) {
+            this.httpHandler = httpHandler;
+            return this.webServer;
         }
     }
 
