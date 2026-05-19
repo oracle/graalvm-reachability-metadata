@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.sonatype.guice.bean.reflect.DeclaredMembers;
-import org.sonatype.guice.bean.reflect.DeclaredMembers.View;
+import org.eclipse.sisu.bean.DeclaredMembers;
+import org.eclipse.sisu.bean.DeclaredMembers.View;
 
 public class DeclaredMembersInnerViewAnonymous1Test {
     @Test

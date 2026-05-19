@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
-import org.sonatype.guice.bean.binders.QualifiedTypeBinder;
+import org.eclipse.sisu.space.QualifiedTypeBinder;
 
 import com.google.inject.Binder;
 import com.google.inject.Binding;
