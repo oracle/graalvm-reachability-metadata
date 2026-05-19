@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.gizmo2.Gizmo;
+import io.quarkus.gizmo2.LambdaStrategy;
 
 public class UtilAnonymous3Test {
     private static final String GENERATED_CLASS_NAME = "io_quarkus_gizmo.gizmo2.generated.UtilAnonymous3Target";
@@ -24,7 +25,7 @@ public class UtilAnonymous3Test {
     @Test
     void createsLambdaFromFunctionalInterfaceClass() {
         Map<String, byte[]> generatedClasses = new HashMap<>();
-        Gizmo gizmo = Gizmo.create(generatedClasses::put);
+        Gizmo gizmo = Gizmo.create(generatedClasses::put).withLambdaStrategy(LambdaStrategy.CLASSIC);
 
         gizmo.class_(GENERATED_CLASS_NAME, classCreator -> classCreator.staticMethod("supplier", methodCreator -> {
             methodCreator.returning(Supplier.class);
