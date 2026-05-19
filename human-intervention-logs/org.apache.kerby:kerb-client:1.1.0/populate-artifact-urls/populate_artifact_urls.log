@@ -1,0 +1,682 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e3e00-5dad-7d22-b117-e604b44c8b36
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.kerby:kerb-client:1.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.1.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd/metadata/org.apache.kerby/kerb-client/index.json
+- Entry selector: "metadata-version" = "1.1.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.1.0
+- Entry metadata-version: 1.1.0
+- Entry test-version: 1.1.0
+- Entry tested-versions: [1.1.0]
+codex
+I’ll inspect the existing metadata entry first, then verify the artifact’s canonical Maven and upstream URLs before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.kerby/kerb-client/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/directory-kerby",
+    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-kerb/kerb-client/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-javadoc.jar",
+    "description" : "Apache Kerby is a Java Kerberos implementation that provides interoperable client, KDC, and related security facilities. The kerb-client artifact supplies client-side APIs for interacting with a Kerberos KDC, including AS and TGS exchanges and support for Kerberos pre-authentication mechanisms.",
+    "tested-versions" : [
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.kerby.kerberos.kerb.client"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.0",
+    "tested-versions" : [
+      "1.1.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.kerby.kerberos.kerb.client"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.apache\\.kerby|kerb-client|source-code-url|documentation-url\" metadata/org.apache.kerby -g 'index.json'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+ succeeded in 0ms:
+metadata/org.apache.kerby/kerby-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/$version$/kerby-util-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-util/index.json:22:      "org.apache.kerby"
+metadata/org.apache.kerby/kerb-simplekdc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-simplekdc/$version$/kerb-simplekdc-$version$-sources.jar",
+metadata/org.apache.kerby/kerb-simplekdc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-simplekdc/$version$/kerb-simplekdc-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerb-simplekdc/index.json:18:      "org.apache.kerby.kerberos.kerb"
+metadata/org.apache.kerby/kerb-crypto/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-crypto/$version$/kerb-crypto-$version$-sources.jar",
+metadata/org.apache.kerby/kerb-crypto/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-crypto/$version$/kerb-crypto-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerb-crypto/index.json:22:      "org.apache.kerby.kerberos.kerb.crypto"
+metadata/org.apache.kerby/kerb-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-util/$version$/kerb-util-$version$-sources.jar",
+metadata/org.apache.kerby/kerb-util/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-util/$version$/kerb-util-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerb-util/index.json:22:      "org.apache.kerby.kerberos.kerb"
+metadata/org.apache.kerby/kerby-pkix/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-pkix/$version$/kerby-pkix-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-pkix/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-pkix/$version$/kerby-pkix-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-pkix/index.json:22:      "org.apache.kerby.cms.type",
+metadata/org.apache.kerby/kerby-pkix/index.json:23:      "org.apache.kerby.pkix",
+metadata/org.apache.kerby/kerby-pkix/index.json:24:      "org.apache.kerby.x500.type",
+metadata/org.apache.kerby/kerby-pkix/index.json:25:      "org.apache.kerby.x509.type"
+metadata/org.apache.kerby/kerby-asn1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-asn1/$version$/kerby-asn1-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-asn1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-asn1/$version$/kerby-asn1-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-asn1/index.json:22:      "org.apache.kerby.asn1"
+metadata/org.apache.kerby/kerb-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-sources.jar",
+metadata/org.apache.kerby/kerb-client/index.json:7:    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-kerb/kerb-client/src/test",
+metadata/org.apache.kerby/kerb-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerb-client/index.json:9:    "description" : "Apache Kerby is a Java Kerberos implementation that provides interoperable client, KDC, and related security facilities. The kerb-client artifact supplies client-side APIs for interacting with a Kerberos KDC, including AS and TGS exchanges and support for Kerberos pre-authentication mechanisms.",
+metadata/org.apache.kerby/kerb-client/index.json:14:      "org.apache.kerby.kerberos.kerb.client"
+metadata/org.apache.kerby/kerb-client/index.json:23:      "org.apache.kerby.kerberos.kerb.client"
+metadata/org.apache.kerby/kerb-admin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-admin/$version$/kerb-admin-$version$-sources.jar",
+metadata/org.apache.kerby/kerb-admin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-admin/$version$/kerb-admin-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerb-admin/index.json:18:      "org.apache.kerby.kerberos.kerb.admin"
+metadata/org.apache.kerby/kerby-config/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-config/$version$/kerby-config-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-config/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/kerby/kerby-config/$version$/kerby-config-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-config/index.json:22:      "org.apache.kerby.config"
+metadata/org.apache.kerby/kerb-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-core/$version$/kerb-core-$version$-sources.jar",
+metadata/org.apache.kerby/kerb-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-core/$version$/kerb-core-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerb-core/index.json:22:      "org.apache.kerby.kerberos.kerb"
+metadata/org.apache.kerby/kerby-xdr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/$version$/kerby-xdr-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/$version$/kerby-xdr-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:17:      "org.apache.kerby.xdr"
+metadata/org.apache.kerby/kerby-xdr/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/$version$/kerby-xdr-$version$-sources.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-xdr/$version$/kerby-xdr-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerby-xdr/index.json:35:      "org.apache.kerby.xdr"
+metadata/org.apache.kerby/kerb-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-common/$version$/kerb-common-$version$-sources.jar",
+metadata/org.apache.kerby/kerb-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-common/$version$/kerb-common-$version$-javadoc.jar",
+metadata/org.apache.kerby/kerb-common/index.json:18:      "org.apache.kerby.kerberos.kerb"
+
+web search: 
+web search: Maven Central org.apache.kerby kerb-client 1.1.0 sources javadoc tests jar
+codex
+The existing 1.0.1 entry already uses Maven source/javadoc jars and the Apache GitHub tag for tests. I’m checking the 1.1.0 Maven directory and tag now so the templates are valid for the exact tested version.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/1.1.0/kerb-client-1.1.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.kerby</groupId>
+    <artifactId>kerby-kerb</artifactId>
+    <version>1.1.0</version>
+  </parent>
+
+  <artifactId>kerb-client</artifactId>
+  <name>Kerby-kerb Client</name>
+  <description>Kerby-kerb Client</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.kerby</groupId>
+      <artifactId>kerby-config</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kerby</groupId>
+      <artifactId>kerb-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kerby</groupId>
+      <artifactId>kerb-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kerby</groupId>
+      <artifactId>kerb-util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kerby</groupId>
+      <artifactId>token-provider</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/1.1.0/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/apache/directory-kerby/tree/kerby-all-1.1.0/kerby-kerb/kerb-client/src/test" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/apache/directory-kerby" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+ succeeded in 290ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/kerby/kerb-client/1.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/kerby/kerb-client/1.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kerb-client-1.1.0-javadoc.jar" title="kerb-client-1.1.0-javadoc.jar">kerb-client-1.1.0-javadoc.jar</a>                     2017-11-21 11:07    383584      
+<a href="kerb-client-1.1.0-javadoc.jar.asc" title="kerb-client-1.1.0-javadoc.jar.asc">kerb-client-1.1.0-javadoc.jar.asc</a>                 2017-11-21 11:07       455      
+<a href="kerb-client-1.1.0-javadoc.jar.md5" title="kerb-client-1.1.0-javadoc.jar.md5">kerb-client-1.1.0-javadoc.jar.md5</a>                 2017-11-21 11:07        32      
+<a href="kerb-client-1.1.0-javadoc.jar.sha1" title="kerb-client-1.1.0-javadoc.jar.sha1">kerb-client-1.1.0-javadoc.jar.sha1</a>                2017-11-21 11:07        40      
+<a href="kerb-client-1.1.0-sources.jar" title="kerb-client-1.1.0-sources.jar">kerb-client-1.1.0-sources.jar</a>                     2017-11-21 11:07     92454      
+<a href="kerb-client-1.1.0-sources.jar.asc" title="kerb-client-1.1.0-sources.jar.asc">kerb-client-1.1.0-sources.jar.asc</a>                 2017-11-21 11:07       455      
+<a href="kerb-client-1.1.0-sources.jar.md5" title="kerb-client-1.1.0-sources.jar.md5">kerb-client-1.1.0-sources.jar.md5</a>                 2017-11-21 11:07        32      
+<a href="kerb-client-1.1.0-sources.jar.sha1" title="kerb-client-1.1.0-sources.jar.sha1">kerb-client-1.1.0-sources.jar.sha1</a>                2017-11-21 11:07        40      
+<a href="kerb-client-1.1.0.jar" title="kerb-client-1.1.0.jar">kerb-client-1.1.0.jar</a>                             2017-11-21 11:07    116673      
+<a href="kerb-client-1.1.0.jar.asc" title="kerb-client-1.1.0.jar.asc">kerb-client-1.1.0.jar.asc</a>                         2017-11-21 11:07       455      
+<a href="kerb-client-1.1.0.jar.md5" title="kerb-client-1.1.0.jar.md5">kerb-client-1.1.0.jar.md5</a>                         2017-11-21 11:07        32      
+<a href="kerb-client-1.1.0.jar.sha1" title="kerb-client-1.1.0.jar.sha1">kerb-client-1.1.0.jar.sha1</a>                        2017-11-21 11:07        40      
+<a href="kerb-client-1.1.0.pom" title="kerb-client-1.1.0.pom">kerb-client-1.1.0.pom</a>                             2017-11-21 11:07      2379      
+<a href="kerb-client-1.1.0.pom.asc" title="kerb-client-1.1.0.pom.asc">kerb-client-1.1.0.pom.asc</a>                         2017-11-21 11:07       455      
+<a href="kerb-client-1.1.0.pom.md5" title="kerb-client-1.1.0.pom.md5">kerb-client-1.1.0.pom.md5</a>                         2017-11-21 11:07        32      
+<a href="kerb-client-1.1.0.pom.sha1" title="kerb-client-1.1.0.pom.sha1">kerb-client-1.1.0.pom.sha1</a>                        2017-11-21 11:07        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 718ms:
+200 https://github.com/apache/directory-kerby/tree/kerby-all-1.1.0/kerby-kerb/kerb-client/src/test
+
+ succeeded in 764ms:
+200 https://github.com/apache/directory-kerby
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.apache.kerby kerb-client 1.1.0
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/kerby/kerb-client/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-all/1.1.0/kerby-all-1.1.0.pom | sed -n '/<scm>/,/<\\/scm>/p; /<url>/p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+ succeeded in 0ms:
+  <url>http://directory.apache.org/kerby</url>
+  <scm>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/directory-kerby.git</connection>
+    <url>https://github.com/apache/directory-kerby</url>
+    <url>https://github.com/apache/directory-kerby</url>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/directory-kerby.git</developerConnection>
+    <tag>kerby-all-1.1.0</tag>
+  </scm>
+      <url>scpexe://people.apache.org/www/directory.apache.org/kerby/gen-docs/${project.version}/</url>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/1.1.0/kerb-client-1.1.0-test-sources.jar" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/1.1.0/kerb-client-1.1.0-sources.jar" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/1.1.0/kerb-client-1.1.0-javadoc.jar" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+ succeeded in 187ms:
+200 https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/1.1.0/kerb-client-1.1.0-sources.jar
+
+ succeeded in 242ms:
+404 https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/1.1.0/kerb-client-1.1.0-test-sources.jar
+
+ succeeded in 337ms:
+200 https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/1.1.0/kerb-client-1.1.0-javadoc.jar
+
+codex
+Maven Central has source and javadoc jars for 1.1.0, but no test-sources jar, so I’ll use Maven for source/docs and the exact `kerby-all-1.1.0` GitHub tag for tests. The artifact is a Java library, not Kotlin/Groovy/Scala-specific under this schema, so I’ll leave `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd/metadata/org.apache.kerby/kerb-client/index.json
+diff --git a/metadata/org.apache.kerby/kerb-client/index.json b/metadata/org.apache.kerby/kerb-client/index.json
+index 2e808506ed21c0a72ada2ae18265e6d44732969b..0281beb4eca0b07a0cf8d0409d2e438a251ead92
+--- a/metadata/org.apache.kerby/kerb-client/index.json
++++ b/metadata/org.apache.kerby/kerb-client/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/directory-kerby",
++    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-kerb/kerb-client/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-javadoc.jar",
++    "description" : "Apache Kerby is a Java Kerberos implementation that provides interoperable client, KDC, and related security facilities. The kerb-client artifact supplies client-side APIs for interacting with a Kerberos KDC, including AS and TGS exchanges and support for Kerberos pre-authentication mechanisms.",
+     "tested-versions" : [
+       "1.1.0"
+     ],
+
+diff --git a/metadata/org.apache.kerby/kerb-client/index.json b/metadata/org.apache.kerby/kerb-client/index.json
+index 2e808506ed21c0a72ada2ae18265e6d44732969b..0281beb4eca0b07a0cf8d0409d2e438a251ead92
+--- a/metadata/org.apache.kerby/kerb-client/index.json
++++ b/metadata/org.apache.kerby/kerb-client/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/directory-kerby",
++    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-kerb/kerb-client/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-javadoc.jar",
++    "description" : "Apache Kerby is a Java Kerberos implementation that provides interoperable client, KDC, and related security facilities. The kerb-client artifact supplies client-side APIs for interacting with a Kerberos KDC, including AS and TGS exchanges and support for Kerberos pre-authentication mechanisms.",
+     "tested-versions" : [
+       "1.1.0"
+     ],
+
+codex
+The metadata file is patched. I’m doing a JSON sanity check and a targeted metadata validation for this coordinate now.
+exec
+/usr/bin/bash -lc "jq '.' metadata/org.apache.kerby/kerb-client/index.json >/dev/null && git diff -- metadata/org.apache.kerby/kerb-client/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.kerby/kerb-client/index.json w/metadata/org.apache.kerby/kerb-client/index.json
+index 2e808506ed..0281beb4ec 100644
+--- i/metadata/org.apache.kerby/kerb-client/index.json
++++ w/metadata/org.apache.kerby/kerb-client/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/directory-kerby",
++    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-kerb/kerb-client/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-javadoc.jar",
++    "description" : "Apache Kerby is a Java Kerberos implementation that provides interoperable client, KDC, and related security facilities. The kerb-client artifact supplies client-side APIs for interacting with a Kerberos KDC, including AS and TGS exchanges and support for Kerberos pre-authentication mechanisms.",
+     "tested-versions" : [
+       "1.1.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.kerby:kerb-client:1.1.0 --stacktrace' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+diff --git a/metadata/org.apache.kerby/kerb-client/index.json b/metadata/org.apache.kerby/kerb-client/index.json
+index 2e808506ed21c0a72ada2ae18265e6d44732969b..0281beb4eca0b07a0cf8d0409d2e438a251ead92
+--- a/metadata/org.apache.kerby/kerb-client/index.json
++++ b/metadata/org.apache.kerby/kerb-client/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/directory-kerby",
++    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-kerb/kerb-client/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-javadoc.jar",
++    "description" : "Apache Kerby is a Java Kerberos implementation that provides interoperable client, KDC, and related security facilities. The kerb-client artifact supplies client-side APIs for interacting with a Kerberos KDC, including AS and TGS exchanges and support for Kerberos pre-authentication mechanisms.",
+     "tested-versions" : [
+       "1.1.0"
+     ],
+
+codex
+The diff is limited to the six missing fields on the 1.1.0 entry. Gradle validation is still running; I’ll wait for the result before wrapping up.
+diff --git a/metadata/org.apache.kerby/kerb-client/index.json b/metadata/org.apache.kerby/kerb-client/index.json
+index 2e808506ed21c0a72ada2ae18265e6d44732969b..0281beb4eca0b07a0cf8d0409d2e438a251ead92
+--- a/metadata/org.apache.kerby/kerb-client/index.json
++++ b/metadata/org.apache.kerby/kerb-client/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/directory-kerby",
++    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-kerb/kerb-client/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-javadoc.jar",
++    "description" : "Apache Kerby is a Java Kerberos implementation that provides interoperable client, KDC, and related security facilities. The kerb-client artifact supplies client-side APIs for interacting with a Kerberos KDC, including AS and TGS exchanges and support for Kerberos pre-authentication mechanisms.",
+     "tested-versions" : [
+       "1.1.0"
+     ],
+
+ exited 1 in 3582ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.apache.kerby:kerb-client:1.1.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd/metadata/org.apache.kerby/kerb-client/1.1.0/
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.kerby:kerb-client:1.1.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd/metadata/org.apache.kerby/kerb-client/1.1.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.apache.kerby:kerb-client:1.1.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd/metadata/org.apache.kerby/kerb-client/1.1.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: repo.maven.apache.org org/apache/kerby/kerb-client/1.1.0 kerb-client-1.1.0-sources.jar javadoc.jar
+web search: 
+web search: https://github.com/apache/directory-kerby
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/kerby/kerb-client/1.1.0/
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/org.apache.kerby/kerb-client/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.apache.kerby/kerb-client/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd
+ succeeded in 0ms:
+ M metadata/org.apache.kerby/kerb-client/index.json
+
+diff --git a/metadata/org.apache.kerby/kerb-client/index.json b/metadata/org.apache.kerby/kerb-client/index.json
+index 2e808506ed21c0a72ada2ae18265e6d44732969b..0281beb4eca0b07a0cf8d0409d2e438a251ead92
+--- a/metadata/org.apache.kerby/kerb-client/index.json
++++ b/metadata/org.apache.kerby/kerb-client/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/directory-kerby",
++    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-kerb/kerb-client/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-javadoc.jar",
++    "description" : "Apache Kerby is a Java Kerberos implementation that provides interoperable client, KDC, and related security facilities. The kerb-client artifact supplies client-side APIs for interacting with a Kerberos KDC, including AS and TGS exchanges and support for Kerberos pre-authentication mechanisms.",
+     "tested-versions" : [
+       "1.1.0"
+     ],
+
+web search: 
+web search: Apache Directory Kerby GitHub directory-kerby
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd/metadata/org.apache.kerby/kerb-client/index.json:19) for `metadata-version` `1.1.0`, filling the missing source, repository, test, documentation, and two-sentence description fields. I left `language` absent because this is not Kotlin/Groovy/Scala-specific; Apache describes Kerby as a Java Kerberos binding, and Maven Central lists the `1.1.0` artifact version. ([github.com](https://github.com/apache/directory-kerby?utm_source=openai))
+
+Verification:
+- `jq` JSON parse: passed
+- `git diff --check`: passed
+- URL checks: source jar, javadoc jar, repository root, and tagged test path returned `200`; Maven test-sources jar returned `404`, so GitHub tagged tests were used.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.kerby:kerb-client:1.1.0 --stacktrace`: failed because `metadata/org.apache.kerby/kerb-client/1.1.0/reachability-metadata.json` is missing, unrelated to these URL fields.
+diff --git a/metadata/org.apache.kerby/kerb-client/index.json b/metadata/org.apache.kerby/kerb-client/index.json
+index 2e808506ed21c0a72ada2ae18265e6d44732969b..0281beb4eca0b07a0cf8d0409d2e438a251ead92
+--- a/metadata/org.apache.kerby/kerb-client/index.json
++++ b/metadata/org.apache.kerby/kerb-client/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "1.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/directory-kerby",
++    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-$version$/kerby-kerb/kerb-client/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerb-client/$version$/kerb-client-$version$-javadoc.jar",
++    "description" : "Apache Kerby is a Java Kerberos implementation that provides interoperable client, KDC, and related security facilities. The kerb-client artifact supplies client-side APIs for interacting with a Kerberos KDC, including AS and TGS exchanges and support for Kerberos pre-authentication mechanisms.",
+     "tested-versions" : [
+       "1.1.0"
+     ],
+
+tokens used
+59,092
+Updated [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd/metadata/org.apache.kerby/kerb-client/index.json:19) for `metadata-version` `1.1.0`, filling the missing source, repository, test, documentation, and two-sentence description fields. I left `language` absent because this is not Kotlin/Groovy/Scala-specific; Apache describes Kerby as a Java Kerberos binding, and Maven Central lists the `1.1.0` artifact version. ([github.com](https://github.com/apache/directory-kerby?utm_source=openai))
+
+Verification:
+- `jq` JSON parse: passed
+- `git diff --check`: passed
+- URL checks: source jar, javadoc jar, repository root, and tagged test path returned `200`; Maven test-sources jar returned `404`, so GitHub tagged tests were used.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.kerby:kerb-client:1.1.0 --stacktrace`: failed because `metadata/org.apache.kerby/kerb-client/1.1.0/reachability-metadata.json` is missing, unrelated to these URL fields.
+Ran agent for org.apache.kerby:kerb-client:1.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd/build/agent-url-discovery-logs/org.apache.kerby-kerb-client-1.1.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6961-aa4871bd/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 14s
+9 actionable tasks: 1 executed, 8 up-to-date
