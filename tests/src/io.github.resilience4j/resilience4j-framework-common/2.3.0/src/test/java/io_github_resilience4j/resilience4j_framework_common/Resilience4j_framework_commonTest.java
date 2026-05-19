@@ -112,6 +112,38 @@ public class Resilience4j_framework_commonTest {
     }
 
     @Test
+    void resolvesRateLimiterPropertiesFromAliasesAndDefaultConfig() {
+        CommonRateLimiterConfigurationProperties properties = new CommonRateLimiterConfigurationProperties();
+        CommonRateLimiterConfigurationProperties.InstanceProperties defaultProperties =
+                new CommonRateLimiterConfigurationProperties.InstanceProperties()
+                        .setLimitForPeriod(10)
+                        .setSubscribeForEvents(true)
+                        .setRegisterHealthIndicator(true)
+                        .setAllowHealthIndicatorToFail(true)
+                        .setEventConsumerBufferSize(12);
+        properties.getConfigs().put("default", defaultProperties);
+        CommonRateLimiterConfigurationProperties.InstanceProperties instanceProperties =
+                new CommonRateLimiterConfigurationProperties.InstanceProperties()
+                        .setLimitForPeriod(3)
+                        .setSubscribeForEvents(false);
+        properties.getLimiters().put("orders", instanceProperties);
+
+        assertThat(properties.getInstances()).containsEntry("orders", instanceProperties);
+        assertThat(properties.getInstanceProperties("orders")).isSameAs(instanceProperties);
+        assertThat(properties.findRateLimiterProperties("orders"))
+                .hasValueSatisfying(found -> {
+                    assertThat(found).isSameAs(instanceProperties);
+                    assertThat(found.getLimitForPeriod()).isEqualTo(3);
+                    assertThat(found.getSubscribeForEvents()).isFalse();
+                    assertThat(found.getRegisterHealthIndicator()).isTrue();
+                    assertThat(found.getAllowHealthIndicatorToFail()).isTrue();
+                    assertThat(found.getEventConsumerBufferSize()).isEqualTo(12);
+                });
+        assertThat(properties.findRateLimiterProperties("missing"))
+                .hasValueSatisfying(found -> assertThat(found).isSameAs(defaultProperties));
+    }
+
+    @Test
     void exposesCompositeCustomizerByInstanceName() {
         RateLimiterConfigCustomizer apiCustomizer = RateLimiterConfigCustomizer.of(
                 "api", builder -> builder.limitForPeriod(8));
