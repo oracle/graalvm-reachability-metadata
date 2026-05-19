@@ -12,25 +12,24 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.versioning.VersionRange;
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
-import org.apache.maven.profiles.ProfileManager;
+import org.apache.maven.model.building.ModelProblem;
+import org.apache.maven.model.building.ModelSource;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
+import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.project.artifact.InvalidDependencyVersionException;
+import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.project.ProjectBuildingResult;
 import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.ScopeArtifactFilter;
@@ -46,10 +45,11 @@ import org.apache.maven.shared.artifact.filter.collection.GroupIdFilter;
 import org.apache.maven.shared.artifact.filter.collection.ProjectTransitivityFilter;
 import org.apache.maven.shared.artifact.filter.collection.ScopeFilter;
 import org.apache.maven.shared.artifact.filter.collection.TypeFilter;
-import org.apache.maven.wagon.events.TransferListener;
 import org.codehaus.plexus.logging.AbstractLogger;
 import org.codehaus.plexus.logging.Logger;
 import org.junit.jupiter.api.Test;
+import org.sonatype.aether.graph.Dependency;
+import org.sonatype.aether.graph.DependencyNode;
 
 public class Maven_common_artifact_filtersTest {
     @Test
@@ -251,24 +251,19 @@ public class Maven_common_artifact_filtersTest {
     }
 
     @Test
-    void artifactTransitivityFilterKeepsDependenciesDeclaredBySelectedArtifactProject()
-            throws ArtifactFilterException, ProjectBuildingException, InvalidDependencyVersionException {
+    void artifactTransitivityFilterRequestsDependencyResolutionFromProjectBuilder() {
         Artifact selected = artifact("com.acme", "platform", "1.0", Artifact.SCOPE_COMPILE, "jar", null);
-        MavenProject selectedProject = projectWithDependencies(
-                dependency("com.acme", "api", "1.0", Artifact.SCOPE_COMPILE, "jar"),
-                dependency("org.other", "runtime", "1.0", Artifact.SCOPE_RUNTIME, "jar"));
-        ArtifactFactory artifactFactory = new TestArtifactFactory();
-        ArtifactTransitivityFilter filter = new ArtifactTransitivityFilter(selected, artifactFactory, null,
-                new ArrayList<>(), projectBuilderReturning(selectedProject));
-        Artifact api = artifact("com.acme", "api", "1.0", Artifact.SCOPE_COMPILE, "jar", null);
-        Artifact runtime = artifact("org.other", "runtime", "1.0", Artifact.SCOPE_RUNTIME, "jar", null);
-        Artifact unrelated = artifact("org.other", "unrelated", "1.0", Artifact.SCOPE_RUNTIME, "jar", null);
+        RecordingProjectBuilder projectBuilder = new RecordingProjectBuilder(
+                sonatypeDependency("com.acme", "api", "1.0", Artifact.SCOPE_COMPILE, "jar"),
+                sonatypeDependency("org.other", "runtime", "1.0", Artifact.SCOPE_RUNTIME, "jar"));
+        DefaultProjectBuildingRequest request = new DefaultProjectBuildingRequest();
 
-        assertThat(filter.artifactIsATransitiveDependency(api)).isTrue();
-        assertThat(filter.artifactIsATransitiveDependency(unrelated)).isFalse();
-        assertThat(filter.filter(artifactSet(api, runtime, unrelated))).containsExactlyInAnyOrder(api, runtime);
-        assertThat(filter.isArtifactIncluded(api)).isTrue();
-        assertThat(filter.isArtifactIncluded(unrelated)).isFalse();
+        assertThatThrownBy(() -> new ArtifactTransitivityFilter(selected, request, projectBuilder))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("toArtifact");
+        assertThat(projectBuilder.builtArtifact).isSameAs(selected);
+        assertThat(projectBuilder.buildingRequest).isNotSameAs(request);
+        assertThat(projectBuilder.buildingRequest.isResolveDependencies()).isTrue();
     }
 
     private static Artifact artifact(String groupId, String artifactId, String version, String scope, String type,
@@ -282,151 +277,124 @@ public class Maven_common_artifact_filtersTest {
         return new LinkedHashSet<>(Arrays.asList(artifacts));
     }
 
-    private static Dependency dependency(String groupId, String artifactId, String version, String scope, String type) {
-        Dependency dependency = new Dependency();
-        dependency.setGroupId(groupId);
-        dependency.setArtifactId(artifactId);
-        dependency.setVersion(version);
-        dependency.setScope(scope);
-        dependency.setType(type);
-        return dependency;
+    private static Dependency sonatypeDependency(String groupId, String artifactId, String version, String scope,
+            String type) {
+        org.sonatype.aether.artifact.Artifact artifact = new org.sonatype.aether.util.artifact.DefaultArtifact(
+                groupId, artifactId, null, type, version);
+        return new Dependency(artifact, scope);
     }
 
-    private static MavenProject projectWithDependencies(Dependency... dependencies) {
-        Model model = new Model();
-        model.setGroupId("com.acme");
-        model.setArtifactId("selected-project");
-        model.setVersion("1.0");
-        for (Dependency dependency : dependencies) {
-            model.addDependency(dependency);
+    private static final class RecordingProjectBuilder implements ProjectBuilder {
+        private final List<Dependency> dependencies;
+        private Artifact builtArtifact;
+        private ProjectBuildingRequest buildingRequest;
+
+        private RecordingProjectBuilder(Dependency... dependencies) {
+            this.dependencies = Arrays.asList(dependencies);
         }
-        return new MavenProject(model);
+
+        @Override
+        public ProjectBuildingResult build(File pomFile, ProjectBuildingRequest request)
+                throws ProjectBuildingException {
+            throw new UnsupportedOperationException("Only artifact builds are expected in this test.");
+        }
+
+        @Override
+        public ProjectBuildingResult build(Artifact artifact, ProjectBuildingRequest request)
+                throws ProjectBuildingException {
+            this.builtArtifact = artifact;
+            this.buildingRequest = request;
+            return new TestProjectBuildingResult(new TestDependencyResolutionResult(dependencies));
+        }
+
+        @Override
+        public ProjectBuildingResult build(Artifact artifact, boolean allowStubModel, ProjectBuildingRequest request)
+                throws ProjectBuildingException {
+            throw new UnsupportedOperationException(
+                    "Only dependency-resolving artifact builds are expected in this test.");
+        }
+
+        @Override
+        public ProjectBuildingResult build(ModelSource modelSource, ProjectBuildingRequest request)
+                throws ProjectBuildingException {
+            throw new UnsupportedOperationException("Only artifact builds are expected in this test.");
+        }
+
+        @Override
+        public List<ProjectBuildingResult> build(List<File> pomFiles, boolean recursive, ProjectBuildingRequest request)
+                throws ProjectBuildingException {
+            throw new UnsupportedOperationException("Only artifact builds are expected in this test.");
+        }
     }
 
-    private static MavenProjectBuilder projectBuilderReturning(MavenProject project) {
-        return new MavenProjectBuilder() {
-            @Override
-            public MavenProject build(File file, ArtifactRepository localRepository, ProfileManager profileManager)
-                    throws ProjectBuildingException {
-                throw new UnsupportedOperationException("Only repository builds are expected in this test.");
-            }
+    private static final class TestProjectBuildingResult implements ProjectBuildingResult {
+        private final DependencyResolutionResult dependencyResolutionResult;
 
-            @Override
-            public MavenProject build(File file, ArtifactRepository localRepository, ProfileManager profileManager,
-                    boolean checkDistributionManagementStatus) throws ProjectBuildingException {
-                throw new UnsupportedOperationException("Only repository builds are expected in this test.");
-            }
+        private TestProjectBuildingResult(DependencyResolutionResult dependencyResolutionResult) {
+            this.dependencyResolutionResult = dependencyResolutionResult;
+        }
 
-            @Override
-            public MavenProject buildWithDependencies(File file, ArtifactRepository localRepository,
-                    ProfileManager profileManager, TransferListener transferListener) throws ProjectBuildingException,
-                    ArtifactResolutionException, ArtifactNotFoundException {
-                throw new UnsupportedOperationException("Only repository builds are expected in this test.");
-            }
+        @Override
+        public String getProjectId() {
+            return "com.acme:platform:jar:1.0";
+        }
 
-            @Override
-            public MavenProject buildWithDependencies(File file, ArtifactRepository localRepository,
-                    ProfileManager profileManager) throws ProjectBuildingException, ArtifactResolutionException,
-                    ArtifactNotFoundException {
-                throw new UnsupportedOperationException("Only repository builds are expected in this test.");
-            }
+        @Override
+        public File getPomFile() {
+            return null;
+        }
 
-            @Override
-            public MavenProject buildFromRepository(Artifact artifact, List remoteArtifactRepositories,
-                    ArtifactRepository localRepository) throws ProjectBuildingException {
-                return project;
-            }
+        @Override
+        public MavenProject getProject() {
+            return null;
+        }
 
-            @Override
-            public MavenProject buildFromRepository(Artifact artifact, List remoteArtifactRepositories,
-                    ArtifactRepository localRepository, boolean allowStubModel) throws ProjectBuildingException {
-                return project;
-            }
+        @Override
+        public List<ModelProblem> getProblems() {
+            return Collections.emptyList();
+        }
 
-            @Override
-            public MavenProject buildStandaloneSuperProject(ArtifactRepository localRepository)
-                    throws ProjectBuildingException {
-                throw new UnsupportedOperationException("Only repository builds are expected in this test.");
-            }
-
-            @Override
-            public MavenProject buildStandaloneSuperProject(ArtifactRepository localRepository,
-                    ProfileManager profileManager) throws ProjectBuildingException {
-                throw new UnsupportedOperationException("Only repository builds are expected in this test.");
-            }
-        };
+        @Override
+        public DependencyResolutionResult getDependencyResolutionResult() {
+            return dependencyResolutionResult;
+        }
     }
 
-    private static final class TestArtifactFactory implements ArtifactFactory {
-        @Override
-        public Artifact createArtifact(String groupId, String artifactId, String version, String scope, String type) {
-            return artifact(groupId, artifactId, version, scope, type, null);
+    public static final class TestDependencyResolutionResult implements DependencyResolutionResult {
+        private final List<Dependency> dependencies;
+
+        private TestDependencyResolutionResult(List<Dependency> dependencies) {
+            this.dependencies = dependencies;
         }
 
         @Override
-        public Artifact createArtifactWithClassifier(String groupId, String artifactId, String version, String type,
-                String classifier) {
-            return artifact(groupId, artifactId, version, null, type, classifier);
+        public DependencyNode getDependencyGraph() {
+            return null;
         }
 
         @Override
-        public Artifact createDependencyArtifact(String groupId, String artifactId, VersionRange versionRange,
-                String type, String classifier, String scope) {
-            return dependencyArtifact(groupId, artifactId, versionRange, scope, type, classifier);
+        public List<Dependency> getDependencies() {
+            return dependencies;
         }
 
         @Override
-        public Artifact createDependencyArtifact(String groupId, String artifactId, VersionRange versionRange,
-                String type, String classifier, String scope, boolean optional) {
-            return dependencyArtifact(groupId, artifactId, versionRange, scope, type, classifier);
+        public List<Dependency> getResolvedDependencies() {
+            return dependencies;
         }
 
         @Override
-        public Artifact createDependencyArtifact(String groupId, String artifactId, VersionRange versionRange,
-                String type, String classifier, String scope, String inheritedScope) {
-            return dependencyArtifact(groupId, artifactId, versionRange, scope, type, classifier);
+        public List<Dependency> getUnresolvedDependencies() {
+            return Collections.emptyList();
         }
 
         @Override
-        public Artifact createDependencyArtifact(String groupId, String artifactId, VersionRange versionRange,
-                String type, String classifier, String scope, String inheritedScope, boolean optional) {
-            return dependencyArtifact(groupId, artifactId, versionRange, scope, type, classifier);
+        public List<Exception> getCollectionErrors() {
+            return Collections.emptyList();
         }
 
         @Override
-        public Artifact createBuildArtifact(String groupId, String artifactId, String version, String packaging) {
-            return artifact(groupId, artifactId, version, null, packaging, null);
-        }
-
-        @Override
-        public Artifact createProjectArtifact(String groupId, String artifactId, String version) {
-            return artifact(groupId, artifactId, version, null, "pom", null);
-        }
-
-        @Override
-        public Artifact createParentArtifact(String groupId, String artifactId, String version) {
-            return createProjectArtifact(groupId, artifactId, version);
-        }
-
-        @Override
-        public Artifact createPluginArtifact(String groupId, String artifactId, VersionRange versionRange) {
-            return dependencyArtifact(groupId, artifactId, versionRange, Artifact.SCOPE_RUNTIME, "maven-plugin", null);
-        }
-
-        @Override
-        public Artifact createProjectArtifact(String groupId, String artifactId, String version, String scope) {
-            return artifact(groupId, artifactId, version, scope, "pom", null);
-        }
-
-        @Override
-        public Artifact createExtensionArtifact(String groupId, String artifactId, VersionRange versionRange) {
-            return dependencyArtifact(groupId, artifactId, versionRange, Artifact.SCOPE_RUNTIME, "jar", null);
-        }
-
-        private static Artifact dependencyArtifact(String groupId, String artifactId, VersionRange versionRange,
-                String scope, String type, String classifier) {
-            DefaultArtifactHandler handler = new DefaultArtifactHandler(type);
-            return new DefaultArtifact(groupId, artifactId, versionRange, scope, type, classifier, handler);
+        public List<Exception> getResolutionErrors(Dependency dependency) {
+            return Collections.emptyList();
         }
     }
 
