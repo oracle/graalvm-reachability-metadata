@@ -198,7 +198,7 @@ public class Spring_cloud_commonsTest {
         LoadBalancerRequestFactory requestFactory = new LoadBalancerRequestFactory(loadBalancer, List.of(transformer));
         LoadBalancerInterceptor interceptor = new LoadBalancerInterceptor(loadBalancer, requestFactory);
         SimpleHttpRequest request = new SimpleHttpRequest(HttpMethod.PUT, URI.create("http://orders/api/items?x=1"));
-        byte[] body = new byte[] { 1, 2, 3 };
+        byte[] body = new byte[] {1, 2, 3};
         RecordingClientHttpRequestExecution execution = new RecordingClientHttpRequestExecution();
 
         ClientHttpResponse response = interceptor.intercept(request, body, execution);
@@ -518,11 +518,9 @@ public class Spring_cloud_commonsTest {
             this.serviceId = serviceId;
             try {
                 return request.apply(serviceInstance);
-            }
-            catch (IOException exception) {
+            } catch (IOException exception) {
                 throw exception;
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 throw new IOException(exception);
             }
         }
@@ -647,8 +645,7 @@ public class Spring_cloud_commonsTest {
         public <T> T run(Supplier<T> toRun, Function<Throwable, T> fallback) {
             try {
                 return toRun.get();
-            }
-            catch (Throwable throwable) {
+            } catch (Throwable throwable) {
                 return fallback.apply(throwable);
             }
         }
