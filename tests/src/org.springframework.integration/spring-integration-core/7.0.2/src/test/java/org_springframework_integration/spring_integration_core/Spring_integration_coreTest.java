@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 
@@ -42,8 +43,10 @@ import org.springframework.integration.channel.RendezvousChannel;
 import org.springframework.integration.channel.interceptor.WireTap;
 import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.context.IntegrationObjectSupport;
+import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.core.MessagingTemplate;
 import org.springframework.integration.endpoint.EventDrivenConsumer;
+import org.springframework.integration.endpoint.SourcePollingChannelAdapter;
 import org.springframework.integration.filter.MessageFilter;
 import org.springframework.integration.handler.MessageProcessor;
 import org.springframework.integration.handler.ServiceActivatingHandler;
@@ -73,6 +76,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.support.PeriodicTrigger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -529,6 +533,49 @@ public class Spring_integration_coreTest {
         Lock reacquired = registry.obtain("customer-42");
         assertThat(reacquired.tryLock(1, TimeUnit.SECONDS)).isTrue();
         reacquired.unlock();
+    }
+
+    @Test
+    void sourcePollingChannelAdapterPollsMessageSourceIntoOutputChannel() {
+        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.setPoolSize(1);
+        taskScheduler.initialize();
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        beanFactory.registerSingleton(IntegrationContextUtils.TASK_SCHEDULER_BEAN_NAME, taskScheduler);
+        QueueChannel output = new QueueChannel();
+        AtomicInteger counter = new AtomicInteger();
+        MessageSource<String> source = () -> {
+            int value = counter.incrementAndGet();
+            if (value > 2) {
+                return null;
+            }
+            return MessageBuilder.withPayload("poll-" + value)
+                    .setHeader("pollNumber", value)
+                    .build();
+        };
+        SourcePollingChannelAdapter adapter = new SourcePollingChannelAdapter();
+        adapter.setSource(source);
+        adapter.setOutputChannel(output);
+        adapter.setTrigger(new PeriodicTrigger(Duration.ofMillis(10)));
+        adapter.setMaxMessagesPerPoll(1);
+        initialize(adapter, beanFactory);
+
+        adapter.start();
+        try {
+            Message<?> first = output.receive(2_000);
+            Message<?> second = output.receive(2_000);
+
+            assertThat(first).isNotNull();
+            assertThat(first.getPayload()).isEqualTo("poll-1");
+            assertThat(first.getHeaders().get("pollNumber")).isEqualTo(1);
+            assertThat(second).isNotNull();
+            assertThat(second.getPayload()).isEqualTo("poll-2");
+            assertThat(second.getHeaders().get("pollNumber")).isEqualTo(2);
+        } finally {
+            adapter.stop();
+            adapter.destroy();
+            taskScheduler.shutdown();
+        }
     }
 
     @Test
