@@ -467,7 +467,7 @@ def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
         "issue", "view",
         str(issue_number),
         "--repo", REPO,
-        "--json", "number,title,url,body,labels,assignees",
+        "--json", "number,title,url,labels,assignees",
     )
     for label in data.get("labels", []):
         label_name = label.get("name") if isinstance(label, dict) else None
@@ -488,8 +488,20 @@ def get_issue_claim_payload(issue_number: int) -> dict:
         "issue", "view",
         str(issue_number),
         "--repo", REPO,
-        "--json", "number,title,url,state,body,labels,assignees",
+        "--json", "number,title,url,state,labels,assignees",
     )
+
+
+def get_issue_body(issue_number: int) -> str:
+    """Fetch an issue body only for workflows that explicitly need reporter context."""
+    data = gh_json(
+        "issue", "view",
+        str(issue_number),
+        "--repo", REPO,
+        "--json", "body",
+    )
+    body = data.get("body")
+    return body if isinstance(body, str) else ""
 
 
 def build_issue_search_query(
@@ -514,7 +526,6 @@ def normalize_github_issue_search_item(item: dict) -> dict:
     return {
         "number": item["number"],
         "title": item.get("title", ""),
-        "body": item.get("body", ""),
         "url": item.get("html_url") or item.get("url"),
         "labels": [
             {"name": label["name"]}
@@ -3472,9 +3483,6 @@ def invoke_pipeline(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
-        issue_requested_metadata_context = extract_issue_requested_metadata_context(claimed_issue.issue.get("body"))
-        if issue_requested_metadata_context:
-            pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         if keep_tests_without_dynamic_access:
@@ -3574,7 +3582,7 @@ def invoke_pipeline(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
-        issue_requested_metadata_context = extract_issue_requested_metadata_context(claimed_issue.issue.get("body"))
+        issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
         if issue_requested_metadata_context:
             pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
         if strategy_name:
