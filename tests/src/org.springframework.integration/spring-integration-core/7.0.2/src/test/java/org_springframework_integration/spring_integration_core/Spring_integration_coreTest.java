@@ -173,8 +173,7 @@ public class Spring_integration_coreTest {
             Message<?> reply = replies.receive(1_000);
             assertThat(reply).isNotNull();
             assertThat(reply.getPayload()).isEqualTo("SPRING");
-        }
-        finally {
+        } finally {
             consumer.stop();
             consumer.destroy();
         }
@@ -196,8 +195,7 @@ public class Spring_integration_coreTest {
 
             assertThat(accepted.receive(0).getPayload()).isEqualTo("keep-this");
             assertThat(discarded.receive(0).getPayload()).isEqualTo("drop-this");
-        }
-        finally {
+        } finally {
             filter.stop();
         }
 
@@ -213,8 +211,7 @@ public class Spring_integration_coreTest {
             transformingHandler.handleMessage(MessageBuilder.withPayload("integration").build());
 
             assertThat(transformed.receive(0).getPayload()).isEqualTo(11);
-        }
-        finally {
+        } finally {
             transformingHandler.stop();
         }
     }
@@ -319,8 +316,7 @@ public class Spring_integration_coreTest {
             assertThat(executorChannel.send(MessageBuilder.withPayload("executor").build())).isTrue();
             assertThat(executorLatch.await(2, TimeUnit.SECONDS)).isTrue();
             assertThat(executorPayload.get()).isEqualTo("executor");
-        }
-        finally {
+        } finally {
             executor.shutdownNow();
             assertThat(executor.awaitTermination(2, TimeUnit.SECONDS)).isTrue();
         }
@@ -362,8 +358,7 @@ public class Spring_integration_coreTest {
             assertThat(fluxLatch.await(Duration.ofSeconds(2).toMillis(), TimeUnit.MILLISECONDS)).isTrue();
             assertThat(fluxError.get()).isNull();
             assertThat(fluxPayloads).containsExactly("flux-one", "flux-two");
-        }
-        finally {
+        } finally {
             Subscription currentSubscription = subscription.get();
             if (currentSubscription != null) {
                 currentSubscription.cancel();
@@ -382,11 +377,9 @@ public class Spring_integration_coreTest {
         Object payload;
         if (aggregate instanceof Message<?> message) {
             payload = message.getPayload();
-        }
-        else if (aggregate instanceof AbstractIntegrationMessageBuilder<?> builder) {
+        } else if (aggregate instanceof AbstractIntegrationMessageBuilder<?> builder) {
             payload = builder.build().getPayload();
-        }
-        else {
+        } else {
             payload = aggregate;
         }
         if (payload instanceof Collection<?> collection) {
