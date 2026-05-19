@@ -6,6 +6,7 @@
  */
 package org_springframework_boot.spring_boot_data_commons;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -26,6 +28,7 @@ import org.springframework.boot.data.autoconfigure.web.DataWebProperties;
 import org.springframework.boot.data.metrics.AutoTimer;
 import org.springframework.boot.data.metrics.DefaultRepositoryTagsProvider;
 import org.springframework.boot.data.metrics.MetricsRepositoryMethodInvocationListener;
+import org.springframework.boot.data.metrics.TimedAnnotations;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.core.support.RepositoryMethodInvocationListener.RepositoryMethodInvocation;
 import org.springframework.data.repository.core.support.RepositoryMethodInvocationListener.RepositoryMethodInvocationResult;
@@ -152,6 +155,19 @@ public class Spring_boot_data_commonsTest {
         assertThat(timer.totalTime(TimeUnit.MILLISECONDS)).isEqualTo(25.0);
     }
 
+    @Test
+    void timedAnnotationsPreferRepositoryMethodAnnotationsAndFallBackToTypeAnnotations() throws NoSuchMethodException {
+        Method annotatedMethod = TimedRepository.class.getMethod("findOneByName", String.class);
+        Method unannotatedMethod = TimedRepository.class.getMethod("countByName", String.class);
+
+        assertThat(TimedAnnotations.get(annotatedMethod, TimedRepository.class)).singleElement()
+            .satisfies((annotation) -> assertTimedAnnotation(annotation, "method.repository.invocations", "method",
+                    "findOneByName"));
+        assertThat(TimedAnnotations.get(unannotatedMethod, TimedRepository.class)).singleElement()
+            .satisfies((annotation) -> assertTimedAnnotation(annotation, "type.repository.invocations", "level",
+                    "repository"));
+    }
+
     private static <T> T bind(String prefix, Class<T> type, Map<String, String> values) {
         Binder binder = new Binder(new MapConfigurationPropertySource(values));
         return binder.bind(prefix, type).get();
@@ -162,7 +178,22 @@ public class Spring_boot_data_commonsTest {
                 durationNs);
     }
 
+    private static void assertTimedAnnotation(Timed annotation, String metricName, String... extraTags) {
+        assertThat(annotation.value()).isEqualTo(metricName);
+        assertThat(annotation.extraTags()).containsExactly(extraTags);
+    }
+
     private interface SampleRepository extends Repository<SampleEntity, Long> {
+
+    }
+
+    @Timed(value = "type.repository.invocations", extraTags = { "level", "repository" })
+    private interface TimedRepository extends Repository<SampleEntity, Long> {
+
+        @Timed(value = "method.repository.invocations", extraTags = { "method", "findOneByName" })
+        SampleEntity findOneByName(String name);
+
+        long countByName(String name);
 
     }
 
