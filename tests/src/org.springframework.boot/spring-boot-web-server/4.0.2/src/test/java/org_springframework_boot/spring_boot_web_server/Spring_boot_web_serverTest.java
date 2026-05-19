@@ -65,6 +65,9 @@ import org.springframework.boot.web.server.context.WebServerInitializedEvent;
 import org.springframework.boot.web.server.context.WebServerPortFileWriter;
 import org.springframework.boot.web.server.reactive.AbstractReactiveWebServerFactory;
 import org.springframework.boot.web.server.reactive.ConfigurableReactiveWebServerFactory;
+import org.springframework.boot.web.server.reactive.ReactiveWebServerFactory;
+import org.springframework.boot.web.server.reactive.context.AnnotationConfigReactiveWebServerApplicationContext;
+import org.springframework.boot.web.server.reactive.context.ReactiveWebServerInitializedEvent;
 import org.springframework.boot.web.server.servlet.ConfigurableServletWebServerFactory;
 import org.springframework.boot.web.server.servlet.ContextPath;
 import org.springframework.boot.web.server.servlet.CookieSameSiteSupplier;
@@ -493,6 +496,47 @@ public class Spring_boot_web_serverTest {
             assertThat(event.get().getWebServer()).isSameAs(webServer);
             assertThat(event.get().getApplicationContext()).isSameAs(context);
             assertThat(context.getEnvironment().getProperty("local.test.port", Integer.class)).isEqualTo(49152);
+        }
+
+        assertThat(webServer.stopped).isTrue();
+    }
+
+    @Test
+    void reactiveWebServerApplicationContextStartsFactoryServerAndPublishesPort() {
+        TestReactiveWebServerFactory factory = new TestReactiveWebServerFactory();
+        RecordingWebServer webServer = new RecordingWebServer(49500);
+        factory.webServer = webServer;
+        AtomicReference<ReactiveWebServerInitializedEvent> event = new AtomicReference<>();
+        AtomicBoolean handled = new AtomicBoolean();
+        HttpHandler handler = (request, response) -> {
+            handled.set(true);
+            return Mono.empty();
+        };
+
+        try (AnnotationConfigReactiveWebServerApplicationContext context =
+                new AnnotationConfigReactiveWebServerApplicationContext()) {
+            context.setServerNamespace("reactive");
+            context.registerBean(ReactiveWebServerFactory.class, () -> factory);
+            context.registerBean(HttpHandler.class, () -> handler);
+            context.addApplicationListener(applicationEvent -> {
+                if (applicationEvent instanceof ReactiveWebServerInitializedEvent webServerEvent) {
+                    event.set(webServerEvent);
+                }
+            });
+            new ServerPortInfoApplicationContextInitializer().initialize(context);
+
+            context.refresh();
+
+            assertThat(context.getServerNamespace()).isEqualTo("reactive");
+            assertThat(WebServerApplicationContext.getServerNamespace(context)).isEqualTo("reactive");
+            assertThat(context.getWebServer()).isSameAs(webServer);
+            assertThat(webServer.started).isTrue();
+            assertThat(factory.httpHandler).isNotNull();
+            assertThat(handled).isFalse();
+            assertThat(event.get()).isNotNull();
+            assertThat(event.get().getWebServer()).isSameAs(webServer);
+            assertThat(event.get().getApplicationContext()).isSameAs(context);
+            assertThat(context.getEnvironment().getProperty("local.reactive.port", Integer.class)).isEqualTo(49500);
         }
 
         assertThat(webServer.stopped).isTrue();
