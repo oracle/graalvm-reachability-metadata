@@ -23,9 +23,8 @@ import org.openqa.selenium.WebDriver.Options;
 import org.openqa.selenium.WebDriver.TargetLocator;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WrapsElement;
-import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.events.EventFiringDecorator;
+import org.openqa.selenium.support.events.WebDriverListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,27 +34,26 @@ public class EventFiringWebDriverInnerEventFiringWebElementTest {
         RecordingWebElement element = new RecordingWebElement("button", "Save");
         RecordingWebDriver driver = new RecordingWebDriver(element);
         RecordingEventListener listener = new RecordingEventListener();
-        EventFiringWebDriver eventFiringDriver = new EventFiringWebDriver(driver)
-                .register(listener);
+        WebDriver eventFiringDriver = new EventFiringDecorator<WebDriver>(listener).decorate(driver);
 
         WebElement foundElement = eventFiringDriver.findElement(By.id("save"));
         String text = foundElement.getText();
         foundElement.click();
 
         assertThat(text).isEqualTo("Save");
-        assertThat(((WrapsElement) foundElement).getWrappedElement()).isSameAs(element);
+        assertThat(foundElement).isNotSameAs(element);
         assertThat(driver.calls()).containsExactly("findElement");
         assertThat(element.calls()).containsExactly("getText", "click");
         assertThat(listener.events()).containsExactly(
-                "beforeFindBy",
-                "afterFindBy",
+                "beforeFindElement",
+                "afterFindElement",
                 "beforeGetText",
                 "afterGetText:Save",
-                "beforeClickOn",
-                "afterClickOn");
+                "beforeClick",
+                "afterClick");
     }
 
-    private static final class RecordingWebDriver implements WebDriver {
+    public static final class RecordingWebDriver implements WebDriver {
         private final List<String> calls = new ArrayList<>();
         private final WebElement element;
 
@@ -133,7 +131,7 @@ public class EventFiringWebDriverInnerEventFiringWebElementTest {
         }
     }
 
-    private static final class RecordingWebElement implements WebElement {
+    public static final class RecordingWebElement implements WebElement {
         private final List<String> calls = new ArrayList<>();
         private final String tagName;
         private final String text;
@@ -246,37 +244,37 @@ public class EventFiringWebDriverInnerEventFiringWebElementTest {
         }
     }
 
-    private static final class RecordingEventListener extends AbstractWebDriverEventListener {
+    public static final class RecordingEventListener implements WebDriverListener {
         private final List<String> events = new ArrayList<>();
 
         @Override
-        public void beforeFindBy(By by, WebElement element, WebDriver driver) {
-            events.add("beforeFindBy");
+        public void beforeFindElement(WebDriver driver, By locator) {
+            events.add("beforeFindElement");
         }
 
         @Override
-        public void afterFindBy(By by, WebElement element, WebDriver driver) {
-            events.add("afterFindBy");
+        public void afterFindElement(WebDriver driver, By locator, WebElement result) {
+            events.add("afterFindElement");
         }
 
         @Override
-        public void beforeGetText(WebElement element, WebDriver driver) {
+        public void beforeGetText(WebElement element) {
             events.add("beforeGetText");
         }
 
         @Override
-        public void afterGetText(WebElement element, WebDriver driver, String text) {
+        public void afterGetText(WebElement element, String text) {
             events.add("afterGetText:" + text);
         }
 
         @Override
-        public void beforeClickOn(WebElement element, WebDriver driver) {
-            events.add("beforeClickOn");
+        public void beforeClick(WebElement element) {
+            events.add("beforeClick");
         }
 
         @Override
-        public void afterClickOn(WebElement element, WebDriver driver) {
-            events.add("afterClickOn");
+        public void afterClick(WebElement element) {
+            events.add("afterClick");
         }
 
         private List<String> events() {
