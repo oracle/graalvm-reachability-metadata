@@ -1,0 +1,245 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.boot:spring-boot-data-jdbc:4.0.6
+Command: `/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 2 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+Spring_boot_data_jdbcTest > autoConfigurationBindsDialectAndCreatesJdbcRepositoryInfrastructure() FAILED
+    org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [INSERT INTO "people" ("age", "name") VALUES (?, ?)]
+        at app//org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:112)
+        at app//org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:102)
+        at app//org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1549)
+        at app//org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:689)
+        at app//org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:997)
+        at app//org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate.update(NamedParameterJdbcTemplate.java:367)
+        at app//org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate.update(NamedParameterJdbcTemplate.java:351)
+        at app//org.springframework.data.jdbc.core.convert.IdGeneratingInsertStrategy.execute(IdGeneratingInsertStrategy.java:68)
+        at app//org.springframework.data.jdbc.core.convert.DefaultDataAccessStrategy.insert(DefaultDataAccessStrategy.java:129)
+        at app//org.springframework.data.jdbc.core.JdbcAggregateChangeExecutionContext.executeInsertRoot(JdbcAggregateChangeExecutionContext.java:82)
+        at app//org.springframework.data.jdbc.core.AggregateChangeExecutor.execute(AggregateChangeExecutor.java:83)
+        at app//org.springframework.data.jdbc.core.AggregateChangeExecutor.lambda$executeSave$0(AggregateChangeExecutor.java:60)
+        at java.base@25.0.3/java.util.ArrayList.forEach(ArrayList.java:1604)
+        at app//org.springframework.data.relational.core.conversion.SaveBatchingAggregateChange.forEachAction(SaveBatchingAggregateChange.java:68)
+        at app//org.springframework.data.jdbc.core.AggregateChangeExecutor.executeSave(AggregateChangeExecutor.java:60)
+        at app//org.springframework.data.jdbc.core.JdbcAggregateTemplate.performSave(JdbcAggregateTemplate.java:587)
+        at app//org.springframework.data.jdbc.core.JdbcAggregateTemplate.save(JdbcAggregateTemplate.java:219)
+        at app//org.springframework.data.jdbc.repository.support.SimpleJdbcRepository.save(SimpleJdbcRepository.java:74)
+        at java.base@25.0.3/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base@25.0.3/java.lang.reflect.Method.invoke(Method.java:565)
+        at app//org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+        at app//org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:278)
+        at app//org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:169)
+        at app//org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+        at app//org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:545)
+        at app//org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:290)
+        at app//org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:690)
+        at app//org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at app//org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:171)
+        at app//org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:146)
+        at app//org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at app//org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:133)
+        at app//org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:371)
+        at app//org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130)
+        at app//org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at app//org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:135)
+        at app//org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at app//org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:222)
+        at app//org_springframework_boot.spring_boot_data_jdbc.$Proxy67.save(Unknown Source)
+        at app//org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.lambda$autoConfigurationBindsDialectAndCreatesJdbcRepositoryInfrastructure$0(Spring_boot_data_jdbcTest.java:92)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+        at app//org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+        at app//org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+        at app//org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+        at app//org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.autoConfigurationBindsDialectAndCreatesJdbcRepositoryInfrastructure(Spring_boot_data_jdbcTest.java:75)
+
+        Caused by:
+        org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "people" not found (candidates are: "PEOPLE"); SQL statement:
+        INSERT INTO "people" ("age", "name") VALUES (?, ?) [42103-240]
+            at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
+            at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+            at app//org.h2.message.DbException.get(DbException.java:223)
+            at app//org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:8052)
+            at app//org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:8020)
+            at app//org.h2.command.Parser.readTableOrView(Parser.java:7999)
+            at app//org.h2.command.Parser.readTableOrView(Parser.java:7961)
+            at app//org.h2.command.Parser.parseInsert(Parser.java:1524)
+            at app//org.h2.command.Parser.parsePrepared(Parser.java:701)
+            at app//org.h2.command.Parser.parse(Parser.java:584)
+            at app//org.h2.command.Parser.parse(Parser.java:559)
+            at app//org.h2.command.Parser.prepareCommand(Parser.java:487)
+            at app//org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:647)
+            at app//org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:563)
+            at app//org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1160)
+            at app//org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
+            at app//org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:1089)
+            at app//org.springframework.jdbc.core.PreparedStatementCreatorFactory$PreparedStatementCreatorImpl.createPreparedStatement(PreparedStatementCreatorFactory.java:234)
+            at app//org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:668)
+            ... 46 more
+
+Spring_boot_data_jdbcTest > repositoryQueriesUseSpringDataJdbcMappingAndDerivedQueryMethods() FAILED
+    org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [INSERT INTO "people" ("age", "name") VALUES (?, ?)]
+        at app//org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:112)
+        at app//org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:102)
+        at app//org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1549)
+        at app//org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:689)
+        at app//org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:997)
+        at app//org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate.update(NamedParameterJdbcTemplate.java:367)
+        at app//org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate.update(NamedParameterJdbcTemplate.java:351)
+        at app//org.springframework.data.jdbc.core.convert.IdGeneratingInsertStrategy.execute(IdGeneratingInsertStrategy.java:68)
+        at app//org.springframework.data.jdbc.core.convert.DefaultDataAccessStrategy.insert(DefaultDataAccessStrategy.java:129)
+        at app//org.springframework.data.jdbc.core.JdbcAggregateChangeExecutionContext.executeInsertRoot(JdbcAggregateChangeExecutionContext.java:82)
+        at app//org.springframework.data.jdbc.core.AggregateChangeExecutor.execute(AggregateChangeExecutor.java:83)
+        at app//org.springframework.data.jdbc.core.AggregateChangeExecutor.lambda$executeSave$0(AggregateChangeExecutor.java:60)
+        at java.base@25.0.3/java.util.ArrayList.forEach(ArrayList.java:1604)
+        at app//org.springframework.data.relational.core.conversion.SaveBatchingAggregateChange.forEachAction(SaveBatchingAggregateChange.java:68)
+        at app//org.springframework.data.jdbc.core.AggregateChangeExecutor.executeSave(AggregateChangeExecutor.java:60)
+        at app//org.springframework.data.jdbc.core.JdbcAggregateTemplate.performSave(JdbcAggregateTemplate.java:587)
+        at app//org.springframework.data.jdbc.core.JdbcAggregateTemplate.save(JdbcAggregateTemplate.java:219)
+        at app//org.springframework.data.jdbc.repository.support.SimpleJdbcRepository.save(SimpleJdbcRepository.java:74)
+        at java.base@25.0.3/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base@25.0.3/java.lang.reflect.Method.invoke(Method.java:565)
+        at app//org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+        at app//org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:278)
+        at app//org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:169)
+        at app//org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+        at app//org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:545)
+        at app//org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:290)
+        at app//org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:690)
+        at app//org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at app//org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:171)
+        at app//org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:146)
+        at app//org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at app//org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:133)
+        at app//org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:371)
+        at app//org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130)
+        at app//org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at app//org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:135)
+        at app//org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at app//org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:222)
+        at app//org_springframework_boot.spring_boot_data_jdbc.$Proxy67.save(Unknown Source)
+        at app//org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.lambda$repositoryQueriesUseSpringDataJdbcMappingAndDerivedQueryMethods$0(Spring_boot_data_jdbcTest.java:124)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+        at app//org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+        at app//org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+        at app//org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+        at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+        at app//org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.repositoryQueriesUseSpringDataJdbcMappingAndDerivedQueryMethods(Spring_boot_data_jdbcTest.java:119)
+
+        Caused by:
+        org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "people" not found (candidates are: "PEOPLE"); SQL statement:
+        INSERT INTO "people" ("age", "name") VALUES (?, ?) [42103-240]
+            at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
+            at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+            at app//org.h2.message.DbException.get(DbException.java:223)
+            at app//org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:8052)
+            at app//org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:8020)
+            at app//org.h2.command.Parser.readTableOrView(Parser.java:7999)
+            at app//org.h2.command.Parser.readTableOrView(Parser.java:7961)
+            at app//org.h2.command.Parser.parseInsert(Parser.java:1524)
+            at app//org.h2.command.Parser.parsePrepared(Parser.java:701)
+            at app//org.h2.command.Parser.parse(Parser.java:584)
+            at app//org.h2.command.Parser.parse(Parser.java:559)
+            at app//org.h2.command.Parser.prepareCommand(Parser.java:487)
+            at app//org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:647)
+            at app//org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:563)
+            at app//org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1160)
+            at app//org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
+            at app//org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:1089)
+            at app//org.springframework.jdbc.core.PreparedStatementCreatorFactory$PreparedStatementCreatorImpl.createPreparedStatement(PreparedStatementCreatorFactory.java:234)
+            at app//org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:668)
+            ... 46 more
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/tests/src/org.springframework.boot/spring-boot-data-jdbc/4.0.6/build/reports/problems/problems-report.html
+
+5 tests completed, 2 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/tests/src/org.springframework.boot/spring-boot-data-jdbc/4.0.6/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+BUILD FAILED in 10s
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.boot:spring-boot-data-jdbc:4.0.6 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 11s
+9 actionable tasks: 1 executed, 8 up-to-date

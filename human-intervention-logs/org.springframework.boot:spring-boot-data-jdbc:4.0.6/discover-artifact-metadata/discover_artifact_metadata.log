@@ -1,0 +1,2850 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.131.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e41f1-e29d-7200-9be0-3ab6600758b9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-data-jdbc:4.0.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.0.6" when "$version$" is replaced with "4.0.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+- Set "coordinates" to "org.springframework.boot:spring-boot-data-jdbc:4.0.6".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.6".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact from authoritative sources first, then update the discovered metadata file in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' -n metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/diagrams-test/src/test/scala/org/scalatest/diagrams",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-sources.jar",
+metadata/org.springframework/spring-context-support/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-context-support/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-context-support/src/test",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-tx/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:40:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:41:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-tx/index.json:42:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:54:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:55:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-tx/index.json:56:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test/src/test/scala/org/scalatest/featurespec",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-javadoc.jar",
+metadata/org.springframework/spring-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context/$version$/spring-context-$version$-sources.jar",
+metadata/org.springframework/spring-context/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-context/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-context/src/test",
+metadata/org.springframework/spring-context/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context/$version$/spring-context-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-expression/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:92:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:93:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-expression/index.json:94:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:95:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg --files | rg 'spring-boot-data-jdbc|discovered-artifact-metadata|spring-boot'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+stats/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/stats.json
+stats/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/execution-metrics.json
+stats/org.springframework.boot/spring-boot-netty/4.0.2/stats.json
+stats/org.springframework.boot/spring-boot-netty/4.0.2/execution-metrics.json
+stats/org.springframework.boot/spring-boot-amqp/4.0.2/stats.json
+stats/org.springframework.boot/spring-boot-amqp/4.0.2/execution-metrics.json
+stats/org.springframework.boot/spring-boot-reactor/4.0.2/stats.json
+stats/org.springframework.boot/spring-boot-reactor/4.0.2/execution-metrics.json
+stats/org.springframework.boot/spring-boot-kafka/4.0.2/stats.json
+stats/org.springframework.boot/spring-boot-kafka/4.0.2/execution-metrics.json
+stats/org.springframework.boot/spring-boot-web-server/4.0.2/stats.json
+stats/org.springframework.boot/spring-boot-web-server/4.0.2/execution-metrics.json
+stats/org.springframework.boot/spring-boot-http-client/4.0.2/stats.json
+stats/org.springframework.boot/spring-boot-http-client/4.0.2/execution-metrics.json
+stats/org.springframework.boot/spring-boot-webflux/4.0.2/stats.json
+stats/org.springframework.boot/spring-boot-webflux/4.0.2/execution-metrics.json
+stats/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/stats.json
+stats/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/execution-metrics.json
+stats/org.springframework.boot/spring-boot-restclient/4.0.2/stats.json
+stats/org.springframework.boot/spring-boot-restclient/4.0.2/execution-metrics.json
+stats/org.springframework.boot/spring-boot-health/4.0.6/stats.json
+stats/org.springframework.boot/spring-boot-health/4.0.6/execution-metrics.json
+stats/org.springframework.boot/spring-boot-reactor-netty/4.0.2/stats.json
+stats/org.springframework.boot/spring-boot-reactor-netty/4.0.2/execution-metrics.json
+stats/org.springframework.boot/spring-boot-configuration-processor/2.7.18/stats.json
+stats/org.springframework.boot/spring-boot-validation/4.0.6/stats.json
+stats/org.springframework.boot/spring-boot-validation/4.0.6/execution-metrics.json
+metadata/io.github.resilience4j/resilience4j-spring-boot3/index.json
+metadata/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-netty/index.json
+metadata/org.springframework.boot/spring-boot-amqp/4.0.2/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-amqp/index.json
+metadata/org.springframework.boot/spring-boot-starter-json/index.json
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-reactor/index.json
+metadata/org.springframework.boot/spring-boot-starter/index.json
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-kafka/index.json
+metadata/org.springframework.boot/spring-boot-web-server/4.0.2/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-web-server/index.json
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json
+metadata/org.springframework.boot/spring-boot-http-client/4.0.2/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-http-client/index.json
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-webflux/index.json
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json
+metadata/org.springframework.boot/spring-boot-starter-tomcat/index.json
+metadata/org.springframework.boot/spring-boot-restclient/4.0.2/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-restclient/index.json
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json
+metadata/org.springframework.boot/spring-boot-health/4.0.6/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-health/index.json
+metadata/org.springframework.boot/spring-boot-reactor-netty/4.0.2/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json
+metadata/org.springframework.boot/spring-boot-starter-jackson/index.json
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json
+metadata/org.springframework.boot/spring-boot-validation/index.json
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/build.gradle
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/settings.gradle
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/gradle.properties
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/build.gradle
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/settings.gradle
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/gradle.properties
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/build.gradle
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/settings.gradle
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/build.gradle
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/settings.gradle
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/gradle.properties
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/build.gradle
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/settings.gradle
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/gradle.properties
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/build.gradle
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/settings.gradle
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/gradle.properties
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/build.gradle
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/settings.gradle
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/gradle.properties
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/build.gradle
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/settings.gradle
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/gradle.properties
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/build.gradle
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/settings.gradle
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/java/org_springframework_boot/spring_boot_configuration_processor/TreesTest.java
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/java/org_springframework_boot/spring_boot_configuration_processor/VariableTreeTest.java
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/java/org_springframework_boot/spring_boot_configuration_processor/ExpressionTreeTest.java
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/gradle.properties
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/user-code-filter.json
+tests/src/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/build.gradle
+tests/src/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/settings.gradle
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/src/test/java/org_springframework_boot/spring_boot_http_client/ReflectiveComponentsClientHttpRequestFactoryBuilderTest.java
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/gradle.properties
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/build.gradle
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/settings.gradle
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/build.gradle
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/settings.gradle
+tests/src/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/src/test/java/io_github_resilience4j/resilience4j_spring_boot3/Resilience4j_spring_boot3Test.java
+tests/src/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/gradle.properties
+tests/src/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/gradle.properties
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/src/test/java/org_springframework_boot/spring_boot_validation/Spring_boot_validationTest.java
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/gradle.properties
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/build.gradle
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/settings.gradle
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/src/test/resources/META-INF/native-image/reachability-metadata.json
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/src/test/java/org_springframework_boot/spring_boot_actuator_autoconfigure/AbstractCompositeHealthContributorConfigurationTest.java
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/gradle.properties
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/user-code-filter.json
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/build.gradle
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/settings.gradle
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/gradle.properties
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/user-code-filter.json
+
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-data-jdbc 4.0.6
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.6
+codex
+I found the artifact on Maven Central and confirmed Spring Boot’s `v4.0.6` tag exists. Next I’m checking whether Central publishes sources, javadoc, and any test artifact, and then I’ll pin the GitHub test path if no Maven tests are published.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/spring-boot-data-jdbc-4.0.6.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-data-jdbc</artifactId>
+  <version>4.0.6</version>
+  <name>spring-boot-data-jdbc</name>
+  <description>Spring Boot Data JDBC</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-data-commons</artifactId>
+      <version>4.0.6</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-jdbc</artifactId>
+      <version>4.0.6</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jdbc</artifactId>
+      <version>4.0.5</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/module?ref=v4.0.6' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 224ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-data-jdbc/4.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-data-jdbc/4.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-data-jdbc-4.0.6-javadoc.jar" title="spring-boot-data-jdbc-4.0.6-javadoc.jar">spring-boot-data-jdbc-4.0.6-javadoc.jar</a>           2026-04-23 15:18    115171      
+<a href="spring-boot-data-jdbc-4.0.6-javadoc.jar.asc" title="spring-boot-data-jdbc-4.0.6-javadoc.jar.asc">spring-boot-data-jdbc-4.0.6-javadoc.jar.asc</a>       2026-04-23 15:18       833      
+<a href="spring-boot-data-jdbc-4.0.6-javadoc.jar.md5" title="spring-boot-data-jdbc-4.0.6-javadoc.jar.md5">spring-boot-data-jdbc-4.0.6-javadoc.jar.md5</a>       2026-04-23 15:18        32      
+<a href="spring-boot-data-jdbc-4.0.6-javadoc.jar.sha1" title="spring-boot-data-jdbc-4.0.6-javadoc.jar.sha1">spring-boot-data-jdbc-4.0.6-javadoc.jar.sha1</a>      2026-04-23 15:18        40      
+<a href="spring-boot-data-jdbc-4.0.6-sources.jar" title="spring-boot-data-jdbc-4.0.6-sources.jar">spring-boot-data-jdbc-4.0.6-sources.jar</a>           2026-04-23 15:18     12007      
+<a href="spring-boot-data-jdbc-4.0.6-sources.jar.asc" title="spring-boot-data-jdbc-4.0.6-sources.jar.asc">spring-boot-data-jdbc-4.0.6-sources.jar.asc</a>       2026-04-23 15:18       833      
+<a href="spring-boot-data-jdbc-4.0.6-sources.jar.md5" title="spring-boot-data-jdbc-4.0.6-sources.jar.md5">spring-boot-data-jdbc-4.0.6-sources.jar.md5</a>       2026-04-23 15:18        32      
+<a href="spring-boot-data-jdbc-4.0.6-sources.jar.sha1" title="spring-boot-data-jdbc-4.0.6-sources.jar.sha1">spring-boot-data-jdbc-4.0.6-sources.jar.sha1</a>      2026-04-23 15:18        40      
+<a href="spring-boot-data-jdbc-4.0.6.jar" title="spring-boot-data-jdbc-4.0.6.jar">spring-boot-data-jdbc-4.0.6.jar</a>                   2026-04-23 15:18     15472      
+<a href="spring-boot-data-jdbc-4.0.6.jar.asc" title="spring-boot-data-jdbc-4.0.6.jar.asc">spring-boot-data-jdbc-4.0.6.jar.asc</a>               2026-04-23 15:18       833      
+<a href="spring-boot-data-jdbc-4.0.6.jar.md5" title="spring-boot-data-jdbc-4.0.6.jar.md5">spring-boot-data-jdbc-4.0.6.jar.md5</a>               2026-04-23 15:18        32      
+<a href="spring-boot-data-jdbc-4.0.6.jar.sha1" title="spring-boot-data-jdbc-4.0.6.jar.sha1">spring-boot-data-jdbc-4.0.6.jar.sha1</a>              2026-04-23 15:18        40      
+<a href="spring-boot-data-jdbc-4.0.6.module" title="spring-boot-data-jdbc-4.0.6.module">spring-boot-data-jdbc-4.0.6.module</a>                2026-04-23 15:18      4704      
+<a href="spring-boot-data-jdbc-4.0.6.module.asc" title="spring-boot-data-jdbc-4.0.6.module.asc">spring-boot-data-jdbc-4.0.6.module.asc</a>            2026-04-23 15:18       833      
+<a href="spring-boot-data-jdbc-4.0.6.module.md5" title="spring-boot-data-jdbc-4.0.6.module.md5">spring-boot-data-jdbc-4.0.6.module.md5</a>            2026-04-23 15:18        32      
+<a href="spring-boot-data-jdbc-4.0.6.module.sha1" title="spring-boot-data-jdbc-4.0.6.module.sha1">spring-boot-data-jdbc-4.0.6.module.sha1</a>           2026-04-23 15:18        40      
+<a href="spring-boot-data-jdbc-4.0.6.pom" title="spring-boot-data-jdbc-4.0.6.pom">spring-boot-data-jdbc-4.0.6.pom</a>                   2026-04-23 15:18      2447      
+<a href="spring-boot-data-jdbc-4.0.6.pom.asc" title="spring-boot-data-jdbc-4.0.6.pom.asc">spring-boot-data-jdbc-4.0.6.pom.asc</a>               2026-04-23 15:18       833      
+<a href="spring-boot-data-jdbc-4.0.6.pom.md5" title="spring-boot-data-jdbc-4.0.6.pom.md5">spring-boot-data-jdbc-4.0.6.pom.md5</a>               2026-04-23 15:18        32      
+<a href="spring-boot-data-jdbc-4.0.6.pom.sha1" title="spring-boot-data-jdbc-4.0.6.pom.sha1">spring-boot-data-jdbc-4.0.6.pom.sha1</a>              2026-04-23 15:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 286ms:
+[
+  {
+    "name": "spring-boot-activemq",
+    "path": "module/spring-boot-activemq",
+    "sha": "b808e4edf4a81b1ac68692a2b622a68c9681111c",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-activemq?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-activemq",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/b808e4edf4a81b1ac68692a2b622a68c9681111c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-activemq?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/b808e4edf4a81b1ac68692a2b622a68c9681111c",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-activemq"
+    }
+  },
+  {
+    "name": "spring-boot-actuator-autoconfigure",
+    "path": "module/spring-boot-actuator-autoconfigure",
+    "sha": "2e173a45d3e00ecda276a58c27b636429ddd7ccc",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-actuator-autoconfigure?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-actuator-autoconfigure",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/2e173a45d3e00ecda276a58c27b636429ddd7ccc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-actuator-autoconfigure?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/2e173a45d3e00ecda276a58c27b636429ddd7ccc",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-actuator-autoconfigure"
+    }
+  },
+  {
+    "name": "spring-boot-actuator",
+    "path": "module/spring-boot-actuator",
+    "sha": "4b309b695b300d499f92203138f80929297062a0",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-actuator?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-actuator",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/4b309b695b300d499f92203138f80929297062a0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-actuator?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/4b309b695b300d499f92203138f80929297062a0",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-actuator"
+    }
+  },
+  {
+    "name": "spring-boot-amqp",
+    "path": "module/spring-boot-amqp",
+    "sha": "e6578526885e6831e42ec8f25c1b9be98fcb5759",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-amqp?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-amqp",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/e6578526885e6831e42ec8f25c1b9be98fcb5759",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-amqp?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/e6578526885e6831e42ec8f25c1b9be98fcb5759",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-amqp"
+    }
+  },
+  {
+    "name": "spring-boot-artemis",
+    "path": "module/spring-boot-artemis",
+    "sha": "91db2d9ad488ffafae1d65d79b867a4d575fdef7",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-artemis?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-artemis",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/91db2d9ad488ffafae1d65d79b867a4d575fdef7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-artemis?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/91db2d9ad488ffafae1d65d79b867a4d575fdef7",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-artemis"
+    }
+  },
+  {
+    "name": "spring-boot-autoconfigure-classic-modules",
+    "path": "module/spring-boot-autoconfigure-classic-modules",
+    "sha": "8a13dcd17c0f6182e7cc1b41fba1d0bec7c2deb3",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-autoconfigure-classic-modules?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-autoconfigure-classic-modules",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/8a13dcd17c0f6182e7cc1b41fba1d0bec7c2deb3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-autoconfigure-classic-modules?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/8a13dcd17c0f6182e7cc1b41fba1d0bec7c2deb3",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-autoconfigure-classic-modules"
+    }
+  },
+  {
+    "name": "spring-boot-autoconfigure-classic",
+    "path": "module/spring-boot-autoconfigure-classic",
+    "sha": "e49369a4851d535a0943ad3aca59f3de2eaf864c",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-autoconfigure-classic?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-autoconfigure-classic",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/e49369a4851d535a0943ad3aca59f3de2eaf864c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-autoconfigure-classic?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/e49369a4851d535a0943ad3aca59f3de2eaf864c",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-autoconfigure-classic"
+    }
+  },
+  {
+    "name": "spring-boot-batch-jdbc",
+    "path": "module/spring-boot-batch-jdbc",
+    "sha": "23254d4086846665db71d0994bac72a24c8e0784",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-batch-jdbc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-batch-jdbc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/23254d4086846665db71d0994bac72a24c8e0784",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-batch-jdbc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/23254d4086846665db71d0994bac72a24c8e0784",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-batch-jdbc"
+    }
+  },
+  {
+    "name": "spring-boot-batch",
+    "path": "module/spring-boot-batch",
+    "sha": "c19cdc50caa89c1e23a665acc630fbc50e3beca8",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-batch?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-batch",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c19cdc50caa89c1e23a665acc630fbc50e3beca8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-batch?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c19cdc50caa89c1e23a665acc630fbc50e3beca8",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-batch"
+    }
+  },
+  {
+    "name": "spring-boot-cache-test",
+    "path": "module/spring-boot-cache-test",
+    "sha": "fe8e582108bbcb8a8548cbcd2e100c3f3fa7d527",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-cache-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-cache-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/fe8e582108bbcb8a8548cbcd2e100c3f3fa7d527",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-cache-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/fe8e582108bbcb8a8548cbcd2e100c3f3fa7d527",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-cache-test"
+    }
+  },
+  {
+    "name": "spring-boot-cache",
+    "path": "module/spring-boot-cache",
+    "sha": "262d159dbf8bd7eaf02aff727e96a83bec8971db",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-cache?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-cache",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/262d159dbf8bd7eaf02aff727e96a83bec8971db",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-cache?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/262d159dbf8bd7eaf02aff727e96a83bec8971db",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-cache"
+    }
+  },
+  {
+    "name": "spring-boot-cassandra",
+    "path": "module/spring-boot-cassandra",
+    "sha": "f4dcdf72b2953656342cfae253fbc5c00e891248",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-cassandra?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-cassandra",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/f4dcdf72b2953656342cfae253fbc5c00e891248",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-cassandra?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/f4dcdf72b2953656342cfae253fbc5c00e891248",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-cassandra"
+    }
+  },
+  {
+    "name": "spring-boot-cloudfoundry",
+    "path": "module/spring-boot-cloudfoundry",
+    "sha": "3025cfc7fb17eb594f674418652f502d516d8616",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-cloudfoundry?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-cloudfoundry",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3025cfc7fb17eb594f674418652f502d516d8616",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-cloudfoundry?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3025cfc7fb17eb594f674418652f502d516d8616",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-cloudfoundry"
+    }
+  },
+  {
+    "name": "spring-boot-couchbase",
+    "path": "module/spring-boot-couchbase",
+    "sha": "97b3bc03e18fe8ecd555651f051f6173e2cdd325",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-couchbase?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-couchbase",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/97b3bc03e18fe8ecd555651f051f6173e2cdd325",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-couchbase?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/97b3bc03e18fe8ecd555651f051f6173e2cdd325",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-couchbase"
+    }
+  },
+  {
+    "name": "spring-boot-data-cassandra-test",
+    "path": "module/spring-boot-data-cassandra-test",
+    "sha": "da14cffac746219ab477d60bea9065030f4af443",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-cassandra-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-cassandra-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/da14cffac746219ab477d60bea9065030f4af443",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-cassandra-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/da14cffac746219ab477d60bea9065030f4af443",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-cassandra-test"
+    }
+  },
+  {
+    "name": "spring-boot-data-cassandra",
+    "path": "module/spring-boot-data-cassandra",
+    "sha": "c7e861d5be38766e17eba31651d91d1942ec7a1a",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-cassandra?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-cassandra",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c7e861d5be38766e17eba31651d91d1942ec7a1a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-cassandra?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c7e861d5be38766e17eba31651d91d1942ec7a1a",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-cassandra"
+    }
+  },
+  {
+    "name": "spring-boot-data-commons",
+    "path": "module/spring-boot-data-commons",
+    "sha": "a0b9b8a98dcb1194ed7ac24a446b47b6f8ff86de",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-commons?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-commons",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a0b9b8a98dcb1194ed7ac24a446b47b6f8ff86de",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-commons?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a0b9b8a98dcb1194ed7ac24a446b47b6f8ff86de",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-commons"
+    }
+  },
+  {
+    "name": "spring-boot-data-couchbase-test",
+    "path": "module/spring-boot-data-couchbase-test",
+    "sha": "3aefd30eb09b933de318927281cebdfff01893ee",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-couchbase-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-couchbase-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3aefd30eb09b933de318927281cebdfff01893ee",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-couchbase-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3aefd30eb09b933de318927281cebdfff01893ee",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-couchbase-test"
+    }
+  },
+  {
+    "name": "spring-boot-data-couchbase",
+    "path": "module/spring-boot-data-couchbase",
+    "sha": "a22fe624b87f5a51aab8b0d1e34b2bb1ea2e5b29",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-couchbase?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-couchbase",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a22fe624b87f5a51aab8b0d1e34b2bb1ea2e5b29",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-couchbase?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a22fe624b87f5a51aab8b0d1e34b2bb1ea2e5b29",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-couchbase"
+    }
+  },
+  {
+    "name": "spring-boot-data-elasticsearch-test",
+    "path": "module/spring-boot-data-elasticsearch-test",
+    "sha": "5532513a469960e4e766f0a6acc0dd2e3e249cfb",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-elasticsearch-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-elasticsearch-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5532513a469960e4e766f0a6acc0dd2e3e249cfb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-elasticsearch-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5532513a469960e4e766f0a6acc0dd2e3e249cfb",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-elasticsearch-test"
+    }
+  },
+  {
+    "name": "spring-boot-data-elasticsearch",
+    "path": "module/spring-boot-data-elasticsearch",
+    "sha": "d47df2cc72d7d98639e49e32aadeefbefebaec58",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-elasticsearch?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-elasticsearch",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d47df2cc72d7d98639e49e32aadeefbefebaec58",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-elasticsearch?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d47df2cc72d7d98639e49e32aadeefbefebaec58",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-elasticsearch"
+    }
+  },
+  {
+    "name": "spring-boot-data-jdbc-test",
+    "path": "module/spring-boot-data-jdbc-test",
+    "sha": "ca44e4f159f6d22672f7d791669cbc806047270b",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ca44e4f159f6d22672f7d791669cbc806047270b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ca44e4f159f6d22672f7d791669cbc806047270b",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc-test"
+    }
+  },
+  {
+    "name": "spring-boot-data-jdbc",
+    "path": "module/spring-boot-data-jdbc",
+    "sha": "c885469139041e4ef8153ef5d8c09351b2d2f484",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c885469139041e4ef8153ef5d8c09351b2d2f484",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c885469139041e4ef8153ef5d8c09351b2d2f484",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc"
+    }
+  },
+  {
+    "name": "spring-boot-data-jpa-test",
+    "path": "module/spring-boot-data-jpa-test",
+    "sha": "f6f9ed7190a45a488d961a08afac74d5d10eae82",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jpa-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jpa-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/f6f9ed7190a45a488d961a08afac74d5d10eae82",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jpa-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/f6f9ed7190a45a488d961a08afac74d5d10eae82",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jpa-test"
+    }
+  },
+  {
+    "name": "spring-boot-data-jpa",
+    "path": "module/spring-boot-data-jpa",
+    "sha": "110309457dfbcdbaf8dd1fd8541967df900df858",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jpa?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jpa",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/110309457dfbcdbaf8dd1fd8541967df900df858",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jpa?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/110309457dfbcdbaf8dd1fd8541967df900df858",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jpa"
+    }
+  },
+  {
+    "name": "spring-boot-data-ldap-test",
+    "path": "module/spring-boot-data-ldap-test",
+    "sha": "491a5a865240321e4f6467a03a06ec25af98b959",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-ldap-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-ldap-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/491a5a865240321e4f6467a03a06ec25af98b959",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-ldap-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/491a5a865240321e4f6467a03a06ec25af98b959",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-ldap-test"
+    }
+  },
+  {
+    "name": "spring-boot-data-ldap",
+    "path": "module/spring-boot-data-ldap",
+    "sha": "6e464614e504102d36cf91b876967e8acfcff979",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-ldap?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-ldap",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/6e464614e504102d36cf91b876967e8acfcff979",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-ldap?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/6e464614e504102d36cf91b876967e8acfcff979",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-ldap"
+    }
+  },
+  {
+    "name": "spring-boot-data-mongodb-test",
+    "path": "module/spring-boot-data-mongodb-test",
+    "sha": "3887a42cec89ccc14d3e661330c40875667e91d7",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-mongodb-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-mongodb-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3887a42cec89ccc14d3e661330c40875667e91d7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-mongodb-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3887a42cec89ccc14d3e661330c40875667e91d7",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-mongodb-test"
+    }
+  },
+  {
+    "name": "spring-boot-data-mongodb",
+    "path": "module/spring-boot-data-mongodb",
+    "sha": "abe15cd927c16fb1105d5b202c28f1834410361d",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-mongodb?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-mongodb",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/abe15cd927c16fb1105d5b202c28f1834410361d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-mongodb?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/abe15cd927c16fb1105d5b202c28f1834410361d",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-mongodb"
+    }
+  },
+  {
+    "name": "spring-boot-data-neo4j-test",
+    "path": "module/spring-boot-data-neo4j-test",
+    "sha": "d3871153c6d5fb17c7be343f43297f5d9804a511",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-neo4j-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-neo4j-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d3871153c6d5fb17c7be343f43297f5d9804a511",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-neo4j-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d3871153c6d5fb17c7be343f43297f5d9804a511",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-neo4j-test"
+    }
+  },
+  {
+    "name": "spring-boot-data-neo4j",
+    "path": "module/spring-boot-data-neo4j",
+    "sha": "78170118d051cdf36735d8395dbfaae796b7a42e",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-neo4j?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-neo4j",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/78170118d051cdf36735d8395dbfaae796b7a42e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-neo4j?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/78170118d051cdf36735d8395dbfaae796b7a42e",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-neo4j"
+    }
+  },
+  {
+    "name": "spring-boot-data-r2dbc-test",
+    "path": "module/spring-boot-data-r2dbc-test",
+    "sha": "c5f96ed14d45469a3503c9921a502473ce0b1b8c",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-r2dbc-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-r2dbc-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c5f96ed14d45469a3503c9921a502473ce0b1b8c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-r2dbc-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c5f96ed14d45469a3503c9921a502473ce0b1b8c",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-r2dbc-test"
+    }
+  },
+  {
+    "name": "spring-boot-data-r2dbc",
+    "path": "module/spring-boot-data-r2dbc",
+    "sha": "f8a55f1e5ceb6e55d2b713bd0171b8eed26c616a",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-r2dbc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-r2dbc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/f8a55f1e5ceb6e55d2b713bd0171b8eed26c616a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-r2dbc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/f8a55f1e5ceb6e55d2b713bd0171b8eed26c616a",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-r2dbc"
+    }
+  },
+  {
+    "name": "spring-boot-data-redis-test",
+    "path": "module/spring-boot-data-redis-test",
+    "sha": "3842939b21b994d708ac916d2f8883a64b7b0c9a",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-redis-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-redis-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3842939b21b994d708ac916d2f8883a64b7b0c9a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-redis-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3842939b21b994d708ac916d2f8883a64b7b0c9a",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-redis-test"
+    }
+  },
+  {
+    "name": "spring-boot-data-redis",
+    "path": "module/spring-boot-data-redis",
+    "sha": "81adc185bb5adeb90caefd37481e0a33e3c26931",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-redis?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-redis",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/81adc185bb5adeb90caefd37481e0a33e3c26931",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-redis?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/81adc185bb5adeb90caefd37481e0a33e3c26931",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-redis"
+    }
+  },
+  {
+    "name": "spring-boot-data-rest",
+    "path": "module/spring-boot-data-rest",
+    "sha": "596a8550fcbb1e301649820e6fb897de11b0d696",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-rest?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-rest",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/596a8550fcbb1e301649820e6fb897de11b0d696",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-rest?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/596a8550fcbb1e301649820e6fb897de11b0d696",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-rest"
+    }
+  },
+  {
+    "name": "spring-boot-devtools",
+    "path": "module/spring-boot-devtools",
+    "sha": "8f39b8ae3111e4035560ef933b91fd5639bb2774",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-devtools?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-devtools",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/8f39b8ae3111e4035560ef933b91fd5639bb2774",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-devtools?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/8f39b8ae3111e4035560ef933b91fd5639bb2774",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-devtools"
+    }
+  },
+  {
+    "name": "spring-boot-elasticsearch",
+    "path": "module/spring-boot-elasticsearch",
+    "sha": "d0cd723439ca6578dc612298cc0fe26b533ca968",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-elasticsearch?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-elasticsearch",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d0cd723439ca6578dc612298cc0fe26b533ca968",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-elasticsearch?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d0cd723439ca6578dc612298cc0fe26b533ca968",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-elasticsearch"
+    }
+  },
+  {
+    "name": "spring-boot-flyway",
+    "path": "module/spring-boot-flyway",
+    "sha": "defcf2cc13942f5f9dca00d3e65f1af41960b4ae",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-flyway?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-flyway",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/defcf2cc13942f5f9dca00d3e65f1af41960b4ae",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-flyway?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/defcf2cc13942f5f9dca00d3e65f1af41960b4ae",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-flyway"
+    }
+  },
+  {
+    "name": "spring-boot-freemarker",
+    "path": "module/spring-boot-freemarker",
+    "sha": "d60173a1dd314eddea4c387aea285a97e4e3bb6d",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-freemarker?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-freemarker",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d60173a1dd314eddea4c387aea285a97e4e3bb6d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-freemarker?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d60173a1dd314eddea4c387aea285a97e4e3bb6d",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-freemarker"
+    }
+  },
+  {
+    "name": "spring-boot-graphql-test",
+    "path": "module/spring-boot-graphql-test",
+    "sha": "fcf3f1e1bce129afb76025eae0c8f2dcde4656b3",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-graphql-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-graphql-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/fcf3f1e1bce129afb76025eae0c8f2dcde4656b3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-graphql-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/fcf3f1e1bce129afb76025eae0c8f2dcde4656b3",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-graphql-test"
+    }
+  },
+  {
+    "name": "spring-boot-graphql",
+    "path": "module/spring-boot-graphql",
+    "sha": "5580a70c387e0ad44e38a7a3e3789e231b1b390e",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-graphql?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-graphql",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5580a70c387e0ad44e38a7a3e3789e231b1b390e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-graphql?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5580a70c387e0ad44e38a7a3e3789e231b1b390e",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-graphql"
+    }
+  },
+  {
+    "name": "spring-boot-groovy-templates",
+    "path": "module/spring-boot-groovy-templates",
+    "sha": "d47599825234124ccfaf39fd8527f3390c9c27b8",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-groovy-templates?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-groovy-templates",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d47599825234124ccfaf39fd8527f3390c9c27b8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-groovy-templates?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d47599825234124ccfaf39fd8527f3390c9c27b8",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-groovy-templates"
+    }
+  },
+  {
+    "name": "spring-boot-gson",
+    "path": "module/spring-boot-gson",
+    "sha": "c2ef999b5268b5a9ff715e1161ca1586f77b4705",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-gson?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-gson",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c2ef999b5268b5a9ff715e1161ca1586f77b4705",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-gson?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c2ef999b5268b5a9ff715e1161ca1586f77b4705",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-gson"
+    }
+  },
+  {
+    "name": "spring-boot-h2console",
+    "path": "module/spring-boot-h2console",
+    "sha": "86301ca4f493b5f04f16ce0c164976db739e81b6",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-h2console?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-h2console",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/86301ca4f493b5f04f16ce0c164976db739e81b6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-h2console?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/86301ca4f493b5f04f16ce0c164976db739e81b6",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-h2console"
+    }
+  },
+  {
+    "name": "spring-boot-hateoas",
+    "path": "module/spring-boot-hateoas",
+    "sha": "0620763e26dfcad977c4252979abc5be9ecec5b2",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-hateoas?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-hateoas",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/0620763e26dfcad977c4252979abc5be9ecec5b2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-hateoas?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/0620763e26dfcad977c4252979abc5be9ecec5b2",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-hateoas"
+    }
+  },
+  {
+    "name": "spring-boot-hazelcast",
+    "path": "module/spring-boot-hazelcast",
+    "sha": "80498f3d5aff4545decfbe91732de68a5982bdc0",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-hazelcast?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-hazelcast",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/80498f3d5aff4545decfbe91732de68a5982bdc0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-hazelcast?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/80498f3d5aff4545decfbe91732de68a5982bdc0",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-hazelcast"
+    }
+  },
+  {
+    "name": "spring-boot-health",
+    "path": "module/spring-boot-health",
+    "sha": "65e264d0509a0a8cb89a14a479b0f6cff7850d99",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-health?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-health",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/65e264d0509a0a8cb89a14a479b0f6cff7850d99",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-health?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/65e264d0509a0a8cb89a14a479b0f6cff7850d99",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-health"
+    }
+  },
+  {
+    "name": "spring-boot-hibernate",
+    "path": "module/spring-boot-hibernate",
+    "sha": "1e667c4e1e1844cdded9fcff73952d812d03792b",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-hibernate?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-hibernate",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/1e667c4e1e1844cdded9fcff73952d812d03792b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-hibernate?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/1e667c4e1e1844cdded9fcff73952d812d03792b",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-hibernate"
+    }
+  },
+  {
+    "name": "spring-boot-http-client",
+    "path": "module/spring-boot-http-client",
+    "sha": "70abf109f53ade6591722b0005b616c3ca43a9ab",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-http-client?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-http-client",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/70abf109f53ade6591722b0005b616c3ca43a9ab",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-http-client?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/70abf109f53ade6591722b0005b616c3ca43a9ab",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-http-client"
+    }
+  },
+  {
+    "name": "spring-boot-http-codec",
+    "path": "module/spring-boot-http-codec",
+    "sha": "6cde8778b27a68bc197d4d369d40423afadd99a0",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-http-codec?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-http-codec",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/6cde8778b27a68bc197d4d369d40423afadd99a0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-http-codec?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/6cde8778b27a68bc197d4d369d40423afadd99a0",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-http-codec"
+    }
+  },
+  {
+    "name": "spring-boot-http-converter",
+    "path": "module/spring-boot-http-converter",
+    "sha": "b2ae27c9fe123566b4ce0030d9aee56ddc493e2f",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-http-converter?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-http-converter",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/b2ae27c9fe123566b4ce0030d9aee56ddc493e2f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-http-converter?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/b2ae27c9fe123566b4ce0030d9aee56ddc493e2f",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-http-converter"
+    }
+  },
+  {
+    "name": "spring-boot-integration",
+    "path": "module/spring-boot-integration",
+    "sha": "3ba29f13cb7f06f26041768c4303c092337cec48",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-integration?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-integration",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3ba29f13cb7f06f26041768c4303c092337cec48",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-integration?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3ba29f13cb7f06f26041768c4303c092337cec48",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-integration"
+    }
+  },
+  {
+    "name": "spring-boot-jackson",
+    "path": "module/spring-boot-jackson",
+    "sha": "7d0e2047fd7cbf68775f2143606d8a12d6706d73",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jackson?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jackson",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/7d0e2047fd7cbf68775f2143606d8a12d6706d73",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jackson?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/7d0e2047fd7cbf68775f2143606d8a12d6706d73",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jackson"
+    }
+  },
+  {
+    "name": "spring-boot-jackson2",
+    "path": "module/spring-boot-jackson2",
+    "sha": "461a7a309632dd4f8b703def16cc81cac9141c6f",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jackson2?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jackson2",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/461a7a309632dd4f8b703def16cc81cac9141c6f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jackson2?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/461a7a309632dd4f8b703def16cc81cac9141c6f",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jackson2"
+    }
+  },
+  {
+    "name": "spring-boot-jdbc-test",
+    "path": "module/spring-boot-jdbc-test",
+    "sha": "ba554491c516a268b9bb05c5f86d1e4cbfb61cef",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jdbc-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jdbc-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ba554491c516a268b9bb05c5f86d1e4cbfb61cef",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jdbc-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ba554491c516a268b9bb05c5f86d1e4cbfb61cef",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jdbc-test"
+    }
+  },
+  {
+    "name": "spring-boot-jdbc",
+    "path": "module/spring-boot-jdbc",
+    "sha": "eb592e896b1f2135092263e4a4f7491965cd44d9",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jdbc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jdbc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/eb592e896b1f2135092263e4a4f7491965cd44d9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jdbc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/eb592e896b1f2135092263e4a4f7491965cd44d9",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jdbc"
+    }
+  },
+  {
+    "name": "spring-boot-jersey",
+    "path": "module/spring-boot-jersey",
+    "sha": "3fd08fda5ae22571e922a74df33f6a9ec44af82e",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jersey?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jersey",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3fd08fda5ae22571e922a74df33f6a9ec44af82e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jersey?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3fd08fda5ae22571e922a74df33f6a9ec44af82e",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jersey"
+    }
+  },
+  {
+    "name": "spring-boot-jetty",
+    "path": "module/spring-boot-jetty",
+    "sha": "1673cd509f9209380b6e40d5ee004bc734850df0",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jetty?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jetty",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/1673cd509f9209380b6e40d5ee004bc734850df0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jetty?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/1673cd509f9209380b6e40d5ee004bc734850df0",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jetty"
+    }
+  },
+  {
+    "name": "spring-boot-jms",
+    "path": "module/spring-boot-jms",
+    "sha": "ab82924e389fb15184f3027590f3a6f8fdce8c05",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jms?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jms",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ab82924e389fb15184f3027590f3a6f8fdce8c05",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jms?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ab82924e389fb15184f3027590f3a6f8fdce8c05",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jms"
+    }
+  },
+  {
+    "name": "spring-boot-jooq-test",
+    "path": "module/spring-boot-jooq-test",
+    "sha": "ded733f26416a779fc0cbad090b4c445e2d97d60",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jooq-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jooq-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ded733f26416a779fc0cbad090b4c445e2d97d60",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jooq-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ded733f26416a779fc0cbad090b4c445e2d97d60",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jooq-test"
+    }
+  },
+  {
+    "name": "spring-boot-jooq",
+    "path": "module/spring-boot-jooq",
+    "sha": "4f894310b110e95e324d4b2c72b02191045a9fb2",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jooq?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jooq",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/4f894310b110e95e324d4b2c72b02191045a9fb2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jooq?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/4f894310b110e95e324d4b2c72b02191045a9fb2",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jooq"
+    }
+  },
+  {
+    "name": "spring-boot-jpa-test",
+    "path": "module/spring-boot-jpa-test",
+    "sha": "677b318350090f0279a41aae525ec32e5d6996d3",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jpa-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jpa-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/677b318350090f0279a41aae525ec32e5d6996d3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jpa-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/677b318350090f0279a41aae525ec32e5d6996d3",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jpa-test"
+    }
+  },
+  {
+    "name": "spring-boot-jpa",
+    "path": "module/spring-boot-jpa",
+    "sha": "58a0de3be9819680ae1d809beee98b11782d5046",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jpa?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jpa",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/58a0de3be9819680ae1d809beee98b11782d5046",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jpa?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/58a0de3be9819680ae1d809beee98b11782d5046",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jpa"
+    }
+  },
+  {
+    "name": "spring-boot-jsonb",
+    "path": "module/spring-boot-jsonb",
+    "sha": "c01ca264e78060af16458d439889054e366fcfe1",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jsonb?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jsonb",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c01ca264e78060af16458d439889054e366fcfe1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-jsonb?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c01ca264e78060af16458d439889054e366fcfe1",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-jsonb"
+    }
+  },
+  {
+    "name": "spring-boot-kafka",
+    "path": "module/spring-boot-kafka",
+    "sha": "d909f24160d9b9ca09e9e608d6bc32a3f84cc0c9",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-kafka?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-kafka",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d909f24160d9b9ca09e9e608d6bc32a3f84cc0c9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-kafka?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d909f24160d9b9ca09e9e608d6bc32a3f84cc0c9",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-kafka"
+    }
+  },
+  {
+    "name": "spring-boot-kotlinx-serialization-json",
+    "path": "module/spring-boot-kotlinx-serialization-json",
+    "sha": "539c95909cc3afb8bc8533b1590f2f3ec352bcda",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-kotlinx-serialization-json?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-kotlinx-serialization-json",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/539c95909cc3afb8bc8533b1590f2f3ec352bcda",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-kotlinx-serialization-json?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/539c95909cc3afb8bc8533b1590f2f3ec352bcda",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-kotlinx-serialization-json"
+    }
+  },
+  {
+    "name": "spring-boot-ldap",
+    "path": "module/spring-boot-ldap",
+    "sha": "2c6d317c3a3eaec14abbf0b0cfc37a9a32b8c697",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-ldap?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-ldap",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/2c6d317c3a3eaec14abbf0b0cfc37a9a32b8c697",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-ldap?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/2c6d317c3a3eaec14abbf0b0cfc37a9a32b8c697",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-ldap"
+    }
+  },
+  {
+    "name": "spring-boot-liquibase",
+    "path": "module/spring-boot-liquibase",
+    "sha": "a562330ac3653c78bc7abbfd712cde61c80e6d29",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-liquibase?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-liquibase",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a562330ac3653c78bc7abbfd712cde61c80e6d29",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-liquibase?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a562330ac3653c78bc7abbfd712cde61c80e6d29",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-liquibase"
+    }
+  },
+  {
+    "name": "spring-boot-mail",
+    "path": "module/spring-boot-mail",
+    "sha": "18977be3ce0f23ef506be0a9c2b45315cc732bbf",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-mail?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-mail",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/18977be3ce0f23ef506be0a9c2b45315cc732bbf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-mail?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/18977be3ce0f23ef506be0a9c2b45315cc732bbf",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-mail"
+    }
+  },
+  {
+    "name": "spring-boot-micrometer-metrics-test",
+    "path": "module/spring-boot-micrometer-metrics-test",
+    "sha": "612c95ace4ddde3bf67a9961f1ade38c4e4623fc",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-metrics-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-metrics-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/612c95ace4ddde3bf67a9961f1ade38c4e4623fc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-metrics-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/612c95ace4ddde3bf67a9961f1ade38c4e4623fc",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-metrics-test"
+    }
+  },
+  {
+    "name": "spring-boot-micrometer-metrics",
+    "path": "module/spring-boot-micrometer-metrics",
+    "sha": "d5945c77c6d4cf1af3f6abdc19c1c3194674fe2b",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-metrics?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-metrics",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d5945c77c6d4cf1af3f6abdc19c1c3194674fe2b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-metrics?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d5945c77c6d4cf1af3f6abdc19c1c3194674fe2b",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-metrics"
+    }
+  },
+  {
+    "name": "spring-boot-micrometer-observation",
+    "path": "module/spring-boot-micrometer-observation",
+    "sha": "2f4c5c1749e8eb077419f1bcd121b0ed40c583aa",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-observation",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/2f4c5c1749e8eb077419f1bcd121b0ed40c583aa",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/2f4c5c1749e8eb077419f1bcd121b0ed40c583aa",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-observation"
+    }
+  },
+  {
+    "name": "spring-boot-micrometer-tracing-brave",
+    "path": "module/spring-boot-micrometer-tracing-brave",
+    "sha": "3137ab39637f6f2e3c406f38a539ac6d5e1cee54",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-tracing-brave?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-tracing-brave",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3137ab39637f6f2e3c406f38a539ac6d5e1cee54",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-tracing-brave?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3137ab39637f6f2e3c406f38a539ac6d5e1cee54",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-tracing-brave"
+    }
+  },
+  {
+    "name": "spring-boot-micrometer-tracing-opentelemetry",
+    "path": "module/spring-boot-micrometer-tracing-opentelemetry",
+    "sha": "c8a94f48498ec2e6d50cbba5aabaf547ea49963d",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-tracing-opentelemetry?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-tracing-opentelemetry",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c8a94f48498ec2e6d50cbba5aabaf547ea49963d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-tracing-opentelemetry?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c8a94f48498ec2e6d50cbba5aabaf547ea49963d",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-tracing-opentelemetry"
+    }
+  },
+  {
+    "name": "spring-boot-micrometer-tracing-test",
+    "path": "module/spring-boot-micrometer-tracing-test",
+    "sha": "b98249d0be7cd5d9dd2992e556c0e6e5bf68b057",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-tracing-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-tracing-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/b98249d0be7cd5d9dd2992e556c0e6e5bf68b057",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-tracing-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/b98249d0be7cd5d9dd2992e556c0e6e5bf68b057",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-tracing-test"
+    }
+  },
+  {
+    "name": "spring-boot-micrometer-tracing",
+    "path": "module/spring-boot-micrometer-tracing",
+    "sha": "9cddbf04cdb969539b1d57e32f697c62af24a04f",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-tracing?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-tracing",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/9cddbf04cdb969539b1d57e32f697c62af24a04f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-tracing?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/9cddbf04cdb969539b1d57e32f697c62af24a04f",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-tracing"
+    }
+  },
+  {
+    "name": "spring-boot-mongodb",
+    "path": "module/spring-boot-mongodb",
+    "sha": "51206f90ddbaeaaa4ba3218482cfc0f9b34499d7",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-mongodb?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-mongodb",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/51206f90ddbaeaaa4ba3218482cfc0f9b34499d7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-mongodb?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/51206f90ddbaeaaa4ba3218482cfc0f9b34499d7",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-mongodb"
+    }
+  },
+  {
+    "name": "spring-boot-mustache",
+    "path": "module/spring-boot-mustache",
+    "sha": "175fc550d19bb56959e6612c53435a1b5941cad5",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-mustache?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-mustache",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/175fc550d19bb56959e6612c53435a1b5941cad5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-mustache?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/175fc550d19bb56959e6612c53435a1b5941cad5",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-mustache"
+    }
+  },
+  {
+    "name": "spring-boot-neo4j",
+    "path": "module/spring-boot-neo4j",
+    "sha": "4d39d516377103c28d8b3a45eedc87f27235c71a",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-neo4j?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-neo4j",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/4d39d516377103c28d8b3a45eedc87f27235c71a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-neo4j?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/4d39d516377103c28d8b3a45eedc87f27235c71a",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-neo4j"
+    }
+  },
+  {
+    "name": "spring-boot-netty",
+    "path": "module/spring-boot-netty",
+    "sha": "472d2b870b9ecbdb0fe2202caa7a50060515432f",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-netty?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-netty",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/472d2b870b9ecbdb0fe2202caa7a50060515432f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-netty?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/472d2b870b9ecbdb0fe2202caa7a50060515432f",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-netty"
+    }
+  },
+  {
+    "name": "spring-boot-opentelemetry",
+    "path": "module/spring-boot-opentelemetry",
+    "sha": "aedceaf0b0de1153ae3efbbab7125e971d1dd584",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-opentelemetry?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-opentelemetry",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/aedceaf0b0de1153ae3efbbab7125e971d1dd584",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-opentelemetry?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/aedceaf0b0de1153ae3efbbab7125e971d1dd584",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-opentelemetry"
+    }
+  },
+  {
+    "name": "spring-boot-persistence",
+    "path": "module/spring-boot-persistence",
+    "sha": "19ee1a5d856cc6e335976506ffb4aaf03fcb2c10",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-persistence",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/19ee1a5d856cc6e335976506ffb4aaf03fcb2c10",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/19ee1a5d856cc6e335976506ffb4aaf03fcb2c10",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-persistence"
+    }
+  },
+  {
+    "name": "spring-boot-pulsar",
+    "path": "module/spring-boot-pulsar",
+    "sha": "65604b30db49785d1d86333c40efa2938042b0e5",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-pulsar?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-pulsar",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/65604b30db49785d1d86333c40efa2938042b0e5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-pulsar?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/65604b30db49785d1d86333c40efa2938042b0e5",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-pulsar"
+    }
+  },
+  {
+    "name": "spring-boot-quartz",
+    "path": "module/spring-boot-quartz",
+    "sha": "359e3fd1568299469aba2c23a3267f651602caf6",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-quartz?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-quartz",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/359e3fd1568299469aba2c23a3267f651602caf6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-quartz?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/359e3fd1568299469aba2c23a3267f651602caf6",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-quartz"
+    }
+  },
+  {
+    "name": "spring-boot-r2dbc",
+    "path": "module/spring-boot-r2dbc",
+    "sha": "ad7aceb3e9763ef348a5519b9e47c65d3faf819e",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-r2dbc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-r2dbc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ad7aceb3e9763ef348a5519b9e47c65d3faf819e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-r2dbc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ad7aceb3e9763ef348a5519b9e47c65d3faf819e",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-r2dbc"
+    }
+  },
+  {
+    "name": "spring-boot-reactor-netty",
+    "path": "module/spring-boot-reactor-netty",
+    "sha": "6333b81ef8bca72602dc6638515f32a293620b16",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-reactor-netty?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-reactor-netty",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/6333b81ef8bca72602dc6638515f32a293620b16",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-reactor-netty?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/6333b81ef8bca72602dc6638515f32a293620b16",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-reactor-netty"
+    }
+  },
+  {
+    "name": "spring-boot-reactor",
+    "path": "module/spring-boot-reactor",
+    "sha": "977a96d1ad00b99ac20caeaed35b043cc4b95db7",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-reactor?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-reactor",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/977a96d1ad00b99ac20caeaed35b043cc4b95db7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-reactor?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/977a96d1ad00b99ac20caeaed35b043cc4b95db7",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-reactor"
+    }
+  },
+  {
+    "name": "spring-boot-restclient-test",
+    "path": "module/spring-boot-restclient-test",
+    "sha": "5badddd0f04feb53a37bb5c4208258e07e22445d",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-restclient-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-restclient-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5badddd0f04feb53a37bb5c4208258e07e22445d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-restclient-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5badddd0f04feb53a37bb5c4208258e07e22445d",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-restclient-test"
+    }
+  },
+  {
+    "name": "spring-boot-restclient",
+    "path": "module/spring-boot-restclient",
+    "sha": "ac67f6a428cd124acf1f372534c49ce2e0b10abd",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-restclient?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-restclient",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ac67f6a428cd124acf1f372534c49ce2e0b10abd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-restclient?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ac67f6a428cd124acf1f372534c49ce2e0b10abd",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-restclient"
+    }
+  },
+  {
+    "name": "spring-boot-restdocs",
+    "path": "module/spring-boot-restdocs",
+    "sha": "19a62f7bb1fa0360db48754dbc31b55ab9e4ccb6",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-restdocs?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-restdocs",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/19a62f7bb1fa0360db48754dbc31b55ab9e4ccb6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-restdocs?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/19a62f7bb1fa0360db48754dbc31b55ab9e4ccb6",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-restdocs"
+    }
+  },
+  {
+    "name": "spring-boot-resttestclient",
+    "path": "module/spring-boot-resttestclient",
+    "sha": "a9534b9bc8375cfed55b07793688cfc1da162e7b",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-resttestclient?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-resttestclient",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a9534b9bc8375cfed55b07793688cfc1da162e7b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-resttestclient?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a9534b9bc8375cfed55b07793688cfc1da162e7b",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-resttestclient"
+    }
+  },
+  {
+    "name": "spring-boot-rsocket-test",
+    "path": "module/spring-boot-rsocket-test",
+    "sha": "64cd3bd7bd4b6cfecbef4d42c47dfcb5a5e06ba6",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-rsocket-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-rsocket-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/64cd3bd7bd4b6cfecbef4d42c47dfcb5a5e06ba6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-rsocket-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/64cd3bd7bd4b6cfecbef4d42c47dfcb5a5e06ba6",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-rsocket-test"
+    }
+  },
+  {
+    "name": "spring-boot-rsocket",
+    "path": "module/spring-boot-rsocket",
+    "sha": "5c81c818017c09736504f8ed8848ca627120ab91",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-rsocket?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-rsocket",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5c81c818017c09736504f8ed8848ca627120ab91",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-rsocket?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5c81c818017c09736504f8ed8848ca627120ab91",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-rsocket"
+    }
+  },
+  {
+    "name": "spring-boot-security-oauth2-authorization-server",
+    "path": "module/spring-boot-security-oauth2-authorization-server",
+    "sha": "86370694a80f36f74e88ab821a528b685e751408",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security-oauth2-authorization-server?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security-oauth2-authorization-server",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/86370694a80f36f74e88ab821a528b685e751408",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security-oauth2-authorization-server?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/86370694a80f36f74e88ab821a528b685e751408",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security-oauth2-authorization-server"
+    }
+  },
+  {
+    "name": "spring-boot-security-oauth2-client",
+    "path": "module/spring-boot-security-oauth2-client",
+    "sha": "3bce325d6072eb800d9b39a8437357d088dbb874",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security-oauth2-client?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security-oauth2-client",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3bce325d6072eb800d9b39a8437357d088dbb874",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security-oauth2-client?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/3bce325d6072eb800d9b39a8437357d088dbb874",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security-oauth2-client"
+    }
+  },
+  {
+    "name": "spring-boot-security-oauth2-resource-server",
+    "path": "module/spring-boot-security-oauth2-resource-server",
+    "sha": "2c9cd79534af01c3b0034c6f13e30341b406672f",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security-oauth2-resource-server?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security-oauth2-resource-server",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/2c9cd79534af01c3b0034c6f13e30341b406672f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security-oauth2-resource-server?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/2c9cd79534af01c3b0034c6f13e30341b406672f",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security-oauth2-resource-server"
+    }
+  },
+  {
+    "name": "spring-boot-security-saml2",
+    "path": "module/spring-boot-security-saml2",
+    "sha": "223fed994296fca75138e52129ba41f2e53da9a1",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security-saml2?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security-saml2",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/223fed994296fca75138e52129ba41f2e53da9a1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security-saml2?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/223fed994296fca75138e52129ba41f2e53da9a1",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security-saml2"
+    }
+  },
+  {
+    "name": "spring-boot-security-test",
+    "path": "module/spring-boot-security-test",
+    "sha": "dacf652b05574779e843dbc4fcaa0e0adf520dd3",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/dacf652b05574779e843dbc4fcaa0e0adf520dd3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/dacf652b05574779e843dbc4fcaa0e0adf520dd3",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security-test"
+    }
+  },
+  {
+    "name": "spring-boot-security",
+    "path": "module/spring-boot-security",
+    "sha": "ba7f1a4372ab75406cdda0886eab57f2a8c4dd7c",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ba7f1a4372ab75406cdda0886eab57f2a8c4dd7c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-security?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ba7f1a4372ab75406cdda0886eab57f2a8c4dd7c",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-security"
+    }
+  },
+  {
+    "name": "spring-boot-sendgrid",
+    "path": "module/spring-boot-sendgrid",
+    "sha": "a21c2500ee13f5b4f2cddb0e5392e0a8ec779376",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-sendgrid?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-sendgrid",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a21c2500ee13f5b4f2cddb0e5392e0a8ec779376",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-sendgrid?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a21c2500ee13f5b4f2cddb0e5392e0a8ec779376",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-sendgrid"
+    }
+  },
+  {
+    "name": "spring-boot-servlet",
+    "path": "module/spring-boot-servlet",
+    "sha": "8aeca03e67c08b0a46abc38a4b3ef14109b48a66",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-servlet?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-servlet",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/8aeca03e67c08b0a46abc38a4b3ef14109b48a66",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-servlet?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/8aeca03e67c08b0a46abc38a4b3ef14109b48a66",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-servlet"
+    }
+  },
+  {
+    "name": "spring-boot-session-data-redis",
+    "path": "module/spring-boot-session-data-redis",
+    "sha": "d570e98a1383c82d3247a65c760ef75a5f2192f4",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-session-data-redis?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-session-data-redis",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d570e98a1383c82d3247a65c760ef75a5f2192f4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-session-data-redis?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d570e98a1383c82d3247a65c760ef75a5f2192f4",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-session-data-redis"
+    }
+  },
+  {
+    "name": "spring-boot-session-jdbc",
+    "path": "module/spring-boot-session-jdbc",
+    "sha": "f2e8545e263bd8fc9a6db09cf76c00b1840a4365",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-session-jdbc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-session-jdbc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/f2e8545e263bd8fc9a6db09cf76c00b1840a4365",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-session-jdbc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/f2e8545e263bd8fc9a6db09cf76c00b1840a4365",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-session-jdbc"
+    }
+  },
+  {
+    "name": "spring-boot-session",
+    "path": "module/spring-boot-session",
+    "sha": "fa0ae912d8a51c01cf29fb11f56a793c38893cc0",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-session?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-session",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/fa0ae912d8a51c01cf29fb11f56a793c38893cc0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-session?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/fa0ae912d8a51c01cf29fb11f56a793c38893cc0",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-session"
+    }
+  },
+  {
+    "name": "spring-boot-sql",
+    "path": "module/spring-boot-sql",
+    "sha": "a6239a96d5788389e5996bfc977e32ee65266e1e",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-sql?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-sql",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a6239a96d5788389e5996bfc977e32ee65266e1e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-sql?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a6239a96d5788389e5996bfc977e32ee65266e1e",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-sql"
+    }
+  },
+  {
+    "name": "spring-boot-test-classic-modules",
+    "path": "module/spring-boot-test-classic-modules",
+    "sha": "173ab04a90d6fbacf811af0328c2c2558fea68ed",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-test-classic-modules?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-test-classic-modules",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/173ab04a90d6fbacf811af0328c2c2558fea68ed",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-test-classic-modules?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/173ab04a90d6fbacf811af0328c2c2558fea68ed",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-test-classic-modules"
+    }
+  },
+  {
+    "name": "spring-boot-thymeleaf",
+    "path": "module/spring-boot-thymeleaf",
+    "sha": "27d6a0882fcf8be3ced8a58aaf1758d8300f666b",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-thymeleaf?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-thymeleaf",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/27d6a0882fcf8be3ced8a58aaf1758d8300f666b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-thymeleaf?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/27d6a0882fcf8be3ced8a58aaf1758d8300f666b",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-thymeleaf"
+    }
+  },
+  {
+    "name": "spring-boot-tomcat",
+    "path": "module/spring-boot-tomcat",
+    "sha": "747a2189c2226ef4cde9ea67b5c169e7111e29ee",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-tomcat?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-tomcat",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/747a2189c2226ef4cde9ea67b5c169e7111e29ee",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-tomcat?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/747a2189c2226ef4cde9ea67b5c169e7111e29ee",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-tomcat"
+    }
+  },
+  {
+    "name": "spring-boot-transaction",
+    "path": "module/spring-boot-transaction",
+    "sha": "5eae8051997bac702c58c743f132ae56b5d599ba",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-transaction?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-transaction",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5eae8051997bac702c58c743f132ae56b5d599ba",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-transaction?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/5eae8051997bac702c58c743f132ae56b5d599ba",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-transaction"
+    }
+  },
+  {
+    "name": "spring-boot-validation",
+    "path": "module/spring-boot-validation",
+    "sha": "2f16b93fc2659a2499e29f524074fd24f3a7fb64",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-validation?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-validation",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/2f16b93fc2659a2499e29f524074fd24f3a7fb64",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-validation?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/2f16b93fc2659a2499e29f524074fd24f3a7fb64",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-validation"
+    }
+  },
+  {
+    "name": "spring-boot-web-server",
+    "path": "module/spring-boot-web-server",
+    "sha": "24eb746858f5a045c497e30b7159e25c5a534059",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-web-server?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-web-server",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/24eb746858f5a045c497e30b7159e25c5a534059",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-web-server?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/24eb746858f5a045c497e30b7159e25c5a534059",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-web-server"
+    }
+  },
+  {
+    "name": "spring-boot-webclient-test",
+    "path": "module/spring-boot-webclient-test",
+    "sha": "85de4fa6431ffc645e9481c89f6aaeee80c46283",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webclient-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webclient-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/85de4fa6431ffc645e9481c89f6aaeee80c46283",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webclient-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/85de4fa6431ffc645e9481c89f6aaeee80c46283",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webclient-test"
+    }
+  },
+  {
+    "name": "spring-boot-webclient",
+    "path": "module/spring-boot-webclient",
+    "sha": "0af7cf3286a4699d671d7c249f086786c8f4033c",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webclient?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webclient",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/0af7cf3286a4699d671d7c249f086786c8f4033c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webclient?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/0af7cf3286a4699d671d7c249f086786c8f4033c",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webclient"
+    }
+  },
+  {
+    "name": "spring-boot-webflux-test",
+    "path": "module/spring-boot-webflux-test",
+    "sha": "953002c4a0ed82c4c9da28e5984d3ad5035ea495",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webflux-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webflux-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/953002c4a0ed82c4c9da28e5984d3ad5035ea495",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webflux-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/953002c4a0ed82c4c9da28e5984d3ad5035ea495",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webflux-test"
+    }
+  },
+  {
+    "name": "spring-boot-webflux",
+    "path": "module/spring-boot-webflux",
+    "sha": "8a06fbb8f7ead4ee53a7694b9d18e04cab140b05",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webflux?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webflux",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/8a06fbb8f7ead4ee53a7694b9d18e04cab140b05",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webflux?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/8a06fbb8f7ead4ee53a7694b9d18e04cab140b05",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webflux"
+    }
+  },
+  {
+    "name": "spring-boot-webmvc-test",
+    "path": "module/spring-boot-webmvc-test",
+    "sha": "55b149b29beba3f38ea6d17d1c09a91bf76a0cee",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webmvc-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webmvc-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/55b149b29beba3f38ea6d17d1c09a91bf76a0cee",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webmvc-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/55b149b29beba3f38ea6d17d1c09a91bf76a0cee",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webmvc-test"
+    }
+  },
+  {
+    "name": "spring-boot-webmvc",
+    "path": "module/spring-boot-webmvc",
+    "sha": "cefc046464d08f382dacc8f8155f87af570b12a8",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webmvc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webmvc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/cefc046464d08f382dacc8f8155f87af570b12a8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webmvc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/cefc046464d08f382dacc8f8155f87af570b12a8",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webmvc"
+    }
+  },
+  {
+    "name": "spring-boot-webservices-test",
+    "path": "module/spring-boot-webservices-test",
+    "sha": "1fd95d7ee789f98dc5897166dd08d8a9d92482bf",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webservices-test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webservices-test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/1fd95d7ee789f98dc5897166dd08d8a9d92482bf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webservices-test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/1fd95d7ee789f98dc5897166dd08d8a9d92482bf",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webservices-test"
+    }
+  },
+  {
+    "name": "spring-boot-webservices",
+    "path": "module/spring-boot-webservices",
+    "sha": "55882e6069867616163b949eb44abf9aa2972bb5",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webservices?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webservices",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/55882e6069867616163b949eb44abf9aa2972bb5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webservices?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/55882e6069867616163b949eb44abf9aa2972bb5",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webservices"
+    }
+  },
+  {
+    "name": "spring-boot-websocket",
+    "path": "module/spring-boot-websocket",
+    "sha": "c2355722c240cfb71d94c2e41747b0d234ad9673",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-websocket?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-websocket",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c2355722c240cfb71d94c2e41747b0d234ad9673",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-websocket?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/c2355722c240cfb71d94c2e41747b0d234ad9673",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-websocket"
+    }
+  },
+  {
+    "name": "spring-boot-webtestclient",
+    "path": "module/spring-boot-webtestclient",
+    "sha": "76e6c1b36ff3c5655c3e5d2df5f76f20d8fddca0",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webtestclient?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webtestclient",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/76e6c1b36ff3c5655c3e5d2df5f76f20d8fddca0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-webtestclient?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/76e6c1b36ff3c5655c3e5d2df5f76f20d8fddca0",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-webtestclient"
+    }
+  },
+  {
+    "name": "spring-boot-zipkin",
+    "path": "module/spring-boot-zipkin",
+    "sha": "838238c45d90111257877f150f37a9bd6ea3645c",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-zipkin?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-zipkin",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/838238c45d90111257877f150f37a9bd6ea3645c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-zipkin?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/838238c45d90111257877f150f37a9bd6ea3645c",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-zipkin"
+    }
+  }
+]
+
+web search: 
+web search: 
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6 spring-boot-data-jdbc-4.0.6-sources.jar
+web search: 
+web search: 
+web search: 
+web search: https://github.com/spring-projects/spring-boot
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/spring-boot-data-jdbc-4.0.6.module' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.springframework.boot",
+    "module": "spring-boot-data-jdbc",
+    "version": "4.0.6",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.4.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-data-commons",
+          "version": {
+            "requires": "4.0.6"
+          }
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-jdbc",
+          "version": {
+            "requires": "4.0.6"
+          }
+        },
+        {
+          "group": "org.springframework.data",
+          "module": "spring-data-jdbc",
+          "version": {
+            "requires": "4.0.5"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "spring-boot-data-jdbc-4.0.6.jar",
+          "url": "spring-boot-data-jdbc-4.0.6.jar",
+          "size": 15472,
+          "sha512": "daced5948f52bd95fd2f92d77f0ff5a5995cd25cfd4839544114dd2ca2c9a457336a4d829bac60086c5e979bf333240a87a564334f7216d4c0d42f2e8625ea11",
+          "sha256": "79d79fdba8be601acd5aba8534cf8a1e74b4a9db8ecaf178683279b4d8d66865",
+          "sha1": "b26e692a91adea788ab706a686086f18242f8c5a",
+          "md5": "3c64f57ccffe953059d7a87a5050591b"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-data-commons",
+          "version": {
+            "requires": "4.0.6"
+          }
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-jdbc",
+          "version": {
+            "requires": "4.0.6"
+          }
+        },
+        {
+          "group": "org.springframework.data",
+          "module": "spring-data-jdbc",
+          "version": {
+            "requires": "4.0.5"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "spring-boot-data-jdbc-4.0.6.jar",
+          "url": "spring-boot-data-jdbc-4.0.6.jar",
+          "size": 15472,
+          "sha512": "daced5948f52bd95fd2f92d77f0ff5a5995cd25cfd4839544114dd2ca2c9a457336a4d829bac60086c5e979bf333240a87a564334f7216d4c0d42f2e8625ea11",
+          "sha256": "79d79fdba8be601acd5aba8534cf8a1e74b4a9db8ecaf178683279b4d8d66865",
+          "sha1": "b26e692a91adea788ab706a686086f18242f8c5a",
+          "md5": "3c64f57ccffe953059d7a87a5050591b"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spring-boot-data-jdbc-4.0.6-javadoc.jar",
+          "url": "spring-boot-data-jdbc-4.0.6-javadoc.jar",
+          "size": 115171,
+          "sha512": "7f824d17df52b66a63f0f75923dd16ed140f63f0ba097fd2891e2c760ec56dfe21aea7846c90a875065b8cd11de9d010513dab176ca57cea2b5771615941e994",
+          "sha256": "325768eb4c20f3959ca46925b463dd94abf2475b4f27e4e4b9e9ba1d7f94e2d7",
+          "sha1": "edab8435337ced1ee77a0552adb972ed37c11181",
+          "md5": "08bc079c796ca8fd6b358b67a11028f0"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spring-boot-data-jdbc-4.0.6-sources.jar",
+          "url": "spring-boot-data-jdbc-4.0.6-sources.jar",
+          "size": 12007,
+          "sha512": "6a0e3fb7a798d5909fe149725e942d267fdb11c5a997e028f96272d8331a3868bbcfbe0d2ef6742034943d3687d4e966c76dc418d2c6befdfc6293451cb5bf6f",
+          "sha256": "4c331898fb819af8ac2665b329c0981857565cac6899ee5817b7b0d4d32ba63f",
+          "sha1": "e05f8eff789e3125ca1b744dda48c3c2d641b817",
+          "md5": "b469af628ecd39c76f9cafbc1d09e977"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc?ref=v4.0.6' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src?ref=v4.0.6' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 196ms:
+[
+  {
+    "name": "build.gradle",
+    "path": "module/spring-boot-data-jdbc/build.gradle",
+    "sha": "ec310d551be59966e60a8770192e06d49966f4ae",
+    "size": 2316,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/build.gradle?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/module/spring-boot-data-jdbc/build.gradle",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/ec310d551be59966e60a8770192e06d49966f4ae",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/module/spring-boot-data-jdbc/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/build.gradle?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/ec310d551be59966e60a8770192e06d49966f4ae",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/module/spring-boot-data-jdbc/build.gradle"
+    }
+  },
+  {
+    "name": "src",
+    "path": "module/spring-boot-data-jdbc/src",
+    "sha": "119ab74b37427113f25caf63e3b186d1ddb36105",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/119ab74b37427113f25caf63e3b186d1ddb36105",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/119ab74b37427113f25caf63e3b186d1ddb36105",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src"
+    }
+  }
+]
+
+ succeeded in 210ms:
+[
+  {
+    "name": "dockerTest",
+    "path": "module/spring-boot-data-jdbc/src/dockerTest",
+    "sha": "a89d0d574e6fd785189c3fa83c7ef265785d06c2",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src/dockerTest?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/dockerTest",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a89d0d574e6fd785189c3fa83c7ef265785d06c2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src/dockerTest?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a89d0d574e6fd785189c3fa83c7ef265785d06c2",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/dockerTest"
+    }
+  },
+  {
+    "name": "main",
+    "path": "module/spring-boot-data-jdbc/src/main",
+    "sha": "bd852eb3138edafeede0b3456216f41c244c43a8",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src/main?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/main",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/bd852eb3138edafeede0b3456216f41c244c43a8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src/main?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/bd852eb3138edafeede0b3456216f41c244c43a8",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "module/spring-boot-data-jdbc/src/test",
+    "sha": "f12090e81297cbdbc86d3f9e4f43b7e1556ee530",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src/test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/f12090e81297cbdbc86d3f9e4f43b7e1556ee530",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src/test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/f12090e81297cbdbc86d3f9e4f43b7e1556ee530",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/test"
+    }
+  }
+]
+
+codex
+Maven Central publishes the main JAR, sources JAR, and javadoc JAR for `4.0.6`, but no test JAR. The Spring Boot tag has the module tests under `module/spring-boot-data-jdbc/src/test`, so I’ll use Maven for sources/docs and GitHub for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+index 2007640fa795aad377c8d18f1d61714e1345f8d1..ae07b9d3c47e36dd5a0331fc12da9a0adce710ab
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-data-jdbc/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-javadoc.jar",
++  "description" : "Spring Boot Data JDBC provides auto-configuration and integration support for using Spring Data JDBC in Spring Boot applications. It configures JDBC repository infrastructure and related data access components so applications can work with relational databases through Spring Boot conventions."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+index 2007640fa795aad377c8d18f1d61714e1345f8d1..ae07b9d3c47e36dd5a0331fc12da9a0adce710ab
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-data-jdbc/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-javadoc.jar",
++  "description" : "Spring Boot Data JDBC provides auto-configuration and integration support for using Spring Data JDBC in Spring Boot applications. It configures JDBC repository infrastructure and related data access components so applications can work with relational databases through Spring Boot conventions."
+ }
+
+codex
+The JSON is updated. I’m doing a quick validation pass now: parse the file and check that the version-substituted URLs resolve.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot-data-jdbc:4.0.6",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-data-jdbc/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-javadoc.jar",
+  "description": "Spring Boot Data JDBC provides auto-configuration and integration support for using Spring Data JDBC in Spring Boot applications. It configures JDBC repository infrastructure and related data access components so applications can work with relational databases through Spring Boot conventions."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/spring-boot-data-jdbc-4.0.6-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 20:34:45 GMT
+content-type: application/java-archive
+content-length: 12007
+cf-ray: 9fe5e2576f5aed57-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2263231
+etag: "b469af628ecd39c76f9cafbc1d09e977"
+last-modified: Thu, 23 Apr 2026 15:18:45 GMT
+x-checksum-md5: b469af628ecd39c76f9cafbc1d09e977
+x-checksum-sha1: e05f8eff789e3125ca1b744dda48c3c2d641b817
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/spring-boot-data-jdbc-4.0.6-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 20:34:45 GMT
+content-type: application/java-archive
+content-length: 115171
+cf-ray: 9fe5e2577f48524a-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 581475
+etag: "08bc079c796ca8fd6b358b67a11028f0"
+last-modified: Thu, 23 Apr 2026 15:18:50 GMT
+x-checksum-md5: 08bc079c796ca8fd6b358b67a11028f0
+x-checksum-sha1: edab8435337ced1ee77a0552adb972ed37c11181
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+index 2007640fa795aad377c8d18f1d61714e1345f8d1..ae07b9d3c47e36dd5a0331fc12da9a0adce710ab
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-data-jdbc/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-javadoc.jar",
++  "description" : "Spring Boot Data JDBC provides auto-configuration and integration support for using Spring Data JDBC in Spring Boot applications. It configures JDBC repository infrastructure and related data access components so applications can work with relational databases through Spring Boot conventions."
+ }
+
+ succeeded in 596ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 20:34:45 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"480e1aab115591c703240749d7dcc158"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=%2Bzwzolj%2FU6dLQ7%2BT63qsoF6dF6EFGWZJ8a2CTOu7lU3w0oEJZncrviCVvsTfdJrgrhdBkjCO%2BKNUs28WqYEWRaGDrd%2BerTewHgzQ01Awh2jxgC7YO3Wne2045hN3Wnm4gErv%2F5SI2TyJSf%2FjA9d55PRPap%2B54rtSo2tzRX8TFVRp6f1uqQbX2jm5l8vMX1Qq1s3L%2FVyZ143etcJcf34Csq7MgJaPn4B0wmtdjL93VWog5d9kCucgr7%2FuZjr3zSbdn0hPAinT6IblTZ%2Fo2w7xRA%3D%3D--AsdqFYJLA6zc5Tad--Lt0%2FSVnv74xoqd0cX9aFkw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.802319228.1779222885; expires=Wed, 19 May 2027 20:34:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 19 May 2027 20:34:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620E:EA187:FD616D2:C6D2B51:6A0CC965
+
+
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/test
+web search: 
+web search: repo.maven.apache.org org.springframework.boot spring-boot-data-jdbc 4.0.6 javadoc sources jar pom scm
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+index 2007640fa795aad377c8d18f1d61714e1345f8d1..ae07b9d3c47e36dd5a0331fc12da9a0adce710ab
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-data-jdbc/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-javadoc.jar",
++  "description" : "Spring Boot Data JDBC provides auto-configuration and integration support for using Spring Data JDBC in Spring Boot applications. It configures JDBC repository infrastructure and related data access components so applications can work with relational databases through Spring Boot conventions."
+ }
+
+ succeeded in 264ms:
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/test
+codex
+Updated [org.springframework.boot-spring-boot-data-jdbc-4.0.6.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json) with repository, Maven sources/javadoc URLs, GitHub test suite URL, and a two-sentence description.
+
+Validation done: JSON parses with `jq`, and the substituted `4.0.6` source, javadoc, and test URLs return HTTP 200. I left `language` and `not-for-native-image` absent because this is a JVM Spring Boot JAR.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+index 2007640fa795aad377c8d18f1d61714e1345f8d1..ae07b9d3c47e36dd5a0331fc12da9a0adce710ab
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-data-jdbc:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-data-jdbc/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-javadoc.jar",
++  "description" : "Spring Boot Data JDBC provides auto-configuration and integration support for using Spring Data JDBC in Spring Boot applications. It configures JDBC repository infrastructure and related data access components so applications can work with relational databases through Spring Boot conventions."
+ }
+
+tokens used
+94,716
+Updated [org.springframework.boot-spring-boot-data-jdbc-4.0.6.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-data-jdbc-4.0.6.json) with repository, Maven sources/javadoc URLs, GitHub test suite URL, and a two-sentence description.
+
+Validation done: JSON parses with `jq`, and the substituted `4.0.6` source, javadoc, and test URLs return HTTP 200. I left `language` and `not-for-native-image` absent because this is a JVM Spring Boot JAR.
+Ran agent for org.springframework.boot:spring-boot-data-jdbc:4.0.6 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-data-jdbc-4.0.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 50s
+9 actionable tasks: 9 executed

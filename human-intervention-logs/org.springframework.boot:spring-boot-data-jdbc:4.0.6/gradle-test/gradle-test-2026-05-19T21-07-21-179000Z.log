@@ -1,0 +1,732 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.boot:spring-boot-data-jdbc:4.0.6
+Command: `/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 21 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/tests/src/org.springframework.boot/spring-boot-data-jdbc/4.0.6/build/test-results/test/testlist
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/tests/src/org.springframework.boot/spring-boot-data-jdbc/4.0.6/build/test-results/test/testlist] and its subfolders.
+JUnit Platform on Native Image - report
+----------------------------------------
+
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest > dataJdbcPropertiesExposeConfiguredDatabaseDialect() SUCCESSFUL
+
+org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest > autoConfigurationUsesCustomNamingStrategyForJdbcMapping() FAILED
+
+org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest > autoConfigurationIsAdvertisedForSpringBootDiscovery() SUCCESSFUL
+
+org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest > autoConfigurationDetectsJdbcDialectFromDataSourceWhenDialectIsNotConfigured() FAILED
+
+org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest > autoConfigurationBindsDialectAndCreatesJdbcRepositoryInfrastructure() FAILED
+
+org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest > repositoryQueriesUseSpringDataJdbcMappingAndDerivedQueryMethods() FAILED
+
+org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest > repositoryAutoConfigurationCanBeDisabled() FAILED
+
+
+Failures (5):
+  JUnit Jupiter:Spring_boot_data_jdbcTest:autoConfigurationUsesCustomNamingStrategyForJdbcMapping()
+    MethodSource [className = 'org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest', methodName = 'autoConfigurationUsesCustomNamingStrategyForJdbcMapping', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting:
+ <Unstarted application context org.springframework.boot.test.context.assertj.AssertableApplicationContext[startupFailure=org.springframework.beans.factory.UnsatisfiedDependencyException]>
+to have a single bean of type:
+ <org.springframework.data.relational.core.mapping.NamingStrategy>:
+but context failed to start:
+ org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataSource' defined in org.springframework.boot.jdbc.autoconfigure.DataSourceConfiguration$Generic: Unsatisfied dependency expressed through method 'dataSource' parameter 0: Error creating bean with name 'spring.datasource-org.springframework.boot.jdbc.autoconfigure.DataSourceProperties': Could not bind properties to 'DataSourceProperties' : prefix=spring.datasource, ignoreInvalidFields=false, ignoreUnknownFields=true
+ 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+ 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121)
+ 	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994)
+ 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.configureContext(AbstractApplicationContextRunner.java:444)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAndLoadContext(AbstractApplicationContextRunner.java:414)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$createAssertableContext$0(AbstractApplicationContextRunner.java:399)
+ 	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getContextOrStartupFailure(AssertProviderApplicationContextInvocationHandler.java:63)
+ 	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.<init>(AssertProviderApplicationContextInvocationHandler.java:50)
+ 	at org.springframework.boot.test.context.assertj.ApplicationContextAssertProvider.get(ApplicationContextAssertProvider.java:136)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAssertableContext(AbstractApplicationContextRunner.java:399)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:370)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+ 	at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+ 	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+ 	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+ 	at org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.autoConfigurationUsesCustomNamingStrategyForJdbcMapping(Spring_boot_data_jdbcTest.java:177)
+ 	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+ 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:701)
+ 	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:502)
+ 	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:45)
+ 	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+ 	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+ 	at org.junit.jupiter.api.util.PreemptiveTimeoutUtils.lambda$submitTask$0(PreemptiveTimeoutUtils.java:82)
+ 	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+ 	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+ 	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+ 	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+ 	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+ Caused by: org.springframework.boot.context.properties.ConfigurationPropertiesBindException: Error creating bean with name 'spring.datasource-org.springframework.boot.jdbc.autoconfigure.DataSourceProperties': Could not bind properties to 'DataSourceProperties' : prefix=spring.datasource, ignoreInvalidFields=false, ignoreUnknownFields=true
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.bind(ConfigurationPropertiesBindingPostProcessor.java:104)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.postProcessBeforeInitialization(ConfigurationPropertiesBindingPostProcessor.java:84)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:426)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1809)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+ 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+ 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:229)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1762)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+ 	... 44 more
+ Caused by: org.springframework.boot.context.properties.bind.BindException: Failed to bind properties under 'spring.datasource.type' to java.lang.Class<javax.sql.DataSource>
+ 	at org.springframework.boot.context.properties.bind.Binder.handleBindError(Binder.java:418)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:377)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$0(Binder.java:505)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:127)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:115)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:71)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$2(Binder.java:508)
+ 	at org.springframework.boot.context.properties.bind.Binder.fromDataObjectBinders(Binder.java:517)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$1(Binder.java:507)
+ 	at org.springframework.boot.context.properties.bind.Binder$Context.withIncreasedDepth(Binder.java:632)
+ 	at org.springframework.boot.context.properties.bind.Binder$Context.withDataObject(Binder.java:618)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindDataObject(Binder.java:509)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindObject(Binder.java:445)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:373)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:360)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:287)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:274)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBinder.bind(ConfigurationPropertiesBinder.java:96)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.bind(ConfigurationPropertiesBindingPostProcessor.java:101)
+ 	... 58 more
+ Caused by: org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [java.lang.Class<javax.sql.DataSource>] for value [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:47)
+ 	at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:181)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:113)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:104)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:96)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindProperty(Binder.java:491)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindObject(Binder.java:434)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:373)
+ 	... 75 more
+ Caused by: org.springframework.beans.TypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Class'; Could not find class [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:82)
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:67)
+ 	at org.springframework.boot.context.properties.bind.BindConverter$TypeConverterConverter.convert(BindConverter.java:241)
+ 	at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:41)
+ 	... 82 more
+ Caused by: java.lang.IllegalArgumentException: Could not find class [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:353)
+ 	at org.springframework.beans.propertyeditors.ClassEditor.setAsText(ClassEditor.java:65)
+ 	at org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:434)
+ 	at org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:407)
+ 	at org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:158)
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:75)
+ 	... 85 more
+ Caused by: java.lang.ClassNotFoundException: org.springframework.jdbc.datasource.SimpleDriverDataSource
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+ 	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1972)
+ 	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+ 	at org.springframework.util.ClassUtils.forName(ClassUtils.java:302)
+ 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:343)
+ 	... 90 more
+
+       org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.lambda$autoConfigurationUsesCustomNamingStrategyForJdbcMapping$0(Spring_boot_data_jdbcTest.java:178)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+       org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+       org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+       org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+       [...]
+  JUnit Jupiter:Spring_boot_data_jdbcTest:autoConfigurationDetectsJdbcDialectFromDataSourceWhenDialectIsNotConfigured()
+    MethodSource [className = 'org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest', methodName = 'autoConfigurationDetectsJdbcDialectFromDataSourceWhenDialectIsNotConfigured', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting:
+ <Unstarted application context org.springframework.boot.test.context.assertj.AssertableApplicationContext[startupFailure=org.springframework.beans.factory.UnsatisfiedDependencyException]>
+to have a single bean of type:
+ <org.springframework.boot.data.jdbc.autoconfigure.DataJdbcProperties>:
+but context failed to start:
+ org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataSource' defined in org.springframework.boot.jdbc.autoconfigure.DataSourceConfiguration$Generic: Unsatisfied dependency expressed through method 'dataSource' parameter 0: Error creating bean with name 'spring.datasource-org.springframework.boot.jdbc.autoconfigure.DataSourceProperties': Could not bind properties to 'DataSourceProperties' : prefix=spring.datasource, ignoreInvalidFields=false, ignoreUnknownFields=true
+ 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+ 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121)
+ 	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994)
+ 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.configureContext(AbstractApplicationContextRunner.java:444)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAndLoadContext(AbstractApplicationContextRunner.java:414)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$createAssertableContext$0(AbstractApplicationContextRunner.java:399)
+ 	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getContextOrStartupFailure(AssertProviderApplicationContextInvocationHandler.java:63)
+ 	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.<init>(AssertProviderApplicationContextInvocationHandler.java:50)
+ 	at org.springframework.boot.test.context.assertj.ApplicationContextAssertProvider.get(ApplicationContextAssertProvider.java:136)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAssertableContext(AbstractApplicationContextRunner.java:399)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:370)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+ 	at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+ 	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+ 	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+ 	at org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.autoConfigurationDetectsJdbcDialectFromDataSourceWhenDialectIsNotConfigured(Spring_boot_data_jdbcTest.java:124)
+ 	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+ 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:701)
+ 	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:502)
+ 	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:45)
+ 	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+ 	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+ 	at org.junit.jupiter.api.util.PreemptiveTimeoutUtils.lambda$submitTask$0(PreemptiveTimeoutUtils.java:82)
+ 	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+ 	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+ 	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+ 	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+ 	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+ Caused by: org.springframework.boot.context.properties.ConfigurationPropertiesBindException: Error creating bean with name 'spring.datasource-org.springframework.boot.jdbc.autoconfigure.DataSourceProperties': Could not bind properties to 'DataSourceProperties' : prefix=spring.datasource, ignoreInvalidFields=false, ignoreUnknownFields=true
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.bind(ConfigurationPropertiesBindingPostProcessor.java:104)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.postProcessBeforeInitialization(ConfigurationPropertiesBindingPostProcessor.java:84)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:426)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1809)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+ 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+ 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:229)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1762)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+ 	... 44 more
+ Caused by: org.springframework.boot.context.properties.bind.BindException: Failed to bind properties under 'spring.datasource.type' to java.lang.Class<javax.sql.DataSource>
+ 	at org.springframework.boot.context.properties.bind.Binder.handleBindError(Binder.java:418)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:377)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$0(Binder.java:505)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:127)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:115)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:71)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$2(Binder.java:508)
+ 	at org.springframework.boot.context.properties.bind.Binder.fromDataObjectBinders(Binder.java:517)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$1(Binder.java:507)
+ 	at org.springframework.boot.context.properties.bind.Binder$Context.withIncreasedDepth(Binder.java:632)
+ 	at org.springframework.boot.context.properties.bind.Binder$Context.withDataObject(Binder.java:618)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindDataObject(Binder.java:509)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindObject(Binder.java:445)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:373)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:360)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:287)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:274)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBinder.bind(ConfigurationPropertiesBinder.java:96)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.bind(ConfigurationPropertiesBindingPostProcessor.java:101)
+ 	... 58 more
+ Caused by: org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [java.lang.Class<javax.sql.DataSource>] for value [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:47)
+ 	at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:181)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:113)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:104)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:96)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindProperty(Binder.java:491)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindObject(Binder.java:434)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:373)
+ 	... 75 more
+ Caused by: org.springframework.beans.TypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Class'; Could not find class [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:82)
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:67)
+ 	at org.springframework.boot.context.properties.bind.BindConverter$TypeConverterConverter.convert(BindConverter.java:241)
+ 	at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:41)
+ 	... 82 more
+ Caused by: java.lang.IllegalArgumentException: Could not find class [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:353)
+ 	at org.springframework.beans.propertyeditors.ClassEditor.setAsText(ClassEditor.java:65)
+ 	at org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:434)
+ 	at org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:407)
+ 	at org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:158)
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:75)
+ 	... 85 more
+ Caused by: java.lang.ClassNotFoundException: org.springframework.jdbc.datasource.SimpleDriverDataSource
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+ 	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1972)
+ 	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+ 	at org.springframework.util.ClassUtils.forName(ClassUtils.java:302)
+ 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:343)
+ 	... 90 more
+
+       org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.lambda$autoConfigurationDetectsJdbcDialectFromDataSourceWhenDialectIsNotConfigured$0(Spring_boot_data_jdbcTest.java:125)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+       org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+       org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+       org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+       [...]
+  JUnit Jupiter:Spring_boot_data_jdbcTest:autoConfigurationBindsDialectAndCreatesJdbcRepositoryInfrastructure()
+    MethodSource [className = 'org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest', methodName = 'autoConfigurationBindsDialectAndCreatesJdbcRepositoryInfrastructure', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting:
+ <Unstarted application context org.springframework.boot.test.context.assertj.AssertableApplicationContext[startupFailure=org.springframework.beans.factory.UnsatisfiedDependencyException]>
+to have a single bean of type:
+ <javax.sql.DataSource>:
+but context failed to start:
+ org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataSource' defined in org.springframework.boot.jdbc.autoconfigure.DataSourceConfiguration$Generic: Unsatisfied dependency expressed through method 'dataSource' parameter 0: Error creating bean with name 'spring.datasource-org.springframework.boot.jdbc.autoconfigure.DataSourceProperties': Could not bind properties to 'DataSourceProperties' : prefix=spring.datasource, ignoreInvalidFields=false, ignoreUnknownFields=true
+ 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+ 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121)
+ 	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994)
+ 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.configureContext(AbstractApplicationContextRunner.java:444)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAndLoadContext(AbstractApplicationContextRunner.java:414)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$createAssertableContext$0(AbstractApplicationContextRunner.java:399)
+ 	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getContextOrStartupFailure(AssertProviderApplicationContextInvocationHandler.java:63)
+ 	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.<init>(AssertProviderApplicationContextInvocationHandler.java:50)
+ 	at org.springframework.boot.test.context.assertj.ApplicationContextAssertProvider.get(ApplicationContextAssertProvider.java:136)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAssertableContext(AbstractApplicationContextRunner.java:399)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:370)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+ 	at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+ 	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+ 	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+ 	at org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.autoConfigurationBindsDialectAndCreatesJdbcRepositoryInfrastructure(Spring_boot_data_jdbcTest.java:80)
+ 	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+ 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:701)
+ 	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:502)
+ 	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:45)
+ 	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+ 	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+ 	at org.junit.jupiter.api.util.PreemptiveTimeoutUtils.lambda$submitTask$0(PreemptiveTimeoutUtils.java:82)
+ 	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+ 	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+ 	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+ 	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+ 	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+ Caused by: org.springframework.boot.context.properties.ConfigurationPropertiesBindException: Error creating bean with name 'spring.datasource-org.springframework.boot.jdbc.autoconfigure.DataSourceProperties': Could not bind properties to 'DataSourceProperties' : prefix=spring.datasource, ignoreInvalidFields=false, ignoreUnknownFields=true
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.bind(ConfigurationPropertiesBindingPostProcessor.java:104)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.postProcessBeforeInitialization(ConfigurationPropertiesBindingPostProcessor.java:84)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:426)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1809)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+ 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+ 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:229)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1762)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+ 	... 44 more
+ Caused by: org.springframework.boot.context.properties.bind.BindException: Failed to bind properties under 'spring.datasource.type' to java.lang.Class<javax.sql.DataSource>
+ 	at org.springframework.boot.context.properties.bind.Binder.handleBindError(Binder.java:418)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:377)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$0(Binder.java:505)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:127)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:115)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:71)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$2(Binder.java:508)
+ 	at org.springframework.boot.context.properties.bind.Binder.fromDataObjectBinders(Binder.java:517)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$1(Binder.java:507)
+ 	at org.springframework.boot.context.properties.bind.Binder$Context.withIncreasedDepth(Binder.java:632)
+ 	at org.springframework.boot.context.properties.bind.Binder$Context.withDataObject(Binder.java:618)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindDataObject(Binder.java:509)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindObject(Binder.java:445)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:373)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:360)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:287)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:274)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBinder.bind(ConfigurationPropertiesBinder.java:96)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.bind(ConfigurationPropertiesBindingPostProcessor.java:101)
+ 	... 58 more
+ Caused by: org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [java.lang.Class<javax.sql.DataSource>] for value [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:47)
+ 	at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:181)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:113)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:104)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:96)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindProperty(Binder.java:491)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindObject(Binder.java:434)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:373)
+ 	... 75 more
+ Caused by: org.springframework.beans.TypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Class'; Could not find class [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:82)
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:67)
+ 	at org.springframework.boot.context.properties.bind.BindConverter$TypeConverterConverter.convert(BindConverter.java:241)
+ 	at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:41)
+ 	... 82 more
+ Caused by: java.lang.IllegalArgumentException: Could not find class [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:353)
+ 	at org.springframework.beans.propertyeditors.ClassEditor.setAsText(ClassEditor.java:65)
+ 	at org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:434)
+ 	at org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:407)
+ 	at org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:158)
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:75)
+ 	... 85 more
+ Caused by: java.lang.ClassNotFoundException: org.springframework.jdbc.datasource.SimpleDriverDataSource
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+ 	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1972)
+ 	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+ 	at org.springframework.util.ClassUtils.forName(ClassUtils.java:302)
+ 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:343)
+ 	... 90 more
+
+       org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.lambda$autoConfigurationBindsDialectAndCreatesJdbcRepositoryInfrastructure$0(Spring_boot_data_jdbcTest.java:81)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+       org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+       org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+       org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+       [...]
+  JUnit Jupiter:Spring_boot_data_jdbcTest:repositoryQueriesUseSpringDataJdbcMappingAndDerivedQueryMethods()
+    MethodSource [className = 'org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest', methodName = 'repositoryQueriesUseSpringDataJdbcMappingAndDerivedQueryMethods', methodParameterTypes = '']
+    => java.lang.IllegalStateException: Unstarted application context org.springframework.boot.test.context.assertj.AssertableApplicationContext[startupFailure=org.springframework.beans.factory.UnsatisfiedDependencyException] failed to start
+       org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getStartedApplicationContext(AssertProviderApplicationContextInvocationHandler.java:159)
+       org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.invokeApplicationContextMethod(AssertProviderApplicationContextInvocationHandler.java:150)
+       org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.invoke(AssertProviderApplicationContextInvocationHandler.java:87)
+       jdk.proxy4/jdk.proxy4.$Proxy/s71c21bd4.getBean(Unknown Source)
+       org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.lambda$repositoryQueriesUseSpringDataJdbcMappingAndDerivedQueryMethods$0(Spring_boot_data_jdbcTest.java:141)
+       [...]
+     Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataSource' defined in org.springframework.boot.jdbc.autoconfigure.DataSourceConfiguration$Generic: Unsatisfied dependency expressed through method 'dataSource' parameter 0: Error creating bean with name 'spring.datasource-org.springframework.boot.jdbc.autoconfigure.DataSourceProperties': Could not bind properties to 'DataSourceProperties' : prefix=spring.datasource, ignoreInvalidFields=false, ignoreUnknownFields=true
+       org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+       org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+       org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+       org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+       org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+       [...]
+     Caused by: org.springframework.boot.context.properties.ConfigurationPropertiesBindException: Error creating bean with name 'spring.datasource-org.springframework.boot.jdbc.autoconfigure.DataSourceProperties': Could not bind properties to 'DataSourceProperties' : prefix=spring.datasource, ignoreInvalidFields=false, ignoreUnknownFields=true
+       org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.bind(ConfigurationPropertiesBindingPostProcessor.java:104)
+       org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.postProcessBeforeInitialization(ConfigurationPropertiesBindingPostProcessor.java:84)
+       org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:426)
+       org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1809)
+       org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603)
+       [...]
+     Caused by: org.springframework.boot.context.properties.bind.BindException: Failed to bind properties under 'spring.datasource.type' to java.lang.Class<javax.sql.DataSource>
+       org.springframework.boot.context.properties.bind.Binder.handleBindError(Binder.java:418)
+       org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:377)
+       org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$0(Binder.java:505)
+       org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:127)
+       org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:115)
+       [...]
+     Caused by: org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [java.lang.Class<javax.sql.DataSource>] for value [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+       org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:47)
+       org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:181)
+       org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:113)
+       org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:104)
+       org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:96)
+       [...]
+     Caused by: org.springframework.beans.TypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Class'; Could not find class [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+       org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:82)
+       org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:67)
+       org.springframework.boot.context.properties.bind.BindConverter$TypeConverterConverter.convert(BindConverter.java:241)
+       org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:41)
+       [...]
+     Caused by: java.lang.IllegalArgumentException: Could not find class [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+       org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:353)
+       org.springframework.beans.propertyeditors.ClassEditor.setAsText(ClassEditor.java:65)
+       org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:434)
+       org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:407)
+       org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:158)
+       [...]
+     Caused by: java.lang.ClassNotFoundException: org.springframework.jdbc.datasource.SimpleDriverDataSource
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+       java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1972)
+       java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+       org.springframework.util.ClassUtils.forName(ClassUtils.java:302)
+       org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:343)
+       [...]
+  JUnit Jupiter:Spring_boot_data_jdbcTest:repositoryAutoConfigurationCanBeDisabled()
+    MethodSource [className = 'org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest', methodName = 'repositoryAutoConfigurationCanBeDisabled', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting:
+ <Unstarted application context org.springframework.boot.test.context.assertj.AssertableApplicationContext[startupFailure=org.springframework.beans.factory.UnsatisfiedDependencyException]>
+to have a single bean of type:
+ <javax.sql.DataSource>:
+but context failed to start:
+ org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataSource' defined in org.springframework.boot.jdbc.autoconfigure.DataSourceConfiguration$Generic: Unsatisfied dependency expressed through method 'dataSource' parameter 0: Error creating bean with name 'spring.datasource-org.springframework.boot.jdbc.autoconfigure.DataSourceProperties': Could not bind properties to 'DataSourceProperties' : prefix=spring.datasource, ignoreInvalidFields=false, ignoreUnknownFields=true
+ 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+ 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1218)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1184)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121)
+ 	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994)
+ 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.configureContext(AbstractApplicationContextRunner.java:444)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAndLoadContext(AbstractApplicationContextRunner.java:414)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$createAssertableContext$0(AbstractApplicationContextRunner.java:399)
+ 	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getContextOrStartupFailure(AssertProviderApplicationContextInvocationHandler.java:63)
+ 	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.<init>(AssertProviderApplicationContextInvocationHandler.java:50)
+ 	at org.springframework.boot.test.context.assertj.ApplicationContextAssertProvider.get(ApplicationContextAssertProvider.java:136)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAssertableContext(AbstractApplicationContextRunner.java:399)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:370)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+ 	at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+ 	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+ 	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+ 	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+ 	at org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.repositoryAutoConfigurationCanBeDisabled(Spring_boot_data_jdbcTest.java:164)
+ 	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+ 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:701)
+ 	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:502)
+ 	at org.junit.jupiter.engine.support.MethodReflectionUtils.invoke(MethodReflectionUtils.java:45)
+ 	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:61)
+ 	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:124)
+ 	at org.junit.jupiter.api.util.PreemptiveTimeoutUtils.lambda$submitTask$0(PreemptiveTimeoutUtils.java:82)
+ 	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+ 	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+ 	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+ 	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+ 	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+ Caused by: org.springframework.boot.context.properties.ConfigurationPropertiesBindException: Error creating bean with name 'spring.datasource-org.springframework.boot.jdbc.autoconfigure.DataSourceProperties': Could not bind properties to 'DataSourceProperties' : prefix=spring.datasource, ignoreInvalidFields=false, ignoreUnknownFields=true
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.bind(ConfigurationPropertiesBindingPostProcessor.java:104)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.postProcessBeforeInitialization(ConfigurationPropertiesBindingPostProcessor.java:84)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:426)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1809)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603)
+ 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+ 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+ 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+ 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:229)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1762)
+ 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912)
+ 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+ 	... 44 more
+ Caused by: org.springframework.boot.context.properties.bind.BindException: Failed to bind properties under 'spring.datasource.type' to java.lang.Class<javax.sql.DataSource>
+ 	at org.springframework.boot.context.properties.bind.Binder.handleBindError(Binder.java:418)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:377)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$0(Binder.java:505)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:127)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:115)
+ 	at org.springframework.boot.context.properties.bind.JavaBeanBinder.bind(JavaBeanBinder.java:71)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$2(Binder.java:508)
+ 	at org.springframework.boot.context.properties.bind.Binder.fromDataObjectBinders(Binder.java:517)
+ 	at org.springframework.boot.context.properties.bind.Binder.lambda$bindDataObject$1(Binder.java:507)
+ 	at org.springframework.boot.context.properties.bind.Binder$Context.withIncreasedDepth(Binder.java:632)
+ 	at org.springframework.boot.context.properties.bind.Binder$Context.withDataObject(Binder.java:618)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindDataObject(Binder.java:509)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindObject(Binder.java:445)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:373)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:360)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:287)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:274)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBinder.bind(ConfigurationPropertiesBinder.java:96)
+ 	at org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor.bind(ConfigurationPropertiesBindingPostProcessor.java:101)
+ 	... 58 more
+ Caused by: org.springframework.core.convert.ConversionFailedException: Failed to convert from type [java.lang.String] to type [java.lang.Class<javax.sql.DataSource>] for value [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:47)
+ 	at org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:181)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:113)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:104)
+ 	at org.springframework.boot.context.properties.bind.BindConverter.convert(BindConverter.java:96)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindProperty(Binder.java:491)
+ 	at org.springframework.boot.context.properties.bind.Binder.bindObject(Binder.java:434)
+ 	at org.springframework.boot.context.properties.bind.Binder.bind(Binder.java:373)
+ 	... 75 more
+ Caused by: org.springframework.beans.TypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Class'; Could not find class [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:82)
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:67)
+ 	at org.springframework.boot.context.properties.bind.BindConverter$TypeConverterConverter.convert(BindConverter.java:241)
+
+ 	at org.springframework.core.convert.support.ConversionUtils.invokeConverter(ConversionUtils.java:41)
+FAILURE: Build failed with an exception.
+ 	... 82 more
+
+ Caused by: java.lang.IllegalArgumentException: Could not find class [org.springframework.jdbc.datasource.SimpleDriverDataSource]
+* What went wrong:
+ 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:353)
+Execution failed for task ':nativeTest'.
+ 	at org.springframework.beans.propertyeditors.ClassEditor.setAsText(ClassEditor.java:65)
+> Process 'command '/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/tests/src/org.springframework.boot/spring-boot-data-jdbc/4.0.6/build/native/nativeTestCompile/org.springframework.boot.spring-boot-data-jdbc_tests-tests'' finished with non-zero exit value 1
+ 	at org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:434)
+
+ 	at org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:407)
+* Try:
+ 	at org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:158)
+> Run with --stacktrace option to get the stack trace.
+ 	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:75)
+> Run with --info or --debug option to get more log output.
+ 	... 85 more
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+ Caused by: java.lang.ClassNotFoundException: org.springframework.jdbc.datasource.SimpleDriverDataSource
+> Get more help at https://help.gradle.org.
+ 	at org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.registry.ClassRegistries.forName(ClassRegistries.java:263)
+
+ 	at java.base@25.0.2/java.lang.Class.forName0(DynamicHub.java:1972)
+BUILD FAILED in 3s
+ 	at java.base@25.0.2/java.lang.Class.forName(DynamicHub.java:547)
+ 	at org.springframework.util.ClassUtils.forName(ClassUtils.java:302)
+ 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:343)
+ 	... 90 more
+
+       org_springframework_boot.spring_boot_data_jdbc.Spring_boot_data_jdbcTest.lambda$repositoryAutoConfigurationCanBeDisabled$0(Spring_boot_data_jdbcTest.java:165)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+       org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+       org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+       org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+       org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+       [...]
+
+Test run finished after 33 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         7 tests found           ]
+[         0 tests skipped         ]
+[         7 tests started         ]
+[         0 tests aborted         ]
+[         2 tests successful      ]
+[         5 tests failed          ]
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/tests/src/org.springframework.boot/spring-boot-data-jdbc/4.0.6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+17 actionable tasks: 2 executed, 15 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.boot:spring-boot-data-jdbc:4.0.6 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date

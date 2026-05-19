@@ -1,0 +1,484 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.131.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e41f3-63b0-79e3-9b2e-50878f13717f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-data-jdbc:4.0.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [4.0.6].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/metadata/org.springframework.boot/spring-boot-data-jdbc/index.json
+- Entry selector: "metadata-version" = "4.0.6"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-sources.jar
+- repository-url: https://github.com/spring-projects/spring-boot
+- test-code-url: https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-data-jdbc/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-javadoc.jar
+- description: Spring Boot Data JDBC provides auto-configuration and integration support for using Spring Data JDBC in Spring Boot applications. It configures JDBC repository infrastructure and related data access components so applications can work with relational databases through Spring Boot conventions.
+- language: <missing>
+
+Context:
+- Coordinate version: 4.0.6
+- Entry metadata-version: 4.0.6
+- Entry test-version: 4.0.6
+- Entry tested-versions: [4.0.6]
+codex
+I’ll verify the Maven classifiers and the Spring Boot tag paths first, then update only fields that are missing or stale under the URL maintenance rules.
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-data-jdbc 4.0.6 sources javadoc tests
+web search: 
+web search: 
+codex
+The Maven source and javadoc classifiers are the likely best source/documentation choices, but the GitHub test path needs checking because Spring Boot’s module layout is easy to mistype. Next I’m reading the local entry and probing exact rendered URLs for `4.0.6`.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"4.0.6\")' metadata/org.springframework.boot/spring-boot-data-jdbc/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "4.0.6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-sources.jar",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-data-jdbc/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-javadoc.jar",
+  "description": "Spring Boot Data JDBC provides auto-configuration and integration support for using Spring Data JDBC in Spring Boot applications. It configures JDBC repository infrastructure and related data access components so applications can work with relational databases through Spring Boot conventions.",
+  "tested-versions": [
+    "4.0.6"
+  ],
+  "allowed-packages": [
+    "org.springframework.boot.data.jdbc.autoconfigure"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/spring-boot-data-jdbc-4.0.6-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Tue, 19 May 2026 20:35:44 GMT
+content-type: application/java-archive
+content-length: 115171
+cf-ray: 9fe5e3cceee70dfa-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 581535
+etag: "08bc079c796ca8fd6b358b67a11028f0"
+last-modified: Thu, 23 Apr 2026 15:18:50 GMT
+x-checksum-md5: 08bc079c796ca8fd6b358b67a11028f0
+x-checksum-sha1: edab8435337ced1ee77a0552adb972ed37c11181
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  112k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/spring-boot-data-jdbc-4.0.6-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Tue, 19 May 2026 20:35:44 GMT
+content-type: application/java-archive
+content-length: 12007
+cf-ray: 9fe5e3ccea050e8f-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2263291
+etag: "b469af628ecd39c76f9cafbc1d09e977"
+last-modified: Thu, 23 Apr 2026 15:18:45 GMT
+x-checksum-md5: b469af628ecd39c76f9cafbc1d09e977
+x-checksum-sha1: e05f8eff789e3125ca1b744dda48c3c2d641b817
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0 12007    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/spring-boot-data-jdbc-4.0.6-test-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ exited 22 in 259ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned HTTP/2 404 
+date: Tue, 19 May 2026 20:35:45 GMT
+content-type: text/html
+cf-ray: 9fe5e3cd2a58baf7-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/spring-boot-data-jdbc-4.0.6-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+error: 404
+
+web search: 
+web search: site:github.com/spring-projects/spring-boot/tree/v4.0.6 spring-boot-data-jdbc src/test
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/spring-projects/spring-boot/tree/v4.0.6/modules/spring-boot-data-jdbc/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+exec
+/usr/bin/bash -lc "curl -s --fail https://api.github.com/repos/spring-projects/spring-boot/contents?ref=v4.0.6 | jq -r '.[].name'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/spring-projects/spring-boot/tree/v4.0.6/spring-boot-project/spring-boot-data-jdbc/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 294ms:
+.editorconfig
+.git-blame-ignore-revs
+.github
+.gitignore
+.idea
+.sdkmanrc
+CONTRIBUTING.adoc
+LICENSE.txt
+README.adoc
+SUPPORT.adoc
+antora
+build-plugin
+build.gradle
+buildSrc
+buildpack
+cli
+config
+configuration-metadata
+core
+documentation
+eclipse
+git
+gradle.properties
+gradle
+gradlew
+gradlew.bat
+integration-test
+loader
+module
+platform
+settings.gradle
+smoke-test
+spring-boot-project
+starter
+system-test
+test-support
+
+ exited 22 in 454ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 19 May 2026 20:35:53 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=3yURXY6DIbpR5ImZkGvtRJKAAt7B9SnG2T%2FiNjJzp%2F81T0RNnUziIEPf%2FdeFYhiMF47pBVhRg5%2Bq5KnBREvdfDc7Gubzei6C%2BW8TOiNG2hhFjtWlTyuBNv2maH3fIlSPHBwg%2FAL9FEa8RGRpBGtl6KXE2qwn%2B9K9HUEmrfgR6EP9qEuaZuzhyZMBbfbTe85VhRwONPEaD%2BRpRQ7y4xFZu56Ixh27O%2BPH%2Fdxa%2BAkt6O8wV0AnIGadgbCYCWryecVn8LZm%2F9V1lza5vGDVQVzUzw%3D%3D--iOKolvB7Ati%2Bm4v%2F--fPXDHV1MQLPxgnCHuBHX6w%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.885104875.1779222953; expires=Wed, 19 May 2027 20:35:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 19 May 2027 20:35:53 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6205:1C1416:FB6BC5E:C568539:6A0CC9A9
+
+
+ exited 22 in 405ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 19 May 2026 20:35:53 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=rLfGYPbO3X7RptaHnOt9nl8TcZhpdfbRZhfbVjJ%2BbWjwukRi6Ox%2FnS1%2FfpJCUIpAKrladhniQdzF9HfPRctkKdY%2F08Xerhl1dt2lStYvi7wYUivqLYhcuk2GV0VQIL2Uh0QUXaSBE3Tx%2BuWOYhzmAwPixYk5XXz0lbqBxTer0v4DfPpLCBRQC7AeWl6vLXKMCIUFYKhHcffW2tTfIyV1HPZHoGP34Rk3Ek9%2FsZsTBzHDxWHwLk4imJH%2BVMP9UmWkelz7Nc%2FXw1KUt4U6W8nD3Q%3D%3D--VfEI4YHFoct%2BTpB4--piyPFDY9cVyo%2Felub9A5Gg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2129745468.1779222953; expires=Wed, 19 May 2027 20:35:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 19 May 2027 20:35:53 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6207:EA187:FD8C523:C6F3751:6A0CC9A9
+
+
+ succeeded in 556ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Tue, 19 May 2026 20:35:53 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0a7855b589002b4cbaa7e348bf50542b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=DrekykhIKmvBHypgJyGlekh5IkLE9yTyCJSg%2F2V8B5Ln4QnaVjlAyh%2FsshvSe5%2FECZcswHvsCGJnMHbo6b%2Fx5We6HiRm9TBOIrIrKW7MXg9PsF46rPrcl%2FXnPBWKIDlry6aq%2Fm4vpwyttH%2FfGf0Sbe%2FHrsab4qmZPcMqmV2Sq7Qsjf%2FtFPmH2JnIp3tmm6vVyUpngddxQAgqQHAQ%2BHOE2W960Q4fjHnTNx%2FqHY%2BQ6%2Boa1qmspOiGYhevCxUBH4u8KmWZX9gbZA%2BXbNNowK0z4w%3D%3D--p3upwhJZ3KTzJ%2Bgo--dv93vlWIDq6wpklakRXn%2Bg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.278330460.1779222953; expires=Wed, 19 May 2027 20:35:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 19 May 2027 20:35:53 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6204:1C91F2:1013FE7F:C998DE8:6A0CC9A9
+
+
+codex
+The Maven source and javadoc URLs both return 200 for `4.0.6`; Maven does not publish a `test-sources` classifier for this artifact, so GitHub remains the right test-suite fallback. The existing GitHub test path also resolves for tag `v4.0.6`, so the only likely edit is adding `language` if the artifact is language-specific, which I’m checking before changing anything.
+exec
+/usr/bin/bash -lc "curl -s --fail https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/spring-boot-data-jdbc-4.0.6.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-data-jdbc</artifactId>
+  <version>4.0.6</version>
+  <name>spring-boot-data-jdbc</name>
+  <description>Spring Boot Data JDBC</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-data-commons</artifactId>
+      <version>4.0.6</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-jdbc</artifactId>
+      <version>4.0.6</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jdbc</artifactId>
+      <version>4.0.5</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -s --fail https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-data-jdbc/4.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-data-jdbc/4.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-data-jdbc-4.0.6-javadoc.jar" title="spring-boot-data-jdbc-4.0.6-javadoc.jar">spring-boot-data-jdbc-4.0.6-javadoc.jar</a>           2026-04-23 15:18    115171      
+<a href="spring-boot-data-jdbc-4.0.6-javadoc.jar.asc" title="spring-boot-data-jdbc-4.0.6-javadoc.jar.asc">spring-boot-data-jdbc-4.0.6-javadoc.jar.asc</a>       2026-04-23 15:18       833      
+<a href="spring-boot-data-jdbc-4.0.6-javadoc.jar.md5" title="spring-boot-data-jdbc-4.0.6-javadoc.jar.md5">spring-boot-data-jdbc-4.0.6-javadoc.jar.md5</a>       2026-04-23 15:18        32      
+<a href="spring-boot-data-jdbc-4.0.6-javadoc.jar.sha1" title="spring-boot-data-jdbc-4.0.6-javadoc.jar.sha1">spring-boot-data-jdbc-4.0.6-javadoc.jar.sha1</a>      2026-04-23 15:18        40      
+<a href="spring-boot-data-jdbc-4.0.6-sources.jar" title="spring-boot-data-jdbc-4.0.6-sources.jar">spring-boot-data-jdbc-4.0.6-sources.jar</a>           2026-04-23 15:18     12007      
+<a href="spring-boot-data-jdbc-4.0.6-sources.jar.asc" title="spring-boot-data-jdbc-4.0.6-sources.jar.asc">spring-boot-data-jdbc-4.0.6-sources.jar.asc</a>       2026-04-23 15:18       833      
+<a href="spring-boot-data-jdbc-4.0.6-sources.jar.md5" title="spring-boot-data-jdbc-4.0.6-sources.jar.md5">spring-boot-data-jdbc-4.0.6-sources.jar.md5</a>       2026-04-23 15:18        32      
+<a href="spring-boot-data-jdbc-4.0.6-sources.jar.sha1" title="spring-boot-data-jdbc-4.0.6-sources.jar.sha1">spring-boot-data-jdbc-4.0.6-sources.jar.sha1</a>      2026-04-23 15:18        40      
+<a href="spring-boot-data-jdbc-4.0.6.jar" title="spring-boot-data-jdbc-4.0.6.jar">spring-boot-data-jdbc-4.0.6.jar</a>                   2026-04-23 15:18     15472      
+<a href="spring-boot-data-jdbc-4.0.6.jar.asc" title="spring-boot-data-jdbc-4.0.6.jar.asc">spring-boot-data-jdbc-4.0.6.jar.asc</a>               2026-04-23 15:18       833      
+<a href="spring-boot-data-jdbc-4.0.6.jar.md5" title="spring-boot-data-jdbc-4.0.6.jar.md5">spring-boot-data-jdbc-4.0.6.jar.md5</a>               2026-04-23 15:18        32      
+<a href="spring-boot-data-jdbc-4.0.6.jar.sha1" title="spring-boot-data-jdbc-4.0.6.jar.sha1">spring-boot-data-jdbc-4.0.6.jar.sha1</a>              2026-04-23 15:18        40      
+<a href="spring-boot-data-jdbc-4.0.6.module" title="spring-boot-data-jdbc-4.0.6.module">spring-boot-data-jdbc-4.0.6.module</a>                2026-04-23 15:18      4704      
+<a href="spring-boot-data-jdbc-4.0.6.module.asc" title="spring-boot-data-jdbc-4.0.6.module.asc">spring-boot-data-jdbc-4.0.6.module.asc</a>            2026-04-23 15:18       833      
+<a href="spring-boot-data-jdbc-4.0.6.module.md5" title="spring-boot-data-jdbc-4.0.6.module.md5">spring-boot-data-jdbc-4.0.6.module.md5</a>            2026-04-23 15:18        32      
+<a href="spring-boot-data-jdbc-4.0.6.module.sha1" title="spring-boot-data-jdbc-4.0.6.module.sha1">spring-boot-data-jdbc-4.0.6.module.sha1</a>           2026-04-23 15:18        40      
+<a href="spring-boot-data-jdbc-4.0.6.pom" title="spring-boot-data-jdbc-4.0.6.pom">spring-boot-data-jdbc-4.0.6.pom</a>                   2026-04-23 15:18      2447      
+<a href="spring-boot-data-jdbc-4.0.6.pom.asc" title="spring-boot-data-jdbc-4.0.6.pom.asc">spring-boot-data-jdbc-4.0.6.pom.asc</a>               2026-04-23 15:18       833      
+<a href="spring-boot-data-jdbc-4.0.6.pom.md5" title="spring-boot-data-jdbc-4.0.6.pom.md5">spring-boot-data-jdbc-4.0.6.pom.md5</a>               2026-04-23 15:18        32      
+<a href="spring-boot-data-jdbc-4.0.6.pom.sha1" title="spring-boot-data-jdbc-4.0.6.pom.sha1">spring-boot-data-jdbc-4.0.6.pom.sha1</a>              2026-04-23 15:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -s --fail https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src/main?ref=v4.0.6 | jq -r '.[].name'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+exec
+/usr/bin/bash -lc "curl -s --fail https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-data-jdbc/src/test?ref=v4.0.6 | jq -r '.[].name'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 196ms:
+java
+resources
+
+ succeeded in 214ms:
+java
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/4.0.6/spring-boot-data-jdbc-4.0.6-sources.jar
+web search: 
+web search: https://docs.spring.io/spring-boot/reference/testing/test-modules.html
+web search: 
+web search: github spring-projects spring-boot v4.0.6 module spring-boot-data-jdbc src test java
+codex
+The artifact itself is Java source under `src/main/java` and `src/test/java`; it is not one of the Kotlin/Groovy/Scala language-specific libraries covered by the `language` field rules. Since every requested field is already non-blank and the versioned URLs render correctly, I’m just validating the JSON and confirming there is no accidental diff.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.springframework.boot/spring-boot-data-jdbc/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.springframework.boot/spring-boot-data-jdbc/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-data-jdbc 4.0.6 spring-boot-data-jdbc-4.0.6-sources.jar javadoc.jar
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-data-jdbc/src/test
+web search: 
+web search: 
+codex
+Checked [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/metadata/org.springframework.boot/spring-boot-data-jdbc/index.json). No edit was needed: all requested non-language fields were already non-blank and valid, and `language` remains absent because this is not a Kotlin/Groovy/Scala-specific artifact. Maven Central lists `4.0.6`, and the tagged GitHub test directory exists under `v4.0.6`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/?utm_source=openai))
+
+Selected values retained:
+
+```text
+repository-url: https://github.com/spring-projects/spring-boot
+source-code-url: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-sources.jar
+test-code-url: https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-data-jdbc/src/test
+documentation-url: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-javadoc.jar
+language: absent
+```
+
+Validation run: `jq empty metadata/org.springframework.boot/spring-boot-data-jdbc/index.json`. Git diff for the file is empty.
+tokens used
+60,181
+Checked [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/metadata/org.springframework.boot/spring-boot-data-jdbc/index.json). No edit was needed: all requested non-language fields were already non-blank and valid, and `language` remains absent because this is not a Kotlin/Groovy/Scala-specific artifact. Maven Central lists `4.0.6`, and the tagged GitHub test directory exists under `v4.0.6`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/?utm_source=openai))
+
+Selected values retained:
+
+```text
+repository-url: https://github.com/spring-projects/spring-boot
+source-code-url: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-sources.jar
+test-code-url: https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-data-jdbc/src/test
+documentation-url: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-data-jdbc/$version$/spring-boot-data-jdbc-$version$-javadoc.jar
+language: absent
+```
+
+Validation run: `jq empty metadata/org.springframework.boot/spring-boot-data-jdbc/index.json`. Git diff for the file is empty.
+Ran agent for org.springframework.boot:spring-boot-data-jdbc:4.0.6 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/build/agent-url-discovery-logs/org.springframework.boot-spring-boot-data-jdbc-4.0.6.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7060-6f7a0f2e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 7s
+9 actionable tasks: 1 executed, 8 up-to-date
