@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -41,6 +43,7 @@ import org.springframework.integration.kafka.inbound.KafkaInboundGateway;
 import org.springframework.integration.kafka.inbound.KafkaMessageDrivenChannelAdapter;
 import org.springframework.integration.kafka.inbound.KafkaMessageSource;
 import org.springframework.integration.kafka.outbound.KafkaProducerMessageHandler;
+import org.springframework.integration.kafka.support.KafkaIntegrationHeaders;
 import org.springframework.integration.kafka.support.KafkaSendFailureException;
 import org.springframework.integration.kafka.support.RawRecordHeaderErrorMessageStrategy;
 import org.springframework.integration.support.ErrorMessageUtils;
@@ -52,6 +55,7 @@ import org.springframework.kafka.listener.ConsumerProperties;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.kafka.support.TopicPartitionOffset;
 import org.springframework.kafka.support.converter.MessagingMessageConverter;
 import org.springframework.messaging.Message;
@@ -103,6 +107,44 @@ public class Spring_integration_kafkaTest {
         assertThat(successMessage.getPayload()).isNotNull();
         assertThat(handler.getComponentType()).isEqualTo("kafka:outbound-channel-adapter");
         assertThat(handler.isRunning()).isTrue();
+
+        handler.stop();
+    }
+
+    @Test
+    void outboundAdapterPublishesSendFuturesWithCorrelationToken() throws Exception {
+        TrackingProducerFactory producerFactory = new TrackingProducerFactory();
+        QueueChannel futuresChannel = new QueueChannel();
+
+        KafkaProducerMessageHandler<String, String> handler = Kafka
+                .<String, String>outboundChannelAdapter(producerFactory)
+                .topic(TOPIC)
+                .messageKey("order-7")
+                .futuresChannel(futuresChannel)
+                .sendFailureChannel(new QueueChannel())
+                .getObject();
+        handler.setBeanFactory(integrationBeanFactory());
+        handler.afterPropertiesSet();
+        handler.start();
+
+        String futureToken = "future-token-1";
+        handler.handleMessage(MessageBuilder.withPayload("future-send")
+                .setHeader(KafkaIntegrationHeaders.FUTURE_TOKEN, futureToken)
+                .build());
+
+        Message<?> futureMessage = futuresChannel.receive(1_000);
+        assertThat(futureMessage).isNotNull();
+        assertThat(futureMessage.getHeaders()).containsEntry(KafkaIntegrationHeaders.FUTURE_TOKEN, futureToken);
+        assertThat(futureMessage.getPayload()).isInstanceOf(CompletableFuture.class);
+
+        CompletableFuture<?> sendFuture = (CompletableFuture<?>) futureMessage.getPayload();
+        assertThat(sendFuture.get(1, TimeUnit.SECONDS)).isInstanceOfSatisfying(SendResult.class, (sendResult) -> {
+            ProducerRecord<?, ?> producerRecord = ((SendResult<?, ?>) sendResult).getProducerRecord();
+            assertThat(producerRecord.topic()).isEqualTo(TOPIC);
+            assertThat(producerRecord.key()).isEqualTo("order-7");
+            assertThat(producerRecord.value()).isEqualTo("future-send");
+            assertThat(producerRecord.headers().lastHeader(KafkaIntegrationHeaders.FUTURE_TOKEN)).isNull();
+        });
 
         handler.stop();
     }
