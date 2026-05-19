@@ -152,8 +152,7 @@ public class Spring_boot_validationTest {
                         .isEqualTo("must be greater than or equal to 18");
                 assertThat(((ValidatorAdapter) adapter).getTarget()).isSameAs(target);
                 assertThat(((ValidatorAdapter) adapter).unwrap(LocalValidatorFactoryBean.class)).isSameAs(target);
-            }
-            finally {
+            } finally {
                 target.destroy();
             }
         }
@@ -199,8 +198,7 @@ public class Spring_boot_validationTest {
         context.register(configurationClasses);
         try {
             context.refresh();
-        }
-        catch (RuntimeException ex) {
+        } catch (RuntimeException ex) {
             context.close();
             throw ex;
         }
