@@ -6,11 +6,116 @@
  */
 package org_springframework_boot.spring_boot_data_commons;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import io.micrometer.core.instrument.Timer;
 import org.junit.jupiter.api.Test;
 
-class Spring_boot_data_commonsTest {
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
+import org.springframework.boot.data.autoconfigure.metrics.DataMetricsProperties;
+import org.springframework.boot.data.autoconfigure.metrics.PropertiesAutoTimer;
+import org.springframework.boot.data.autoconfigure.web.DataWebProperties;
+import org.springframework.boot.data.metrics.AutoTimer;
+import org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Spring_boot_data_commonsTest {
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void dataWebPropertiesExposeDocumentedDefaults() {
+        DataWebProperties properties = new DataWebProperties();
+
+        assertThat(properties.getPageable().getPageParameter()).isEqualTo("page");
+        assertThat(properties.getPageable().getSizeParameter()).isEqualTo("size");
+        assertThat(properties.getPageable().isOneIndexedParameters()).isFalse();
+        assertThat(properties.getPageable().getPrefix()).isEmpty();
+        assertThat(properties.getPageable().getQualifierDelimiter()).isEqualTo("_");
+        assertThat(properties.getPageable().getDefaultPageSize()).isEqualTo(20);
+        assertThat(properties.getPageable().getMaxPageSize()).isEqualTo(2000);
+        assertThat(properties.getPageable().getSerializationMode()).isEqualTo(PageSerializationMode.DIRECT);
+        assertThat(properties.getSort().getSortParameter()).isEqualTo("sort");
     }
+
+    @Test
+    void bindsDataWebPropertiesUsingSpringBootBinder() {
+        DataWebProperties properties = bind("spring.data.web", DataWebProperties.class, Map.of(
+                "spring.data.web.pageable.page-parameter", "p",
+                "spring.data.web.pageable.size-parameter", "s",
+                "spring.data.web.pageable.one-indexed-parameters", "true",
+                "spring.data.web.pageable.prefix", "search",
+                "spring.data.web.pageable.qualifier-delimiter", ".",
+                "spring.data.web.pageable.default-page-size", "25",
+                "spring.data.web.pageable.max-page-size", "250",
+                "spring.data.web.pageable.serialization-mode", "via-dto",
+                "spring.data.web.sort.sort-parameter", "order"));
+
+        assertThat(properties.getPageable().getPageParameter()).isEqualTo("p");
+        assertThat(properties.getPageable().getSizeParameter()).isEqualTo("s");
+        assertThat(properties.getPageable().isOneIndexedParameters()).isTrue();
+        assertThat(properties.getPageable().getPrefix()).isEqualTo("search");
+        assertThat(properties.getPageable().getQualifierDelimiter()).isEqualTo(".");
+        assertThat(properties.getPageable().getDefaultPageSize()).isEqualTo(25);
+        assertThat(properties.getPageable().getMaxPageSize()).isEqualTo(250);
+        assertThat(properties.getPageable().getSerializationMode()).isEqualTo(PageSerializationMode.VIA_DTO);
+        assertThat(properties.getSort().getSortParameter()).isEqualTo("order");
+    }
+
+    @Test
+    void dataMetricsPropertiesExposeRepositoryDefaults() {
+        DataMetricsProperties properties = new DataMetricsProperties();
+
+        assertThat(properties.getRepository().getMetricName()).isEqualTo("spring.data.repository.invocations");
+        assertThat(properties.getRepository().getAutotime().isEnabled()).isTrue();
+        assertThat(properties.getRepository().getAutotime().isPercentilesHistogram()).isFalse();
+        assertThat(properties.getRepository().getAutotime().getPercentiles()).isNull();
+    }
+
+    @Test
+    void bindsDataMetricsPropertiesAndConfiguresPropertiesAutoTimer() {
+        Map<String, String> values = new LinkedHashMap<>();
+        values.put("management.metrics.data.repository.metric-name", "custom.repository.calls");
+        values.put("management.metrics.data.repository.autotime.enabled", "true");
+        values.put("management.metrics.data.repository.autotime.percentiles-histogram", "true");
+        values.put("management.metrics.data.repository.autotime.percentiles[0]", "0.5");
+        values.put("management.metrics.data.repository.autotime.percentiles[1]", "0.95");
+        DataMetricsProperties properties = bind("management.metrics.data", DataMetricsProperties.class, values);
+
+        assertThat(properties.getRepository().getMetricName()).isEqualTo("custom.repository.calls");
+        assertThat(properties.getRepository().getAutotime().isEnabled()).isTrue();
+        assertThat(properties.getRepository().getAutotime().isPercentilesHistogram()).isTrue();
+        assertThat(properties.getRepository().getAutotime().getPercentiles()).containsExactly(0.5, 0.95);
+
+        PropertiesAutoTimer autoTimer = new PropertiesAutoTimer(properties.getRepository().getAutotime());
+        List<Timer.Builder> builders = new ArrayList<>();
+        AutoTimer.apply(autoTimer, properties.getRepository().getMetricName(), Collections.emptySet(), builders::add);
+
+        assertThat(autoTimer.isEnabled()).isTrue();
+        assertThat(builders).hasSize(1);
+    }
+
+    @Test
+    void autoTimerStaticApplyHonorsDisabledAndEnabledTimers() {
+        List<Timer.Builder> disabledBuilders = new ArrayList<>();
+        AutoTimer.apply(AutoTimer.DISABLED, "repository.calls", Collections.emptySet(), disabledBuilders::add);
+
+        List<Timer.Builder> enabledBuilders = new ArrayList<>();
+        AutoTimer.apply(AutoTimer.ENABLED, "repository.calls", Collections.emptySet(), enabledBuilders::add);
+
+        assertThat(AutoTimer.DISABLED.isEnabled()).isFalse();
+        assertThat(AutoTimer.ENABLED.isEnabled()).isTrue();
+        assertThat(disabledBuilders).isEmpty();
+        assertThat(enabledBuilders).hasSize(1);
+    }
+
+    private static <T> T bind(String prefix, Class<T> type, Map<String, String> values) {
+        Binder binder = new Binder(new MapConfigurationPropertySource(values));
+        return binder.bind(prefix, type).get();
+    }
+
 }
