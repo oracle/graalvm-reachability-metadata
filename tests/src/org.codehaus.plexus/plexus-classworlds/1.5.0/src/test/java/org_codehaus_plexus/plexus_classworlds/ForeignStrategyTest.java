@@ -22,8 +22,20 @@ import org.codehaus.plexus.classworlds.strategy.ForeignStrategy;
 import org.junit.jupiter.api.Test;
 
 public class ForeignStrategyTest {
+    private static final String CLASS_NAME = ForeignLoadTarget.class.getName();
     private static final String REALM_ID = "foreign-realm";
     private static final String RESOURCE_NAME = "foreign/resource.txt";
+
+    @Test
+    void loadClassConsultsForeignClassLoaderFirst() throws Exception {
+        ClassLoader foreignClassLoader = new ClassLoader(ForeignStrategyTest.class.getClassLoader()) {
+        };
+        ForeignStrategy strategy = newForeignStrategy(foreignClassLoader);
+
+        Class<?> loadedClass = strategy.loadClass(CLASS_NAME);
+
+        assertThat(loadedClass).isEqualTo(ForeignLoadTarget.class);
+    }
 
     @Test
     void getResourceConsultsForeignClassLoaderFirst() throws Exception {
@@ -67,6 +79,9 @@ public class ForeignStrategyTest {
         } catch (MalformedURLException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public static final class ForeignLoadTarget {
     }
 
     private static final class RecordingClassLoader extends ClassLoader {
