@@ -10,10 +10,14 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.Configuration;
+
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.security.plain.PlainLoginModule;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
@@ -34,6 +38,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.retrytopic.RetryTopicConfiguration;
+import org.springframework.kafka.security.jaas.KafkaJaasLoginModuleInitializer;
 import org.springframework.kafka.transaction.KafkaTransactionManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -164,6 +169,31 @@ public class Spring_boot_kafkaTest {
                             .containsEntry(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, List.of("localhost:9092"));
 
                     assertListenerContainerProperties(context.getBean(ConcurrentKafkaListenerContainerFactory.class));
+                });
+    }
+
+    @Test
+    void autoConfigurationCreatesJaasInitializerFromConfiguredLoginModule() {
+        this.contextRunner
+                .withPropertyValues("spring.kafka.bootstrap-servers=localhost:9092",
+                        "spring.kafka.admin.auto-create=false",
+                        "spring.kafka.jaas.enabled=true",
+                        "spring.kafka.jaas.login-module=" + PlainLoginModule.class.getName(),
+                        "spring.kafka.jaas.control-flag=required",
+                        "spring.kafka.jaas.options.username=alice",
+                        "spring.kafka.jaas.options.password=secret")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(KafkaJaasLoginModuleInitializer.class);
+
+                    AppConfigurationEntry[] entries = Configuration.getConfiguration().getAppConfigurationEntry(
+                            KafkaJaasLoginModuleInitializer.KAFKA_CLIENT_CONTEXT_NAME);
+                    assertThat(entries).hasSize(1);
+                    AppConfigurationEntry entry = entries[0];
+                    assertThat(entry.getLoginModuleName()).isEqualTo(PlainLoginModule.class.getName());
+                    assertThat(entry.getControlFlag()).isSameAs(
+                            AppConfigurationEntry.LoginModuleControlFlag.REQUIRED);
+                    assertThat(entry.getOptions().get("username")).isEqualTo("alice");
+                    assertThat(entry.getOptions().get("password")).isEqualTo("secret");
                 });
     }
 
