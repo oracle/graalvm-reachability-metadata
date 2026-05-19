@@ -152,7 +152,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         dlqProducer.setCompressionType(CompressionType.zstd);
         dlqProducer.setBatchTimeout(25);
         dlqProducer.setSync(true);
-        dlqProducer.setHeaderPatterns(new String[] { "trace*", "type" });
+        dlqProducer.setHeaderPatterns(new String[] {"trace*", "type"});
         dlqProducer.setConfiguration(Map.of(ProducerConfig.CLIENT_ID_CONFIG, "dlq-producer"));
 
         consumer.setAckMode(AckMode.MANUAL);
@@ -174,7 +174,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         consumer.setStartOffset(StartOffset.earliest);
         consumer.setTopic(topicProperties());
         consumer.setTransactionManager("consumerTx");
-        consumer.setTrustedPackages(new String[] { "org.example" });
+        consumer.setTrustedPackages(new String[] {"org.example"});
         consumer.setTxCommitRecovered(false);
         consumer.setConfiguration(Map.of(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "10"));
 
@@ -212,7 +212,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         producer.setCloseTimeout(9);
         producer.setCompressionType(CompressionType.gzip);
         producer.setConfiguration(Map.of(ProducerConfig.RETRIES_CONFIG, "2"));
-        producer.setHeaderPatterns(new String[] { "foo*", "bar" });
+        producer.setHeaderPatterns(new String[] {"foo*", "bar"});
         producer.setMessageKeyExpression(messageKey);
         producer.setRecordMetadataChannel("metadataOut");
         producer.setSendTimeoutExpression(sendTimeout);
@@ -397,7 +397,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
                 .setHeader("traceId", "abc-123")
                 .setHeader("contentType", MimeType.valueOf("application/json;charset=UTF-8"))
                 .setHeader("uri", URI.create("https://example.test/orders"))
-                .setHeader("bytes", new byte[] { 1, 2, 3 })
+                .setHeader("bytes", new byte[] {1, 2, 3})
                 .setHeader("largeNumber", new BigInteger("123456789"))
                 .setHeader(BinderHeaders.NATIVE_HEADERS_PRESENT, true)
                 .build().getHeaders(), kafkaHeaders);
@@ -453,10 +453,10 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         assertThat(mappedHeaders).containsEntry("traceId", "abc-123").containsEntry("type", "order");
 
         RecordHeaders headersWithNeverHeaders = new RecordHeaders();
-        headersWithNeverHeaders.add(new RecordHeader(MessageHeaders.ID, new byte[] { 1 }));
-        headersWithNeverHeaders.add(new RecordHeader(MessageHeaders.TIMESTAMP, new byte[] { 2 }));
-        headersWithNeverHeaders.add(new RecordHeader(BinderHeaders.NATIVE_HEADERS_PRESENT, new byte[] { 3 }));
-        headersWithNeverHeaders.add(new RecordHeader("business", new byte[] { 4 }));
+        headersWithNeverHeaders.add(new RecordHeader(MessageHeaders.ID, new byte[] {1}));
+        headersWithNeverHeaders.add(new RecordHeader(MessageHeaders.TIMESTAMP, new byte[] {2}));
+        headersWithNeverHeaders.add(new RecordHeader(BinderHeaders.NATIVE_HEADERS_PRESENT, new byte[] {3}));
+        headersWithNeverHeaders.add(new RecordHeader("business", new byte[] {4}));
 
         BinderHeaderMapper.removeNeverHeaders(headersWithNeverHeaders);
 
@@ -559,8 +559,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
                     .isThrownBy(() -> BindingUtils.getConsumerMessageConverter(context,
                             new ExtendedConsumerProperties<>(missingConsumer), binderProperties))
                     .withMessageContaining("Converter bean not present");
-        }
-        finally {
+        } finally {
             context.close();
         }
     }
@@ -647,8 +646,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
             assertThat(Files.readString(copiedKeystore, StandardCharsets.UTF_8)).isEqualTo("keystore");
             assertThat(Files.readString(copiedSchemaRegistryTruststore, StandardCharsets.UTF_8))
                     .isEqualTo("schema-truststore");
-        }
-        finally {
+        } finally {
             deleteRecursively(targetDirectory);
             deleteRecursively(sourceDirectory);
         }
@@ -673,7 +671,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         combined.setSync(true);
         combined.setBatchTimeout(33);
         combined.setMessageKeyExpression(PARSER.parseExpression("'message-key'"));
-        combined.setHeaderPatterns(new String[] { "trace*" });
+        combined.setHeaderPatterns(new String[] {"trace*"});
         combined.setConfiguration(Map.of(ProducerConfig.CLIENT_ID_CONFIG, "tx-client"));
         combined.setTopic(topicProperties());
 
@@ -802,7 +800,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
     @Test
     void topicInformationAndDlqUtilitiesExposeFunctionalContracts() {
         ConsumerRecord<byte[], byte[]> record = new ConsumerRecord<>("orders", 4, 12L,
-                new byte[] { 1 }, new byte[] { 2 });
+                new byte[] {1}, new byte[] {2});
 
         assertThat(DlqPartitionFunction.ORIGINAL_PARTITION.apply("workers", record,
                 new IllegalStateException("failed"))).isEqualTo(4);
@@ -848,13 +846,11 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
             paths.sorted(Comparator.reverseOrder()).forEach(file -> {
                 try {
                     Files.deleteIfExists(file);
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     throw new UncheckedIOException(ex);
                 }
             });
-        }
-        catch (UncheckedIOException ex) {
+        } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }
     }
