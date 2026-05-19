@@ -7,9 +7,12 @@
 package org_springframework_boot.spring_boot_web_server;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.net.BindException;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyStore;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +33,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.ssl.NoSuchSslBundleException;
 import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.ssl.SslBundles;
+import org.springframework.boot.ssl.SslStoreBundle;
 import org.springframework.boot.web.error.ErrorPage;
 import org.springframework.boot.web.server.AbstractConfigurableWebServerFactory;
 import org.springframework.boot.web.server.Compression;
@@ -43,6 +47,7 @@ import org.springframework.boot.web.server.Ssl;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor;
+import org.springframework.boot.web.server.WebServerSslBundle;
 import org.springframework.boot.web.server.autoconfigure.ServerProperties;
 import org.springframework.boot.web.server.context.MissingWebServerFactoryBeanException;
 import org.springframework.boot.web.server.context.ServerPortInfoApplicationContextInitializer;
@@ -336,6 +341,46 @@ public class Spring_boot_web_serverTest {
     }
 
     @Test
+    void webServerSslBundleResolvesNamedBundlesAndInlineConfiguration(@TempDir File tempDir) throws Exception {
+        SslBundle namedBundle = SslBundle.of(SslStoreBundle.NONE);
+        Ssl namedSsl = Ssl.forBundle("test-bundle");
+
+        SslBundle resolvedNamedBundle = WebServerSslBundle.get(namedSsl,
+                new SingleSslBundles("test-bundle", namedBundle));
+
+        assertThat(resolvedNamedBundle).isSameAs(namedBundle);
+
+        File keyStoreFile = new File(tempDir, "server.p12");
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        keyStore.load(null, null);
+        try (OutputStream output = new FileOutputStream(keyStoreFile)) {
+            keyStore.store(output, "store-password".toCharArray());
+        }
+
+        Ssl inlineSsl = new Ssl();
+        inlineSsl.setKeyAlias("server");
+        inlineSsl.setKeyPassword("key-password");
+        inlineSsl.setKeyStore(keyStoreFile.toURI().toString());
+        inlineSsl.setKeyStorePassword("store-password");
+        inlineSsl.setKeyStoreType("PKCS12");
+        inlineSsl.setProtocol("TLSv1.3");
+        inlineSsl.setCiphers(new String[] { "TLS_AES_128_GCM_SHA256" });
+        inlineSsl.setEnabledProtocols(new String[] { "TLSv1.3" });
+
+        SslBundle inlineBundle = WebServerSslBundle.get(inlineSsl);
+
+        assertThat(inlineBundle.getKey().getAlias()).isEqualTo("server");
+        assertThat(inlineBundle.getKey().getPassword()).isEqualTo("key-password");
+        assertThat(inlineBundle.getProtocol()).isEqualTo("TLSv1.3");
+        assertThat(inlineBundle.getOptions().getCiphers()).containsExactly("TLS_AES_128_GCM_SHA256");
+        assertThat(inlineBundle.getOptions().getEnabledProtocols()).containsExactly("TLSv1.3");
+        assertThat(inlineBundle.getStores().getKeyStore()).isNotNull();
+        assertThat(inlineBundle.getStores().getKeyStore().getType()).isEqualToIgnoringCase("PKCS12");
+        assertThat(inlineBundle.getStores().getKeyStorePassword()).isEqualTo("store-password");
+        assertThat(inlineBundle.getStores().getTrustStore()).isNull();
+    }
+
+    @Test
     void servletWebServerApplicationContextStartsFactoryServerAndPublishesPort() {
         TestServletWebServerFactory factory = new TestServletWebServerFactory();
         RecordingWebServer webServer = new RecordingWebServer(49152);
@@ -409,6 +454,41 @@ public class Spring_boot_web_serverTest {
         assertThat(documentRoot.getValidDirectory()).isEqualTo(tempDir);
         assertThat(initializers).hasSize(4).contains(first, second);
         assertThat(settings.getStaticResourceUrls()).isNotNull();
+    }
+
+    static final class SingleSslBundles implements SslBundles {
+        private final String name;
+        private final SslBundle bundle;
+
+        SingleSslBundles(String name, SslBundle bundle) {
+            this.name = name;
+            this.bundle = bundle;
+        }
+
+        @Override
+        public SslBundle getBundle(String name) {
+            if (!this.name.equals(name)) {
+                throw new NoSuchSslBundleException(name, "No test SSL bundle is registered");
+            }
+            return this.bundle;
+        }
+
+        @Override
+        public void addBundleUpdateHandler(String name, Consumer<SslBundle> updateHandler) {
+            if (!this.name.equals(name)) {
+                throw new NoSuchSslBundleException(name, "No test SSL bundle is registered");
+            }
+        }
+
+        @Override
+        public void addBundleRegisterHandler(BiConsumer<String, SslBundle> registerHandler) {
+            registerHandler.accept(this.name, this.bundle);
+        }
+
+        @Override
+        public List<String> getBundleNames() {
+            return List.of(this.name);
+        }
     }
 
     static final class TestFactoryCustomizer implements WebServerFactoryCustomizer<TestServletWebServerFactory> {
