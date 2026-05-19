@@ -8,29 +8,29 @@ package org_apache_directory_server.apacheds_kerberos_codec;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.ByteBuffer;
 
-import org.apache.directory.server.kerberos.shared.crypto.encryption.CipherTextHandler;
-import org.apache.directory.server.kerberos.shared.crypto.encryption.KeyUsage;
+import org.apache.directory.server.kerberos.shared.crypto.encryption.KerberosKeyFactory;
+import org.apache.directory.shared.kerberos.codec.KerberosDecoder;
 import org.apache.directory.shared.kerberos.codec.types.EncryptionType;
-import org.apache.directory.shared.kerberos.components.EncryptedData;
 import org.apache.directory.shared.kerberos.components.EncryptionKey;
 import org.junit.jupiter.api.Test;
 
 public class CipherTextHandlerTest {
     @Test
-    void encryptsAndDecryptsRc4HmacData() throws Exception {
-        CipherTextHandler handler = new CipherTextHandler();
-        byte[] keyBytes = "deterministic-key".getBytes(StandardCharsets.UTF_8);
-        EncryptionKey key = new EncryptionKey(EncryptionType.RC4_HMAC, keyBytes, 3);
-        byte[] plainText = "Apache Directory Kerberos cipher text".getBytes(StandardCharsets.UTF_8);
+    void derivesAndRoundTripsAesKey() throws Exception {
+        EncryptionKey key = KerberosKeyFactory.string2Key(
+                "service/localhost@EXAMPLE.COM",
+                "correct horse battery staple",
+                EncryptionType.AES128_CTS_HMAC_SHA1_96);
+        int encodedLength = key.computeLength();
+        ByteBuffer encoded = key.encode(ByteBuffer.allocate(encodedLength));
 
-        EncryptedData encryptedData = handler.encrypt(key, plainText, KeyUsage.AP_REQ_AUTHNT_SESS_KEY);
-        byte[] decryptedData = handler.decrypt(key, encryptedData, KeyUsage.AP_REQ_AUTHNT_SESS_KEY);
+        EncryptionKey decoded = KerberosDecoder.decodeEncryptionKey(encoded.array());
 
-        assertThat(encryptedData.getEType()).isEqualTo(EncryptionType.RC4_HMAC);
-        assertThat(encryptedData.getKvno()).isEqualTo(3);
-        assertThat(encryptedData.getCipher()).containsExactly(plainText);
-        assertThat(decryptedData).containsExactly(plainText);
+        assertThat(key.getKeyType()).isEqualTo(EncryptionType.AES128_CTS_HMAC_SHA1_96);
+        assertThat(key.getKeyValue()).isNotEmpty();
+        assertThat(decoded.getKeyType()).isEqualTo(key.getKeyType());
+        assertThat(decoded.getKeyValue()).containsExactly(key.getKeyValue());
     }
 }
