@@ -22,6 +22,14 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            excludeConfig.put("io.grpc:grpc-netty-shaded", [
+                    ".*/netty-codec-http/native-image\\.properties",
+                    ".*/netty-codec-http2/native-image\\.properties"
+            ])
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
