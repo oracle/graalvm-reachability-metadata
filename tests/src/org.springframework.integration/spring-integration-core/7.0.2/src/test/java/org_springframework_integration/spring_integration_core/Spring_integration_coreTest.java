@@ -11,13 +11,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
 
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Subscriber;
@@ -26,31 +29,50 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.aggregator.DefaultAggregatingMessageGroupProcessor;
 import org.springframework.integration.aggregator.MessageCountReleaseStrategy;
+import org.springframework.integration.channel.DefaultHeaderChannelRegistry;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.ExecutorChannel;
+import org.springframework.integration.channel.FixedSubscriberChannel;
 import org.springframework.integration.channel.FluxMessageChannel;
+import org.springframework.integration.channel.NullChannel;
 import org.springframework.integration.channel.PriorityChannel;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.integration.channel.QueueChannel;
+import org.springframework.integration.channel.RendezvousChannel;
 import org.springframework.integration.channel.interceptor.WireTap;
+import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.context.IntegrationObjectSupport;
+import org.springframework.integration.core.MessagingTemplate;
 import org.springframework.integration.endpoint.EventDrivenConsumer;
 import org.springframework.integration.filter.MessageFilter;
 import org.springframework.integration.handler.MessageProcessor;
 import org.springframework.integration.handler.ServiceActivatingHandler;
+import org.springframework.integration.metadata.SimpleMetadataStore;
+import org.springframework.integration.router.HeaderValueRouter;
+import org.springframework.integration.router.PayloadTypeRouter;
 import org.springframework.integration.router.RecipientListRouter;
+import org.springframework.integration.selector.MessageSelectorChain;
+import org.springframework.integration.selector.MetadataStoreSelector;
+import org.springframework.integration.selector.PayloadTypeSelector;
+import org.springframework.integration.selector.UnexpiredMessageSelector;
 import org.springframework.integration.splitter.DefaultMessageSplitter;
 import org.springframework.integration.store.MessageGroup;
 import org.springframework.integration.store.SimpleMessageStore;
 import org.springframework.integration.support.AbstractIntegrationMessageBuilder;
 import org.springframework.integration.support.MessageBuilder;
+import org.springframework.integration.support.locks.DefaultLockRegistry;
 import org.springframework.integration.transformer.ClaimCheckInTransformer;
 import org.springframework.integration.transformer.ClaimCheckOutTransformer;
+import org.springframework.integration.transformer.HeaderEnricher;
+import org.springframework.integration.transformer.HeaderFilter;
 import org.springframework.integration.transformer.MessageTransformingHandler;
+import org.springframework.integration.transformer.ObjectToStringTransformer;
 import org.springframework.integration.transformer.PayloadTypeConvertingTransformer;
+import org.springframework.integration.transformer.support.StaticHeaderValueMessageProcessor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -303,6 +325,213 @@ public class Spring_integration_coreTest {
     }
 
     @Test
+    void messagingTemplateSupportsRequestReplyAndPollableReceives() {
+        DirectChannel requests = new DirectChannel();
+        QueueChannel replies = new QueueChannel();
+        requests.subscribe(message -> {
+            MessageChannel replyChannel = (MessageChannel) message.getHeaders().getReplyChannel();
+            replyChannel.send(MessageBuilder.withPayload("processed-" + message.getPayload())
+                    .setHeader("requestId", message.getHeaders().get("requestId"))
+                    .build());
+        });
+        MessagingTemplate template = new MessagingTemplate();
+        template.setSendTimeout(1_000);
+        template.setReceiveTimeout(1_000);
+
+        Message<?> reply = template.sendAndReceive(requests, MessageBuilder.withPayload("template")
+                .setHeader("requestId", "r-1")
+                .build());
+
+        assertThat(reply).isNotNull();
+        assertThat(reply.getPayload()).isEqualTo("processed-template");
+        assertThat(reply.getHeaders().get("requestId")).isEqualTo("r-1");
+
+        replies.send(MessageBuilder.withPayload(42).build());
+        assertThat(template.receiveAndConvert(replies, 0)).isEqualTo(42);
+    }
+
+    @Test
+    void rendezvousFixedSubscriberNullAndHeaderRegistryChannelsUsePublicChannelContracts() throws Exception {
+        RendezvousChannel rendezvous = new RendezvousChannel();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<Boolean> sender = executor.submit(() -> rendezvous.send(MessageBuilder.withPayload("handoff")
+                .build(), 2_000));
+        try {
+            Message<?> received = rendezvous.receive(2_000);
+
+            assertThat(received).isNotNull();
+            assertThat(received.getPayload()).isEqualTo("handoff");
+            assertThat(sender.get(2, TimeUnit.SECONDS)).isTrue();
+        } finally {
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(2, TimeUnit.SECONDS)).isTrue();
+        }
+
+        AtomicReference<Message<?>> fixedSubscriberMessage = new AtomicReference<>();
+        FixedSubscriberChannel fixedSubscriberChannel = new FixedSubscriberChannel(fixedSubscriberMessage::set);
+        assertThat(fixedSubscriberChannel.send(MessageBuilder.withPayload("fixed").build())).isTrue();
+        assertThat(fixedSubscriberMessage.get().getPayload()).isEqualTo("fixed");
+
+        NullChannel nullChannel = new NullChannel();
+        assertThat(nullChannel.send(MessageBuilder.withPayload("discard").build())).isTrue();
+        assertThat(nullChannel.receive(0)).isNull();
+
+        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.setPoolSize(1);
+        taskScheduler.initialize();
+        DefaultListableBeanFactory registryBeanFactory = new DefaultListableBeanFactory();
+        registryBeanFactory.registerSingleton(IntegrationContextUtils.TASK_SCHEDULER_BEAN_NAME, taskScheduler);
+        DefaultHeaderChannelRegistry registry = initialize(
+                new DefaultHeaderChannelRegistry(10_000), registryBeanFactory);
+        try {
+            registry.setRemoveOnGet(true);
+            Object channelName = registry.channelToChannelName(fixedSubscriberChannel);
+            assertThat(channelName).isInstanceOf(String.class);
+            assertThat(registry.size()).isEqualTo(1);
+            assertThat(registry.channelNameToChannel((String) channelName)).isSameAs(fixedSubscriberChannel);
+            assertThat(registry.size()).isZero();
+        } finally {
+            registry.stop();
+            taskScheduler.shutdown();
+        }
+    }
+
+    @Test
+    void payloadAndHeaderRoutersResolveMappedChannelsFromBeanFactory() {
+        QueueChannel stringPayloads = new QueueChannel();
+        QueueChannel numberPayloads = new QueueChannel();
+        QueueChannel standardPriority = new QueueChannel();
+        QueueChannel expressPriority = new QueueChannel();
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        beanFactory.registerSingleton("stringPayloads", stringPayloads);
+        beanFactory.registerSingleton("numberPayloads", numberPayloads);
+        beanFactory.registerSingleton("standardPriority", standardPriority);
+        beanFactory.registerSingleton("expressPriority", expressPriority);
+
+        PayloadTypeRouter payloadTypeRouter = new PayloadTypeRouter();
+        payloadTypeRouter.setChannelMapping(String.class.getName(), "stringPayloads");
+        payloadTypeRouter.setChannelMapping(Integer.class.getName(), "numberPayloads");
+        initialize(payloadTypeRouter, beanFactory);
+
+        payloadTypeRouter.handleMessage(MessageBuilder.withPayload("text").build());
+        payloadTypeRouter.handleMessage(MessageBuilder.withPayload(99).build());
+
+        assertThat(stringPayloads.receive(0).getPayload()).isEqualTo("text");
+        assertThat(numberPayloads.receive(0).getPayload()).isEqualTo(99);
+
+        HeaderValueRouter headerValueRouter = new HeaderValueRouter("shippingPriority");
+        headerValueRouter.setChannelMapping("standard", "standardPriority");
+        headerValueRouter.setChannelMapping("express", "expressPriority");
+        initialize(headerValueRouter, beanFactory);
+
+        headerValueRouter.handleMessage(MessageBuilder.withPayload("first")
+                .setHeader("shippingPriority", "standard")
+                .build());
+        headerValueRouter.handleMessage(MessageBuilder.withPayload("second")
+                .setHeader("shippingPriority", "express")
+                .build());
+
+        assertThat(standardPriority.receive(0).getPayload()).isEqualTo("first");
+        assertThat(expressPriority.receive(0).getPayload()).isEqualTo("second");
+    }
+
+    @Test
+    void headerTransformersEnrichFilterAndRenderPayloads() {
+        HeaderEnricher enricher = new HeaderEnricher(Map.of(
+                "tenant", new StaticHeaderValueMessageProcessor<>("north"),
+                "internalTrace", new StaticHeaderValueMessageProcessor<>("trace-1")));
+        enricher.setDefaultOverwrite(true);
+        initialize(enricher);
+
+        Message<?> enriched = enricher.transform(MessageBuilder.withPayload(List.of("a", "b"))
+                .setHeader("tenant", "original")
+                .build());
+
+        assertThat(enriched.getHeaders().get("tenant")).isEqualTo("north");
+        assertThat(enriched.getHeaders().get("internalTrace")).isEqualTo("trace-1");
+
+        HeaderFilter headerFilter = new HeaderFilter("internal*");
+        headerFilter.setPatternMatch(true);
+        initialize(headerFilter);
+        Message<?> filtered = headerFilter.transform(enriched);
+
+        assertThat(filtered.getHeaders()).containsEntry("tenant", "north");
+        assertThat(filtered.getHeaders()).doesNotContainKey("internalTrace");
+
+        ObjectToStringTransformer objectToStringTransformer = initialize(new ObjectToStringTransformer());
+        Message<?> rendered = objectToStringTransformer.transform(filtered);
+
+        assertThat(rendered.getPayload()).isEqualTo("[a, b]");
+        assertThat(rendered.getHeaders().get("tenant")).isEqualTo("north");
+    }
+
+    @Test
+    void metadataStoreSelectorsAndSelectorChainsFilterMessagesDeterministically() {
+        SimpleMetadataStore metadataStore = new SimpleMetadataStore();
+        MessageProcessor<String> keyProcessor = message -> message.getHeaders().get("businessKey", String.class);
+        MessageProcessor<String> valueProcessor = message -> message.getPayload().toString();
+        MetadataStoreSelector selector = new MetadataStoreSelector(keyProcessor, valueProcessor, metadataStore);
+        selector.setCompareValues((oldValue, newValue) -> newValue.compareTo(oldValue) > 0);
+
+        Message<String> firstVersion = MessageBuilder.withPayload("v1")
+                .setHeader("businessKey", "order-1")
+                .build();
+        Message<String> duplicateVersion = MessageBuilder.withPayload("v1")
+                .setHeader("businessKey", "order-1")
+                .build();
+        Message<String> laterVersion = MessageBuilder.withPayload("v2")
+                .setHeader("businessKey", "order-1")
+                .build();
+
+        assertThat(selector.accept(firstVersion)).isTrue();
+        assertThat(selector.accept(duplicateVersion)).isFalse();
+        assertThat(selector.accept(laterVersion)).isTrue();
+        assertThat(metadataStore.get("order-1")).isEqualTo("v2");
+
+        MessageSelectorChain chain = new MessageSelectorChain();
+        chain.add(new PayloadTypeSelector(String.class));
+        chain.add(new UnexpiredMessageSelector());
+
+        assertThat(chain.accept(MessageBuilder.withPayload("fresh")
+                .setExpirationDate(System.currentTimeMillis() + 60_000)
+                .build())).isTrue();
+        assertThat(chain.accept(MessageBuilder.withPayload(7)
+                .setExpirationDate(System.currentTimeMillis() + 60_000)
+                .build())).isFalse();
+        assertThat(chain.accept(MessageBuilder.withPayload("expired")
+                .setExpirationDate(System.currentTimeMillis() - 1_000)
+                .build())).isFalse();
+    }
+
+    @Test
+    void defaultLockRegistryCoordinatesAccessAcrossThreads() throws Exception {
+        DefaultLockRegistry registry = new DefaultLockRegistry();
+        Lock lock = registry.obtain("customer-42");
+        lock.lock();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+            Future<Boolean> contender = executor.submit(() -> {
+                Lock contenderLock = registry.obtain("customer-42");
+                boolean acquired = contenderLock.tryLock(100, TimeUnit.MILLISECONDS);
+                if (acquired) {
+                    contenderLock.unlock();
+                }
+                return acquired;
+            });
+
+            assertThat(contender.get(2, TimeUnit.SECONDS)).isFalse();
+        } finally {
+            lock.unlock();
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(2, TimeUnit.SECONDS)).isTrue();
+        }
+
+        Lock reacquired = registry.obtain("customer-42");
+        assertThat(reacquired.tryLock(1, TimeUnit.SECONDS)).isTrue();
+        reacquired.unlock();
+    }
+
+    @Test
     void executorAndFluxChannelsDeliverMessagesAsynchronouslyWithinBoundedWaits() throws Exception {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         ExecutorChannel executorChannel = new ExecutorChannel(executor);
@@ -368,7 +597,12 @@ public class Spring_integration_coreTest {
     }
 
     private static <T extends IntegrationObjectSupport> T initialize(T component) {
-        component.setBeanFactory(BEAN_FACTORY);
+        return initialize(component, BEAN_FACTORY);
+    }
+
+    private static <T extends IntegrationObjectSupport> T initialize(
+            T component, DefaultListableBeanFactory beanFactory) {
+        component.setBeanFactory(beanFactory);
         component.afterPropertiesSet();
         return component;
     }
