@@ -7,6 +7,7 @@
 package org_springframework_cloud.spring_cloud_context;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,6 +27,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.bootstrap.config.BootstrapPropertySource;
 import org.springframework.cloud.bootstrap.config.PropertySourceBootstrapProperties;
 import org.springframework.cloud.bootstrap.config.SimpleBootstrapPropertySource;
+import org.springframework.cloud.context.encrypt.EncryptorFactory;
+import org.springframework.cloud.context.encrypt.KeyFormatException;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.cloud.context.environment.EnvironmentManager;
 import org.springframework.cloud.context.named.NamedContextFactory;
@@ -46,6 +49,7 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 public class Spring_cloud_contextTest {
 
@@ -117,6 +121,19 @@ public class Spring_cloud_contextTest {
         assertThat(cachedRandom.getProperty("random.int")).isNull();
         assertThat(cachedRandom.getProperty("cachedrandom.int")).isNull();
         CachedRandomPropertySource.clearCache();
+    }
+
+    @Test
+    void encryptorFactoryCreatesSymmetricTextEncryptorAndRejectsPublicKeys() {
+        EncryptorFactory factory = new EncryptorFactory("01234567");
+        TextEncryptor encryptor = factory.create("test-password");
+
+        String encrypted = encryptor.encrypt("spring-cloud-context secret");
+
+        assertThat(encrypted).isNotEqualTo("spring-cloud-context secret");
+        assertThat(encryptor.decrypt(encrypted)).isEqualTo("spring-cloud-context secret");
+        assertThatThrownBy(() -> factory.create("ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtest"))
+                .isInstanceOf(KeyFormatException.class);
     }
 
     @Test
