@@ -22,7 +22,7 @@ public class ResourceBundleMessageSourceTest {
 
         String message = messageSource.getMessage("type", Locale.ROOT, "$.enabled", "boolean", "string");
 
-        assertThat(message).isEqualTo("$.enabled: boolean found, string expected");
+        assertThat(message).isEqualTo("$.enabled found, boolean expected");
     }
 
     @Test
