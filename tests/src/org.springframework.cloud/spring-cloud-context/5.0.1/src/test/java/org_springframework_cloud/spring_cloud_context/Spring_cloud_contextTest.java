@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,6 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.bootstrap.config.BootstrapPropertySource;
 import org.springframework.cloud.bootstrap.config.PropertySourceBootstrapProperties;
 import org.springframework.cloud.bootstrap.config.SimpleBootstrapPropertySource;
@@ -33,6 +36,8 @@ import org.springframework.cloud.context.scope.StandardScopeCache;
 import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.cloud.context.scope.thread.ThreadScope;
 import org.springframework.cloud.endpoint.RefreshEndpoint;
+import org.springframework.cloud.endpoint.event.RefreshEvent;
+import org.springframework.cloud.endpoint.event.RefreshEventListener;
 import org.springframework.cloud.util.PropertyUtils;
 import org.springframework.cloud.util.random.CachedRandomPropertySource;
 import org.springframework.context.ApplicationContextInitializer;
@@ -184,6 +189,34 @@ public class Spring_cloud_contextTest {
         }
 
         assertThat(factory.getContextNames()).isEmpty();
+    }
+
+    @Test
+    void refreshEventListenerRefreshesOnlyAfterApplicationIsReady() {
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            context.refresh();
+            RefreshScope refreshScope = new RefreshScope();
+            refreshScope.setApplicationContext(context);
+            RefreshEventListener listener = new RefreshEventListener(new StubContextRefresher(context, refreshScope,
+                    Map.of("spring.cloud.context.test.refresh.event", "ready")));
+            RefreshEvent refreshEvent = new RefreshEvent(this, Map.of("trigger", "test"), "test refresh event");
+
+            assertThat(listener.supportsEventType(RefreshEvent.class)).isTrue();
+            assertThat(listener.supportsEventType(ApplicationReadyEvent.class)).isTrue();
+            assertThat(refreshEvent.getEvent()).isEqualTo(Map.of("trigger", "test"));
+            assertThat(refreshEvent.getEventDesc()).isEqualTo("test refresh event");
+
+            listener.onApplicationEvent(refreshEvent);
+
+            assertThat(context.getEnvironment().getProperty("spring.cloud.context.test.refresh.event")).isNull();
+
+            listener.onApplicationEvent(new ApplicationReadyEvent(new SpringApplication(Spring_cloud_contextTest.class),
+                    new String[0], context, Duration.ZERO));
+            listener.onApplicationEvent(refreshEvent);
+
+            assertThat(context.getEnvironment().getProperty("spring.cloud.context.test.refresh.event"))
+                    .isEqualTo("ready");
+        }
     }
 
     @Test
