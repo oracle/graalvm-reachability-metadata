@@ -6,6 +6,9 @@
  */
 package org_springframework_cloud.spring_cloud_commons;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URI;
 import java.time.Duration;
@@ -38,7 +41,13 @@ import org.springframework.cloud.client.loadbalancer.DefaultRequestContext;
 import org.springframework.cloud.client.loadbalancer.DefaultResponse;
 import org.springframework.cloud.client.loadbalancer.EmptyResponse;
 import org.springframework.cloud.client.loadbalancer.HintRequestContext;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerRequest;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerRequestFactory;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerRequestTransformer;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerUriTools;
+import org.springframework.cloud.client.loadbalancer.Request;
 import org.springframework.cloud.client.loadbalancer.RequestData;
 import org.springframework.cloud.client.loadbalancer.ResponseData;
 import org.springframework.cloud.commons.publisher.CloudFlux;
@@ -50,8 +59,13 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.support.HttpRequestWrapper;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.ClientRequest;
@@ -170,6 +184,28 @@ public class Spring_cloud_commonsTest {
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> LoadBalancerUriTools.reconstructURI(null, original))
             .withMessage("Service Instance cannot be null.");
+    }
+
+    @Test
+    void loadBalancerInterceptorExecutesRequestAgainstChosenServiceInstance() throws IOException {
+        ServiceInstance selected = new DefaultServiceInstance("orders-1", "orders", "orders.internal", 8081,
+                false);
+        RecordingLoadBalancerClient loadBalancer = new RecordingLoadBalancerClient(selected);
+        LoadBalancerRequestTransformer transformer = (request, instance) -> new HeaderAddingRequest(request,
+                "X-Service-Instance", instance.getInstanceId());
+        LoadBalancerRequestFactory requestFactory = new LoadBalancerRequestFactory(loadBalancer, List.of(transformer));
+        LoadBalancerInterceptor interceptor = new LoadBalancerInterceptor(loadBalancer, requestFactory);
+        SimpleHttpRequest request = new SimpleHttpRequest(HttpMethod.PUT, URI.create("http://orders/api/items?x=1"));
+        byte[] body = new byte[] { 1, 2, 3 };
+        RecordingClientHttpRequestExecution execution = new RecordingClientHttpRequestExecution();
+
+        ClientHttpResponse response = interceptor.intercept(request, body, execution);
+
+        assertThat(loadBalancer.serviceId()).isEqualTo("orders");
+        assertThat(execution.request().getURI()).isEqualTo(URI.create("http://orders.internal:8081/api/items?x=1"));
+        assertThat(execution.request().getHeaders().getFirst("X-Service-Instance")).isEqualTo("orders-1");
+        assertThat(execution.body()).isSameAs(body);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
@@ -293,6 +329,171 @@ public class Spring_cloud_commonsTest {
         instance.setUri(URI.create(uri));
         instance.setMetadata(new LinkedHashMap<>(metadata));
         return instance;
+    }
+
+    private static final class SimpleHttpRequest implements HttpRequest {
+
+        private final HttpMethod method;
+
+        private final URI uri;
+
+        private final HttpHeaders headers = new HttpHeaders();
+
+        private final Map<String, Object> attributes = new LinkedHashMap<>();
+
+        private SimpleHttpRequest(HttpMethod method, URI uri) {
+            this.method = method;
+            this.uri = uri;
+        }
+
+        @Override
+        public HttpMethod getMethod() {
+            return method;
+        }
+
+        @Override
+        public URI getURI() {
+            return uri;
+        }
+
+        @Override
+        public HttpHeaders getHeaders() {
+            return headers;
+        }
+
+        @Override
+        public Map<String, Object> getAttributes() {
+            return attributes;
+        }
+
+    }
+
+    private static final class HeaderAddingRequest extends HttpRequestWrapper {
+
+        private final HttpHeaders headers;
+
+        private HeaderAddingRequest(HttpRequest request, String headerName, String headerValue) {
+            super(request);
+            this.headers = new HttpHeaders();
+            this.headers.putAll(request.getHeaders());
+            this.headers.add(headerName, headerValue);
+        }
+
+        @Override
+        public HttpHeaders getHeaders() {
+            return headers;
+        }
+
+    }
+
+    private static final class SimpleClientHttpResponse implements ClientHttpResponse {
+
+        private final HttpStatusCode statusCode;
+
+        private SimpleClientHttpResponse(HttpStatusCode statusCode) {
+            this.statusCode = statusCode;
+        }
+
+        @Override
+        public HttpStatusCode getStatusCode() {
+            return statusCode;
+        }
+
+        public String getStatusText() {
+            return statusCode.toString();
+        }
+
+        @Override
+        public HttpHeaders getHeaders() {
+            return new HttpHeaders();
+        }
+
+        @Override
+        public InputStream getBody() {
+            return new ByteArrayInputStream(new byte[0]);
+        }
+
+        @Override
+        public void close() {
+        }
+
+    }
+
+    private static final class RecordingClientHttpRequestExecution implements ClientHttpRequestExecution {
+
+        private HttpRequest request;
+
+        private byte[] body;
+
+        @Override
+        public ClientHttpResponse execute(HttpRequest request, byte[] body) {
+            this.request = request;
+            this.body = body;
+            return new SimpleClientHttpResponse(HttpStatus.CREATED);
+        }
+
+        private HttpRequest request() {
+            return request;
+        }
+
+        private byte[] body() {
+            return body;
+        }
+
+    }
+
+    private static final class RecordingLoadBalancerClient implements LoadBalancerClient {
+
+        private final ServiceInstance serviceInstance;
+
+        private String serviceId;
+
+        private RecordingLoadBalancerClient(ServiceInstance serviceInstance) {
+            this.serviceInstance = serviceInstance;
+        }
+
+        @Override
+        public ServiceInstance choose(String serviceId) {
+            this.serviceId = serviceId;
+            return serviceInstance;
+        }
+
+        @Override
+        public <T> ServiceInstance choose(String serviceId, Request<T> request) {
+            this.serviceId = serviceId;
+            return serviceInstance;
+        }
+
+        @Override
+        public <T> T execute(String serviceId, LoadBalancerRequest<T> request) throws IOException {
+            this.serviceId = serviceId;
+            return execute(serviceId, serviceInstance, request);
+        }
+
+        @Override
+        public <T> T execute(String serviceId, ServiceInstance serviceInstance, LoadBalancerRequest<T> request)
+                throws IOException {
+            this.serviceId = serviceId;
+            try {
+                return request.apply(serviceInstance);
+            }
+            catch (IOException exception) {
+                throw exception;
+            }
+            catch (Exception exception) {
+                throw new IOException(exception);
+            }
+        }
+
+        @Override
+        public URI reconstructURI(ServiceInstance instance, URI original) {
+            return LoadBalancerUriTools.reconstructURI(instance, original);
+        }
+
+        private String serviceId() {
+            return serviceId;
+        }
+
     }
 
     private static final class RecordingDiscoveryClient implements DiscoveryClient {
