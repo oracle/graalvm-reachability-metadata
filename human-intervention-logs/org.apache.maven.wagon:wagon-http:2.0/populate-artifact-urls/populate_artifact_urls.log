@@ -1,0 +1,1268 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e3f12-ebd4-7572-9b61-2bb6d40d4af5
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven.wagon:wagon-http:2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa/metadata/org.apache.maven.wagon/wagon-http/index.json
+- Entry selector: "metadata-version" = "2.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0
+- Entry metadata-version: 2.0
+- Entry test-version: 2.0
+- Entry tested-versions: [2.0]
+codex
+I’ll verify the artifact metadata and existing repository patterns first, then render and check candidate URLs before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.maven.wagon/wagon-http/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/maven-wagon",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
+    "description" : "Maven Wagon HTTP Provider implements Wagon's HTTP transport so Maven can retrieve artifacts from and publish artifacts to HTTP-based repositories. Version 1.0-beta-6 provides that transport through the Wagon HTTP shared layer backed by Apache Commons HttpClient.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.wagon.providers.http",
+      "org.apache.maven.wagon.shared.http"
+    ]
+  },
+  {
+    "metadata-version" : "2.0",
+    "tested-versions" : [
+      "2.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.wagon.providers.http",
+      "org.apache.maven.wagon.shared.http"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' metadata/org.apache.maven.wagon metadata/org.apache.maven* -g 'index.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 0ms:
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/$version$/surefire-logger-api-$version$-sources.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-surefire",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/$version$/surefire-logger-api-$version$-javadoc.jar",
+metadata/org.apache.maven.surefire/surefire-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/$version$/surefire-api-$version$-sources.jar",
+metadata/org.apache.maven.surefire/surefire-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-surefire",
+metadata/org.apache.maven.surefire/surefire-api/index.json:7:    "test-code-url" : "https://github.com/apache/maven-surefire/tree/surefire-$version$/surefire-api/src/test",
+metadata/org.apache.maven.surefire/surefire-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/$version$/surefire-api-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-artifact/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-sources.jar",
+metadata/org.apache.maven/maven-artifact/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-artifact/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-artifact/src/test",
+metadata/org.apache.maven/maven-artifact/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-javadoc.jar",
+metadata/org.apache.maven.doxia/doxia-module-apt/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-module-apt/$version$/doxia-module-apt-$version$-sources.jar",
+metadata/org.apache.maven.doxia/doxia-module-apt/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia/",
+metadata/org.apache.maven.doxia/doxia-module-apt/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia/tags/doxia-$version$/doxia-modules/doxia-module-apt/src/test/",
+metadata/org.apache.maven.doxia/doxia-module-apt/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/doxia/doxia-module-apt/$version$/doxia-module-apt-$version$-javadoc.jar",
+metadata/org.apache.maven.plugins/maven-gpg-plugin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-gpg-plugin/$version$/maven-gpg-plugin-$version$-sources.jar",
+metadata/org.apache.maven.plugins/maven-gpg-plugin/index.json:6:    "repository-url" : "https://github.com/apache/maven-gpg-plugin",
+metadata/org.apache.maven.plugins/maven-gpg-plugin/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-gpg-plugin/$version$/maven-gpg-plugin-$version$-source-release.zip",
+metadata/org.apache.maven.plugins/maven-gpg-plugin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-gpg-plugin/$version$/maven-gpg-plugin-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-di/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-di/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-api-di/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven/maven-api-di/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-javadoc.jar",
+metadata/org.apache.maven.doxia/doxia-sink-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-sink-api/$version$/doxia-sink-api-$version$-sources.jar",
+metadata/org.apache.maven.doxia/doxia-sink-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia",
+metadata/org.apache.maven.doxia/doxia-sink-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven.doxia/doxia-sink-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-sink-api/$version$/doxia-sink-api-$version$-javadoc.jar",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-api/$version$/maven-scm-api-$version$-sources.jar",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-scm",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm/$version$/maven-scm-$version$-source-release.zip",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-api/$version$/maven-scm-api-$version$-javadoc.jar",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-api/$version$/maven-scm-api-$version$-sources.jar",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:26:    "repository-url" : "https://github.com/apache/maven-scm",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:27:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm/$version$/maven-scm-$version$-source-release.zip",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-api/$version$/maven-scm-api-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
+metadata/org.apache.maven.shared/maven-common-artifact-filters/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-common-artifact-filters/$version$/maven-common-artifact-filters-$version$-sources.jar",
+metadata/org.apache.maven.shared/maven-common-artifact-filters/index.json:6:    "repository-url" : "https://github.com/apache/maven-common-artifact-filters",
+metadata/org.apache.maven.shared/maven-common-artifact-filters/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-common-artifact-filters/$version$/maven-common-artifact-filters-$version$-source-release.zip",
+metadata/org.apache.maven.shared/maven-common-artifact-filters/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-common-artifact-filters/$version$/maven-common-artifact-filters-$version$-javadoc.jar",
+metadata/org.apache.maven.doxia/doxia-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/$version$/doxia-core-$version$-sources.jar",
+metadata/org.apache.maven.doxia/doxia-core/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia",
+metadata/org.apache.maven.doxia/doxia-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/$version$/doxia-core-$version$-tests.jar",
+metadata/org.apache.maven.doxia/doxia-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/$version$/doxia-core-$version$-javadoc.jar",
+metadata/org.apache.maven.doxia/doxia-core/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/$version$/doxia-core-$version$-sources.jar",
+metadata/org.apache.maven.doxia/doxia-core/index.json:30:    "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia",
+metadata/org.apache.maven.doxia/doxia-core/index.json:31:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/$version$/doxia-core-$version$-tests.jar",
+metadata/org.apache.maven.doxia/doxia-core/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/$version$/doxia-core-$version$-javadoc.jar",
+metadata/org.apache.maven.doxia/doxia-module-xhtml/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xhtml/$version$/doxia-module-xhtml-$version$-sources.jar",
+metadata/org.apache.maven.doxia/doxia-module-xhtml/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia",
+metadata/org.apache.maven.doxia/doxia-module-xhtml/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/doxia/doxia/tags/doxia-$version$/doxia-modules/doxia-module-xhtml/src/test/",
+metadata/org.apache.maven.doxia/doxia-module-xhtml/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xhtml/$version$/doxia-module-xhtml-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-plugin-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven/maven-plugin-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-support/$version$/maven-support-$version$-sources.jar",
+metadata/org.apache.maven/maven-support/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-support/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+metadata/org.apache.maven/maven-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-support/$version$/maven-support-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh/$version$/wagon-ssh-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:7:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh/src/test",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh/$version$/wagon-ssh-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-ssh-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-common/$version$/wagon-ssh-common-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-ssh-common/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-ssh-common/index.json:7:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh-common/src/test",
+metadata/org.apache.maven.wagon/wagon-ssh-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-common/$version$/wagon-ssh-common-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-project/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-project/$version$/maven-project-$version$-sources.jar",
+metadata/org.apache.maven/maven-project/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-project/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-project/src/test",
+metadata/org.apache.maven/maven-project/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-project/$version$/maven-project-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-artifact-manager/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact-manager/$version$/maven-artifact-manager-$version$-sources.jar",
+metadata/org.apache.maven/maven-artifact-manager/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-artifact-manager/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-artifact-manager/src/test",
+metadata/org.apache.maven/maven-artifact-manager/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact-manager/$version$/maven-artifact-manager-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-builder-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-sources.jar",
+metadata/org.apache.maven/maven-builder-support/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-builder-support/index.json:7:    "test-code-url" : "https://github.com/apache/maven/tree/maven-$version$/maven-builder-support/src/test",
+metadata/org.apache.maven/maven-builder-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-monitor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/$version$/maven-monitor-$version$-sources.jar",
+metadata/org.apache.maven/maven-monitor/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-monitor/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven/maven-monitor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/$version$/maven-monitor-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-descriptor/$version$/maven-plugin-descriptor-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-plugin-descriptor/src/test",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-descriptor/$version$/maven-plugin-descriptor-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-profile/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-profile/$version$/maven-profile-$version$-sources.jar",
+metadata/org.apache.maven/maven-profile/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-profile/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven/maven-profile/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-profile/$version$/maven-profile-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh/$version$/wagon-ssh-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:7:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh/src/test",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh/$version$/wagon-ssh-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-error-diagnostics/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-error-diagnostics/$version$/maven-error-diagnostics-$version$-sources.jar",
+metadata/org.apache.maven/maven-error-diagnostics/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-error-diagnostics/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven/maven-error-diagnostics/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-error-diagnostics/$version$/maven-error-diagnostics-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/$version$/maven-api-meta-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:6:    "repository-url" : "https://github.com/apache/maven",
+metadata/org.apache.maven/maven-api-meta/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven/maven-api-meta/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/$version$/maven-api-meta-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-parameter-documenter/$version$/maven-plugin-parameter-documenter-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-plugin-parameter-documenter/src/test",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-parameter-documenter/$version$/maven-plugin-parameter-documenter-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:21:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:22:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-http-lightweight/src/test",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-http/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
+metadata/org.apache.maven.wagon/wagon-http/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-http/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
+metadata/org.apache.maven.wagon/wagon-http/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-ssh-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-common/$version$/wagon-ssh-common-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-ssh-common/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-ssh-common/index.json:7:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh-common/src/test",
+metadata/org.apache.maven.wagon/wagon-ssh-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh-common/$version$/wagon-ssh-common-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+metadata/org.apache.maven/maven-model/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-model/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-model/src/test",
+metadata/org.apache.maven/maven-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-model/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+metadata/org.apache.maven/maven-model/index.json:21:    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+metadata/org.apache.maven/maven-model/index.json:22:    "test-code-url" : "N/A",
+metadata/org.apache.maven/maven-model/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:7:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-provider-api/src/test",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:7:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-provider-api/src/test",
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:6:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:21:    "repository-url" : "https://github.com/apache/maven-wagon",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:22:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-http-lightweight/src/test",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-apache/$version$/maven-resolver-transport-apache-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-transport-apache/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-apache/$version$/maven-resolver-transport-apache-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:23:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:24:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:43:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:44:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:45:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-connector-basic/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-connector-basic/index.json:46:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-connector-basic/$version$/maven-resolver-connector-basic-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:21:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-transport-http/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-http/$version$/maven-resolver-transport-http-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-impl/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-impl/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-impl/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-impl/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-impl/$version$/maven-resolver-impl-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-file/$version$/maven-resolver-transport-file-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:7:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-transport-file/src/test/java",
+metadata/org.apache.maven.resolver/maven-resolver-transport-file/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-transport-file/$version$/maven-resolver-transport-file-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:37:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:38:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-named-locks/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-named-locks/$version$/maven-resolver-named-locks-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:37:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:38:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-spi/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-spi/$version$/maven-resolver-spi-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:7:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-util/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:37:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:38:    "test-code-url" : "https://github.com/apache/maven-resolver/tree/maven-resolver-$version$/maven-resolver-util/src/test",
+metadata/org.apache.maven.resolver/maven-resolver-util/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-javadoc.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:37:    "repository-url" : "https://github.com/apache/maven-resolver",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:38:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver/$version$/maven-resolver-$version$-source-release.zip",
+metadata/org.apache.maven.resolver/maven-resolver-api/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 0ms:
+web search: 
+web search: org.apache.maven.wagon wagon-http 2.0 Maven Central source-release javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/
+codex
+The existing 1.0 entry already shows the local convention for Wagon: Maven Central sources and javadocs, with the parent `wagon` source release ZIP used where tests are not published as a test jar. I’m checking 2.0’s actual Central files now so the templates are not stale.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/2.0/wagon-http-2.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven.wagon</groupId>
+    <artifactId>wagon-providers</artifactId>
+    <version>2.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>wagon-http</artifactId>
+  <name>Apache Maven Wagon :: Providers :: HTTP Provider</name>
+  <description>
+    Wagon that gets and puts artifacts through http using Apache httpclient-4.x.
+  </description>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>wagon-http-shared4</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+    </dependency>
+
+    <!-- used fo the TCK -->
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-tck-http</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>shaded</shadedClassifierName>
+              <artifactSet>
+                <includes>
+                  <include>org.apache.httpcomponents:httpclient</include>
+                  <include>org.apache.httpcomponents:httpcore</include>
+                  <include>commons-logging:commons-logging</include>
+                  <include>commons-codec:commons-codec</include>
+                  <include>${project.groupId}:wagon-http-shared4</include>
+                </includes>
+              </artifactSet>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>shaded</shadedClassifierName>
+              <relocations>
+                <relocation>
+                  <pattern>org.apache.commons.codec</pattern>
+                  <shadedPattern>org.apache.maven.wagon.providers.http.commons.codec</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.commons.logging</pattern>
+                  <shadedPattern>org.apache.maven.wagon.providers.http.commons.logging</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.http</pattern>
+                  <shadedPattern>org.apache.maven.wagon.providers.http.httpclient</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/2.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/2.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/apache/maven-wagon/tree/wagon-2.0/wagon-providers/wagon-http/src/test | head' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 220ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/wagon/wagon/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/wagon/wagon/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="wagon-2.0-site.xml" title="wagon-2.0-site.xml">wagon-2.0-site.xml</a>                                2011-09-26 13:33      1148      
+<a href="wagon-2.0-site.xml.asc" title="wagon-2.0-site.xml.asc">wagon-2.0-site.xml.asc</a>                            2011-09-26 13:33       195      
+<a href="wagon-2.0-site.xml.asc.md5" title="wagon-2.0-site.xml.asc.md5">wagon-2.0-site.xml.asc.md5</a>                        2011-09-26 13:33        32      
+<a href="wagon-2.0-site.xml.asc.sha1" title="wagon-2.0-site.xml.asc.sha1">wagon-2.0-site.xml.asc.sha1</a>                       2011-09-26 13:33        40      
+<a href="wagon-2.0-site.xml.md5" title="wagon-2.0-site.xml.md5">wagon-2.0-site.xml.md5</a>                            2011-09-26 13:33        32      
+<a href="wagon-2.0-site.xml.sha1" title="wagon-2.0-site.xml.sha1">wagon-2.0-site.xml.sha1</a>                           2011-09-26 13:33        40      
+<a href="wagon-2.0-source-release.zip" title="wagon-2.0-source-release.zip">wagon-2.0-source-release.zip</a>                      2011-09-26 13:33    599621      
+<a href="wagon-2.0-source-release.zip.asc" title="wagon-2.0-source-release.zip.asc">wagon-2.0-source-release.zip.asc</a>                  2011-09-26 13:33       195      
+<a href="wagon-2.0-source-release.zip.asc.md5" title="wagon-2.0-source-release.zip.asc.md5">wagon-2.0-source-release.zip.asc.md5</a>              2011-09-26 13:33        32      
+<a href="wagon-2.0-source-release.zip.asc.sha1" title="wagon-2.0-source-release.zip.asc.sha1">wagon-2.0-source-release.zip.asc.sha1</a>             2011-09-26 13:33        40      
+<a href="wagon-2.0-source-release.zip.md5" title="wagon-2.0-source-release.zip.md5">wagon-2.0-source-release.zip.md5</a>                  2011-09-26 13:33        32      
+<a href="wagon-2.0-source-release.zip.sha1" title="wagon-2.0-source-release.zip.sha1">wagon-2.0-source-release.zip.sha1</a>                 2011-09-26 13:33        40      
+<a href="wagon-2.0.pom" title="wagon-2.0.pom">wagon-2.0.pom</a>                                     2011-09-26 13:33     15393      
+<a href="wagon-2.0.pom.asc" title="wagon-2.0.pom.asc">wagon-2.0.pom.asc</a>                                 2011-09-26 13:33       195      
+<a href="wagon-2.0.pom.asc.md5" title="wagon-2.0.pom.asc.md5">wagon-2.0.pom.asc.md5</a>                             2011-09-26 13:33        32      
+<a href="wagon-2.0.pom.asc.sha1" title="wagon-2.0.pom.asc.sha1">wagon-2.0.pom.asc.sha1</a>                            2011-09-26 13:33        40      
+<a href="wagon-2.0.pom.md5" title="wagon-2.0.pom.md5">wagon-2.0.pom.md5</a>                                 2011-09-26 13:33        32      
+<a href="wagon-2.0.pom.sha1" title="wagon-2.0.pom.sha1">wagon-2.0.pom.sha1</a>                                2011-09-26 13:33        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 326ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/wagon/wagon-http/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/wagon/wagon-http/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="wagon-http-2.0-javadoc.jar" title="wagon-http-2.0-javadoc.jar">wagon-http-2.0-javadoc.jar</a>                        2011-09-26 13:41     31172      
+<a href="wagon-http-2.0-javadoc.jar.asc" title="wagon-http-2.0-javadoc.jar.asc">wagon-http-2.0-javadoc.jar.asc</a>                    2011-09-26 13:41       195      
+<a href="wagon-http-2.0-javadoc.jar.asc.md5" title="wagon-http-2.0-javadoc.jar.asc.md5">wagon-http-2.0-javadoc.jar.asc.md5</a>                2011-09-26 13:41        32      
+<a href="wagon-http-2.0-javadoc.jar.asc.sha1" title="wagon-http-2.0-javadoc.jar.asc.sha1">wagon-http-2.0-javadoc.jar.asc.sha1</a>               2011-09-26 13:41        40      
+<a href="wagon-http-2.0-javadoc.jar.md5" title="wagon-http-2.0-javadoc.jar.md5">wagon-http-2.0-javadoc.jar.md5</a>                    2011-09-26 13:41        32      
+<a href="wagon-http-2.0-javadoc.jar.sha1" title="wagon-http-2.0-javadoc.jar.sha1">wagon-http-2.0-javadoc.jar.sha1</a>                   2011-09-26 13:41        40      
+<a href="wagon-http-2.0-shaded.jar" title="wagon-http-2.0-shaded.jar">wagon-http-2.0-shaded.jar</a>                         2011-09-26 13:41    790738      
+<a href="wagon-http-2.0-shaded.jar.asc" title="wagon-http-2.0-shaded.jar.asc">wagon-http-2.0-shaded.jar.asc</a>                     2011-09-26 13:41       195      
+<a href="wagon-http-2.0-shaded.jar.asc.md5" title="wagon-http-2.0-shaded.jar.asc.md5">wagon-http-2.0-shaded.jar.asc.md5</a>                 2011-09-26 13:41        32      
+<a href="wagon-http-2.0-shaded.jar.asc.sha1" title="wagon-http-2.0-shaded.jar.asc.sha1">wagon-http-2.0-shaded.jar.asc.sha1</a>                2011-09-26 13:41        40      
+<a href="wagon-http-2.0-shaded.jar.md5" title="wagon-http-2.0-shaded.jar.md5">wagon-http-2.0-shaded.jar.md5</a>                     2011-09-26 13:41        32      
+<a href="wagon-http-2.0-shaded.jar.sha1" title="wagon-http-2.0-shaded.jar.sha1">wagon-http-2.0-shaded.jar.sha1</a>                    2011-09-26 13:41        40      
+<a href="wagon-http-2.0-sources.jar" title="wagon-http-2.0-sources.jar">wagon-http-2.0-sources.jar</a>                        2011-09-26 13:41      8498      
+<a href="wagon-http-2.0-sources.jar.asc" title="wagon-http-2.0-sources.jar.asc">wagon-http-2.0-sources.jar.asc</a>                    2011-09-26 13:41       195      
+<a href="wagon-http-2.0-sources.jar.asc.md5" title="wagon-http-2.0-sources.jar.asc.md5">wagon-http-2.0-sources.jar.asc.md5</a>                2011-09-26 13:41        32      
+<a href="wagon-http-2.0-sources.jar.asc.sha1" title="wagon-http-2.0-sources.jar.asc.sha1">wagon-http-2.0-sources.jar.asc.sha1</a>               2011-09-26 13:41        40      
+<a href="wagon-http-2.0-sources.jar.md5" title="wagon-http-2.0-sources.jar.md5">wagon-http-2.0-sources.jar.md5</a>                    2011-09-26 13:41        32      
+<a href="wagon-http-2.0-sources.jar.sha1" title="wagon-http-2.0-sources.jar.sha1">wagon-http-2.0-sources.jar.sha1</a>                   2011-09-26 13:41        40      
+<a href="wagon-http-2.0.jar" title="wagon-http-2.0.jar">wagon-http-2.0.jar</a>                                2011-09-26 13:41     10786      
+<a href="wagon-http-2.0.jar.asc" title="wagon-http-2.0.jar.asc">wagon-http-2.0.jar.asc</a>                            2011-09-26 13:41       195      
+<a href="wagon-http-2.0.jar.asc.md5" title="wagon-http-2.0.jar.asc.md5">wagon-http-2.0.jar.asc.md5</a>                        2011-09-26 13:41        32      
+<a href="wagon-http-2.0.jar.asc.sha1" title="wagon-http-2.0.jar.asc.sha1">wagon-http-2.0.jar.asc.sha1</a>                       2011-09-26 13:41        40      
+<a href="wagon-http-2.0.jar.md5" title="wagon-http-2.0.jar.md5">wagon-http-2.0.jar.md5</a>                            2011-09-26 13:41        32      
+<a href="wagon-http-2.0.jar.sha1" title="wagon-http-2.0.jar.sha1">wagon-http-2.0.jar.sha1</a>                           2011-09-26 13:41        40      
+<a href="wagon-http-2.0.pom" title="wagon-http-2.0.pom">wagon-http-2.0.pom</a>                                2011-09-26 13:41      4075      
+<a href="wagon-http-2.0.pom.asc" title="wagon-http-2.0.pom.asc">wagon-http-2.0.pom.asc</a>                            2011-09-26 13:41       195      
+<a href="wagon-http-2.0.pom.asc.md5" title="wagon-http-2.0.pom.asc.md5">wagon-http-2.0.pom.asc.md5</a>                        2011-09-26 13:41        32      
+<a href="wagon-http-2.0.pom.asc.sha1" title="wagon-http-2.0.pom.asc.sha1">wagon-http-2.0.pom.asc.sha1</a>                       2011-09-26 13:41        40      
+<a href="wagon-http-2.0.pom.md5" title="wagon-http-2.0.pom.md5">wagon-http-2.0.pom.md5</a>                            2011-09-26 13:41        32      
+<a href="wagon-http-2.0.pom.sha1" title="wagon-http-2.0.pom.sha1">wagon-http-2.0.pom.sha1</a>                           2011-09-26 13:41        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 843ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 07:11:27 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"32f4fac1e7f05d83a3ed8056d3677dd9"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-providers/2.0/wagon-providers-2.0.pom | rg -n -C 3 '<scm>|<url>|<connection>|<developerConnection>|<tag>'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/2.0/wagon-2.0.pom | rg -n -C 3 '<scm>|<url>|<connection>|<developerConnection>|<tag>|<description>|<name>'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 0ms:
+32-  <version>2.0</version>
+33-  <packaging>pom</packaging>
+34-
+35:  <name>Apache Maven Wagon</name>
+36:  <description>Tools to manage artifacts and deployment</description>
+37:  <url>http://maven.apache.org/wagon</url>
+38-  <inceptionYear>2003</inceptionYear>
+39-
+40-  <contributors>
+41-    <contributor>
+42:      <name>James William Dumay</name>
+43-    </contributor>
+44-    <contributor>
+45:      <name>Nathan Beyer</name>
+46-    </contributor>
+47-    <contributor>
+48:      <name>Gregory Block</name>
+49-    </contributor>
+50-    <contributor>
+51:      <name>Thomas Recloux</name>
+52-    </contributor>
+53-    <contributor>
+54:      <name>Trustin Lee</name>
+55-    </contributor>
+56-    <contributor>
+57:      <name>John Wells</name>
+58-    </contributor>
+59-    <contributor>
+60:      <name>Marcel Schutte</name>
+61-    </contributor>
+62-    <contributor>
+63:      <name>David Hawkins</name>
+64-    </contributor>
+65-    <contributor>
+66:      <name>Juan F. Codagnone</name>
+67-    </contributor>
+68-    <contributor>
+69:      <name>ysoonleo</name>
+70-    </contributor>
+71-    <contributor>
+72:      <name>Thomas Champagne</name>
+73-    </contributor>
+74-    <contributor>
+75:      <name>M. van der Plas</name>
+76-    </contributor>
+77-    <contributor>
+78:      <name>Jason Dillon</name>
+79-    </contributor>
+80-    <contributor>
+81:      <name>Jochen Wiedmann</name>
+82-    </contributor>
+83-    <contributor>
+84:      <name>Gilles Scokart</name>
+85-    </contributor>
+86-    <contributor>
+87:      <name>Wolfgang Glas</name>
+88-    </contributor>
+89-    <contributor>
+90:      <name>Kohsuke Kawaguchi</name>
+91-    </contributor>
+92-    <contributor>
+93:      <name>Antti Virtanen</name>
+94-    </contributor>
+95-    <contributor>
+96:      <name>Thorsten Heit</name>
+97-    </contributor>
+98-    <contributor>
+99:      <name>Michal Maczka</name>
+100-      <email>michal@codehaus.org</email>
+101-      <organization>Codehaus</organization>
+102-      <roles>
+--
+107-
+108-  <mailingLists>
+109-    <mailingList>
+110:      <name>Maven Developer List</name>
+111-      <subscribe>dev-subscribe@maven.apache.org</subscribe>
+112-      <unsubscribe>dev-unsubscribe@maven.apache.org</unsubscribe>
+113-      <post>dev@maven.apache.org</post>
+--
+119-      </otherArchives>
+120-    </mailingList>
+121-    <mailingList>
+122:      <name>Maven User List</name>
+123-      <subscribe>users-subscribe@maven.apache.org</subscribe>
+124-      <unsubscribe>users-unsubscribe@maven.apache.org</unsubscribe>
+125-      <post>users@maven.apache.org</post>
+--
+132-    </mailingList>
+133-
+134-    <mailingList>
+135:      <name>LEGACY Wagon User List (deprecated)</name>
+136-      <post>wagon-users@maven.apache.org</post>
+137-      <subscribe>wagon-users-subscribe@maven.apache.org</subscribe>
+138-      <unsubscribe>wagon-users-unsubscribe@maven.apache.org</unsubscribe>
+--
+144-      </otherArchives>
+145-    </mailingList>
+146-    <mailingList>
+147:      <name>LEGACY Wagon Developer List (deprecated)</name>
+148-      <post>wagon-dev@maven.apache.org</post>
+149-      <subscribe>wagon-dev-subscribe@maven.apache.org</subscribe>
+150-      <unsubscribe>wagon-dev-unsubscribe@maven.apache.org</unsubscribe>
+--
+156-      </otherArchives>
+157-    </mailingList>
+158-    <mailingList>
+159:      <name>Wagon Commits List</name>
+160-      <subscribe>wagon-commits-subscribe@maven.apache.org</subscribe>
+161-      <unsubscribe>wagon-commits-unsubscribe@maven.apache.org</unsubscribe>
+162-      <archive>http://mail-archives.apache.org/mod_mbox/maven-wagon-commits/</archive>
+--
+166-    </mailingList>
+167-  </mailingLists>
+168-
+169:  <scm>
+170:    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/wagon/tags/wagon-2.0</connection>
+171:    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-2.0</developerConnection>
+172:    <url>http://svn.apache.org/viewvc/maven/wagon/tags/wagon-2.0</url>
+173-  </scm>
+174-  <issueManagement>
+175-    <system>jira</system>
+176:    <url>http://jira.codehaus.org/browse/WAGON</url>
+177-  </issueManagement>
+178-  <ciManagement>
+179-    <system>Jenkins</system>
+180:    <url>https://builds.apache.org/job/maven-wagon/</url>
+181-  </ciManagement>
+182-
+183-
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/2.0/wagon-http-2.0-sources.jar -o /tmp/wagon-http-2.0-sources.jar && jar tf /tmp/wagon-http-2.0-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/2.0/wagon-2.0-source-release.zip -o /tmp/wagon-2.0-source-release.zip && unzip -l /tmp/wagon-2.0-source-release.zip | rg 'wagon-providers/wagon-http/src/test|wagon-http/src/test' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 420ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/wagon/
+org/apache/maven/wagon/providers/
+org/apache/maven/wagon/providers/http/
+org/apache/maven/wagon/providers/http/HttpWagon.java
+META-INF/plexus/
+META-INF/plexus/components.xml
+
+ succeeded in 1489ms:
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/http/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/resources/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/resources/META-INF/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/resources/META-INF/plexus/
+        0  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/resources/ssl/
+     2056  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/http/ErrorWithReasonPhaseServlet.java
+     1836  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/http/HttpsWagonTest.java
+     1958  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/http/HttpWagonHttpServerTestCase.java
+     5148  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/http/HttpWagonReasonPhraseTest.java
+     2388  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/http/HttpWagonTest.java
+     5862  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/http/HttpWagonTimeoutTest.java
+     1242  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/http/TckTest.java
+     1627  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/java/org/apache/maven/wagon/providers/http/WaitForeverServlet.java
+     1402  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/resources/META-INF/plexus/components.xml
+     1363  2011-09-26 15:33   wagon-2.0/wagon-providers/wagon-http/src/test/resources/ssl/keystore
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.maven.wagon/wagon-http-shared/index.json && sed -n '1,80p' metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json && sed -n '1,80p' metadata/org.apache.maven.wagon/wagon-provider-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0-beta-2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/wagon",
+    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
+    "description" : "Maven Wagon HTTP Shared Library provides common HTTP utilities used by the wagon-http and wagon-http-lightweight provider modules in Apache Maven Wagon. It supports Maven's transport layer by sharing HTTP-related parsing and stream helper code between those Wagon implementations.",
+    "tested-versions" : [
+      "1.0-beta-2"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.wagon.shared.http"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/maven-wagon",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-javadoc.jar",
+    "description" : "Maven Wagon Lightweight HTTP Provider is an HTTP/HTTPS transport provider for Maven Wagon that gets and puts artifacts using standard JDK networking classes. It lets Maven and repository tooling access remote repositories hosted on HTTP servers through the Wagon provider API.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.wagon.providers.http",
+      "org_apache_maven_wagon.wagon_http_lightweight"
+    ]
+  },
+  {
+    "metadata-version" : "1.0-beta-2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/maven-wagon",
+    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-http-lightweight/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-lightweight/$version$/wagon-http-lightweight-$version$-javadoc.jar",
+    "description" : "Maven Wagon Lightweight HTTP Provider is an HTTP/HTTPS transport provider for Maven Wagon that gets and puts artifacts using standard JDK networking classes. It lets Maven and repository tooling access remote repositories hosted on HTTP servers through the Wagon provider API.",
+    "tested-versions" : [
+      "1.0-beta-2"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.wagon.providers.http"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/maven-wagon",
+    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-provider-api/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-provider-api/$version$/wagon-provider-api-$version$-javadoc.jar",
+    "description" : "Maven Wagon Provider API defines the common Java interfaces, events, exceptions, and support classes used by Wagon transport providers. It lets Maven and related tools interact with repository transfer implementations through a shared provider contract.",
+    "tested-versions" : [
+      "1.0",
+      "2.0",
+      "2.1",
+      "2.2",
+      "2.3",
+      "2.4",
+      "2.5",
+      "2.6",
+      "2.7",
+      "2.8",
+      "2.9",
+      "2.10",
+      "2.12",
+      "3.0.0",
+      "3.1.0",
+      "3.2.0",
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "3.3.4",
+      "3.4.0",
+      "3.4.1",
+      "3.4.2",
+      "3.4.3",
+      "3.5.0",
+      "3.5.1",
+      "3.5.2",
+      "3.5.3"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.wagon"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/2.0/wagon-http-2.0-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/2.0/wagon-2.0-source-release.zip \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/2.0/wagon-http-2.0-javadoc.jar \\
+  https://github.com/apache/maven-wagon; do printf '%s -> ' \""'$url"; curl -fsIL -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+exec
+/usr/bin/bash -lc "curl -fsIL -o /dev/null -w '%{http_code}\\n' https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/2.0/wagon-http-2.0-tests.jar || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/2.0/wagon-http-2.0.pom | rg -n '<description>|Wagon that gets|wagon-tck-http|httpclient-4.x|<artifactId>wagon-http</artifactId>|<name>'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 0ms:
+30:  <artifactId>wagon-http</artifactId>
+31:  <name>Apache Maven Wagon :: Providers :: HTTP Provider</name>
+32:  <description>
+33:    Wagon that gets and puts artifacts through http using Apache httpclient-4.x.
+55:      <artifactId>wagon-tck-http</artifactId>
+
+ succeeded in 366ms:
+404
+
+ succeeded in 1272ms:
+200
+https://github.com/apache/maven-wagon -> 200
+
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/2.0/wagon-http-2.0.pom
+web search: 
+web search: apache maven-wagon GitHub repository
+codex
+The rendered 2.0 URLs return 200, and Central does not publish a `wagon-http-2.0-tests.jar`, so I’m using the 2.0 source-release ZIP for test sources as the closest Maven-hosted test source, matching the repository’s existing pattern. I’ll now fill only the missing fields on the `metadata-version` 2.0 entry and leave `language` absent because this is not Kotlin, Groovy, or Scala specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa/metadata/org.apache.maven.wagon/wagon-http/index.json
+diff --git a/metadata/org.apache.maven.wagon/wagon-http/index.json b/metadata/org.apache.maven.wagon/wagon-http/index.json
+index 55f7bce73633f3fd5411be2151969b36aba40314..bda359686e55fd3d0db67a1743a5ee404a00fd2c
+--- a/metadata/org.apache.maven.wagon/wagon-http/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/maven-wagon",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Provider is an HTTP transport implementation for Maven Wagon that gets and puts artifacts through HTTP using Apache HttpClient 4.x. It lets Maven and related repository tooling transfer artifacts to and from HTTP-based repositories through the Wagon provider API.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+diff --git a/metadata/org.apache.maven.wagon/wagon-http/index.json b/metadata/org.apache.maven.wagon/wagon-http/index.json
+index 55f7bce73633f3fd5411be2151969b36aba40314..bda359686e55fd3d0db67a1743a5ee404a00fd2c
+--- a/metadata/org.apache.maven.wagon/wagon-http/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/maven-wagon",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Provider is an HTTP transport implementation for Maven Wagon that gets and puts artifacts through HTTP using Apache HttpClient 4.x. It lets Maven and related repository tooling transfer artifacts to and from HTTP-based repositories through the Wagon provider API.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq . metadata/org.apache.maven.wagon/wagon-http/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.maven.wagon/wagon-http/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.maven.wagon/wagon-http/index.json w/metadata/org.apache.maven.wagon/wagon-http/index.json
+index 55f7bce736..bda359686e 100644
+--- i/metadata/org.apache.maven.wagon/wagon-http/index.json
++++ w/metadata/org.apache.maven.wagon/wagon-http/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/maven-wagon",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Provider is an HTTP transport implementation for Maven Wagon that gets and puts artifacts through HTTP using Apache HttpClient 4.x. It lets Maven and related repository tooling transfer artifacts to and from HTTP-based repositories through the Wagon provider API.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+diff --git a/metadata/org.apache.maven.wagon/wagon-http/index.json b/metadata/org.apache.maven.wagon/wagon-http/index.json
+index 55f7bce73633f3fd5411be2151969b36aba40314..bda359686e55fd3d0db67a1743a5ee404a00fd2c
+--- a/metadata/org.apache.maven.wagon/wagon-http/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/maven-wagon",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Provider is an HTTP transport implementation for Maven Wagon that gets and puts artifacts through HTTP using Apache HttpClient 4.x. It lets Maven and related repository tooling transfer artifacts to and from HTTP-based repositories through the Wagon provider API.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+codex
+The JSON patch is in place and `jq` accepts the file. I’m running the coordinate metadata check now to catch schema or URL-field formatting issues before wrapping up.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.maven.wagon:wagon-http:2.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+diff --git a/metadata/org.apache.maven.wagon/wagon-http/index.json b/metadata/org.apache.maven.wagon/wagon-http/index.json
+index 55f7bce73633f3fd5411be2151969b36aba40314..bda359686e55fd3d0db67a1743a5ee404a00fd2c
+--- a/metadata/org.apache.maven.wagon/wagon-http/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/maven-wagon",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Provider is an HTTP transport implementation for Maven Wagon that gets and puts artifacts through HTTP using Apache HttpClient 4.x. It lets Maven and related repository tooling transfer artifacts to and from HTTP-based repositories through the Wagon provider API.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+ exited 1 in 3365ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.apache.maven.wagon:wagon-http:2.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa/metadata/org.apache.maven.wagon/wagon-http/2.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.maven.wagon:wagon-http:2.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa/metadata/org.apache.maven.wagon/wagon-http/2.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.apache.maven.wagon:wagon-http:2.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa/metadata/org.apache.maven.wagon/wagon-http/2.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.apache.maven.wagon/wagon-http/index.json | sed -n '15,34p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+ succeeded in 0ms:
+    15	      "org.apache.maven.wagon.shared.http"
+    16	    ]
+    17	  },
+    18	  {
+    19	    "metadata-version" : "2.0",
+    20	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
+    21	    "repository-url" : "https://github.com/apache/maven-wagon",
+    22	    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
+    23	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
+    24	    "description" : "Maven Wagon HTTP Provider is an HTTP transport implementation for Maven Wagon that gets and puts artifacts through HTTP using Apache HttpClient 4.x. It lets Maven and related repository tooling transfer artifacts to and from HTTP-based repositories through the Wagon provider API.",
+    25	    "tested-versions" : [
+    26	      "2.0"
+    27	    ],
+    28	    "allowed-packages" : [
+    29	      "org.apache.maven.wagon.providers.http",
+    30	      "org.apache.maven.wagon.shared.http"
+    31	    ]
+    32	  }
+    33	]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa
+diff --git a/metadata/org.apache.maven.wagon/wagon-http/index.json b/metadata/org.apache.maven.wagon/wagon-http/index.json
+index 55f7bce73633f3fd5411be2151969b36aba40314..bda359686e55fd3d0db67a1743a5ee404a00fd2c
+--- a/metadata/org.apache.maven.wagon/wagon-http/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/maven-wagon",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Provider is an HTTP transport implementation for Maven Wagon that gets and puts artifacts through HTTP using Apache HttpClient 4.x. It lets Maven and related repository tooling transfer artifacts to and from HTTP-based repositories through the Wagon provider API.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+ succeeded in 135ms:
+ M metadata/org.apache.maven.wagon/wagon-http/index.json
+
+web search: 
+web search: https://github.com/apache/maven-wagon
+web search: 
+web search: repo.maven.apache.org org/apache/maven/wagon/wagon-http/2.0 wagon-http-2.0-sources.jar wagon-http-2.0-javadoc.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/
+web search: 
+web search: 
+web search: 
+web search: "wagon-http-2.0-sources.jar"
+web search: 
+web search: 
+web search: 
+web search: search.maven.org org.apache.maven.wagon wagon-http 2.0
+web search: 
+web search: 
+web search: 
+web search: site:maven.apache.org/components/wagon-archives/wagon-2.0/wagon-providers/wagon-http Maven Wagon HTTP 2.0 Apache HttpClient
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa/metadata/org.apache.maven.wagon/wagon-http/index.json:19) for `metadata-version` `2.0` with source, repository, test source, documentation, and a two-sentence description. I left `language` absent because this is not Kotlin, Groovy, or Scala specific. The repository root and description align with Apache Maven Wagon’s GitHub repo and versioned Wagon HTTP docs. ([github.com](https://github.com/apache/maven-wagon))
+
+Validation: `jq` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.apache.maven.wagon:wagon-http:2.0 --stacktrace` failed because `metadata/org.apache.maven.wagon/wagon-http/2.0/reachability-metadata.json` is missing, unrelated to this URL/description update.
+diff --git a/metadata/org.apache.maven.wagon/wagon-http/index.json b/metadata/org.apache.maven.wagon/wagon-http/index.json
+index 55f7bce73633f3fd5411be2151969b36aba40314..bda359686e55fd3d0db67a1743a5ee404a00fd2c
+--- a/metadata/org.apache.maven.wagon/wagon-http/index.json
++++ b/metadata/org.apache.maven.wagon/wagon-http/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/maven-wagon",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
++    "description" : "Maven Wagon HTTP Provider is an HTTP transport implementation for Maven Wagon that gets and puts artifacts through HTTP using Apache HttpClient 4.x. It lets Maven and related repository tooling transfer artifacts to and from HTTP-based repositories through the Wagon provider API.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+tokens used
+122,303
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa/metadata/org.apache.maven.wagon/wagon-http/index.json:19) for `metadata-version` `2.0` with source, repository, test source, documentation, and a two-sentence description. I left `language` absent because this is not Kotlin, Groovy, or Scala specific. The repository root and description align with Apache Maven Wagon’s GitHub repo and versioned Wagon HTTP docs. ([github.com](https://github.com/apache/maven-wagon))
+
+Validation: `jq` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.apache.maven.wagon:wagon-http:2.0 --stacktrace` failed because `metadata/org.apache.maven.wagon/wagon-http/2.0/reachability-metadata.json` is missing, unrelated to this URL/description update.
+Ran agent for org.apache.maven.wagon:wagon-http:2.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa/build/agent-url-discovery-logs/org.apache.maven.wagon-wagon-http-2.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6939-4823fbaa/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 5s
+9 actionable tasks: 1 executed, 8 up-to-date
