@@ -32,6 +32,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
+import org.springframework.stereotype.Indexed;
 import org.springframework.stereotype.Repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -211,12 +212,14 @@ public class Spring_boot_persistenceTest {
 
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
+    @Indexed
     public @interface SampleEntity {
 
     }
 
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
+    @Indexed
     public @interface SampleEmbeddable {
 
     }

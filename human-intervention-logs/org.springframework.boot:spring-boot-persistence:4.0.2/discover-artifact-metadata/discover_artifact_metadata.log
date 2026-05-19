@@ -1,0 +1,655 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.131.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e3fe2-d25b-7b00-b7b0-2e77739baacd
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-persistence:4.0.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.0.2" when "$version$" is replaced with "4.0.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+- Set "coordinates" to "org.springframework.boot:spring-boot-persistence:4.0.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and the upstream Spring Boot repository, then patch the metadata JSON in place. I’ll also check whether the published artifact is JVM bytecode before deciding on any Native Image exclusion fields.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json && sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+-rw-rw-r-- 1 vjovanov vjovanov 79 May 19 12:58 build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+{
+  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "spring-boot-persistence|org.springframework.boot:spring-boot" build/discovered-artifact-metadata metadata tests || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json:2:  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2"
+metadata/org.springframework.boot/spring-boot-starter-json/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-json:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-jpa:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-jpa:2.7.18, org.hibernate:hibernate-core:5.6.15.Final, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-starter-tomcat/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-tomcat:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-redis:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-redis:2.7.18, io.lettuce:lettuce-core:6.1.10.RELEASE, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-starter-jackson/index.json:4:    "reason": "The published spring-boot-starter-jackson-4.0.2 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; the implementation classes are supplied by dependencies such as org.springframework.boot:spring-boot-jackson.",
+metadata/org.springframework.boot/spring-boot-starter-jackson/index.json:5:    "replacement": "Use the class-bearing dependency org.springframework.boot:spring-boot-jackson:4.0.2 for Spring Boot Jackson integration metadata."
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-aop:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-aop:5.3.31, org.aspectj:aspectjweaver:1.9.7, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-validation:3.4.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:5:    "replacement": "Use class-bearing dependencies such as org.hibernate.validator:hibernate-validator:8.0.2.Final, org.apache.tomcat.embed:tomcat-embed-el:10.1.36, org.springframework.boot:spring-boot:3.4.3, and org.springframework.boot:spring-boot-autoconfigure:3.4.3."
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-amqp:4.0.2 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-amqp:4.0.2, org.springframework.amqp:spring-rabbit:4.0.2, and org.springframework.boot:spring-boot-autoconfigure:4.0.2."
+metadata/library-and-framework-list.json:2007:    "artifact": "org.springframework.boot:spring-boot-starter-actuator",
+metadata/library-and-framework-list.json:2023:    "artifact": "org.springframework.boot:spring-boot-starter-amqp",
+metadata/library-and-framework-list.json:2039:    "artifact": "org.springframework.boot:spring-boot-starter-cache",
+metadata/library-and-framework-list.json:2055:    "artifact": "org.springframework.boot:spring-boot-starter-data-jdbc",
+metadata/library-and-framework-list.json:2071:    "artifact": "org.springframework.boot:spring-boot-starter-data-jpa",
+metadata/library-and-framework-list.json:2089:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb",
+metadata/library-and-framework-list.json:2108:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb-reactive",
+metadata/library-and-framework-list.json:2127:    "artifact": "org.springframework.boot:spring-boot-starter-data-r2dbc",
+metadata/library-and-framework-list.json:2143:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis",
+metadata/library-and-framework-list.json:2160:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis-reactive",
+metadata/library-and-framework-list.json:2177:    "artifact": "org.springframework.boot:spring-boot-starter-data-rest",
+metadata/library-and-framework-list.json:2194:    "artifact": "org.springframework.boot:spring-boot-starter-freemarker",
+metadata/library-and-framework-list.json:2210:    "artifact": "org.springframework.boot:spring-boot-starter-graphql",
+metadata/library-and-framework-list.json:2227:    "artifact": "org.springframework.boot:spring-boot-starter-hateoas",
+metadata/library-and-framework-list.json:2246:    "artifact": "org.springframework.boot:spring-boot-starter-integration",
+metadata/library-and-framework-list.json:2266:    "artifact": "org.springframework.boot:spring-boot-starter-jdbc",
+metadata/library-and-framework-list.json:2282:    "artifact": "org.springframework.boot:spring-boot-starter-jetty",
+metadata/library-and-framework-list.json:2298:    "artifact": "org.springframework.boot:spring-boot-starter-json",
+metadata/library-and-framework-list.json:2315:    "artifact": "org.springframework.boot:spring-boot-starter-logging",
+metadata/library-and-framework-list.json:2332:    "artifact": "org.springframework.boot:spring-boot-starter-mail",
+metadata/library-and-framework-list.json:2348:    "artifact": "org.springframework.boot:spring-boot-starter-mustache",
+metadata/library-and-framework-list.json:2364:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-client",
+metadata/library-and-framework-list.json:2380:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
+metadata/library-and-framework-list.json:2396:    "artifact": "org.springframework.boot:spring-boot-starter-quartz",
+metadata/library-and-framework-list.json:2412:    "artifact": "org.springframework.boot:spring-boot-starter-reactor-netty",
+metadata/library-and-framework-list.json:2429:    "artifact": "org.springframework.boot:spring-boot-starter-rsocket",
+metadata/library-and-framework-list.json:2446:    "artifact": "org.springframework.boot:spring-boot-starter-security",
+metadata/library-and-framework-list.json:2463:    "artifact": "org.springframework.boot:spring-boot-starter-test",
+metadata/library-and-framework-list.json:2479:    "artifact": "org.springframework.boot:spring-boot-starter-thymeleaf",
+metadata/library-and-framework-list.json:2495:    "artifact": "org.springframework.boot:spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2511:    "artifact": "org.springframework.boot:spring-boot-starter-undertow",
+metadata/library-and-framework-list.json:2527:    "artifact": "org.springframework.boot:spring-boot-starter-validation",
+metadata/library-and-framework-list.json:2543:    "artifact": "org.springframework.boot:spring-boot-starter-web",
+metadata/library-and-framework-list.json:2562:    "artifact": "org.springframework.boot:spring-boot-starter-webflux",
+metadata/library-and-framework-list.json:2580:    "artifact": "org.springframework.boot:spring-boot-starter-websocket",
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/build.gradle:14:    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-netty:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/build.gradle:16:    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/build.gradle:17:    testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
+tests/src/org.jboss.logging/jboss-logging/3.5.0.Final/build.gradle:17:    testImplementation 'org.springframework.boot:spring-boot-test:2.7.5'
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-netty:4.0.2
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-amqp:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-reactor-netty:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-amqp:4.0.2
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-reactor-netty:4.0.2
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/build.gradle:21:    testImplementation "org.springframework.boot:spring-boot-configuration-processor:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-configuration-processor:2.7.18
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-validation:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/build.gradle:14:    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-reactor:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/build.gradle:16:    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-validation:4.0.6
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-reactor:4.0.2
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-kafka:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/build.gradle:16:    testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-kafka:4.0.2
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-web-server:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-web-server:4.0.2
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-http-client:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-http-client:4.0.2
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-webflux:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-webflux:4.0.2
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-actuator-autoconfigure:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-actuator-autoconfigure:2.6.3
+
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-persistence 4.0.2
+codex
+The local repository already has Spring Boot metadata patterns, including `not-for-native-image` treatment for starter artifacts. For this artifact I’m checking the actual Maven files so the decision is based on the published JAR contents rather than the artifact name alone.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-persistence/4.0.2/spring-boot-persistence-4.0.2.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-persistence</artifactId>
+  <version>4.0.2</version>
+  <name>spring-boot-persistence</name>
+  <description>Spring Boot Persistence</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>7.0.3</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-persistence/4.0.2/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-persistence/4.0.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-persistence/4.0.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-persistence-4.0.2-javadoc.jar" title="spring-boot-persistence-4.0.2-javadoc.jar">spring-boot-persistence-4.0.2-javadoc.jar</a>         2026-01-22 14:25    115028      
+<a href="spring-boot-persistence-4.0.2-javadoc.jar.asc" title="spring-boot-persistence-4.0.2-javadoc.jar.asc">spring-boot-persistence-4.0.2-javadoc.jar.asc</a>     2026-01-22 14:25       833      
+<a href="spring-boot-persistence-4.0.2-javadoc.jar.md5" title="spring-boot-persistence-4.0.2-javadoc.jar.md5">spring-boot-persistence-4.0.2-javadoc.jar.md5</a>     2026-01-22 14:25        32      
+<a href="spring-boot-persistence-4.0.2-javadoc.jar.sha1" title="spring-boot-persistence-4.0.2-javadoc.jar.sha1">spring-boot-persistence-4.0.2-javadoc.jar.sha...</a>  2026-01-22 14:25        40      
+<a href="spring-boot-persistence-4.0.2-sources.jar" title="spring-boot-persistence-4.0.2-sources.jar">spring-boot-persistence-4.0.2-sources.jar</a>         2026-01-22 14:25     10487      
+<a href="spring-boot-persistence-4.0.2-sources.jar.asc" title="spring-boot-persistence-4.0.2-sources.jar.asc">spring-boot-persistence-4.0.2-sources.jar.asc</a>     2026-01-22 14:25       833      
+<a href="spring-boot-persistence-4.0.2-sources.jar.md5" title="spring-boot-persistence-4.0.2-sources.jar.md5">spring-boot-persistence-4.0.2-sources.jar.md5</a>     2026-01-22 14:25        32      
+<a href="spring-boot-persistence-4.0.2-sources.jar.sha1" title="spring-boot-persistence-4.0.2-sources.jar.sha1">spring-boot-persistence-4.0.2-sources.jar.sha...</a>  2026-01-22 14:25        40      
+<a href="spring-boot-persistence-4.0.2.jar" title="spring-boot-persistence-4.0.2.jar">spring-boot-persistence-4.0.2.jar</a>                 2026-01-22 14:25     13289      
+<a href="spring-boot-persistence-4.0.2.jar.asc" title="spring-boot-persistence-4.0.2.jar.asc">spring-boot-persistence-4.0.2.jar.asc</a>             2026-01-22 14:25       833      
+<a href="spring-boot-persistence-4.0.2.jar.md5" title="spring-boot-persistence-4.0.2.jar.md5">spring-boot-persistence-4.0.2.jar.md5</a>             2026-01-22 14:25        32      
+<a href="spring-boot-persistence-4.0.2.jar.sha1" title="spring-boot-persistence-4.0.2.jar.sha1">spring-boot-persistence-4.0.2.jar.sha1</a>            2026-01-22 14:25        40      
+<a href="spring-boot-persistence-4.0.2.module" title="spring-boot-persistence-4.0.2.module">spring-boot-persistence-4.0.2.module</a>              2026-01-22 14:25      4322      
+<a href="spring-boot-persistence-4.0.2.module.asc" title="spring-boot-persistence-4.0.2.module.asc">spring-boot-persistence-4.0.2.module.asc</a>          2026-01-22 14:25       833      
+<a href="spring-boot-persistence-4.0.2.module.md5" title="spring-boot-persistence-4.0.2.module.md5">spring-boot-persistence-4.0.2.module.md5</a>          2026-01-22 14:25        32      
+<a href="spring-boot-persistence-4.0.2.module.sha1" title="spring-boot-persistence-4.0.2.module.sha1">spring-boot-persistence-4.0.2.module.sha1</a>         2026-01-22 14:25        40      
+<a href="spring-boot-persistence-4.0.2.pom" title="spring-boot-persistence-4.0.2.pom">spring-boot-persistence-4.0.2.pom</a>                 2026-01-22 14:25      2235      
+<a href="spring-boot-persistence-4.0.2.pom.asc" title="spring-boot-persistence-4.0.2.pom.asc">spring-boot-persistence-4.0.2.pom.asc</a>             2026-01-22 14:25       833      
+<a href="spring-boot-persistence-4.0.2.pom.md5" title="spring-boot-persistence-4.0.2.pom.md5">spring-boot-persistence-4.0.2.pom.md5</a>             2026-01-22 14:25        32      
+<a href="spring-boot-persistence-4.0.2.pom.sha1" title="spring-boot-persistence-4.0.2.pom.sha1">spring-boot-persistence-4.0.2.pom.sha1</a>            2026-01-22 14:25        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-persistence/4.0.2/spring-boot-persistence-4.0.2-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-persistence/4.0.2/spring-boot-persistence-4.0.2-test-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-persistence/4.0.2/spring-boot-persistence-4.0.2-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ exited 22 in 315ms:
+HTTP/2 404 
+date: Tue, 19 May 2026 10:58:23 GMT
+content-type: text/html
+cf-ray: 9fe2960cde860d6c-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/boot/spring-boot-persistence/4.0.2/spring-boot-persistence-4.0.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: site:mvnrepository.com/artifact/org.springframework.boot/spring-boot-persistence 4.0.2
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata metadata/org.springframework.boot -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ succeeded in 0ms:
+metadata/org.springframework.boot/spring-boot-netty/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-netty/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-netty/src/test",
+metadata/org.springframework.boot/spring-boot-netty/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-amqp/$version$/spring-boot-amqp-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-amqp/src/test",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-amqp/$version$/spring-boot-amqp-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-kafka/$version$/spring-boot-kafka-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-kafka/src/test",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-kafka/$version$/spring-boot-kafka-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-webflux/$version$/spring-boot-webflux-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-webflux/src/test",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-webflux/$version$/spring-boot-webflux-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-actuator-autoconfigure/src/test",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-web-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-web-server/$version$/spring-boot-web-server-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-web-server/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-web-server/src/test",
+metadata/org.springframework.boot/spring-boot-web-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-web-server/$version$/spring-boot-web-server-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-reactor-netty/$version$/spring-boot-reactor-netty-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-reactor-netty/src/test",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-reactor-netty/$version$/spring-boot-reactor-netty-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-http-client/$version$/spring-boot-http-client-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-http-client/src/test",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-http-client/$version$/spring-boot-http-client-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-reactor/$version$/spring-boot-reactor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-reactor/src/test/java",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-reactor/$version$/spring-boot-reactor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-validation/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-validation/$version$/spring-boot-validation-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-validation/index.json:7:    "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-validation/src/test/java",
+metadata/org.springframework.boot/spring-boot-validation/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-validation/$version$/spring-boot-validation-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d) && cd "$tmp" && curl -fsSLO https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-persistence/4.0.2/spring-boot-persistence-4.0.2.jar && curl -fsSLO https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-persistence/4.0.2/spring-boot-persistence-4.0.2-sources.jar && printf '"'JAR contents:\\n' && jar tf spring-boot-persistence-4.0.2.jar | sed -n '1,120p' && printf '\\nSources contents:\\n' && jar tf spring-boot-persistence-4.0.2-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/git/ref/tags/v4.0.2' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ succeeded in 223ms:
+{
+  "ref": "refs/tags/v4.0.2",
+  "node_id": "MDM6UmVmNjI5Njc5MDpyZWZzL3RhZ3MvdjQuMC4y",
+  "url": "https://api.github.com/repos/spring-projects/spring-boot/git/refs/tags/v4.0.2",
+  "object": {
+    "sha": "fae35455769a9f6af8911fa9d3e984bff5070542",
+    "type": "commit",
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/git/commits/fae35455769a9f6af8911fa9d3e984bff5070542"
+  }
+}
+
+ succeeded in 264ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/spring-autoconfigure-metadata.properties
+META-INF/spring-configuration-metadata.json
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/persistence/
+org/springframework/boot/persistence/autoconfigure/
+org/springframework/boot/persistence/autoconfigure/EntityScan.class
+org/springframework/boot/persistence/autoconfigure/EntityScanPackages$EntityScanPackagesBeanDefinition.class
+org/springframework/boot/persistence/autoconfigure/EntityScanPackages$Registrar.class
+org/springframework/boot/persistence/autoconfigure/EntityScanPackages.class
+org/springframework/boot/persistence/autoconfigure/EntityScanner.class
+org/springframework/boot/persistence/autoconfigure/PersistenceExceptionTranslationAutoConfiguration.class
+org/springframework/boot/persistence/autoconfigure/package-info.class
+META-INF/additional-spring-configuration-metadata.json
+META-INF/spring/
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+
+Sources contents:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/additional-spring-configuration-metadata.json
+META-INF/spring/
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/persistence/
+org/springframework/boot/persistence/autoconfigure/
+org/springframework/boot/persistence/autoconfigure/EntityScan.java
+org/springframework/boot/persistence/autoconfigure/EntityScanPackages.java
+org/springframework/boot/persistence/autoconfigure/EntityScanner.java
+org/springframework/boot/persistence/autoconfigure/PersistenceExceptionTranslationAutoConfiguration.java
+org/springframework/boot/persistence/autoconfigure/package-info.java
+
+codex
+Maven Central publishes the normal JAR, sources JAR, and javadocs JAR; there is no Maven test-sources artifact for this coordinate. The JAR contains `.class` files under `org/springframework/boot/persistence`, so this remains a Native Image metadata target and does not need `not-for-native-image`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence?ref=v4.0.2' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence/src?ref=v4.0.2' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/search/code?q=repo:spring-projects/spring-boot+EntityScanPackagesTests+ref:v4.0.2' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ exited 22 in 135ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 194ms:
+[
+  {
+    "name": "build.gradle",
+    "path": "module/spring-boot-persistence/build.gradle",
+    "sha": "5f0c60209896e7821adf7030ee66a207904161d2",
+    "size": 1612,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence/build.gradle?ref=v4.0.2",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.2/module/spring-boot-persistence/build.gradle",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/5f0c60209896e7821adf7030ee66a207904161d2",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.2/module/spring-boot-persistence/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence/build.gradle?ref=v4.0.2",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/5f0c60209896e7821adf7030ee66a207904161d2",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.2/module/spring-boot-persistence/build.gradle"
+    }
+  },
+  {
+    "name": "src",
+    "path": "module/spring-boot-persistence/src",
+    "sha": "04468c5e9d46b74a11a2ede3540aebaa5f236d3c",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence/src?ref=v4.0.2",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-persistence/src",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/04468c5e9d46b74a11a2ede3540aebaa5f236d3c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence/src?ref=v4.0.2",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/04468c5e9d46b74a11a2ede3540aebaa5f236d3c",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-persistence/src"
+    }
+  }
+]
+
+ succeeded in 238ms:
+[
+  {
+    "name": "main",
+    "path": "module/spring-boot-persistence/src/main",
+    "sha": "a313f16561c33d33ffcd69e92f511825fa01ae62",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence/src/main?ref=v4.0.2",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-persistence/src/main",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a313f16561c33d33ffcd69e92f511825fa01ae62",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence/src/main?ref=v4.0.2",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a313f16561c33d33ffcd69e92f511825fa01ae62",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-persistence/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "module/spring-boot-persistence/src/test",
+    "sha": "43062da8d60c431d9579839458681004f9602fca",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence/src/test?ref=v4.0.2",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-persistence/src/test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/43062da8d60c431d9579839458681004f9602fca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-persistence/src/test?ref=v4.0.2",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/43062da8d60c431d9579839458681004f9602fca",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-persistence/src/test"
+    }
+  }
+]
+
+codex
+I found the Spring Boot 4.0.2 tag and confirmed the module path is `module/spring-boot-persistence`, with tests under `src/test`. I’m going to use Maven Central for sources and javadocs, and the GitHub tag path only for the test suite because no test artifact is published on Maven.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+index 2f9cb03ed70842f9cc1cdd2152a040c7754e6d8b..2c70b280285ba6c03bf783b19fe9ba988de04f7d
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2"
++  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-persistence/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-javadoc.jar",
++  "description" : "Spring Boot Persistence provides auto-configuration support for common persistence infrastructure in Spring Boot applications. It includes entity scanning and persistence exception translation integration so applications can discover domain types and expose Spring's consistent data access exception model."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+index 2f9cb03ed70842f9cc1cdd2152a040c7754e6d8b..2c70b280285ba6c03bf783b19fe9ba988de04f7d
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2"
++  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-persistence/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-javadoc.jar",
++  "description" : "Spring Boot Persistence provides auto-configuration support for common persistence infrastructure in Spring Boot applications. It includes entity scanning and persistence exception translation integration so applications can discover domain types and expose Spring's consistent data access exception model."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot-persistence:4.0.2",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-persistence/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-javadoc.jar",
+  "description": "Spring Boot Persistence provides auto-configuration support for common persistence infrastructure in Spring Boot applications. It includes entity scanning and persistence exception translation integration so applications can discover domain types and expose Spring's consistent data access exception model."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/4.0.2/spring-boot-persistence-4.0.2-sources.jar' \\
+  'https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-persistence/src/test' \\
+  'https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/4.0.2/spring-boot-persistence-4.0.2-javadoc.jar'; do
+  printf '%s -> ' \""'$url"
+  curl -fsI -o /dev/null -w '"'%{http_code}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+index 2f9cb03ed70842f9cc1cdd2152a040c7754e6d8b..2c70b280285ba6c03bf783b19fe9ba988de04f7d
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2"
++  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-persistence/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-javadoc.jar",
++  "description" : "Spring Boot Persistence provides auto-configuration support for common persistence infrastructure in Spring Boot applications. It includes entity scanning and persistence exception translation integration so applications can discover domain types and expose Spring's consistent data access exception model."
+ }
+
+ succeeded in 777ms:
+200
+https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/4.0.2/spring-boot-persistence-4.0.2-javadoc.jar -> 200
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org org/springframework/boot/spring-boot-persistence/4.0.2 spring-boot-persistence-4.0.2.pom
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-persistence/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2",
+     3	  "repository-url" : "https://github.com/spring-projects/spring-boot",
+     4	  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-sources.jar",
+     5	  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-persistence/src/test",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-javadoc.jar",
+     7	  "description" : "Spring Boot Persistence provides auto-configuration support for common persistence infrastructure in Spring Boot applications. It includes entity scanning and persistence exception translation integration so applications can discover domain types and expose Spring's consistent data access exception model."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+index 2f9cb03ed70842f9cc1cdd2152a040c7754e6d8b..2c70b280285ba6c03bf783b19fe9ba988de04f7d
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2"
++  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-persistence/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-javadoc.jar",
++  "description" : "Spring Boot Persistence provides auto-configuration support for common persistence infrastructure in Spring Boot applications. It includes entity scanning and persistence exception translation integration so applications can discover domain types and expose Spring's consistent data access exception model."
+ }
+
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.2/module/spring-boot-persistence/src/test
+web search: 
+web search: spring-boot-persistence-4.0.2-sources.jar spring-boot-persistence-4.0.2-javadoc.jar
+web search: 
+web search: org.springframework.boot spring-boot-persistence 4.0.2 Maven Central
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-persistence/
+web search: 
+web search: 
+web search: 
+web search: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-persistence
+web search: 
+web search: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-persistence/4.0.4
+web search: 
+web search: mvnrepository.com/artifact/org.springframework.boot/spring-boot-persistence/4.0.2
+web search: 
+web search: https://central.sonatype.com/artifact/org.springframework.boot/spring-boot-persistence/4.0.2
+codex
+Updated [org.springframework.boot-spring-boot-persistence-4.0.2.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json:1).
+
+I set the repository URL from the artifact POM’s SCM URL and used the Spring Boot `v4.0.2` test directory for `test-code-url`. Maven Central confirms the coordinate and POM metadata, and GitHub confirms the tagged test path. ([central.sonatype.com](https://central.sonatype.com/artifact/org.springframework.boot/spring-boot-persistence/4.0.2))
+
+Validation completed: JSON parses with `jq`, and the rendered source, test, and documentation URLs all returned HTTP 200. I left `language` absent and did not set `not-for-native-image` because the published JAR contains JVM `.class` files.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+index 2f9cb03ed70842f9cc1cdd2152a040c7754e6d8b..2c70b280285ba6c03bf783b19fe9ba988de04f7d
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2"
++  "coordinates" : "org.springframework.boot:spring-boot-persistence:4.0.2",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-persistence/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-persistence/$version$/spring-boot-persistence-$version$-javadoc.jar",
++  "description" : "Spring Boot Persistence provides auto-configuration support for common persistence infrastructure in Spring Boot applications. It includes entity scanning and persistence exception translation integration so applications can discover domain types and expose Spring's consistent data access exception model."
+ }
+
+tokens used
+79,198
+Updated [org.springframework.boot-spring-boot-persistence-4.0.2.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-persistence-4.0.2.json:1).
+
+I set the repository URL from the artifact POM’s SCM URL and used the Spring Boot `v4.0.2` test directory for `test-code-url`. Maven Central confirms the coordinate and POM metadata, and GitHub confirms the tagged test path. ([central.sonatype.com](https://central.sonatype.com/artifact/org.springframework.boot/spring-boot-persistence/4.0.2))
+
+Validation completed: JSON parses with `jq`, and the rendered source, test, and documentation URLs all returned HTTP 200. I left `language` absent and did not set `not-for-native-image` because the published JAR contains JVM `.class` files.
+Ran agent for org.springframework.boot:spring-boot-persistence:4.0.2 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-persistence-4.0.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7085-88a20d5e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 55s
+9 actionable tasks: 9 executed
