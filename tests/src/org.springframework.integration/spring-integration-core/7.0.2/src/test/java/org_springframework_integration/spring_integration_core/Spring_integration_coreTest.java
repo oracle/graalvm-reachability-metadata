@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -36,6 +37,7 @@ import org.springframework.integration.channel.ExecutorChannel;
 import org.springframework.integration.channel.FixedSubscriberChannel;
 import org.springframework.integration.channel.FluxMessageChannel;
 import org.springframework.integration.channel.NullChannel;
+import org.springframework.integration.channel.PartitionedChannel;
 import org.springframework.integration.channel.PriorityChannel;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.integration.channel.QueueChannel;
@@ -575,6 +577,54 @@ public class Spring_integration_coreTest {
             adapter.stop();
             adapter.destroy();
             taskScheduler.shutdown();
+        }
+    }
+
+    @Test
+    void partitionedChannelSerializesMessagesByPartitionKeyOnDedicatedWorkers() throws Exception {
+        AtomicInteger threadCounter = new AtomicInteger();
+        PartitionedChannel channel = new PartitionedChannel(2, message -> message.getHeaders().get("partitionKey"));
+        channel.setThreadFactory(task -> {
+            Thread thread = new Thread(task, "partition-worker-" + threadCounter.incrementAndGet());
+            thread.setDaemon(true);
+            return thread;
+        });
+        initialize(channel);
+
+        CountDownLatch handledMessages = new CountDownLatch(4);
+        List<String> handledPayloads = new CopyOnWriteArrayList<>();
+        Map<Object, String> threadsByPartition = new ConcurrentHashMap<>();
+        AtomicReference<Throwable> handlerFailure = new AtomicReference<>();
+        channel.subscribe(message -> {
+            Object partitionKey = message.getHeaders().get("partitionKey");
+            String threadName = Thread.currentThread().getName();
+            String previousThreadName = threadsByPartition.putIfAbsent(partitionKey, threadName);
+            if (previousThreadName != null && !previousThreadName.equals(threadName)) {
+                handlerFailure.compareAndSet(null, new AssertionError(
+                        "Partition " + partitionKey + " moved from " + previousThreadName + " to " + threadName));
+            }
+            handledPayloads.add(message.getPayload().toString());
+            handledMessages.countDown();
+        });
+
+        try {
+            assertThat(channel.send(MessageBuilder.withPayload("zero-one").setHeader("partitionKey", 0).build()))
+                    .isTrue();
+            assertThat(channel.send(MessageBuilder.withPayload("one-one").setHeader("partitionKey", 1).build()))
+                    .isTrue();
+            assertThat(channel.send(MessageBuilder.withPayload("zero-two").setHeader("partitionKey", 0).build()))
+                    .isTrue();
+            assertThat(channel.send(MessageBuilder.withPayload("one-two").setHeader("partitionKey", 1).build()))
+                    .isTrue();
+
+            assertThat(handledMessages.await(2, TimeUnit.SECONDS)).isTrue();
+            assertThat(handlerFailure.get()).isNull();
+            assertThat(threadsByPartition).containsOnlyKeys(0, 1);
+            assertThat(threadsByPartition.get(0)).isNotEqualTo(threadsByPartition.get(1));
+            assertThat(handledPayloads.indexOf("zero-one")).isLessThan(handledPayloads.indexOf("zero-two"));
+            assertThat(handledPayloads.indexOf("one-one")).isLessThan(handledPayloads.indexOf("one-two"));
+        } finally {
+            channel.destroy();
         }
     }
 
