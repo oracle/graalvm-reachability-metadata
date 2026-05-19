@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -43,6 +44,8 @@ import org.springframework.integration.store.MessageGroup;
 import org.springframework.integration.store.SimpleMessageStore;
 import org.springframework.integration.support.AbstractIntegrationMessageBuilder;
 import org.springframework.integration.support.MessageBuilder;
+import org.springframework.integration.transformer.ClaimCheckInTransformer;
+import org.springframework.integration.transformer.ClaimCheckOutTransformer;
 import org.springframework.integration.transformer.MessageTransformingHandler;
 import org.springframework.integration.transformer.PayloadTypeConvertingTransformer;
 import org.springframework.messaging.Message;
@@ -214,6 +217,35 @@ public class Spring_integration_coreTest {
         finally {
             transformingHandler.stop();
         }
+    }
+
+    @Test
+    void claimCheckStoresAndRestoresMessagesById() {
+        SimpleMessageStore store = new SimpleMessageStore();
+        ClaimCheckInTransformer claimCheckIn = new ClaimCheckInTransformer(store);
+        ClaimCheckOutTransformer claimCheckOut = new ClaimCheckOutTransformer(store);
+        claimCheckOut.setRemoveMessage(true);
+        initialize(claimCheckIn);
+        initialize(claimCheckOut);
+        Message<String> original = MessageBuilder.withPayload("invoice")
+                .setHeader("tenant", "north")
+                .build();
+
+        Message<?> claim = claimCheckIn.transform(original);
+
+        assertThat(claim.getPayload()).isInstanceOf(UUID.class);
+        UUID claimId = (UUID) claim.getPayload();
+        assertThat(claimId).isEqualTo(original.getHeaders().getId());
+        assertThat(store.getMessage(claimId)).isSameAs(original);
+
+        Message<?> restored = claimCheckOut.transform(MessageBuilder.withPayload(claimId)
+                .setHeader("request", "restore")
+                .build());
+
+        assertThat(restored.getPayload()).isEqualTo("invoice");
+        assertThat(restored.getHeaders().get("tenant")).isEqualTo("north");
+        assertThat(restored.getHeaders().get("request")).isEqualTo("restore");
+        assertThat(store.getMessage(claimId)).isNull();
     }
 
     @Test
