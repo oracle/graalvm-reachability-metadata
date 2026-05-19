@@ -6,6 +6,9 @@
  */
 package org_springframework_cloud.spring_cloud_function_core;
 
+import java.util.Locale;
+import java.util.function.Function;
+
 import org.junit.jupiter.api.Test;
 
 import org.springframework.cloud.function.core.FunctionInvocationHelper;
@@ -68,6 +71,22 @@ public class FunctionInvocationHelperTest {
         assertThat(postProcessedResult).isSameAs(result);
     }
 
+    @Test
+    void helperCanDecorateFunctionInvocationPipeline() {
+        InvocationInput originalInput = new InvocationInput(" spring cloud function ");
+        FunctionInvocationHelper<InvocationInput> helper = new InvocationDecoratingFunctionInvocationHelper();
+        Function<InvocationInput, InvocationResult> uppercaseFunction = input -> new InvocationResult(
+                input.value().toUpperCase(Locale.ROOT));
+
+        InvocationInput preProcessedInput = helper.preProcessInput(originalInput, InvocationInput.class);
+        InvocationResult rawResult = uppercaseFunction.apply(preProcessedInput);
+        Object postProcessedResult = helper.postProcessResult(rawResult, preProcessedInput);
+
+        assertThat(helper.isRetainOutputAsMessage(preProcessedInput)).isFalse();
+        assertThat(preProcessedInput.value()).isEqualTo("spring cloud function");
+        assertThat(postProcessedResult).isEqualTo(new InvocationResult("[SPRING CLOUD FUNCTION]"));
+    }
+
     private static final class DefaultFunctionInvocationHelper<I> implements FunctionInvocationHelper<I> {
     }
 
@@ -77,6 +96,28 @@ public class FunctionInvocationHelperTest {
         public InvocationInput preProcessInput(InvocationInput input, Object conversionContext) {
             assertThat(conversionContext).isEqualTo("conversion-context");
             return new InvocationInput(input.value().trim());
+        }
+    }
+
+    private static final class InvocationDecoratingFunctionInvocationHelper
+            implements FunctionInvocationHelper<InvocationInput> {
+        @Override
+        public boolean isRetainOutputAsMessage(InvocationInput input) {
+            return !input.value().contains("cloud");
+        }
+
+        @Override
+        public InvocationInput preProcessInput(InvocationInput input, Object conversionContext) {
+            assertThat(conversionContext).isEqualTo(InvocationInput.class);
+            return new InvocationInput(input.value().trim());
+        }
+
+        @Override
+        public Object postProcessResult(Object result, InvocationInput input) {
+            assertThat(input.value()).isEqualTo("spring cloud function");
+            assertThat(result).isInstanceOf(InvocationResult.class);
+            InvocationResult invocationResult = (InvocationResult) result;
+            return new InvocationResult("[" + invocationResult.value() + "]");
         }
     }
 
