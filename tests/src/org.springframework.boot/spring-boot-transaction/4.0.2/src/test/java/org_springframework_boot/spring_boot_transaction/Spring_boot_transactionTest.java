@@ -28,6 +28,7 @@ import org.springframework.boot.transaction.jta.autoconfigure.JtaAutoConfigurati
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.ReactiveTransaction;
@@ -149,6 +150,30 @@ public class Spring_boot_transactionTest {
     }
 
     @Test
+    void transactionAutoConfigurationUsesPrimaryTransactionManagerForTemplateWhenSeveralManagersExist() {
+        try (AnnotationConfigApplicationContext context = contextWithProperties(
+                Map.of("spring.aop.proxy-target-class", "false"),
+                TransactionAutoConfigurationImport.class, MultipleTransactionManagersConfiguration.class)) {
+            RecordingTransactionManager primaryTransactionManager = context.getBean("primaryTransactionManager",
+                    RecordingTransactionManager.class);
+            RecordingTransactionManager secondaryTransactionManager = context.getBean("secondaryTransactionManager",
+                    RecordingTransactionManager.class);
+            TransactionTemplate transactionTemplate = context.getBean(TransactionTemplate.class);
+
+            String result = transactionTemplate.execute((status) -> "primary");
+
+            assertThat(result).isEqualTo("primary");
+            assertThat(transactionTemplate.getTransactionManager()).isSameAs(primaryTransactionManager);
+            assertThat(primaryTransactionManager.beginCount).isEqualTo(1);
+            assertThat(primaryTransactionManager.commitCount).isEqualTo(1);
+            assertThat(primaryTransactionManager.rollbackCount).isZero();
+            assertThat(secondaryTransactionManager.beginCount).isZero();
+            assertThat(secondaryTransactionManager.commitCount).isZero();
+            assertThat(secondaryTransactionManager.rollbackCount).isZero();
+        }
+    }
+
+    @Test
     void transactionAutoConfigurationHonorsUserProvidedTransactionManagementConfiguration() {
         try (AnnotationConfigApplicationContext context = contextWithProperties(
                 Map.of("spring.aop.proxy-target-class", "true"),
@@ -236,6 +261,22 @@ public class Spring_boot_transactionTest {
         @Bean
         TransactionalService transactionalService() {
             return new DefaultTransactionalService();
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    public static class MultipleTransactionManagersConfiguration {
+
+        @Bean
+        @Primary
+        RecordingTransactionManager primaryTransactionManager() {
+            return new RecordingTransactionManager();
+        }
+
+        @Bean
+        RecordingTransactionManager secondaryTransactionManager() {
+            return new RecordingTransactionManager();
         }
 
     }
