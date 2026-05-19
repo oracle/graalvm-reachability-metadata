@@ -6,11 +6,43 @@
  */
 package org_springframework_boot.spring_boot_jdbc;
 
-import org.junit.jupiter.api.Test;
+import javax.sql.DataSource;
 
-class Spring_boot_jdbcTest {
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Spring_boot_jdbcTest {
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void dataSourceBuilderCreatesSimpleDriverDataSourceWithConnectionSettings() {
+        SimpleDriverDataSource dataSource = DataSourceBuilder.create()
+            .type(SimpleDriverDataSource.class)
+            .url("jdbc:custom:orders")
+            .username("orders-user")
+            .password("orders-secret")
+            .build();
+
+        assertThat(dataSource.getUrl()).isEqualTo("jdbc:custom:orders");
+        assertThat(dataSource.getUsername()).isEqualTo("orders-user");
+        assertThat(dataSource.getPassword()).isEqualTo("orders-secret");
+    }
+
+    @Test
+    void dataSourceBuilderDerivesSettingsFromExistingDataSourceAndAppliesOverrides() {
+        SimpleDriverDataSource source = new SimpleDriverDataSource();
+        source.setUrl("jdbc:custom:inventory");
+        source.setUsername("source-user");
+        source.setPassword("source-secret");
+
+        DataSource dataSource = DataSourceBuilder.derivedFrom(source).username("derived-user").build();
+
+        assertThat(dataSource).isInstanceOfSatisfying(SimpleDriverDataSource.class, (derived) -> {
+            assertThat(derived.getUrl()).isEqualTo("jdbc:custom:inventory");
+            assertThat(derived.getUsername()).isEqualTo("derived-user");
+            assertThat(derived.getPassword()).isEqualTo("source-secret");
+        });
     }
 }
