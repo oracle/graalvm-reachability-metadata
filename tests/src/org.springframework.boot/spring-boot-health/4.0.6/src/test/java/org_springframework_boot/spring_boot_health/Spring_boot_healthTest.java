@@ -34,6 +34,7 @@ import org.springframework.boot.health.actuate.endpoint.HealthEndpointGroups;
 import org.springframework.boot.health.actuate.endpoint.HealthEndpointWebExtension;
 import org.springframework.boot.health.actuate.endpoint.HttpCodeStatusMapper;
 import org.springframework.boot.health.actuate.endpoint.IndicatedHealthDescriptor;
+import org.springframework.boot.health.actuate.endpoint.ReactiveHealthEndpointWebExtension;
 import org.springframework.boot.health.actuate.endpoint.SimpleHttpCodeStatusMapper;
 import org.springframework.boot.health.actuate.endpoint.SimpleStatusAggregator;
 import org.springframework.boot.health.actuate.endpoint.StatusAggregator;
@@ -46,15 +47,22 @@ import org.springframework.boot.health.autoconfigure.actuate.endpoint.HealthEndp
 import org.springframework.boot.health.autoconfigure.application.DiskSpaceHealthIndicatorProperties;
 import org.springframework.boot.health.autoconfigure.application.SslHealthIndicatorProperties;
 import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+import org.springframework.boot.health.contributor.AbstractReactiveHealthIndicator;
 import org.springframework.boot.health.contributor.CompositeHealthContributor;
+import org.springframework.boot.health.contributor.CompositeReactiveHealthContributor;
 import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.HealthContributor;
 import org.springframework.boot.health.contributor.HealthIndicator;
 import org.springframework.boot.health.contributor.PingHealthIndicator;
+import org.springframework.boot.health.contributor.ReactiveHealthContributor;
+import org.springframework.boot.health.contributor.ReactiveHealthIndicator;
 import org.springframework.boot.health.contributor.Status;
 import org.springframework.boot.health.registry.DefaultHealthContributorRegistry;
+import org.springframework.boot.health.registry.DefaultReactiveHealthContributorRegistry;
 import org.springframework.boot.health.registry.HealthContributorNameValidator;
 import org.springframework.util.unit.DataSize;
+
+import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -241,6 +249,51 @@ public class Spring_boot_healthTest {
     }
 
     @Test
+    void reactiveHealthContributorsAdaptAndExposeWebResponses() {
+        ReactiveHealthIndicator search = () -> Mono.just(Health.up().withDetail("index", "ready").build());
+        ReactiveFailingHealthIndicator queue = new ReactiveFailingHealthIndicator();
+        Map<String, ReactiveHealthContributor> children = new LinkedHashMap<>();
+        children.put("search", search);
+        children.put("queue", queue);
+        CompositeReactiveHealthContributor services = CompositeReactiveHealthContributor.fromMap(children);
+        DefaultReactiveHealthContributorRegistry registry = new DefaultReactiveHealthContributorRegistry();
+        registry.registerContributor("services", services);
+        HealthEndpointGroup primary = new TestHealthEndpointGroup((name) -> true, true, true,
+            new SimpleStatusAggregator(), new SimpleHttpCodeStatusMapper(), null);
+        ReactiveHealthEndpointWebExtension extension = new ReactiveHealthEndpointWebExtension(registry,
+            new DefaultHealthContributorRegistry(), HealthEndpointGroups.of(primary, Map.of()), Duration.ofSeconds(1));
+
+        assertThat(registry.getContributor("services")).isSameAs(services);
+        CompositeHealthContributor blockingServices = services.asHealthContributor();
+        HealthContributor blockingSearch = blockingServices.getContributor("search");
+        assertThat(blockingSearch).isInstanceOf(HealthIndicator.class);
+        assertThat(((HealthIndicator) blockingSearch).health(false).getDetails()).isEmpty();
+        Health failed = queue.health().block(Duration.ofSeconds(5));
+        assertThat(failed).isNotNull();
+        assertThat(failed.getStatus()).isEqualTo(Status.DOWN);
+        assertThat((String) failed.getDetails().get("error"))
+            .contains(IllegalStateException.class.getName(), "reactive backend unavailable");
+
+        WebEndpointResponse<? extends HealthDescriptor> rootResponse = extension.health(ApiVersion.V3,
+            WebServerNamespace.SERVER, SecurityContext.NONE).block(Duration.ofSeconds(5));
+        assertThat(rootResponse).isNotNull();
+        assertThat(rootResponse.getStatus()).isEqualTo(WebEndpointResponse.STATUS_SERVICE_UNAVAILABLE);
+        assertThat(rootResponse.getBody()).isInstanceOf(CompositeHealthDescriptor.class);
+        CompositeHealthDescriptor root = (CompositeHealthDescriptor) rootResponse.getBody();
+        assertThat(root.getComponents()).containsOnlyKeys("services");
+
+        WebEndpointResponse<? extends HealthDescriptor> queueResponse = extension.health(ApiVersion.V3,
+            WebServerNamespace.SERVER, SecurityContext.NONE, "services", "queue").block(Duration.ofSeconds(5));
+        assertThat(queueResponse).isNotNull();
+        assertThat(queueResponse.getStatus()).isEqualTo(WebEndpointResponse.STATUS_SERVICE_UNAVAILABLE);
+        assertThat(queueResponse.getBody()).isInstanceOf(IndicatedHealthDescriptor.class);
+        IndicatedHealthDescriptor queueDescriptor = (IndicatedHealthDescriptor) queueResponse.getBody();
+        assertThat(queueDescriptor.getStatus()).isEqualTo(Status.DOWN);
+        assertThat((String) queueDescriptor.getDetails().get("error"))
+            .contains(IllegalStateException.class.getName(), "reactive backend unavailable");
+    }
+
+    @Test
     void healthConfigurationPropertiesAreMutableValueObjects() {
         DiskSpaceHealthIndicatorProperties diskSpace = new DiskSpaceHealthIndicatorProperties();
         diskSpace.setPath(new File("."));
@@ -330,6 +383,15 @@ public class Spring_boot_healthTest {
         @Override
         protected void doHealthCheck(Health.Builder builder) {
             throw new IllegalStateException("simulated failure");
+        }
+
+    }
+
+    private static final class ReactiveFailingHealthIndicator extends AbstractReactiveHealthIndicator {
+
+        @Override
+        protected Mono<Health> doHealthCheck(Health.Builder builder) {
+            return Mono.error(new IllegalStateException("reactive backend unavailable"));
         }
 
     }
