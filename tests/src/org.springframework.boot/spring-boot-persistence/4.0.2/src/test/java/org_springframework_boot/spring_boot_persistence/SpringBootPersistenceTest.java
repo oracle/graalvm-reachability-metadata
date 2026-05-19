@@ -73,6 +73,18 @@ public class SpringBootPersistenceTest {
     }
 
     @Test
+    void entityScanAnnotationUsesConfigurationPackageWhenNoBasePackageIsSpecified() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.register(DefaultEntityScanConfiguration.class);
+            context.refresh();
+
+            List<String> packageNames = EntityScanPackages.get(context).getPackageNames();
+
+            assertThat(packageNames).containsExactly(SpringBootPersistenceTest.class.getPackageName());
+        }
+    }
+
+    @Test
     void entityScannerFindsAnnotatedTypesFromExplicitEntityScanPackages() throws ClassNotFoundException {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             EntityScanPackages.register(context, SampleAccount.class.getPackageName());
@@ -156,6 +168,12 @@ public class SpringBootPersistenceTest {
     @Configuration(proxyBeanMethods = false)
     @EntityScan(basePackages = { "${scan.base}", "java.lang, java.util" }, basePackageClasses = PackageMarker.class)
     static class EntityScanConfiguration {
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @EntityScan
+    static class DefaultEntityScanConfiguration {
 
     }
 
