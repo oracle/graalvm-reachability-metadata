@@ -8,9 +8,9 @@ package com_rabbitmq_client.amqp_client;
 
 import org.junit.jupiter.api.Test;
 
-class Amqp_clientTest {
+public class Amqp_clientTest {
     @Test
-    void test() throws Exception {
+    void test() {
         System.out.println("This is just a placeholder, implement your test");
     }
 }
