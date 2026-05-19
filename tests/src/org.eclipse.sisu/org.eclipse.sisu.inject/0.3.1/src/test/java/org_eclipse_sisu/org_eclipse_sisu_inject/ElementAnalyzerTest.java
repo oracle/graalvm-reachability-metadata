@@ -13,9 +13,11 @@ import java.util.List;
 
 import org.eclipse.sisu.wire.WireModule;
 import org.junit.jupiter.api.Test;
+import org.sonatype.guice.bean.locators.RankingFunction;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
+import com.google.inject.Binding;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -23,6 +25,24 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 
 public class ElementAnalyzerTest {
+    @Test
+    void wireModuleAliasesLegacyRankingFunctionBindingToEclipseApi() {
+        RankingFunction legacyRanking = new LegacyRankingFunction();
+        Module applicationModule = new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(RankingFunction.class).toInstance(legacyRanking);
+            }
+        };
+
+        Injector injector = Guice.createInjector(new WireModule(applicationModule));
+
+        org.eclipse.sisu.inject.RankingFunction eclipseRanking =
+                injector.getInstance(org.eclipse.sisu.inject.RankingFunction.class);
+        assertThat(eclipseRanking).isSameAs(legacyRanking);
+        assertThat(eclipseRanking.maxRank()).isEqualTo(17);
+    }
+
     @Test
     void wireModuleRoutesUnresolvedConstructorDependenciesToCustomWiring() {
         Collaborator collaborator = new WiredCollaborator();
@@ -46,6 +66,18 @@ public class ElementAnalyzerTest {
 
         assertThat(injector.getInstance(NeedsCollaborator.class).collaborator()).isSameAs(collaborator);
         assertThat(wiredKeys).containsExactly(Key.get(Collaborator.class));
+    }
+
+    private static final class LegacyRankingFunction implements RankingFunction {
+        @Override
+        public int maxRank() {
+            return 17;
+        }
+
+        @Override
+        public <T> int rank(Binding<T> binding) {
+            return 3;
+        }
     }
 
     private interface Collaborator {
