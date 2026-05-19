@@ -1,0 +1,677 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e3f23-abd6-7ca2-95e8-0c3873bc0b91
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.cloud:spring-cloud-function-context:5.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "5.0.1" when "$version$" is replaced with "5.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+- Set "coordinates" to "org.springframework.cloud:spring-cloud-function-context:5.0.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "5.0.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and Spring’s repository tags first, then update the JSON in place using the existing metadata style in this repo.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'rg -n "spring-cloud-function-context|spring-cloud-function" build/discovered-artifact-metadata metadata tests || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json:2:  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1"
+metadata/org.springframework.cloud/spring-cloud-function-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
+metadata/org.springframework.cloud/spring-cloud-function-context/index.json:6:    "repository-url" : "https://github.com/spring-cloud/spring-cloud-function",
+metadata/org.springframework.cloud/spring-cloud-function-context/index.json:7:    "test-code-url" : "https://github.com/spring-cloud/spring-cloud-function/tree/v$version$/spring-cloud-function-context/src/test",
+metadata/org.springframework.cloud/spring-cloud-function-context/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
+tests/src/org.springframework.cloud/spring-cloud-function-context/5.0.1/build.gradle:18:    testImplementation "org.springframework.cloud:spring-cloud-function-context:$libraryVersion"
+tests/src/org.springframework.cloud/spring-cloud-function-context/5.0.1/settings.gradle:20:rootProject.name = 'org.springframework.cloud.spring-cloud-function-context_tests'
+tests/src/org.springframework.cloud/spring-cloud-function-context/5.0.1/gradle.properties:4:library.coordinates = org.springframework.cloud:spring-cloud-function-context:5.0.1
+tests/src/org.springframework.cloud/spring-cloud-function-context/5.0.1/gradle.properties:6:metadata.dir = org.springframework.cloud/spring-cloud-function-context/5.0.1/
+
+codex
+There is already committed metadata for this coordinate family, which gives a likely answer. I’m going to validate it against Maven Central and the upstream tag so the discovered file isn’t just copying stale data.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.springframework.cloud/spring-cloud-function-context/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.0.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-cloud/spring-cloud-function",
+    "test-code-url" : "https://github.com/spring-cloud/spring-cloud-function/tree/v$version$/spring-cloud-function-context/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
+    "description" : "Spring Cloud Function Context provides the Spring application context integration for discovering, registering, and composing functions through the Spring Cloud Function catalog. It adds configuration, message conversion, routing, CloudEvents, observability, and testing support around the core function API.",
+    "tested-versions" : [
+      "5.0.1"
+    ],
+    "allowed-packages" : [
+      "org.springframework.cloud.function"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1/spring-cloud-function-context-5.0.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-function-parent</artifactId>
+    <version>5.0.1</version>
+  </parent>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-function-context</artifactId>
+  <version>5.0.1</version>
+  <name>spring-cloud-function-context</name>
+  <description>Implementation of core API for Spring Cloud Function</description>
+  <url>https://github.com/spring-cloud/spring-cloud-function/spring-cloud-function-context</url>
+  <organization>
+    <name>Pivotal Software, Inc.</name>
+    <url>https://www.spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>olegz</id>
+      <name>Oleg Zhurakousky</name>
+      <email>oleg.zhurakousky at broadcom.com</email>
+      <organization>Broadcom, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+      <roles>
+        <role>Project lead</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-cloud/spring-cloud-function.git/spring-cloud-function-context</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-cloud/spring-cloud-function.git/spring-cloud-function-context</developerConnection>
+    <url>https://github.com/spring-cloud/spring-cloud-function/spring-cloud-function-context</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-restclient</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-web-server</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-function-core</artifactId>
+      <version>5.0.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-messaging</artifactId>
+      <version>7.0.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>7.0.3</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.module</groupId>
+      <artifactId>jackson-module-kotlin</artifactId>
+      <version>3.0.4</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.13.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>3.0.4</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-joda</artifactId>
+      <version>3.0.4</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>2.2.21</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-reflect</artifactId>
+      <version>2.2.21</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-reactor</artifactId>
+      <version>1.10.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.cloudevents</groupId>
+      <artifactId>cloudevents-spring</artifactId>
+      <version>2.2.0</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+      <version>4.0.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-observation</artifactId>
+      <version>1.16.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+      <version>1.16.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-tracing</artifactId>
+      <version>1.6.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1/spring-cloud-function-context-5.0.1-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1/spring-cloud-function-context-5.0.1-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/spring-cloud/spring-cloud-function/tree/v5.0.1/spring-cloud-function-context/src/test' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 113ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 07:29:34 GMT
+content-type: application/java-archive
+content-length: 481539
+cf-ray: 9fe1642dfb34baac-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 90075
+etag: "074c929bc04767466ea97ef2cf9d403e"
+last-modified: Wed, 28 Jan 2026 20:05:08 GMT
+x-checksum-md5: 074c929bc04767466ea97ef2cf9d403e
+x-checksum-sha1: 463311371b8139a96cb5f2422b8dbd6e7a9b1d78
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1106ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 07:29:35 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b15a2f6ce722576dd41f96536cef71f7"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=CXg%2FapP7sOrXSUWmEXt3ghJXZPnIQLl12pWqt7w422ld%2F05bX8PIVrNQRafMiGEVFQnPwcjnrsWbo4vSDQxTQ06ABb1AxtvD%2FMXMJE1GmeK%2B8U2Jvz2PVzCQGshBXkDv%2FCnbDv%2BUHATD3nR19HnWq8wejRYyEQz%2Fim7AvhRBgJJU29Jew4HCE2gRoqdUeKH%2FXJsofd2WTe1mqEpDwTVQAeQkZSM0nW58%2BiegDaVeKxJ%2FodAAm0cqYaNSAlJ8Uvj5V6JAmvaMpIuGzW7ZWeZUKw%3D%3D--tp0m2c%2BnA2F4XI6t--ijMLTBxY5Xm6msCfSAr27Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.960789590.1779175774; expires=Wed, 19 May 2027 07:29:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 19 May 2027 07:29:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6200:1B0A45:600F0E0:4B0CE5E:6A0C115E
+
+
+web search: 
+web search: Maven Central org.springframework.cloud spring-cloud-function-context 5.0.1 sources jar javadoc jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.springframework.cloud/spring-cloud-function-context
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1 spring-cloud-function-context-5.0.1-sources.jar
+web search: 
+web search: https://github.com/spring-cloud/spring-cloud-function/tree/v5.0.1/spring-cloud-function-context/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1/
+web search: 
+web search: https://central.sonatype.com/artifact/org.springframework.cloud/spring-cloud-function-context
+codex
+The artifact has Maven Central source and javadoc jars, and the v5.0.1 GitHub tag exposes the module test tree. Although the module includes Kotlin support code, it is a JVM Spring library rather than a Kotlin-specific/Scala/Groovy artifact, so I’ll leave `language` absent.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1/spring-cloud-function-context-5.0.1.jar -o /tmp/spring-cloud-function-context-5.0.1.jar && jar tf /tmp/spring-cloud-function-context-5.0.1.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json metadata/org.springframework.cloud/spring-cloud-function-context/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 279ms:
+ succeeded in 5046ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/cloud/spring-cloud-function-context/5.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/cloud/spring-cloud-function-context/5.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-cloud-function-context-5.0.1-javadoc.jar" title="spring-cloud-function-context-5.0.1-javadoc.jar">spring-cloud-function-context-5.0.1-javadoc.j...</a>  2026-01-28 20:05    481539      
+<a href="spring-cloud-function-context-5.0.1-javadoc.jar.asc" title="spring-cloud-function-context-5.0.1-javadoc.jar.asc">spring-cloud-function-context-5.0.1-javadoc.j...</a>  2026-01-28 20:05       833      
+<a href="spring-cloud-function-context-5.0.1-javadoc.jar.md5" title="spring-cloud-function-context-5.0.1-javadoc.jar.md5">spring-cloud-function-context-5.0.1-javadoc.j...</a>  2026-01-28 20:05        32      
+<a href="spring-cloud-function-context-5.0.1-javadoc.jar.sha1" title="spring-cloud-function-context-5.0.1-javadoc.jar.sha1">spring-cloud-function-context-5.0.1-javadoc.j...</a>  2026-01-28 20:05        40      
+<a href="spring-cloud-function-context-5.0.1-javadoc.jar.sha256" title="spring-cloud-function-context-5.0.1-javadoc.jar.sha256">spring-cloud-function-context-5.0.1-javadoc.j...</a>  2026-01-28 20:05        64      
+<a href="spring-cloud-function-context-5.0.1-javadoc.jar.sha512" title="spring-cloud-function-context-5.0.1-javadoc.jar.sha512">spring-cloud-function-context-5.0.1-javadoc.j...</a>  2026-01-28 20:05       128      
+<a href="spring-cloud-function-context-5.0.1-sources.jar" title="spring-cloud-function-context-5.0.1-sources.jar">spring-cloud-function-context-5.0.1-sources.j...</a>  2026-01-28 20:05    104218      
+<a href="spring-cloud-function-context-5.0.1-sources.jar.asc" title="spring-cloud-function-context-5.0.1-sources.jar.asc">spring-cloud-function-context-5.0.1-sources.j...</a>  2026-01-28 20:05       833      
+<a href="spring-cloud-function-context-5.0.1-sources.jar.md5" title="spring-cloud-function-context-5.0.1-sources.jar.md5">spring-cloud-function-context-5.0.1-sources.j...</a>  2026-01-28 20:05        32      
+<a href="spring-cloud-function-context-5.0.1-sources.jar.sha1" title="spring-cloud-function-context-5.0.1-sources.jar.sha1">spring-cloud-function-context-5.0.1-sources.j...</a>  2026-01-28 20:05        40      
+<a href="spring-cloud-function-context-5.0.1-sources.jar.sha256" title="spring-cloud-function-context-5.0.1-sources.jar.sha256">spring-cloud-function-context-5.0.1-sources.j...</a>  2026-01-28 20:05        64      
+<a href="spring-cloud-function-context-5.0.1-sources.jar.sha512" title="spring-cloud-function-context-5.0.1-sources.jar.sha512">spring-cloud-function-context-5.0.1-sources.j...</a>  2026-01-28 20:05       128      
+<a href="spring-cloud-function-context-5.0.1.jar" title="spring-cloud-function-context-5.0.1.jar">spring-cloud-function-context-5.0.1.jar</a>           2026-01-28 20:05    173623      
+<a href="spring-cloud-function-context-5.0.1.jar.asc" title="spring-cloud-function-context-5.0.1.jar.asc">spring-cloud-function-context-5.0.1.jar.asc</a>       2026-01-28 20:05       833      
+<a href="spring-cloud-function-context-5.0.1.jar.md5" title="spring-cloud-function-context-5.0.1.jar.md5">spring-cloud-function-context-5.0.1.jar.md5</a>       2026-01-28 20:05        32      
+<a href="spring-cloud-function-context-5.0.1.jar.sha1" title="spring-cloud-function-context-5.0.1.jar.sha1">spring-cloud-function-context-5.0.1.jar.sha1</a>      2026-01-28 20:05        40      
+<a href="spring-cloud-function-context-5.0.1.jar.sha256" title="spring-cloud-function-context-5.0.1.jar.sha256">spring-cloud-function-context-5.0.1.jar.sha25...</a>  2026-01-28 20:05        64      
+<a href="spring-cloud-function-context-5.0.1.jar.sha512" title="spring-cloud-function-context-5.0.1.jar.sha512">spring-cloud-function-context-5.0.1.jar.sha51...</a>  2026-01-28 20:05       128      
+<a href="spring-cloud-function-context-5.0.1.pom" title="spring-cloud-function-context-5.0.1.pom">spring-cloud-function-context-5.0.1.pom</a>           2026-01-28 20:05      6141      
+<a href="spring-cloud-function-context-5.0.1.pom.asc" title="spring-cloud-function-context-5.0.1.pom.asc">spring-cloud-function-context-5.0.1.pom.asc</a>       2026-01-28 20:05       833      
+<a href="spring-cloud-function-context-5.0.1.pom.md5" title="spring-cloud-function-context-5.0.1.pom.md5">spring-cloud-function-context-5.0.1.pom.md5</a>       2026-01-28 20:05        32      
+<a href="spring-cloud-function-context-5.0.1.pom.sha1" title="spring-cloud-function-context-5.0.1.pom.sha1">spring-cloud-function-context-5.0.1.pom.sha1</a>      2026-01-28 20:05        40      
+<a href="spring-cloud-function-context-5.0.1.pom.sha256" title="spring-cloud-function-context-5.0.1.pom.sha256">spring-cloud-function-context-5.0.1.pom.sha25...</a>  2026-01-28 20:05        64      
+<a href="spring-cloud-function-context-5.0.1.pom.sha512" title="spring-cloud-function-context-5.0.1.pom.sha512">spring-cloud-function-context-5.0.1.pom.sha51...</a>  2026-01-28 20:05       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 5098ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/springframework/
+org/springframework/cloud/
+org/springframework/cloud/function/
+org/springframework/cloud/function/json/
+org/springframework/cloud/function/actuator/
+org/springframework/cloud/function/observability/
+org/springframework/cloud/function/cloudevent/
+org/springframework/cloud/function/context/
+org/springframework/cloud/function/context/test/
+org/springframework/cloud/function/context/config/
+org/springframework/cloud/function/context/catalog/
+org/springframework/cloud/function/context/message/
+org/springframework/cloud/function/utils/
+META-INF/spring/
+META-INF/maven/
+META-INF/maven/org.springframework.cloud/
+META-INF/maven/org.springframework.cloud/spring-cloud-function-context/
+org/springframework/cloud/function/json/GsonMapper.class
+org/springframework/cloud/function/json/JacksonMapper.class
+org/springframework/cloud/function/json/JsonMapper.class
+org/springframework/cloud/function/actuator/FunctionsEndpoint.class
+org/springframework/cloud/function/observability/FunctionObservation$1.class
+org/springframework/cloud/function/observability/FunctionObservation.class
+org/springframework/cloud/function/observability/ObservationAutoConfiguration.class
+org/springframework/cloud/function/observability/DefaultFunctionObservationConvention.class
+org/springframework/cloud/function/observability/FunctionObservationConvention.class
+org/springframework/cloud/function/observability/FunctionContext.class
+org/springframework/cloud/function/observability/FunctionObservation$FunctionLowCardinalityTags$1.class
+org/springframework/cloud/function/observability/FunctionObservation$FunctionLowCardinalityTags.class
+org/springframework/cloud/function/observability/ObservationFunctionAroundWrapper.class
+org/springframework/cloud/function/cloudevent/CloudEventHeaderEnricher.class
+org/springframework/cloud/function/cloudevent/CloudEventMessageBuilder.class
+org/springframework/cloud/function/cloudevent/CloudEventMessageUtils$1.class
+org/springframework/cloud/function/cloudevent/CloudEventMessageUtils$Protocols.class
+org/springframework/cloud/function/cloudevent/CloudEventsFunctionExtensionConfiguration.class
+org/springframework/cloud/function/cloudevent/CloudEventMessageUtils.class
+org/springframework/cloud/function/cloudevent/CloudEventsFunctionInvocationHelper.class
+org/springframework/cloud/function/context/test/FunctionalSpringBootTest.class
+org/springframework/cloud/function/context/test/FunctionalTestContextLoader.class
+org/springframework/cloud/function/context/FunctionTypeProcessor.class
+org/springframework/cloud/function/context/FunctionProperties$FunctionConfigurationProperties.class
+org/springframework/cloud/function/context/FunctionCatalog.class
+org/springframework/cloud/function/context/FunctionRegistry.class
+org/springframework/cloud/function/context/PostProcessingFunction.class
+org/springframework/cloud/function/context/FunctionalSpringApplication.class
+org/springframework/cloud/function/context/FunctionRegistration.class
+org/springframework/cloud/function/context/config/RoutingFunction.class
+org/springframework/cloud/function/context/config/ContextFunctionCatalogInitializer$ContextFunctionCatalogBeanRegistrar$FunctionRegistrationPostProcessor.class
+org/springframework/cloud/function/context/config/MessageConverterHelper.class
+org/springframework/cloud/function/context/config/ContextFunctionCatalogInitializer.class
+org/springframework/cloud/function/context/config/FunctionContextUtils.class
+org/springframework/cloud/function/context/config/ContextFunctionCatalogAutoConfiguration.class
+org/springframework/cloud/function/context/config/KotlinLambdaToFunctionAutoConfiguration.class
+org/springframework/cloud/function/context/config/ContextFunctionCatalogAutoConfiguration$JsonMapperConfiguration.class
+org/springframework/cloud/function/context/config/CoroutinesUtils$invokeSuspendingConsumer$1.class
+org/springframework/cloud/function/context/config/ContextFunctionCatalogInitializer$ContextFunctionCatalogBeanRegistrar$1.class
+org/springframework/cloud/function/context/config/CoroutinesUtils.class
+org/springframework/cloud/function/context/config/ContextFunctionCatalogAutoConfiguration$1.class
+org/springframework/cloud/function/context/config/KotlinLambdaToFunctionAutoConfiguration$KotlinFunctionWrapper.class
+org/springframework/cloud/function/context/config/ContextFunctionCatalogAutoConfiguration$PlainFunctionScanConfiguration.class
+org/springframework/cloud/function/context/config/ContextFunctionCatalogInitializer$DummyProcessor.class
+org/springframework/cloud/function/context/config/FunctionsEndpointAutoConfiguration.class
+org/springframework/cloud/function/context/config/CoroutinesUtils$invokeSuspendingSupplier$1.class
+org/springframework/cloud/function/context/config/CoroutinesUtils$invokeSuspendingFunction$1.class
+org/springframework/cloud/function/context/config/ContextFunctionCatalogAutoConfiguration$CloudEventsMessageConverterConfiguration.class
+org/springframework/cloud/function/context/config/JsonMessageConverter.class
+org/springframework/cloud/function/context/config/SmartCompositeMessageConverter.class
+org/springframework/cloud/function/context/config/ContextFunctionCatalogInitializer$ContextFunctionCatalogBeanRegistrar.class
+org/springframework/cloud/function/context/MessageRoutingCallback.class
+org/springframework/cloud/function/context/FunctionProperties.class
+org/springframework/cloud/function/context/DefaultMessageRoutingHandler.class
+org/springframework/cloud/function/context/FunctionTypeProcessor$ReflectiveProcessorBeanFactoryInitializationAotContribution.class
+org/springframework/cloud/function/context/PollableBean.class
+org/springframework/cloud/function/context/catalog/FunctionAroundWrapper.class
+org/springframework/cloud/function/context/catalog/HeaderEnricher.class
+org/springframework/cloud/function/context/catalog/SimpleFunctionRegistry$OriginalMessageHolder.class
+org/springframework/cloud/function/context/catalog/BeanFactoryAwareFunctionRegistry$1.class
+
+codex
+I’m updating only the discovered metadata file now, using Maven Central for source and javadoc artifacts and the upstream v$version$ GitHub tag for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+index e8c82bf1fe15c2a5c33f5dfef7e8bbbb1edd6306..2cfb256f7eceb21ef7a5c7c2bef5cae6bdab51f3
+--- a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
++++ b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1"
++  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
++  "repository-url" : "https://github.com/spring-cloud/spring-cloud-function",
++  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-function/tree/v$version$/spring-cloud-function-context/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
++  "description" : "Spring Cloud Function Context provides the Spring application context integration for discovering, registering, and composing functions through the Spring Cloud Function catalog. It adds configuration, message conversion, routing, CloudEvents, observability, and testing support around the core function API."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+index e8c82bf1fe15c2a5c33f5dfef7e8bbbb1edd6306..2cfb256f7eceb21ef7a5c7c2bef5cae6bdab51f3
+--- a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
++++ b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1"
++  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
++  "repository-url" : "https://github.com/spring-cloud/spring-cloud-function",
++  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-function/tree/v$version$/spring-cloud-function-context/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
++  "description" : "Spring Cloud Function Context provides the Spring application context integration for discovering, registering, and composing functions through the Spring Cloud Function catalog. It adds configuration, message conversion, routing, CloudEvents, observability, and testing support around the core function API."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.cloud:spring-cloud-function-context:5.0.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
+  "repository-url": "https://github.com/spring-cloud/spring-cloud-function",
+  "test-code-url": "https://github.com/spring-cloud/spring-cloud-function/tree/v$version$/spring-cloud-function-context/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
+  "description": "Spring Cloud Function Context provides the Spring application context integration for discovering, registering, and composing functions through the Spring Cloud Function catalog. It adds configuration, message conversion, routing, CloudEvents, observability, and testing support around the core function API."
+}
+
+exec
+/usr/bin/bash -lc 'url=$(jq -r '"'.\"documentation-url\"' build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json | sed 's/\\"'$version'"\\"'$/5.0.1/g'"'); curl -I -fsSL \""'$url" | sed -n '"'1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 07:30:16 GMT
+content-type: application/java-archive
+content-length: 481539
+cf-ray: 9fe16537d8daedc0-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 90118
+
+exec
+/usr/bin/bash -lc 'url=$(jq -r '"'.\"source-code-url\"' build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json | sed 's/\\"'$version'"\\"'$/5.0.1/g'"'); curl -I -fsSL \""'$url" | sed -n '"'1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 07:30:16 GMT
+content-type: application/java-archive
+content-length: 104218
+cf-ray: 9fe16537df665e95-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 365671
+
+exec
+/usr/bin/bash -lc 'url=$(jq -r '"'.\"test-code-url\"' build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json | sed 's/\\"'$version'"\\"'$/5.0.1/g'"'); curl -I -fsSL \""'$url" | sed -n '"'1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+diff --git a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+index e8c82bf1fe15c2a5c33f5dfef7e8bbbb1edd6306..2cfb256f7eceb21ef7a5c7c2bef5cae6bdab51f3
+--- a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
++++ b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1"
++  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
++  "repository-url" : "https://github.com/spring-cloud/spring-cloud-function",
++  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-function/tree/v$version$/spring-cloud-function-context/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
++  "description" : "Spring Cloud Function Context provides the Spring application context integration for discovering, registering, and composing functions through the Spring Cloud Function catalog. It adds configuration, message conversion, routing, CloudEvents, observability, and testing support around the core function API."
+ }
+
+ succeeded in 499ms:
+HTTP/2 200 
+date: Tue, 19 May 2026 07:30:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c6c09307e8deb55a9b038abb7fdadc01"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
+  "repository-url" : "https://github.com/spring-cloud/spring-cloud-function",
+  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-function/tree/v$version$/spring-cloud-function-context/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
+  "description" : "Spring Cloud Function Context provides the Spring application context integration for discovering, registering, and composing functions through the Spring Cloud Function catalog. It adds configuration, message conversion, routing, CloudEvents, observability, and testing support around the core function API."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+index e8c82bf1fe15c2a5c33f5dfef7e8bbbb1edd6306..2cfb256f7eceb21ef7a5c7c2bef5cae6bdab51f3
+--- a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
++++ b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1"
++  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
++  "repository-url" : "https://github.com/spring-cloud/spring-cloud-function",
++  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-function/tree/v$version$/spring-cloud-function-context/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
++  "description" : "Spring Cloud Function Context provides the Spring application context integration for discovering, registering, and composing functions through the Spring Cloud Function catalog. It adds configuration, message conversion, routing, CloudEvents, observability, and testing support around the core function API."
+ }
+
+web search: 
+web search: spring-cloud-function-context 5.0.1 Maven Central sources javadoc jar
+web search: 
+web search: https://github.com/spring-cloud/spring-cloud-function/tree/v5.0.1/spring-cloud-function-context/src/test
+web search: 
+web search: "repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1/"
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1/
+web search: 
+web search: 
+codex
+Updated [org.springframework.cloud-spring-cloud-function-context-5.0.1.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json:1) with the repository, Maven Central source/javadoc URLs, v5.0.1 test URL, and two-sentence description. I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a JVM jar artifact with class files, not a language-specific or non-JVM artifact. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1/))
+
+Validation: `jq .` passed, and the resolved source, documentation, and test URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+index e8c82bf1fe15c2a5c33f5dfef7e8bbbb1edd6306..2cfb256f7eceb21ef7a5c7c2bef5cae6bdab51f3
+--- a/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
++++ b/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1"
++  "coordinates" : "org.springframework.cloud:spring-cloud-function-context:5.0.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
++  "repository-url" : "https://github.com/spring-cloud/spring-cloud-function",
++  "test-code-url" : "https://github.com/spring-cloud/spring-cloud-function/tree/v$version$/spring-cloud-function-context/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
++  "description" : "Spring Cloud Function Context provides the Spring application context integration for discovering, registering, and composing functions through the Spring Cloud Function catalog. It adds configuration, message conversion, routing, CloudEvents, observability, and testing support around the core function API."
+ }
+
+tokens used
+84,990
+Updated [org.springframework.cloud-spring-cloud-function-context-5.0.1.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8/build/discovered-artifact-metadata/org.springframework.cloud-spring-cloud-function-context-5.0.1.json:1) with the repository, Maven Central source/javadoc URLs, v5.0.1 test URL, and two-sentence description. I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a JVM jar artifact with class files, not a language-specific or non-JVM artifact. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/5.0.1/))
+
+Validation: `jq .` passed, and the resolved source, documentation, and test URLs all returned HTTP 200.
+Ran agent for org.springframework.cloud:spring-cloud-function-context:5.0.1 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8/build/agent-artifact-discovery-logs/org.springframework.cloud-spring-cloud-function-context-5.0.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7092-423ba4e8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 46s
+9 actionable tasks: 9 executed
