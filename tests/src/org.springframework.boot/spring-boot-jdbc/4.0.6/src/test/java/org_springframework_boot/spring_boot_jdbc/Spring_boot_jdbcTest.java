@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.jdbc.DataSourceUnwrapper;
+import org.springframework.jdbc.datasource.DelegatingDataSource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,5 +46,16 @@ public class Spring_boot_jdbcTest {
             assertThat(derived.getUsername()).isEqualTo("derived-user");
             assertThat(derived.getPassword()).isEqualTo("source-secret");
         });
+    }
+
+    @Test
+    void dataSourceUnwrapperFindsNestedDelegatingDataSourceTarget() {
+        SimpleDriverDataSource target = new SimpleDriverDataSource();
+        target.setUrl("jdbc:custom:warehouse");
+        DelegatingDataSource wrapped = new DelegatingDataSource(new DelegatingDataSource(target));
+
+        SimpleDriverDataSource unwrapped = DataSourceUnwrapper.unwrap(wrapped, SimpleDriverDataSource.class);
+
+        assertThat(unwrapped).isSameAs(target);
     }
 }
