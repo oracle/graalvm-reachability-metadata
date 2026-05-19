@@ -9,31 +9,38 @@ package org_codehaus_plexus.plexus_classworlds;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Enumeration;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class ClassRealmTest {
     private static final String REALM_ID = "direct-realm";
 
     @Test
-    void loadRealmClassLoadsClassThroughRealmClassLoader() throws Exception {
+    void loadClassFromParentLoadsClassThroughParentClassLoader() throws Exception {
         ClassRealm realm = newRealm();
 
-        Class<?> loadedClass = realm.loadRealmClass(ClassRealmTest.class.getName());
+        Class<?> loadedClass = realm.loadClassFromParent(ClassRealmTest.class.getName());
 
         assertThat(loadedClass).isSameAs(ClassRealmTest.class);
     }
 
     @Test
-    void getRealmResourceLoadsResourceThroughRealmClassLoader() throws Exception {
+    void loadResourceFromSelfLoadsResourceThroughRealmClassLoader(@TempDir Path temporaryDirectory) throws Exception {
+        Path resourcePath = temporaryDirectory.resolve("realm-resource.txt");
+        Files.writeString(resourcePath, "realm resource");
         ClassRealm realm = newRealm();
+        realm.addURL(temporaryDirectory.toUri().toURL());
 
-        URL resource = realm.getRealmResource("classworlds.conf");
+        URL resource = realm.loadResourceFromSelf(resourcePath.getFileName().toString());
 
         assertThat(resource).isNotNull();
+        assertThat(Files.readString(Path.of(resource.toURI()))).isEqualTo("realm resource");
     }
 
     @Test

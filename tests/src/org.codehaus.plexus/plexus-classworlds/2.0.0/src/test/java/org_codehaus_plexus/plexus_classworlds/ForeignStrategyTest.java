@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +19,7 @@ import java.util.List;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.classworlds.strategy.ForeignStrategy;
+import org.codehaus.plexus.classworlds.strategy.Strategy;
 import org.junit.jupiter.api.Test;
 
 public class ForeignStrategyTest {
@@ -28,21 +29,21 @@ public class ForeignStrategyTest {
 
     @Test
     void loadClassConsultsForeignClassLoaderFirst() throws Exception {
-        ClassLoader foreignClassLoader = new ClassLoader(ForeignStrategyTest.class.getClassLoader()) {
-        };
-        ForeignStrategy strategy = newForeignStrategy(foreignClassLoader);
+        RecordingClassLoader foreignClassLoader = new RecordingClassLoader(ForeignStrategyTest.class.getClassLoader());
+        Strategy strategy = newImportedStrategy(foreignClassLoader);
 
         Class<?> loadedClass = strategy.loadClass(CLASS_NAME);
 
         assertThat(loadedClass).isEqualTo(ForeignLoadTarget.class);
+        assertThat(foreignClassLoader.classLookups).contains(CLASS_NAME);
     }
 
     @Test
     void getResourceConsultsForeignClassLoaderFirst() throws Exception {
         RecordingClassLoader foreignClassLoader = new RecordingClassLoader();
-        ForeignStrategy strategy = newForeignStrategy(foreignClassLoader);
+        Strategy strategy = newImportedStrategy(foreignClassLoader);
 
-        URL resource = strategy.getResource("/" + RESOURCE_NAME);
+        URL resource = strategy.getResource(RESOURCE_NAME);
 
         assertThat(resource).isEqualTo(foreignClassLoader.resource);
         assertThat(foreignClassLoader.resourceLookups).containsExactly(RESOURCE_NAME);
@@ -51,18 +52,19 @@ public class ForeignStrategyTest {
     @Test
     void findResourcesIncludesResourcesFromForeignClassLoader() throws Exception {
         RecordingClassLoader foreignClassLoader = new RecordingClassLoader();
-        ForeignStrategy strategy = newForeignStrategy(foreignClassLoader);
+        Strategy strategy = newImportedStrategy(foreignClassLoader);
 
-        List<URL> resources = resources(strategy.findResources("/" + RESOURCE_NAME));
+        List<URL> resources = resources(strategy.getResources(RESOURCE_NAME));
 
         assertThat(resources).containsExactly(foreignClassLoader.enumeratedResource);
         assertThat(foreignClassLoader.resourcesLookups).containsExactly(RESOURCE_NAME);
     }
 
-    private static ForeignStrategy newForeignStrategy(ClassLoader foreignClassLoader) throws Exception {
+    private static Strategy newImportedStrategy(ClassLoader foreignClassLoader) throws Exception {
         ClassWorld world = new ClassWorld();
         ClassRealm realm = world.newRealm(REALM_ID);
-        return new ForeignStrategy(realm, foreignClassLoader);
+        realm.importFrom(foreignClassLoader, "");
+        return realm.getStrategy();
     }
 
     private static List<URL> resources(Enumeration<?> enumeration) {
@@ -75,7 +77,7 @@ public class ForeignStrategyTest {
 
     private static URL fileUrl(String path) {
         try {
-            return new URL("file", "", path);
+            return URI.create("file:" + path).toURL();
         } catch (MalformedURLException e) {
             throw new IllegalStateException(e);
         }
@@ -87,11 +89,22 @@ public class ForeignStrategyTest {
     private static final class RecordingClassLoader extends ClassLoader {
         private final URL resource = fileUrl("/foreign-resource.txt");
         private final URL enumeratedResource = fileUrl("/foreign-enumerated-resource.txt");
+        private final List<String> classLookups = new ArrayList<>();
         private final List<String> resourceLookups = new ArrayList<>();
         private final List<String> resourcesLookups = new ArrayList<>();
 
         private RecordingClassLoader() {
-            super(null);
+            this(null);
+        }
+
+        private RecordingClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            classLookups.add(name);
+            return super.loadClass(name, resolve);
         }
 
         @Override
