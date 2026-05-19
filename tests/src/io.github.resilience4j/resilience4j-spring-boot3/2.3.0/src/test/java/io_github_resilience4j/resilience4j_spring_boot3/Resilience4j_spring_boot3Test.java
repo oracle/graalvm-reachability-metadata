@@ -55,6 +55,7 @@ import io.github.resilience4j.springboot3.bulkhead.monitoring.endpoint.BulkheadE
 import io.github.resilience4j.springboot3.circuitbreaker.autoconfigure.CircuitBreakerProperties;
 import io.github.resilience4j.springboot3.circuitbreaker.monitoring.endpoint.CircuitBreakerEndpoint;
 import io.github.resilience4j.springboot3.circuitbreaker.monitoring.endpoint.CircuitBreakerEventsEndpoint;
+import io.github.resilience4j.springboot3.circuitbreaker.monitoring.health.CircuitBreakersHealthIndicator;
 import io.github.resilience4j.springboot3.micrometer.autoconfigure.TimerProperties;
 import io.github.resilience4j.springboot3.micrometer.monitoring.endpoint.TimerEndpoint;
 import io.github.resilience4j.springboot3.micrometer.monitoring.endpoint.TimerEventsEndpoint;
@@ -73,9 +74,12 @@ import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import io.github.resilience4j.timelimiter.event.TimeLimiterEvent;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.Status;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -235,6 +239,47 @@ public class Resilience4j_spring_boot3Test {
                 .getTimerEvents())
                 .extracting(event -> event.getType())
                 .containsOnly(TimerEvent.Type.SUCCESS);
+    }
+
+    @Test
+    void circuitBreakerHealthIndicatorReportsOnlyRegisteredBackendsAndFailsWhenConfigured() {
+        CircuitBreakerConfig openOnFailure = CircuitBreakerConfig.custom()
+                .slidingWindowSize(2)
+                .minimumNumberOfCalls(1)
+                .failureRateThreshold(50.0f)
+                .build();
+        CircuitBreakerRegistry circuitBreakers = CircuitBreakerRegistry.of(openOnFailure);
+        CircuitBreaker orders = circuitBreakers.circuitBreaker("orders");
+        circuitBreakers.circuitBreaker("ignored");
+
+        CircuitBreakerProperties circuitBreakerProperties = new CircuitBreakerProperties();
+        CommonCircuitBreakerConfigurationProperties.InstanceProperties ordersInstance =
+                new CommonCircuitBreakerConfigurationProperties.InstanceProperties();
+        ordersInstance.setRegisterHealthIndicator(true);
+        ordersInstance.setAllowHealthIndicatorToFail(true);
+        circuitBreakerProperties.getInstances().put("orders", ordersInstance);
+        CommonCircuitBreakerConfigurationProperties.InstanceProperties ignoredInstance =
+                new CommonCircuitBreakerConfigurationProperties.InstanceProperties();
+        ignoredInstance.setRegisterHealthIndicator(false);
+        circuitBreakerProperties.getInstances().put("ignored", ignoredInstance);
+
+        orders.onError(0, TimeUnit.NANOSECONDS, new IllegalStateException("failure"));
+        assertThat(orders.getState()).isEqualTo(CircuitBreaker.State.OPEN);
+
+        CircuitBreakersHealthIndicator healthIndicator = new CircuitBreakersHealthIndicator(circuitBreakers,
+                circuitBreakerProperties, statuses -> statuses.contains(Status.DOWN) ? Status.DOWN : Status.UP);
+        Health health = healthIndicator.health();
+
+        assertThat(health.getStatus()).isEqualTo(Status.DOWN);
+        assertThat(health.getDetails()).containsOnlyKeys("orders");
+        assertThat(health.getDetails().get("orders")).isInstanceOf(Health.class);
+        Health ordersHealth = (Health) health.getDetails().get("orders");
+        assertThat(ordersHealth.getStatus()).isEqualTo(Status.DOWN);
+        assertThat(ordersHealth.getDetails())
+                .containsEntry("state", CircuitBreaker.State.OPEN)
+                .containsEntry("bufferedCalls", 1)
+                .containsEntry("failedCalls", 1)
+                .containsKeys("failureRate", "failureRateThreshold", "notPermittedCalls");
     }
 
     @Test
