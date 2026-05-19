@@ -90,8 +90,8 @@ public class Resilience4j_annotationsTest {
 
     @Test
     void configuredAnnotationValuesAreReadableAtRuntimeForTypeAndMethodUse() throws NoSuchMethodException {
-        CircuitBreaker typeCircuitBreaker = AnnotatedInventoryClient.class.getAnnotation(CircuitBreaker.class);
-        Retry typeRetry = AnnotatedInventoryClient.class.getAnnotation(Retry.class);
+        CircuitBreaker typeCircuitBreaker = AnnotatedInventoryClient.class.getAnnotationsByType(CircuitBreaker.class)[0];
+        Retry typeRetry = AnnotatedInventoryClient.class.getAnnotationsByType(Retry.class)[0];
 
         assertThat(typeCircuitBreaker.name()).isEqualTo("inventoryCircuitBreaker");
         assertThat(typeCircuitBreaker.fallbackMethod()).isEqualTo("circuitBreakerFallback");
@@ -99,39 +99,39 @@ public class Resilience4j_annotationsTest {
         assertThat(typeRetry.fallbackMethod()).isEqualTo("retryFallback");
 
         Method loadProduct = AnnotatedInventoryClient.class.getDeclaredMethod("loadProduct", String.class);
-        assertThat(loadProduct.getAnnotation(CircuitBreaker.class).name()).isEqualTo("productCircuitBreaker");
-        assertThat(loadProduct.getAnnotation(CircuitBreaker.class).fallbackMethod()).isEqualTo("productFallback");
-        assertThat(loadProduct.getAnnotation(Retry.class).name()).isEqualTo("productRetry");
-        assertThat(loadProduct.getAnnotation(Retry.class).fallbackMethod()).isEqualTo("productRetryFallback");
+        assertThat(loadProduct.getAnnotationsByType(CircuitBreaker.class)[0].name()).isEqualTo("productCircuitBreaker");
+        assertThat(loadProduct.getAnnotationsByType(CircuitBreaker.class)[0].fallbackMethod()).isEqualTo("productFallback");
+        assertThat(loadProduct.getAnnotationsByType(Retry.class)[0].name()).isEqualTo("productRetry");
+        assertThat(loadProduct.getAnnotationsByType(Retry.class)[0].fallbackMethod()).isEqualTo("productRetryFallback");
 
         Method rateLimitedLookup = AnnotatedInventoryClient.class.getDeclaredMethod("rateLimitedLookup", String.class);
-        RateLimiter rateLimiter = rateLimitedLookup.getAnnotation(RateLimiter.class);
+        RateLimiter rateLimiter = rateLimitedLookup.getAnnotationsByType(RateLimiter.class)[0];
         assertThat(rateLimiter.name()).isEqualTo("lookupRateLimiter");
         assertThat(rateLimiter.fallbackMethod()).isEqualTo("lookupFallback");
         assertThat(rateLimiter.permits()).isEqualTo(2);
 
         Method bulkheadProtectedRefresh = AnnotatedInventoryClient.class.getDeclaredMethod("bulkheadProtectedRefresh");
-        Bulkhead bulkhead = bulkheadProtectedRefresh.getAnnotation(Bulkhead.class);
+        Bulkhead bulkhead = bulkheadProtectedRefresh.getAnnotationsByType(Bulkhead.class)[0];
         assertThat(bulkhead.name()).isEqualTo("refreshBulkhead");
         assertThat(bulkhead.fallbackMethod()).isEqualTo("refreshFallback");
         assertThat(bulkhead.type()).isEqualTo(Bulkhead.Type.THREADPOOL);
 
         Method timedLookup = AnnotatedInventoryClient.class.getDeclaredMethod("timedLookup", String.class);
-        TimeLimiter timeLimiter = timedLookup.getAnnotation(TimeLimiter.class);
+        TimeLimiter timeLimiter = timedLookup.getAnnotationsByType(TimeLimiter.class)[0];
         assertThat(timeLimiter.name()).isEqualTo("asyncLookupTimeLimiter");
         assertThat(timeLimiter.fallbackMethod()).isEqualTo("asyncLookupFallback");
 
         Method measuredOperation = AnnotatedInventoryClient.class.getDeclaredMethod("measuredOperation");
-        Timer timer = measuredOperation.getAnnotation(Timer.class);
+        Timer timer = measuredOperation.getAnnotationsByType(Timer.class)[0];
         assertThat(timer.name()).isEqualTo("measuredInventoryTimer");
         assertThat(timer.fallbackMethod()).isEqualTo("timerFallback");
     }
 
     private static void assertRuntimeMethodAndTypeAnnotation(Class<? extends Annotation> annotationType) {
-        Retention retention = annotationType.getAnnotation(Retention.class);
-        Target target = annotationType.getAnnotation(Target.class);
+        Retention retention = annotationType.getAnnotationsByType(Retention.class)[0];
+        Target target = annotationType.getAnnotationsByType(Target.class)[0];
 
-        assertThat(annotationType.getAnnotation(Documented.class)).isNotNull();
+        assertThat(annotationType.getAnnotationsByType(Documented.class)).isNotEmpty();
         assertThat(retention).isNotNull();
         assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(target).isNotNull();
