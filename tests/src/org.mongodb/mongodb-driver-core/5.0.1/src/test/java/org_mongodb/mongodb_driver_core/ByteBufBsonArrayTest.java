@@ -16,8 +16,8 @@ import com.mongodb.connection.ClusterConnectionMode;
 import com.mongodb.connection.ClusterSettings;
 import com.mongodb.connection.ConnectionPoolSettings;
 import com.mongodb.connection.ServerSettings;
-import com.mongodb.connection.Stream;
-import com.mongodb.connection.StreamFactory;
+import com.mongodb.internal.connection.Stream;
+import com.mongodb.internal.connection.StreamFactory;
 import com.mongodb.event.CommandListener;
 import com.mongodb.event.CommandStartedEvent;
 import com.mongodb.internal.IgnorableRequestContext;
@@ -84,7 +84,6 @@ public class ByteBufBsonArrayTest {
                 "byte-buf-bson-array-test",
                 MongoDriverInformation.builder().build(),
                 Collections.emptyList(),
-                null,
                 null,
                 null);
         final ClusterBinding binding = new ClusterBinding(cluster, ReadPreference.primary(), ReadConcern.DEFAULT, null,
