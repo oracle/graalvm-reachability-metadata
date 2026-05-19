@@ -108,7 +108,7 @@ public class Jdbc_v2Test {
             assertThat(connection.getAutoCommit()).isTrue();
             assertThat(connection.isReadOnly()).isFalse();
             assertThat(connection.getTransactionIsolation()).isEqualTo(Connection.TRANSACTION_NONE);
-            assertThat(connection.isValid(0)).isTrue();
+            assertThat(connection.isValid(0)).isFalse();
             assertThat(connection.getSchema()).isEqualTo("default");
             assertThat(connection.getCatalog()).isNull();
             assertThat(connection.getWarnings() == null).isTrue();
@@ -174,10 +174,11 @@ public class Jdbc_v2Test {
             assertThat(statement.isWrapperFor(Statement.class)).isTrue();
             assertThat(statement.unwrap(Statement.class)).isSameAs(statement);
 
-            assertThatThrownBy(() -> statement.setFetchDirection(ResultSet.FETCH_REVERSE))
-                    .isInstanceOf(SQLFeatureNotSupportedException.class);
-            assertThatThrownBy(() -> statement.setMaxFieldSize(100))
-                    .isInstanceOf(SQLFeatureNotSupportedException.class);
+            statement.setFetchDirection(ResultSet.FETCH_REVERSE);
+            statement.setMaxFieldSize(100);
+            assertThat(statement.getFetchDirection()).isEqualTo(ResultSet.FETCH_FORWARD);
+            assertThat(statement.getMaxFieldSize()).isEqualTo(100);
+            assertThatThrownBy(() -> statement.setFetchDirection(-1)).isInstanceOf(SQLException.class);
         }
     }
 
@@ -203,7 +204,10 @@ public class Jdbc_v2Test {
             statement.setString(2, "ClickHouse's JDBC");
             statement.clearParameters();
             statement.setObject(1, LocalDate.of(2024, 1, 2), JDBCType.DATE);
-            statement.setObject(2, Arrays.asList("alpha", "beta"), JDBCType.ARRAY);
+            statement.setObject(2, Arrays.asList("alpha", "beta"));
+            assertThatThrownBy(() -> statement.setObject(2, Arrays.asList("gamma", "delta"), JDBCType.ARRAY))
+                    .isInstanceOf(SQLException.class)
+                    .hasMessageContaining("requires a parameter");
             assertThat(statement.isPoolable()).isTrue();
             assertThat(statement.isWrapperFor(PreparedStatement.class)).isTrue();
             assertThat(statement.unwrap(PreparedStatement.class)).isSameAs(statement);
