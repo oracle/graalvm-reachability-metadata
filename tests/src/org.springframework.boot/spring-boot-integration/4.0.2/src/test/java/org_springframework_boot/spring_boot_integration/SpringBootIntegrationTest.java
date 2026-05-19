@@ -23,10 +23,12 @@ import org.springframework.boot.integration.autoconfigure.IntegrationAutoConfigu
 import org.springframework.boot.integration.autoconfigure.IntegrationJdbcProperties;
 import org.springframework.boot.integration.autoconfigure.IntegrationProperties;
 import org.springframework.boot.integration.autoconfigure.PollerMetadataCustomizer;
+import org.springframework.boot.task.ThreadPoolTaskSchedulerBuilder;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.integration.graph.Graph;
 import org.springframework.integration.graph.IntegrationGraphServer;
 import org.springframework.integration.scheduling.PollerMetadata;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.PeriodicTrigger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -172,6 +174,20 @@ public class SpringBootIntegrationTest {
                 assertThat(trigger.isFixedRate()).isTrue();
                 assertThat(trigger.getPeriodDuration()).isEqualTo(Duration.ofMillis(250));
                 assertThat(trigger.getInitialDelayDuration()).isEqualTo(Duration.ofMillis(25));
+            });
+    }
+
+    @Test
+    void autoConfigurationCreatesTaskSchedulerFromBuilderWhenMissing() {
+        this.contextRunner
+            .withBean(ThreadPoolTaskSchedulerBuilder.class,
+                    () -> new ThreadPoolTaskSchedulerBuilder().poolSize(2))
+            .run((context) -> {
+                assertThat(context).hasBean("taskScheduler");
+                assertThat(context).hasSingleBean(ThreadPoolTaskScheduler.class);
+
+                ThreadPoolTaskScheduler scheduler = context.getBean("taskScheduler", ThreadPoolTaskScheduler.class);
+                assertThat(scheduler.getScheduledThreadPoolExecutor().getCorePoolSize()).isEqualTo(2);
             });
     }
 
