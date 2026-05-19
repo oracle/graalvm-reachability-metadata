@@ -127,6 +127,19 @@ public class Spring_boot_persistenceTest {
     }
 
     @Test
+    void persistenceExceptionTranslationAutoConfigurationBacksOffWhenPostProcessorBeanExists() {
+        try (AnnotationConfigApplicationContext context = contextWith(
+                CustomPostProcessorConfiguration.class, PersistenceExceptionTranslationAutoConfiguration.class)) {
+            String[] postProcessorBeanNames = context
+                    .getBeanNamesForType(PersistenceExceptionTranslationPostProcessor.class);
+
+            assertThat(postProcessorBeanNames).containsExactly("customPersistenceExceptionTranslationPostProcessor");
+            assertThat(context.getBean(PersistenceExceptionTranslationPostProcessor.class))
+                    .isSameAs(context.getBean("customPersistenceExceptionTranslationPostProcessor"));
+        }
+    }
+
+    @Test
     void persistenceExceptionTranslationAutoConfigurationCanBeDisabled() {
         try (AnnotationConfigApplicationContext context = contextWithProperties(
                 Map.of("spring.persistence.exceptiontranslation.enabled", "false"),
@@ -204,6 +217,16 @@ public class Spring_boot_persistenceTest {
     }
 
     public static final class UnannotatedPersistenceType {
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class CustomPostProcessorConfiguration {
+
+        @Bean
+        PersistenceExceptionTranslationPostProcessor customPersistenceExceptionTranslationPostProcessor() {
+            return new PersistenceExceptionTranslationPostProcessor();
+        }
 
     }
 
