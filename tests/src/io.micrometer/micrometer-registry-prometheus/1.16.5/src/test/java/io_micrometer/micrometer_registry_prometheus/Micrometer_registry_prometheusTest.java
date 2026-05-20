@@ -18,6 +18,7 @@ import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
+import io.micrometer.prometheusmetrics.PrometheusRenameFilter;
 import io.prometheus.metrics.model.registry.PrometheusRegistry;
 import org.junit.jupiter.api.Test;
 
@@ -213,6 +214,25 @@ public class Micrometer_registry_prometheusTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("same name")
                 .hasMessageContaining("same type");
+    }
+
+    @Test
+    void prometheusRenameFilterConvertsKnownJvmMetricNames() {
+        PrometheusMeterRegistry registry = newRegistry();
+        registry.config().meterFilter(new PrometheusRenameFilter());
+
+        AtomicInteger openFiles = new AtomicInteger(17);
+        Gauge.builder("process.files.open", openFiles, AtomicInteger::get)
+                .register(registry);
+        Gauge.builder("process.start.time", () -> 1_234.0)
+                .register(registry);
+
+        String scrape = registry.scrape();
+        assertThat(scrape)
+                .contains("process_open_fds")
+                .contains("# HELP process_start_time Start time of the process since unix epoch in seconds.")
+                .contains("process_start_time")
+                .doesNotContain("process_files_open");
     }
 
     @Test
