@@ -25,6 +25,8 @@ import tools.jackson.core.JsonParser;
 import tools.jackson.core.JsonToken;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.MappingIterator;
+import tools.jackson.databind.SequenceWriter;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 import tools.jackson.dataformat.yaml.JacksonYAMLParseException;
@@ -119,6 +121,40 @@ public class Jackson_dataformat_yamlTest {
         assertThat(decoded.path("samples").get(0).path("value").asDouble()).isEqualTo(1.25d);
         assertThat(decoded.path("samples").get(1).path("host").asString()).isEqualTo("beta");
         assertThat(decoded.path("samples").get(1).path("value").asDouble()).isEqualTo(2.5d);
+    }
+
+    @Test
+    void mapperReadsAndWritesMultipleDocumentsInOneYamlStream() throws Exception {
+        YAMLMapper mapper = YAMLMapper.builder()
+                .enable(YAMLWriteFeature.WRITE_DOC_START_MARKER)
+                .build();
+        TypeReference<LinkedHashMap<String, Object>> documentType =
+                new TypeReference<LinkedHashMap<String, Object>>() { };
+        Map<String, Object> firstDocument = new LinkedHashMap<>();
+        firstDocument.put("name", "alpha");
+        firstDocument.put("ports", List.of(8080, 8443));
+        Map<String, Object> secondDocument = new LinkedHashMap<>();
+        secondDocument.put("name", "beta");
+        secondDocument.put("ports", List.of(9090));
+        StringWriter writer = new StringWriter();
+
+        try (SequenceWriter sequenceWriter = mapper.writerFor(documentType).writeValues(writer)) {
+            sequenceWriter.write(firstDocument);
+            sequenceWriter.write(secondDocument);
+        }
+        String yaml = writer.toString();
+
+        try (MappingIterator<LinkedHashMap<String, Object>> documents =
+                mapper.readerFor(documentType).readValues(yaml)) {
+            List<LinkedHashMap<String, Object>> decoded = documents.readAll();
+
+            assertThat(yaml).startsWith("---");
+            assertThat(decoded).hasSize(2);
+            assertThat(decoded.get(0)).containsEntry("name", "alpha");
+            assertThat(decoded.get(0).get("ports")).isEqualTo(List.of(8080, 8443));
+            assertThat(decoded.get(1)).containsEntry("name", "beta");
+            assertThat(decoded.get(1).get("ports")).isEqualTo(List.of(9090));
+        }
     }
 
     @Test
