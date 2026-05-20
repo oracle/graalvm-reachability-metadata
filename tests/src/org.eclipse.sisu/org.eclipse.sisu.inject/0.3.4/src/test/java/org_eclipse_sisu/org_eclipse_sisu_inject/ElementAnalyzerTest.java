@@ -8,11 +8,16 @@ package org_eclipse_sisu.org_eclipse_sisu_inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.sisu.wire.WireModule;
 import org.junit.jupiter.api.Test;
+import org.sonatype.guice.bean.locators.BeanLocator;
+import org.sonatype.inject.BeanEntry;
+import org.sonatype.inject.Mediator;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
@@ -23,6 +28,22 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 
 public class ElementAnalyzerTest {
+    @Test
+    void wireModuleAcceptsLegacyLocatorBindingsWhenCompatibilityApiIsPresent() {
+        BeanLocator legacyLocator = new LegacyBeanLocator();
+        Module applicationModule = new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(BeanLocator.class).toInstance(legacyLocator);
+                bind(NeedsLegacyLocator.class);
+            }
+        };
+
+        Injector injector = Guice.createInjector(new WireModule(applicationModule));
+
+        assertThat(injector.getInstance(NeedsLegacyLocator.class).locator()).isSameAs(legacyLocator);
+    }
+
     @Test
     void wireModuleRoutesUnresolvedConstructorDependenciesToCustomWiring() {
         Collaborator collaborator = new WiredCollaborator();
@@ -46,6 +67,30 @@ public class ElementAnalyzerTest {
 
         assertThat(injector.getInstance(NeedsCollaborator.class).collaborator()).isSameAs(collaborator);
         assertThat(wiredKeys).containsExactly(Key.get(Collaborator.class));
+    }
+
+    private static final class LegacyBeanLocator implements BeanLocator {
+        @Override
+        public <Q extends Annotation, T> Iterable<BeanEntry<Q, T>> locate(Key<T> key) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public <Q extends Annotation, T, W> void watch(Key<T> key, Mediator<Q, T, W> mediator, W watcher) {
+        }
+    }
+
+    private static final class NeedsLegacyLocator {
+        private final BeanLocator locator;
+
+        @Inject
+        private NeedsLegacyLocator(BeanLocator locator) {
+            this.locator = locator;
+        }
+
+        private BeanLocator locator() {
+            return locator;
+        }
     }
 
     private interface Collaborator {
