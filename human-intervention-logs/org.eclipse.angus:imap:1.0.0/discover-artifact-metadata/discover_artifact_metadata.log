@@ -1,0 +1,1926 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e45e0-2234-7771-99c6-97c578cb2bc7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.eclipse.angus:imap:1.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.0" when "$version$" is replaced with "1.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+- Set "coordinates" to "org.eclipse.angus:imap:1.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream project tags, then patch the JSON directly with the most specific URLs that resolve for version `1.0.0`.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json && sed -n '1,200p' build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+-rw-rw-r-- 1 vjovanov vjovanov 53 May 20 16:52 build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+{
+  "coordinates" : "org.eclipse.angus:imap:1.0.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.eclipse\\.angus:imap|org.eclipse.angus.*imap|\\\"artifact\\\"\\s*:\\s*\\\"imap\\\"\" ." in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central org.eclipse.angus imap 1.0.0
+codex
+The artifact is a normal Maven `jar` and Maven Central has both `sources` and `javadoc` artifacts for `1.0.0`, so I’m checking the project POM/tag now to avoid guessing the repository and test URL.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata metadata test-data | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 0ms:
+rg: test-data: No such file or directory (os error 2)
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:7:    "repository-url" : "https://github.com/javaparser/javaparser",
+metadata/com.github.javaparser/javaparser-core/index.json:8:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:22:    "repository-url" : "https://github.com/javaparser/javaparser",
+metadata/com.github.javaparser/javaparser-core/index.json:23:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/$version$/okio-jvm-$version$-sources.jar",
+metadata/com.squareup.okio/okio-jvm/index.json:6:    "repository-url" : "https://github.com/square/okio",
+metadata/com.squareup.okio/okio-jvm/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/parent-$version$/okio/src/jvmTest",
+metadata/com.squareup.okio/okio-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/$version$/okio-jvm-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-sources.jar",
+metadata/com.squareup.okio/okio/index.json:6:    "repository-url" : "https://github.com/square/okio",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-$version$/okio/src/test",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/charleskorn/kaml/kaml-jvm/$version$/kaml-jvm-$version$-sources.jar",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:6:    "repository-url" : "https://github.com/charleskorn/kaml",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:7:    "test-code-url" : "https://github.com/charleskorn/kaml/tree/$version$/src",
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:8:    "documentation-url" : "https://github.com/charleskorn/kaml/blob/$version$/README.md",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/oro/oro/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/jakarta/oro/",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/oro/oro/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-$version$/docs/index.html",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-json-provider/$version$/jackson-jaxrs-json-provider-$version$-sources.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-jaxrs-providers",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/json/src/test",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-json-provider/$version$/jackson-jaxrs-json-provider-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:6:    "repository-url" : "https://github.com/google/truth",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:9:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v$version$/jctools-core/src/test",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-base/$version$/jackson-jaxrs-base-$version$-sources.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-jaxrs-providers",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/base/src/test",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-base/$version$/jackson-jaxrs-base-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:6:    "repository-url" : "https://github.com/spotify/completable-futures",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/angus/imap/1.0.0/imap-1.0.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>providers</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.eclipse.angus</groupId>
+    <artifactId>imap</artifactId>
+    <packaging>jar</packaging>
+    <name>Angus Mail imap provider</name>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/eclipse/angus/imap/1.0.0/imap-1.0.0-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/eclipse/angus/imap/1.0.0/imap-1.0.0-javadoc.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/eclipse/angus/imap/1.0.0/imap-1.0.0.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 884ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 14:53:18 GMT
+content-type: application/java-archive
+content-length: 963774
+cf-ray: 9fec2b8d0e734c6f-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "7bd13546a0c5decb9e02f7e66c7a6f19"
+last-modified: Tue, 18 Jan 2022 10:46:12 GMT
+x-checksum-md5: 7bd13546a0c5decb9e02f7e66c7a6f19
+x-checksum-sha1: 461af99985c1fc048f10456c87ca4358364d284f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 20 May 2026 14:53:19 GMT
+content-type: application/java-archive
+content-length: 234515
+cf-ray: 9fec2b8f9a05ed27-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "fec9023e0b82f24fc299aa12c381bd29"
+last-modified: Tue, 18 Jan 2022 10:46:05 GMT
+x-checksum-md5: fec9023e0b82f24fc299aa12c381bd29
+x-checksum-sha1: d4dabb479b54beb8d59d3aecd59bff451ed0ebb3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.eclipse.angus imap 1.0.0
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/angus/all/1.0.0/all-1.0.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0  http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.7</version>
+        <relativePath></relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.eclipse.angus</groupId>
+    <artifactId>all</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+    <name>Angus Mail Project</name>
+    <description>${project.name}</description>
+    <url>http://eclipse-ee4j.github.io/mail</url>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse-ee4j/angus-mail.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/angus-mail.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/angus-mail</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/eclipse-ee4j/angus-mail/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>EDL 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.commonResourcesDirectory>${project.build.directory}/common-resources</project.build.commonResourcesDirectory>
+        <legal.doc.source>${project.build.commonResourcesDirectory}/legal</legal.doc.source>
+        <copyright.exclude>${project.build.commonResourcesDirectory}/config/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.update>false</copyright.update>
+        <spotbugs.skip>true</spotbugs.skip>
+        <spotbugs.threshold>High</spotbugs.threshold>
+        <spotbugs.plugin.version>4.5.0.0</spotbugs.plugin.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javadoc.title>Angus Mail API documentation</javadoc.title>
+
+        <mail.spec.version>2.1</mail.spec.version>
+        <mail-api.version>2.1.0</mail-api.version>
+        <activation-api.version>2.1.0</activation-api.version>
+        <jsp-api.version>3.0.0</jsp-api.version>
+        <servlet-api.version>5.0.0</servlet-api.version>
+        <angus.activation.version>1.0.0</angus.activation.version>
+    </properties>
+
+    <developers>
+        <developer>
+            <id>shannon</id>
+            <name>Bill Shannon</name>
+            <email>bill.shannon@oracle.com</email>
+            <organization>Oracle</organization>
+            <roles>
+                <role>lead</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!-- following to enable use of "mvn site:stage" -->
+    <distributionManagement>
+        <site>
+            <id>oracle.com</id>
+            <url>file:/tmp</url> <!-- not used -->
+        </site>
+    </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${activation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.mail</groupId>
+                <artifactId>jakarta.mail-api</artifactId>
+                <version>${mail-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>angus-activation</artifactId>
+                <version>${angus.activation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>angus-mail</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>angus-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>dsn</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>imap</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>smtp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>pop3</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>logging-mailhandler</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>gimap</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>mbox</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>taglib</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet.jsp</groupId>
+                <artifactId>jakarta.servlet.jsp-api</artifactId>
+                <version>${jsp-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!--
+        I'm leaving this here but commented out to remind myself
+        NOT to add this back in because it breaks the Android
+        version of Jakarta Mail.
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-activation</artifactId>
+        </dependency>
+    </dependencies>
+    -->
+
+    <modules>
+        <module>core</module>
+        <module>dsn</module>
+        <module>mailhandler</module>
+        <module>providers</module>
+    </modules>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <!--
+                    By default, disable the SpotBugs plugin for all modules.
+                    It's enabled in the modules where we actually want to
+                    run it.
+                    -->
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.plugin.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.3.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                    <configuration>
+                        <excludeFile>${copyright.exclude}</excludeFile>
+                        <!-- skip files not under SCM-->
+                        <scmOnly>${copyright.scmonly}</scmOnly>
+                        <!-- for use with repair -->
+                        <update>${copyright.update}</update>
+                        <!-- check that year is correct -->
+                        <ignoreYear>${copyright.ignoreyear}</ignoreYear>
+                        <quiet>false</quiet>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant</artifactId>
+                            <version>1.10.11</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <!--
+            Make sure we're using the correct version of maven and JDK.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-version</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.6.3,)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[11,)</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>common-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/resources.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.eclipse.angus</groupId>
+                                    <artifactId>all</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>resources</classifier>
+                                    <type>zip</type>
+                                    <outputDirectory>${project.build.commonResourcesDirectory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+            This plugin is reponsible for packaging artifacts
+            as OSGi bundles.  Please refer to
+            http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html
+            for more information about how to use this plugin.
+            -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <_noextraheaders>true</_noextraheaders>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                    </instructions>
+                    <niceManifest>true</niceManifest>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <!--
+                    Since we don't change the packaging type to bundle, we
+                    need to configure the plugin to execute the manifest goal
+                    during the process-classes phase of the build life cycle.
+                -->
+                <executions>
+                    <execution>
+                        <id>osgi-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+            Use the JDK 11+ compiler for Jakarta Mail itself,
+            but restrict it to 1.8 source and target.
+                    The 11+ compiler is used *only* to compile module-info descriptors.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <release>9</release>
+                            <showDeprecation>true</showDeprecation>
+                            <showWarnings>true</showWarnings>
+                            <!--
+                                Configure compiler plugin to print lint warnings.
+                                Need to exclude options warning because bootstrap
+                                classpath isn't set (on purpose).
+                                Need to exclude path warnings because Maven includes
+                                source directories that don't exist (e.g., generated-sources).
+                            -->
+                            <compilerArgs>
+                                <arg>-Xlint</arg>
+                                <arg>-Xlint:-options</arg>
+                                <arg>-Xlint:-path</arg>
+                                <!--
+                                    Too many finalize warnings.
+                                <arg>-Werror</arg>
+                                -->
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>base-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>8</release>
+                            <excludes>
+                                <exclude>module-info.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <configuration>
+                            <release>8</release>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <!--
+                            Configure the maven-jar-plugin to pick up
+                            META-INF/MANIFEST.MF that's generated by
+                            the maven-bundle-plugin.
+                        -->
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!--
+            Tell the source plugin about the sources that may have
+            been downloaded by the maven-dependency-plugin.
+
+            Also, need this plugin to define target/classes as another
+            source directory so that the filtered Version.java
+            that's copied there will also be compiled when using
+            the latest version of the maven-compiler-plugin.
+            -->
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>currentyear-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <name>current.year</name>
+                            <locale>en,US</locale>
+                            <pattern>yyyy</pattern>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-legal-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${legal.doc.source}</directory>
+                                    <targetPath>META-INF</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+            Configure the source plugin here so that it will know
+            about the sources that may have been downloaded by the
+            maven-dependency-plugin and configured by the
+            build-helper-maven-plugin.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                    <source>11</source>
+                    <author>false</author>
+                    <description>${javadoc.title}</description>
+                    <doctitle>${javadoc.title}</doctitle>
+                    <windowtitle>${javadoc.title}</windowtitle>
+                    <splitindex>true</splitindex>
+                    <use>true</use>
+                    <notimestamp>true</notimestamp>
+                    <serialwarn>true</serialwarn>
+                    <quiet>true</quiet>
+                    <header><![CDATA[<br>Angus Mail v${project.version}]]></header>
+                    <bottom>
+                        <![CDATA[
+Comments to : <a href="mailto:angus-dev@eclipse.org">angus-dev@eclipse.org</a>.<br>
+Copyright &#169; 2019, ${current.year} Eclipse Foundation. All rights reserved.]]>
+                    </bottom>
+                    <!-- force the doc-files directory to be copied -->
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <detectJavaApiLink>false</detectJavaApiLink>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <!--
+            Configure SpotBugs to run with "mvn site" and
+            generate html output that can be viewed directly.
+            -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <!--<version>${findbugs.version}</version>-->
+                <configuration>
+                    <skip>${spotbugs.skip}</skip>
+                    <threshold>${spotbugs.threshold}</threshold>
+                    <excludeFilterFile>${spotbugs.exclude}</excludeFilterFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <profiles>
+        <!--
+            This profile contains modules that should only be built
+            but not installed or deployed.
+        -->
+        <profile>
+            <id>build-only</id>
+            <modules>
+                <module>demos</module>
+                <module>javadoc</module>
+                <module>publish</module>
+            </modules>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <!--
+            This profile is used for deploying a Jakarta Mail final release.
+
+            Activating this profile manually for deployment causes
+            the above profile to be deactivated, which works around
+            an apparent bug in maven that prevents me from manually
+            deactivating a profile.  This profile purposely has none
+            of the modules I don't want to be deployed.
+        -->
+        <profile>
+            <id>oss-release</id>
+        </profile>
+
+        <profile>
+            <id>coverage</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.jacoco</groupId>
+                            <artifactId>jacoco-maven-plugin</artifactId>
+                            <version>0.8.7</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>default-report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/angus/providers/1.0.0/providers-1.0.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>all</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.eclipse.angus</groupId>
+    <artifactId>providers</artifactId>
+    <packaging>pom</packaging>
+    <name>Angus Mail providers</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-core</artifactId>
+        </dependency>
+    </dependencies>
+
+    <modules>
+        <module>angus-mail</module>
+        <module>smtp</module>
+        <module>imap</module>
+        <module>gimap</module>
+        <module>pop3</module>
+        <module>jakarta.mail</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            javax.security.sasl;resolution:=optional,
+                            sun.security.util;resolution:=optional,
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!--
+            This profile contains modules that should only be built
+            but not installed or deployed.
+        -->
+        <profile>
+            <id>build-only</id>
+            <modules>
+                <module>mbox</module>
+            </modules>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>oss-release</id>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/1.0.0/imap-1.0.0.jar -o /tmp/imap-1.0.0.jar && jar tf /tmp/imap-1.0.0.jar | head -60' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 284ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/services/
+com/
+com/sun/
+com/sun/mail/
+com/sun/mail/iap/
+com/sun/mail/imap/
+com/sun/mail/imap/protocol/
+META-INF/maven/
+META-INF/maven/org.eclipse.angus/
+META-INF/maven/org.eclipse.angus/imap/
+META-INF/javamail.providers
+META-INF/services/jakarta.mail.Provider
+META-INF/NOTICE.md
+META-INF/LICENSE.md
+com/sun/mail/iap/Literal.class
+com/sun/mail/iap/Response.class
+com/sun/mail/iap/Protocol.class
+com/sun/mail/iap/ProtocolException.class
+com/sun/mail/iap/ParsingException.class
+com/sun/mail/iap/ResponseInputStream.class
+com/sun/mail/iap/ResponseHandler.class
+com/sun/mail/iap/ByteArray.class
+com/sun/mail/iap/Argument.class
+com/sun/mail/iap/ConnectionException.class
+com/sun/mail/iap/Atom.class
+com/sun/mail/iap/AString.class
+com/sun/mail/iap/NString.class
+com/sun/mail/iap/BadCommandException.class
+com/sun/mail/iap/LiteralException.class
+com/sun/mail/iap/CommandFailedException.class
+com/sun/mail/imap/Rights$Right.class
+com/sun/mail/imap/Rights.class
+com/sun/mail/imap/protocol/FetchResponse.class
+com/sun/mail/imap/protocol/IMAPResponse.class
+com/sun/mail/imap/protocol/Item.class
+com/sun/mail/imap/protocol/FetchItem.class
+com/sun/mail/imap/protocol/BODYSTRUCTURE.class
+com/sun/mail/imap/protocol/ENVELOPE.class
+com/sun/mail/imap/protocol/IMAPProtocol.class
+com/sun/mail/imap/protocol/SearchSequence.class
+com/sun/mail/imap/protocol/SaslAuthenticator.class
+com/sun/mail/imap/protocol/IMAPReferralException.class
+com/sun/mail/imap/protocol/MailboxInfo.class
+com/sun/mail/imap/protocol/Status.class
+com/sun/mail/imap/protocol/ListInfo.class
+com/sun/mail/imap/protocol/UIDSet.class
+com/sun/mail/imap/protocol/BODY.class
+com/sun/mail/imap/protocol/RFC822DATA.class
+com/sun/mail/imap/protocol/UID.class
+com/sun/mail/imap/protocol/MODSEQ.class
+com/sun/mail/imap/protocol/MessageSet.class
+com/sun/mail/imap/protocol/Namespaces$Namespace.class
+com/sun/mail/imap/protocol/Namespaces.class
+com/sun/mail/imap/protocol/INTERNALDATE.class
+com/sun/mail/imap/protocol/RFC822SIZE.class
+com/sun/mail/imap/protocol/ID.class
+com/sun/mail/imap/protocol/BASE64MailboxDecoder.class
+com/sun/mail/imap/protocol/IMAPAddress.class
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/angus-mail.git '*1.0.0*'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/1.0.0?recursive=1 | rg 'providers/imap/.*/test|providers/imap/src/test|imap/src/test|providers/imap'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/1.0.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 289ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/eclipse/angus/imap/1.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/eclipse/angus/imap/1.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="imap-1.0.0-javadoc.jar" title="imap-1.0.0-javadoc.jar">imap-1.0.0-javadoc.jar</a>                            2022-01-18 10:46    963774      
+<a href="imap-1.0.0-javadoc.jar.asc" title="imap-1.0.0-javadoc.jar.asc">imap-1.0.0-javadoc.jar.asc</a>                        2022-01-18 10:46       833      
+<a href="imap-1.0.0-javadoc.jar.md5" title="imap-1.0.0-javadoc.jar.md5">imap-1.0.0-javadoc.jar.md5</a>                        2022-01-18 10:46        32      
+<a href="imap-1.0.0-javadoc.jar.sha1" title="imap-1.0.0-javadoc.jar.sha1">imap-1.0.0-javadoc.jar.sha1</a>                       2022-01-18 10:46        40      
+<a href="imap-1.0.0-sources.jar" title="imap-1.0.0-sources.jar">imap-1.0.0-sources.jar</a>                            2022-01-18 10:46    211395      
+<a href="imap-1.0.0-sources.jar.asc" title="imap-1.0.0-sources.jar.asc">imap-1.0.0-sources.jar.asc</a>                        2022-01-18 10:46       833      
+<a href="imap-1.0.0-sources.jar.md5" title="imap-1.0.0-sources.jar.md5">imap-1.0.0-sources.jar.md5</a>                        2022-01-18 10:46        32      
+<a href="imap-1.0.0-sources.jar.sha1" title="imap-1.0.0-sources.jar.sha1">imap-1.0.0-sources.jar.sha1</a>                       2022-01-18 10:46        40      
+<a href="imap-1.0.0.jar" title="imap-1.0.0.jar">imap-1.0.0.jar</a>                                    2022-01-18 10:46    234515      
+<a href="imap-1.0.0.jar.asc" title="imap-1.0.0.jar.asc">imap-1.0.0.jar.asc</a>                                2022-01-18 10:46       833      
+<a href="imap-1.0.0.jar.md5" title="imap-1.0.0.jar.md5">imap-1.0.0.jar.md5</a>                                2022-01-18 10:46        32      
+<a href="imap-1.0.0.jar.sha1" title="imap-1.0.0.jar.sha1">imap-1.0.0.jar.sha1</a>                               2022-01-18 10:46        40      
+<a href="imap-1.0.0.pom" title="imap-1.0.0.pom">imap-1.0.0.pom</a>                                    2022-01-18 10:46      1367      
+<a href="imap-1.0.0.pom.asc" title="imap-1.0.0.pom.asc">imap-1.0.0.pom.asc</a>                                2022-01-18 10:46       833      
+<a href="imap-1.0.0.pom.md5" title="imap-1.0.0.pom.md5">imap-1.0.0.pom.md5</a>                                2022-01-18 10:46        32      
+<a href="imap-1.0.0.pom.sha1" title="imap-1.0.0.pom.sha1">imap-1.0.0.pom.sha1</a>                               2022-01-18 10:46        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 362ms:
+79cfec376c41307bc46448c437f5a4dd1166edf3	refs/tags/1.0.0
+01fb4192a84e278015cb5f011c27bb2fd64c4385	refs/tags/1.0.0^{}
+788813b2c3c0e0a3d82ad33288b30b819bd6ff2a	refs/tags/1.0.0-M1
+b32d973e1c722d01fdbda53a1d081c577e4e499f	refs/tags/1.0.0-M1^{}
+4e83fc1ece4bddf7dfc1e17f18284b73592f349c	refs/tags/1.0.0-M2
+79bb3e61b2b948f27bea8a2c5f67b48ebb7cb5e3	refs/tags/1.0.0-M2^{}
+
+ succeeded in 421ms:
+      "path": "providers/imap",
+      "path": "providers/imap/pom.xml",
+      "path": "providers/imap/src",
+      "path": "providers/imap/src/main",
+      "path": "providers/imap/src/main/java",
+      "path": "providers/imap/src/main/java/com",
+      "path": "providers/imap/src/main/java/com/sun",
+      "path": "providers/imap/src/main/java/com/sun/mail",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/Argument.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/BadCommandException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ByteArray.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/CommandFailedException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ConnectionException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/Literal.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/LiteralException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ParsingException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/Protocol.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ProtocolException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/Response.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ResponseHandler.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ResponseInputStream.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/package-info.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/ACL.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/AppendUID.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/CopyUID.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/DefaultFolder.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPBodyPart.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPFolder.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPInputStream.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPMessage.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPMultipartDataSource.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPNestedMessage.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPProvider.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPSSLProvider.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPSSLStore.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPStore.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IdleManager.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/MessageCache.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/MessageVanishedEvent.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/ModifiedSinceTerm.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/OlderTerm.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/ReferralException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/ResyncData.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/Rights.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/SortTerm.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/Utility.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/YoungerTerm.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/package-info.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/BASE64MailboxDecoder.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/BASE64MailboxEncoder.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/BODY.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/BODYSTRUCTURE.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/ENVELOPE.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/FLAGS.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/FetchItem.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/FetchResponse.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/ID.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/IMAPProtocol.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/IMAPReferralException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/IMAPResponse.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/IMAPSaslAuthenticator.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/INTERNALDATE.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/Item.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/ListInfo.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/MODSEQ.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/MailboxInfo.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/MessageSet.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/Namespaces.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/RFC822DATA.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/RFC822SIZE.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/SaslAuthenticator.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/SearchSequence.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/Status.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/UID.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/UIDSet.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/package-info.java",
+      "path": "providers/imap/src/main/java/module-info.java",
+      "path": "providers/imap/src/main/resources",
+      "path": "providers/imap/src/main/resources/META-INF",
+      "path": "providers/imap/src/main/resources/META-INF/javamail.providers",
+      "path": "providers/imap/src/main/resources/META-INF/services",
+      "path": "providers/imap/src/main/resources/META-INF/services/jakarta.mail.Provider",
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/1.0.0?recursive=1' | rg '\"path\": \".*(test|Test|imap|IMAP).*\"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/1.0.0/imap-1.0.0-sources.jar -o /tmp/imap-1.0.0-sources.jar && jar tf /tmp/imap-1.0.0-sources.jar | rg 'test|Test|java"'$'"' | head -120" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/eclipse-ee4j/angus-mail/contents?ref=1.0.0' | rg '\"name\"|\"path\"|\"type\"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 188ms:
+      "path": "demos/demo/src/main/java/internal/testidle.java",
+      "path": "dsn/src/test",
+      "path": "dsn/src/test/java",
+      "path": "dsn/src/test/java/com",
+      "path": "dsn/src/test/java/com/sun",
+      "path": "dsn/src/test/java/com/sun/mail",
+      "path": "dsn/src/test/java/com/sun/mail/dsn",
+      "path": "dsn/src/test/java/com/sun/mail/dsn/MultipartReportTest.java",
+      "path": "dsn/src/test/java/com/sun/mail/dsn/NullOutputStream.java",
+      "path": "providers/angus-mail/src/oldtest",
+      "path": "providers/angus-mail/src/oldtest/java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/decodetest",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/encodedheaders.data",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/messagecachetest.java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory/DummySSLSocketFactory.java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory/DummySocketFactory.java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory/DummyTrustManager.java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory/TestResult.java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory/socketfactorytest.java",
+      "path": "providers/angus-mail/src/test",
+      "path": "providers/angus-mail/src/test/java",
+      "path": "providers/angus-mail/src/test/java/com",
+      "path": "providers/angus-mail/src/test/java/com/sun",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/handlers",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/handlers/TextXmlTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/iap",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/iap/ProtocolTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/iap/ResponseInputStreamTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/iap/ResponseTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPAlertTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPAuthDebugTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPCloseFailureTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPConnectFailureTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPFetchProfileTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPFolderTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPIDTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPIdleManagerTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPIdleStateTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPIdleUntaggedResponseTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPLoginCapabilitiesTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPLoginFailureTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPLoginHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPLoginReferralTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPMessageNumberOutOfRangeTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPMessageTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPPlainHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPResponseEventTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPSaslHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPSaslLoginTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPSearchTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPStoreTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPUidExpungeTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/MessageCacheTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/BODYSTRUCTURETest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/EnvelopeTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/IMAPProtocolTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/MODSEQTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/NamespacesTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/StatusTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/StratoImapBugfixTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/UIDSetTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3AuthDebugTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3FolderClosedExceptionTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3Handler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3MessageTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3ReadableMimeTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3StoreTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/NopServer.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPAuthDebugTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPBdatTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPCloseTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPConnectFailureTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPIOExceptionTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPLoginHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPSaslHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPSaslLoginTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPUknownCodeTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPUtf8Test.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPWriteTimeoutTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/stream",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/stream/LineInputStreamTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/stream/LineInputStreamUtf8FailTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/stream/LineInputStreamUtf8Test.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/AsciiStringInputStream.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/NullOutputStream.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/ProtocolHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/SavedSocketFactory.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/SessionTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/TestSSLSocketFactory.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/TestServer.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/TestSocketFactory.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/AddAddressHeaderTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/AddFromTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/AllowEncodedMessagesTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/BASE64Test.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/ContentTypeCleanerTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/DecodeParametersTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/EncodeFileNameNoEncodeParametersTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/EncodeFileNameTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/GetLocalAddressTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/InternetHeadersTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeBodyPartTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeMessageTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeMultipartBCSIndexTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeMultipartParseTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeMultipartPreambleTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeMultipartPropertyTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeUtilityTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/ModifyMessageTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/NoEncodeFileNameNoEncodeParametersTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/NoEncodeFileNameTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/NonAsciiBoundaryTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/ParameterListDecode.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/ParametersNoStrictTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/PropUtilTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/QPEncoderStreamTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/ReferencesTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/RestrictEncodingTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/SocketFetcherTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/UUDecoderStreamTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/Utf8AddressTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/WriteTimeoutSocketTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/AbstractLogging.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/CollectorFormatterTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/CompactFormatterTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/DurationFilterTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/LogManagerPropertiesTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/MailHandlerTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/SeverityComparatorTest.java",
+      "path": "providers/angus-mail/src/test/resources",
+      "path": "providers/angus-mail/src/test/resources/com",
+      "path": "providers/angus-mail/src/test/resources/com/sun",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/imap",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/imap/protocol",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/imap/protocol/uiddata",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/test",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/test/keystore.jks",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/util",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/util/paramdata",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/util/paramdatanostrict",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/util/uudata",
+      "path": "providers/gimap",
+      "path": "providers/gimap/exclude.xml",
+      "path": "providers/gimap/pom.xml",
+      "path": "providers/gimap/src",
+      "path": "providers/gimap/src/main",
+      "path": "providers/gimap/src/main/java",
+      "path": "providers/gimap/src/main/java/com",
+      "path": "providers/gimap/src/main/java/com/sun",
+      "path": "providers/gimap/src/main/java/com/sun/mail",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/GmailFolder.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/GmailMessage.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/GmailMsgIdTerm.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/GmailProvider.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/GmailRawSearchTerm.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/GmailSSLProvider.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/GmailSSLStore.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/GmailStore.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/GmailThrIdTerm.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/LongTerm.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/package-info.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/protocol",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/protocol/GmailProtocol.java",
+      "path": "providers/gimap/src/main/java/com/sun/mail/gimap/protocol/GmailSearchSequence.java",
+      "path": "providers/gimap/src/main/java/module-info.java",
+      "path": "providers/gimap/src/main/resources",
+      "path": "providers/gimap/src/main/resources/META-INF",
+      "path": "providers/gimap/src/main/resources/META-INF/javamail.providers",
+      "path": "providers/gimap/src/main/resources/META-INF/services",
+      "path": "providers/gimap/src/main/resources/META-INF/services/jakarta.mail.Provider",
+      "path": "providers/imap",
+      "path": "providers/imap/pom.xml",
+      "path": "providers/imap/src",
+      "path": "providers/imap/src/main",
+      "path": "providers/imap/src/main/java",
+      "path": "providers/imap/src/main/java/com",
+      "path": "providers/imap/src/main/java/com/sun",
+      "path": "providers/imap/src/main/java/com/sun/mail",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/Argument.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/BadCommandException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ByteArray.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/CommandFailedException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ConnectionException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/Literal.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/LiteralException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ParsingException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/Protocol.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ProtocolException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/Response.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ResponseHandler.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/ResponseInputStream.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/iap/package-info.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/ACL.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/AppendUID.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/CopyUID.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/DefaultFolder.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPBodyPart.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPFolder.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPInputStream.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPMessage.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPMultipartDataSource.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPNestedMessage.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPProvider.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPSSLProvider.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPSSLStore.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IMAPStore.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/IdleManager.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/MessageCache.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/MessageVanishedEvent.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/ModifiedSinceTerm.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/OlderTerm.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/ReferralException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/ResyncData.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/Rights.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/SortTerm.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/Utility.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/YoungerTerm.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/package-info.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/BASE64MailboxDecoder.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/BASE64MailboxEncoder.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/BODY.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/BODYSTRUCTURE.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/ENVELOPE.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/FLAGS.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/FetchItem.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/FetchResponse.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/ID.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/IMAPProtocol.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/IMAPReferralException.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/IMAPResponse.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/IMAPSaslAuthenticator.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/INTERNALDATE.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/Item.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/ListInfo.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/MODSEQ.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/MailboxInfo.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/MessageSet.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/Namespaces.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/RFC822DATA.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/RFC822SIZE.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/SaslAuthenticator.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/SearchSequence.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/Status.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/UID.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/UIDSet.java",
+      "path": "providers/imap/src/main/java/com/sun/mail/imap/protocol/package-info.java",
+      "path": "providers/imap/src/main/java/module-info.java",
+      "path": "providers/imap/src/main/resources",
+      "path": "providers/imap/src/main/resources/META-INF",
+      "path": "providers/imap/src/main/resources/META-INF/javamail.providers",
+      "path": "providers/imap/src/main/resources/META-INF/services",
+      "path": "providers/imap/src/main/resources/META-INF/services/jakarta.mail.Provider",
+      "path": "providers/mbox/src/test",
+      "path": "providers/mbox/src/test/java",
+      "path": "providers/mbox/src/test/java/com",
+      "path": "providers/mbox/src/test/java/com/sun",
+      "path": "providers/mbox/src/test/java/com/sun/mail",
+      "path": "providers/mbox/src/test/java/com/sun/mail/mbox",
+      "path": "providers/mbox/src/test/java/com/sun/mail/mbox/MboxFolderExpungeTest.java",
+      "path": "providers/mbox/src/test/java/com/sun/mail/mbox/MboxFolderTest.java",
+      "path": "sigtest",
+
+ succeeded in 271ms:
+    "name": ".github",
+    "path": ".github",
+    "type": "dir",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "type": "file",
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "type": "file",
+    "name": "Jenkinsfile",
+    "path": "Jenkinsfile",
+    "type": "file",
+    "name": "LICENSE.md",
+    "path": "LICENSE.md",
+    "type": "file",
+    "name": "NOTICE.md",
+    "path": "NOTICE.md",
+    "type": "file",
+    "name": "README.md",
+    "path": "README.md",
+    "type": "file",
+    "name": "ant-common.xml",
+    "path": "ant-common.xml",
+    "type": "file",
+    "name": "build.properties",
+    "path": "build.properties",
+    "type": "file",
+    "name": "build.xml",
+    "path": "build.xml",
+    "type": "file",
+    "name": "copyright-exclude",
+    "path": "copyright-exclude",
+    "type": "file",
+    "name": "core",
+    "path": "core",
+    "type": "dir",
+    "name": "demos",
+    "path": "demos",
+    "type": "dir",
+    "name": "doc",
+    "path": "doc",
+    "type": "dir",
+    "name": "docker",
+    "path": "docker",
+    "type": "dir",
+    "name": "dsn",
+    "path": "dsn",
+    "type": "dir",
+    "name": "javadoc",
+    "path": "javadoc",
+    "type": "dir",
+    "name": "mail.sig",
+    "path": "mail.sig",
+    "type": "file",
+    "name": "mailhandler",
+    "path": "mailhandler",
+    "type": "dir",
+    "name": "mbox.xml",
+    "path": "mbox.xml",
+    "type": "file",
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "type": "file",
+    "name": "project.properties",
+    "path": "project.properties",
+    "type": "file",
+    "name": "project.xml",
+    "path": "project.xml",
+    "type": "file",
+    "name": "providers",
+    "path": "providers",
+    "type": "dir",
+    "name": "publish",
+    "path": "publish",
+    "type": "dir",
+    "name": "siggen",
+    "path": "siggen",
+    "type": "file",
+    "name": "sigtest",
+    "path": "sigtest",
+    "type": "file",
+    "name": "src",
+    "path": "src",
+    "type": "dir",
+    "name": "update_version",
+    "path": "update_version",
+    "type": "file",
+
+ succeeded in 540ms:
+com/sun/mail/iap/Argument.java
+com/sun/mail/iap/BadCommandException.java
+com/sun/mail/iap/ByteArray.java
+com/sun/mail/iap/CommandFailedException.java
+com/sun/mail/iap/ConnectionException.java
+com/sun/mail/iap/Literal.java
+com/sun/mail/iap/LiteralException.java
+com/sun/mail/iap/ParsingException.java
+com/sun/mail/iap/Protocol.java
+com/sun/mail/iap/ProtocolException.java
+com/sun/mail/iap/Response.java
+com/sun/mail/iap/ResponseHandler.java
+com/sun/mail/iap/ResponseInputStream.java
+com/sun/mail/iap/package-info.java
+com/sun/mail/imap/ACL.java
+com/sun/mail/imap/AppendUID.java
+com/sun/mail/imap/CopyUID.java
+com/sun/mail/imap/DefaultFolder.java
+com/sun/mail/imap/IMAPBodyPart.java
+com/sun/mail/imap/IMAPFolder.java
+com/sun/mail/imap/IMAPInputStream.java
+com/sun/mail/imap/IMAPMessage.java
+com/sun/mail/imap/IMAPMultipartDataSource.java
+com/sun/mail/imap/IMAPNestedMessage.java
+com/sun/mail/imap/IMAPProvider.java
+com/sun/mail/imap/IMAPSSLProvider.java
+com/sun/mail/imap/IMAPSSLStore.java
+com/sun/mail/imap/IMAPStore.java
+com/sun/mail/imap/IdleManager.java
+com/sun/mail/imap/MessageCache.java
+com/sun/mail/imap/MessageVanishedEvent.java
+com/sun/mail/imap/ModifiedSinceTerm.java
+com/sun/mail/imap/OlderTerm.java
+com/sun/mail/imap/ReferralException.java
+com/sun/mail/imap/ResyncData.java
+com/sun/mail/imap/Rights.java
+com/sun/mail/imap/SortTerm.java
+com/sun/mail/imap/Utility.java
+com/sun/mail/imap/YoungerTerm.java
+com/sun/mail/imap/package-info.java
+com/sun/mail/imap/protocol/BASE64MailboxDecoder.java
+com/sun/mail/imap/protocol/BASE64MailboxEncoder.java
+com/sun/mail/imap/protocol/BODY.java
+com/sun/mail/imap/protocol/BODYSTRUCTURE.java
+com/sun/mail/imap/protocol/ENVELOPE.java
+com/sun/mail/imap/protocol/FLAGS.java
+com/sun/mail/imap/protocol/FetchItem.java
+com/sun/mail/imap/protocol/FetchResponse.java
+com/sun/mail/imap/protocol/ID.java
+com/sun/mail/imap/protocol/IMAPProtocol.java
+com/sun/mail/imap/protocol/IMAPReferralException.java
+com/sun/mail/imap/protocol/IMAPResponse.java
+com/sun/mail/imap/protocol/IMAPSaslAuthenticator.java
+com/sun/mail/imap/protocol/INTERNALDATE.java
+com/sun/mail/imap/protocol/Item.java
+com/sun/mail/imap/protocol/ListInfo.java
+com/sun/mail/imap/protocol/MODSEQ.java
+com/sun/mail/imap/protocol/MailboxInfo.java
+com/sun/mail/imap/protocol/MessageSet.java
+com/sun/mail/imap/protocol/Namespaces.java
+com/sun/mail/imap/protocol/RFC822DATA.java
+com/sun/mail/imap/protocol/RFC822SIZE.java
+com/sun/mail/imap/protocol/SaslAuthenticator.java
+com/sun/mail/imap/protocol/SearchSequence.java
+com/sun/mail/imap/protocol/Status.java
+com/sun/mail/imap/protocol/UID.java
+com/sun/mail/imap/protocol/UIDSet.java
+com/sun/mail/imap/protocol/package-info.java
+module-info.java
+
+web search: 
+web search: https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/providers/angus-mail/src/test/java/com/sun/mail/imap
+codex
+I found the project tag `1.0.0`, Maven-hosted sources and Javadoc, and the IMAP-focused tests under the upstream `providers/angus-mail` test tree. I’m updating only the discovered metadata JSON and leaving language/native-image flags absent because the artifact is a JVM jar with class files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+index 933aee15372bc7fbdc880aa2defa3ed60b33456a..7d39fa2001c6d0a393964463b2a848d9b8c2f1c5
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:imap:1.0.0"
++  "coordinates" : "org.eclipse.angus:imap:1.0.0",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/imap",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-javadoc.jar",
++  "description" : "Angus Mail IMAP is the IMAP protocol provider for Eclipse Angus Mail, the Jakarta Mail implementation. It supplies JVM classes for connecting to IMAP and IMAPS mail stores, managing folders and messages, and handling IMAP protocol features used through the Jakarta Mail API."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+index 933aee15372bc7fbdc880aa2defa3ed60b33456a..7d39fa2001c6d0a393964463b2a848d9b8c2f1c5
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:imap:1.0.0"
++  "coordinates" : "org.eclipse.angus:imap:1.0.0",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/imap",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-javadoc.jar",
++  "description" : "Angus Mail IMAP is the IMAP protocol provider for Eclipse Angus Mail, the Jakarta Mail implementation. It supplies JVM classes for connecting to IMAP and IMAPS mail stores, managing folders and messages, and handling IMAP protocol features used through the Jakarta Mail API."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 0ms:
+{
+  "coordinates": "org.eclipse.angus:imap:1.0.0",
+  "repository-url": "https://github.com/eclipse-ee4j/angus-mail",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-sources.jar",
+  "test-code-url": "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/imap",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-javadoc.jar",
+  "description": "Angus Mail IMAP is the IMAP protocol provider for Eclipse Angus Mail, the Jakarta Mail implementation. It supplies JVM classes for connecting to IMAP and IMAPS mail stores, managing folders and messages, and handling IMAP protocol features used through the Jakarta Mail API."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/1.0.0/imap-1.0.0-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/1.0.0/imap-1.0.0-javadoc.jar && curl -I -fsSL https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/providers/angus-mail/src/test/java/com/sun/mail/imap' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+index 933aee15372bc7fbdc880aa2defa3ed60b33456a..7d39fa2001c6d0a393964463b2a848d9b8c2f1c5
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:imap:1.0.0"
++  "coordinates" : "org.eclipse.angus:imap:1.0.0",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/imap",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-javadoc.jar",
++  "description" : "Angus Mail IMAP is the IMAP protocol provider for Eclipse Angus Mail, the Jakarta Mail implementation. It supplies JVM classes for connecting to IMAP and IMAPS mail stores, managing folders and messages, and handling IMAP protocol features used through the Jakarta Mail API."
+ }
+
+ succeeded in 1306ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 14:54:04 GMT
+content-type: application/java-archive
+content-length: 963774
+cf-ray: 9fec2caaeb420e62-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "7bd13546a0c5decb9e02f7e66c7a6f19"
+last-modified: Tue, 18 Jan 2022 10:46:12 GMT
+x-checksum-md5: 7bd13546a0c5decb9e02f7e66c7a6f19
+x-checksum-sha1: 461af99985c1fc048f10456c87ca4358364d284f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 20 May 2026 14:54:05 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e93222fc05558fcfba091469cbcb49b0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=2fD3S2jGT%2BSOcV0Ju7CITrcxG3l8xX7Mniy1Attl6aykQzxcK4aCsanmoFgw%2FaXZdGGaQa1y%2Fwhl%2FYGe6fDyX9%2BKQHQlcQ5zaNno%2BSDpi5LnqEJsuvKxvgxcLpSaOJ1cGusUSUKNYVuk%2Fe7TJTgGymPlN0rJcnzITKnK2q89YspvQtKjL8GYQQTd45LNioJRGiQrUdqGZ4KW6fgyVvZsYFJBfthxeNQ5tTKQEMeN3CTwCE0Z4mnaKXKrwy21mxbW9wXVaE%2Fn%2FDRVcHc5ZuRFBw%3D%3D--YJ2Q6wkVKbyc6gkw--ghTUIgC5AE%2FMot9vmlyq9g%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1367215865.1779288844; expires=Thu, 20 May 2027 14:54:04 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 20 May 2027 14:54:04 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6221:1B5657:950F9A5:7685E99:6A0DCB0C
+
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+index 933aee15372bc7fbdc880aa2defa3ed60b33456a..7d39fa2001c6d0a393964463b2a848d9b8c2f1c5
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:imap:1.0.0"
++  "coordinates" : "org.eclipse.angus:imap:1.0.0",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/imap",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-javadoc.jar",
++  "description" : "Angus Mail IMAP is the IMAP protocol provider for Eclipse Angus Mail, the Jakarta Mail implementation. It supplies JVM classes for connecting to IMAP and IMAPS mail stores, managing folders and messages, and handling IMAP protocol features used through the Jakarta Mail API."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ exited 1 in 0ms:
+error: pathspec 'build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json' did not match any file(s) known to git
+Did you forget to 'git add'?
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+index 933aee15372bc7fbdc880aa2defa3ed60b33456a..7d39fa2001c6d0a393964463b2a848d9b8c2f1c5
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:imap:1.0.0"
++  "coordinates" : "org.eclipse.angus:imap:1.0.0",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/imap",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-javadoc.jar",
++  "description" : "Angus Mail IMAP is the IMAP protocol provider for Eclipse Angus Mail, the Jakarta Mail implementation. It supplies JVM classes for connecting to IMAP and IMAPS mail stores, managing folders and messages, and handling IMAP protocol features used through the Jakarta Mail API."
+ }
+
+web search: 
+web search: site:mvnrepository.com/artifact/org.eclipse.angus/imap/1.0.0
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org eclipse angus imap 1.0.0 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/angus/imap/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "awk -F'\"description\" : ' '/\"description\"/ {print "'$2}'"' build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 0ms:
+"Angus Mail IMAP is the IMAP protocol provider for Eclipse Angus Mail, the Jakarta Mail implementation. It supplies JVM classes for connecting to IMAP and IMAPS mail stores, managing folders and messages, and handling IMAP protocol features used through the Jakarta Mail API."
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name 'org.eclipse.angus-imap-1.0.0.json' -print" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+index 933aee15372bc7fbdc880aa2defa3ed60b33456a..7d39fa2001c6d0a393964463b2a848d9b8c2f1c5
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:imap:1.0.0"
++  "coordinates" : "org.eclipse.angus:imap:1.0.0",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/imap",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-javadoc.jar",
++  "description" : "Angus Mail IMAP is the IMAP protocol provider for Eclipse Angus Mail, the Jakarta Mail implementation. It supplies JVM classes for connecting to IMAP and IMAPS mail stores, managing folders and messages, and handling IMAP protocol features used through the Jakarta Mail API."
+ }
+
+web search: 
+web search: org.eclipse.angus imap 1.0.0 Maven Central
+web search: 
+web search: https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/providers/angus-mail/src/test/java/com/sun/mail/imap
+web search: 
+web search: "imap-1.0.0-sources.jar" "imap-1.0.0-javadoc.jar" "repo1.maven.org/maven2/org/eclipse/angus/imap/1.0.0"
+codex
+Updated [org.eclipse.angus-imap-1.0.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json).
+
+Set Maven-hosted sources/Javadoc, the upstream `1.0.0` IMAP test directory, and the GitHub repository root. Maven Central lists `org/eclipse/angus/imap/1.0.0`, and the GitHub tag path contains the IMAP test suite files. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/angus/imap/?utm_source=openai))
+
+Validated JSON with `jq` and confirmed the substituted source, documentation, and test URLs return HTTP 200. No `language` or `not-for-native-image` fields were added because this is a JVM `jar` artifact.
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+index 933aee15372bc7fbdc880aa2defa3ed60b33456a..7d39fa2001c6d0a393964463b2a848d9b8c2f1c5
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:imap:1.0.0"
++  "coordinates" : "org.eclipse.angus:imap:1.0.0",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/imap",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/angus/imap/$version$/imap-$version$-javadoc.jar",
++  "description" : "Angus Mail IMAP is the IMAP protocol provider for Eclipse Angus Mail, the Jakarta Mail implementation. It supplies JVM classes for connecting to IMAP and IMAPS mail stores, managing folders and messages, and handling IMAP protocol features used through the Jakarta Mail API."
+ }
+
+tokens used
+88,561
+Updated [org.eclipse.angus-imap-1.0.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8/build/discovered-artifact-metadata/org.eclipse.angus-imap-1.0.0.json).
+
+Set Maven-hosted sources/Javadoc, the upstream `1.0.0` IMAP test directory, and the GitHub repository root. Maven Central lists `org/eclipse/angus/imap/1.0.0`, and the GitHub tag path contains the IMAP test suite files. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/angus/imap/?utm_source=openai))
+
+Validated JSON with `jq` and confirmed the substituted source, documentation, and test URLs return HTTP 200. No `language` or `not-for-native-image` fields were added because this is a JVM `jar` artifact.
+Ran agent for org.eclipse.angus:imap:1.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8/build/agent-artifact-discovery-logs/org.eclipse.angus-imap-1.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1526-6ddbf8b8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 16s
+9 actionable tasks: 9 executed
