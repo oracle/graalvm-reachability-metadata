@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.xnio.BufferAllocator;
+import org.xnio.ByteBufferPool;
 import org.xnio.ByteString;
 import org.xnio.FailedIoFuture;
 import org.xnio.FileAccess;
@@ -83,6 +84,43 @@ public class Xnio_apiTest {
         ByteBuffer directBuffer = BufferAllocator.DIRECT_BYTE_BUFFER_ALLOCATOR.allocate(4);
         assertThat(directBuffer.isDirect()).isTrue();
         assertThat(directBuffer.capacity()).isEqualTo(4);
+    }
+
+    @Test
+    void byteBufferPoolsAllocateBulkBuffersAndUseScopedCaches() {
+        ByteBufferPool pool = ByteBufferPool.Set.HEAP.getSmall();
+        assertThat(pool.isDirect()).isFalse();
+        assertThat(pool.getSize()).isEqualTo(ByteBufferPool.SMALL_SIZE);
+
+        ByteBuffer[] buffers = new ByteBuffer[3];
+        pool.allocate(buffers, 1, 2);
+        assertThat(buffers[0]).isNull();
+        assertThat(buffers[1].capacity()).isEqualTo(ByteBufferPool.SMALL_SIZE);
+        assertThat(buffers[2].capacity()).isEqualTo(ByteBufferPool.SMALL_SIZE);
+        assertThat(buffers[1].isDirect()).isFalse();
+
+        buffers[1].put(0, (byte) 0x7f);
+        ByteBufferPool.zeroAndFree(buffers[1]);
+        assertThat(buffers[1].position()).isZero();
+        assertThat(buffers[1].limit()).isEqualTo(ByteBufferPool.SMALL_SIZE);
+        assertThat(buffers[1].get(0)).isZero();
+
+        ByteBufferPool.free(buffers, 2, 1);
+        assertThat(buffers[2]).isNull();
+
+        AtomicReference<ByteBuffer> firstAllocation = new AtomicReference<>();
+        AtomicReference<ByteBuffer> cachedAllocation = new AtomicReference<>();
+        pool.runWithCache(1, () -> {
+            ByteBuffer buffer = pool.allocate();
+            firstAllocation.set(buffer);
+            ByteBufferPool.free(buffer);
+            cachedAllocation.set(pool.allocate());
+        });
+
+        assertThat(cachedAllocation.get()).isSameAs(firstAllocation.get());
+        ByteBufferPool.free(cachedAllocation.get());
+        pool.flushCaches();
+        ByteBufferPool.flushAllCaches();
     }
 
     @Test
