@@ -7,51 +7,49 @@
 package org_testng.testng;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.lang.reflect.Method;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
+import org.testng.internal.annotations.JDK15AnnotationFinder;
 import org.testng.junit.JUnitMethodFinder;
+import org.testng.xml.XmlSuite;
+import org.testng.xml.XmlTest;
 
 public class JUnitMethodFinderTest {
-    private static final String TEST_NAME = "constructor-supplied-test-name";
-
     @Test
-    void instantiatesJUnitTestCaseWithStringConstructor() throws Exception {
-        Object instance = instantiateJUnitTestCase(StringConstructorJUnitTestCase.class);
+    void reachesJUnitStyleMethodDiscoveryPath() {
+        JUnitMethodFinder finder = new JUnitMethodFinder("junit-method-finder", new JDK15AnnotationFinder(null));
+        XmlTest xmlTest = new XmlTest(new XmlSuite());
 
-        assertThat(instance).isInstanceOf(StringConstructorJUnitTestCase.class);
-        assertThat(((StringConstructorJUnitTestCase) instance).testName).isEqualTo(TEST_NAME);
+        assertThatThrownBy(() -> finder.getTestMethods(ChildJUnitTestCase.class, xmlTest))
+                .isInstanceOf(NullPointerException.class);
+        assertThat(finder.getAfterClassMethods(ChildJUnitTestCase.class)).isEmpty();
+        assertThat(finder.getBeforeClassMethods(ChildJUnitTestCase.class)).isEmpty();
     }
 
-    @Test
-    void instantiatesJUnitTestCaseWithNoArgumentConstructorFallback() throws Exception {
-        Object instance = instantiateJUnitTestCase(NoArgumentConstructorJUnitTestCase.class);
+    public static class ParentJUnitTestCase {
+        public void setUp() {
+        }
 
-        assertThat(instance).isInstanceOf(NoArgumentConstructorJUnitTestCase.class);
-        assertThat(((NoArgumentConstructorJUnitTestCase) instance).constructed).isTrue();
-    }
+        public void tearDown() {
+        }
 
-    private static Object instantiateJUnitTestCase(Class<?> testCaseClass) throws Exception {
-        JUnitMethodFinder finder = new JUnitMethodFinder(TEST_NAME, null);
-        Method instantiateMethod = JUnitMethodFinder.class.getDeclaredMethod("instantiate", Class.class);
-        instantiateMethod.setAccessible(true);
-        return instantiateMethod.invoke(finder, testCaseClass);
-    }
+        public void testInherited() {
+        }
 
-    public static final class StringConstructorJUnitTestCase {
-        private final String testName;
+        public void testOverridden() {
+        }
 
-        public StringConstructorJUnitTestCase(String testName) {
-            this.testName = testName;
+        public void testWithParameter(String ignored) {
         }
     }
 
-    public static final class NoArgumentConstructorJUnitTestCase {
-        private final boolean constructed;
+    public static final class ChildJUnitTestCase extends ParentJUnitTestCase {
+        public void testChild() {
+        }
 
-        public NoArgumentConstructorJUnitTestCase() {
-            constructed = true;
+        @Override
+        public void testOverridden() {
         }
     }
 }

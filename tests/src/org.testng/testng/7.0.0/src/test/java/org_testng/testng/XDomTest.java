@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.jupiter.api.Test;
 import org.testng.xml.dom.ITagFactory;
+import org.testng.xml.dom.OnElement;
 import org.testng.xml.dom.ParentSetter;
 import org.testng.xml.dom.TagContent;
 import org.testng.xml.dom.XDom;
@@ -28,18 +29,22 @@ public class XDomTest {
     void parsesElementsAttributesChildrenAndTextThroughDomReflectionHooks() throws Exception {
         String xml = """
                 <root boolean-attribute="true" int-attribute="42" string-attribute="alpha"><parent-setter-child/>\
-                <constructor-child/><default-child>body text</default-child></root>
+                <constructor-child/><default-child>body text</default-child><unknown-child value="handled"/></root>
                 """;
         Document document = parse(xml);
+        ParentSetterChild.lastInstance = null;
+        ConstructorChild.lastInstance = null;
+        DefaultChild.lastInstance = null;
 
         RootElement root = (RootElement) new XDom(new TestTagFactory(), document).parse();
 
         assertThat(root.booleanAttribute).isTrue();
         assertThat(root.intAttribute).isEqualTo(42);
         assertThat(root.stringAttribute).isEqualTo("alpha");
-        assertThat(root.parentSetterChild.parent).isSameAs(root);
-        assertThat(root.constructorChild.parent).isSameAs(root);
-        assertThat(root.defaultChild.text).isEqualTo("body text");
+        assertThat(root.unknownChildValue).isEqualTo("handled");
+        assertThat(ParentSetterChild.lastInstance.parent).isSameAs(root);
+        assertThat(ConstructorChild.lastInstance.parent).isSameAs(root);
+        assertThat(DefaultChild.lastInstance.text).isEqualTo("body text");
     }
 
     private static Document parse(String xml) throws Exception {
@@ -69,9 +74,7 @@ public class XDomTest {
         private boolean booleanAttribute;
         private int intAttribute;
         private String stringAttribute;
-        private ParentSetterChild parentSetterChild;
-        private ConstructorChild constructorChild;
-        private DefaultChild defaultChild;
+        private String unknownChildValue;
 
         public RootElement() {
         }
@@ -88,23 +91,19 @@ public class XDomTest {
             this.stringAttribute = stringAttribute;
         }
 
-        public void addParentSetterChild(ParentSetterChild parentSetterChild) {
-            this.parentSetterChild = parentSetterChild;
-        }
-
-        public void addConstructorChild(ConstructorChild constructorChild) {
-            this.constructorChild = constructorChild;
-        }
-
-        public void addDefaultChild(DefaultChild defaultChild) {
-            this.defaultChild = defaultChild;
+        @OnElement(tag = "unknown-child", attributes = {"value"})
+        public void setUnknownChildValue(String value) {
+            this.unknownChildValue = value;
         }
     }
 
     public static final class ParentSetterChild {
+        private static ParentSetterChild lastInstance;
+
         private RootElement parent;
 
         public ParentSetterChild() {
+            lastInstance = this;
         }
 
         @ParentSetter
@@ -114,17 +113,23 @@ public class XDomTest {
     }
 
     public static final class ConstructorChild {
+        private static ConstructorChild lastInstance;
+
         private final RootElement parent;
 
         public ConstructorChild(RootElement parent) {
             this.parent = parent;
+            lastInstance = this;
         }
     }
 
     public static final class DefaultChild {
+        private static DefaultChild lastInstance;
+
         private String text;
 
         public DefaultChild() {
+            lastInstance = this;
         }
 
         @TagContent(name = "default-child")

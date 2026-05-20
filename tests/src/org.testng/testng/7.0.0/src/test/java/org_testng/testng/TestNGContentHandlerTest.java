@@ -48,7 +48,7 @@ public class TestNGContentHandlerTest {
             try {
                 Thread.currentThread().setContextClassLoader(new DtdOnlyClassLoader(originalLoader));
 
-                InputSource source = handler.resolveEntity(null, Parser.TESTNG_DTD_URL);
+                InputSource source = handler.resolveEntity(null, Parser.HTTPS_TESTNG_DTD_URL);
 
                 assertThat(source).isNotNull();
                 assertThat(source.getByteStream()).isNotNull();

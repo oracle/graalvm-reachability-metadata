@@ -22,7 +22,7 @@ public class JUnit4TestMethodTest {
         JUnit4TestMethod testMethod = new JUnit4TestMethod(testClass, description);
 
         assertThat(testMethod.getMethodName()).isEqualTo("sampleTest[0]");
-        assertThat(testMethod.getMethod().getName()).isEqualTo("sampleTest");
+        assertThat(testMethod.getConstructorOrMethod().getMethod().getName()).isEqualTo("sampleTest");
         assertThat(testMethod.isTest()).isTrue();
         assertThat(testClass.getTestMethods()).containsExactly(testMethod);
     }
