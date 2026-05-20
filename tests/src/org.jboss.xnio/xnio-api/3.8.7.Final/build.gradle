@@ -12,6 +12,9 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.jboss.xnio:xnio-api:$libraryVersion"
+    testImplementation('org.wildfly.common:wildfly-common:1.7.0.Final') {
+        because 'wildfly-common 1.5.4.Final contains substitutions for removed Graal compiler classes'
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
