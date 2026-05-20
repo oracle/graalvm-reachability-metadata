@@ -42,7 +42,7 @@ public class AbstractJavadocMojoTest {
         Path outputDirectory = temporaryDirectory.resolve("javadoc-output");
         Files.createDirectories(outputDirectory);
 
-        invoke(mojo, "copyDefaultStylesheet", new Class<?>[]{ File.class }, outputDirectory.toFile());
+        invoke(mojo, "copyDefaultStylesheet", new Class<?>[]{File.class }, outputDirectory.toFile());
 
         assertThat(outputDirectory.resolve("stylesheet.css"))
             .exists()
@@ -62,7 +62,7 @@ public class AbstractJavadocMojoTest {
         URL resource = invoke(
             mojo,
             "getResource",
-            new Class<?>[]{ List.class, String.class },
+            new Class<?>[]{List.class, String.class },
             Collections.singletonList(resourceRoot.toString()),
             "custom/help.html");
 
@@ -101,7 +101,7 @@ public class AbstractJavadocMojoTest {
         Integer patchedFiles = invoke(
             mojo,
             "fixFrameInjectionBug",
-            new Class<?>[]{ File.class, String.class },
+            new Class<?>[]{File.class, String.class },
             outputDirectory.toFile(),
             StandardCharsets.UTF_8.name());
 
