@@ -14,6 +14,8 @@ import org.jetbrains.kotlin.cli.common.config.KotlinSourceRoot
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSourceLocation
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
+import org.jetbrains.kotlin.cli.common.modules.ModuleChunk
+import org.jetbrains.kotlin.cli.common.modules.ModuleXmlParser
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
 import org.jetbrains.kotlin.config.ApiVersion
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
@@ -23,6 +25,8 @@ import org.jetbrains.kotlin.config.JvmTarget
 import org.jetbrains.kotlin.config.LanguageVersion
 import org.jetbrains.kotlin.config.LanguageVersionSettingsImpl
 import org.jetbrains.kotlin.config.Services
+import org.jetbrains.kotlin.modules.JavaRootPath
+import org.jetbrains.kotlin.modules.Module
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.ByteArrayOutputStream
@@ -141,6 +145,55 @@ public class Kotlin_compiler_embeddableTest {
         assertThat(collector.messages).noneMatch { it.severity.isError }
     }
 
+    @Test
+    fun parsesModuleBuildFileWithJvmRoots(@TempDir tempDir: Path) {
+        val sourceFile: Path = Files.writeString(
+            tempDir.resolve("Sample.kt"),
+            "package sample\nfun answer(): Int = 42\n",
+        )
+        val commonSourceFile: Path = Files.writeString(
+            tempDir.resolve("Common.kt"),
+            "expect fun platformName(): String\n",
+        )
+        val javaSourceRoot: Path = Files.createDirectories(tempDir.resolve("java-sources"))
+        val classpathRoot: Path = Files.createDirectories(tempDir.resolve("classpath"))
+        val friendRoot: Path = Files.createDirectories(tempDir.resolve("friend-classes"))
+        val outputDirectory: Path = Files.createDirectories(tempDir.resolve("module-classes"))
+        val modularJdkRoot: Path = Files.createDirectories(tempDir.resolve("modular-jdk"))
+        val moduleFile: Path = tempDir.resolve("module.xml")
+        Files.writeString(
+            moduleFile,
+            """
+            <modules>
+                <module name="sample-module" type="java-production" outputDir="${xmlAttribute(outputDirectory)}">
+                    <sources path="${xmlAttribute(sourceFile)}" />
+                    <commonSources path="${xmlAttribute(commonSourceFile)}" />
+                    <classpath path="${xmlAttribute(classpathRoot)}" />
+                    <javaSourceRoots path="${xmlAttribute(javaSourceRoot)}" packagePrefix="sample.java" />
+                    <friendDir path="${xmlAttribute(friendRoot)}" />
+                    <modularJdkRoot path="${xmlAttribute(modularJdkRoot)}" />
+                </module>
+            </modules>
+            """.trimIndent(),
+        )
+        val collector = RecordingMessageCollector()
+
+        val moduleChunk: ModuleChunk = ModuleXmlParser.parseModuleScript(moduleFile.toString(), collector)
+
+        assertThat(collector.hasErrors()).isFalse()
+        assertThat(moduleChunk.modules).hasSize(1)
+        val module: Module = moduleChunk.modules.single()
+        assertThat(module.getModuleName()).isEqualTo("sample-module")
+        assertThat(module.getModuleType()).isEqualTo(ModuleXmlParser.TYPE_PRODUCTION)
+        assertThat(module.getOutputDirectory()).isEqualTo(outputDirectory.toString())
+        assertThat(module.getSourceFiles()).containsExactly(sourceFile.toString())
+        assertThat(module.getCommonSourceFiles()).containsExactly(commonSourceFile.toString())
+        assertThat(module.getClasspathRoots()).containsExactly(classpathRoot.toString())
+        assertThat(module.getJavaSourceRoots())
+            .containsExactly(JavaRootPath(javaSourceRoot.toString(), "sample.java"))
+        assertThat(module.getFriendPaths()).containsExactly(friendRoot.toString())
+    }
+
     private fun invokeCompiler(vararg arguments: String): CompilerInvocation {
         val outputStream = ByteArrayOutputStream()
         val exitCode: ExitCode = PrintStream(outputStream, true, StandardCharsets.UTF_8).use { printStream ->
@@ -148,6 +201,12 @@ public class Kotlin_compiler_embeddableTest {
         }
         return CompilerInvocation(exitCode, outputStream.toString(StandardCharsets.UTF_8))
     }
+
+    private fun xmlAttribute(value: Any): String = value.toString()
+        .replace("&", "&amp;")
+        .replace("\"", "&quot;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
 
     private data class CompilerInvocation(
         val exitCode: ExitCode,
