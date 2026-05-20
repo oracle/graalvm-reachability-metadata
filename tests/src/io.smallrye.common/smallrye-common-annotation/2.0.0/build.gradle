@@ -12,6 +12,13 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "io.smallrye.common:smallrye-common-annotation:$libraryVersion"
+    testImplementation("jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0") {
+        exclude group: "org.testng", module: "testng"
+        exclude group: "jakarta.el", module: "jakarta.el-api"
+        exclude group: "jakarta.interceptor", module: "jakarta.interceptor-api"
+        exclude group: "jakarta.transaction", module: "jakarta.transaction-api"
+        exclude group: "jakarta.ejb", module: "jakarta.ejb-api"
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
