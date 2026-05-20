@@ -8,6 +8,7 @@ package org_slf4j.slf4j_reload4j;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.log4j.Appender;
@@ -145,6 +146,25 @@ public class Slf4j_reload4jTest {
         }
     }
 
+    @Test
+    void rootLoggerNameRoutesSlf4jCallsToReload4jRootLogger() {
+        try (RootLoggerContext context = RootLoggerContext.create(Level.INFO)) {
+            Logger rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+
+            assertThat(rootLogger.isDebugEnabled()).isFalse();
+            assertThat(rootLogger.isInfoEnabled()).isTrue();
+
+            rootLogger.debug("hidden root debug");
+            rootLogger.info("root event {}", 1);
+
+            assertThat(context.events()).singleElement().satisfies(event -> {
+                assertThat(event.getLevel()).isEqualTo(Level.INFO);
+                assertThat(event.getLoggerName()).isEqualTo(context.name());
+                assertThat(event.getRenderedMessage()).isEqualTo("root event 1");
+            });
+        }
+    }
+
     private static String uniqueLoggerName(String suffix) {
         return Slf4j_reload4jTest.class.getName() + "." + suffix + "." + System.nanoTime();
     }
@@ -159,6 +179,51 @@ public class Slf4j_reload4jTest {
                     "location aware message",
                     null,
                     throwable);
+        }
+    }
+
+    private static final class RootLoggerContext implements AutoCloseable {
+
+        private final org.apache.log4j.Logger rootLogger;
+        private final Level previousLevel;
+        private final List<Appender> previousAppenders;
+        private final RecordingAppender recordingAppender;
+
+        private RootLoggerContext(Level level) {
+            this.rootLogger = LogManager.getRootLogger();
+            this.previousLevel = this.rootLogger.getLevel();
+            this.previousAppenders = new ArrayList<>();
+            Enumeration<?> appenders = this.rootLogger.getAllAppenders();
+            while (appenders.hasMoreElements()) {
+                this.previousAppenders.add((Appender) appenders.nextElement());
+            }
+            this.recordingAppender = new RecordingAppender();
+
+            this.rootLogger.removeAllAppenders();
+            this.rootLogger.setLevel(level);
+            this.rootLogger.addAppender(this.recordingAppender);
+        }
+
+        private static RootLoggerContext create(Level level) {
+            return new RootLoggerContext(level);
+        }
+
+        private String name() {
+            return this.rootLogger.getName();
+        }
+
+        private List<LoggingEvent> events() {
+            return this.recordingAppender.events();
+        }
+
+        @Override
+        public void close() {
+            this.rootLogger.removeAllAppenders();
+            this.recordingAppender.close();
+            this.rootLogger.setLevel(this.previousLevel);
+            for (Appender appender : this.previousAppenders) {
+                this.rootLogger.addAppender(appender);
+            }
         }
     }
 
