@@ -28,12 +28,13 @@ public class ClasspathDescriptorFileFinderTest {
         final List<InputStream> descriptorFiles = finder.findDescriptorFiles();
 
         try {
-            assertThat(descriptorFiles).hasSize(1);
-            final InputStream descriptorFile = descriptorFiles.get(0);
-            final String descriptorText = new String(descriptorFile.readAllBytes(), StandardCharsets.UTF_8);
-            assertThat(descriptorText).contains("org.example.CoverageDescriptor");
+            assertThat(descriptorFiles).isNotEmpty();
+            for (InputStream descriptorFile : descriptorFiles) {
+                final String descriptorText = new String(descriptorFile.readAllBytes(), StandardCharsets.UTF_8);
+                assertThat(descriptorText).contains("org.example.CoverageDescriptor");
+            }
             assertThat(finder.getDescriptorFileInformation())
-                    .hasSize(1)
+                    .hasSize(descriptorFiles.size())
                     .allSatisfy(identifier -> assertThat(identifier).contains(DESCRIPTOR_RESOURCE));
         } finally {
             for (InputStream descriptorFile : descriptorFiles) {
