@@ -26,6 +26,7 @@ public class EnvironmentConfigurationTest {
             assertThat(SystemUtils.isJavaVersionAtLeast(JAVA_1_5)).isTrue();
 
             EnvironmentConfiguration configuration = new EnvironmentConfiguration();
+            configuration.setDelimiterParsingDisabled(true);
 
             assertThat(configuration.isEmpty()).isEqualTo(System.getenv().isEmpty());
             assertThat(configuration.getKeys().hasNext()).isEqualTo(!System.getenv().isEmpty());
@@ -45,10 +46,10 @@ public class EnvironmentConfigurationTest {
             EnvironmentConfiguration configuration = new EnvironmentConfiguration();
 
             assertThatThrownBy(configuration::clear).isInstanceOf(UnsupportedOperationException.class)
-                    .hasMessage("Configuration is read-only!");
+                    .hasMessage("EnvironmentConfiguration is read-only!");
             assertThatThrownBy(() -> configuration.clearProperty("PATH"))
                     .isInstanceOf(UnsupportedOperationException.class)
-                    .hasMessage("Configuration is read-only!");
+                    .hasMessage("EnvironmentConfiguration is read-only!");
         } finally {
             restoreJavaVersionString(originalJavaVersion);
         }
