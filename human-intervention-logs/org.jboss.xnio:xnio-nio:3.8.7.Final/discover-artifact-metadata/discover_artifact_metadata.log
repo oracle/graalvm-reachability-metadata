@@ -1,0 +1,903 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e4578-1eec-77a0-8aa0-f74e6419e9b3
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.xnio:xnio-nio:3.8.7.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.8.7.Final" when "$version$" is replaced with "3.8.7.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+- Set "coordinates" to "org.jboss.xnio:xnio-nio:3.8.7.Final".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.8.7.Final".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s Maven metadata and upstream repository/tag layout, then patch the JSON in place with version-tokenized URLs.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+{
+  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.jboss\\.xnio|xnio-nio' metadata build/discovered-artifact-metadata || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json:2:  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final"
+
+web search: 
+web search: Maven Central org.jboss.xnio xnio-nio 3.8.7.Final pom scm url
+codex
+The artifact exists as a normal Maven `jar` and Maven Central lists both source and javadoc artifacts, so it should remain a Native Image metadata target unless the downloaded contents contradict that. I’m checking the POM and tag structure now to choose stable URLs.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata metadata | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 0ms:
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:7:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:22:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:37:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:8:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-sources.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:23:    "test-code-url" : "https://github.com/javaparser/javaparser/tree/javaparser-parent-$version$/javaparser-core-testing/src/test",
+metadata/com.github.javaparser/javaparser-core/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/$version$/okio-jvm-$version$-sources.jar",
+metadata/com.squareup.okio/okio-jvm/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/parent-$version$/okio/src/jvmTest",
+metadata/com.squareup.okio/okio-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/$version$/okio-jvm-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/oro/oro/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-$version$/docs/index.html",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-sources.jar",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-$version$/okio/src/test",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:7:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/tools.jackson.datatype/jackson-datatype-joda/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/tools/jackson/datatype/jackson-datatype-joda/$version$/jackson-datatype-joda-$version$-sources.jar",
+metadata/tools.jackson.datatype/jackson-datatype-joda/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-datatype-joda/tree/jackson-datatype-joda-$version$/src/test",
+metadata/tools.jackson.datatype/jackson-datatype-joda/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/tools/jackson/datatype/jackson-datatype-joda/$version$/jackson-datatype-joda-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-tests.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-tests.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 0ms:
+
+<!--
+  ~ JBoss, Home of Professional Open Source
+  ~
+  ~ Copyright 2014 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>XNIO NIO Implementation</name>
+    <description>The NIO implementation of the XNIO project</description>
+    <artifactId>xnio-nio</artifactId>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.jboss.xnio</groupId>
+        <artifactId>xnio-all</artifactId>
+        <version>3.8.7.Final</version>
+    </parent>
+    
+    <properties>
+        <test.level>INFO</test.level>
+        <xnio.nio.old-locking>false</xnio.nio.old-locking>
+        <xnio.nio.selector.main/>
+        <xnio.nio.selector.temp/>
+        <xnio.nio.selector.provider/>
+        <xnio.nio.alt-queued-server>true</xnio.nio.alt-queued-server>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+            <!-- Not part of the API, so set as "provided" -->
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.xnio</groupId>
+            <artifactId>xnio-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.byteman</groupId>
+            <artifactId>byteman</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.byteman</groupId>
+            <artifactId>byteman-bmunit</artifactId>
+            <scope>test</scope>
+             <exclusions>
+                <exclusion>
+                    <artifactId>testng</artifactId>
+                    <groupId>org.testng</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.byteman</groupId>
+            <artifactId>byteman-install</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemProperties>
+                        <property>
+                            <name>java.util.logging.manager</name>
+                            <value>org.jboss.logmanager.LogManager</value>
+                        </property>
+                        <property>
+                            <name>test.level</name>
+                            <value>${test.level}</value>
+                        </property>
+                        <property>
+                            <name>xnio.nio.selector.main</name>
+                            <value>${xnio.nio.selector.main}</value>
+                        </property>
+                        <property>
+                            <name>xnio.nio.selector.temp</name>
+                            <value>${xnio.nio.selector.temp}</value>
+                        </property>
+                        <property>
+                            <name>xnio.nio.selector.provider</name>
+                            <value>${xnio.nio.selector.provider}</value>
+                        </property>
+                        <property>
+                            <name>xnio.nio.old-locking</name>
+                            <value>${xnio.nio.old-locking}</value>
+                        </property>
+                        <property>
+                            <name>org.xnio.ssl.new</name>
+                            <value>${org.xnio.ssl.new}</value>
+                        </property>
+                        <property>
+                            <name>xnio.nio.alt-queued-server</name>
+                            <value>${xnio.nio.alt-queued-server}</value>
+                        </property>
+                    </systemProperties>
+                    <enableAssertions>true</enableAssertions>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <reuseForks>false</reuseForks>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Main-Class>org.xnio.Version</Main-Class>
+                        <Jar-Version>${project.version}</Jar-Version>
+                        <Jar-Name>${project.artifactId}</Jar-Name>
+                        <Export-Package>
+                            !*._private,
+                            org.xnio.nio*;version=${project.version}
+                        </Export-Package>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                        <Provide-Capability>
+                            osgi.service;objectClass=org.xnio.Xnio;name=xnio
+                        </Provide-Capability>
+                        <Bundle-Activator>org.xnio.nio.OsgiActivator</Bundle-Activator>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>manifest</id>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-test-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ exited 22 in 297ms:
+HTTP/2 404 
+date: Wed, 20 May 2026 12:59:35 GMT
+content-type: text/html
+cf-ray: 9feb84f9ff9dee7a-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jboss/xnio/xnio-all/3.8.7.Final/xnio-all-3.8.7.Final.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 0ms:
+
+<!--
+  ~ JBoss, Home of Professional Open Source
+  ~
+  ~ Copyright 2014 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>39</version>
+    </parent>
+
+    <groupId>org.jboss.xnio</groupId>
+    <artifactId>xnio-all</artifactId>
+    <packaging>pom</packaging>
+    <name>XNIO Parent POM</name>
+    <version>3.8.7.Final</version>
+    <description>The aggregator POM of the XNIO project</description>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>api</module>
+        <module>nio-impl</module>
+    </modules>
+
+    <properties>
+        <byteman-version>4.0.18</byteman-version>
+        <version.org.jboss.logging.jboss-logging>3.4.3.Final</version.org.jboss.logging.jboss-logging>
+        <version.org.jboss.logging.jboss-logging-tools>2.2.1.Final</version.org.jboss.logging.jboss-logging-tools>
+        <version.org.jboss.logmanager.jboss-logmanager>2.1.18.Final</version.org.jboss.logmanager.jboss-logmanager>
+        <version.org.jboss.threads>2.3.6.Final</version.org.jboss.threads>
+        <version.org.wildfly.common>1.5.4.Final</version.org.wildfly.common>
+        <version.org.wildfly.client-config>1.0.1.Final</version.org.wildfly.client-config>
+        <version.bridger.plugin>1.6.Final</version.bridger.plugin>
+        <version.junit>4.13.2</version.junit>
+        <version.jmock>2.12.0</version.jmock>
+        <org.xnio.ssl.new>false</org.xnio.ssl.new>
+
+        <version.org.osgi.core>6.0.0</version.org.osgi.core>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.xnio</groupId>
+                <artifactId>xnio-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.xnio</groupId>
+                <artifactId>xnio-nio</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.xnio</groupId>
+                <artifactId>compat-tool</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging</artifactId>
+                <version>${version.org.jboss.logging.jboss-logging}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging-processor</artifactId>
+                <version>${version.org.jboss.logging.jboss-logging-tools}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging-annotations</artifactId>
+                <version>${version.org.jboss.logging.jboss-logging-tools}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.threads</groupId>
+                <artifactId>jboss-threads</artifactId>
+                <version>${version.org.jboss.threads}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.common</groupId>
+                <artifactId>wildfly-common</artifactId>
+                <version>${version.org.wildfly.common}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.client</groupId>
+                <artifactId>wildfly-client-config</artifactId>
+                <version>${version.org.wildfly.client-config}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.wildfly.common</groupId>
+                        <artifactId>wildfly-common</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
+                <version>${version.org.osgi.core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jmock</groupId>
+                <artifactId>jmock</artifactId>
+                <version>${version.jmock}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jmock</groupId>
+                <artifactId>jmock-junit4</artifactId>
+                <version>${version.jmock}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.logmanager</groupId>
+                <artifactId>jboss-logmanager</artifactId>
+                <version>${version.org.jboss.logmanager.jboss-logmanager}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.byteman</groupId>
+                <artifactId>byteman</artifactId>
+                <version>${byteman-version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.byteman</groupId>
+                <artifactId>byteman-bmunit</artifactId>
+                <version>${byteman-version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>testng</artifactId>
+                        <groupId>org.testng</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.byteman</groupId>
+                <artifactId>byteman-install</artifactId>
+                <version>${byteman-version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/xnio/xnio-nio/3.8.7.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/xnio/xnio-nio/3.8.7.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="xnio-nio-3.8.7.Final-javadoc.jar" title="xnio-nio-3.8.7.Final-javadoc.jar">xnio-nio-3.8.7.Final-javadoc.jar</a>                  2022-04-24 10:45     49714      
+<a href="xnio-nio-3.8.7.Final-javadoc.jar.md5" title="xnio-nio-3.8.7.Final-javadoc.jar.md5">xnio-nio-3.8.7.Final-javadoc.jar.md5</a>              2022-04-24 10:45        32      
+<a href="xnio-nio-3.8.7.Final-javadoc.jar.sha1" title="xnio-nio-3.8.7.Final-javadoc.jar.sha1">xnio-nio-3.8.7.Final-javadoc.jar.sha1</a>             2022-04-24 10:45        40      
+<a href="xnio-nio-3.8.7.Final-sources.jar" title="xnio-nio-3.8.7.Final-sources.jar">xnio-nio-3.8.7.Final-sources.jar</a>                  2022-04-24 10:45     56937      
+<a href="xnio-nio-3.8.7.Final-sources.jar.md5" title="xnio-nio-3.8.7.Final-sources.jar.md5">xnio-nio-3.8.7.Final-sources.jar.md5</a>              2022-04-24 10:45        32      
+<a href="xnio-nio-3.8.7.Final-sources.jar.sha1" title="xnio-nio-3.8.7.Final-sources.jar.sha1">xnio-nio-3.8.7.Final-sources.jar.sha1</a>             2022-04-24 10:45        40      
+<a href="xnio-nio-3.8.7.Final.jar" title="xnio-nio-3.8.7.Final.jar">xnio-nio-3.8.7.Final.jar</a>                          2022-04-24 10:45    111413      
+<a href="xnio-nio-3.8.7.Final.jar.md5" title="xnio-nio-3.8.7.Final.jar.md5">xnio-nio-3.8.7.Final.jar.md5</a>                      2022-04-24 10:45        32      
+<a href="xnio-nio-3.8.7.Final.jar.sha1" title="xnio-nio-3.8.7.Final.jar.sha1">xnio-nio-3.8.7.Final.jar.sha1</a>                     2022-04-24 10:45        40      
+<a href="xnio-nio-3.8.7.Final.pom" title="xnio-nio-3.8.7.Final.pom">xnio-nio-3.8.7.Final.pom</a>                          2022-04-24 10:45      8194      
+<a href="xnio-nio-3.8.7.Final.pom.md5" title="xnio-nio-3.8.7.Final.pom.md5">xnio-nio-3.8.7.Final.pom.md5</a>                      2022-04-24 10:45        32      
+<a href="xnio-nio-3.8.7.Final.pom.sha1" title="xnio-nio-3.8.7.Final.pom.sha1">xnio-nio-3.8.7.Final.pom.sha1</a>                     2022-04-24 10:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'for suffix in tests test-sources javadoc sources; do url="https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-${suffix}.jar"; code=$(curl -o /dev/null -s -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 505ms:
+404 https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-tests.jar
+404 https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-test-sources.jar
+200 https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-javadoc.jar
+200 https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-sources.jar
+
+web search: 
+web search: github.com/xnio/xnio 3.8.7.Final tag xnio
+web search: 
+web search: https://xnio.jboss.org/xnio
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/xnio/xnio.git '3.8.7.Final' 'xnio-*' | tail -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/dmlloyd/xnio.git '3.8.7.Final' 'xnio-*' | tail -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+exec
+/usr/bin/bash -lc 'for url in https://github.com/dmlloyd/xnio/tree/3.8.7.Final/nio-impl/src/test https://github.com/xnio/xnio/tree/3.8.7.Final/nio-impl/src/test https://github.com/xnio/xnio/tree/3.8.7.Final/xnio-nio/src/test https://github.com/dmlloyd/xnio/tree/3.8.7.Final/xnio-nio/src/test; do code=$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 355ms:
+ succeeded in 372ms:
+cf6de9811d860f4d47eff6598e233def7ff4b399	refs/tags/3.8.7.Final
+
+ succeeded in 3199ms:
+404 https://github.com/dmlloyd/xnio/tree/3.8.7.Final/nio-impl/src/test
+200 https://github.com/xnio/xnio/tree/3.8.7.Final/nio-impl/src/test
+404 https://github.com/xnio/xnio/tree/3.8.7.Final/xnio-nio/src/test
+404 https://github.com/dmlloyd/xnio/tree/3.8.7.Final/xnio-nio/src/test
+
+codex
+The upstream tag is `3.8.7.Final` in `xnio/xnio`, and the module path at that tag is `nio-impl`. Maven Central has sources and javadoc jars for this artifact, but no tests or test-sources jar, so the test URL will point to the tagged upstream test directory.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/xnio-nio.jar" https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final.jar; jar tf "$tmp/xnio-nio.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+exec
+/usr/bin/bash -lc 'for url in https://github.com/xnio/xnio https://github.com/xnio/xnio/tree/3.8.7.Final/nio-impl/src/test https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-sources.jar https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-javadoc.jar; do code=$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 109ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/services/
+org/
+org/xnio/
+org/xnio/nio/
+META-INF/maven/
+META-INF/maven/org.jboss.xnio/
+META-INF/maven/org.jboss.xnio/xnio-nio/
+META-INF/services/org.xnio.XnioProvider
+org/xnio/nio/NioTcpServerHandle$6.class
+org/xnio/nio/NioXnioWorker$1.class
+org/xnio/nio/NioTcpServer$1.class
+org/xnio/nio/NioPipeSinkConduit.class
+org/xnio/nio/NioPipeStreamConnection.class
+org/xnio/nio/AbstractNioStreamConnection.class
+org/xnio/nio/Version.properties
+org/xnio/nio/Version.class
+org/xnio/nio/WorkerThread$SynchTask.class
+org/xnio/nio/NioXnioProvider.class
+org/xnio/nio/WorkerThread$SelectNowTask.class
+org/xnio/nio/WorkerThread$2.class
+org/xnio/nio/NioXnio$DefaultSelectorCreator.class
+org/xnio/nio/NioTcpServer.class
+org/xnio/nio/WorkerThread$RepeatKey.class
+org/xnio/nio/NioTcpServerHandle$3.class
+org/xnio/nio/NioSocketStreamConnection.class
+org/xnio/nio/WorkerThread$3.class
+org/xnio/nio/NioXnio$FinalizableSelectorHolder.class
+org/xnio/nio/ChannelClosed.class
+org/xnio/nio/QueuedNioTcpServer2.class
+META-INF/maven/org.jboss.xnio/xnio-nio/pom.properties
+org/xnio/nio/AbstractNioChannel.class
+org/xnio/nio/NioUdpChannelHandle.class
+org/xnio/nio/NioTcpServerHandle$5.class
+org/xnio/nio/NioUdpChannel$NioKey.class
+org/xnio/nio/NioXnioWorker$NioWorkerMetrics.class
+org/xnio/nio/NioHandle.class
+org/xnio/nio/NioTcpServerHandle.class
+org/xnio/nio/OsgiActivator.class
+org/xnio/nio/NioPipeSourceConduit.class
+org/xnio/nio/WorkerThread$ConnectHandle.class
+META-INF/INDEX.LIST
+org/xnio/nio/NioXnio$4.class
+org/xnio/nio/Log.i18n.properties
+org/xnio/nio/NioXnio$SelectorCreator.class
+org/xnio/nio/WorkerThread$TimeKey.class
+org/xnio/nio/NioXnio$2.class
+org/xnio/nio/NioSocketConduit.class
+org/xnio/nio/WorkerThread$4.class
+org/xnio/nio/Log_$logger.class
+org/xnio/nio/NioTcpServerHandle$4.class
+META-INF/maven/org.jboss.xnio/xnio-nio/pom.xml
+org/xnio/nio/NioXnio$1.class
+org/xnio/nio/WatchServiceFileSystemWatcher$PathData.class
+org/xnio/nio/NioHandle$1.class
+org/xnio/nio/SelectorUtils.class
+org/xnio/nio/NioTcpServerHandle$2.class
+org/xnio/nio/NioUdpChannel.class
+org/xnio/nio/WatchServiceFileSystemWatcher$1.class
+org/xnio/nio/NioXnio.class
+org/xnio/nio/NioXnio$3.class
+org/xnio/nio/WorkerThread.class
+org/xnio/nio/WatchServiceFileSystemWatcher.class
+org/xnio/nio/NioXnio$ConstructorSelectorCreator.class
+org/xnio/nio/NioTcpServerHandle$1.class
+org/xnio/nio/WorkerThread$1.class
+org/xnio/nio/NioXnioWorker.class
+org/xnio/nio/Log.class
+
+ succeeded in 1511ms:
+200 https://github.com/xnio/xnio
+200 https://github.com/xnio/xnio/tree/3.8.7.Final/nio-impl/src/test
+200 https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-sources.jar
+200 https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-javadoc.jar
+
+web search: 
+web search: https://github.com/xnio/xnio/tree/3.8.7.Final/nio-impl/src/test
+web search: 
+web search: repo.maven.apache.org org.jboss.xnio xnio-nio 3.8.7.Final xnio-nio-3.8.7.Final-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.jboss.xnio/xnio-nio/3.8.7.Final
+web search: 
+web search: 
+codex
+I’m going to patch the discovered metadata with Maven Central URLs for source and javadoc, the GitHub tag test directory, no language field, and no `not-for-native-image` marker because the artifact is a JVM jar with `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+diff --git a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+index 62aa0a661597d8f2435046c33396a848a50b3d6a..219662606e9310bbb416cd1023b8bf8b9dc2b275
+--- a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final"
++  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final",
++  "repository-url" : "https://github.com/xnio/xnio",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xnio/xnio/tree/$version$/nio-impl/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-javadoc.jar",
++  "description" : "XNIO NIO provides the Java NIO-based implementation for the XNIO project, supplying the runtime provider behind the XNIO API. It handles non-blocking channels, selectors, and related I/O services used by JBoss/WildFly components and other JVM applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+index 62aa0a661597d8f2435046c33396a848a50b3d6a..219662606e9310bbb416cd1023b8bf8b9dc2b275
+--- a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final"
++  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final",
++  "repository-url" : "https://github.com/xnio/xnio",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xnio/xnio/tree/$version$/nio-impl/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-javadoc.jar",
++  "description" : "XNIO NIO provides the Java NIO-based implementation for the XNIO project, supplying the runtime provider behind the XNIO API. It handles non-blocking channels, selectors, and related I/O services used by JBoss/WildFly components and other JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 0ms:
+{
+  "coordinates": "org.jboss.xnio:xnio-nio:3.8.7.Final",
+  "repository-url": "https://github.com/xnio/xnio",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-sources.jar",
+  "test-code-url": "https://github.com/xnio/xnio/tree/$version$/nio-impl/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-javadoc.jar",
+  "description": "XNIO NIO provides the Java NIO-based implementation for the XNIO project, supplying the runtime provider behind the XNIO API. It handles non-blocking channels, selectors, and related I/O services used by JBoss/WildFly components and other JVM applications."
+}
+
+exec
+/usr/bin/bash -lc 'for url in https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-sources.jar https://github.com/xnio/xnio/tree/3.8.7.Final/nio-impl/src/test https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-javadoc.jar; do code=$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+diff --git a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+index 62aa0a661597d8f2435046c33396a848a50b3d6a..219662606e9310bbb416cd1023b8bf8b9dc2b275
+--- a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final"
++  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final",
++  "repository-url" : "https://github.com/xnio/xnio",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xnio/xnio/tree/$version$/nio-impl/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-javadoc.jar",
++  "description" : "XNIO NIO provides the Java NIO-based implementation for the XNIO project, supplying the runtime provider behind the XNIO API. It handles non-blocking channels, selectors, and related I/O services used by JBoss/WildFly components and other JVM applications."
+ }
+
+ succeeded in 394ms:
+200 https://github.com/xnio/xnio/tree/3.8.7.Final/nio-impl/src/test
+200 https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/xnio-nio-3.8.7.Final-javadoc.jar
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+index 62aa0a661597d8f2435046c33396a848a50b3d6a..219662606e9310bbb416cd1023b8bf8b9dc2b275
+--- a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final"
++  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final",
++  "repository-url" : "https://github.com/xnio/xnio",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xnio/xnio/tree/$version$/nio-impl/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-javadoc.jar",
++  "description" : "XNIO NIO provides the Java NIO-based implementation for the XNIO project, supplying the runtime provider behind the XNIO API. It handles non-blocking channels, selectors, and related I/O services used by JBoss/WildFly components and other JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+index 62aa0a661597d8f2435046c33396a848a50b3d6a..219662606e9310bbb416cd1023b8bf8b9dc2b275
+--- a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final"
++  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final",
++  "repository-url" : "https://github.com/xnio/xnio",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xnio/xnio/tree/$version$/nio-impl/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-javadoc.jar",
++  "description" : "XNIO NIO provides the Java NIO-based implementation for the XNIO project, supplying the runtime provider behind the XNIO API. It handles non-blocking channels, selectors, and related I/O services used by JBoss/WildFly components and other JVM applications."
+ }
+
+web search: 
+web search: Maven Central org.jboss.xnio xnio-nio 3.8.7.Final
+web search: 
+web search: site:github.com/xnio/xnio/tree/3.8.7.Final/nio-impl/src/test xnio
+web search: 
+web search: https://github.com/xnio/xnio
+web search: 
+web search: https://github.com/xnio/xnio/tree/3.8.7.Final/nio-impl/src/test
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jboss/xnio/xnio-nio/3.8.7.Final/
+codex
+Updated [org.jboss.xnio-xnio-nio-3.8.7.Final.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json).
+
+I set the repo to `xnio/xnio`, used Maven Central source and javadoc jars, and pointed tests at the `3.8.7.Final` tag’s `nio-impl/src/test` directory. Maven Central identifies this artifact as a `jar` for the XNIO NIO implementation, and GitHub shows the repository, Java project, and tagged test directory. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jboss.xnio/xnio-nio/3.8.7.Final?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`. Validation: `jq` passed, and the three substituted version URLs returned HTTP 200; no Gradle test run was needed for this metadata-only edit.
+diff --git a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+index 62aa0a661597d8f2435046c33396a848a50b3d6a..219662606e9310bbb416cd1023b8bf8b9dc2b275
+--- a/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
++++ b/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final"
++  "coordinates" : "org.jboss.xnio:xnio-nio:3.8.7.Final",
++  "repository-url" : "https://github.com/xnio/xnio",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xnio/xnio/tree/$version$/nio-impl/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/xnio/xnio-nio/$version$/xnio-nio-$version$-javadoc.jar",
++  "description" : "XNIO NIO provides the Java NIO-based implementation for the XNIO project, supplying the runtime provider behind the XNIO API. It handles non-blocking channels, selectors, and related I/O services used by JBoss/WildFly components and other JVM applications."
+ }
+
+tokens used
+78,934
+Updated [org.jboss.xnio-xnio-nio-3.8.7.Final.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9/build/discovered-artifact-metadata/org.jboss.xnio-xnio-nio-3.8.7.Final.json).
+
+I set the repo to `xnio/xnio`, used Maven Central source and javadoc jars, and pointed tests at the `3.8.7.Final` tag’s `nio-impl/src/test` directory. Maven Central identifies this artifact as a `jar` for the XNIO NIO implementation, and GitHub shows the repository, Java project, and tagged test directory. ([central.sonatype.com](https://central.sonatype.com/artifact/org.jboss.xnio/xnio-nio/3.8.7.Final?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`. Validation: `jq` passed, and the three substituted version URLs returned HTTP 200; no Gradle test run was needed for this metadata-only edit.
+Ran agent for org.jboss.xnio:xnio-nio:3.8.7.Final (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9/build/agent-artifact-discovery-logs/org.jboss.xnio-xnio-nio-3.8.7.Final.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1538-cfcd56b9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 15s
+9 actionable tasks: 9 executed
