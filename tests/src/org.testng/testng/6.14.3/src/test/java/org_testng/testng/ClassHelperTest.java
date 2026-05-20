@@ -97,16 +97,16 @@ public class ClassHelperTest {
     @Test
     void reachesEnclosingClassConstructorLookupWhenTrackedClassHasNoCachedInstances() {
         Map<Class<?>, IClass> classes = new HashMap<>();
-        classes.put(ClassHelperTest.class, new EmptyTrackedClass(ClassHelperTest.class));
+        classes.put(PackageEnclosingClass.class, new EmptyTrackedClass(PackageEnclosingClass.class));
 
         Object instance = ClassHelper.createInstance1(
-                InnerTestClass.class,
+                PackageEnclosingClass.InnerTestTarget.class,
                 classes,
                 xmlTest("missing-enclosing-instance"),
                 new EmptyAnnotationFinder(),
-                new DelegatingObjectFactory());
+                new SelfSupplyingObjectFactory());
 
-        assertThat(instance).isNull();
+        assertThat(instance).isInstanceOf(PackageEnclosingClass.InnerTestTarget.class);
     }
 
     @Test
@@ -181,6 +181,19 @@ public class ClassHelperTest {
     private static final class DelegatingObjectFactory implements IObjectFactory {
         @Override
         public Object newInstance(Constructor constructor, Object... params) {
+            return ClassHelper.newInstance(constructor, params);
+        }
+    }
+
+    private static final class SelfSupplyingObjectFactory implements IObjectFactory {
+        @Override
+        public Object newInstance(Constructor constructor, Object... params) {
+            if (constructor.getDeclaringClass().equals(PackageEnclosingClass.class)) {
+                return new PackageEnclosingClass(null);
+            }
+            if (constructor.getDeclaringClass().equals(PackageEnclosingClass.InnerTestTarget.class)) {
+                return ((PackageEnclosingClass) params[0]).new InnerTestTarget();
+            }
             return ClassHelper.newInstance(constructor, params);
         }
     }
@@ -280,5 +293,13 @@ public class ClassHelperTest {
         public String[] findOptionalValues(Constructor constructor) {
             return new String[0];
         }
+    }
+}
+
+final class PackageEnclosingClass {
+    public PackageEnclosingClass(PackageEnclosingClass ignored) {
+    }
+
+    public final class InnerTestTarget {
     }
 }
