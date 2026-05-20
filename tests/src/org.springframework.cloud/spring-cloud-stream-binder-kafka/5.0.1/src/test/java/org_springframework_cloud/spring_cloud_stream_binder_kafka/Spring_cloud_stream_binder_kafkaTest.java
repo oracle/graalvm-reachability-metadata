@@ -38,6 +38,7 @@ import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.kafka.KafkaExpressionEvaluatingInterceptor;
+import org.springframework.cloud.stream.binder.kafka.KafkaNullConverter;
 import org.springframework.cloud.stream.binder.kafka.common.BinderHeaderMapper;
 import org.springframework.cloud.stream.binder.kafka.common.TopicInformation;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties;
@@ -61,8 +62,10 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.kafka.listener.ContainerProperties.AckMode;
 import org.springframework.kafka.security.jaas.KafkaJaasLoginModuleInitializer.ControlFlag;
+import org.springframework.kafka.support.KafkaNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.util.MimeTypeUtils;
 
 public class Spring_cloud_stream_binder_kafkaTest {
 
@@ -404,6 +407,23 @@ public class Spring_cloud_stream_binder_kafkaTest {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> BindingUtils.createProducerConfigs(producer, binderProperties))
                 .withMessageContaining("bootstrap.servers cannot be overridden");
+    }
+
+    @Test
+    void kafkaNullConverterHandlesTombstonePayloadsForAnyContentType() {
+        KafkaNullConverter converter = new KafkaNullConverter();
+        Message<KafkaNull> tombstoneMessage = MessageBuilder.withPayload(KafkaNull.INSTANCE)
+                .setHeader("contentType", MimeTypeUtils.APPLICATION_JSON)
+                .build();
+
+        Object convertedPayload = converter.fromMessage(tombstoneMessage, KafkaNull.class);
+        Message<?> outboundMessage = converter.toMessage(KafkaNull.INSTANCE, tombstoneMessage.getHeaders());
+
+        assertThat(convertedPayload).isSameAs(KafkaNull.INSTANCE);
+        assertThat(outboundMessage).isNotNull();
+        assertThat(outboundMessage.getPayload()).isSameAs(KafkaNull.INSTANCE);
+        assertThat(outboundMessage.getHeaders()).containsEntry("contentType", MimeTypeUtils.APPLICATION_JSON);
+        assertThat(converter.fromMessage(MessageBuilder.withPayload("value").build(), KafkaNull.class)).isNull();
     }
 
     @Test
