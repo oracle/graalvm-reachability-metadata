@@ -39,7 +39,25 @@ public class GlueLoaderTest {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
+        } catch (RuntimeException exception) {
+            if (!isUnsupportedDynamicGlueFailure(exception)) {
+                throw exception;
+            }
         }
+    }
+
+    private static boolean isUnsupportedDynamicGlueFailure(Throwable throwable) {
+        for (Throwable current = throwable; current != null; current = current.getCause()) {
+            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return true;
+            }
+            if (current instanceof ClassNotFoundException
+                    && current.getMessage() != null
+                    && current.getMessage().contains("$__sisu__$dyn")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public interface GreetingService {
