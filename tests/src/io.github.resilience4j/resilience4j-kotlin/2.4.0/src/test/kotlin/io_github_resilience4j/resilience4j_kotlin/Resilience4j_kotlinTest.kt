@@ -20,6 +20,7 @@ import io.github.resilience4j.kotlin.circuitbreaker.CircuitBreakerRegistry as Ko
 import io.github.resilience4j.kotlin.circuitbreaker.addCircuitBreakerConfig
 import io.github.resilience4j.kotlin.circuitbreaker.circuitBreaker as resilienceCircuitBreaker
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction as executeCircuitBreakerSuspendFunction
+import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunctionAndRecordCancellationError as executeCircuitBreakerSuspendFunctionAndRecordCancellationError
 import io.github.resilience4j.kotlin.circuitbreaker.withCircuitBreakerConfig
 import io.github.resilience4j.kotlin.micrometer.TimerConfig as KotlinTimerConfig
 import io.github.resilience4j.kotlin.micrometer.executeSuspendFunction as executeTimerSuspendFunction
@@ -59,6 +60,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
 import java.time.Duration
+import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
@@ -207,6 +209,49 @@ public class Resilience4j_kotlinTest {
 
         assertThat(values).containsExactly("one", "two")
         assertThat(flowCircuitBreaker.metrics.numberOfSuccessfulCalls).isEqualTo(1)
+    }
+
+    @Test
+    @Timeout(value = 10, unit = TimeUnit.SECONDS)
+    fun circuitBreakerSuspendFunctionsHandleCancellationSeparatelyFromFailures(): Unit = runBlocking {
+        val ignoredCancellationCircuitBreaker = CircuitBreaker.of(
+            "ignored-cancellation-circuit",
+            KotlinCircuitBreakerConfig {
+                slidingWindowSize(1)
+                minimumNumberOfCalls(1)
+                failureRateThreshold(1.0f)
+            },
+        )
+        val ignoredCancellation = runCatching {
+            ignoredCancellationCircuitBreaker.executeCircuitBreakerSuspendFunction<String> {
+                throw CancellationException("client cancelled")
+            }
+        }.exceptionOrNull()
+
+        assertThat(ignoredCancellation).isInstanceOf(CancellationException::class.java)
+        assertThat(ignoredCancellationCircuitBreaker.state).isEqualTo(State.CLOSED)
+        assertThat(ignoredCancellationCircuitBreaker.metrics.numberOfBufferedCalls).isZero()
+        assertThat(ignoredCancellationCircuitBreaker.metrics.numberOfFailedCalls).isZero()
+
+        val recordedCancellationCircuitBreaker = CircuitBreaker.of(
+            "recorded-cancellation-circuit",
+            KotlinCircuitBreakerConfig {
+                slidingWindowSize(1)
+                minimumNumberOfCalls(1)
+                failureRateThreshold(1.0f)
+                recordExceptions(CancellationException::class.java)
+            },
+        )
+        val recordedCancellation = runCatching {
+            recordedCancellationCircuitBreaker.executeCircuitBreakerSuspendFunctionAndRecordCancellationError<String> {
+                throw CancellationException("upstream cancelled")
+            }
+        }.exceptionOrNull()
+
+        assertThat(recordedCancellation).isInstanceOf(CancellationException::class.java)
+        assertThat(recordedCancellationCircuitBreaker.state).isEqualTo(State.OPEN)
+        assertThat(recordedCancellationCircuitBreaker.metrics.numberOfBufferedCalls).isEqualTo(1)
+        assertThat(recordedCancellationCircuitBreaker.metrics.numberOfFailedCalls).isEqualTo(1)
     }
 
     @Test
