@@ -1,0 +1,255 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.131.0
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e4500-7bb5-7872-a4a4-a8003b199f1d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.tomcat.embed:tomcat-embed-core:11.0.18
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [11.0.18, 11.0.20, 11.0.21, 11.0.22].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae/metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json
+- Entry selector: "metadata-version" = "11.0.18"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/$version$/tomcat-embed-core-$version$-sources.jar
+- repository-url: https://github.com/apache/tomcat
+- test-code-url: https://github.com/apache/tomcat/tree/$version$/test
+- documentation-url: https://github.com/apache/tomcat/tree/$version$/webapps/docs
+- description: Apache Tomcat Embed provides the core Tomcat server implementation for embedding a servlet container in a Java application. It supplies the runtime components needed to run Jakarta Servlet-based web applications without deploying to a separate Tomcat installation.
+- language: <missing>
+
+Context:
+- Coordinate version: 11.0.18
+- Entry metadata-version: 11.0.18
+- Entry test-version: 11.0.18
+- Entry tested-versions: [11.0.18, 11.0.20, 11.0.21, 11.0.22]
+codex
+I’ll verify the Maven and upstream tag URLs first, then inspect the existing JSON and only edit fields that are actually missing under the rules you gave.
+web search: 
+web search: Maven Central org.apache.tomcat.embed tomcat-embed-core 11.0.18 sources jar
+exec
+/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions|test-version' metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae
+3:    "metadata-version": "10.1.0",
+4:    "test-version": "10.0.20",
+5:    "source-code-url": "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/$version$/tomcat-embed-core-$version$-sources.jar",
+6:    "repository-url": "https://github.com/apache/tomcat",
+7:    "test-code-url": "https://github.com/apache/tomcat/tree/$version$/test",
+8:    "documentation-url": "https://github.com/apache/tomcat/tree/$version$/webapps/docs",
+9:    "description": "Apache Tomcat Embed provides the core Tomcat server implementation for embedding a servlet container in a Java application. It supplies the runtime components needed to run Jakarta Servlet-based web applications without deploying to a separate Tomcat installation.",
+10:    "tested-versions": [
+80:    "metadata-version": "10.0.20",
+81:    "source-code-url": "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/$version$/tomcat-embed-core-$version$-sources.jar",
+82:    "repository-url": "https://github.com/apache/tomcat",
+83:    "test-code-url": "https://github.com/apache/tomcat/tree/$version$/test",
+84:    "documentation-url": "https://github.com/apache/tomcat/tree/$version$/webapps/docs",
+85:    "description": "Apache Tomcat Embed is a library that allows you to embed Tomcat in your application. The tomcat-embed-core artifact provides the core Tomcat server implementation for running an embedded servlet container.",
+86:    "tested-versions": [
+104:    "metadata-version": "11.0.18",
+105:    "source-code-url": "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/$version$/tomcat-embed-core-$version$-sources.jar",
+106:    "repository-url": "https://github.com/apache/tomcat",
+107:    "test-code-url": "https://github.com/apache/tomcat/tree/$version$/test",
+108:    "documentation-url": "https://github.com/apache/tomcat/tree/$version$/webapps/docs",
+109:    "description": "Apache Tomcat Embed provides the core Tomcat server implementation for embedding a servlet container in a Java application. It supplies the runtime components needed to run Jakarta Servlet-based web applications without deploying to a separate Tomcat installation.",
+110:    "tested-versions": [
+
+exec
+/bin/bash -lc "for v in 11.0.18 11.0.20 11.0.21 11.0.22; do printf '%s tag-test ' \""'$v"; curl -fsSI "https://github.com/apache/tomcat/tree/$v/test" | head -n 1 || true; printf '"'%s tag-docs ' \""'$v"; curl -fsSI "https://github.com/apache/tomcat/tree/$v/webapps/docs" | head -n 1 || true; done' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae
+exec
+/bin/bash -lc "for v in 11.0.18 11.0.20 11.0.21 11.0.22; do printf '%s sources ' \""'$v"; curl -fsSI "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/$v/tomcat-embed-core-$v-sources.jar" | head -n 1; printf '"'%s tests ' \""'$v"; curl -fsSI "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/$v/tomcat-embed-core-$v-tests.jar" | head -n 1 || true; done' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae
+ succeeded in 1865ms:
+HTTP/2 200 
+11.0.18 tests curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+11.0.20 sources HTTP/2 200 
+11.0.20 tests curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+11.0.21 sources HTTP/2 200 
+11.0.21 tests curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+11.0.22 sources HTTP/2 200 
+11.0.22 tests curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+
+codex
+The JSON already has non-blank URL and description fields for the `11.0.18` entry. I’m checking whether those templates actually resolve for all aliases before deciding whether any maintenance edit is needed.
+ succeeded in 5504ms:
+HTTP/2 200 
+11.0.18 tag-docs HTTP/2 200 
+11.0.20 tag-test HTTP/2 200 
+11.0.20 tag-docs HTTP/2 200 
+11.0.21 tag-test HTTP/2 200 
+11.0.21 tag-docs HTTP/2 200 
+11.0.22 tag-test HTTP/2 200 
+11.0.22 tag-docs HTTP/2 200 
+
+web search: 
+web search: 
+web search: 
+web search: site:repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/11.0.18 tomcat-embed-core-11.0.18-sources.jar
+web search: 
+web search: https://github.com/apache/tomcat/tree/11.0.18/test
+web search: 
+web search: repo.maven.apache.org maven2 org apache tomcat embed tomcat-embed-core 11.0.18 sources jar
+codex
+Maven Central has source jars for all four aliases, but the corresponding `-tests.jar` classifier returns 404 for each, so the GitHub tag test tree remains the right test-code template. The GitHub tag docs path also resolves for all aliases.
+exec
+/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"11.0.18\")' metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "11.0.18",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/$version$/tomcat-embed-core-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/tomcat",
+  "test-code-url": "https://github.com/apache/tomcat/tree/$version$/test",
+  "documentation-url": "https://github.com/apache/tomcat/tree/$version$/webapps/docs",
+  "description": "Apache Tomcat Embed provides the core Tomcat server implementation for embedding a servlet container in a Java application. It supplies the runtime components needed to run Jakarta Servlet-based web applications without deploying to a separate Tomcat installation.",
+  "tested-versions": [
+    "11.0.18",
+    "11.0.20",
+    "11.0.21",
+    "11.0.22"
+  ],
+  "allowed-packages": [
+    "org.apache.catalina",
+    "org.apache.tomcat"
+  ]
+}
+
+exec
+/bin/bash -lc 'git diff -- metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae
+ succeeded in 0ms:
+exec
+/bin/bash -lc "for v in 11.0.18 11.0.20 11.0.21 11.0.22; do printf '%s pom ' \""'$v"; curl -fsSL "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/$v/tomcat-embed-core-$v.pom" | rg -o '"'<url>["'^<]+</url>|<connection>[''^<]+</connection>|<developerConnection>[''^<]+</developerConnection>'"' | head -n 5; done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae
+ succeeded in 628ms:
+<url>https://tomcat.apache.org/</url>
+<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+11.0.20 pom <url>https://tomcat.apache.org/</url>
+<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+11.0.21 pom <url>https://tomcat.apache.org/</url>
+<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+11.0.22 pom <url>https://tomcat.apache.org/</url>
+<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+
+web search: 
+web search: https://github.com/apache/tomcat/tree/11.0.18/test
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/11.0.18/tomcat-embed-core-11.0.18-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.tomcat.embed/tomcat-embed-core/11.0.18
+web search: 
+web search: 'apache / tomcat' in https://github.com/apache/tomcat
+exec
+/bin/bash -lc 'git status --short -- metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae
+ succeeded in 0ms:
+web search: 
+web search: Apache Tomcat GitHub repository apache/tomcat
+web search: 
+web search: 
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/11.0.18/ tomcat-embed-core-11.0.18-sources.jar
+web search: 
+web search: "11.0.22/" "tomcat-embed-core" "repo.maven.apache.org"
+web search: 
+web search: central.sonatype.com/artifact/org.apache.tomcat.embed/tomcat-embed-core/11.0.20 "Core Tomcat implementation"
+codex
+No file changes were needed in [index.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae/metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:104). The selected `11.0.18` entry already has non-blank values for the URLs and two-sentence description, and `language` is correctly absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+I verified the templates for `11.0.18`, `11.0.20`, `11.0.21`, and `11.0.22`: Maven source jars resolve, Maven `-tests.jar` artifacts do not exist, and the GitHub tag `/test` and `/webapps/docs` paths resolve. Maven Central identifies `tomcat-embed-core` as “Core Tomcat implementation,” and the Apache Tomcat repository is the canonical upstream GitHub repo. ([central.sonatype.com](https://central.sonatype.com/artifact/org.apache.tomcat.embed/tomcat-embed-core/11.0.18?utm_source=openai))
+
+`git diff` is clean for the target file.
+tokens used
+82,147
+No file changes were needed in [index.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae/metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:104). The selected `11.0.18` entry already has non-blank values for the URLs and two-sentence description, and `language` is correctly absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+I verified the templates for `11.0.18`, `11.0.20`, `11.0.21`, and `11.0.22`: Maven source jars resolve, Maven `-tests.jar` artifacts do not exist, and the GitHub tag `/test` and `/webapps/docs` paths resolve. Maven Central identifies `tomcat-embed-core` as “Core Tomcat implementation,” and the Apache Tomcat repository is the canonical upstream GitHub repo. ([central.sonatype.com](https://central.sonatype.com/artifact/org.apache.tomcat.embed/tomcat-embed-core/11.0.18?utm_source=openai))
+
+`git diff` is clean for the target file.
+Ran agent for org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae/build/agent-url-discovery-logs/org.apache.tomcat.embed-tomcat-embed-core-11.0.18.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-0fee59ae/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 24s
+9 actionable tasks: 9 executed
