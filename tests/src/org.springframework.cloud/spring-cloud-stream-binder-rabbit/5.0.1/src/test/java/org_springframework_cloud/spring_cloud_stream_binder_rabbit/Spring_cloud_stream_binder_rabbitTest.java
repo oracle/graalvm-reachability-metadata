@@ -33,6 +33,7 @@ import org.springframework.boot.amqp.autoconfigure.RabbitProperties;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
 import org.springframework.cloud.function.context.config.MessageConverterHelper;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.rabbit.BatchCapableRejectAndDontRequeueRecoverer;
 import org.springframework.cloud.stream.binder.rabbit.RabbitExpressionEvaluatingInterceptor;
 import org.springframework.cloud.stream.binder.rabbit.RabbitMessageChannelBinder;
@@ -50,6 +51,7 @@ import org.springframework.cloud.stream.binder.rabbit.properties.RabbitProducerP
 import org.springframework.cloud.stream.binder.rabbit.provisioning.RabbitExchangeQueueProvisioner;
 import org.springframework.cloud.stream.config.BindingHandlerAdvise.MappingsProvider;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
+import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -205,6 +207,25 @@ public class Spring_cloud_stream_binder_rabbitTest {
 
         assertThat(destination.getName())
                 .isEqualTo("tenant.orders.analytics-2,tenant.invoices.analytics-2");
+    }
+
+    @Test
+    void provisionerBuildsPrefixedProducerDestinationWithoutBrokerConnection() {
+        FailingConnectionFactory connectionFactory = new FailingConnectionFactory();
+        RabbitExchangeQueueProvisioner provisioner = new RabbitExchangeQueueProvisioner(connectionFactory);
+        RabbitProducerProperties producerProperties = new RabbitProducerProperties();
+        producerProperties.setPrefix("tenant.");
+        producerProperties.setDeclareExchange(false);
+        producerProperties.setBindQueue(false);
+        ExtendedProducerProperties<RabbitProducerProperties> extendedProperties =
+                new ExtendedProducerProperties<>(producerProperties);
+        extendedProperties.setPartitionCount(3);
+
+        ProducerDestination destination = provisioner.provisionProducerDestination("orders", extendedProperties);
+
+        assertThat(destination.getName()).isEqualTo("tenant.orders");
+        assertThat(destination.getNameForPartition(0)).isEqualTo("tenant.orders");
+        assertThat(destination.getNameForPartition(2)).isEqualTo("tenant.orders");
     }
 
     @Test
