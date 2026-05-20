@@ -8,10 +8,12 @@ package tomcat;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.catalina.startup.Bootstrap;
+import org.apache.catalina.startup.Catalina;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -51,6 +53,22 @@ public class BootstrapTest {
         Bootstrap.main(new String[] {"-config", serverXml.toString(), "-nonaming", "start"});
     }
 
+    @Test
+    void getAwaitInvokesAwaitCapableCatalinaDaemon() throws Exception {
+        Bootstrap bootstrap = new Bootstrap();
+        AwaitCapableCatalina catalina = new AwaitCapableCatalina();
+        catalina.setAwait(true);
+        setCatalinaDaemon(bootstrap, catalina);
+
+        assertThat(bootstrap.getAwait()).isTrue();
+    }
+
+    private void setCatalinaDaemon(Bootstrap bootstrap, AwaitCapableCatalina catalina) throws Exception {
+        Field field = Bootstrap.class.getDeclaredField("catalinaDaemon");
+        field.setAccessible(true);
+        field.set(bootstrap, catalina);
+    }
+
     private Path createServerXml() throws IOException {
         Files.createDirectories(catalinaBase.resolve("conf"));
         Files.createDirectories(catalinaBase.resolve("logs"));
@@ -71,4 +89,10 @@ public class BootstrapTest {
         return serverXml;
     }
 
+    public static class AwaitCapableCatalina extends Catalina {
+
+        public boolean getAwait() {
+            return isAwait();
+        }
+    }
 }
