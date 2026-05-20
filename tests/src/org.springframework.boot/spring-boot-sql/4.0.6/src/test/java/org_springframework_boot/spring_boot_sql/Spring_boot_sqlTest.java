@@ -211,6 +211,22 @@ public class Spring_boot_sqlTest {
         }
     }
 
+    @Test
+    void afterPropertiesSetInitializesDatabaseUsingConfiguredResourceLoader(@TempDir Path directory) throws Exception {
+        Path schema = writeScript(directory, "schema.sql", "create table lifecycle_sample(id int);");
+        DatabaseInitializationSettings settings = new DatabaseInitializationSettings();
+        settings.setSchemaLocations(List.of(fileUri(schema)));
+        settings.setMode(DatabaseInitializationMode.ALWAYS);
+        RecordingScriptDatabaseInitializer initializer = new RecordingScriptDatabaseInitializer(settings, true);
+        initializer.setResourceLoader(resourceLoader());
+
+        initializer.afterPropertiesSet();
+
+        assertThat(initializer.batches()).singleElement()
+                .extracting(RecordedScripts::resourceNames)
+                .isEqualTo(List.of(schema.getFileName().toString()));
+    }
+
     private static Path writeScript(Path directory, String name, String content) throws IOException {
         Path script = directory.resolve(name);
         Files.writeString(script, content, StandardCharsets.UTF_8);
