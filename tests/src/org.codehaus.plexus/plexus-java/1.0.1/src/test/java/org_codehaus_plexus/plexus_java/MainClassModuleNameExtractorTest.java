@@ -18,6 +18,7 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import org.codehaus.plexus.languages.java.jpms.CmdModuleNameExtractor;
 import org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -32,7 +33,7 @@ public class MainClassModuleNameExtractorTest {
     void getsAutomaticModuleNameFromJarManifest() throws Exception {
         Path moduleJar = createAutomaticModuleJar();
 
-        String moduleName = MainClassModuleNameExtractor.getModuleName(moduleJar);
+        String moduleName = CmdModuleNameExtractor.getModuleName(moduleJar);
 
         assertThat(moduleName).isEqualTo(MODULE_NAME);
     }
