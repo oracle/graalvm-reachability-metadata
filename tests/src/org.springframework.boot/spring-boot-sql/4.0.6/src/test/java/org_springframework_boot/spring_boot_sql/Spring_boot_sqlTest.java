@@ -98,6 +98,30 @@ public class Spring_boot_sqlTest {
     }
 
     @Test
+    void customScriptLocationsBindFromExternalizedConfiguration() {
+        StandardEnvironment environment = new StandardEnvironment();
+        environment.getPropertySources().addFirst(new MapPropertySource("test", Map.of(
+                "spring.sql.init.schema-locations[0]", "classpath:/db/schema-core.sql",
+                "spring.sql.init.schema-locations[1]", "optional:classpath:/db/schema-extra.sql",
+                "spring.sql.init.data-locations[0]", "classpath:/db/reference-data.sql",
+                "spring.sql.init.data-locations[1]", "optional:classpath:/db/sample-data.sql")));
+
+        SqlInitializationProperties properties = Binder.get(environment)
+                .bind("spring.sql.init", SqlInitializationProperties.class)
+                .get();
+        DatabaseInitializationSettings settings = ApplicationScriptDatabaseInitializer.getSettings(properties);
+
+        assertThat(properties.getSchemaLocations()).containsExactly("classpath:/db/schema-core.sql",
+                "optional:classpath:/db/schema-extra.sql");
+        assertThat(properties.getDataLocations()).containsExactly("classpath:/db/reference-data.sql",
+                "optional:classpath:/db/sample-data.sql");
+        assertThat(settings.getSchemaLocations()).containsExactly("classpath:/db/schema-core.sql",
+                "optional:classpath:/db/schema-extra.sql");
+        assertThat(settings.getDataLocations()).containsExactly("classpath:/db/reference-data.sql",
+                "optional:classpath:/db/sample-data.sql");
+    }
+
+    @Test
     void initializerResolvesSortedSchemaAndDataScriptsWithConfiguredOptions(@TempDir Path directory)
             throws IOException {
         Path secondSchema = writeScript(directory, "schema-b.sql", "create table b(id int);");
