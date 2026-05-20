@@ -7,6 +7,7 @@
 package org_apache_logging_log4j.log4j_slf4j2_impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,6 +26,8 @@ import org.slf4j.MDC;
 import org.slf4j.MDC.MDCCloseable;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+import org.slf4j.event.Level;
+import org.slf4j.spi.LocationAwareLogger;
 import org.slf4j.spi.MDCAdapter;
 
 public class Log4j_slf4j2_implTest {
@@ -101,6 +104,50 @@ public class Log4j_slf4j2_implTest {
 
         assertThat(argumentSupplierCalled).isTrue();
         assertThat(messageSupplierCalled).isTrue();
+    }
+
+    @Test
+    void levelAwareAndLocationAwareSlf4jApisMapToLog4jLevels() {
+        Logger logger = LoggerFactory.getLogger(LOGGER_NAME + ".levels");
+        Marker marker = MarkerFactory.getMarker("LOG4J_SLF4J2_IMPL_LEVEL_MARKER");
+        Throwable failure = new IllegalStateException("expected level-aware exception");
+        AtomicBoolean keyValueSupplierCalled = new AtomicBoolean(false);
+
+        assertThat(logger).isInstanceOf(LocationAwareLogger.class);
+        assertThat(logger.isEnabledForLevel(Level.TRACE)).isEqualTo(logger.isTraceEnabled());
+        assertThat(logger.isEnabledForLevel(Level.DEBUG)).isEqualTo(logger.isDebugEnabled());
+        assertThat(logger.isEnabledForLevel(Level.INFO)).isEqualTo(logger.isInfoEnabled());
+        assertThat(logger.isEnabledForLevel(Level.WARN)).isEqualTo(logger.isWarnEnabled());
+        assertThat(logger.isEnabledForLevel(Level.ERROR)).isEqualTo(logger.isErrorEnabled());
+
+        assertThatCode(() -> {
+            logger.atLevel(Level.ERROR)
+                    .addMarker(marker)
+                    .addKeyValue("level-api", () -> {
+                        keyValueSupplierCalled.set(true);
+                        return "error";
+                    })
+                    .setCause(failure)
+                    .setMessage("level-aware fluent message")
+                    .log();
+
+            LocationAwareLogger locationAwareLogger = (LocationAwareLogger) logger;
+            locationAwareLogger.log(
+                    marker,
+                    Log4j_slf4j2_implTest.class.getName(),
+                    LocationAwareLogger.INFO_INT,
+                    "location-aware {} message",
+                    new Object[] {"info"},
+                    null);
+            locationAwareLogger.log(
+                    marker,
+                    Log4j_slf4j2_implTest.class.getName(),
+                    LocationAwareLogger.ERROR_INT,
+                    "location-aware error {}",
+                    new Object[] {"payload", failure},
+                    null);
+        }).doesNotThrowAnyException();
+        assertThat(keyValueSupplierCalled).isTrue();
     }
 
     @Test
