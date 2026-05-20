@@ -9,11 +9,13 @@ package org_apache_activemq.artemis_selector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.activemq.artemis.api.core.SimpleString;
 import org.apache.activemq.artemis.selector.filter.BooleanExpression;
 import org.apache.activemq.artemis.selector.filter.FilterException;
 import org.apache.activemq.artemis.selector.filter.Filterable;
+import org.apache.activemq.artemis.selector.filter.XPathExpression;
 import org.apache.activemq.artemis.selector.impl.LRUCache;
 import org.apache.activemq.artemis.selector.impl.SelectorParser;
 import org.junit.jupiter.api.Test;
@@ -108,6 +110,31 @@ public class Artemis_selectorTest {
         assertThatExceptionOfType(FilterException.class)
                 .isThrownBy(() -> SelectorParser.parse("priority >"))
                 .withMessageContaining("priority >");
+    }
+
+    @Test
+    void delegatesXPathSelectorsToConfiguredEvaluatorFactory() throws Exception {
+        XPathExpression.XPathEvaluatorFactory originalFactory = XPathExpression.XPATH_EVALUATOR_FACTORY;
+        AtomicReference<String> requestedXPath = new AtomicReference<>();
+
+        try {
+            XPathExpression.XPATH_EVALUATOR_FACTORY = xpath -> {
+                requestedXPath.set(xpath);
+                return message -> "accepted".equals(message.getProperty(SimpleString.toSimpleString("routing")));
+            };
+
+            BooleanExpression selector = SelectorParser.parse("XPATH 'routing-check'");
+            TestFilterable accepted = filterable(Map.of("routing", "accepted"));
+            TestFilterable rejected = filterable(Map.of("routing", "rejected"));
+
+            assertThat(requestedXPath).hasValue("routing-check");
+            assertThat(selector.evaluate(accepted)).isEqualTo(Boolean.TRUE);
+            assertThat(selector.matches(accepted)).isTrue();
+            assertThat(selector.matches(rejected)).isFalse();
+            assertThat(selector.toString()).isEqualTo("XPATH 'routing-check'");
+        } finally {
+            XPathExpression.XPATH_EVALUATOR_FACTORY = originalFactory;
+        }
     }
 
     @Test
