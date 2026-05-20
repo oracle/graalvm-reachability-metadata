@@ -32,7 +32,7 @@ public class BasicAuthCacheTest {
                 ChallengeType.TARGET,
                 StandardAuthScheme.BASIC,
                 new BasicNameValuePair("realm", "cached")), null);
-        scheme.initPreemptive(new UsernamePasswordCredentials("üser", "päss".toCharArray()));
+        scheme.initPreemptive(new UsernamePasswordCredentials("\u00fcser", "p\u00e4ss".toCharArray()));
 
         final BasicAuthCache authCache = new BasicAuthCache();
         authCache.put(host, "/secure", scheme);
@@ -44,7 +44,7 @@ public class BasicAuthCacheTest {
         assertThat(restored.getRealm()).isEqualTo("cached");
         assertThat(restored.isChallengeComplete()).isTrue();
         final String expectedCredentials = Base64.getEncoder()
-                .encodeToString("üser:päss".getBytes(StandardCharsets.UTF_8));
+                .encodeToString("\u00fcser:p\u00e4ss".getBytes(StandardCharsets.UTF_8));
         assertThat(restored.generateAuthResponse(host, null, null))
                 .isEqualTo(StandardAuthScheme.BASIC + " " + expectedCredentials);
     }
