@@ -416,6 +416,45 @@ public class Swagger_models_jakartaTest {
         assertThat(booleanSchema.getEnum()).isEqualTo(List.of(false));
     }
 
+    @Test
+    void pathItemsSupportHttpMethodBasedOperationAccess() {
+        Operation getOrder = new Operation().operationId("getOrder");
+        Operation replaceOrder = new Operation().operationId("replaceOrder");
+        Operation createOrder = new Operation().operationId("createOrder");
+        Operation deleteOrder = new Operation().operationId("deleteOrder");
+        Operation describeOrderOptions = new Operation().operationId("describeOrderOptions");
+        Operation headOrder = new Operation().operationId("headOrder");
+        Operation updateOrder = new Operation().operationId("updateOrder");
+        Operation traceOrder = new Operation().operationId("traceOrder");
+
+        PathItem pathItem = new PathItem();
+        pathItem.operation(PathItem.HttpMethod.GET, getOrder);
+        pathItem.operation(PathItem.HttpMethod.PUT, replaceOrder);
+        pathItem.operation(PathItem.HttpMethod.POST, createOrder);
+        pathItem.operation(PathItem.HttpMethod.DELETE, deleteOrder);
+        pathItem.operation(PathItem.HttpMethod.OPTIONS, describeOrderOptions);
+        pathItem.operation(PathItem.HttpMethod.HEAD, headOrder);
+        pathItem.operation(PathItem.HttpMethod.PATCH, updateOrder);
+        pathItem.operation(PathItem.HttpMethod.TRACE, traceOrder);
+
+        Map<PathItem.HttpMethod, Operation> operationsByMethod = pathItem.readOperationsMap();
+
+        assertThat(operationsByMethod)
+                .containsEntry(PathItem.HttpMethod.GET, getOrder)
+                .containsEntry(PathItem.HttpMethod.PUT, replaceOrder)
+                .containsEntry(PathItem.HttpMethod.POST, createOrder)
+                .containsEntry(PathItem.HttpMethod.DELETE, deleteOrder)
+                .containsEntry(PathItem.HttpMethod.OPTIONS, describeOrderOptions)
+                .containsEntry(PathItem.HttpMethod.HEAD, headOrder)
+                .containsEntry(PathItem.HttpMethod.PATCH, updateOrder)
+                .containsEntry(PathItem.HttpMethod.TRACE, traceOrder);
+        assertThat(pathItem.readOperations())
+                .containsExactlyInAnyOrder(getOrder, replaceOrder, createOrder, deleteOrder, describeOrderOptions,
+                        headOrder, updateOrder, traceOrder);
+        assertThat(pathItem.getPatch()).isSameAs(updateOrder);
+        assertThat(pathItem.getTrace()).isSameAs(traceOrder);
+    }
+
     private static Content jsonContent(Schema<?> schema) {
         return new Content().addMediaType("application/json", new MediaType().schema(schema));
     }
