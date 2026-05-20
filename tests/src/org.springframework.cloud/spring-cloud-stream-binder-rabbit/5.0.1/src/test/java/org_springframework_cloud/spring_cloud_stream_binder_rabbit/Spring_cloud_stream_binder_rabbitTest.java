@@ -32,6 +32,7 @@ import org.springframework.aot.hint.TypeHint;
 import org.springframework.boot.amqp.autoconfigure.RabbitProperties;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
 import org.springframework.cloud.function.context.config.MessageConverterHelper;
+import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.rabbit.BatchCapableRejectAndDontRequeueRecoverer;
 import org.springframework.cloud.stream.binder.rabbit.RabbitExpressionEvaluatingInterceptor;
 import org.springframework.cloud.stream.binder.rabbit.RabbitMessageChannelBinder;
@@ -48,6 +49,7 @@ import org.springframework.cloud.stream.binder.rabbit.properties.RabbitProducerP
 import org.springframework.cloud.stream.binder.rabbit.properties.RabbitProducerProperties.ProducerType;
 import org.springframework.cloud.stream.binder.rabbit.provisioning.RabbitExchangeQueueProvisioner;
 import org.springframework.cloud.stream.config.BindingHandlerAdvise.MappingsProvider;
+import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -182,6 +184,27 @@ public class Spring_cloud_stream_binder_rabbitTest {
         assertRegisteredBindingPropertyHint(hints, RabbitProducerProperties.class);
         assertRegisteredBindingPropertyHint(hints, RabbitExtendedBindingProperties.class);
         assertRegisteredBindingPropertyHint(hints, RabbitBindingProperties.class);
+    }
+
+    @Test
+    void provisionerBuildsPrefixedMultiplexConsumerDestinationsWithoutBrokerConnection() {
+        FailingConnectionFactory connectionFactory = new FailingConnectionFactory();
+        RabbitExchangeQueueProvisioner provisioner = new RabbitExchangeQueueProvisioner(connectionFactory);
+        RabbitConsumerProperties consumerProperties = new RabbitConsumerProperties();
+        consumerProperties.setPrefix("tenant.");
+        consumerProperties.setDeclareExchange(false);
+        consumerProperties.setBindQueue(false);
+        ExtendedConsumerProperties<RabbitConsumerProperties> extendedProperties =
+                new ExtendedConsumerProperties<>(consumerProperties);
+        extendedProperties.setMultiplex(true);
+        extendedProperties.setPartitioned(true);
+        extendedProperties.setInstanceIndex(2);
+
+        ConsumerDestination destination = provisioner.provisionConsumerDestination(
+                "orders, invoices", "analytics", extendedProperties);
+
+        assertThat(destination.getName())
+                .isEqualTo("tenant.orders.analytics-2,tenant.invoices.analytics-2");
     }
 
     @Test
