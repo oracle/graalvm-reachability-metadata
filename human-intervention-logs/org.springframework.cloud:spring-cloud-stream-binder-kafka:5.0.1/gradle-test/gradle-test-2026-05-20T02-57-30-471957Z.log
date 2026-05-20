@@ -1,0 +1,175 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1
+Command: `/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7031-83b3a4c4/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 10 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7031-83b3a4c4/tests/src/org.springframework.cloud/spring-cloud-stream-binder-kafka/5.0.1/build/test-results/test/testlist
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7031-83b3a4c4/tests/src/org.springframework.cloud/spring-cloud-stream-binder-kafka/5.0.1/build/test-results/test/testlist] and its subfolders.
+JUnit Platform on Native Image - report
+----------------------------------------
+
+04:57:34.011 [junit-timeout-thread-4] WARN org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties -- Ignoring provided value(s) for 'enable.auto.commit'. enable.auto.commit=true is not supported by the Kafka binder
+04:57:34.011 [junit-timeout-thread-4] WARN org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties -- Ignoring provided value(s) for 'group.id'. Use spring.cloud.stream.default.group or spring.cloud.stream.binding.<name>.group to specify the group instead of group.id
+04:57:34.011 [junit-timeout-thread-8] INFO org.springframework.cloud.stream.binder.kafka.provisioning.KafkaTopicProvisioner -- Using kafka topic for outbound: orders
+org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest > topicValidationDlqUtilitiesAndTopicInformationUseKafkaTypes() SUCCESSFUL
+
+org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest > expressionEvaluatingInterceptorAddsMessageKeyHeaderFromConfiguredExpression() SUCCESSFUL
+
+org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest > binderMapsExternalConfigurationToKafkaProperties() FAILED
+
+org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest > binderConfigurationMergesBootBinderAndBindingLevelClientProperties() SUCCESSFUL
+
+org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest > kafkaNullConverterHandlesTombstonePayloadsForAnyContentType() SUCCESSFUL
+
+org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest > propertyObjectsExposeDefaultsAndMutableNestedConfiguration() SUCCESSFUL
+
+org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest > extendedBindingPropertiesReturnsConfiguredBindingEntries() SUCCESSFUL
+
+org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest > provisionerReturnsDestinationsWithoutConnectingWhenTopicAutoCreationIsDisabled() SUCCESSFUL
+
+org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest > headerMapperRoundTripsApplicationHeadersAndManagesNeverPatterns() SUCCESSFUL
+
+org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest > bindingUtilsCreatesConsumerAndProducerClientConfigurations() SUCCESSFUL
+
+
+Failures (1):
+  JUnit Jupiter:Spring_cloud_stream_binder_kafkaTest:binderMapsExternalConfigurationToKafkaProperties()
+    MethodSource [className = 'org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest', methodName = 'binderMapsExternalConfigurationToKafkaProperties', methodParameterTypes = '']
+    => org.graalvm.nativeimage.MissingReflectionRegistrationError: Cannot reflectively invoke constructor 'public org.springframework.cloud.stream.binder.kafka.properties.KafkaBindingProperties()'.
+
+Reachability metadata for this access was found, but it is inactive because its runtime conditions were not satisfied.
+To fix this, either change/remove the metadata condition, or make sure the condition is reached before this access.
+Unsatisfied runtime conditions:
+
+    "typeReached": "org.springframework.cloud.stream.binder.kafka.properties.KafkaBindingProperties"
+
+The metadata element in the 'reflection' section of 'reachability-metadata.json' is:
+
+    {
+      "type": "org.springframework.cloud.stream.binder.kafka.properties.KafkaBindingProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+
+The 'reachability-metadata.json' file should be located in 'META-INF/native-image/<group-id>/<artifact-id>/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.MissingReflectionRegistrationUtils.reportInvokedExecutable(MissingReflectionRegistrationUtils.java:120)
+       java.base@25.0.2/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:103)
+       java.base@25.0.2/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:496)
+       java.base@25.0.2/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+       org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:194)
+       org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:149)
+       org.springframework.boot.context.properties.bind.JavaBeanBinder$Bean.lambda$getSupplier$0(JavaBeanBinder.java:277)
+       org.springframework.boot.context.properties.bind.JavaBeanBinder$BeanSupplier.get(JavaBeanBinder.java:348)
+       org.springframework.boot.context.properties.bind.JavaBeanBinder$BeanProperty.lambda$getValue$0(JavaBeanBinder.java:428)
+       org.springframework.boot.context.properties.bind.JavaBeanBinder$Bean.get(JavaBeanBinder.java:290)
+       [...]
+
+Test run finished after 8 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[        10 tests found           ]
+[         0 tests skipped         ]
+[        10 tests started         ]
+[         0 tests aborted         ]
+[         9 tests successful      ]
+[         1 tests failed          ]
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7031-83b3a4c4/tests/src/org.springframework.cloud/spring-cloud-stream-binder-kafka/5.0.1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':nativeTest'.
+> Process 'command '/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7031-83b3a4c4/tests/src/org.springframework.cloud/spring-cloud-stream-binder-kafka/5.0.1/build/native/nativeTestCompile/org.springframework.cloud.spring-cloud-stream-binder-kafka_tests-tests'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 2s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+17 actionable tasks: 2 executed, 15 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7031-83b3a4c4/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date

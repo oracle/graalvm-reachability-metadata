@@ -1,0 +1,157 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1
+Command: `/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7031-83b3a4c4/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+Spring_cloud_stream_binder_kafkaTest > topicValidationDlqUtilitiesAndTopicInformationUseKafkaTypes() FAILED
+    java.lang.AssertionError: 
+    Expecting throwable message:
+      "Topic name can only have ASCII alphanumerics, '.', '_' and '-', but was: 'orders created'"
+    to contain:
+      "not a valid topic name"
+    but did not.
+
+    Throwable that failed the check:
+
+    java.lang.IllegalArgumentException: Topic name can only have ASCII alphanumerics, '.', '_' and '-', but was: 'orders created'
+    	at org.springframework.cloud.stream.binder.kafka.utils.KafkaTopicUtils.validateTopicName(KafkaTopicUtils.java:42)
+    	at org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest.lambda$topicValidationDlqUtilitiesAndTopicInformationUseKafkaTypes$0(Spring_cloud_stream_binder_kafkaTest.java:440)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.ThrowableTypeAssert.isThrownBy(ThrowableTypeAssert.java:59)
+    	at org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest.topicValidationDlqUtilitiesAndTopicInformationUseKafkaTypes(Spring_cloud_stream_binder_kafkaTest.java:440)
+    	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+    	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+    	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+    	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+    	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+    	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+    	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+        at org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest.topicValidationDlqUtilitiesAndTopicInformationUseKafkaTypes(Spring_cloud_stream_binder_kafkaTest.java:441)
+
+Spring_cloud_stream_binder_kafkaTest > binderMapsExternalConfigurationToKafkaProperties() FAILED
+    java.lang.UnsupportedOperationException: Element access not supported - for custom ObjectProvider classes, implement stream() to enable all other methods
+        at org.springframework.beans.factory.ObjectProvider.stream(ObjectProvider.java:237)
+        at org.springframework.beans.factory.ObjectProvider.iterator(ObjectProvider.java:222)
+        at org.springframework.beans.factory.ObjectProvider.getObject(ObjectProvider.java:87)
+        at org.springframework.beans.factory.ObjectProvider.getIfAvailable(ObjectProvider.java:122)
+        at org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties.<init>(KafkaBinderConfigurationProperties.java:182)
+        at org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest.newBinderProperties(Spring_cloud_stream_binder_kafkaTest.java:517)
+        at org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest.binderMapsExternalConfigurationToKafkaProperties(Spring_cloud_stream_binder_kafkaTest.java:227)
+
+Spring_cloud_stream_binder_kafkaTest > binderConfigurationMergesBootBinderAndBindingLevelClientProperties() FAILED
+    java.lang.UnsupportedOperationException: Element access not supported - for custom ObjectProvider classes, implement stream() to enable all other methods
+        at org.springframework.beans.factory.ObjectProvider.stream(ObjectProvider.java:237)
+        at org.springframework.beans.factory.ObjectProvider.iterator(ObjectProvider.java:222)
+        at org.springframework.beans.factory.ObjectProvider.getObject(ObjectProvider.java:87)
+        at org.springframework.beans.factory.ObjectProvider.getIfAvailable(ObjectProvider.java:122)
+        at org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties.<init>(KafkaBinderConfigurationProperties.java:182)
+        at org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest.binderConfigurationMergesBootBinderAndBindingLevelClientProperties(Spring_cloud_stream_binder_kafkaTest.java:282)
+
+Spring_cloud_stream_binder_kafkaTest > provisionerReturnsDestinationsWithoutConnectingWhenTopicAutoCreationIsDisabled() FAILED
+    java.lang.UnsupportedOperationException: Element access not supported - for custom ObjectProvider classes, implement stream() to enable all other methods
+        at org.springframework.beans.factory.ObjectProvider.stream(ObjectProvider.java:237)
+        at org.springframework.beans.factory.ObjectProvider.iterator(ObjectProvider.java:222)
+        at org.springframework.beans.factory.ObjectProvider.getObject(ObjectProvider.java:87)
+        at org.springframework.beans.factory.ObjectProvider.getIfAvailable(ObjectProvider.java:122)
+        at org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties.<init>(KafkaBinderConfigurationProperties.java:182)
+        at org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest.newBinderProperties(Spring_cloud_stream_binder_kafkaTest.java:517)
+        at org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest.provisionerReturnsDestinationsWithoutConnectingWhenTopicAutoCreationIsDisabled(Spring_cloud_stream_binder_kafkaTest.java:477)
+
+Spring_cloud_stream_binder_kafkaTest > bindingUtilsCreatesConsumerAndProducerClientConfigurations() FAILED
+    java.lang.UnsupportedOperationException: Element access not supported - for custom ObjectProvider classes, implement stream() to enable all other methods
+        at org.springframework.beans.factory.ObjectProvider.stream(ObjectProvider.java:237)
+        at org.springframework.beans.factory.ObjectProvider.iterator(ObjectProvider.java:222)
+        at org.springframework.beans.factory.ObjectProvider.getObject(ObjectProvider.java:87)
+        at org.springframework.beans.factory.ObjectProvider.getIfAvailable(ObjectProvider.java:122)
+        at org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties.<init>(KafkaBinderConfigurationProperties.java:182)
+        at org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest.newBinderProperties(Spring_cloud_stream_binder_kafkaTest.java:517)
+        at org_springframework_cloud.spring_cloud_stream_binder_kafka.Spring_cloud_stream_binder_kafkaTest.bindingUtilsCreatesConsumerAndProducerClientConfigurations(Spring_cloud_stream_binder_kafkaTest.java:350)
+
+8 tests completed, 5 failed
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7031-83b3a4c4/tests/src/org.springframework.cloud/spring-cloud-stream-binder-kafka/5.0.1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7031-83b3a4c4/tests/src/org.springframework.cloud/spring-cloud-stream-binder-kafka/5.0.1/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 2s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7031-83b3a4c4/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
