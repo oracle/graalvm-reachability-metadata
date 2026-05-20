@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.snakeyaml.engine.v2.api.LoadSettings;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.JsonParser;
@@ -370,6 +371,25 @@ public class Jackson_dataformat_yamlTest {
         assertThat(emptyStringMapper.isEnabled(YAMLReadFeature.EMPTY_STRING_AS_NULL)).isTrue();
         assertThat(converted.path("empty").asString()).isEmpty();
         assertThat(converted.path("text").asString()).isEqualTo("value");
+    }
+
+    @Test
+    void customLoadSettingsRejectDuplicateKeysWhileAllowingUniqueMappings() throws Exception {
+        LoadSettings loadSettings = LoadSettings.builder()
+                .setAllowDuplicateKeys(false)
+                .build();
+        YAMLFactory factory = YAMLFactory.builder()
+                .loadSettings(loadSettings)
+                .build();
+        YAMLMapper mapper = YAMLMapper.builder(factory).build();
+
+        JsonNode uniqueMapping = mapper.readTree("first: alpha\nsecond: beta\n");
+
+        assertThat(uniqueMapping.path("first").asString()).isEqualTo("alpha");
+        assertThat(uniqueMapping.path("second").asString()).isEqualTo("beta");
+        assertThatThrownBy(() -> mapper.readTree("name: primary\nname: duplicate\n"))
+                .isInstanceOf(JacksonException.class)
+                .hasMessageContaining("Duplicate Object property \"name\"");
     }
 
     @Test
