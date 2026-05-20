@@ -1,21 +1,31 @@
 {
-  "reflection": [
+  "resources" : [
     {
-      "condition": {
-        "typeReached": "javax.security.auth.login.Configuration"
+      "glob" : "logback.xml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.kafka.common.utils.Serializer"
       },
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "type": "sun.security.provider.ConfigFile"
-    }
-  ],
-  "resources": [
+      "glob" : "invalid-serialized-object.bin"
+    },
     {
-      "glob": "logback.xml"
+      "condition" : {
+        "typeReached" : "org.apache.kafka.common.config.AbstractConfig"
+      },
+      "glob" : "logback.xml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.kafka.common.utils.ChildFirstClassLoader"
+      },
+      "glob" : "logback.xml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.kafka.common.utils.ChildFirstClassLoader$1"
+      },
+      "glob" : "logback.xml"
     }
   ]
 }
