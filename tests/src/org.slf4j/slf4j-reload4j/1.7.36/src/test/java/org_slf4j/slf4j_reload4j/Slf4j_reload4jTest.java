@@ -165,6 +165,28 @@ public class Slf4j_reload4jTest {
         }
     }
 
+    @Test
+    void childLoggersUseReload4jHierarchyForInheritedLevelsAndAppenderAdditivity() {
+        String parentName = uniqueLoggerName("hierarchy");
+        String childName = parentName + ".child";
+
+        try (HierarchicalLoggerContext context = HierarchicalLoggerContext.create(parentName, childName, Level.ERROR)) {
+            Logger childLogger = LoggerFactory.getLogger(childName);
+
+            assertThat(childLogger.isWarnEnabled()).isFalse();
+            assertThat(childLogger.isErrorEnabled()).isTrue();
+
+            childLogger.warn("hidden by inherited level");
+            childLogger.error("propagated from {}", "child");
+
+            assertThat(context.events()).singleElement().satisfies(event -> {
+                assertThat(event.getLevel()).isEqualTo(Level.ERROR);
+                assertThat(event.getLoggerName()).isEqualTo(childName);
+                assertThat(event.getRenderedMessage()).isEqualTo("propagated from child");
+            });
+        }
+    }
+
     private static String uniqueLoggerName(String suffix) {
         return Slf4j_reload4jTest.class.getName() + "." + suffix + "." + System.nanoTime();
     }
@@ -179,6 +201,45 @@ public class Slf4j_reload4jTest {
                     "location aware message",
                     null,
                     throwable);
+        }
+    }
+
+    private static final class HierarchicalLoggerContext implements AutoCloseable {
+
+        private final LoggerState parentState;
+        private final LoggerState childState;
+        private final RecordingAppender recordingAppender;
+
+        private HierarchicalLoggerContext(String parentName, String childName, Level parentLevel) {
+            org.apache.log4j.Logger parentLogger = LogManager.getLogger(parentName);
+            org.apache.log4j.Logger childLogger = LogManager.getLogger(childName);
+            this.parentState = LoggerState.capture(parentLogger);
+            this.childState = LoggerState.capture(childLogger);
+            this.recordingAppender = new RecordingAppender();
+
+            parentLogger.removeAllAppenders();
+            parentLogger.setAdditivity(false);
+            parentLogger.setLevel(parentLevel);
+            parentLogger.addAppender(this.recordingAppender);
+
+            childLogger.removeAllAppenders();
+            childLogger.setAdditivity(true);
+            childLogger.setLevel(null);
+        }
+
+        private static HierarchicalLoggerContext create(String parentName, String childName, Level parentLevel) {
+            return new HierarchicalLoggerContext(parentName, childName, parentLevel);
+        }
+
+        private List<LoggingEvent> events() {
+            return this.recordingAppender.events();
+        }
+
+        @Override
+        public void close() {
+            this.childState.restore();
+            this.parentState.restore();
+            this.recordingAppender.close();
         }
     }
 
@@ -223,6 +284,38 @@ public class Slf4j_reload4jTest {
             this.rootLogger.setLevel(this.previousLevel);
             for (Appender appender : this.previousAppenders) {
                 this.rootLogger.addAppender(appender);
+            }
+        }
+    }
+
+    private static final class LoggerState {
+
+        private final org.apache.log4j.Logger logger;
+        private final Level level;
+        private final boolean additivity;
+        private final List<Appender> appenders;
+
+        private LoggerState(org.apache.log4j.Logger logger) {
+            this.logger = logger;
+            this.level = logger.getLevel();
+            this.additivity = logger.getAdditivity();
+            this.appenders = new ArrayList<>();
+            Enumeration<?> currentAppenders = logger.getAllAppenders();
+            while (currentAppenders.hasMoreElements()) {
+                this.appenders.add((Appender) currentAppenders.nextElement());
+            }
+        }
+
+        private static LoggerState capture(org.apache.log4j.Logger logger) {
+            return new LoggerState(logger);
+        }
+
+        private void restore() {
+            this.logger.removeAllAppenders();
+            this.logger.setLevel(this.level);
+            this.logger.setAdditivity(this.additivity);
+            for (Appender appender : this.appenders) {
+                this.logger.addAppender(appender);
             }
         }
     }
