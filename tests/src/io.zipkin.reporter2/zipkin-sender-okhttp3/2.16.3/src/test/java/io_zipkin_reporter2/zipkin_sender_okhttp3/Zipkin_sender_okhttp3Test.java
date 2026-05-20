@@ -9,6 +9,7 @@ package io_zipkin_reporter2.zipkin_sender_okhttp3;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import okhttp3.HttpUrl;
 import okhttp3.Request;
 import org.junit.jupiter.api.Test;
 import zipkin2.Call;
@@ -127,6 +128,42 @@ public class Zipkin_sender_okhttp3Test {
                 assertThat(SpanBytesDecoder.PROTO3.decodeList(request.body())).containsExactly(FIRST_SPAN, SECOND_SPAN);
             } finally {
                 sender.close();
+            }
+        }
+    }
+
+    @Test
+    void senderToBuilderCanReuseConfigurationWithDifferentEndpoint() throws Exception {
+        try (TestCollector primaryCollector = new TestCollector();
+                TestCollector secondaryCollector = new TestCollector()) {
+            OkHttpSender originalSender = OkHttpSender.newBuilder()
+                    .endpoint(primaryCollector.endpoint())
+                    .compressionEnabled(false)
+                    .messageMaxBytes(2048)
+                    .build();
+            OkHttpSender derivedSender = null;
+            try {
+                HttpUrl secondaryEndpoint = HttpUrl.parse(secondaryCollector.endpoint());
+                assertThat(secondaryEndpoint).isNotNull();
+
+                derivedSender = originalSender.toBuilder()
+                        .endpoint(secondaryEndpoint)
+                        .build();
+
+                assertThat(derivedSender.encoding()).isEqualTo(originalSender.encoding());
+                assertThat(derivedSender.messageMaxBytes()).isEqualTo(originalSender.messageMaxBytes());
+                assertThat(derivedSender.toString()).isEqualTo("OkHttpSender{" + secondaryCollector.endpoint() + "}");
+
+                derivedSender.sendSpans(jsonSpans(FIRST_SPAN)).execute();
+
+                CapturedRequest request = secondaryCollector.takeRequest();
+                assertThat(request.header("Content-Encoding")).isNull();
+                assertThat(SpanBytesDecoder.JSON_V2.decodeList(request.body())).containsExactly(FIRST_SPAN);
+            } finally {
+                if (derivedSender != null) {
+                    derivedSender.close();
+                }
+                originalSender.close();
             }
         }
     }
