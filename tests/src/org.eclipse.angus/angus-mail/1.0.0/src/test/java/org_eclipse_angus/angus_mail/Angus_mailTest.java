@@ -8,7 +8,7 @@ package org_eclipse_angus.angus_mail;
 
 import org.junit.jupiter.api.Test;
 
-class Angus_mailTest {
+public class Angus_mailTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
