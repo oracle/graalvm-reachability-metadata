@@ -1,0 +1,78 @@
+{
+  "reflection" : [
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.slf4j.Log4jLoggerFactory"
+      },
+      "type" : {
+        "lambda" : {
+          "declaringClass" : "org.apache.logging.log4j.spi.LoggingSystem",
+          "interfaces" : [
+            "java.security.PrivilegedAction"
+          ]
+        }
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.slf4j.Log4jLoggerFactory"
+      },
+      "type" : "java.util.ServiceLoader",
+      "methods" : [
+        {
+          "name" : "load",
+          "parameterTypes" : [
+            "java.lang.Class",
+            "java.lang.ClassLoader"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.slf4j.Log4jLoggerFactory"
+      },
+      "type" : "java.security.AccessController",
+      "methods" : [
+        {
+          "name" : "doPrivileged",
+          "parameterTypes" : [
+            "java.security.PrivilegedAction"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.slf4j.Log4jLoggerFactory"
+      },
+      "type" : "org.apache.logging.log4j.core.impl.Log4jProvider",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.slf4j.Log4jLoggerFactory"
+      },
+      "type" : "org.apache.logging.log4j.core.impl.Log4jContextFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    }
+  ],
+  "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.slf4j.Log4jLoggerFactory"
+      },
+      "glob" : "META-INF/services/org.apache.logging.log4j.spi.Provider"
+    }
+  ]
+}
