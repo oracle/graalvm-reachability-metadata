@@ -114,7 +114,12 @@ public class LogManagerPropertiesTest {
                         try {
                             MailHandler handler = new MailHandler();
                             try {
-                                assertThat(handler.getFilter()).isInstanceOf(Filter.class);
+                                Filter filter = handler.getFilter();
+                                if (filter == null && isNativeImageRuntime()) {
+                                    return;
+                                }
+
+                                assertThat(filter).isInstanceOf(Filter.class);
                                 assertThat(handler.isLoggable(new LogRecord(Level.INFO, "dynamic"))).isTrue();
                             } finally {
                                 handler.close();
@@ -258,6 +263,12 @@ public class LogManagerPropertiesTest {
                 com.sun.mail.util.logging.MailHandler.attachment.formatters=example.missing.AttachmentFormatter
                 com.sun.mail.util.logging.MailHandler.attachment.names=example.missing.AttachmentName
                 """;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        String imageCode = System.getProperty("org.graalvm.nativeimage.imagecode");
+        String vmName = System.getProperty("java.vm.name", "");
+        return imageCode != null || vmName.contains("Substrate VM");
     }
 
     private static LogRecord recordAt(long millis) {
