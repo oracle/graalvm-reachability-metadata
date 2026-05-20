@@ -1,0 +1,303 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e472c-5d1c-7ff1-85e5-737bdf6fbcc7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.lucene:lucene-core:5.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [5.1.0, 5.2.0, 5.2.1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9/metadata/org.apache.lucene/lucene-core/index.json
+- Entry selector: "metadata-version" = "5.1.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar
+- repository-url: https://github.com/apache/lucene-solr
+- test-code-url: https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar
+- description: Apache Lucene Core provides the core indexing, search, storage, and query APIs for the Lucene full-text search engine. It lets JVM applications create and query inverted indexes with analyzers, codecs, scoring, and low-level index management primitives.
+- language: <missing>
+
+Context:
+- Coordinate version: 5.1.0
+- Entry metadata-version: 5.1.0
+- Entry test-version: 5.1.0
+- Entry tested-versions: [5.1.0, 5.2.0, 5.2.1]
+codex
+I’ll verify the versioned artifact URLs before touching the JSON, especially whether Maven publishes test sources for these Lucene versions since those should take precedence if present.
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org apache lucene lucene-core 5.1.0 test-sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.1.0/
+codex
+Maven Central shows versioned source and javadoc jars for `5.1.0`, and its directory has no test-sources artifact. I’m checking the other aliases and the existing JSON now, then I’ll only adjust fields that are genuinely missing or stale under the URL-maintenance rules.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.lucene/lucene-core/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.5.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/lucene-solr",
+    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+    "description" : "Apache Lucene Core provides the core indexing, search, storage, and query APIs for the Lucene full-text search engine. It lets JVM applications create and query inverted indexes with analyzers, codecs, scoring, and low-level index management primitives.",
+    "tested-versions" : [
+      "5.5.0",
+      "5.5.1",
+      "5.5.2",
+      "5.5.3",
+      "5.5.4",
+      "5.5.5"
+    ],
+    "allowed-packages" : [
+      "org.apache.lucene"
+    ]
+  },
+  {
+    "metadata-version" : "5.3.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/lucene-solr",
+    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+    "description" : "Apache Lucene Core provides the core indexing, search, storage, and query APIs for the Lucene full-text search engine. It lets JVM applications create and query inverted indexes with analyzers, codecs, scoring, and low-level index management primitives.",
+    "tested-versions" : [
+      "5.3.0",
+      "5.3.1",
+      "5.3.2",
+      "5.4.0",
+      "5.4.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.lucene"
+    ]
+  },
+  {
+    "metadata-version" : "5.1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/lucene-solr",
+    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+    "description" : "Apache Lucene Core provides the core indexing, search, storage, and query APIs for the Lucene full-text search engine. It lets JVM applications create and query inverted indexes with analyzers, codecs, scoring, and low-level index management primitives.",
+    "tested-versions" : [
+      "5.1.0",
+      "5.2.0",
+      "5.2.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.lucene"
+    ]
+  },
+  {
+    "metadata-version" : "5.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/lucene-solr",
+    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+    "description" : "Apache Lucene Core provides the core indexing, search, storage, and query APIs for the Lucene full-text search engine. It lets JVM applications create and query inverted indexes with analyzers, codecs, scoring, and low-level index management primitives.",
+    "tested-versions" : [
+      "5.0.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.lucene"
+    ]
+  },
+  {
+    "metadata-version" : "4.10.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/lucene-solr",
+    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+    "description" : "Apache Lucene Core provides the core indexing, search, storage, and query APIs for the Lucene full-text search engine. It lets JVM applications create and query inverted indexes with analyzers, codecs, scoring, and low-level index management primitives.",
+    "tested-versions" : [
+      "4.10.4"
+    ],
+    "allowed-packages" : [
+      "org.apache.lucene"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'for v in 5.1.0 5.2.0 5.2.1; do for c in sources javadoc test-sources tests; do url="https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$v/lucene-core-$v-$c.jar"; code=$(curl -Ls -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s %s\\n' \""'$code" "$c" "$url"; done; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9
+ succeeded in 0ms:
+ M tests/src/org.apache.lucene/lucene-core/5.1.0/test-results-native/test/TEST-junit-jupiter.xml
+ M tests/src/org.apache.lucene/lucene-core/5.1.0/test-results-native/test/TEST-junit-vintage.xml
+
+exec
+/usr/bin/bash -lc 'for v in 5.1.0 5.2.0 5.2.1; do url="https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$v/lucene/core/src/test"; code=$(curl -Ls -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9
+ succeeded in 2419ms:
+200 https://github.com/apache/lucene-solr/tree/releases/lucene-solr/5.1.0/lucene/core/src/test
+200 https://github.com/apache/lucene-solr/tree/releases/lucene-solr/5.2.0/lucene/core/src/test
+200 https://github.com/apache/lucene-solr/tree/releases/lucene-solr/5.2.1/lucene/core/src/test
+
+ succeeded in 4589ms:
+200 sources https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.1.0/lucene-core-5.1.0-sources.jar
+200 javadoc https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.1.0/lucene-core-5.1.0-javadoc.jar
+404 test-sources https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.1.0/lucene-core-5.1.0-test-sources.jar
+404 tests https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.1.0/lucene-core-5.1.0-tests.jar
+200 sources https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.2.0/lucene-core-5.2.0-sources.jar
+200 javadoc https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.2.0/lucene-core-5.2.0-javadoc.jar
+404 test-sources https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.2.0/lucene-core-5.2.0-test-sources.jar
+404 tests https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.2.0/lucene-core-5.2.0-tests.jar
+200 sources https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.2.1/lucene-core-5.2.1-sources.jar
+200 javadoc https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.2.1/lucene-core-5.2.1-javadoc.jar
+404 test-sources https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.2.1/lucene-core-5.2.1-test-sources.jar
+404 tests https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.2.1/lucene-core-5.2.1-tests.jar
+
+web search: 
+web search: https://github.com/apache/lucene-solr/tree/releases/lucene-solr/5.1.0/lucene/core/src/test
+codex
+The target entry already has the selected source, repository, test-suite, documentation, and two-sentence description values. The only absent candidate is `language`, and Lucene Core is not Kotlin, Groovy, or Scala-specific, so that field should stay absent.
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.apache.lucene/lucene-core/index.json | sed -n '36,62p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9
+ succeeded in 0ms:
+    36	    "allowed-packages" : [
+    37	      "org.apache.lucene"
+    38	    ]
+    39	  },
+    40	  {
+    41	    "metadata-version" : "5.1.0",
+    42	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+    43	    "repository-url" : "https://github.com/apache/lucene-solr",
+    44	    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+    45	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+    46	    "description" : "Apache Lucene Core provides the core indexing, search, storage, and query APIs for the Lucene full-text search engine. It lets JVM applications create and query inverted indexes with analyzers, codecs, scoring, and low-level index management primitives.",
+    47	    "tested-versions" : [
+    48	      "5.1.0",
+    49	      "5.2.0",
+    50	      "5.2.1"
+    51	    ],
+    52	    "allowed-packages" : [
+    53	      "org.apache.lucene"
+    54	    ]
+    55	  },
+    56	  {
+    57	    "metadata-version" : "5.0.0",
+    58	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+    59	    "repository-url" : "https://github.com/apache/lucene-solr",
+    60	    "test-code-url" : "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+    61	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+    62	    "description" : "Apache Lucene Core provides the core indexing, search, storage, and query APIs for the Lucene full-text search engine. It lets JVM applications create and query inverted indexes with analyzers, codecs, scoring, and low-level index management primitives.",
+
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"5.1.0\")' metadata/org.apache.lucene/lucene-core/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9
+ succeeded in 0ms:
+{
+  "metadata-version": "5.1.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/lucene-solr",
+  "test-code-url": "https://github.com/apache/lucene-solr/tree/releases/lucene-solr/$version$/lucene/core/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/$version$/lucene-core-$version$-javadoc.jar",
+  "description": "Apache Lucene Core provides the core indexing, search, storage, and query APIs for the Lucene full-text search engine. It lets JVM applications create and query inverted indexes with analyzers, codecs, scoring, and low-level index management primitives.",
+  "tested-versions": [
+    "5.1.0",
+    "5.2.0",
+    "5.2.1"
+  ],
+  "allowed-packages": [
+    "org.apache.lucene"
+  ]
+}
+
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.1.0/lucene-core-5.1.0-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.1.0/
+web search: 
+web search: https://github.com/apache/lucene-solr
+web search: 
+web search: https://apache.googlesource.com/lucene/%2B/refs/tags/releases/lucene-solr/5.1.0/lucene/
+web search: 
+web search: https://apache.googlesource.com/lucene/%2B/refs/tags/releases/lucene-solr/5.1.0/lucene/core/
+web search: 
+web search: https://apache.googlesource.com/lucene/%2B/refs/tags/releases/lucene-solr/5.1.0/lucene/core/src/
+web search: 
+web search: "lucene-core-5.2.0-sources.jar" "lucene-core-5.2.0-javadoc.jar"
+codex
+No JSON edit was needed in [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9/metadata/org.apache.lucene/lucene-core/index.json:41). The `5.1.0` entry already has the selected source, repository, test-suite, documentation, and exact two-sentence description values; `language` remains absent because Lucene Core is a Java library, not Kotlin/Groovy/Scala-specific. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.1.0/))
+
+I verified the `$version$` templates for `5.1.0`, `5.2.0`, and `5.2.1`: Maven source and javadoc jars return `200`, Maven test/test-sources jars are not published, and the GitHub tagged test-suite paths return `200`. Existing unrelated modified files are still present under `tests/src/org.apache.lucene/lucene-core/5.1.0/test-results-native/test/`.
+tokens used
+59,326
+No JSON edit was needed in [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9/metadata/org.apache.lucene/lucene-core/index.json:41). The `5.1.0` entry already has the selected source, repository, test-suite, documentation, and exact two-sentence description values; `language` remains absent because Lucene Core is a Java library, not Kotlin/Groovy/Scala-specific. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/5.1.0/))
+
+I verified the `$version$` templates for `5.1.0`, `5.2.0`, and `5.2.1`: Maven source and javadoc jars return `200`, Maven test/test-sources jars are not published, and the GitHub tagged test-suite paths return `200`. Existing unrelated modified files are still present under `tests/src/org.apache.lucene/lucene-core/5.1.0/test-results-native/test/`.
+Ran agent for org.apache.lucene:lucene-core:5.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9/build/agent-url-discovery-logs/org.apache.lucene-lucene-core-5.1.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7344-3b3cacd9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 24s
+9 actionable tasks: 1 executed, 8 up-to-date
