@@ -13,6 +13,7 @@ import io.swagger.v3.core.converter.ResolvedSchema;
 import io.swagger.v3.core.jackson.ModelResolver;
 import io.swagger.v3.core.util.Configuration;
 import io.swagger.v3.core.util.Json;
+import io.swagger.v3.core.util.ValidatorProcessor;
 import io.swagger.v3.oas.annotations.parameters.ValidatedParameter;
 import io.swagger.v3.oas.models.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ModelResolverTest {
+public class ModelResolverTest implements ValidatorProcessor {
     @Test
     void resolvesEnumSchemaFromJsonValueField() {
         ResolvedSchema resolvedSchema = new ModelConverters().readAllAsResolvedSchema(EnumContainer.class);
@@ -68,7 +69,7 @@ public class ModelResolverTest {
     @Test
     void acceptsValidatorProcessorConfigurationClassName() {
         Configuration configuration = new Configuration()
-                .validatorProcessorClass("io.swagger.v3.core.util.ValidatorProcessor");
+                .validatorProcessorClass(ModelResolverTest.class.getName());
 
         ModelResolver resolver = new ModelResolver(Json.mapper()).configuration(configuration);
 
