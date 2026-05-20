@@ -152,6 +152,27 @@ public class Reactor_netty_incubator_quicTest {
     }
 
     @Test
+    void hostAndPortShortcutsConfigureEndpointAddresses() {
+        QuicClientConfig clientConfig = QuicClient.create()
+                .host("127.0.0.1")
+                .port(24_680)
+                .configuration();
+        InetSocketAddress remoteAddress = (InetSocketAddress) clientConfig.remoteAddress().get();
+
+        assertThat(remoteAddress.getHostString()).isEqualTo("127.0.0.1");
+        assertThat(remoteAddress.getPort()).isEqualTo(24_680);
+
+        QuicServerConfig serverConfig = QuicServer.create()
+                .host("127.0.0.1")
+                .port(24_681)
+                .configuration();
+        InetSocketAddress bindAddress = (InetSocketAddress) serverConfig.bindAddress().get();
+
+        assertThat(bindAddress.getHostString()).isEqualTo("127.0.0.1");
+        assertThat(bindAddress.getPort()).isEqualTo(24_681);
+    }
+
+    @Test
     void channelAttributesAndOptionsAreCapturedAndCanBeRemoved() {
         AttributeKey<String> clientAttribute = AttributeKey.valueOf("reactor.netty.quic.test.client.channelAttribute");
         AttributeKey<String> serverAttribute = AttributeKey.valueOf("reactor.netty.quic.test.server.channelAttribute");
