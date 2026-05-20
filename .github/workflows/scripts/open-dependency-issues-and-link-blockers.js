@@ -24,6 +24,9 @@
 const fs = require('fs');
 const path = require('path');
 
+const MAX_NEW_ISSUES = 100;
+const MAX_SKIPPED_ISSUES_IN_COMMENT = 50;
+
 /**
  * Resolves the workspace directory used to read repository files and helper scripts.
  */
@@ -805,6 +808,7 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
 
   const gaIssue = new Map([[rootGA, sourceIssueNumber]]);
   let createdCount = 0;
+  const skippedIssueCreations = [];
 
   const openIssues = await github.paginate(github.rest.issues.listForRepo, {
     owner,
@@ -866,6 +870,14 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
         );
       }
     } else {
+      if (createdCount >= MAX_NEW_ISSUES) {
+        skippedIssueCreations.push(`${ga}:${version}`);
+        console.log(
+          `Reached dependency issue creation cap of ${MAX_NEW_ISSUES}; skipping ${ga}:${version}.`
+        );
+        continue;
+      }
+
       const created = await github.rest.issues.create({
         owner,
         repo,
@@ -882,6 +894,37 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
     }
 
     gaIssue.set(ga, issueNumber);
+  }
+
+  if (skippedIssueCreations.length > 0) {
+    const listedSkippedIssues = skippedIssueCreations
+      .slice(0, MAX_SKIPPED_ISSUES_IN_COMMENT)
+      .join('\n');
+    const unlistedSkippedIssueCount = Math.max(
+      0,
+      skippedIssueCreations.length - MAX_SKIPPED_ISSUES_IN_COMMENT
+    );
+    const diagnosticComment = [
+      'Automation: Dependency issue creation reached the safety cap.',
+      '',
+      `This workflow creates at most ${MAX_NEW_ISSUES} new dependency issues per source issue.`,
+      'Remaining unsupported dependencies were not opened automatically.',
+      '',
+      'Skipped dependency issue candidates:',
+      '```',
+      listedSkippedIssues || '(none)',
+      unlistedSkippedIssueCount > 0
+        ? `... and ${unlistedSkippedIssueCount} more.`
+        : '',
+      '```'
+    ].filter((line) => line !== '').join('\n');
+
+    await github.rest.issues.createComment({
+      owner,
+      repo,
+      issue_number: sourceIssueNumber,
+      body: diagnosticComment
+    });
   }
 
   await hydrateAcceptedBlockersFromExistingIssues(Array.from(gaIssue.values()));
