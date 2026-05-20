@@ -7,7 +7,6 @@
 package tomcat;
 
 import java.beans.PropertyChangeListener;
-import java.util.Hashtable;
 import java.util.Map;
 
 import jakarta.annotation.PostConstruct;
@@ -46,7 +45,7 @@ public class DefaultInstanceManagerTest {
 
     @Test
     void loadsApplicationClassesWithWebappClassLoaderWhenContainerClassLoaderCannotSeeThem() throws Exception {
-        DefaultInstanceManager manager = instanceManager(new NamingContext(new Hashtable<>(), "empty"),
+        DefaultInstanceManager manager = instanceManager(new NamingContext(null, "empty"),
                 testClassLoader(), new RejectingClassLoader());
 
         Object component = manager.newInstance(WebappLoadedComponent.class.getName());
@@ -56,7 +55,7 @@ public class DefaultInstanceManagerTest {
 
     @Test
     void loadsCatalinaClassesWithContainerClassLoader() throws Exception {
-        DefaultInstanceManager manager = instanceManager(new NamingContext(new Hashtable<>(), "empty"),
+        DefaultInstanceManager manager = instanceManager(new NamingContext(null, "empty"),
                 testClassLoader(), testClassLoader());
 
         Object component = manager.newInstance(StandardContext.class.getName());
@@ -66,7 +65,7 @@ public class DefaultInstanceManagerTest {
 
     @Test
     void constructsClassesWithExplicitClassLoader() throws Exception {
-        DefaultInstanceManager manager = instanceManager(new NamingContext(new Hashtable<>(), "empty"),
+        DefaultInstanceManager manager = instanceManager(new NamingContext(null, "empty"),
                 testClassLoader(), testClassLoader());
 
         Object component = manager.newInstance(ExplicitLoaderComponent.class.getName(), testClassLoader());
@@ -74,9 +73,9 @@ public class DefaultInstanceManagerTest {
         assertThat(component).isInstanceOf(ExplicitLoaderComponent.class);
     }
 
-    private static NamingContext namingContext(Map<String,Object> bindings) throws Exception {
-        NamingContext context = new NamingContext(new Hashtable<>(), "default-instance-manager-test");
-        for (Map.Entry<String,Object> binding : bindings.entrySet()) {
+    private static NamingContext namingContext(Map<String, Object> bindings) throws Exception {
+        NamingContext context = new NamingContext(null, "default-instance-manager-test");
+        for (Map.Entry<String, Object> binding : bindings.entrySet()) {
             context.bind(binding.getKey(), binding.getValue());
         }
         return context;
