@@ -15,10 +15,10 @@ import org.testng.internal.annotations.Converter;
 public class ConverterTest {
     @Test
     void convertsClassNameListIntoClassArray() {
-        Class<?>[] defaultClasses = new Class<?>[] { Object.class };
+        Class<?>[] defaultClasses = new Class<?>[] {Object.class};
 
         Class<?>[] classes = Converter.getClassArray(
-                String.class.getName() + " , " + ConverterTest.class.getName(),
+                String.class.getName() + ", " + ConverterTest.class.getName(),
                 defaultClasses);
 
         assertThat(classes).containsExactly(String.class, ConverterTest.class);
@@ -26,7 +26,7 @@ public class ConverterTest {
 
     @Test
     void returnsDefaultClassArrayWhenTagValueIsNull() {
-        Class<?>[] defaultClasses = new Class<?>[] { Object.class };
+        Class<?>[] defaultClasses = new Class<?>[] {Object.class};
 
         Class<?>[] classes = Converter.getClassArray(null, defaultClasses);
 
