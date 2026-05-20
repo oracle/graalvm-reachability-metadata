@@ -207,9 +207,9 @@ public class Xnio_apiTest {
                 decoded,
                 StandardCharsets.UTF_8.newDecoder(),
                 4)) {
-            writerOutputStream.write("Grüße".getBytes(StandardCharsets.UTF_8));
+            writerOutputStream.write("Gr\u00fc\u00dfe".getBytes(StandardCharsets.UTF_8));
         }
-        assertThat(decoded).hasToString("Grüße");
+        assertThat(decoded).hasToString("Gr\u00fc\u00dfe");
     }
 
 }
