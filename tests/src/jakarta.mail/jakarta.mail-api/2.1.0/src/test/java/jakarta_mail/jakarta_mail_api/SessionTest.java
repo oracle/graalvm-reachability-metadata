@@ -17,6 +17,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SessionTest {
+    private static final String ANGUS_SMTP_TRANSPORT_CLASS = "com.sun.mail.smtp.SMTPTransport";
+
+    @Test
+    void getTransportInstantiatesProvider() throws Exception {
+        Session session = newSession();
+        Provider provider = transportProvider("smtp", ANGUS_SMTP_TRANSPORT_CLASS);
+
+        Transport transport = session.getTransport(provider);
+
+        assertEquals(provider.getProtocol(), transport.getURLName().getProtocol());
+        transport.close();
+    }
+
     @Test
     void getTransportLoadsProviderWithContextClassLoader() {
         Session session = newSession();
