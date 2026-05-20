@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 import org.testng.TestNG;
+import org.testng.internal.thread.DefaultThreadPoolExecutorFactory;
 
 public class ArrayEndingMethodMatcherTest {
     @Test
@@ -23,6 +24,7 @@ public class ArrayEndingMethodMatcherTest {
         TestNG testNg = new TestNG();
         testNg.setUseDefaultListeners(false);
         testNg.setVerbose(0);
+        testNg.setExecutorFactory(new DefaultThreadPoolExecutorFactory());
         testNg.setTestClasses(new Class<?>[] {VarargsDataProviderTestCase.class});
         testNg.run();
 
