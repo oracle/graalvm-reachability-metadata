@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.slf4j.SLF4JServiceProvider;
 import org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory;
@@ -68,6 +69,23 @@ public class Log4j_slf4j2_implTest {
         assertThat(namedLogger.getName()).isEqualTo(LOGGER_NAME);
         assertThat(classLogger.getName()).isEqualTo(Log4j_slf4j2_implTest.class.getName());
         assertThat(loggerFactory.getLogger(LOGGER_NAME)).isSameAs(namedLogger);
+    }
+
+    @Test
+    void loggerFactoryMapsSlf4jRootLoggerNameToLog4jRootLogger() {
+        ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
+        Logger slf4jRootLogger = loggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        org.apache.logging.log4j.Logger log4jRootLogger = LogManager.getRootLogger();
+
+        assertThat(slf4jRootLogger.getName()).isEqualTo(Logger.ROOT_LOGGER_NAME);
+        assertThat(loggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).isSameAs(slf4jRootLogger);
+        assertThat(slf4jRootLogger.isTraceEnabled()).isEqualTo(log4jRootLogger.isTraceEnabled());
+        assertThat(slf4jRootLogger.isDebugEnabled()).isEqualTo(log4jRootLogger.isDebugEnabled());
+        assertThat(slf4jRootLogger.isInfoEnabled()).isEqualTo(log4jRootLogger.isInfoEnabled());
+        assertThat(slf4jRootLogger.isWarnEnabled()).isEqualTo(log4jRootLogger.isWarnEnabled());
+        assertThat(slf4jRootLogger.isErrorEnabled()).isEqualTo(log4jRootLogger.isErrorEnabled());
+
+        slf4jRootLogger.error("root logger message is accepted by the Log4j-backed SLF4J bridge");
     }
 
     @Test
