@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
@@ -24,13 +25,17 @@ import io.vertx.sqlclient.PrepareOptions;
 import io.vertx.sqlclient.PreparedQuery;
 import io.vertx.sqlclient.PreparedStatement;
 import io.vertx.sqlclient.PropertyKind;
+import io.vertx.sqlclient.Query;
 import io.vertx.sqlclient.Row;
 import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.RowStream;
 import io.vertx.sqlclient.SqlConnectOptions;
+import io.vertx.sqlclient.SqlConnection;
+import io.vertx.sqlclient.Transaction;
 import io.vertx.sqlclient.Tuple;
 import io.vertx.sqlclient.data.NullValue;
 import io.vertx.sqlclient.data.Numeric;
+import io.vertx.sqlclient.spi.DatabaseMetadata;
 import io.vertx.sqlclient.spi.Driver;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -47,6 +52,7 @@ import java.util.NoSuchElementException;
 import java.util.ServiceConfigurationError;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -352,6 +358,29 @@ public class Vertx_sql_clientTest {
     }
 
     @Test
+    void poolWithConnectionClosesBorrowedConnectionAfterSuccessAndFailure() {
+        TestSqlConnection successfulConnection = new TestSqlConnection();
+        Future<String> success = new TestPool(successfulConnection)
+                .withConnection(connection -> {
+                    assertThat(connection).isSameAs(successfulConnection);
+                    return Future.succeededFuture("done");
+                });
+
+        assertThat(success.succeeded()).isTrue();
+        assertThat(success.result()).isEqualTo("done");
+        assertThat(successfulConnection.closeCount).isEqualTo(1);
+
+        TestSqlConnection failedConnection = new TestSqlConnection();
+        RuntimeException failure = new RuntimeException("boom");
+        Future<String> failed = new TestPool(failedConnection)
+                .withConnection(connection -> Future.failedFuture(failure));
+
+        assertThat(failed.failed()).isTrue();
+        assertThat(failed.cause()).isSameAs(failure);
+        assertThat(failedConnection.closeCount).isEqualTo(1);
+    }
+
+    @Test
     void preparedStatementConvenienceMethodsUseEmptyTupleArguments() {
         TestPreparedStatement preparedStatement = new TestPreparedStatement();
 
@@ -363,6 +392,152 @@ public class Vertx_sql_clientTest {
         assertThat(stream).isSameAs(preparedStatement.stream);
         assertThat(preparedStatement.fetch).isEqualTo(25);
         assertThat(preparedStatement.streamArguments.size()).isZero();
+    }
+
+    private static final class TestPool implements Pool {
+        private final SqlConnection connection;
+
+        private TestPool(SqlConnection connection) {
+            this.connection = connection;
+        }
+
+        @Override
+        public void getConnection(Handler<AsyncResult<SqlConnection>> handler) {
+            handler.handle(Future.succeededFuture(connection));
+        }
+
+        @Override
+        public Future<SqlConnection> getConnection() {
+            return Future.succeededFuture(connection);
+        }
+
+        @Override
+        public Query<RowSet<Row>> query(String sql) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public PreparedQuery<RowSet<Row>> preparedQuery(String sql) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public PreparedQuery<RowSet<Row>> preparedQuery(String sql, PrepareOptions options) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void close(Handler<AsyncResult<Void>> handler) {
+            handler.handle(Future.succeededFuture());
+        }
+
+        @Override
+        public Future<Void> close() {
+            return Future.succeededFuture();
+        }
+
+        @Override
+        public Pool connectHandler(Handler<SqlConnection> handler) {
+            handler.handle(connection);
+            return this;
+        }
+
+        @Override
+        public Pool connectionProvider(Function<Context, Future<SqlConnection>> provider) {
+            return this;
+        }
+
+        @Override
+        public int size() {
+            return 1;
+        }
+    }
+
+    private static final class TestSqlConnection implements SqlConnection {
+        private int closeCount;
+
+        @Override
+        public Query<RowSet<Row>> query(String sql) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public PreparedQuery<RowSet<Row>> preparedQuery(String sql) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public PreparedQuery<RowSet<Row>> preparedQuery(String sql, PrepareOptions options) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public SqlConnection prepare(String sql, Handler<AsyncResult<PreparedStatement>> handler) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Future<PreparedStatement> prepare(String sql) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public SqlConnection prepare(
+                String sql, PrepareOptions options, Handler<AsyncResult<PreparedStatement>> handler) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Future<PreparedStatement> prepare(String sql, PrepareOptions options) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public SqlConnection exceptionHandler(Handler<Throwable> handler) {
+            return this;
+        }
+
+        @Override
+        public SqlConnection closeHandler(Handler<Void> handler) {
+            return this;
+        }
+
+        @Override
+        public void begin(Handler<AsyncResult<Transaction>> handler) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Future<Transaction> begin() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Transaction transaction() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isSSL() {
+            return false;
+        }
+
+        @Override
+        public void close(Handler<AsyncResult<Void>> handler) {
+            closeCount++;
+            handler.handle(Future.succeededFuture());
+        }
+
+        @Override
+        public Future<Void> close() {
+            closeCount++;
+            return Future.succeededFuture();
+        }
+
+        @Override
+        public DatabaseMetadata databaseMetadata() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private static final class TestPreparedStatement implements PreparedStatement {
