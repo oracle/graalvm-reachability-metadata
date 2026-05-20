@@ -6,9 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  actions: read
   contents: read
-  issues: write
 
 concurrency:
   group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
@@ -43,9 +41,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
     needs: get-all-metadata
+    permissions:
+      contents: read
     env:
-      CURRENT_JOB_NAME: "🧪 ${{ matrix.coordinates }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GVM_TCK_NATIVE_IMAGE_MODE: ${{ matrix.nativeImageMode }}
       LOG_LINES: "300"
     strategy:
@@ -54,6 +52,8 @@ jobs:
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
 
       - name: "🛠️ Setup latest native-build-tools snapshot"
         uses: ./.github/actions/setup-native-build-tools
@@ -117,16 +117,7 @@ jobs:
               }' >> test-all-results/failures.ndjson
           }
 
-          JOB_ID=$(
-            gh run view "${{ github.run_id }}" --repo "${{ github.repository }}" --json jobs \
-              --jq ".jobs[] | select(.name == \"$CURRENT_JOB_NAME\") | .databaseId" \
-              | head -n1
-          )
-          if [[ -z "$JOB_ID" || "$JOB_ID" == "null" ]]; then
-            RUNNER_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          else
-            RUNNER_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/$JOB_ID"
-          fi
+          RUNNER_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
           MATCHING_MATRIX_OUTPUT_FILE="$(mktemp)"
           GITHUB_OUTPUT="$MATCHING_MATRIX_OUTPUT_FILE" ./gradlew generateMatrixMatchingCoordinates -Pcoordinates="${{ matrix.coordinates }}"
@@ -231,10 +222,11 @@ jobs:
   process-results:
     name: "🧪 Process results"
     runs-on: "ubuntu-22.04"
-    permissions: write-all
+    permissions:
+      actions: read
+      contents: read
+      issues: write
     env:
-      GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ISSUE_TITLE_PREFIX: "[Automation] "
       ISSUE_TITLE_MIDDLE: " fails for "
       ISSUE_BODY_CHAR_LIMIT: "60000"
@@ -302,6 +294,8 @@ jobs:
 
       - name: "❗ Create aggregated issues for failed metadata tests"
         if: steps.aggregate.outputs.has-failures == 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+        env:
+          GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
         run: |
           set -euo pipefail
 
