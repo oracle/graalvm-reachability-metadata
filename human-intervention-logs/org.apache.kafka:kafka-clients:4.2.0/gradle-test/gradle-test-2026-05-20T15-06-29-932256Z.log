@@ -1,0 +1,104 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.apache.kafka:kafka-clients:4.2.0
+Command: `/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2110-42db5a15/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test FAILED
+
+KafkaClientsTest > initializationError FAILED
+    java.lang.NoSuchFieldError: Class org.apache.kafka.common.record.CompressionType does not have member field 'int id'
+        at kafka.server.Defaults$.<clinit>(KafkaConfig.scala:186)
+        at kafka.server.KafkaConfig$.<clinit>(KafkaConfig.scala:734)
+        at kafka.server.KafkaConfig.<init>(KafkaConfig.scala:1568)
+        at org_apache_kafka.kafka_clients.KafkaClientsTest.beforeAll(KafkaClientsTest.java:100)
+
+DefaultJwtRetrieverTest > oauthBearerLoginHandlerUsesDefaultJwtRetrieverFromProducerConfiguration() FAILED
+    org.apache.kafka.common.config.ConfigException: The class org.apache.kafka.common.security.oauthbearer.DefaultJwtRetriever defined in the sasl.oauthbearer.jwt.retriever.class configuration encountered an error on configure(): Malformed JWT provided; expected three sections (header, payload, and signature)
+        at app//org.apache.kafka.common.security.oauthbearer.internals.secured.ConfigurationUtils.getConfiguredInstance(ConfigurationUtils.java:360)
+        at app//org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginCallbackHandler.configure(OAuthBearerLoginCallbackHandler.java:186)
+        at app//org_apache_kafka.kafka_clients.DefaultJwtRetrieverTest.oauthBearerLoginHandlerUsesDefaultJwtRetrieverFromProducerConfiguration(DefaultJwtRetrieverTest.java:51)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2110-42db5a15/tests/src/org.apache.kafka/kafka-clients/4.2.0/build/reports/problems/problems-report.html
+
+3 tests completed, 2 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2110-42db5a15/tests/src/org.apache.kafka/kafka-clients/4.2.0/build/reports/tests/test/index.html
+
+
+* Try:
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+> Run with --scan
+ to generate a Build Scan (Powered by Develocity).
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2110-42db5a15/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.apache.kafka:kafka-clients:4.2.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+9 actionable tasks: 1 executed, 8 up-to-date
