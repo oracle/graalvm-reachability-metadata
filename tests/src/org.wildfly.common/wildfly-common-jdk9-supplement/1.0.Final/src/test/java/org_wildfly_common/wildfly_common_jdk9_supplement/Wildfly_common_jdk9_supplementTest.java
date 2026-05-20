@@ -7,6 +7,7 @@
 package org_wildfly_common.wildfly_common_jdk9_supplement;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.wildfly.common.cpu.ProcessorInfo.availableProcessors;
 import static org.wildfly.common.os.Process.getProcessId;
 import static org.wildfly.common.os.Process.getProcessName;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -77,10 +79,14 @@ public class Wildfly_common_jdk9_supplementTest {
     @Test
     @Order(5)
     void processNameCanBeDerivedFromJavaCommandClassName() throws Exception {
+        Optional<String> processProbeClasspath = processProbeClasspath();
+        assumeTrue(processProbeClasspath.isPresent(),
+                "Child JVM classpath is unavailable in this native-image test environment");
+
         ProcessBuilder processBuilder = new ProcessBuilder(List.of(
                 javaCommand(),
                 "-cp",
-                processProbeClasspath(),
+                processProbeClasspath.orElseThrow(),
                 ProcessNameProbe.class.getName(),
                 "resolve-simple-name"))
                 .redirectErrorStream(true);
@@ -127,19 +133,23 @@ public class Wildfly_common_jdk9_supplementTest {
         return "java";
     }
 
-    private static String processProbeClasspath() throws Exception {
+    private static Optional<String> processProbeClasspath() throws Exception {
         String javaClasspath = System.getProperty("java.class.path");
         if (javaClasspath != null && !javaClasspath.isBlank()) {
-            return javaClasspath;
+            return Optional.of(javaClasspath);
         }
 
-        return String.join(System.getProperty("path.separator"),
+        Path effectiveClasses = Path.of("build", "jacoco", "effective");
+        if (!Files.isDirectory(effectiveClasses)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(String.join(System.getProperty("path.separator"),
                 Path.of("build", "classes", "java", "test").toString(),
-                wildflyCommonClassesDirectory().toString());
+                wildflyCommonClassesDirectory(effectiveClasses).toString()));
     }
 
-    private static Path wildflyCommonClassesDirectory() throws Exception {
-        Path effectiveClasses = Path.of("build", "jacoco", "effective");
+    private static Path wildflyCommonClassesDirectory(Path effectiveClasses) throws Exception {
         try (Stream<Path> paths = Files.walk(effectiveClasses)) {
             return paths.filter(Files::isDirectory)
                     .filter(path -> Files.exists(path.resolve("org/wildfly/common/os/Process.class")))
