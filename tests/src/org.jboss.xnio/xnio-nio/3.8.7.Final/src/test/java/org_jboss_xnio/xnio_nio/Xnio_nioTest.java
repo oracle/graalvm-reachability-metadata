@@ -23,6 +23,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.xnio.ChannelPipe;
 import org.xnio.FileAccess;
+import org.xnio.FileChangeCallback;
+import org.xnio.FileChangeEvent;
+import org.xnio.FileSystemWatcher;
 import org.xnio.IoFuture;
 import org.xnio.OptionMap;
 import org.xnio.Options;
@@ -69,6 +72,43 @@ public class Xnio_nioTest {
             assertThat(worker.getIoThreadCount()).isEqualTo(1);
         } finally {
             closeWorker(worker);
+        }
+    }
+
+    @Test
+    void fileSystemWatcherReportsAddedFiles() throws Exception {
+        Path directory = Files.createTempDirectory("xnio-nio-watch");
+        Path createdFile = directory.resolve("created.txt");
+        FileSystemWatcher watcher = null;
+        try {
+            watcher = Xnio.getInstance("nio").createFileSystemWatcher(
+                    "xnio-nio-test-watcher",
+                    OptionMap.create(Options.THREAD_DAEMON, true));
+            CountDownLatch fileAdded = new CountDownLatch(1);
+            AtomicReference<FileChangeEvent> addedEvent = new AtomicReference<>();
+            Path expectedPath = createdFile.toAbsolutePath().normalize();
+            FileChangeCallback callback = changes -> changes.stream()
+                    .filter(change -> change.getType() == FileChangeEvent.Type.ADDED)
+                    .filter(change -> change.getFile().toPath().toAbsolutePath().normalize().equals(expectedPath))
+                    .findFirst()
+                    .ifPresent(change -> {
+                        addedEvent.set(change);
+                        fileAdded.countDown();
+                    });
+
+            watcher.watchPath(directory.toFile(), callback);
+            Files.writeString(createdFile, "created by watcher", StandardCharsets.UTF_8);
+
+            assertThat(fileAdded.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(addedEvent.get()).isNotNull();
+            assertThat(addedEvent.get().getFile().toPath().toAbsolutePath().normalize()).isEqualTo(expectedPath);
+            assertThat(addedEvent.get().getType()).isEqualTo(FileChangeEvent.Type.ADDED);
+
+            watcher.unwatchPath(directory.toFile(), callback);
+        } finally {
+            closeQuietly(watcher);
+            Files.deleteIfExists(createdFile);
+            Files.deleteIfExists(directory);
         }
     }
 
