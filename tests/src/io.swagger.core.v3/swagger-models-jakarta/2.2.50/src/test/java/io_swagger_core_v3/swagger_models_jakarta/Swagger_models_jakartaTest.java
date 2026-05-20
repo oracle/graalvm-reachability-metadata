@@ -24,10 +24,12 @@ import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.DateSchema;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
 import io.swagger.v3.oas.models.media.Discriminator;
 import io.swagger.v3.oas.models.media.EmailSchema;
 import io.swagger.v3.oas.models.media.Encoding;
 import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.JsonSchema;
 import io.swagger.v3.oas.models.media.MapSchema;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.NumberSchema;
@@ -56,6 +58,9 @@ import io.swagger.v3.oas.models.tags.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -414,6 +419,33 @@ public class Swagger_models_jakartaTest {
         assertThat(booleanSchema.getType()).isEqualTo("boolean");
         assertThat(booleanSchema.getDefault()).isEqualTo(true);
         assertThat(booleanSchema.getEnum()).isEqualTo(List.of(false));
+    }
+
+    @Test
+    void jsonAndDateTimeSchemasCoercePublicDefaultAndExampleValues() {
+        JsonSchema numericSchema = new JsonSchema();
+        numericSchema.types(Set.of("integer"));
+        numericSchema.setDefault("42");
+        numericSchema.setExample("100");
+
+        JsonSchema booleanSchema = new JsonSchema();
+        booleanSchema.types(Set.of("boolean"));
+        booleanSchema.setDefault("true");
+
+        DateTimeSchema dateTimeSchema = new DateTimeSchema();
+        dateTimeSchema.setDefault(Date.from(Instant.EPOCH));
+        dateTimeSchema.setExample("2024-01-02T03:04:05Z");
+
+        assertThat(numericSchema.getSpecVersion()).isEqualTo(SpecVersion.V31);
+        assertThat(numericSchema.getTypes()).containsExactly("integer");
+        assertThat(numericSchema.getDefault()).isEqualTo(42);
+        assertThat(numericSchema.getExample()).isEqualTo(100);
+        assertThat(booleanSchema.getDefault()).isEqualTo(true);
+        assertThat(dateTimeSchema.getType()).isEqualTo("string");
+        assertThat(dateTimeSchema.getFormat()).isEqualTo("date-time");
+        assertThat(dateTimeSchema.getDefault()).isEqualTo(OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC));
+        assertThat(dateTimeSchema.getExample())
+                .isEqualTo(OffsetDateTime.of(2024, 1, 2, 3, 4, 5, 0, ZoneOffset.UTC));
     }
 
     @Test
