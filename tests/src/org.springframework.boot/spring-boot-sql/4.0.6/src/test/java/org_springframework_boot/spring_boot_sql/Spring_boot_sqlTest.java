@@ -30,12 +30,15 @@ import org.springframework.boot.sql.init.DatabaseInitializationSettings;
 import org.springframework.boot.sql.init.dependency.AbstractBeansOfTypeDatabaseInitializerDetector;
 import org.springframework.boot.sql.init.dependency.AbstractBeansOfTypeDependsOnDatabaseInitializationDetector;
 import org.springframework.boot.sql.init.dependency.DatabaseInitializationDependencyConfigurer;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitializationDetector;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.DescriptiveResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
@@ -241,6 +244,22 @@ public class Spring_boot_sqlTest {
         }
     }
 
+    @Test
+    void springFactoriesDetectorFindsBeansAnnotatedWithDependsOnDatabaseInitialization() {
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            context.registerBean("annotatedDependent", AnnotatedDatabaseDependentBean.class);
+            context.registerBean("plainDependent", PlainDatabaseDependentBean.class);
+
+            List<DependsOnDatabaseInitializationDetector> detectors = SpringFactoriesLoader
+                .forDefaultResourceLocation(context.getClassLoader())
+                .load(DependsOnDatabaseInitializationDetector.class);
+
+            assertThat(detectors).isNotEmpty();
+            assertThat(detectors).anySatisfy((detector) -> assertThat(detector.detect(context.getBeanFactory()))
+                .containsExactly("annotatedDependent"));
+        }
+    }
+
     private static DatabaseInitializationSettings scriptSettings(DatabaseInitializationMode mode) {
         DatabaseInitializationSettings settings = new DatabaseInitializationSettings();
         settings.setSchemaLocations(List.of("schema.sql"));
@@ -386,6 +405,13 @@ public class Spring_boot_sqlTest {
             return this.types;
         }
 
+    }
+
+    @DependsOnDatabaseInitialization
+    private static final class AnnotatedDatabaseDependentBean {
+    }
+
+    private static final class PlainDatabaseDependentBean {
     }
 
     private static final class TestDatabaseInitializer {
