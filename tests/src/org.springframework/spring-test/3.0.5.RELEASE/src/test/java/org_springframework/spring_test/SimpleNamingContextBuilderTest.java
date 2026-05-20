@@ -7,6 +7,7 @@
 package org_springframework.spring_test;
 
 import java.util.Hashtable;
+import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -25,7 +26,7 @@ public class SimpleNamingContextBuilderTest {
         builder.deactivate();
         TestInitialContextFactory.createdInstances = 0;
 
-        Hashtable<String, Object> environment = new Hashtable<String, Object>();
+        Properties environment = new Properties();
         environment.put(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class);
 
         InitialContextFactory factory = builder.createInitialContextFactory(environment);
