@@ -36,6 +36,8 @@ import io.github.resilience4j.kotlin.retry.executeSuspendFunction as executeRetr
 import io.github.resilience4j.kotlin.retry.retry as resilienceRetry
 import io.github.resilience4j.kotlin.retry.withRetryConfig
 import io.github.resilience4j.kotlin.timelimiter.TimeLimiterConfig as KotlinTimeLimiterConfig
+import io.github.resilience4j.kotlin.timelimiter.decorateFunction as decorateTimeLimiterFunction
+import io.github.resilience4j.kotlin.timelimiter.executeFunction as executeTimeLimiterFunction
 import io.github.resilience4j.kotlin.timelimiter.executeSuspendFunction as executeTimeLimiterSuspendFunction
 import io.github.resilience4j.kotlin.timelimiter.timeLimiter as resilienceTimeLimiter
 import io.github.resilience4j.micrometer.Timer as ResilienceTimer
@@ -321,6 +323,40 @@ public class Resilience4j_kotlinTest {
         } finally {
             meterRegistry.close()
         }
+    }
+
+    @Test
+    @Timeout(value = 10, unit = TimeUnit.SECONDS)
+    fun timeLimiterExtensionsExecuteAndDecorateBlockingFunctions(): Unit {
+        val timeLimiter = TimeLimiter.of(
+            "blocking-limiter",
+            KotlinTimeLimiterConfig {
+                timeoutDuration(Duration.ofMillis(100))
+                cancelRunningFuture(true)
+            },
+        )
+
+        val directResult = timeLimiter.executeTimeLimiterFunction { "direct" }
+        val decoratedFunction = timeLimiter.decorateTimeLimiterFunction { "decorated" }
+
+        assertThat(directResult).isEqualTo("direct")
+        assertThat(decoratedFunction()).isEqualTo("decorated")
+
+        val timeoutLimiter = TimeLimiter.of(
+            "blocking-timeout-limiter",
+            KotlinTimeLimiterConfig {
+                timeoutDuration(Duration.ofMillis(20))
+                cancelRunningFuture(true)
+            },
+        )
+        val timeout = runCatching {
+            timeoutLimiter.executeTimeLimiterFunction {
+                Thread.sleep(250)
+                "late"
+            }
+        }.exceptionOrNull()
+
+        assertThat(timeout).isInstanceOf(TimeoutException::class.java)
     }
 
     @Test
