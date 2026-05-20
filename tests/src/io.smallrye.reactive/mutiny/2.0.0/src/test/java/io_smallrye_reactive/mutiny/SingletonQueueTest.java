@@ -26,6 +26,6 @@ public class SingletonQueueTest {
 
         String[] values = queue.toArray(new String[0]);
 
-        assertArrayEquals(new String[] { "mutiny" }, values);
+        assertArrayEquals(new String[] {"mutiny"}, values);
     }
 }
