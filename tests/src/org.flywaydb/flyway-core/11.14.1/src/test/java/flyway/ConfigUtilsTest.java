@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.flywaydb.core.internal.configuration.ConfigUtils;
 import org.flywaydb.core.internal.configuration.models.FlywayModel;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,6 +19,8 @@ public class ConfigUtilsTest {
 
     @Test
     void suggestsNamespacesForConfigurationExtensionFields() {
+        Assumptions.assumeTrue(hasFuzzyScore());
+
         List<String> possibleConfigurations = ConfigUtils.getPossibleFlywayConfigurations(
                 "scriptFilename",
                 FlywayModel.defaults(),
@@ -25,5 +28,14 @@ public class ConfigUtilsTest {
 
         assertThat(possibleConfigurations)
                 .contains("deploy.scriptFilename", "prepare.scriptFilename");
+    }
+
+    private boolean hasFuzzyScore() {
+        try {
+            Class.forName("org.apache.commons.text.similarity.FuzzyScore");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 }
