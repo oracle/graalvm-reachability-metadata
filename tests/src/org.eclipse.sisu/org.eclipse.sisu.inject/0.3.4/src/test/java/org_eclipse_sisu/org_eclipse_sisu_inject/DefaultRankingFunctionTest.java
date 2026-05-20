@@ -8,8 +8,7 @@ package org_eclipse_sisu.org_eclipse_sisu_inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import javax.annotation.Priority;
-
+import org.eclipse.sisu.Priority;
 import org.eclipse.sisu.inject.DefaultRankingFunction;
 import org.junit.jupiter.api.Test;
 
@@ -24,18 +23,18 @@ import com.google.inject.spi.UntargettedBinding;
 
 public class DefaultRankingFunctionTest {
     @Test
-    void rankUsesJsr250PriorityAnnotationWhenBindingImplementationIsKnown() {
+    void rankUsesSisuPriorityAnnotationWhenBindingImplementationIsKnown() {
         DefaultRankingFunction rankingFunction = new DefaultRankingFunction(13);
-        Binding<Jsr250PriorityComponent> binding = new UntargettedTestBinding<>(Jsr250PriorityComponent.class);
+        Binding<SisuPriorityComponent> binding = new UntargettedTestBinding<>(SisuPriorityComponent.class);
 
         int rank = rankingFunction.rank(binding);
 
         assertThat(rank).isEqualTo(37);
-        assertThat(rankingFunction.maxRank()).isEqualTo(13);
+        assertThat(rankingFunction.maxRank()).isEqualTo(Integer.MAX_VALUE);
     }
 
     @Priority(37)
-    private static final class Jsr250PriorityComponent {
+    private static final class SisuPriorityComponent {
     }
 
     private static final class UntargettedTestBinding<T> implements UntargettedBinding<T> {
