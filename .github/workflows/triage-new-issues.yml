@@ -33,7 +33,7 @@ jobs:
             const hasLibraryNewRequestLabel = labelNames.includes("library-new-request");
 
             function extractCoordinatesFromTitle(title) {
-              const match = String(title || "").match(/([^:\s]+:[^:\s]+:[^\s]+)/);
+              const match = String(title || "").match(/^Support for ([A-Za-z0-9._-]+:[A-Za-z0-9._-]+:[A-Za-z0-9._-]+)$/);
               return match ? match[1] : null;
             }
 
@@ -66,7 +66,7 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           set -Eeuo pipefail
-          if [[ "$ISSUE_TITLE" =~ ([^[:space:]:]+:[^[:space:]:]+:[^[:space:]]+) ]]; then
+          if [[ "$ISSUE_TITLE" =~ ^Support[[:space:]]for[[:space:]]([A-Za-z0-9._-]+:[A-Za-z0-9._-]+:[A-Za-z0-9._-]+)$ ]]; then
             COORDS="${BASH_REMATCH[1]}"
           else
             COORDS=""
@@ -76,10 +76,11 @@ jobs:
       - name: "Validate coordinates format"
         if: ${{ steps.classify.outputs.should_triage == 'true' }}
         id: validate
+        env:
+          COORDS: ${{ steps.extract.outputs.coords }}
         run: |
           set -Eeuo pipefail
-          COORDS="${{ steps.extract.outputs.coords }}"
-          if [[ "$COORDS" =~ ^[^[:space:]:]+:[^[:space:]:]+:[^[:space:]:]+$ ]]; then
+          if [[ "$COORDS" =~ ^[A-Za-z0-9._-]+:[A-Za-z0-9._-]+:[A-Za-z0-9._-]+$ ]]; then
             echo "invalid=false" >> "$GITHUB_OUTPUT"
           else
             echo "Invalid coordinates format: $COORDS"
@@ -89,12 +90,14 @@ jobs:
       - name: "Close issue - invalid coordinates format"
         if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid == 'true' }}
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          COORDS: ${{ steps.extract.outputs.coords }}
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const issue_number = context.issue.number;
-            const coords = "${{ steps.extract.outputs.coords }}";
+            const coords = process.env.COORDS || "";
             const reason = `Maven coordinates in the issue title are invalid: '${coords}'.`;
             const body = [
               "Automated triage: " + reason,
@@ -121,16 +124,18 @@ jobs:
         if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' }}
         id: duplicate
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          COORDS: ${{ steps.extract.outputs.coords }}
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const issue_number = context.issue.number;
-            const coords = "${{ steps.extract.outputs.coords }}";
+            const coords = process.env.COORDS || "";
             const exactTitle = `Support for ${coords}`;
 
             function extractCoordinatesFromTitle(title) {
-              const match = String(title || "").match(/([^:\s]+:[^:\s]+:[^\s]+)/);
+              const match = String(title || "").match(/^Support for ([A-Za-z0-9._-]+:[A-Za-z0-9._-]+:[A-Za-z0-9._-]+)$/);
               return match ? match[1] : null;
             }
 
@@ -170,9 +175,10 @@ jobs:
       - name: "Check if library/version is already supported by the repository"
         if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' }}
         id: support
+        env:
+          COORDS: ${{ steps.extract.outputs.coords }}
         run: |
           set -Eeuo pipefail
-          COORDS="${{ steps.extract.outputs.coords }}"
           echo "Checking support for $COORDS"
           set +e
           OUTPUT="$(./check-library-support.sh "$COORDS" 2>&1)"
@@ -189,12 +195,14 @@ jobs:
       - name: "Close issue - already supported by the Reachability Metadata Repository"
         if: ${{ steps.classify.outputs.should_triage == 'true' && steps.support.outputs.supported == 'true' }}
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          COORDS: ${{ steps.extract.outputs.coords }}
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const issue_number = context.issue.number;
-            const coords = "${{ steps.extract.outputs.coords }}";
+            const coords = process.env.COORDS || "";
             const body = [
               `Automated triage: The requested library (${coords}) is already supported by the GraalVM Reachability Metadata repository.`,
               "",
