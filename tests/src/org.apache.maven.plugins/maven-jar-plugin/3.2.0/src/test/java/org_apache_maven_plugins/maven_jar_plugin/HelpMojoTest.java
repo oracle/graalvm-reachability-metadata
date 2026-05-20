@@ -6,11 +6,16 @@
  */
 package org_apache_maven_plugins.maven_jar_plugin;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+
+import org.apache.maven.plugins.jar.HelpMojo;
 import org.junit.jupiter.api.Test;
 
-class Maven_jar_pluginTest {
+public class HelpMojoTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void executeLoadsPluginHelpResource() {
+        HelpMojo mojo = new HelpMojo();
+
+        assertThatCode(mojo::execute).doesNotThrowAnyException();
     }
 }
