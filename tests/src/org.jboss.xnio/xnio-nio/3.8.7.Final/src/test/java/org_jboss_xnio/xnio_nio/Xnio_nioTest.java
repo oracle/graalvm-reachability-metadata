@@ -31,6 +31,8 @@ import org.xnio.OptionMap;
 import org.xnio.Options;
 import org.xnio.StreamConnection;
 import org.xnio.Xnio;
+import org.xnio.XnioExecutor;
+import org.xnio.XnioIoThread;
 import org.xnio.XnioWorker;
 import org.xnio.channels.AcceptingChannel;
 import org.xnio.channels.MulticastMessageChannel;
@@ -219,6 +221,41 @@ public class Xnio_nioTest {
         } finally {
             closeQuietly(sender);
             closeQuietly(receiver);
+            closeWorker(worker);
+        }
+    }
+
+    @Test
+    void ioThreadExecutesImmediateDelayedAndIntervalTasks() throws Exception {
+        XnioWorker worker = createWorker();
+        XnioExecutor.Key intervalKey = null;
+        try {
+            CountDownLatch immediateTask = new CountDownLatch(1);
+            CountDownLatch delayedTask = new CountDownLatch(1);
+            CountDownLatch intervalTask = new CountDownLatch(2);
+            AtomicReference<Thread> immediateThread = new AtomicReference<>();
+            AtomicReference<XnioWorker> currentWorker = new AtomicReference<>();
+
+            XnioIoThread ioThread = worker.getIoThread();
+            ioThread.execute(() -> {
+                immediateThread.set(Thread.currentThread());
+                currentWorker.set(XnioIoThread.currentThread().getWorker());
+                immediateTask.countDown();
+            });
+            ioThread.executeAfter(delayedTask::countDown, 10, TimeUnit.MILLISECONDS);
+            intervalKey = ioThread.executeAtInterval(intervalTask::countDown, 10, TimeUnit.MILLISECONDS);
+
+            assertThat(immediateTask.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(delayedTask.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(intervalTask.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            intervalKey.remove();
+            intervalKey = null;
+            assertThat(immediateThread.get()).isInstanceOf(XnioIoThread.class);
+            assertThat(currentWorker.get()).isSameAs(worker);
+        } finally {
+            if (intervalKey != null) {
+                intervalKey.remove();
+            }
             closeWorker(worker);
         }
     }
