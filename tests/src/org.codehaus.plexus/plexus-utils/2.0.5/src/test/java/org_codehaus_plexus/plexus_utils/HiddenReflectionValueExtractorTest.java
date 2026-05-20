@@ -6,7 +6,7 @@
  */
 package org_codehaus_plexus.plexus_utils;
 
-import hidden.org.codehaus.plexus.interpolation.reflection.ReflectionValueExtractor;
+import org.codehaus.plexus.util.introspection.ReflectionValueExtractor;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
