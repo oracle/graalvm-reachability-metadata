@@ -35,6 +35,16 @@ public class ParameterizedTest {
     }
 
     @Test
+    void methodBackedBooleanParameterCanUseIsGetter() {
+        CommandOptions options = new CommandOptions();
+        Parameterized parameterized = parameterNamed(Parameterized.parseArg(options), "setVerbose");
+
+        parameterized.set(options, true);
+
+        assertThat(parameterized.get(options)).isEqualTo(true);
+    }
+
+    @Test
     void methodBackedParameterFallsBackToMatchingFieldWhenGetterIsMissing() {
         CommandOptions options = new CommandOptions();
         Parameterized parameterized = parameterNamed(Parameterized.parseArg(options), "setToken");
@@ -57,6 +67,8 @@ public class ParameterizedTest {
 
         private int level;
 
+        private boolean verbose;
+
         private String token;
 
         @Parameter(names = "--level")
@@ -66,6 +78,15 @@ public class ParameterizedTest {
 
         public int getLevel() {
             return level;
+        }
+
+        @Parameter(names = "--verbose")
+        public void setVerbose(boolean verbose) {
+            this.verbose = verbose;
+        }
+
+        public boolean isVerbose() {
+            return verbose;
         }
 
         @Parameter(names = "--token")
