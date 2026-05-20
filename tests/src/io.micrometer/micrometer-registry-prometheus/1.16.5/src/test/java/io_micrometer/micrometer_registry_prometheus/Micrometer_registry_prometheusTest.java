@@ -44,7 +44,7 @@ public class Micrometer_registry_prometheusTest {
         PrometheusMeterRegistry registry = newRegistry();
         AtomicInteger queueDepth = new AtomicInteger(7);
         AtomicLong evictions = new AtomicLong(4);
-        long[] cacheLoadStats = { 3, 250 };
+        long[] cacheLoadStats = {3, 250};
 
         Counter createdOrders = Counter.builder("orders.created")
                 .description("Orders created by checkout")
