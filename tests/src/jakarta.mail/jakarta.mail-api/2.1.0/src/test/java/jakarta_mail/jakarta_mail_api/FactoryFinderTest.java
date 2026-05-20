@@ -16,6 +16,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
+import org.glassfish.hk2.osgiresourcelocator.ServiceLoader;
+import org.glassfish.hk2.osgiresourcelocator.TestOsgiServiceLoader;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,14 +70,20 @@ public class FactoryFinderTest {
         ClassLoader originalContextClassLoader = thread.getContextClassLoader();
         String originalProperty = System.getProperty(STREAM_PROVIDER_PROPERTY);
 
+        boolean osgiServiceLoaderInitialized = false;
         try {
             System.clearProperty(STREAM_PROVIDER_PROPERTY);
+            ServiceLoader.initialize(new TestOsgiServiceLoader());
+            osgiServiceLoaderInitialized = true;
             thread.setContextClassLoader(new ServiceHidingClassLoader(FactoryFinderTest.class.getClassLoader()));
 
             IllegalStateException exception = assertThrows(IllegalStateException.class, StreamProvider::provider);
 
             assertEquals("Not provider of " + StreamProvider.class.getName() + " was found", exception.getMessage());
         } finally {
+            if (osgiServiceLoaderInitialized) {
+                ServiceLoader.reset();
+            }
             restoreSystemProperty(originalProperty);
             thread.setContextClassLoader(originalContextClassLoader);
         }
