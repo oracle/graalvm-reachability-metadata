@@ -479,14 +479,17 @@ List<Map<String, Object>> changedMetadataTestEntries(
         List<String> changedCoordinates
 ) {
     List<Map<String, Object>> addedVersionEntries = flattenChangedTestedVersionEntries(tck.diffIndexTestedVersions(base, head))
+    Set<String> changedCoordinateSet = changedCoordinates.toSet()
     List<Map<String, Object>> entries = []
-    entries.addAll(addedVersionEntries.collect { Map<String, Object> entry ->
-        [
-                "coordinates": entry["coordinates"],
-                "versions"   : entry["versions"],
-                "batch"      : "added"
-        ]
-    })
+    entries.addAll(addedVersionEntries
+            .findAll { Map<String, Object> entry -> !changedCoordinateSet.contains(entry["coordinates"].toString()) }
+            .collect { Map<String, Object> entry ->
+                [
+                        "coordinates": entry["coordinates"],
+                        "versions"   : entry["versions"],
+                        "batch"      : "added"
+                ]
+            })
     entries.addAll(changedCoordinates.collectMany { coordinate -> tck.testedVersionBatches(coordinate, versionsPerJob) })
     entries
 }
