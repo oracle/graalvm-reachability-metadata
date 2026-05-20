@@ -62,22 +62,22 @@ public class SmallryeCommonAnnotationTest {
 
     @Test
     void runtimeBehaviorAnnotationsAreAvailableOnTypesAndMethods() {
-        assertThat(BlockingService.class.isAnnotationPresent(Blocking.class)).isTrue();
-        assertThat(NonBlockingService.class.isAnnotationPresent(NonBlocking.class)).isTrue();
-        assertThat(VirtualThreadService.class.isAnnotationPresent(RunOnVirtualThread.class)).isTrue();
-        assertThat(VirtualThreadService.class.isAnnotationPresent(Blocking.class)).isTrue();
+        assertThat(BlockingService.class.getAnnotationsByType(Blocking.class).length > 0).isTrue();
+        assertThat(NonBlockingService.class.getAnnotationsByType(NonBlocking.class).length > 0).isTrue();
+        assertThat(VirtualThreadService.class.getAnnotationsByType(RunOnVirtualThread.class).length > 0).isTrue();
+        assertThat(VirtualThreadService.class.getAnnotationsByType(Blocking.class).length > 0).isTrue();
 
         Method blockingOperation = declaredMethod(BlockingService.class, "blockingOperation");
         Method nonBlockingOperation = declaredMethod(NonBlockingService.class, "nonBlockingOperation");
         Method virtualThreadOperation = declaredMethod(VirtualThreadService.class, "virtualThreadOperation");
 
-        assertThat(blockingOperation.isAnnotationPresent(Blocking.class)).isTrue();
-        assertThat(blockingOperation.isAnnotationPresent(CheckReturnValue.class)).isTrue();
+        assertThat(blockingOperation.getAnnotationsByType(Blocking.class).length > 0).isTrue();
+        assertThat(blockingOperation.getAnnotationsByType(CheckReturnValue.class).length > 0).isTrue();
         assertThat(requireAnnotation(blockingOperation, Experimental.class).value())
                 .isEqualTo("operation contract may change");
-        assertThat(nonBlockingOperation.isAnnotationPresent(NonBlocking.class)).isTrue();
-        assertThat(virtualThreadOperation.isAnnotationPresent(RunOnVirtualThread.class)).isTrue();
-        assertThat(virtualThreadOperation.isAnnotationPresent(Blocking.class)).isTrue();
+        assertThat(nonBlockingOperation.getAnnotationsByType(NonBlocking.class).length > 0).isTrue();
+        assertThat(virtualThreadOperation.getAnnotationsByType(RunOnVirtualThread.class).length > 0).isTrue();
+        assertThat(virtualThreadOperation.getAnnotationsByType(Blocking.class).length > 0).isTrue();
     }
 
     @Test
@@ -86,12 +86,12 @@ public class SmallryeCommonAnnotationTest {
         Method nonBlockingOperation = declaredMethod(ClassLevelNonBlockingService.class, "nonBlockingOperation");
         Method virtualThreadOperation = declaredMethod(ClassLevelVirtualThreadService.class, "virtualThreadOperation");
 
-        assertThat(blockingOperation.isAnnotationPresent(Blocking.class)).isFalse();
+        assertThat(blockingOperation.getAnnotationsByType(Blocking.class).length > 0).isFalse();
         assertThat(hasMethodOrDeclaringClassAnnotation(blockingOperation, Blocking.class)).isTrue();
-        assertThat(nonBlockingOperation.isAnnotationPresent(NonBlocking.class)).isFalse();
+        assertThat(nonBlockingOperation.getAnnotationsByType(NonBlocking.class).length > 0).isFalse();
         assertThat(hasMethodOrDeclaringClassAnnotation(nonBlockingOperation, NonBlocking.class)).isTrue();
-        assertThat(virtualThreadOperation.isAnnotationPresent(RunOnVirtualThread.class)).isFalse();
-        assertThat(virtualThreadOperation.isAnnotationPresent(Blocking.class)).isFalse();
+        assertThat(virtualThreadOperation.getAnnotationsByType(RunOnVirtualThread.class).length > 0).isFalse();
+        assertThat(virtualThreadOperation.getAnnotationsByType(Blocking.class).length > 0).isFalse();
         assertThat(hasMethodOrDeclaringClassAnnotation(virtualThreadOperation, RunOnVirtualThread.class)).isTrue();
         assertThat(hasMethodOrDeclaringClassAnnotation(virtualThreadOperation, Blocking.class)).isTrue();
     }
@@ -107,11 +107,11 @@ public class SmallryeCommonAnnotationTest {
         assertRetentionAndTarget(Identifier.class, ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD,
                 ElementType.TYPE);
 
-        assertThat(CheckReturnValue.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(Experimental.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(Experimental.class.isAnnotationPresent(Inherited.class)).isTrue();
-        assertThat(Identifier.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(Identifier.class.isAnnotationPresent(Qualifier.class)).isTrue();
+        assertThat(CheckReturnValue.class.getAnnotationsByType(Documented.class).length > 0).isTrue();
+        assertThat(Experimental.class.getAnnotationsByType(Documented.class).length > 0).isTrue();
+        assertThat(Experimental.class.getAnnotationsByType(Inherited.class).length > 0).isTrue();
+        assertThat(Identifier.class.getAnnotationsByType(Documented.class).length > 0).isTrue();
+        assertThat(Identifier.class.getAnnotationsByType(Qualifier.class).length > 0).isTrue();
         assertThat(requireAnnotation(RunOnVirtualThread.class, Experimental.class).value())
                 .isEqualTo("This is an experimental feature still at the alpha stage");
     }
@@ -120,8 +120,8 @@ public class SmallryeCommonAnnotationTest {
     void experimentalIsInheritedButThreadingMarkersAreNot() {
         assertThat(requireAnnotation(ExperimentalSubclass.class, Experimental.class).value())
                 .isEqualTo("base type contract may change");
-        assertThat(BlockingSubclass.class.isAnnotationPresent(Blocking.class)).isFalse();
-        assertThat(NonBlockingSubclass.class.isAnnotationPresent(NonBlocking.class)).isFalse();
+        assertThat(BlockingSubclass.class.getAnnotationsByType(Blocking.class).length > 0).isFalse();
+        assertThat(NonBlockingSubclass.class.getAnnotationsByType(NonBlocking.class).length > 0).isFalse();
     }
 
     @Test
@@ -132,7 +132,7 @@ public class SmallryeCommonAnnotationTest {
     }
 
     private static <A extends Annotation> A requireAnnotation(AnnotatedElement element, Class<A> annotationType) {
-        A annotation = element.getAnnotation(annotationType);
+        A annotation = element.getAnnotationsByType(annotationType).length == 0 ? null : element.getAnnotationsByType(annotationType)[0];
         assertThat(annotation).as("%s annotation on %s", annotationType.getSimpleName(), element).isNotNull();
         return annotation;
     }
@@ -155,8 +155,8 @@ public class SmallryeCommonAnnotationTest {
 
     private static boolean hasMethodOrDeclaringClassAnnotation(Method method,
             Class<? extends Annotation> annotationType) {
-        return method.isAnnotationPresent(annotationType)
-                || method.getDeclaringClass().isAnnotationPresent(annotationType);
+        return method.getAnnotationsByType(annotationType).length > 0
+                || method.getDeclaringClass().getAnnotationsByType(annotationType).length > 0;
     }
 
     @Identifier("component")
