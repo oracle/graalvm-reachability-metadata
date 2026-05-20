@@ -15,6 +15,15 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.named("test") {
+    File resourceDir = layout.buildDirectory.dir("resources/test").get().asFile
+    doFirst {
+        resourceDir.mkdirs()
+    }
+    workingDir = resourceDir
+    jvmArgs("-Djdk.invoke.LambdaMetafactory.dumpProxyClassFiles=true")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"

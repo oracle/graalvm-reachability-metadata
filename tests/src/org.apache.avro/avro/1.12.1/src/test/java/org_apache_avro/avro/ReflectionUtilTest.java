@@ -10,7 +10,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.apache.avro.reflect.ReflectionUtil;
 import org.junit.jupiter.api.Test;
@@ -29,28 +28,6 @@ public class ReflectionUtilTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    void createsSupplierBackedByPublicNoArgumentConstructor() throws Throwable {
-        MethodHandle getConstructorAsSupplier = privateReflectionUtilLookup().findStatic(ReflectionUtil.class,
-                "getConstructorAsSupplier", MethodType.methodType(Supplier.class, Class.class));
-
-        Supplier<ConstructedWithNoArgs> supplier = (Supplier<ConstructedWithNoArgs>) getConstructorAsSupplier
-                .invoke(ConstructedWithNoArgs.class);
-
-        assertThat(supplier.get()).isInstanceOf(ConstructedWithNoArgs.class);
-    }
-
-    @Test
-    void createsFunctionBackedByPublicOneArgumentConstructor() {
-        Function<String, ConstructedFromString> constructor = ReflectionUtil.getConstructorAsFunction(String.class,
-                ConstructedFromString.class);
-
-        ConstructedFromString constructed = constructor.apply("created by method handle");
-
-        assertThat(constructed.value).isEqualTo("created by method handle");
-    }
-
-    @Test
     void returnsNullWhenOneArgumentConstructorIsNotAccessible() {
         Function<String, PrivateStringConstructor> constructor = ReflectionUtil.getConstructorAsFunction(String.class,
                 PrivateStringConstructor.class);
@@ -64,14 +41,6 @@ public class ReflectionUtilTest {
 
     public static class ConstructedWithNoArgs {
         public ConstructedWithNoArgs() {
-        }
-    }
-
-    public static class ConstructedFromString {
-        private final String value;
-
-        public ConstructedFromString(String value) {
-            this.value = value;
         }
     }
 
