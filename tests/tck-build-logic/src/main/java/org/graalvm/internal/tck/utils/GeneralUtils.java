@@ -15,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -37,18 +36,6 @@ public final class GeneralUtils {
     public static void writeToFile(Path path, String content, StandardOpenOption writeOption) throws IOException {
         Files.createDirectories(path.getParent());
         Files.writeString(path, content, StandardCharsets.UTF_8, writeOption);
-    }
-
-    public static void invokeCommand(ExecOperations execOps, String command, String errorMessage) {
-        invokeCommand(execOps, command, errorMessage, null);
-    }
-
-    public static void invokeCommand(ExecOperations execOps, String command, String errorMessage, Path workingDirectory) {
-        String[] commandParts = command.split(" ");
-        String executable = commandParts[0];
-
-        List<String> args = List.of(Arrays.copyOfRange(commandParts, 1, commandParts.length));
-        invokeCommand(execOps, executable, args, errorMessage, workingDirectory);
     }
 
     /**

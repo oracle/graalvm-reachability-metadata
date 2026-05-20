@@ -235,8 +235,11 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void createStubs(boolean shouldUpdate) {
         InteractiveTaskUtils.printUserInfo("Generating stubs for: " + coordinates);
-        String opt = shouldUpdate ? "--update" : "";
-        GeneralUtils.invokeCommand(getExecOperations(), gradlewPath + " scaffold --coordinates " + coordinates + " --skipTests " + opt, "Cannot generate stubs for: " + coordinates);
+        List<String> args = new ArrayList<>(List.of("scaffold", "--coordinates", coordinates, "--skipTests"));
+        if (shouldUpdate) {
+            args.add("--update");
+        }
+        GeneralUtils.invokeCommand(getExecOperations(), gradlewPath.toString(), args, "Cannot generate stubs for: " + coordinates, null);
     }
 
     private void updateAllowedPackages(List<String> allowedPackages, boolean libraryAlreadyExists) throws IOException {
@@ -356,16 +359,16 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void createPullRequest(String branch) {
         InteractiveTaskUtils.printUserInfo("Creating new branch: " + branch);
-        GeneralUtils.invokeCommand(getExecOperations(), "git switch -C " + branch, "Cannot create a new branch");
+        GeneralUtils.invokeCommand(getExecOperations(), "git", List.of("switch", "-C", branch), "Cannot create a new branch", null);
 
         InteractiveTaskUtils.printUserInfo("Staging changes");
-        GeneralUtils.invokeCommand(getExecOperations(), "git add .", "Cannot add changes");
+        GeneralUtils.invokeCommand(getExecOperations(), "git", List.of("add", "."), "Cannot add changes", null);
 
         InteractiveTaskUtils.printUserInfo("Committing changes");
         GeneralUtils.invokeCommand(getExecOperations(), "git", List.of("commit", "-m", "Add metadata for " + coordinates), "Cannot commit changes", null);
 
         InteractiveTaskUtils.printUserInfo("Pushing changes");
-        GeneralUtils.invokeCommand(getExecOperations(), "git push origin " + branch, "Cannot push to origin");
+        GeneralUtils.invokeCommand(getExecOperations(), "git", List.of("push", "origin", branch), "Cannot push to origin", null);
 
         InteractiveTaskUtils.printUserInfo("Complete pull request creation on the above link");
     }
