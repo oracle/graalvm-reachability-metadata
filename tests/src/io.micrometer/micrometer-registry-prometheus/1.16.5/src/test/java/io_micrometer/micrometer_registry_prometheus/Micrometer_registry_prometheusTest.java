@@ -12,6 +12,7 @@ import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.FunctionCounter;
 import io.micrometer.core.instrument.FunctionTimer;
 import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MultiGauge;
 import io.micrometer.core.instrument.Tags;
@@ -133,6 +134,32 @@ public class Micrometer_registry_prometheusTest {
                 .contains("le=\"")
                 .contains("quantile=\"0.5\"")
                 .contains("quantile=\"0.95\"");
+    }
+
+    @Test
+    void longTaskTimersExposeActiveTaskMetricsAndMax() {
+        PrometheusMeterRegistry registry = newRegistry();
+        LongTaskTimer batchImport = LongTaskTimer.builder("batch.import")
+                .description("Running batch imports")
+                .tag("source", "catalog")
+                .register(registry);
+
+        LongTaskTimer.Sample sample = batchImport.start();
+        try {
+            assertThat(batchImport.activeTasks()).isEqualTo(1);
+            assertThat(batchImport.duration(TimeUnit.MILLISECONDS)).isGreaterThanOrEqualTo(0.0);
+
+            String scrape = registry.scrape();
+            assertThat(scrape)
+                    .contains("batch_import_seconds_count")
+                    .contains("batch_import_seconds_sum")
+                    .contains("batch_import_seconds_max")
+                    .contains("source=\"catalog\"");
+        } finally {
+            sample.stop();
+        }
+
+        assertThat(batchImport.activeTasks()).isZero();
     }
 
     @Test
