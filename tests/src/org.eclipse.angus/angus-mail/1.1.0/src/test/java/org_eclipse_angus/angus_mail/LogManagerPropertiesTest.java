@@ -20,6 +20,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Properties;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
@@ -27,6 +28,19 @@ import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 public class LogManagerPropertiesTest {
+    private static final String CONTEXT_FORMATTER_NAME = "org.example.ContextFormatter";
+
+    private static final byte[] CONTEXT_FORMATTER_BYTES = Base64.getDecoder().decode("""
+        yv66vgAAADQAFQoAAgADBwAEDAAFAAYBABtqYXZhL3V0aWwvbG9nZ2luZy9Gb3JtYXR0ZXIB
+        AAY8aW5pdD4BAAMoKVYKAAgACQcACgwACwAMAQAbamF2YS91dGlsL2xvZ2dpbmcvTG9nUmVj
+        b3JkAQAKZ2V0TWVzc2FnZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7BwAOAQAcb3JnL2V4YW1w
+        bGUvQ29udGV4dEZvcm1hdHRlcgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAZmb3JtYXQB
+        ADEoTGphdmEvdXRpbC9sb2dnaW5nL0xvZ1JlY29yZDspTGphdmEvbGFuZy9TdHJpbmc7AQAK
+        U291cmNlRmlsZQEAFUNvbnRleHRGb3JtYXR0ZXIuamF2YQAhAA0AAgAAAAAAAgABAAUABgAB
+        AA8AAAAdAAEAAQAAAAUqtwABsQAAAAEAEAAAAAYAAQAAAAQAAQARABIAAQAPAAAAHQABAAIA
+        AAAFK7YAB7AAAAABABAAAAAGAAEAAAAFAAEAEwAAAAIAFA==
+        """.replaceAll("\\s", ""));
+
     @Test
     public void compactFormatterFormatsZonedTimeAndClassifiesStackFrames() {
         LogRecord record = new LogRecord(Level.WARNING, "delivery failed");
@@ -102,7 +116,7 @@ public class LogManagerPropertiesTest {
     public void collectorFormatterLoadsFormatterThroughContextClassLoader() throws Exception {
         configureLogManager(
             "com.sun.mail.util.logging.CollectorFormatter.format={1}",
-            "com.sun.mail.util.logging.CollectorFormatter.formatter=org.example.ContextFormatter",
+            "com.sun.mail.util.logging.CollectorFormatter.formatter=" + CONTEXT_FORMATTER_NAME,
             "com.sun.mail.util.logging.CollectorFormatter.comparator=null");
 
         try {
@@ -121,6 +135,34 @@ public class LogManagerPropertiesTest {
                 throw error;
             }
         }
+    }
+
+    @Test
+    public void collectorFormatterLoadsJdkFormatterWhenContextClassLoaderIsUnset() throws Exception {
+        configureLogManager(
+            "com.sun.mail.util.logging.CollectorFormatter.format={1}",
+            "com.sun.mail.util.logging.CollectorFormatter.formatter=java.util.logging.SimpleFormatter",
+            "com.sun.mail.util.logging.CollectorFormatter.comparator=null");
+
+        CollectorFormatter formatter = withContextClassLoader(null, CollectorFormatter::new);
+        formatter.format(new LogRecord(Level.INFO, "simple formatter fallback"));
+
+        assertThat(formatter.getTail(null)).contains("simple formatter fallback");
+    }
+
+    @Test
+    public void collectorFormatterLoadsCallerVisibleFormatterWhenContextClassLoaderIsUnset()
+            throws Exception {
+        configureLogManager(
+            "com.sun.mail.util.logging.CollectorFormatter.format={1}",
+            "com.sun.mail.util.logging.CollectorFormatter.formatter="
+                + ClassForNameFallbackFormatter.class.getName(),
+            "com.sun.mail.util.logging.CollectorFormatter.comparator=null");
+
+        CollectorFormatter formatter = withContextClassLoader(null, CollectorFormatter::new);
+        formatter.format(new LogRecord(Level.INFO, "caller fallback"));
+
+        assertThat(formatter.getTail(null)).contains("fallback:caller fallback");
     }
 
     @Test
@@ -167,12 +209,19 @@ public class LogManagerPropertiesTest {
         Throwable current = throwable;
         while (current != null) {
             if (current instanceof ClassNotFoundException classNotFoundException
-                    && "org.example.ContextFormatter".equals(classNotFoundException.getMessage())) {
+                    && CONTEXT_FORMATTER_NAME.equals(classNotFoundException.getMessage())) {
                 return true;
             }
             current = current.getCause();
         }
         return false;
+    }
+
+    public static final class ClassForNameFallbackFormatter extends Formatter {
+        @Override
+        public String format(LogRecord record) {
+            return "fallback:" + record.getMessage();
+        }
     }
 
     @FunctionalInterface
@@ -181,27 +230,17 @@ public class LogManagerPropertiesTest {
     }
 
     private static final class FormatterContextClassLoader extends ClassLoader {
-        private static final byte[] FORMATTER_BYTES = Base64.getDecoder().decode("""
-            yv66vgAAADQAFQoAAgADBwAEDAAFAAYBABtqYXZhL3V0aWwvbG9nZ2luZy9Gb3JtYXR0ZXIB
-            AAY8aW5pdD4BAAMoKVYKAAgACQcACgwACwAMAQAbamF2YS91dGlsL2xvZ2dpbmcvTG9nUmVj
-            b3JkAQAKZ2V0TWVzc2FnZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7BwAOAQAcb3JnL2V4YW1w
-            bGUvQ29udGV4dEZvcm1hdHRlcgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAZmb3JtYXQB
-            ADEoTGphdmEvdXRpbC9sb2dnaW5nL0xvZ1JlY29yZDspTGphdmEvbGFuZy9TdHJpbmc7AQAK
-            U291cmNlRmlsZQEAFUNvbnRleHRGb3JtYXR0ZXIuamF2YQAhAA0AAgAAAAAAAgABAAUABgAB
-            AA8AAAAdAAEAAQAAAAUqtwABsQAAAAEAEAAAAAYAAQAAAAQAAQARABIAAQAPAAAAHQABAAIA
-            AAAFK7YAB7AAAAABABAAAAAGAAEAAAAFAAEAEwAAAAIAFA==
-            """.replaceAll("\\s", ""));
-
         private FormatterContextClassLoader() {
             super(ClassLoader.getPlatformClassLoader());
         }
 
         @Override
         protected Class<?> findClass(String name) throws ClassNotFoundException {
-            if ("org.example.ContextFormatter".equals(name)) {
-                return defineClass(name, FORMATTER_BYTES, 0, FORMATTER_BYTES.length);
+            if (CONTEXT_FORMATTER_NAME.equals(name)) {
+                return defineClass(name, CONTEXT_FORMATTER_BYTES, 0, CONTEXT_FORMATTER_BYTES.length);
             }
             throw new ClassNotFoundException(name);
         }
     }
+
 }

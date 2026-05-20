@@ -57,6 +57,8 @@ public class ProtocolTest {
             properties.setProperty("mail.test.connectiontimeout", Integer.toString(TIMEOUT_MILLIS));
             properties.setProperty("mail.test.timeout", Integer.toString(TIMEOUT_MILLIS));
             properties.setProperty("mail.test.usesocketchannels", "true");
+            properties.setProperty("mail.test.ssl.checkserveridentity", "false");
+            properties.setProperty("mail.test.socketFactory.fallback", "false");
             properties.put("mail.test.ssl.socketFactory", new DelegatingSslSocketFactory(socketCreator));
 
             ExposedProtocol protocol = new ExposedProtocol(serverSocket.getInetAddress().getHostAddress(),
