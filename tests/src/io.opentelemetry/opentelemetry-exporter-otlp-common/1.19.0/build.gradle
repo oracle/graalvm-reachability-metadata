@@ -9,9 +9,15 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String alphaLibraryVersion = "${libraryVersion}-alpha"
 
 dependencies {
+    testImplementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
     testImplementation "io.opentelemetry:opentelemetry-exporter-otlp-common:$libraryVersion"
+    testImplementation "io.opentelemetry:opentelemetry-sdk-logs:$alphaLibraryVersion"
+    testImplementation "io.opentelemetry:opentelemetry-sdk-metrics:$libraryVersion"
+    testImplementation "io.opentelemetry:opentelemetry-sdk-testing:$libraryVersion"
+    testImplementation "io.opentelemetry:opentelemetry-sdk-trace:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
