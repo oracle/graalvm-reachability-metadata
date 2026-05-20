@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.logs.Logger;
 import io.opentelemetry.api.logs.Severity;
+import io.opentelemetry.api.metrics.LongUpDownCounter;
 import io.opentelemetry.api.metrics.ObservableDoubleGauge;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanContext;
@@ -217,6 +218,48 @@ public class Opentelemetry_exporter_otlp_commonTest {
                     "\"asDouble\":5.5");
         } finally {
             gauge.close();
+            meterProvider.close();
+        }
+    }
+
+    @Test
+    void metricsRequestMarshalsNonMonotonicUpDownCounterSums() throws IOException {
+        InMemoryMetricReader metricReader = InMemoryMetricReader.create();
+        SdkMeterProvider meterProvider = SdkMeterProvider.builder()
+                .setResource(testResource())
+                .registerMetricReader(metricReader)
+                .build();
+        try {
+            LongUpDownCounter activeSessions = meterProvider.get("updown.metrics.scope")
+                    .upDownCounterBuilder("sessions.active")
+                    .setDescription("Currently active sessions")
+                    .setUnit("sessions")
+                    .build();
+            Attributes attributes = Attributes.of(stringKey("state"), "connected");
+            activeSessions.add(3, attributes);
+            activeSessions.add(-1, attributes);
+
+            Collection<MetricData> metrics = metricReader.collectAllMetrics();
+            assertThat(metrics)
+                    .filteredOn(metric -> metric.getName().equals("sessions.active"))
+                    .singleElement()
+                    .satisfies(metric -> {
+                        assertThat(metric.getType().name()).isEqualTo("LONG_SUM");
+                        assertThat(metric.getLongSumData().isMonotonic()).isFalse();
+                    });
+
+            MetricsRequestMarshaler marshaler = MetricsRequestMarshaler.create(metrics);
+            assertBinarySizeMatches(marshaler);
+            assertThat(jsonOf(marshaler))
+                    .contains(
+                            "\"name\":\"sessions.active\"",
+                            "\"sum\"",
+                            "\"aggregationTemporality\"",
+                            "\"asInt\":\"2\"",
+                            "\"key\":\"state\"",
+                            "\"stringValue\":\"connected\"")
+                    .doesNotContain("\"isMonotonic\":true");
+        } finally {
             meterProvider.close();
         }
     }
