@@ -118,6 +118,10 @@ public class OgnlRuntimeTest {
     void invokesMethodWhenOgnlSecurityManagerWasForceDisabledDuringRuntimeInitialization() throws Exception {
         try {
             runIsolatedScenario(ForceDisabledScenario.class.getName());
+        } catch (ClassNotFoundException exception) {
+            if (!isUnsupportedNativeImageClasspathReload(exception, ForceDisabledScenario.class.getName())) {
+                throw exception;
+            }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -244,6 +248,23 @@ public class OgnlRuntimeTest {
                     current = reason;
                     continue;
                 }
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static boolean isUnsupportedNativeImageClasspathReload(
+            Throwable throwable, String expectedClassName) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof ClassNotFoundException
+                    && expectedClassName.equals(current.getMessage())) {
+                return true;
             }
             current = current.getCause();
         }
