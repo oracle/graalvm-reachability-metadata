@@ -15,8 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.slf4j.SLF4JServiceProvider;
-import org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.ILoggerFactory;
@@ -225,21 +225,15 @@ public class Log4j_slf4j2_implTest {
     }
 
     @Test
-    void throwableConsumingMessageFactoryPreservesSlf4jThrowableSemantics() {
-        ThrowableConsumingMessageFactory messageFactory = new ThrowableConsumingMessageFactory();
-        Throwable failure = new IllegalArgumentException("expected factory exception");
+    void parameterizedMessagesPreserveSlf4jThrowableSemantics() {
+        Throwable failure = new IllegalArgumentException("expected parameterized exception");
 
-        Message simpleMessage = messageFactory.newMessage("plain message");
-        Message charSequenceMessage = messageFactory.newMessage(new StringBuilder("chars message"));
-        Message objectMessage = messageFactory.newMessage(Integer.valueOf(42));
-        Message parameterizedMessage = messageFactory.newMessage("Hello, {}", "GraalVM");
-        Message parameterizedWithThrowable = messageFactory.newMessage(
-                "{} failed at {}", "operation", "startup", failure);
-        Message varargsWithThrowable = messageFactory.newMessage("values {} {}", new Object[] {"one", "two", failure});
+        Message parameterizedMessage = new ParameterizedMessage("Hello, {}", new Object[] {"GraalVM"}, null);
+        Message parameterizedWithThrowable = new ParameterizedMessage(
+                "{} failed at {}", new Object[] {"operation", "startup"}, failure);
+        Message varargsWithThrowable = new ParameterizedMessage(
+                "values {} {}", new Object[] {"one", "two", failure}, null);
 
-        assertThat(simpleMessage.getFormattedMessage()).isEqualTo("plain message");
-        assertThat(charSequenceMessage.getFormattedMessage()).isEqualTo("chars message");
-        assertThat(objectMessage.getFormattedMessage()).isEqualTo("42");
         assertThat(parameterizedMessage.getFormattedMessage()).isEqualTo("Hello, GraalVM");
         assertThat(parameterizedMessage.getThrowable()).isNull();
         assertThat(parameterizedWithThrowable.getFormattedMessage()).isEqualTo("operation failed at startup");
