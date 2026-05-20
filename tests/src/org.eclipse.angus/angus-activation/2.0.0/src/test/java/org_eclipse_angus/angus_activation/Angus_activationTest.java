@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-import com.sun.activation.registries.MailcapFile;
-import com.sun.activation.registries.MailcapRegistryProviderImpl;
-import com.sun.activation.registries.MailcapTokenizer;
-import com.sun.activation.registries.MimeTypeFile;
-import com.sun.activation.registries.MimeTypeRegistryProviderImpl;
+import org.eclipse.angus.activation.MailcapFile;
+import org.eclipse.angus.activation.MailcapRegistryProviderImpl;
+import org.eclipse.angus.activation.MailcapTokenizer;
+import org.eclipse.angus.activation.MimeTypeFile;
+import org.eclipse.angus.activation.MimeTypeRegistryProviderImpl;
 import jakarta.activation.MailcapRegistry;
 import jakarta.activation.MimeTypeEntry;
 import jakarta.activation.MimeTypeRegistry;
