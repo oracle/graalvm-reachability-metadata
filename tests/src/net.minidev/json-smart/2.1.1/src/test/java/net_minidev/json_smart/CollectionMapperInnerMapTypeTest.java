@@ -13,8 +13,8 @@ import java.lang.reflect.Type;
 import net.minidev.asm.BeansAccess;
 import net.minidev.json.JSONNavi;
 import net.minidev.json.JSONObject;
-import net.minidev.json.mapper.AMapper;
-import net.minidev.json.mapper.Mapper;
+import net.minidev.json.JSONValue;
+import net.minidev.json.writer.JsonReaderI;
 import org.junit.jupiter.api.Test;
 
 public class CollectionMapperInnerMapTypeTest {
@@ -22,7 +22,7 @@ public class CollectionMapperInnerMapTypeTest {
     void parsesObjectIntoParameterizedMapType() {
         ParameterizedType mapType =
                 new SimpleParameterizedType(AccessibleJsonObject.class, String.class, Integer.class);
-        AMapper<AccessibleJsonObject> mapper = Mapper.getMapper(mapType);
+        JsonReaderI<AccessibleJsonObject> mapper = JSONValue.defaultReader.getMapper(mapType);
 
         JSONNavi<AccessibleJsonObject> navi = new JSONNavi<>("{\"one\":1,\"two\":2}", mapper);
 
