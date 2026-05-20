@@ -116,6 +116,23 @@ public class Angus_activationTest {
     }
 
     @Test
+    void mailcapFileDeduplicatesCommandClassesWhenMergingEntries() throws IOException {
+        MailcapFile mailcap = new MailcapFile(streamOf("""
+                application/x-merge; first-view %s; \
+                    x-java-view=com.example.PrimaryViewer; x-java-edit=com.example.Editor
+                application/x-merge; second-view %s; \
+                    x-java-view=com.example.PrimaryViewer; x-java-view=com.example.SecondaryViewer; \
+                    x-java-edit=com.example.Editor
+                """));
+
+        Map<?, ?> commands = mailcap.getMailcapList("application/x-merge");
+
+        assertThat(commandClasses(commands, "view"))
+                .containsExactly("com.example.PrimaryViewer", "com.example.SecondaryViewer");
+        assertThat(commandClasses(commands, "edit")).containsExactly("com.example.Editor");
+    }
+
+    @Test
     void mailcapRegistrySupportsAppendFileAndProviderConstruction() throws IOException {
         Path mailcapFile = temporaryDirectory.resolve("mailcap");
         Files.writeString(
