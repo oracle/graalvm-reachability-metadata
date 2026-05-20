@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ReflectionUtilsTest {
     @Test
@@ -26,13 +25,14 @@ public class ReflectionUtilsTest {
     }
 
     @Test
-    void delegatesToContextClassLoaderWhenClassForNameCannotResolveName() {
+    void delegatesToContextClassLoaderWhenClassForNameCannotResolveName() throws ClassNotFoundException {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader(ReflectionUtilsTest.class.getClassLoader());
+            Thread.currentThread().setContextClassLoader(new AliasClassLoader());
 
-            assertThatThrownBy(() -> ReflectionUtils.loadClassByName("example.missing.ReflectionUtilsFixture"))
-                    .isInstanceOf(ClassNotFoundException.class);
+            Class<?> loadedClass = ReflectionUtils.loadClassByName(AliasClassLoader.ALIAS_NAME);
+
+            assertThat(loadedClass).isEqualTo(AliasTarget.class);
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
@@ -69,6 +69,21 @@ public class ReflectionUtilsTest {
         Optional<Object> result = ReflectionUtils.safeInvoke(method, fixture, "value");
 
         assertThat(result).contains("prefix-value");
+    }
+
+    public static class AliasTarget {
+    }
+
+    public static class AliasClassLoader extends ClassLoader {
+        static final String ALIAS_NAME = "example.missing.ReflectionUtilsAlias";
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (ALIAS_NAME.equals(name)) {
+                return AliasTarget.class;
+            }
+            return super.loadClass(name);
+        }
     }
 
     public static class ParentFields {
