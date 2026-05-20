@@ -13,7 +13,7 @@ from utility_scripts.repo_path_resolver import require_complete_reachability_rep
 from utility_scripts.gradle_environment import gradle_command_environment
 
 CODEX_MODEL_NAME = "oca/gpt-5.4"
-CODEX_TIMEOUT_SECONDS = 1200
+CODEX_TIMEOUT_SECONDS = 35 * 60
 
 
 def run_codex_metadata_fix(
