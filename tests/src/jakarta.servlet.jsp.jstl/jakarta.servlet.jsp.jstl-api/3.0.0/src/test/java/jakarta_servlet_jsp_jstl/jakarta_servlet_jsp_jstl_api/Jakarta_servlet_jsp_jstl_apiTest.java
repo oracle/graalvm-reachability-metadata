@@ -24,10 +24,8 @@ import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.SortedMap;
 
@@ -69,8 +67,6 @@ import jakarta.servlet.jsp.jstl.core.IteratedExpression;
 import jakarta.servlet.jsp.jstl.core.IteratedValueExpression;
 import jakarta.servlet.jsp.jstl.core.LoopTagStatus;
 import jakarta.servlet.jsp.jstl.core.LoopTagSupport;
-import jakarta.servlet.jsp.jstl.fmt.LocaleSupport;
-import jakarta.servlet.jsp.jstl.fmt.LocalizationContext;
 import jakarta.servlet.jsp.jstl.sql.Result;
 import jakarta.servlet.jsp.jstl.sql.ResultSupport;
 import jakarta.servlet.jsp.jstl.tlv.PermittedTaglibsTLV;
@@ -82,9 +78,6 @@ import jakarta.servlet.jsp.tagext.ValidationMessage;
 import org.junit.jupiter.api.Test;
 
 public class Jakarta_servlet_jsp_jstl_apiTest {
-    private static final String NAMED_MESSAGES_BUNDLE = "jakarta_servlet_jsp_jstl.jakarta_servlet_jsp_jstl_api"
-            + ".Jakarta_servlet_jsp_jstl_apiTest$NamedLocaleMessages";
-
     @Test
     void configStoresScopedValuesAndFindsThemInStandardOrder() {
         TestPageContext pageContext = new TestPageContext();
@@ -117,35 +110,6 @@ public class Jakarta_servlet_jsp_jstl_apiTest {
 
         assertThat(Config.get(pageContext.getServletContext(), Config.FMT_LOCALE)).isNull();
         assertThat(Config.find(pageContext, Config.FMT_LOCALE)).isEqualTo("en-US");
-    }
-
-    @Test
-    void localizationContextAndLocaleSupportResolveAndFormatMessages() {
-        TestPageContext pageContext = new TestPageContext();
-        ResourceBundle bundle = new MessagesBundle();
-        LocalizationContext context = new LocalizationContext(bundle, Locale.US);
-
-        Config.set(pageContext, Config.FMT_LOCALIZATION_CONTEXT, context, PageContext.PAGE_SCOPE);
-
-        assertThat(context.getResourceBundle()).isSameAs(bundle);
-        assertThat(context.getLocale()).isEqualTo(Locale.US);
-        assertThat(LocaleSupport.getLocalizedMessage(pageContext, "plain")).isEqualTo("Plain text");
-        assertThat(LocaleSupport.getLocalizedMessage(pageContext, "welcome", new Object[] {"Ada"}))
-                .isEqualTo("Welcome Ada");
-        assertThat(LocaleSupport.getLocalizedMessage(pageContext, "missing")).isEqualTo("???missing???");
-        assertThat(new LocalizationContext().getResourceBundle()).isNull();
-        assertThat(new LocalizationContext(bundle).getLocale()).isNull();
-    }
-
-    @Test
-    void localeSupportLoadsBundleByBasenameAndAppliesConfiguredLocale() {
-        TestPageContext pageContext = new TestPageContext();
-
-        Config.set(pageContext, Config.FMT_LOCALE, "en-US", PageContext.PAGE_SCOPE);
-
-        assertThat(LocaleSupport.getLocalizedMessage(pageContext, "salutation", new Object[] {"Ada"},
-                NAMED_MESSAGES_BUNDLE)).isEqualTo("Howdy Ada");
-        assertThat(pageContext.getResponse().getLocale()).isEqualTo(Locale.US);
     }
 
     @Test
@@ -565,42 +529,14 @@ public class Jakarta_servlet_jsp_jstl_apiTest {
         }
     }
 
-    private static final class MessagesBundle extends ListResourceBundle {
-        @Override
-        protected Object[][] getContents() {
-            return new Object[][] {
-                    {"plain", "Plain text"},
-                    {"welcome", "Welcome {0}"}
-            };
-        }
-    }
-
-    public static final class NamedLocaleMessages extends ListResourceBundle {
-        @Override
-        protected Object[][] getContents() {
-            return new Object[][] {
-                    {"salutation", "Hello {0}"}
-            };
-        }
-    }
-
-    public static final class NamedLocaleMessages_en_US extends ListResourceBundle {
-        @Override
-        protected Object[][] getContents() {
-            return new Object[][] {
-                    {"salutation", "Howdy {0}"}
-            };
-        }
-    }
-
-    private static final class TestPageContext extends PageContext {
+    static final class TestPageContext extends PageContext {
         private final Map<Integer, Map<String, Object>> scopedAttributes = new HashMap<>();
         private final TestServletContext servletContext = new TestServletContext();
         private final TestHttpSession session = new TestHttpSession(servletContext);
         private final TestServletResponse response = new TestServletResponse();
         private final TestELContext elContext = new TestELContext();
 
-        private TestPageContext() {
+        TestPageContext() {
             scopedAttributes.put(PAGE_SCOPE, new HashMap<>());
             scopedAttributes.put(REQUEST_SCOPE, new HashMap<>());
             scopedAttributes.put(SESSION_SCOPE, new HashMap<>());
