@@ -6,11 +6,151 @@
  */
 package org_springframework_boot.spring_boot_persistence;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
-class Spring_boot_persistenceTest {
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
+import org.springframework.boot.persistence.autoconfigure.EntityScanPackages;
+import org.springframework.boot.persistence.autoconfigure.EntityScanner;
+import org.springframework.boot.persistence.autoconfigure.PersistenceExceptionTranslationAutoConfiguration;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Spring_boot_persistenceTest {
+
+    private static final String SCANNED_PACKAGE = ScannedEntity.class.getPackageName();
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void entityScanPackagesCanBeRegisteredAndExtendedProgrammatically() {
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+
+        assertThat(EntityScanPackages.get(beanFactory).getPackageNames()).isEmpty();
+
+        EntityScanPackages.register(beanFactory, List.of("example.alpha", "", " ", "example.beta"));
+        EntityScanPackages.register(beanFactory, "example.gamma", "example.alpha");
+
+        assertThat(EntityScanPackages.get(beanFactory).getPackageNames())
+                .containsExactly("example.alpha", "example.beta", "example.gamma");
+    }
+
+    @Test
+    void entityScanAnnotationRegistersPlaceholderTokensAndMarkerClassPackages() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("entity-scan-test",
+                    Map.of("entity.scan.packages", SCANNED_PACKAGE + ", example.one; example.two")));
+            context.register(PlaceholderEntityScanConfiguration.class, MarkerEntityScanConfiguration.class);
+
+            context.refresh();
+
+            assertThat(EntityScanPackages.get(context).getPackageNames())
+                    .containsExactly(SCANNED_PACKAGE, "example.one", "example.two");
+        }
+    }
+
+    @Test
+    void entityScannerFindsAnnotatedClassesFromEntityScanPackages() throws ClassNotFoundException {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+                EntityScannerConfiguration.class)) {
+            Set<Class<?>> entities = new EntityScanner(context).scan(SamplePersistenceEntity.class);
+
+            assertThat(entities).contains(ScannedEntity.class, AnotherScannedEntity.class)
+                    .doesNotContain(UnannotatedEntity.class);
+        }
+    }
+
+    @Test
+    void entityScannerFallsBackToAutoConfigurationPackagesWhenEntityScanPackagesAreAbsent()
+            throws ClassNotFoundException {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            AutoConfigurationPackages.register(context, SCANNED_PACKAGE);
+            context.refresh();
+
+            Set<Class<?>> entities = new EntityScanner(context).scan(SamplePersistenceEntity.class);
+
+            assertThat(entities).contains(ScannedEntity.class, AnotherScannedEntity.class)
+                    .doesNotContain(UnannotatedEntity.class);
+        }
+    }
+
+    @Test
+    void persistenceExceptionTranslationAutoConfigurationCreatesPostProcessorByDefault() {
+        try (AnnotationConfigApplicationContext context = autoConfigurationContext(Map.of())) {
+            PersistenceExceptionTranslationPostProcessor postProcessor = context
+                    .getBean(PersistenceExceptionTranslationPostProcessor.class);
+
+            assertThat(postProcessor.isProxyTargetClass()).isTrue();
+        }
+    }
+
+    @Test
+    void persistenceExceptionTranslationAutoConfigurationHonorsProxyTargetClassProperty() {
+        try (AnnotationConfigApplicationContext context = autoConfigurationContext(
+                Map.of("spring.aop.proxy-target-class", "false"))) {
+            PersistenceExceptionTranslationPostProcessor postProcessor = context
+                    .getBean(PersistenceExceptionTranslationPostProcessor.class);
+
+            assertThat(postProcessor.isProxyTargetClass()).isFalse();
+        }
+    }
+
+    @Test
+    void persistenceExceptionTranslationAutoConfigurationCanBeDisabled() {
+        try (AnnotationConfigApplicationContext context = autoConfigurationContext(
+                Map.of("spring.persistence.exceptiontranslation.enabled", "false"))) {
+            assertThat(context.getBeansOfType(PersistenceExceptionTranslationPostProcessor.class)).isEmpty();
+        }
+    }
+
+    private static AnnotationConfigApplicationContext autoConfigurationContext(Map<String, Object> properties) {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.getEnvironment().getPropertySources()
+                .addFirst(new MapPropertySource("persistence-exception-translation-test", properties));
+        context.register(PersistenceExceptionTranslationAutoConfiguration.class);
+        context.refresh();
+        return context;
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @EntityScan("${entity.scan.packages}")
+    static class PlaceholderEntityScanConfiguration {
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @EntityScan(basePackageClasses = ScannedEntity.class)
+    static class MarkerEntityScanConfiguration {
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @EntityScan(basePackageClasses = ScannedEntity.class)
+    static class EntityScannerConfiguration {
+    }
+
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface SamplePersistenceEntity {
+    }
+
+    @SamplePersistenceEntity
+    static class ScannedEntity {
+    }
+
+    @SamplePersistenceEntity
+    static class AnotherScannedEntity {
+    }
+
+    static class UnannotatedEntity {
     }
 }
