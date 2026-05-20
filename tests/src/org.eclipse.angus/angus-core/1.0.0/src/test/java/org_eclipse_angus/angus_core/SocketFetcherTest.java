@@ -39,6 +39,36 @@ import org.junit.jupiter.api.Test;
 
 public class SocketFetcherTest {
     @Test
+    void loadsSocketFactoryClassWithContextClassLoader() throws Exception {
+        RecordingSocketFactory.reset();
+
+        try (ServerSocket serverSocket = new ServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
+            AtomicReference<Throwable> serverFailure = new AtomicReference<>();
+            Thread serverThread = new Thread(() -> acceptOneConnection(serverSocket, serverFailure));
+            serverThread.start();
+
+            Properties props = new Properties();
+            props.setProperty("mail.test.socketFactory.class", RecordingSocketFactory.class.getName());
+            props.setProperty("mail.test.connectiontimeout", "5000");
+
+            Thread thread = Thread.currentThread();
+            ClassLoader originalContextClassLoader = thread.getContextClassLoader();
+            thread.setContextClassLoader(SocketFetcherTest.class.getClassLoader());
+            try (Socket socket = SocketFetcher.getSocket("127.0.0.1", serverSocket.getLocalPort(), props,
+                    "mail.test")) {
+                assertThat(socket.isConnected()).isTrue();
+            } finally {
+                thread.setContextClassLoader(originalContextClassLoader);
+            }
+
+            serverThread.join(5000);
+            assertThat(serverThread.isAlive()).isFalse();
+            assertThat(serverFailure.get()).isNull();
+            assertThat(RecordingSocketFactory.wasUsed()).isTrue();
+        }
+    }
+
+    @Test
     void loadsSocketFactoryClassWithCallerClassLoaderFallback() throws Exception {
         RecordingSocketFactory.reset();
 
