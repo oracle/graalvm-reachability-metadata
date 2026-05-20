@@ -1,0 +1,1598 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.131.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e439c-340a-7bb0-90e1-ea73a6c540cd
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-sql:4.0.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.0.6" when "$version$" is replaced with "4.0.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+- Set "coordinates" to "org.springframework.boot:spring-boot-sql:4.0.6".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.6".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and the upstream Spring Boot repository, then update the JSON in place. I’m checking whether the artifact has JVM classes and whether Spring publishes source/test artifacts for this exact version.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json && sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+-rw-rw-r-- 1 vjovanov vjovanov 71 May 20 06:19 build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+{
+  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'spring-boot-sql|spring-boot.*4\\.0|org.springframework.boot' build/discovered-artifact-metadata metadata tests -g '*.json' -g '*.properties' -g '*.java'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json:2:  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/reachability-metadata.json:32:        "typeReached": "org.springframework.boot.context.properties.bind.Binder"
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/reachability-metadata.json:40:        "typeReached": "org.springframework.boot.context.properties.bind.Binder"
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/reachability-metadata.json:48:        "typeReached": "org.springframework.boot.context.properties.bind.Binder"
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/reachability-metadata.json:56:        "typeReached": "org.springframework.boot.context.properties.bind.Binder"
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/reachability-metadata.json:64:        "typeReached": "org.springframework.boot.context.properties.bind.Binder"
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/reachability-metadata.json:72:        "typeReached": "org.springframework.boot.context.properties.bind.Binder"
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/reachability-metadata.json:80:        "typeReached": "org.springframework.boot.context.properties.bind.Binder"
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:16:      "org.springframework.boot.context.properties.bind"
+metadata/org.springframework.cloud/spring-cloud-context/5.0.1/reachability-metadata.json:7:      "type" : "org.springframework.boot.ClearCachesApplicationListener",
+metadata/org.springframework.cloud/spring-cloud-context/5.0.1/reachability-metadata.json:19:      "type" : "org.springframework.boot.builder.ParentContextCloserApplicationListener",
+metadata/org.springframework.cloud/spring-cloud-context/5.0.1/reachability-metadata.json:31:      "type" : "org.springframework.boot.context.ConfigurationWarningsApplicationContextInitializer",
+metadata/org.springframework.cloud/spring-cloud-context/5.0.1/reachability-metadata.json:43:      "type" : "org.springframework.boot.context.ContextIdApplicationContextInitializer",
+metadata/org.springframework.cloud/spring-cloud-context/5.0.1/reachability-metadata.json:55:      "type" : "org.springframework.boot.context.FileEncodingApplicationListener",
+metadata/org.springframework.cloud/spring-cloud-context/5.0.1/reachability-metadata.json:67:      "type" : "org.springframework.boot.context.logging.LoggingApplicationListener",
+metadata/org.springframework.cloud/spring-cloud-context/5.0.1/reachability-metadata.json:79:      "type" : "org.springframework.boot.io.ProtocolResolverApplicationContextInitializer",
+metadata/org.springframework.cloud/spring-cloud-context/5.0.1/reachability-metadata.json:151:      "type" : "org.springframework.boot.support.AnsiOutputApplicationListener",
+metadata/org.springframework.cloud/spring-cloud-context/5.0.1/reachability-metadata.json:163:      "type" : "org.springframework.boot.support.EnvironmentPostProcessorApplicationListener",
+metadata/org.springframework.cloud/spring-cloud-stream/5.0.1/reachability-metadata.json:151:      "type" : "org.springframework.boot.logging.log4j2.SpringBootPropertySource"
+metadata/org.springframework.cloud/spring-cloud-stream/5.0.1/reachability-metadata.json:157:      "type" : "org.springframework.boot.logging.logback.RootLogLevelConfigurator"
+metadata/org.springframework.cloud/spring-cloud-stream/5.0.1/reachability-metadata.json:163:      "type" : "org.springframework.boot.amqp.autoconfigure.ConnectionFactoryCustomizer"
+metadata/org.springframework.cloud/spring-cloud-stream/5.0.1/reachability-metadata.json:169:      "type" : "org.springframework.boot.kafka.autoconfigure.KafkaConnectionDetails"
+metadata/org.springframework.cloud/spring-cloud-stream/5.0.1/reachability-metadata.json:175:      "type" : "org.springframework.boot.kafka.autoconfigure.StreamsBuilderFactoryBeanCustomizer"
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:4:      "type": "org.springframework.boot.netty.autoconfigure.NettyAutoConfiguration",
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:9:            "org.springframework.boot.netty.autoconfigure.NettyProperties"
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:19:      "type": "org.springframework.boot.netty.autoconfigure.NettyProperties",
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:32:            "org.springframework.boot.netty.autoconfigure.NettyProperties$LeakDetection"
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:38:      "type": "org.springframework.boot.netty.autoconfigure.NettyProperties$LeakDetection"
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:41:      "type": "org.springframework.boot.autoconfigure.condition.OnClassCondition",
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:50:      "type": "org.springframework.boot.context.properties.EnableConfigurationPropertiesRegistrar",
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:59:      "type": "org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor",
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:68:      "type": "org.springframework.boot.context.properties.ConfigurationPropertiesBinder$ConfigurationPropertiesBinderFactory",
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:77:      "type": "org.springframework.boot.context.properties.BoundConfigurationProperties",
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:86:      "type": "org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter",
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:103:          "org.springframework.boot.test.context.assertj.AssertableApplicationContext"
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:110:      "glob": "org/springframework/boot/netty/autoconfigure/*.class"
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:113:      "glob": "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:119:      "glob": "org/springframework/boot/autoconfigure/AutoConfiguration.class"
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:122:      "glob": "org/springframework/boot/autoconfigure/condition/ConditionalOnClass.class"
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:125:      "glob": "org/springframework/boot/context/properties/EnableConfigurationProperties.class"
+metadata/org.springframework.boot/spring-boot-netty/4.0.2/reachability-metadata.json:128:      "glob": "org/springframework/boot/context/properties/EnableConfigurationPropertiesRegistrar.class"
+metadata/org.springframework.boot/spring-boot-netty/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-netty/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-netty/index.json:23:      "org.springframework.boot.netty.autoconfigure"
+metadata/org.springframework.boot/spring-boot-amqp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-amqp/$version$/spring-boot-amqp-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-amqp/$version$/spring-boot-amqp-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:20:      "org.springframework.boot.amqp"
+metadata/org.springframework.boot/spring-boot-starter-json/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-json:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:4:      "type": "org.springframework.boot.autoconfigure.condition.OnClassCondition",
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:14:        "typeReached": "org.springframework.boot.autoconfigure.condition.OnClassCondition"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:20:        "typeReached": "org.springframework.boot.context.properties.bind.JavaBeanBinder"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:22:      "type": "org.springframework.boot.reactor.autoconfigure.ReactorProperties",
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:29:        "typeReached": "org.springframework.boot.thread.Threading"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:45:        "typeReached": "org.springframework.boot.thread.Threading"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:63:        "typeReached": "org.springframework.boot.thread.Threading"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:75:        "typeReached": "org.springframework.boot.thread.Threading"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:87:        "typeReached": "org.springframework.boot.thread.Threading"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:99:        "typeReached": "org.springframework.boot.thread.Threading"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:111:        "typeReached": "org.springframework.boot.thread.Threading"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:127:          "org.springframework.boot.autoconfigure.AutoConfiguration"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:137:          "org.springframework.boot.autoconfigure.AutoConfiguration"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:147:          "org.springframework.boot.autoconfigure.condition.ConditionalOnClass"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:157:          "org.springframework.boot.autoconfigure.condition.ConditionalOnClass"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:167:          "org.springframework.boot.context.properties.EnableConfigurationProperties"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:177:          "org.springframework.boot.context.properties.EnableConfigurationProperties"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:185:      "type": "org.springframework.boot.context.properties.EnableConfigurationPropertiesRegistrar",
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:195:        "typeReached": "org.springframework.boot.context.properties.EnableConfigurationPropertiesRegistrar"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:197:      "type": "org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor",
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:207:        "typeReached": "org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:209:      "type": "org.springframework.boot.context.properties.ConfigurationPropertiesBinder$ConfigurationPropertiesBinderFactory",
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:219:        "typeReached": "org.springframework.boot.reactor.autoconfigure.ReactorProperties"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:221:      "type": "org.springframework.boot.reactor.autoconfigure.ReactorAutoConfiguration",
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:232:        "typeReached": "org.springframework.boot.context.properties.EnableConfigurationPropertiesRegistrar"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:234:      "type": "org.springframework.boot.context.properties.BoundConfigurationProperties",
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:244:        "typeReached": "org.springframework.boot.context.properties.EnableConfigurationPropertiesRegistrar"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:246:      "type": "org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter",
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:260:        "typeReached": "org.springframework.boot.reactor.ReactorEnvironmentPostProcessor"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:266:        "typeReached": "org.springframework.boot.context.annotation.ImportCandidates"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:268:      "glob": "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:272:        "typeReached": "org.springframework.boot.autoconfigure.AutoConfigurationMetadataLoader"
+metadata/org.springframework.boot/spring-boot-reactor/4.0.2/reachability-metadata.json:280:      "glob": "org/springframework/boot/context/properties/EnableConfigurationPropertiesRegistrar.class"
+metadata/org.springframework.boot/spring-boot-reactor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-reactor/$version$/spring-boot-reactor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-reactor/$version$/spring-boot-reactor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:23:      "org.springframework.boot.reactor",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:24:      "org.springframework.boot.autoconfigure",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:25:      "org.springframework.boot.autoconfigure.condition",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:26:      "org.springframework.boot.context.annotation",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:27:      "org.springframework.boot.context.properties",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:28:      "org.springframework.boot.context.properties.bind",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:29:      "org.springframework.boot.thread",
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:4:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:28:            "org.springframework.boot.kafka.autoconfigure.KafkaConnectionDetails",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:35:            "org.springframework.boot.kafka.autoconfigure.KafkaConnectionDetails",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:52:            "org.springframework.boot.kafka.autoconfigure.KafkaConnectionDetails"
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:64:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:70:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Admin",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:76:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Cleanup",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:82:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Consumer",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:88:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$IsolationLevel",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:94:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Jaas",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:100:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Listener",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:106:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Listener$Type",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:112:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Producer",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:118:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Properties",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:124:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Retry",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:130:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Retry$Topic",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:136:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Retry$Topic$Backoff",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:142:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Security",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:148:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Ssl",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:154:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Streams",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:160:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaProperties$Template",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:166:      "type": "org.springframework.boot.autoconfigure.condition.OnClassCondition",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:175:      "type": "org.springframework.boot.autoconfigure.condition.OnBeanCondition",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:184:      "type": "org.springframework.boot.autoconfigure.condition.OnPropertyCondition",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:193:      "type": "org.springframework.boot.autoconfigure.condition.OnThreadingCondition",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:284:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaAnnotationDrivenConfiguration",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:289:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaAnnotationDrivenConfiguration$EnableKafkaConfiguration",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:293:      "type": "org.springframework.boot.kafka.autoconfigure.KafkaStreamsAnnotationDrivenConfiguration",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:300:          "org.springframework.boot.autoconfigure.AutoConfiguration"
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:307:          "org.springframework.boot.autoconfigure.condition.ConditionalOnClass"
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:314:          "org.springframework.boot.context.properties.EnableConfigurationProperties"
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:319:      "type": "org.springframework.boot.context.properties.EnableConfigurationPropertiesRegistrar",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:328:      "type": "org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:337:      "type": "org.springframework.boot.context.properties.ConfigurationPropertiesBinder$ConfigurationPropertiesBinderFactory",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:346:      "type": "org.springframework.boot.context.properties.BoundConfigurationProperties",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:355:      "type": "org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter",
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:369:          "org.springframework.boot.test.context.assertj.AssertableApplicationContext"
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:376:      "glob": "org/springframework/boot/kafka/autoconfigure/*.class"
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:385:      "glob": "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"
+metadata/org.springframework.boot/spring-boot-kafka/4.0.2/reachability-metadata.json:391:      "glob": "org/springframework/boot/context/properties/EnableConfigurationPropertiesRegistrar.class"
+metadata/org.springframework.boot/spring-boot-kafka/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-kafka/$version$/spring-boot-kafka-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-kafka/$version$/spring-boot-kafka-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:18:      "org.springframework.boot.kafka"
+metadata/org.springframework.boot/spring-boot-jdbc/4.0.6/reachability-metadata.json:5:        "typeReached": "org.springframework.boot.jdbc.DataSourceBuilder"
+metadata/org.springframework.boot/spring-boot-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-jdbc/$version$/spring-boot-jdbc-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-jdbc/$version$/spring-boot-jdbc-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-jdbc/index.json:19:      "org.springframework.boot.jdbc"
+metadata/org.springframework.boot/spring-boot-web-server/4.0.2/reachability-metadata.json:5:        "typeReached" : "org.springframework.boot.web.server.WebServerSslBundle"
+metadata/org.springframework.boot/spring-boot-web-server/4.0.2/reachability-metadata.json:7:      "type" : "org.springframework.boot.io.Base64ProtocolResolver",
+metadata/org.springframework.boot/spring-boot-web-server/4.0.2/reachability-metadata.json:18:      "glob" : "org/springframework/boot/web/server/mime-mappings.properties"
+metadata/org.springframework.boot/spring-boot-web-server/4.0.2/reachability-metadata.json:22:        "typeReached" : "org.springframework.boot.web.server.servlet.CookieSameSiteSupplier"
+metadata/org.springframework.boot/spring-boot-web-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-web-server/$version$/spring-boot-web-server-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-web-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-web-server/$version$/spring-boot-web-server-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-web-server/index.json:23:      "org.springframework.boot.web.server"
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-jpa:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-jpa:2.7.18, org.hibernate:hibernate-core:5.6.15.Final, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-http-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-http-client/$version$/spring-boot-http-client-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-http-client/$version$/spring-boot-http-client-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:23:      "org.springframework.boot.http.client"
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:7:      "type" : "org.springframework.boot.ClearCachesApplicationListener",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:19:      "type" : "org.springframework.boot.builder.ParentContextCloserApplicationListener",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:31:      "type" : "org.springframework.boot.context.ConfigurationWarningsApplicationContextInitializer",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:43:      "type" : "org.springframework.boot.context.ContextIdApplicationContextInitializer",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:55:      "type" : "org.springframework.boot.context.FileEncodingApplicationListener",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:67:      "type" : "org.springframework.boot.context.logging.LoggingApplicationListener",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:79:      "type" : "org.springframework.boot.io.ProtocolResolverApplicationContextInitializer",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:91:      "type" : "org.springframework.boot.support.AnsiOutputApplicationListener",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:103:      "type" : "org.springframework.boot.support.EnvironmentPostProcessorApplicationListener",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:115:      "type" : "org.springframework.boot.web.server.context.ServerPortInfoApplicationContextInitializer",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:127:      "type" : "org.springframework.boot.webflux.WebFluxWebApplicationTypeDeducer",
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:137:        "typeReached" : "org.springframework.boot.webflux.WebFluxWebApplicationTypeDeducer"
+metadata/org.springframework.boot/spring-boot-webflux/4.0.2/reachability-metadata.json:143:        "typeReached" : "org.springframework.boot.webflux.WebFluxWebApplicationTypeDeducer"
+metadata/org.springframework.boot/spring-boot-webflux/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-webflux/$version$/spring-boot-webflux-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-webflux/$version$/spring-boot-webflux-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:23:      "org.springframework.boot.webflux",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/reachability-metadata.json:5:        "typeReached" : "org.springframework.boot.actuate.autoconfigure.health.AbstractCompositeHealthContributorConfiguration"
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/reachability-metadata.json:11:        "typeReached" : "org.springframework.boot.actuate.autoconfigure.health.AbstractCompositeHealthContributorConfiguration"
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/reachability-metadata.json:17:        "typeReached" : "org.springframework.boot.actuate.autoconfigure.health.AbstractCompositeHealthContributorConfiguration"
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/reachability-metadata.json:23:        "typeReached" : "org.springframework.boot.actuate.autoconfigure.health.AbstractCompositeHealthContributorConfiguration"
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/reachability-metadata.json:29:        "typeReached" : "org.springframework.boot.actuate.autoconfigure.health.AbstractCompositeHealthContributorConfiguration"
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/reachability-metadata.json:35:        "typeReached" : "org.springframework.boot.actuate.autoconfigure.health.AbstractCompositeHealthContributorConfiguration"
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/reachability-metadata.json:41:        "typeReached" : "org.springframework.boot.actuate.autoconfigure.health.AbstractCompositeHealthContributorConfiguration"
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:72:      "org.springframework.boot.actuate.autoconfigure"
+metadata/org.springframework.boot/spring-boot-starter-tomcat/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-tomcat:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-restclient/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-restclient/$version$/spring-boot-restclient-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-restclient/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-restclient/$version$/spring-boot-restclient-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-restclient/index.json:23:      "org.springframework.boot.restclient"
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-redis:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-redis:2.7.18, io.lettuce:lettuce-core:6.1.10.RELEASE, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-transaction/4.0.6/reachability-metadata.json:5:        "typeReached" : "org.springframework.boot.transaction.autoconfigure.TransactionProperties"
+metadata/org.springframework.boot/spring-boot-transaction/4.0.6/reachability-metadata.json:11:        "typeReached" : "org.springframework.boot.transaction.autoconfigure.TransactionProperties"
+metadata/org.springframework.boot/spring-boot-transaction/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-transaction/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-transaction/index.json:19:      "org.springframework.boot.transaction.autoconfigure",
+metadata/org.springframework.boot/spring-boot-transaction/index.json:20:      "org.springframework.boot.transaction.jta.autoconfigure"
+metadata/org.springframework.boot/spring-boot-health/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-health/$version$/spring-boot-health-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-health/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-health/$version$/spring-boot-health-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-health/index.json:19:      "org.springframework.boot.health"
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-reactor-netty/$version$/spring-boot-reactor-netty-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-reactor-netty/$version$/spring-boot-reactor-netty-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:23:      "org.springframework.boot.reactor.netty"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:5:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:17:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:24:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:31:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:38:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:45:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:52:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:59:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:66:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:73:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:80:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:87:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:99:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:106:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/2.7.18/reachability-metadata.json:113:        "typeReached": "org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser"
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:68:      "org.springframework.boot.configurationprocessor"
+metadata/org.springframework.boot/spring-boot-starter-jackson/index.json:4:    "reason": "The published spring-boot-starter-jackson-4.0.2 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; the implementation classes are supplied by dependencies such as org.springframework.boot:spring-boot-jackson.",
+metadata/org.springframework.boot/spring-boot-starter-jackson/index.json:5:    "replacement": "Use the class-bearing dependency org.springframework.boot:spring-boot-jackson:4.0.2 for Spring Boot Jackson integration metadata."
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-aop:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-aop:5.3.31, org.aspectj:aspectjweaver:1.9.7, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-starter-aspectj/index.json:4:    "reason": "The published spring-boot-starter-aspectj-4.0.6 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; it is a dependency starter whose runtime classes are supplied by dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-validation:3.4.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:5:    "replacement": "Use class-bearing dependencies such as org.hibernate.validator:hibernate-validator:8.0.2.Final, org.apache.tomcat.embed:tomcat-embed-el:10.1.36, org.springframework.boot:spring-boot:3.4.3, and org.springframework.boot:spring-boot-autoconfigure:3.4.3."
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-amqp:4.0.2 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-amqp:4.0.2, org.springframework.amqp:spring-rabbit:4.0.2, and org.springframework.boot:spring-boot-autoconfigure:4.0.2."
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:7:      "type" : "org.springframework.boot.validation.autoconfigure.ValidationAutoConfiguration",
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:34:      "type" : "org.springframework.boot.validation.autoconfigure.PrimaryDefaultValidatorPostProcessor",
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:48:          "org.springframework.boot.autoconfigure.AutoConfiguration"
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:58:          "org.springframework.boot.autoconfigure.AutoConfiguration"
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:68:          "org.springframework.boot.autoconfigure.condition.ConditionalOnClass"
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:78:          "org.springframework.boot.autoconfigure.condition.ConditionalOnClass"
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:88:          "org.springframework.boot.autoconfigure.condition.ConditionalOnResource"
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:98:          "org.springframework.boot.autoconfigure.condition.ConditionalOnResource"
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:125:      "glob" : "org/springframework/boot/validation/autoconfigure/*.class"
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:128:      "glob" : "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:134:      "glob" : "org/springframework/boot/autoconfigure/AutoConfiguration.class"
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:137:      "glob" : "org/springframework/boot/autoconfigure/condition/ConditionalOnClass.class"
+metadata/org.springframework.boot/spring-boot-validation/4.0.6/reachability-metadata.json:140:      "glob" : "org/springframework/boot/autoconfigure/condition/ConditionalOnResource.class"
+metadata/org.springframework.boot/spring-boot-validation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-validation/$version$/spring-boot-validation-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-validation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-validation/$version$/spring-boot-validation-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-validation/index.json:19:      "org.springframework.boot.validation.autoconfigure",
+metadata/library-and-framework-list.json:2007:    "artifact": "org.springframework.boot:spring-boot-starter-actuator",
+metadata/library-and-framework-list.json:2013:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/health/HealthEndpointWebExtensionRuntimeHints.java"
+metadata/library-and-framework-list.json:2023:    "artifact": "org.springframework.boot:spring-boot-starter-amqp",
+metadata/library-and-framework-list.json:2039:    "artifact": "org.springframework.boot:spring-boot-starter-cache",
+metadata/library-and-framework-list.json:2055:    "artifact": "org.springframework.boot:spring-boot-starter-data-jdbc",
+metadata/library-and-framework-list.json:2071:    "artifact": "org.springframework.boot:spring-boot-starter-data-jpa",
+metadata/library-and-framework-list.json:2089:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb",
+metadata/library-and-framework-list.json:2108:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb-reactive",
+metadata/library-and-framework-list.json:2127:    "artifact": "org.springframework.boot:spring-boot-starter-data-r2dbc",
+metadata/library-and-framework-list.json:2143:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis",
+metadata/library-and-framework-list.json:2160:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis-reactive",
+metadata/library-and-framework-list.json:2177:    "artifact": "org.springframework.boot:spring-boot-starter-data-rest",
+metadata/library-and-framework-list.json:2194:    "artifact": "org.springframework.boot:spring-boot-starter-freemarker",
+metadata/library-and-framework-list.json:2200:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2210:    "artifact": "org.springframework.boot:spring-boot-starter-graphql",
+metadata/library-and-framework-list.json:2227:    "artifact": "org.springframework.boot:spring-boot-starter-hateoas",
+metadata/library-and-framework-list.json:2246:    "artifact": "org.springframework.boot:spring-boot-starter-integration",
+metadata/library-and-framework-list.json:2266:    "artifact": "org.springframework.boot:spring-boot-starter-jdbc",
+metadata/library-and-framework-list.json:2282:    "artifact": "org.springframework.boot:spring-boot-starter-jetty",
+metadata/library-and-framework-list.json:2288:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2298:    "artifact": "org.springframework.boot:spring-boot-starter-json",
+metadata/library-and-framework-list.json:2304:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/jackson/JsonMixinModuleEntriesBeanRegistrationAotProcessor.java",
+metadata/library-and-framework-list.json:2305:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/json/JacksonRuntimeHints.java"
+metadata/library-and-framework-list.json:2315:    "artifact": "org.springframework.boot:spring-boot-starter-logging",
+metadata/library-and-framework-list.json:2321:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/logging/java/JavaLoggingSystemRuntimeHints.java",
+metadata/library-and-framework-list.json:2322:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/logging/logback/LogbackRuntimeHints.java"
+metadata/library-and-framework-list.json:2332:    "artifact": "org.springframework.boot:spring-boot-starter-mail",
+metadata/library-and-framework-list.json:2348:    "artifact": "org.springframework.boot:spring-boot-starter-mustache",
+metadata/library-and-framework-list.json:2354:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2364:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-client",
+metadata/library-and-framework-list.json:2380:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
+metadata/library-and-framework-list.json:2396:    "artifact": "org.springframework.boot:spring-boot-starter-quartz",
+metadata/library-and-framework-list.json:2412:    "artifact": "org.springframework.boot:spring-boot-starter-reactor-netty",
+metadata/library-and-framework-list.json:2429:    "artifact": "org.springframework.boot:spring-boot-starter-rsocket",
+metadata/library-and-framework-list.json:2446:    "artifact": "org.springframework.boot:spring-boot-starter-security",
+metadata/library-and-framework-list.json:2463:    "artifact": "org.springframework.boot:spring-boot-starter-test",
+metadata/library-and-framework-list.json:2479:    "artifact": "org.springframework.boot:spring-boot-starter-thymeleaf",
+metadata/library-and-framework-list.json:2485:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2495:    "artifact": "org.springframework.boot:spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2501:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2511:    "artifact": "org.springframework.boot:spring-boot-starter-undertow",
+metadata/library-and-framework-list.json:2517:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2527:    "artifact": "org.springframework.boot:spring-boot-starter-validation",
+metadata/library-and-framework-list.json:2543:    "artifact": "org.springframework.boot:spring-boot-starter-web",
+metadata/library-and-framework-list.json:2551:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/web/client/ClientHttpRequestFactoriesRuntimeHints.java",
+metadata/library-and-framework-list.json:2552:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2562:    "artifact": "org.springframework.boot:spring-boot-starter-webflux",
+metadata/library-and-framework-list.json:2570:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2580:    "artifact": "org.springframework.boot:spring-boot-starter-websocket",
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:10191:      "type": "org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
+metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:10203:      "type": "org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy",
+tests/src/org.springframework.cloud/spring-cloud-function-context/5.0.1/src/test/java/org_springframework_cloud/spring_cloud_function_context/FunctionClassUtilsTest.java:11:import org.springframework.boot.SpringBootConfiguration;
+tests/src/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/src/test/java/org_springframework_cloud/spring_cloud_stream_binder_rabbit_core/Spring_cloud_stream_binder_rabbit_coreTest.java:47:import org.springframework.boot.context.properties.bind.Bindable;
+tests/src/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/src/test/java/org_springframework_cloud/spring_cloud_stream_binder_rabbit_core/Spring_cloud_stream_binder_rabbit_coreTest.java:48:import org.springframework.boot.context.properties.bind.Binder;
+tests/src/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/5.0.1/src/test/java/org_springframework_cloud/spring_cloud_stream_binder_rabbit_core/Spring_cloud_stream_binder_rabbit_coreTest.java:49:import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
+tests/src/org.springframework.cloud/spring-cloud-context/5.0.1/src/test/java/org_springframework_cloud/spring_cloud_context/Spring_cloud_contextTest.java:25:import org.springframework.boot.SpringApplication;
+tests/src/org.springframework.cloud/spring-cloud-context/5.0.1/src/test/java/org_springframework_cloud/spring_cloud_context/Spring_cloud_contextTest.java:26:import org.springframework.boot.context.event.ApplicationReadyEvent;
+tests/src/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/src/test/java/io_github_resilience4j/resilience4j_spring_boot3/Resilience4j_spring_boot3Test.java:78:import org.springframework.boot.actuate.health.Health;
+tests/src/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/src/test/java/io_github_resilience4j/resilience4j_spring_boot3/Resilience4j_spring_boot3Test.java:79:import org.springframework.boot.actuate.health.Status;
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.springframework.boot.actuate.autoconfigure.health.AbstractCompositeHealthContributorConfiguration"
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "org_springframework_boot.spring_boot_actuator_autoconfigure.AbstractCompositeHealthContributorConfigurationTest$TestHealthIndicator"
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java:7:package org_springframework_boot.spring_boot_netty;
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java:11:import org.springframework.boot.LazyInitializationBeanFactoryPostProcessor;
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java:12:import org.springframework.boot.LazyInitializationExcludeFilter;
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java:13:import org.springframework.boot.autoconfigure.AutoConfiguration;
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java:14:import org.springframework.boot.autoconfigure.AutoConfigurations;
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java:15:import org.springframework.boot.context.annotation.ImportCandidates;
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java:16:import org.springframework.boot.netty.autoconfigure.NettyAutoConfiguration;
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java:17:import org.springframework.boot.netty.autoconfigure.NettyProperties;
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java:18:import org.springframework.boot.netty.autoconfigure.NettyProperties.LeakDetection;
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_netty/Spring_boot_nettyTest.java:19:import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-netty:4.0.2
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-netty/4.0.2/
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.netty.autoconfigure.**"
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_netty.**"
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/src/test/java/org_springframework_boot/spring_boot_actuator_autoconfigure/AbstractCompositeHealthContributorConfigurationTest.java:7:package org_springframework_boot.spring_boot_actuator_autoconfigure;
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/src/test/java/org_springframework_boot/spring_boot_actuator_autoconfigure/AbstractCompositeHealthContributorConfigurationTest.java:14:import org.springframework.boot.actuate.autoconfigure.health.CompositeHealthContributorConfiguration;
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/src/test/java/org_springframework_boot/spring_boot_actuator_autoconfigure/AbstractCompositeHealthContributorConfigurationTest.java:15:import org.springframework.boot.actuate.health.Health;
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/src/test/java/org_springframework_boot/spring_boot_actuator_autoconfigure/AbstractCompositeHealthContributorConfigurationTest.java:16:import org.springframework.boot.actuate.health.HealthContributor;
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/src/test/java/org_springframework_boot/spring_boot_actuator_autoconfigure/AbstractCompositeHealthContributorConfigurationTest.java:17:import org.springframework.boot.actuate.health.HealthIndicator;
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-actuator-autoconfigure:2.6.3
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.actuate.autoconfigure.**"
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_actuator_autoconfigure.**"
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:7:package org_springframework_boot.spring_boot_health;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:39:import org.springframework.boot.actuate.endpoint.ApiVersion;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:40:import org.springframework.boot.actuate.endpoint.SecurityContext;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:41:import org.springframework.boot.actuate.endpoint.Show;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:42:import org.springframework.boot.actuate.endpoint.web.WebEndpointResponse;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:43:import org.springframework.boot.actuate.endpoint.web.WebServerNamespace;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:44:import org.springframework.boot.availability.ApplicationAvailability;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:45:import org.springframework.boot.availability.AvailabilityChangeEvent;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:46:import org.springframework.boot.availability.AvailabilityState;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:47:import org.springframework.boot.availability.LivenessState;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:48:import org.springframework.boot.availability.ReadinessState;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:49:import org.springframework.boot.health.actuate.endpoint.AdditionalHealthEndpointPath;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:50:import org.springframework.boot.health.actuate.endpoint.CompositeHealthDescriptor;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:51:import org.springframework.boot.health.actuate.endpoint.HealthDescriptor;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:52:import org.springframework.boot.health.actuate.endpoint.HealthEndpoint;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:53:import org.springframework.boot.health.actuate.endpoint.HealthEndpointGroup;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:54:import org.springframework.boot.health.actuate.endpoint.HealthEndpointGroups;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:55:import org.springframework.boot.health.actuate.endpoint.HealthEndpointWebExtension;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:56:import org.springframework.boot.health.actuate.endpoint.HttpCodeStatusMapper;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:57:import org.springframework.boot.health.actuate.endpoint.IndicatedHealthDescriptor;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:58:import org.springframework.boot.health.actuate.endpoint.ReactiveHealthEndpointWebExtension;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:59:import org.springframework.boot.health.actuate.endpoint.SimpleHttpCodeStatusMapper;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:60:import org.springframework.boot.health.actuate.endpoint.SimpleStatusAggregator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:61:import org.springframework.boot.health.actuate.endpoint.StatusAggregator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:62:import org.springframework.boot.health.actuate.endpoint.SystemHealthDescriptor;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:63:import org.springframework.boot.health.application.AvailabilityStateHealthIndicator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:64:import org.springframework.boot.health.application.DiskSpaceHealthIndicator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:65:import org.springframework.boot.health.application.LivenessStateHealthIndicator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:66:import org.springframework.boot.health.application.ReadinessStateHealthIndicator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:67:import org.springframework.boot.health.application.SslHealthIndicator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:68:import org.springframework.boot.health.autoconfigure.actuate.endpoint.HealthEndpointProperties;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:69:import org.springframework.boot.health.autoconfigure.application.DiskSpaceHealthIndicatorProperties;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:70:import org.springframework.boot.health.autoconfigure.application.SslHealthIndicatorProperties;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:71:import org.springframework.boot.health.contributor.AbstractHealthIndicator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:72:import org.springframework.boot.health.contributor.AbstractReactiveHealthIndicator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:73:import org.springframework.boot.health.contributor.CompositeHealthContributor;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:74:import org.springframework.boot.health.contributor.CompositeReactiveHealthContributor;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:75:import org.springframework.boot.health.contributor.Health;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:76:import org.springframework.boot.health.contributor.HealthContributor;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:77:import org.springframework.boot.health.contributor.HealthIndicator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:78:import org.springframework.boot.health.contributor.PingHealthIndicator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:79:import org.springframework.boot.health.contributor.ReactiveHealthContributor;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:80:import org.springframework.boot.health.contributor.ReactiveHealthIndicator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:81:import org.springframework.boot.health.contributor.Status;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:82:import org.springframework.boot.health.registry.DefaultHealthContributorRegistry;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:83:import org.springframework.boot.health.registry.DefaultReactiveHealthContributorRegistry;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:84:import org.springframework.boot.health.registry.HealthContributorNameValidator;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:85:import org.springframework.boot.info.SslInfo;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:86:import org.springframework.boot.info.SslInfo.CertificateChainInfo;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:87:import org.springframework.boot.info.SslInfo.CertificateInfo;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:88:import org.springframework.boot.info.SslInfo.CertificateValidityInfo;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:89:import org.springframework.boot.ssl.DefaultSslBundleRegistry;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:90:import org.springframework.boot.ssl.SslBundle;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/src/test/java/org_springframework_boot/spring_boot_health/Spring_boot_healthTest.java:91:import org.springframework.boot.ssl.SslStoreBundle;
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-health:4.0.6
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-health/4.0.6/
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.health.**"
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_health.**"
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:7:package org_springframework_boot.spring_boot_restclient;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:30:import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:31:import org.springframework.boot.http.client.HttpRedirects;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:32:import org.springframework.boot.http.converter.autoconfigure.ClientHttpMessageConvertersCustomizer;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:33:import org.springframework.boot.restclient.RestTemplateBuilder;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:34:import org.springframework.boot.restclient.RestTemplateRequestCustomizer;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:35:import org.springframework.boot.restclient.RootUriBuilderFactory;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:36:import org.springframework.boot.restclient.autoconfigure.HttpMessageConvertersRestClientCustomizer;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:37:import org.springframework.boot.restclient.autoconfigure.RestClientBuilderConfigurer;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:38:import org.springframework.boot.restclient.autoconfigure.RestTemplateBuilderConfigurer;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:39:import org.springframework.boot.restclient.observation.ObservationRestClientCustomizer;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/src/test/java/org_springframework_boot/spring_boot_restclient/Spring_boot_restclientTest.java:40:import org.springframework.boot.restclient.observation.ObservationRestTemplateCustomizer;
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java:7:package org_springframework_boot.spring_boot_amqp;
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java:38:import org.springframework.boot.amqp.autoconfigure.CachingConnectionFactoryConfigurer;
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java:39:import org.springframework.boot.amqp.autoconfigure.DirectRabbitListenerContainerFactoryConfigurer;
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java:40:import org.springframework.boot.amqp.autoconfigure.RabbitConnectionDetails;
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java:41:import org.springframework.boot.amqp.autoconfigure.RabbitConnectionFactoryBeanConfigurer;
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java:42:import org.springframework.boot.amqp.autoconfigure.RabbitProperties;
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java:43:import org.springframework.boot.amqp.autoconfigure.RabbitProperties.ContainerType;
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java:44:import org.springframework.boot.amqp.autoconfigure.RabbitTemplateConfigurer;
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java:45:import org.springframework.boot.amqp.autoconfigure.SimpleRabbitListenerContainerFactoryConfigurer;
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java:46:import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-restclient:4.0.2
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-restclient/4.0.2/
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-amqp:4.0.2
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-amqp/4.0.2/
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.restclient.**"
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_restclient.**"
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.amqp.**"
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_amqp.**"
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:7:package org_springframework_boot.spring_boot_reactor_netty;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:28:import org.springframework.boot.reactor.netty.NettyReactiveWebServerFactory;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:29:import org.springframework.boot.reactor.netty.NettyServerCustomizer;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:30:import org.springframework.boot.reactor.netty.autoconfigure.NettyReactiveWebServerFactoryCustomizer;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:31:import org.springframework.boot.reactor.netty.autoconfigure.NettyServerProperties;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:32:import org.springframework.boot.reactor.netty.autoconfigure.ReactorNettyProperties;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:33:import org.springframework.boot.web.server.Compression;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:34:import org.springframework.boot.web.server.GracefulShutdownResult;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:35:import org.springframework.boot.web.server.Http2;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:36:import org.springframework.boot.web.server.Shutdown;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:37:import org.springframework.boot.web.server.WebServer;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor_netty/Spring_boot_reactor_nettyTest.java:38:import org.springframework.boot.web.server.autoconfigure.ServerProperties;
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-reactor-netty:4.0.2
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-reactor-netty/4.0.2/
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.reactor.netty.**"
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_reactor_netty.**"
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/src/test/java/org_springframework_boot/spring_boot_transaction/SpringBootTransactionConfigurationMetadataTest.java:7:package org_springframework_boot.spring_boot_transaction;
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/src/test/java/org_springframework_boot/spring_boot_transaction/SpringBootTransactionConfigurationMetadataTest.java:17:import org.springframework.boot.transaction.autoconfigure.TransactionManagerCustomizer;
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/src/test/java/org_springframework_boot/spring_boot_transaction/SpringBootTransactionConfigurationMetadataTest.java:18:import org.springframework.boot.transaction.autoconfigure.TransactionManagerCustomizers;
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/src/test/java/org_springframework_boot/spring_boot_transaction/SpringBootTransactionConfigurationMetadataTest.java:19:import org.springframework.boot.transaction.autoconfigure.TransactionProperties;
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-transaction:4.0.6
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-transaction/4.0.6/
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/resources/META-INF/native-image/reachability-metadata.json:9:      "type": "org_springframework_boot.spring_boot_configuration_processor.TreesTest$DelegatingProcessingEnvironment"
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.transaction.autoconfigure.**"
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/user-code-filter.json:10:      "includeClasses" : "org.springframework.boot.transaction.jta.autoconfigure.**"
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/user-code-filter.json:13:      "includeClasses" : "org_springframework_boot.spring_boot_transaction.**"
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:7:package org_springframework_boot.spring_boot_reactor;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:24:import org.springframework.boot.EnvironmentPostProcessor;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:25:import org.springframework.boot.LazyInitializationBeanFactoryPostProcessor;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:26:import org.springframework.boot.LazyInitializationExcludeFilter;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:27:import org.springframework.boot.autoconfigure.AutoConfiguration;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:28:import org.springframework.boot.context.annotation.ImportCandidates;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:29:import org.springframework.boot.context.properties.bind.Bindable;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:30:import org.springframework.boot.context.properties.bind.Binder;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:31:import org.springframework.boot.reactor.ReactorEnvironmentPostProcessor;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:32:import org.springframework.boot.reactor.autoconfigure.ReactorAutoConfiguration;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:33:import org.springframework.boot.reactor.autoconfigure.ReactorProperties;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/src/test/java/org_springframework_boot/spring_boot_reactor/Spring_boot_reactorTest.java:34:import org.springframework.boot.reactor.autoconfigure.ReactorProperties.ContextPropagationMode;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-reactor:4.0.2
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-reactor/4.0.2/
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/java/org_springframework_boot/spring_boot_configuration_processor/TreesTest.java:7:package org_springframework_boot.spring_boot_configuration_processor;
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/java/org_springframework_boot/spring_boot_configuration_processor/TreesTest.java:37:import org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser;
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.reactor.**"
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_reactor.**"
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/java/org_springframework_boot/spring_boot_configuration_processor/VariableTreeTest.java:7:package org_springframework_boot.spring_boot_configuration_processor;
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/java/org_springframework_boot/spring_boot_configuration_processor/VariableTreeTest.java:31:import org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser;
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/java/org_springframework_boot/spring_boot_configuration_processor/ExpressionTreeTest.java:7:package org_springframework_boot.spring_boot_configuration_processor;
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/src/test/java/org_springframework_boot/spring_boot_configuration_processor/ExpressionTreeTest.java:31:import org.springframework.boot.configurationprocessor.fieldvalues.javac.JavaCompilerFieldValuesParser;
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-configuration-processor:2.7.18
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-configuration-processor/2.7.18/
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/user-code-filter.json:7:      "includeClasses": "org.springframework.boot.configurationprocessor.**"
+tests/src/org.springframework.boot/spring-boot-jdbc/4.0.6/src/test/java/org_springframework_boot/spring_boot_jdbc/Spring_boot_jdbcTest.java:7:package org_springframework_boot.spring_boot_jdbc;
+tests/src/org.springframework.boot/spring-boot-jdbc/4.0.6/src/test/java/org_springframework_boot/spring_boot_jdbc/Spring_boot_jdbcTest.java:12:import org.springframework.boot.jdbc.DataSourceBuilder;
+tests/src/org.springframework.boot/spring-boot-jdbc/4.0.6/src/test/java/org_springframework_boot/spring_boot_jdbc/Spring_boot_jdbcTest.java:13:import org.springframework.boot.jdbc.DataSourceUnwrapper;
+tests/src/org.springframework.boot/spring-boot-jdbc/4.0.6/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-jdbc:4.0.6
+tests/src/org.springframework.boot/spring-boot-jdbc/4.0.6/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-jdbc/4.0.6/
+tests/src/org.springframework.boot/spring-boot-jdbc/4.0.6/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.jdbc.**"
+tests/src/org.springframework.boot/spring-boot-jdbc/4.0.6/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_jdbc.**"
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.validation.autoconfigure.**"
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_validation.**"
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/src/test/resources/META-INF/native-image/reachability-metadata.json:9:          "org_springframework_boot.spring_boot_validation.Spring_boot_validationTest$GreetingService",
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java:7:package org_springframework_boot.spring_boot_kafka;
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java:24:import org.springframework.boot.autoconfigure.AutoConfiguration;
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java:25:import org.springframework.boot.autoconfigure.AutoConfigurations;
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java:26:import org.springframework.boot.context.annotation.ImportCandidates;
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java:27:import org.springframework.boot.kafka.autoconfigure.DefaultKafkaConsumerFactoryCustomizer;
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java:28:import org.springframework.boot.kafka.autoconfigure.DefaultKafkaProducerFactoryCustomizer;
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java:29:import org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration;
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java:30:import org.springframework.boot.kafka.autoconfigure.KafkaConnectionDetails;
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java:31:import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/src/test/java/org_springframework_boot/spring_boot_kafka/Spring_boot_kafkaTest.java:32:import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-kafka:4.0.2
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-kafka/4.0.2/
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.kafka.**"
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_kafka.**"
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/src/test/java/org_springframework_boot/spring_boot_validation/Spring_boot_validationTest.java:7:package org_springframework_boot.spring_boot_validation;
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/src/test/java/org_springframework_boot/spring_boot_validation/Spring_boot_validationTest.java:31:import org.springframework.boot.validation.autoconfigure.ValidationAutoConfiguration;
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/src/test/java/org_springframework_boot/spring_boot_validation/Spring_boot_validationTest.java:32:import org.springframework.boot.validation.autoconfigure.ValidationConfigurationCustomizer;
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/src/test/java/org_springframework_boot/spring_boot_validation/Spring_boot_validationTest.java:33:import org.springframework.boot.validation.autoconfigure.ValidatorAdapter;
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/src/test/java/org_springframework_boot/spring_boot_validation/Spring_boot_validationTest.java:34:import org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter;
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-validation:4.0.6
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-validation/4.0.6/
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:7:package org_springframework_boot.spring_boot_web_server;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:38:import org.springframework.boot.WebApplicationType;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:39:import org.springframework.boot.ssl.NoSuchSslBundleException;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:40:import org.springframework.boot.ssl.SslBundle;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:41:import org.springframework.boot.ssl.SslBundles;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:42:import org.springframework.boot.ssl.SslStoreBundle;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:43:import org.springframework.boot.web.error.ErrorPage;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:44:import org.springframework.boot.web.server.AbstractConfigurableWebServerFactory;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:45:import org.springframework.boot.web.server.Compression;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:46:import org.springframework.boot.web.server.Cookie;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:47:import org.springframework.boot.web.server.GracefulShutdownResult;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:48:import org.springframework.boot.web.server.Http2;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:49:import org.springframework.boot.web.server.MimeMappings;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:50:import org.springframework.boot.web.server.PortInUseException;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:51:import org.springframework.boot.web.server.Shutdown;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:52:import org.springframework.boot.web.server.Ssl;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:53:import org.springframework.boot.web.server.WebServer;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:54:import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:55:import org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:56:import org.springframework.boot.web.server.WebServerSslBundle;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:57:import org.springframework.boot.web.server.autoconfigure.ServerProperties;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:58:import org.springframework.boot.web.server.autoconfigure.reactive.ReactiveWebServerFactoryCustomizer;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:59:import org.springframework.boot.web.server.autoconfigure.servlet.ServletWebServerFactoryCustomizer;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:60:import org.springframework.boot.web.server.context.MissingWebServerFactoryBeanException;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:61:import org.springframework.boot.web.server.context.ServerPortInfoApplicationContextInitializer;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:62:import org.springframework.boot.web.server.context.WebServerApplicationContext;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:63:import org.springframework.boot.web.server.context.WebServerGracefulShutdownLifecycle;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:64:import org.springframework.boot.web.server.context.WebServerInitializedEvent;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:65:import org.springframework.boot.web.server.context.WebServerPortFileWriter;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:66:import org.springframework.boot.web.server.reactive.AbstractReactiveWebServerFactory;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:67:import org.springframework.boot.web.server.reactive.ConfigurableReactiveWebServerFactory;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:68:import org.springframework.boot.web.server.reactive.ReactiveWebServerFactory;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:69:import org.springframework.boot.web.server.reactive.context.AnnotationConfigReactiveWebServerApplicationContext;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:70:import org.springframework.boot.web.server.reactive.context.ReactiveWebServerApplicationContext;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:71:import org.springframework.boot.web.server.reactive.context.ReactiveWebServerInitializedEvent;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:72:import org.springframework.boot.web.server.servlet.ConfigurableServletWebServerFactory;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:73:import org.springframework.boot.web.server.servlet.ContextPath;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:74:import org.springframework.boot.web.server.servlet.CookieSameSiteSupplier;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:75:import org.springframework.boot.web.server.servlet.DocumentRoot;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:76:import org.springframework.boot.web.server.servlet.Jsp;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:77:import org.springframework.boot.web.server.servlet.ServletContextInitializers;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:78:import org.springframework.boot.web.server.servlet.ServletWebServerFactory;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:79:import org.springframework.boot.web.server.servlet.ServletWebServerSettings;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:80:import org.springframework.boot.web.server.servlet.Session;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:81:import org.springframework.boot.web.server.servlet.Session.SessionTrackingMode;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:82:import org.springframework.boot.web.server.servlet.context.AnnotationConfigServletWebServerApplicationContext;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:83:import org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:84:import org.springframework.boot.web.server.servlet.context.ServletWebServerInitializedEvent;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/src/test/java/org_springframework_boot/spring_boot_web_server/Spring_boot_web_serverTest.java:85:import org.springframework.boot.web.servlet.ServletContextInitializer;
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-web-server:4.0.2
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-web-server/4.0.2/
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.web.server.**"
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_web_server.**"
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.springframework.boot.http.client.ReflectiveComponentsClientHttpRequestFactoryBuilder"
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "org_springframework_boot.spring_boot_http_client.CustomClientHttpRequestFactory",
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/src/test/java/org_springframework_boot/spring_boot_http_client/ReflectiveComponentsClientHttpRequestFactoryBuilderTest.java:7:package org_springframework_boot.spring_boot_http_client;
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/src/test/java/org_springframework_boot/spring_boot_http_client/ReflectiveComponentsClientHttpRequestFactoryBuilderTest.java:14:import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder;
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-http-client:4.0.2
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-http-client/4.0.2/
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.http.client.**"
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_http_client.**"
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java:7:package org_springframework_boot.spring_boot_webflux;
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java:20:import org.springframework.boot.SpringApplication;
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java:21:import org.springframework.boot.WebApplicationType;
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java:22:import org.springframework.boot.web.error.ErrorAttributeOptions;
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java:23:import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java:24:import org.springframework.boot.webflux.autoconfigure.ReactiveMultipartProperties;
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java:25:import org.springframework.boot.webflux.autoconfigure.WebFluxProperties;
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java:26:import org.springframework.boot.webflux.autoconfigure.WebHttpHandlerBuilderCustomizer;
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java:27:import org.springframework.boot.webflux.error.DefaultErrorAttributes;
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/src/test/java/org_springframework_boot/spring_boot_webflux/Spring_boot_webfluxTest.java:28:import org.springframework.boot.webflux.filter.OrderedHiddenHttpMethodFilter;
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-webflux:4.0.2
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/gradle.properties:6:metadata.dir = org.springframework.boot/spring-boot-webflux/4.0.2/
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/user-code-filter.json:7:      "includeClasses" : "org.springframework.boot.webflux.**"
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/user-code-filter.json:10:      "includeClasses" : "org_springframework_boot.spring_boot_webflux.**"
+tests/src/org.jboss.logging/jboss-logging/3.5.0.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:10:      "type": "org.springframework.boot.test.system.OutputCapture"
+tests/src/org.jboss.logging/jboss-logging/3.5.0.Final/src/test/java/org_jboss_logging/jboss_logging/Jboss_loggingTest.java:12:import org.springframework.boot.test.system.CapturedOutput;
+tests/src/org.jboss.logging/jboss-logging/3.5.0.Final/src/test/java/org_jboss_logging/jboss_logging/Jboss_loggingTest.java:13:import org.springframework.boot.test.system.OutputCaptureExtension;
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:11423:      "type": "org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy"
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/src/test/resources/META-INF/native-image/reachability-metadata.json:11435:      "type": "org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
+
+web search: 
+web search: org.springframework.boot spring-boot-sql 4.0.6 Maven Central
+web search: 
+web search: https://central.sonatype.com/artifact/org.springframework.boot/spring-boot-sql
+web search: 
+web search: 
+web search: 
+web search: 'spring-boot-sql' in https://repo.maven.apache.org/maven2/org/springframework/boot/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/
+codex
+The existing file only contains coordinates. Maven’s artifact listing through the browser output looks inconsistent with the release pages, so I’m going to verify the actual files directly from Maven metadata and artifact URLs before choosing URLs.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-sql</artifactId>
+  <version>4.0.6</version>
+  <name>spring-boot-sql</name>
+  <description>Spring Boot SQL</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>4.0.6</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/maven-metadata.xml | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-sql</artifactId>
+  <versioning>
+    <latest>4.1.0-RC1</latest>
+    <release>4.1.0-RC1</release>
+    <versions>
+      <version>4.0.0-M1</version>
+      <version>4.0.0-M2</version>
+      <version>4.0.0-M3</version>
+      <version>4.0.0-RC1</version>
+      <version>4.0.0-RC2</version>
+      <version>4.0.0</version>
+      <version>4.0.1</version>
+      <version>4.0.2</version>
+      <version>4.0.3</version>
+      <version>4.0.4</version>
+      <version>4.0.5</version>
+      <version>4.0.6</version>
+      <version>4.1.0-M1</version>
+      <version>4.1.0-M2</version>
+      <version>4.1.0-M3</version>
+      <version>4.1.0-M4</version>
+      <version>4.1.0-RC1</version>
+    </versions>
+    <lastUpdated>20260423154625</lastUpdated>
+  </versioning>
+</metadata>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 162ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 04:19:52 GMT
+content-type: application/java-archive
+content-length: 163441
+cf-ray: 9fe88bac6883bc4a-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1553418
+etag: "8dd9e9bc86c69093537e8c1c615bb7a5"
+last-modified: Thu, 23 Apr 2026 15:18:46 GMT
+x-checksum-md5: 8dd9e9bc86c69093537e8c1c615bb7a5
+x-checksum-sha1: d5a42f3e3561eaf9b9e760539febe6b912a3b609
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-test-sources.jar || true; curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-tests.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/spring-boot-sql-4.0.6.jar" https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6.jar; jar tf "$tmp/spring-boot-sql-4.0.6.jar" | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 144ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/spring-configuration-metadata.json
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/sql/
+org/springframework/boot/sql/autoconfigure/
+org/springframework/boot/sql/autoconfigure/init/
+org/springframework/boot/sql/autoconfigure/init/ApplicationScriptDatabaseInitializer.class
+org/springframework/boot/sql/autoconfigure/init/ConditionalOnSqlInitialization.class
+org/springframework/boot/sql/autoconfigure/init/OnDatabaseInitializationCondition.class
+org/springframework/boot/sql/autoconfigure/init/OnSqlInitializationCondition.class
+org/springframework/boot/sql/autoconfigure/init/SettingsCreator.class
+org/springframework/boot/sql/autoconfigure/init/SqlInitializationProperties.class
+org/springframework/boot/sql/autoconfigure/init/SqlInitializationScriptsRuntimeHints.class
+org/springframework/boot/sql/autoconfigure/init/package-info.class
+org/springframework/boot/sql/init/
+org/springframework/boot/sql/init/AbstractScriptDatabaseInitializer$ScriptLocationResolver.class
+org/springframework/boot/sql/init/AbstractScriptDatabaseInitializer$Scripts.class
+org/springframework/boot/sql/init/AbstractScriptDatabaseInitializer.class
+org/springframework/boot/sql/init/DatabaseInitializationMode.class
+org/springframework/boot/sql/init/DatabaseInitializationSettings.class
+org/springframework/boot/sql/init/package-info.class
+org/springframework/boot/sql/init/dependency/
+org/springframework/boot/sql/init/dependency/AbstractBeansOfTypeDatabaseInitializerDetector.class
+org/springframework/boot/sql/init/dependency/AbstractBeansOfTypeDependsOnDatabaseInitializationDetector.class
+org/springframework/boot/sql/init/dependency/AnnotationDependsOnDatabaseInitializationDetector.class
+org/springframework/boot/sql/init/dependency/BeansOfTypeDetector.class
+org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer$DependsOnDatabaseInitializationPostProcessor$InitializerBeanNames.class
+org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer$DependsOnDatabaseInitializationPostProcessor.class
+org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer.class
+org/springframework/boot/sql/init/dependency/DatabaseInitializerDetector.class
+org/springframework/boot/sql/init/dependency/DependsOnDatabaseInitialization.class
+org/springframework/boot/sql/init/dependency/DependsOnDatabaseInitializationDetector.class
+org/springframework/boot/sql/init/dependency/package-info.class
+META-INF/additional-spring-configuration-metadata.json
+META-INF/spring.factories
+
+ succeeded in 179ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-sql/4.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-sql/4.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-sql-4.0.6-javadoc.jar" title="spring-boot-sql-4.0.6-javadoc.jar">spring-boot-sql-4.0.6-javadoc.jar</a>                 2026-04-23 15:18    163441      
+<a href="spring-boot-sql-4.0.6-javadoc.jar.asc" title="spring-boot-sql-4.0.6-javadoc.jar.asc">spring-boot-sql-4.0.6-javadoc.jar.asc</a>             2026-04-23 15:18       833      
+<a href="spring-boot-sql-4.0.6-javadoc.jar.md5" title="spring-boot-sql-4.0.6-javadoc.jar.md5">spring-boot-sql-4.0.6-javadoc.jar.md5</a>             2026-04-23 15:18        32      
+<a href="spring-boot-sql-4.0.6-javadoc.jar.sha1" title="spring-boot-sql-4.0.6-javadoc.jar.sha1">spring-boot-sql-4.0.6-javadoc.jar.sha1</a>            2026-04-23 15:18        40      
+<a href="spring-boot-sql-4.0.6-sources.jar" title="spring-boot-sql-4.0.6-sources.jar">spring-boot-sql-4.0.6-sources.jar</a>                 2026-04-23 15:18     30638      
+<a href="spring-boot-sql-4.0.6-sources.jar.asc" title="spring-boot-sql-4.0.6-sources.jar.asc">spring-boot-sql-4.0.6-sources.jar.asc</a>             2026-04-23 15:18       833      
+<a href="spring-boot-sql-4.0.6-sources.jar.md5" title="spring-boot-sql-4.0.6-sources.jar.md5">spring-boot-sql-4.0.6-sources.jar.md5</a>             2026-04-23 15:18        32      
+<a href="spring-boot-sql-4.0.6-sources.jar.sha1" title="spring-boot-sql-4.0.6-sources.jar.sha1">spring-boot-sql-4.0.6-sources.jar.sha1</a>            2026-04-23 15:18        40      
+<a href="spring-boot-sql-4.0.6.jar" title="spring-boot-sql-4.0.6.jar">spring-boot-sql-4.0.6.jar</a>                         2026-04-23 15:18     36059      
+<a href="spring-boot-sql-4.0.6.jar.asc" title="spring-boot-sql-4.0.6.jar.asc">spring-boot-sql-4.0.6.jar.asc</a>                     2026-04-23 15:18       833      
+<a href="spring-boot-sql-4.0.6.jar.md5" title="spring-boot-sql-4.0.6.jar.md5">spring-boot-sql-4.0.6.jar.md5</a>                     2026-04-23 15:18        32      
+<a href="spring-boot-sql-4.0.6.jar.sha1" title="spring-boot-sql-4.0.6.jar.sha1">spring-boot-sql-4.0.6.jar.sha1</a>                    2026-04-23 15:18        40      
+<a href="spring-boot-sql-4.0.6.module" title="spring-boot-sql-4.0.6.module">spring-boot-sql-4.0.6.module</a>                      2026-04-23 15:18      3924      
+<a href="spring-boot-sql-4.0.6.module.asc" title="spring-boot-sql-4.0.6.module.asc">spring-boot-sql-4.0.6.module.asc</a>                  2026-04-23 15:18       833      
+<a href="spring-boot-sql-4.0.6.module.md5" title="spring-boot-sql-4.0.6.module.md5">spring-boot-sql-4.0.6.module.md5</a>                  2026-04-23 15:18        32      
+<a href="spring-boot-sql-4.0.6.module.sha1" title="spring-boot-sql-4.0.6.module.sha1">spring-boot-sql-4.0.6.module.sha1</a>                 2026-04-23 15:18        40      
+<a href="spring-boot-sql-4.0.6.pom" title="spring-boot-sql-4.0.6.pom">spring-boot-sql-4.0.6.pom</a>                         2026-04-23 15:18      2030      
+<a href="spring-boot-sql-4.0.6.pom.asc" title="spring-boot-sql-4.0.6.pom.asc">spring-boot-sql-4.0.6.pom.asc</a>                     2026-04-23 15:18       833      
+<a href="spring-boot-sql-4.0.6.pom.md5" title="spring-boot-sql-4.0.6.pom.md5">spring-boot-sql-4.0.6.pom.md5</a>                     2026-04-23 15:18        32      
+<a href="spring-boot-sql-4.0.6.pom.sha1" title="spring-boot-sql-4.0.6.pom.sha1">spring-boot-sql-4.0.6.pom.sha1</a>                    2026-04-23 15:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 595ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 20 May 2026 04:20:00 GMT
+content-type: text/html
+cf-ray: 9fe88bdbed1dbe5c-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 20 May 2026 04:20:00 GMT
+content-type: text/html
+cf-ray: 9fe88bddb9f1bc05-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+Maven Central confirms the 4.0.6 JAR, sources JAR, and javadoc JAR exist; no test-sources/tests classifier is published. The main JAR contains `.class` files under `org/springframework/boot/sql`, so this remains a JVM artifact and should not be marked `not-for-native-image`.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sources.jar" https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-sources.jar; jar tf "$tmp/sources.jar" | sed -n '"'1,200p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/additional-spring-configuration-metadata.json
+META-INF/spring.factories
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/sql/
+org/springframework/boot/sql/autoconfigure/
+org/springframework/boot/sql/autoconfigure/init/
+org/springframework/boot/sql/autoconfigure/init/ApplicationScriptDatabaseInitializer.java
+org/springframework/boot/sql/autoconfigure/init/ConditionalOnSqlInitialization.java
+org/springframework/boot/sql/autoconfigure/init/OnDatabaseInitializationCondition.java
+org/springframework/boot/sql/autoconfigure/init/OnSqlInitializationCondition.java
+org/springframework/boot/sql/autoconfigure/init/SettingsCreator.java
+org/springframework/boot/sql/autoconfigure/init/SqlInitializationProperties.java
+org/springframework/boot/sql/autoconfigure/init/SqlInitializationScriptsRuntimeHints.java
+org/springframework/boot/sql/autoconfigure/init/package-info.java
+org/springframework/boot/sql/init/
+org/springframework/boot/sql/init/AbstractScriptDatabaseInitializer.java
+org/springframework/boot/sql/init/DatabaseInitializationMode.java
+org/springframework/boot/sql/init/DatabaseInitializationSettings.java
+org/springframework/boot/sql/init/package-info.java
+org/springframework/boot/sql/init/dependency/
+org/springframework/boot/sql/init/dependency/AbstractBeansOfTypeDatabaseInitializerDetector.java
+org/springframework/boot/sql/init/dependency/AbstractBeansOfTypeDependsOnDatabaseInitializationDetector.java
+org/springframework/boot/sql/init/dependency/AnnotationDependsOnDatabaseInitializationDetector.java
+org/springframework/boot/sql/init/dependency/BeansOfTypeDetector.java
+org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer.java
+org/springframework/boot/sql/init/dependency/DatabaseInitializerDetector.java
+org/springframework/boot/sql/init/dependency/DependsOnDatabaseInitialization.java
+org/springframework/boot/sql/init/dependency/DependsOnDatabaseInitializationDetector.java
+org/springframework/boot/sql/init/dependency/package-info.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/spring-boot-project/spring-boot-sql/build.gradle | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/spring-projects/spring-boot/tree/v4.0.6 && curl -I -fsSL https://github.com/spring-projects/spring-boot/tree/v4.0.6/spring-boot-project/spring-boot-sql && curl -I -fsSL https://github.com/spring-projects/spring-boot/tree/v4.0.6/spring-boot-project/spring-boot-sql/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 143ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 1345ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 04:20:09 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6ebf61af70a308df35a2dfd9fdfd6293"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=pyNodQK%2BWj0cKFV%2BF6g7iPkU2rS3u2isgkW%2Fwg8wyNkUogdUQ83JnKpw1beI8v7SmKd01nwuosQfrNLRl%2BOETlf%2Fg0oRAv0tINJ1vIg8NAfh35GtqgLZzN%2BZqCnFpJDd878SrbV5%2F82DOoGcK9fL440XuEooshw4hRQaCApH%2B28T7GtB6uZLrpQ1ZF87UC2Rp1HgqEzwOkkCxKLaYkH3AnwInL1QytefdBViPvv1PMBFh8bwXV2nIK6cirVYes7d1zISL08bd3mcoxmII7kBYw%3D%3D--kOfcKDKqPgC9I8Jc--I0%2FIGqhXsbzMH%2Bu4qYvVKw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.555057601.1779250808; expires=Thu, 20 May 2027 04:20:08 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 20 May 2027 04:20:08 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6201:1B5657:16A6DB4:1233103:6A0D3678
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 20 May 2026 04:20:09 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=UkVJaC8zHTCJIJpbUI34CyXaw1xwQtrPZur8bh9Z07sQ9SA8mzeLRfdcXdSCcIAY43clG2kIV1%2B8HOsFyiKaFpVO75ic1rRLM3osD9ZoEstmm9fmm5qFAeRKjB5mYOxKWe3Zg2aFVfeJTaQoJQPUlKZyboAuusO3ZJhZg9ZOF7j%2Bdptu30k67kyeTzgyTznzqypL7IB%2BWjUuYRWevDz0G5ymanCtqGQZ%2Bi6Xk2mTmpTlaI1ggvVacaVwZYinbjPC9VndbnYV2r891oW1QVu%2BGA%3D%3D--ljIEfaSul9Qk52Cy--yvcc%2F6%2F4vlRgOFhg7G15bQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1825888666.1779250809; expires=Thu, 20 May 2027 04:20:09 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 20 May 2027 04:20:09 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6202:1D8EB4:1680890:121A4FD:6A0D3679
+
+
+codex
+The tag `v4.0.6` exists, but my first guessed module path was wrong. I’m querying the tagged Git tree to locate the module and its tests exactly instead of inferring the URL shape.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6.module | sed -n '1,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.springframework.boot",
+    "module": "spring-boot-sql",
+    "version": "4.0.6",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.4.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot",
+          "version": {
+            "requires": "4.0.6"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "spring-boot-sql-4.0.6.jar",
+          "url": "spring-boot-sql-4.0.6.jar",
+          "size": 36059,
+          "sha512": "ef137628f72749ade5320398255313b62a352261df60a10e3d2657e6ffad3c4b5047609adcac71b3a78a8915d4740bb77d26668cf3108b33af3cf5cc456b4f34",
+          "sha256": "aa98cba6a0195ce0a6cc48e075f37f4b11587d91f1004b3b37b47a59897de615",
+          "sha1": "2526bc5a53f0ca3c029a4c02a1360a25c9e226d4",
+          "md5": "ae4bb6a4d7f7b429439592f9321e1b0c"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot",
+          "version": {
+            "requires": "4.0.6"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "spring-boot-sql-4.0.6.jar",
+          "url": "spring-boot-sql-4.0.6.jar",
+          "size": 36059,
+          "sha512": "ef137628f72749ade5320398255313b62a352261df60a10e3d2657e6ffad3c4b5047609adcac71b3a78a8915d4740bb77d26668cf3108b33af3cf5cc456b4f34",
+          "sha256": "aa98cba6a0195ce0a6cc48e075f37f4b11587d91f1004b3b37b47a59897de615",
+          "sha1": "2526bc5a53f0ca3c029a4c02a1360a25c9e226d4",
+          "md5": "ae4bb6a4d7f7b429439592f9321e1b0c"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spring-boot-sql-4.0.6-javadoc.jar",
+          "url": "spring-boot-sql-4.0.6-javadoc.jar",
+          "size": 163441,
+          "sha512": "4ff8d1f93f9be72a45d4e480b7e3b05af9d131c8754c58281abffe44c3e9c9cc4fbfa2d95c8630213f3f3fa28dac1a8a820ab9124cefb528e0808dd1e1a14d27",
+          "sha256": "98099a01d97893f1108f24b3919d5d1bc8132077b21ab3b00ffc3fccef5e40c1",
+          "sha1": "d5a42f3e3561eaf9b9e760539febe6b912a3b609",
+          "md5": "8dd9e9bc86c69093537e8c1c615bb7a5"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spring-boot-sql-4.0.6-sources.jar",
+          "url": "spring-boot-sql-4.0.6-sources.jar",
+          "size": 30638,
+          "sha512": "edc8d0482c0fc6c6a4d35fb71d86784fb873226d9027421c09a9364ae98cbd7d7ad63c597b270166e965bb24d4dcef73a4d4b816ed3c45c63f02ff26b89f86c1",
+          "sha256": "6292d95d75e281b1f2c9dbbaad0fabaff918cf85d3a752f5840da40315a1a130",
+          "sha1": "ebc02c0fca1b1ce06ecc1c3eb3497c108f90afea",
+          "md5": "efd64311a47dde2d3f66227478bc082f"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents?ref=v4.0.6 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/git/trees/v4.0.6?recursive=1 | rg 'spring-boot-sql|sql/init|SqlInitialization' | sed -n '1,240p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 234ms:
+[
+  {
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "sha": "48a40c43887addd0581131a72c5d9854729069cb",
+    "size": 100,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/.editorconfig?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/.editorconfig",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/48a40c43887addd0581131a72c5d9854729069cb",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/.editorconfig",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/.editorconfig?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/48a40c43887addd0581131a72c5d9854729069cb",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/.editorconfig"
+    }
+  },
+  {
+    "name": ".git-blame-ignore-revs",
+    "path": ".git-blame-ignore-revs",
+    "sha": "9f1f385af67d7868755e64f3c9e7c84e47b84e1d",
+    "size": 205,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/.git-blame-ignore-revs?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/.git-blame-ignore-revs",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/9f1f385af67d7868755e64f3c9e7c84e47b84e1d",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/.git-blame-ignore-revs",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/.git-blame-ignore-revs?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/9f1f385af67d7868755e64f3c9e7c84e47b84e1d",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/.git-blame-ignore-revs"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "a9cb36a5ec9ed1490a368e2aec9000957f1b32ac",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/.github?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/.github",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a9cb36a5ec9ed1490a368e2aec9000957f1b32ac",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/.github?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a9cb36a5ec9ed1490a368e2aec9000957f1b32ac",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "d5e93a54c6297a2d7ee82e15a36d3af296de330f",
+    "size": 458,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/.gitignore?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/.gitignore",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/d5e93a54c6297a2d7ee82e15a36d3af296de330f",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/.gitignore?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/d5e93a54c6297a2d7ee82e15a36d3af296de330f",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/.gitignore"
+    }
+  },
+  {
+    "name": ".idea",
+    "path": ".idea",
+    "sha": "ec89ff779fbfb45bb4cb1601222bb84c29b8e4a7",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/.idea?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/.idea",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ec89ff779fbfb45bb4cb1601222bb84c29b8e4a7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/.idea?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ec89ff779fbfb45bb4cb1601222bb84c29b8e4a7",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/.idea"
+    }
+  },
+  {
+    "name": ".sdkmanrc",
+    "path": ".sdkmanrc",
+    "sha": "936bd46f844d699d84b8f26c9e3e7dda83051d90",
+    "size": 115,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/.sdkmanrc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/.sdkmanrc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/936bd46f844d699d84b8f26c9e3e7dda83051d90",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/.sdkmanrc",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/.sdkmanrc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/936bd46f844d699d84b8f26c9e3e7dda83051d90",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/.sdkmanrc"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.adoc",
+    "path": "CONTRIBUTING.adoc",
+    "sha": "9ccb8fea3b8138b7c02aed8b36bb8a415290a5a5",
+    "size": 4100,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/CONTRIBUTING.adoc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/CONTRIBUTING.adoc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/9ccb8fea3b8138b7c02aed8b36bb8a415290a5a5",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/CONTRIBUTING.adoc",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/CONTRIBUTING.adoc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/9ccb8fea3b8138b7c02aed8b36bb8a415290a5a5",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/CONTRIBUTING.adoc"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "823c1c8e9820bcc35d561f04d1cc972323162769",
+    "size": 11359,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/LICENSE.txt?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/823c1c8e9820bcc35d561f04d1cc972323162769",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/LICENSE.txt?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/823c1c8e9820bcc35d561f04d1cc972323162769",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/LICENSE.txt"
+    }
+  },
+  {
+    "name": "README.adoc",
+    "path": "README.adoc",
+    "sha": "65c70c823d1b454378edde3f3c64c662ef3d85ad",
+    "size": 5281,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/README.adoc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/README.adoc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/65c70c823d1b454378edde3f3c64c662ef3d85ad",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/README.adoc",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/README.adoc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/65c70c823d1b454378edde3f3c64c662ef3d85ad",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/README.adoc"
+    }
+  },
+  {
+    "name": "SUPPORT.adoc",
+    "path": "SUPPORT.adoc",
+    "sha": "19917ea3d9a993112b73e02c466c70cc8efb2c85",
+    "size": 1002,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/SUPPORT.adoc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/SUPPORT.adoc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/19917ea3d9a993112b73e02c466c70cc8efb2c85",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/SUPPORT.adoc",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/SUPPORT.adoc?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/19917ea3d9a993112b73e02c466c70cc8efb2c85",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/SUPPORT.adoc"
+    }
+  },
+  {
+    "name": "antora",
+    "path": "antora",
+    "sha": "dc992a5a1da3a668597fb174e53b09f1dabb6335",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/antora?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/antora",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/dc992a5a1da3a668597fb174e53b09f1dabb6335",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/antora?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/dc992a5a1da3a668597fb174e53b09f1dabb6335",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/antora"
+    }
+  },
+  {
+    "name": "build-plugin",
+    "path": "build-plugin",
+    "sha": "a97c8fc418c640acbbe0f9064b504b02072317a7",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/build-plugin?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/build-plugin",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a97c8fc418c640acbbe0f9064b504b02072317a7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/build-plugin?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a97c8fc418c640acbbe0f9064b504b02072317a7",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/build-plugin"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "84acc860390290b3d386dbff8bbdb71d45dc6c7d",
+    "size": 1184,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/build.gradle?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/build.gradle",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/84acc860390290b3d386dbff8bbdb71d45dc6c7d",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/build.gradle?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/84acc860390290b3d386dbff8bbdb71d45dc6c7d",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/build.gradle"
+    }
+  },
+  {
+    "name": "buildSrc",
+    "path": "buildSrc",
+    "sha": "a7341a94797738be4e525b8627527af7f8ca3973",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/buildSrc?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/buildSrc",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a7341a94797738be4e525b8627527af7f8ca3973",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+
+ succeeded in 1736ms:
+      "path": "module/spring-boot-sql",
+      "path": "module/spring-boot-sql/build.gradle",
+      "path": "module/spring-boot-sql/src",
+      "path": "module/spring-boot-sql/src/main",
+      "path": "module/spring-boot-sql/src/main/java",
+      "path": "module/spring-boot-sql/src/main/java/org",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/ApplicationScriptDatabaseInitializer.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/ConditionalOnSqlInitialization.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/OnDatabaseInitializationCondition.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/OnSqlInitializationCondition.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/SettingsCreator.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/SqlInitializationProperties.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/SqlInitializationScriptsRuntimeHints.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/package-info.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/AbstractScriptDatabaseInitializer.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/DatabaseInitializationMode.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/DatabaseInitializationSettings.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/AbstractBeansOfTypeDatabaseInitializerDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/AbstractBeansOfTypeDependsOnDatabaseInitializationDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/AnnotationDependsOnDatabaseInitializationDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/BeansOfTypeDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/DatabaseInitializerDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/DependsOnDatabaseInitialization.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/DependsOnDatabaseInitializationDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/package-info.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/package-info.java",
+      "path": "module/spring-boot-sql/src/main/resources",
+      "path": "module/spring-boot-sql/src/main/resources/META-INF",
+      "path": "module/spring-boot-sql/src/main/resources/META-INF/additional-spring-configuration-metadata.json",
+      "path": "module/spring-boot-sql/src/main/resources/META-INF/spring.factories",
+      "path": "module/spring-boot-sql/src/test",
+      "path": "module/spring-boot-sql/src/test/java",
+      "path": "module/spring-boot-sql/src/test/java/org",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/autoconfigure",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/autoconfigure/init",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/autoconfigure/init/OnDatabaseInitializationConditionTests.java",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/autoconfigure/init/SqlInitializationScriptsRuntimeHintsTests.java",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/init",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/init/dependency",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurerTests.java",
+      "path": "module/spring-boot-sql/src/testFixtures",
+      "path": "module/spring-boot-sql/src/testFixtures/java",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework/boot",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework/boot/sql",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework/boot/sql/init",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework/boot/sql/init/AbstractScriptDatabaseInitializerTests.java",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework/boot/sql/init/ScriptDatabaseInitializerSettings.java",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.springframework.boot/spring-boot-netty/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-boot",
+    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-netty/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-javadoc.jar",
+    "description" : "Spring Boot Netty provides auto-configuration support for using Netty within Spring Boot applications. It contributes configuration properties and auto-configuration classes that integrate Netty runtime settings, such as leak detection, with Boot's application context.",
+    "tested-versions" : [
+      "4.0.2",
+      "4.0.3",
+      "4.0.4",
+      "4.0.5",
+      "4.0.6",
+      "4.1.0-M1",
+      "4.1.0-M2",
+      "4.1.0-M3",
+      "4.1.0-M4",
+      "4.1.0-RC1"
+    ],
+    "allowed-packages" : [
+      "org.springframework.boot.netty.autoconfigure"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.springframework.boot/spring-boot-web-server/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-web-server/$version$/spring-boot-web-server-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-boot",
+    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-web-server/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-web-server/$version$/spring-boot-web-server-$version$-javadoc.jar",
+    "description" : "Spring Boot Web Server provides the core abstractions, configuration properties, and context support that Spring Boot uses to create and manage embedded servlet and reactive web servers. It supplies common web server factory contracts, SSL, HTTP/2, graceful shutdown, session, port, and server property support for Spring Boot web applications.",
+    "tested-versions" : [
+      "4.0.2",
+      "4.0.3",
+      "4.0.4",
+      "4.0.5",
+      "4.0.6",
+      "4.1.0-M1",
+      "4.1.0-M2",
+      "4.1.0-M3",
+      "4.1.0-M4",
+      "4.1.0-RC1"
+    ],
+    "allowed-packages" : [
+      "org.springframework.boot.web.server"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url.*repo.maven.apache.org/maven2/org/springframework/boot|test-code-url.*spring-projects/spring-boot/tree' metadata/org.springframework.boot -g index.json | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 0ms:
+metadata/org.springframework.boot/spring-boot-netty/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-netty/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-netty/src/test",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-amqp/$version$/spring-boot-amqp-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-amqp/src/test",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-reactor/$version$/spring-boot-reactor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-reactor/src/test/java",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-kafka/$version$/spring-boot-kafka-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-kafka/src/test",
+metadata/org.springframework.boot/spring-boot-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-jdbc/$version$/spring-boot-jdbc-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-jdbc/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-jdbc/src/test/java",
+metadata/org.springframework.boot/spring-boot-web-server/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-web-server/src/test",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-http-client/$version$/spring-boot-http-client-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-http-client/src/test",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-webflux/src/test",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-actuator-autoconfigure/src/test",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-reactor-netty/src/test",
+metadata/org.springframework.boot/spring-boot-transaction/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-transaction/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-transaction/src/test",
+metadata/org.springframework.boot/spring-boot-health/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-health/src/test",
+metadata/org.springframework.boot/spring-boot-restclient/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-restclient/$version$/spring-boot-restclient-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-restclient/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-restclient/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-validation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-validation/$version$/spring-boot-validation-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-validation/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-validation/src/test/java",
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 org springframework boot spring-boot-sql 4.0.6 spring-boot-sql-4.0.6-sources.jar
+codex
+I found the tagged source tree under `module/spring-boot-sql`. I’m updating the discovered metadata with Maven source/javadoc artifacts, GitHub test path for the tagged suite, and no language or `not-for-native-image` fields because this is a plain JVM Java artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+index 0be1e4e2e7b4cf9af13b5cec2b814a91ac7866d9..a072d3f4a6db1383f0347f61d5c0edbf9667dc14
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
++  "description" : "Spring Boot SQL provides Spring Boot's SQL database initialization support, including settings and initializers for running schema and data scripts. It also supplies auto-configuration conditions, dependency detection, and runtime hints used by Boot applications that initialize databases."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+index 0be1e4e2e7b4cf9af13b5cec2b814a91ac7866d9..a072d3f4a6db1383f0347f61d5c0edbf9667dc14
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
++  "description" : "Spring Boot SQL provides Spring Boot's SQL database initialization support, including settings and initializers for running schema and data scripts. It also supplies auto-configuration conditions, dependency detection, and runtime hints used by Boot applications that initialize databases."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot-sql:4.0.6",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
+  "description": "Spring Boot SQL provides Spring Boot's SQL database initialization support, including settings and initializers for running schema and data scripts. It also supplies auto-configuration conditions, dependency detection, and runtime hints used by Boot applications that initialize databases."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-sources.jar >/dev/null && curl -I -fsSL https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-sql/src/test >/dev/null && curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-javadoc.jar >/dev/null && echo ok' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+index 0be1e4e2e7b4cf9af13b5cec2b814a91ac7866d9..a072d3f4a6db1383f0347f61d5c0edbf9667dc14
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
++  "description" : "Spring Boot SQL provides Spring Boot's SQL database initialization support, including settings and initializers for running schema and data scripts. It also supplies auto-configuration conditions, dependency detection, and runtime hints used by Boot applications that initialize databases."
+ }
+
+ succeeded in 757ms:
+ok
+
+codex
+Done. I updated [org.springframework.boot-spring-boot-sql-4.0.6.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json:1).
+
+Validation: JSON parses with `jq`, and the `$version$` URLs resolve when substituted with `4.0.6`. No `language` or `not-for-native-image` fields were added.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+index 0be1e4e2e7b4cf9af13b5cec2b814a91ac7866d9..a072d3f4a6db1383f0347f61d5c0edbf9667dc14
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
++  "description" : "Spring Boot SQL provides Spring Boot's SQL database initialization support, including settings and initializers for running schema and data scripts. It also supplies auto-configuration conditions, dependency detection, and runtime hints used by Boot applications that initialize databases."
+ }
+
+tokens used
+62,490
+Done. I updated [org.springframework.boot-spring-boot-sql-4.0.6.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json:1).
+
+Validation: JSON parses with `jq`, and the `$version$` URLs resolve when substituted with `4.0.6`. No `language` or `not-for-native-image` fields were added.
+Ran agent for org.springframework.boot:spring-boot-sql:4.0.6 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-sql-4.0.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7051-3253d3da/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 44s
+9 actionable tasks: 9 executed
