@@ -133,6 +133,24 @@ public class Angus_activationTest {
     }
 
     @Test
+    void mailcapFileSupportsJavaOnlyEntriesAndPrimaryTypeShorthand() throws IOException {
+        MailcapFile mailcap = new MailcapFile(streamOf("""
+                APPLICATION/X-JAVA-ONLY;; X-JAVA-VIEW=com.example.JavaOnlyViewer
+                text;; x-java-print=com.example.TextPrinter
+                """));
+
+        assertThat(commandClasses(mailcap.getMailcapList("application/x-java-only"), "view"))
+                .containsExactly("com.example.JavaOnlyViewer");
+        assertThat(mailcap.getNativeCommands("application/x-java-only")).isNull();
+
+        assertThat(commandClasses(mailcap.getMailcapList("text/plain"), "print"))
+                .containsExactly("com.example.TextPrinter");
+        assertThat(commandClasses(mailcap.getMailcapList("text/*"), "print"))
+                .containsExactly("com.example.TextPrinter");
+        assertThat(mailcap.getMimeTypes()).contains("application/x-java-only", "text/*");
+    }
+
+    @Test
     void mailcapRegistrySupportsAppendFileAndProviderConstruction() throws IOException {
         Path mailcapFile = temporaryDirectory.resolve("mailcap");
         Files.writeString(
