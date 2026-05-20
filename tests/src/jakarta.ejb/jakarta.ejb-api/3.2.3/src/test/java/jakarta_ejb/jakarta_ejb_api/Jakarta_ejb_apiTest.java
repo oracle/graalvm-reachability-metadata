@@ -9,7 +9,9 @@ package jakarta_ejb.jakarta_ejb_api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -66,7 +68,10 @@ import javax.ejb.Stateful;
 import javax.ejb.StatefulTimeout;
 import javax.ejb.Stateless;
 import javax.ejb.Timeout;
+import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
+import javax.ejb.TimerHandle;
+import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
@@ -317,6 +322,41 @@ public class Jakarta_ejb_apiTest {
     }
 
     @Test
+    void timerServiceCreatesProgrammaticTimersAndExposesTimerState() {
+        RecordingTimerService timerService = new RecordingTimerService();
+        TimerConfig oneShotConfig = new TimerConfig("refresh-cache", false);
+        Timer oneShot = timerService.createSingleActionTimer(5_000L, oneShotConfig);
+        ScheduleExpression calendarSchedule = new ScheduleExpression().hour(2).minute(30).second(0);
+        TimerConfig calendarConfig = new TimerConfig("calendar-job", true);
+        Timer calendar = timerService.createCalendarTimer(calendarSchedule, calendarConfig);
+
+        assertThat(timerService.getTimers()).containsExactly(oneShot, calendar);
+        assertThat(timerService.getAllTimers()).containsExactly(oneShot, calendar);
+        assertThat(oneShot.isPersistent()).isFalse();
+        assertThat(oneShot.isCalendarTimer()).isFalse();
+        assertThat(oneShot.getInfo()).isEqualTo("refresh-cache");
+        assertThat(oneShot.getTimeRemaining()).isPositive();
+        assertThat(oneShot.getNextTimeout()).isAfter(new Date());
+
+        Date returnedTimeout = oneShot.getNextTimeout();
+        returnedTimeout.setTime(0L);
+        assertThat(oneShot.getNextTimeout()).isAfter(new Date());
+
+        TimerHandle handle = oneShot.getHandle();
+        assertThat(handle.getTimer()).isSameAs(oneShot);
+        assertThat(calendar.isPersistent()).isTrue();
+        assertThat(calendar.isCalendarTimer()).isTrue();
+        assertThat(calendar.getInfo()).isEqualTo("calendar-job");
+        assertThat(calendar.getSchedule()).isSameAs(calendarSchedule);
+
+        oneShot.cancel();
+        assertThat(timerService.getTimers()).containsExactly(calendar);
+        assertThatExceptionOfType(NoSuchObjectLocalException.class)
+                .isThrownBy(oneShot::getInfo)
+                .withMessage("Timer has been cancelled");
+    }
+
+    @Test
     void annotatedBeanTypesUseEjbAnnotationsAndBusinessMethods() throws Exception {
         AnnotatedSessionBean sessionBean = new AnnotatedSessionBean();
 
@@ -525,6 +565,172 @@ public class Jakarta_ejb_apiTest {
 
         private Map<?, ?> getReceivedProperties() {
             return receivedProperties;
+        }
+    }
+
+    private static final class RecordingTimerService implements TimerService {
+        private final List<RecordingTimer> timers = new ArrayList<>();
+
+        @Override
+        public Timer createTimer(long duration, Serializable info) {
+            return createSingleActionTimer(duration, new TimerConfig(info, true));
+        }
+
+        @Override
+        public Timer createSingleActionTimer(long duration, TimerConfig timerConfig) {
+            return addTimer(new RecordingTimer(new Date(System.currentTimeMillis() + duration), null, timerConfig));
+        }
+
+        @Override
+        public Timer createTimer(long initialDuration, long intervalDuration, Serializable info) {
+            return createIntervalTimer(initialDuration, intervalDuration, new TimerConfig(info, true));
+        }
+
+        @Override
+        public Timer createIntervalTimer(long initialDuration, long intervalDuration, TimerConfig timerConfig) {
+            return addTimer(new RecordingTimer(
+                    new Date(System.currentTimeMillis() + initialDuration), null, timerConfig));
+        }
+
+        @Override
+        public Timer createTimer(Date expiration, Serializable info) {
+            return createSingleActionTimer(expiration, new TimerConfig(info, true));
+        }
+
+        @Override
+        public Timer createSingleActionTimer(Date expiration, TimerConfig timerConfig) {
+            return addTimer(new RecordingTimer(expiration, null, timerConfig));
+        }
+
+        @Override
+        public Timer createTimer(Date initialExpiration, long intervalDuration, Serializable info) {
+            return createIntervalTimer(initialExpiration, intervalDuration, new TimerConfig(info, true));
+        }
+
+        @Override
+        public Timer createIntervalTimer(Date initialExpiration, long intervalDuration, TimerConfig timerConfig) {
+            return addTimer(new RecordingTimer(initialExpiration, null, timerConfig));
+        }
+
+        @Override
+        public Timer createCalendarTimer(ScheduleExpression schedule) {
+            return createCalendarTimer(schedule, new TimerConfig(null, true));
+        }
+
+        @Override
+        public Timer createCalendarTimer(ScheduleExpression schedule, TimerConfig timerConfig) {
+            return addTimer(new RecordingTimer(new Date(System.currentTimeMillis() + 60_000L), schedule, timerConfig));
+        }
+
+        @Override
+        public Collection<Timer> getTimers() {
+            return activeTimers();
+        }
+
+        @Override
+        public Collection<Timer> getAllTimers() {
+            return activeTimers();
+        }
+
+        private Timer addTimer(RecordingTimer timer) {
+            timers.add(timer);
+            return timer;
+        }
+
+        private List<Timer> activeTimers() {
+            List<Timer> activeTimers = new ArrayList<>();
+            for (RecordingTimer timer : timers) {
+                if (!timer.isCancelled()) {
+                    activeTimers.add(timer);
+                }
+            }
+            return activeTimers;
+        }
+    }
+
+    private static final class RecordingTimer implements Timer {
+        private final Date nextTimeout;
+        private final ScheduleExpression schedule;
+        private final Serializable info;
+        private final boolean persistent;
+        private boolean cancelled;
+
+        private RecordingTimer(Date nextTimeout, ScheduleExpression schedule, TimerConfig timerConfig) {
+            this.nextTimeout = new Date(nextTimeout.getTime());
+            this.schedule = schedule;
+            info = timerConfig.getInfo();
+            persistent = timerConfig.isPersistent();
+        }
+
+        @Override
+        public void cancel() {
+            ensureActive();
+            cancelled = true;
+        }
+
+        @Override
+        public long getTimeRemaining() {
+            ensureActive();
+            return Math.max(0L, nextTimeout.getTime() - System.currentTimeMillis());
+        }
+
+        @Override
+        public Date getNextTimeout() {
+            ensureActive();
+            return new Date(nextTimeout.getTime());
+        }
+
+        @Override
+        public ScheduleExpression getSchedule() {
+            ensureActive();
+            return schedule;
+        }
+
+        @Override
+        public boolean isPersistent() {
+            ensureActive();
+            return persistent;
+        }
+
+        @Override
+        public boolean isCalendarTimer() {
+            ensureActive();
+            return schedule != null;
+        }
+
+        @Override
+        public Serializable getInfo() {
+            ensureActive();
+            return info;
+        }
+
+        @Override
+        public TimerHandle getHandle() {
+            ensureActive();
+            return new RecordingTimerHandle(this);
+        }
+
+        private boolean isCancelled() {
+            return cancelled;
+        }
+
+        private void ensureActive() {
+            if (cancelled) {
+                throw new NoSuchObjectLocalException("Timer has been cancelled");
+            }
+        }
+    }
+
+    private static final class RecordingTimerHandle implements TimerHandle {
+        private final Timer timer;
+
+        private RecordingTimerHandle(Timer timer) {
+            this.timer = timer;
+        }
+
+        @Override
+        public Timer getTimer() {
+            return timer;
         }
     }
 
