@@ -212,6 +212,36 @@ public class Swagger_annotations_jakartaTest {
     }
 
     @Test
+    void readsRepeatableAnnotationsDeclaredWithoutContainerAnnotations() throws NoSuchMethodException {
+        Tag[] tags = RepeatableAnnotatedApi.class.getAnnotationsByType(Tag.class);
+        assertThat(tags).extracting(Tag::name).containsExactly("catalog", "pricing");
+        assertThat(tags[0].description()).isEqualTo("Catalog operations");
+        assertThat(tags[1].externalDocs().description()).isEqualTo("Pricing guide");
+
+        SecurityScheme[] securitySchemes = RepeatableAnnotatedApi.class.getAnnotationsByType(SecurityScheme.class);
+        assertThat(securitySchemes).extracting(SecurityScheme::name).containsExactly("openId", "clientCertificate");
+        assertThat(securitySchemes[0].type()).isEqualTo(SecuritySchemeType.OPENIDCONNECT);
+        assertThat(securitySchemes[0].openIdConnectUrl())
+                .isEqualTo("https://auth.example.test/.well-known/openid-configuration");
+        assertThat(securitySchemes[1].type()).isEqualTo(SecuritySchemeType.MUTUALTLS);
+        assertThat(securitySchemes[1].ref()).isEqualTo("#/components/securitySchemes/clientCertificate");
+
+        Method method = RepeatableAnnotatedApi.class.getDeclaredMethod("searchCatalog");
+        Server[] servers = method.getAnnotationsByType(Server.class);
+        assertThat(servers).extracting(Server::url)
+                .containsExactly("https://catalog.example.test", "https://catalog-backup.example.test");
+
+        SecurityRequirement[] requirements = method.getAnnotationsByType(SecurityRequirement.class);
+        assertThat(requirements).extracting(SecurityRequirement::name).containsExactly("openId", "clientCertificate");
+        assertThat(requirements[0].scopes()).containsExactly("catalog:read");
+
+        Extension[] extensions = method.getAnnotationsByType(Extension.class);
+        assertThat(extensions).extracting(Extension::name).containsExactly("x-method", "x-owner");
+        assertThat(extensions[0].properties()[0].value()).isEqualTo("beta");
+        assertThat(extensions[1].properties()[0].value()).isEqualTo("catalog-team");
+    }
+
+    @Test
     void exposesEnumConstantsAndParameterValidationGroups() throws NoSuchMethodException {
         assertThat(ParameterIn.values()).containsExactly(
                 ParameterIn.DEFAULT, ParameterIn.HEADER, ParameterIn.QUERY, ParameterIn.PATH, ParameterIn.COOKIE);
@@ -573,6 +603,30 @@ public class Swagger_annotations_jakartaTest {
                 unevaluatedItems = @Schema(hidden = true),
                 prefixItems = @Schema(type = "string"))
         private List<String> tags;
+    }
+
+    @Tag(name = "catalog", description = "Catalog operations")
+    @Tag(
+            name = "pricing",
+            description = "Pricing operations",
+            externalDocs = @ExternalDocumentation(description = "Pricing guide", url = "https://docs.example.test/pricing"))
+    @SecurityScheme(
+            name = "openId",
+            type = SecuritySchemeType.OPENIDCONNECT,
+            openIdConnectUrl = "https://auth.example.test/.well-known/openid-configuration")
+    @SecurityScheme(
+            name = "clientCertificate",
+            type = SecuritySchemeType.MUTUALTLS,
+            ref = "#/components/securitySchemes/clientCertificate")
+    private static final class RepeatableAnnotatedApi {
+        @Server(url = "https://catalog.example.test", description = "Primary catalog server")
+        @Server(url = "https://catalog-backup.example.test", description = "Backup catalog server")
+        @SecurityRequirement(name = "openId", scopes = "catalog:read")
+        @SecurityRequirement(name = "clientCertificate")
+        @Extension(name = "x-method", properties = @ExtensionProperty(name = "release", value = "beta"))
+        @Extension(name = "x-owner", properties = @ExtensionProperty(name = "team", value = "catalog-team"))
+        void searchCatalog() {
+        }
     }
 
     private interface ValidationGroup {
