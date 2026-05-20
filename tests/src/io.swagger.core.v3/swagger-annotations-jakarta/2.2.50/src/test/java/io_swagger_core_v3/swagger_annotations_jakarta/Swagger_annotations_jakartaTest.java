@@ -102,7 +102,7 @@ public class Swagger_annotations_jakartaTest {
         assertThat(webhooks.value()[0].operation().requestBody().content()[0].schema().implementation())
                 .isEqualTo(WebhookEvent.class);
 
-        assertThat(AnnotatedInventoryApi.class.isAnnotationPresent(Hidden.class)).isTrue();
+        assertThat(annotation(AnnotatedInventoryApi.class, Hidden.class)).isNotNull();
     }
 
     @Test
@@ -110,7 +110,7 @@ public class Swagger_annotations_jakartaTest {
         Method method = AnnotatedInventoryApi.class.getDeclaredMethod("readItem", String.class, ItemUpdate.class);
         Operation operation = annotation(method, Operation.class);
 
-        assertThat(method.isAnnotationPresent(OpenAPI31.class)).isTrue();
+        assertThat(annotation(method, OpenAPI31.class)).isNotNull();
         assertThat(operation.method()).isEqualTo("GET");
         assertThat(operation.tags()).containsExactly("inventory");
         assertThat(operation.operationId()).isEqualTo("readItem");
@@ -272,8 +272,8 @@ public class Swagger_annotations_jakartaTest {
         assertThat(swaggerParameter.example()).isEqualTo("SKU-1");
     }
 
-    private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
-        A annotation = element.getAnnotation(annotationType);
+    private static <A extends Annotation> A annotation(AnnotatedElement elementAnnotationAccess, Class<A> annotationType) {
+        A annotation = elementAnnotationAccess.getAnnotation(annotationType);
         assertThat(annotation).isNotNull();
         return annotation;
     }
