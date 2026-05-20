@@ -80,6 +80,18 @@ public class Spring_boot_persistenceTest {
     }
 
     @Test
+    void entityScannerFindsClassesMatchingAnyRequestedAnnotation() throws ClassNotFoundException {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+                EntityScannerConfiguration.class)) {
+            Set<Class<?>> entities = new EntityScanner(context).scan(SamplePersistenceEntity.class,
+                    AlternatePersistenceEntity.class);
+
+            assertThat(entities).contains(ScannedEntity.class, AnotherScannedEntity.class,
+                    AlternateScannedEntity.class).doesNotContain(UnannotatedEntity.class);
+        }
+    }
+
+    @Test
     void entityScannerFallsBackToAutoConfigurationPackagesWhenEntityScanPackagesAreAbsent()
             throws ClassNotFoundException {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
@@ -156,12 +168,21 @@ public class Spring_boot_persistenceTest {
     @interface SamplePersistenceEntity {
     }
 
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface AlternatePersistenceEntity {
+    }
+
     @SamplePersistenceEntity
     static class ScannedEntity {
     }
 
     @SamplePersistenceEntity
     static class AnotherScannedEntity {
+    }
+
+    @AlternatePersistenceEntity
+    static class AlternateScannedEntity {
     }
 
     static class UnannotatedEntity {
