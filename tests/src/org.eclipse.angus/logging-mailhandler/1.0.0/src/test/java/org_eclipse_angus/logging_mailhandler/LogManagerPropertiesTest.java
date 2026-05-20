@@ -11,12 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.sun.mail.util.logging.CompactFormatter;
 import com.sun.mail.util.logging.DurationFilter;
 import com.sun.mail.util.logging.MailHandler;
-import jakarta.mail.Address;
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
-import jakarta.mail.URLName;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.Permission;
@@ -185,6 +181,28 @@ public class LogManagerPropertiesTest {
     }
 
     @Test
+    void mailHandlerLoadsLibraryFormatterWithoutContextClassLoader() throws Throwable {
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(null);
+            withLogManagerConfiguration("""
+                    com.sun.mail.util.logging.MailHandler.level=ALL
+                    com.sun.mail.util.logging.MailHandler.capacity=1
+                    com.sun.mail.util.logging.MailHandler.formatter=com.sun.mail.util.logging.CompactFormatter
+                    """, () -> {
+                        MailHandler handler = new MailHandler();
+                        try {
+                            assertThat(handler.getFormatter()).isInstanceOf(CompactFormatter.class);
+                        } finally {
+                            handler.close();
+                        }
+                    });
+        } finally {
+            Thread.currentThread().setContextClassLoader(original);
+        }
+    }
+
+    @Test
     void mailHandlerReportsMissingConfiguredClassesWithoutContextClassLoader() throws Throwable {
         ClassLoader original = Thread.currentThread().getContextClassLoader();
         try {
@@ -210,16 +228,18 @@ public class LogManagerPropertiesTest {
                 """, () -> {
                     Properties properties = new Properties();
                     properties.setProperty("verify", "local");
-                    properties.setProperty("mail.transport.protocol", "localtest");
-                    properties.setProperty("mail.localtest.class", LocalHostTransport.class.getName());
-                    properties.setProperty("mail.localtest.host", "localhost");
-                    properties.setProperty("mail.localtest.localhost", "localhost");
+                    properties.setProperty("mail.transport.protocol", "smtp");
+                    properties.setProperty("mail.smtp.host", "localhost");
+                    properties.setProperty("mail.smtp.localhost", "localhost");
                     properties.setProperty("mail.from", "sender@example.test");
                     properties.setProperty("mail.to", "recipient@example.test");
 
+                    Transport transport = Session.getInstance(properties).getTransport();
+                    transport.close();
+
                     MailHandler handler = new MailHandler(properties);
                     try {
-                        assertThat(handler.getMailProperties()).containsEntry("mail.localtest.localhost", "localhost");
+                        assertThat(handler.getMailProperties()).containsEntry("mail.smtp.localhost", "localhost");
                     } finally {
                         handler.close();
                     }
@@ -256,20 +276,6 @@ public class LogManagerPropertiesTest {
             } finally {
                 logManager.reset();
             }
-        }
-    }
-
-    public static class LocalHostTransport extends Transport {
-        public LocalHostTransport(Session session, URLName name) {
-            super(session, name);
-        }
-
-        public String getLocalHost() {
-            return "localhost";
-        }
-
-        @Override
-        public void sendMessage(Message message, Address[] addresses) throws MessagingException {
         }
     }
 
