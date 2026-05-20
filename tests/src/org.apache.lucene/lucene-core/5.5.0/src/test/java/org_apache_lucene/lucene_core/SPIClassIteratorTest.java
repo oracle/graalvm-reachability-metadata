@@ -6,6 +6,8 @@
  */
 package org_apache_lucene.lucene_core;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.lucene.util.SPIClassIterator;
@@ -22,10 +24,7 @@ public class SPIClassIteratorTest {
                 SPIClassIteratorService.class,
                 classLoader);
 
-        assertThat(iterator.hasNext()).isTrue();
-        assertThat(iterator.next()).isEqualTo(SPIClassIteratorServiceImplementation.class);
-        assertThat(iterator.hasNext()).isFalse();
-        assertThatThrownBy(iterator::next).isInstanceOf(NoSuchElementException.class);
+        assertIteratorContainsOnlyImplementation(iterator, SPIClassIteratorServiceImplementation.class);
     }
 
     @Test
@@ -35,9 +34,20 @@ public class SPIClassIteratorTest {
                 SPIClassIteratorSystemService.class,
                 classLoader);
 
-        assertThat(iterator.hasNext()).isTrue();
-        assertThat(iterator.next()).isEqualTo(SPIClassIteratorSystemServiceImplementation.class);
-        assertThat(iterator.hasNext()).isFalse();
+        assertIteratorContainsOnlyImplementation(iterator, SPIClassIteratorSystemServiceImplementation.class);
+    }
+
+    private static <T> void assertIteratorContainsOnlyImplementation(
+            SPIClassIterator<T> iterator,
+            Class<? extends T> expectedImplementation) {
+        List<Class<? extends T>> implementations = new ArrayList<>();
+
+        while (iterator.hasNext()) {
+            implementations.add(iterator.next());
+        }
+
+        assertThat(implementations).containsOnly(expectedImplementation);
+        assertThatThrownBy(iterator::next).isInstanceOf(NoSuchElementException.class);
     }
 }
 
