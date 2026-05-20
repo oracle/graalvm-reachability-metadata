@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.xnio.BufferAllocator;
+import org.xnio.ByteString;
 import org.xnio.FailedIoFuture;
 import org.xnio.FileAccess;
 import org.xnio.FinishedIoFuture;
@@ -82,6 +83,31 @@ public class Xnio_apiTest {
         ByteBuffer directBuffer = BufferAllocator.DIRECT_BYTE_BUFFER_ALLOCATOR.allocate(4);
         assertThat(directBuffer.isDirect()).isTrue();
         assertThat(directBuffer.capacity()).isEqualTo(4);
+    }
+
+    @Test
+    void byteStringsSupportImmutableAsciiSearchAndNumericConversion() throws Exception {
+        byte[] bytes = "Content-Length: 42".getBytes(StandardCharsets.ISO_8859_1);
+        ByteString header = ByteString.copyOf(bytes, 0, bytes.length);
+        bytes[0] = 'x';
+
+        assertThat(header.toString()).isEqualTo("Content-Length: 42");
+        assertThat(header.startsWithIgnoreCase(ByteString.getBytes("content"))).isTrue();
+        assertThat(header.containsIgnoreCase(ByteString.getBytes("length"))).isTrue();
+        assertThat(header.indexOf(':')).isEqualTo("Content-Length".length());
+        assertThat(header.toInt("Content-Length: ".length())).isEqualTo(42);
+        assertThat(header.substring(0, "Content".length()).toString()).isEqualTo("Content");
+
+        ByteBuffer target = ByteBuffer.allocate(8);
+        int appended = header.tryAppendTo(0, target);
+        assertThat(appended).isEqualTo(8);
+        target.flip();
+        assertThat(ByteString.getBytes(target).toString()).isEqualTo("Content-");
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        ByteString statusLinePrefix = ByteString.concat("HTTP/", ByteString.fromInt(2));
+        statusLinePrefix.concat(".0").writeTo(output);
+        assertThat(output.toString(StandardCharsets.ISO_8859_1)).isEqualTo("HTTP/2.0");
     }
 
     @Test
