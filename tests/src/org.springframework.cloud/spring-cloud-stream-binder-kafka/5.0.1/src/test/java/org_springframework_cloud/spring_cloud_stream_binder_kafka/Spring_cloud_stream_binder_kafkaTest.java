@@ -37,6 +37,7 @@ import org.springframework.boot.kafka.autoconfigure.KafkaConnectionDetails;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
+import org.springframework.cloud.stream.binder.kafka.KafkaExpressionEvaluatingInterceptor;
 import org.springframework.cloud.stream.binder.kafka.common.BinderHeaderMapper;
 import org.springframework.cloud.stream.binder.kafka.common.TopicInformation;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties;
@@ -57,6 +58,7 @@ import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.kafka.listener.ContainerProperties.AckMode;
 import org.springframework.kafka.security.jaas.KafkaJaasLoginModuleInitializer.ControlFlag;
 import org.springframework.messaging.Message;
@@ -402,6 +404,24 @@ public class Spring_cloud_stream_binder_kafkaTest {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> BindingUtils.createProducerConfigs(producer, binderProperties))
                 .withMessageContaining("bootstrap.servers cannot be overridden");
+    }
+
+    @Test
+    void expressionEvaluatingInterceptorAddsMessageKeyHeaderFromConfiguredExpression() {
+        KafkaExpressionEvaluatingInterceptor interceptor = new KafkaExpressionEvaluatingInterceptor(
+                new SpelExpressionParser().parseExpression("headers['tenant'] + ':' + payload"),
+                new StandardEvaluationContext());
+        Message<String> message = MessageBuilder.withPayload("order-42")
+                .setHeader("tenant", "acme")
+                .build();
+
+        Message<?> intercepted = interceptor.preSend(message, null);
+
+        assertThat(intercepted.getPayload()).isEqualTo("order-42");
+        assertThat(intercepted.getHeaders()).containsEntry("tenant", "acme");
+        assertThat(intercepted.getHeaders()).containsEntry(
+                KafkaExpressionEvaluatingInterceptor.MESSAGE_KEY_HEADER, "acme:order-42");
+        assertThat(message.getHeaders()).doesNotContainKey(KafkaExpressionEvaluatingInterceptor.MESSAGE_KEY_HEADER);
     }
 
     @Test
