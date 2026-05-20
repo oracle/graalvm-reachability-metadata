@@ -9,6 +9,7 @@ package io_zipkin_reporter2.zipkin_sender_okhttp3;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import okhttp3.Request;
 import org.junit.jupiter.api.Test;
 import zipkin2.Call;
 import zipkin2.Callback;
@@ -124,6 +125,31 @@ public class Zipkin_sender_okhttp3Test {
                 assertThat(request.header("Content-Type")).isEqualTo("application/x-protobuf");
                 assertThat(request.header("Content-Encoding")).isNull();
                 assertThat(SpanBytesDecoder.PROTO3.decodeList(request.body())).containsExactly(FIRST_SPAN, SECOND_SPAN);
+            } finally {
+                sender.close();
+            }
+        }
+    }
+
+    @Test
+    void customOkHttpClientBuilderCanDecorateOutgoingRequests() throws Exception {
+        try (TestCollector collector = new TestCollector()) {
+            OkHttpSender.Builder builder = OkHttpSender.newBuilder()
+                    .endpoint(collector.endpoint())
+                    .compressionEnabled(false);
+            builder.clientBuilder().addInterceptor(chain -> {
+                Request request = chain.request().newBuilder()
+                        .addHeader("X-Zipkin-Sender-Test", "custom-client")
+                        .build();
+                return chain.proceed(request);
+            });
+            OkHttpSender sender = builder.build();
+            try {
+                sender.sendSpans(jsonSpans(FIRST_SPAN)).execute();
+
+                CapturedRequest request = collector.takeRequest();
+                assertThat(request.header("X-Zipkin-Sender-Test")).isEqualTo("custom-client");
+                assertThat(SpanBytesDecoder.JSON_V2.decodeList(request.body())).containsExactly(FIRST_SPAN);
             } finally {
                 sender.close();
             }
