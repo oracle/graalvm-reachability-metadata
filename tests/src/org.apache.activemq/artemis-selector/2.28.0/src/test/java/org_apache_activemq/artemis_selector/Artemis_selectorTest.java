@@ -89,6 +89,17 @@ public class Artemis_selectorTest {
     }
 
     @Test
+    void decodesEscapedApostrophesInStringLiterals() throws Exception {
+        TestFilterable message = filterable(Map.of("customer", "Bob's Bikes"));
+
+        BooleanExpression selector = SelectorParser.parse("customer = 'Bob''s Bikes'");
+
+        assertThat(selector.evaluate(message)).isEqualTo(Boolean.TRUE);
+        assertThat(selector.matches(message)).isTrue();
+        assertThat(SelectorParser.parse("customer = 'Bobs Bikes'").matches(message)).isFalse();
+    }
+
+    @Test
     void supportsQuotedIdentifiersAndXmlBodySelectors() throws Exception {
         TestFilterable message = filterable(
                 Map.of("quoted property", "expected"),
