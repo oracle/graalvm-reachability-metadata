@@ -10,15 +10,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.tracing.TracingPolicy;
+import io.vertx.sqlclient.Cursor;
 import io.vertx.sqlclient.Pool;
 import io.vertx.sqlclient.PoolOptions;
 import io.vertx.sqlclient.PrepareOptions;
+import io.vertx.sqlclient.PreparedQuery;
+import io.vertx.sqlclient.PreparedStatement;
 import io.vertx.sqlclient.PropertyKind;
 import io.vertx.sqlclient.Row;
+import io.vertx.sqlclient.RowSet;
+import io.vertx.sqlclient.RowStream;
 import io.vertx.sqlclient.SqlConnectOptions;
 import io.vertx.sqlclient.Tuple;
 import io.vertx.sqlclient.data.NullValue;
@@ -341,6 +349,130 @@ public class Vertx_sql_clientTest {
         assertThatExceptionOfType(ServiceConfigurationError.class)
                 .isThrownBy(() -> Pool.pool(options, new PoolOptions()))
                 .withMessageContaining(Driver.class.getName());
+    }
+
+    @Test
+    void preparedStatementConvenienceMethodsUseEmptyTupleArguments() {
+        TestPreparedStatement preparedStatement = new TestPreparedStatement();
+
+        Cursor cursor = preparedStatement.cursor();
+        assertThat(cursor).isSameAs(preparedStatement.cursor);
+        assertThat(preparedStatement.cursorArguments.size()).isZero();
+
+        RowStream<Row> stream = preparedStatement.createStream(25);
+        assertThat(stream).isSameAs(preparedStatement.stream);
+        assertThat(preparedStatement.fetch).isEqualTo(25);
+        assertThat(preparedStatement.streamArguments.size()).isZero();
+    }
+
+    private static final class TestPreparedStatement implements PreparedStatement {
+        private final Cursor cursor = new TestCursor();
+        private final RowStream<Row> stream = new TestRowStream();
+        private Tuple cursorArguments;
+        private Tuple streamArguments;
+        private int fetch;
+
+        @Override
+        public PreparedQuery<RowSet<Row>> query() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Cursor cursor(Tuple arguments) {
+            cursorArguments = arguments;
+            return cursor;
+        }
+
+        @Override
+        public RowStream<Row> createStream(int fetch, Tuple arguments) {
+            this.fetch = fetch;
+            streamArguments = arguments;
+            return stream;
+        }
+
+        @Override
+        public Future<Void> close() {
+            return Future.succeededFuture();
+        }
+
+        @Override
+        public void close(Handler<AsyncResult<Void>> handler) {
+            handler.handle(Future.succeededFuture());
+        }
+    }
+
+    private static final class TestCursor implements Cursor {
+        @Override
+        public void read(int count, Handler<AsyncResult<RowSet<Row>>> handler) {
+            handler.handle(Future.succeededFuture());
+        }
+
+        @Override
+        public Future<RowSet<Row>> read(int count) {
+            return Future.succeededFuture();
+        }
+
+        @Override
+        public boolean hasMore() {
+            return false;
+        }
+
+        @Override
+        public Future<Void> close() {
+            return Future.succeededFuture();
+        }
+
+        @Override
+        public void close(Handler<AsyncResult<Void>> handler) {
+            handler.handle(Future.succeededFuture());
+        }
+
+        @Override
+        public boolean isClosed() {
+            return true;
+        }
+    }
+
+    private static final class TestRowStream implements RowStream<Row> {
+        @Override
+        public RowStream<Row> exceptionHandler(Handler<Throwable> handler) {
+            return this;
+        }
+
+        @Override
+        public RowStream<Row> handler(Handler<Row> handler) {
+            return this;
+        }
+
+        @Override
+        public RowStream<Row> pause() {
+            return this;
+        }
+
+        @Override
+        public RowStream<Row> resume() {
+            return this;
+        }
+
+        @Override
+        public RowStream<Row> endHandler(Handler<Void> handler) {
+            return this;
+        }
+
+        @Override
+        public RowStream<Row> fetch(long amount) {
+            return this;
+        }
+
+        @Override
+        public Future<Void> close() {
+            return Future.succeededFuture();
+        }
+
+        @Override
+        public void close(Handler<AsyncResult<Void>> handler) {
+            handler.handle(Future.succeededFuture());
+        }
     }
 
     private static final class TestRow implements Row {
