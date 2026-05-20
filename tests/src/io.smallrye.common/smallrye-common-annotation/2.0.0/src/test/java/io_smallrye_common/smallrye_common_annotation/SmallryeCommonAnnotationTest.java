@@ -124,6 +124,13 @@ public class SmallryeCommonAnnotationTest {
         assertThat(NonBlockingSubclass.class.isAnnotationPresent(NonBlocking.class)).isFalse();
     }
 
+    @Test
+    void experimentalCanDescribeRuntimeFields() {
+        Field field = declaredField(ExperimentalFieldComponent.class, "previewSetting");
+
+        assertThat(requireAnnotation(field, Experimental.class).value()).isEqualTo("field contract may change");
+    }
+
     private static <A extends Annotation> A requireAnnotation(AnnotatedElement element, Class<A> annotationType) {
         A annotation = element.getAnnotation(annotationType);
         assertThat(annotation).as("%s annotation on %s", annotationType.getSimpleName(), element).isNotNull();
@@ -218,6 +225,11 @@ public class SmallryeCommonAnnotationTest {
     }
 
     static final class ExperimentalSubclass extends ExperimentalBase {
+    }
+
+    static final class ExperimentalFieldComponent {
+        @Experimental("field contract may change")
+        String previewSetting;
     }
 
     @Blocking
