@@ -35,7 +35,8 @@ public class TomcatTests {
     @ValueSource(strings = {"HTTP/1.1", "org.apache.coyote.http11.Http11NioProtocol", "org.apache.coyote.http11.Http11Nio2Protocol"})
     void test(String protocol) throws Exception {
         Tomcat tomcat = new Tomcat();
-        configureConnector(tomcat, protocol);
+        Connector connector = configureConnector(tomcat, protocol);
+        assertProtocolIntrospection(connector);
         Context context = addContext(tomcat);
         addServlet(context);
         tomcat.start();
@@ -63,10 +64,17 @@ public class TomcatTests {
         context.addServletMappingDecoded("/*", "hello");
     }
 
-    private void configureConnector(Tomcat tomcat, String protocol) {
+    private Connector configureConnector(Tomcat tomcat, String protocol) {
         Connector connector = new Connector(protocol);
         connector.setPort(PORT);
         tomcat.setConnector(connector);
+        return connector;
+    }
+
+    private void assertProtocolIntrospection(Connector connector) {
+        assertThat(connector.getProperty("name")).isInstanceOf(String.class);
+        assertThat(connector.getProperty("missingPropertyForReachabilityMetadata")).isNull();
+        assertThat(connector.getProperty("SSLEnabled")).isEqualTo(Boolean.FALSE);
     }
 
     private static class MyServlet extends HttpServlet {
