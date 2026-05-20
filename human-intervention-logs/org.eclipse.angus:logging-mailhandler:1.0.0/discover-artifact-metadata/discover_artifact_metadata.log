@@ -1,0 +1,2368 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e459c-8eeb-7061-846c-31efeccc5478
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.eclipse.angus:logging-mailhandler:1.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.0.0" when "$version$" is replaced with "1.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+- Set "coordinates" to "org.eclipse.angus:logging-mailhandler:1.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream project/tag, then update the JSON in place. After that I’ll run a quick JSON validation so we know the file is syntactically clean.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+{
+  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files | rg 'org\\.eclipse\\.angus-logging-mailhandler-1\\.0\\.0\\.json"'$|logging-mailhandler|angus'"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+stats/org.eclipse.angus/jakarta.mail/1.0.0/stats.json
+metadata/org.eclipse.angus/jakarta.mail/1.0.0/reachability-metadata.json
+metadata/org.eclipse.angus/jakarta.mail/index.json
+tests/src/org.eclipse.angus/jakarta.mail/1.0.0/build.gradle
+tests/src/org.eclipse.angus/jakarta.mail/1.0.0/settings.gradle
+tests/src/org.eclipse.angus/jakarta.mail/1.0.0/required-docker-images.txt
+tests/src/org.eclipse.angus/jakarta.mail/1.0.0/gradle.properties
+tests/src/org.eclipse.angus/jakarta.mail/1.0.0/src/test/java/com/sun/mail/JakartaMailTest.java
+
+web search: 
+web search: org.eclipse.angus logging-mailhandler 1.0.0 Maven source repository tag
+codex
+Maven Central confirms this is a regular JAR artifact for `org.eclipse.angus:logging-mailhandler:1.0.0`, so I’m treating it as a JVM artifact unless the artifact contents prove otherwise. Next I’m checking the POM and attached artifacts for source/test/doc locations, with Maven-hosted artifacts preferred where they exist.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+{
+  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/1.0.0/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/eclipse/angus/logging-mailhandler/1.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/eclipse/angus/logging-mailhandler/1.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="logging-mailhandler-1.0.0-javadoc.jar" title="logging-mailhandler-1.0.0-javadoc.jar">logging-mailhandler-1.0.0-javadoc.jar</a>             2022-01-18 10:46    475696      
+<a href="logging-mailhandler-1.0.0-javadoc.jar.asc" title="logging-mailhandler-1.0.0-javadoc.jar.asc">logging-mailhandler-1.0.0-javadoc.jar.asc</a>         2022-01-18 10:46       833      
+<a href="logging-mailhandler-1.0.0-javadoc.jar.md5" title="logging-mailhandler-1.0.0-javadoc.jar.md5">logging-mailhandler-1.0.0-javadoc.jar.md5</a>         2022-01-18 10:46        32      
+<a href="logging-mailhandler-1.0.0-javadoc.jar.sha1" title="logging-mailhandler-1.0.0-javadoc.jar.sha1">logging-mailhandler-1.0.0-javadoc.jar.sha1</a>        2022-01-18 10:46        40      
+<a href="logging-mailhandler-1.0.0-sources.jar" title="logging-mailhandler-1.0.0-sources.jar">logging-mailhandler-1.0.0-sources.jar</a>             2022-01-18 10:46     81191      
+<a href="logging-mailhandler-1.0.0-sources.jar.asc" title="logging-mailhandler-1.0.0-sources.jar.asc">logging-mailhandler-1.0.0-sources.jar.asc</a>         2022-01-18 10:46       833      
+<a href="logging-mailhandler-1.0.0-sources.jar.md5" title="logging-mailhandler-1.0.0-sources.jar.md5">logging-mailhandler-1.0.0-sources.jar.md5</a>         2022-01-18 10:46        32      
+<a href="logging-mailhandler-1.0.0-sources.jar.sha1" title="logging-mailhandler-1.0.0-sources.jar.sha1">logging-mailhandler-1.0.0-sources.jar.sha1</a>        2022-01-18 10:46        40      
+<a href="logging-mailhandler-1.0.0.jar" title="logging-mailhandler-1.0.0.jar">logging-mailhandler-1.0.0.jar</a>                     2022-01-18 10:46     75916      
+<a href="logging-mailhandler-1.0.0.jar.asc" title="logging-mailhandler-1.0.0.jar.asc">logging-mailhandler-1.0.0.jar.asc</a>                 2022-01-18 10:46       833      
+<a href="logging-mailhandler-1.0.0.jar.md5" title="logging-mailhandler-1.0.0.jar.md5">logging-mailhandler-1.0.0.jar.md5</a>                 2022-01-18 10:46        32      
+<a href="logging-mailhandler-1.0.0.jar.sha1" title="logging-mailhandler-1.0.0.jar.sha1">logging-mailhandler-1.0.0.jar.sha1</a>                2022-01-18 10:46        40      
+<a href="logging-mailhandler-1.0.0.pom" title="logging-mailhandler-1.0.0.pom">logging-mailhandler-1.0.0.pom</a>                     2022-01-18 10:46      1557      
+<a href="logging-mailhandler-1.0.0.pom.asc" title="logging-mailhandler-1.0.0.pom.asc">logging-mailhandler-1.0.0.pom.asc</a>                 2022-01-18 10:46       833      
+<a href="logging-mailhandler-1.0.0.pom.md5" title="logging-mailhandler-1.0.0.pom.md5">logging-mailhandler-1.0.0.pom.md5</a>                 2022-01-18 10:46        32      
+<a href="logging-mailhandler-1.0.0.pom.sha1" title="logging-mailhandler-1.0.0.pom.sha1">logging-mailhandler-1.0.0.pom.sha1</a>                2022-01-18 10:46        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/1.0.0/logging-mailhandler-1.0.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>all</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.eclipse.angus</groupId>
+    <artifactId>logging-mailhandler</artifactId>
+    <packaging>jar</packaging>
+    <name>Angus Mail logging handler</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+
+web search: 
+web search: org.eclipse.angus logging-mailhandler 1.0.0 Maven source repository tag
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/angus/all/1.0.0/all-1.0.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0  http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.7</version>
+        <relativePath></relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.eclipse.angus</groupId>
+    <artifactId>all</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+    <name>Angus Mail Project</name>
+    <description>${project.name}</description>
+    <url>http://eclipse-ee4j.github.io/mail</url>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse-ee4j/angus-mail.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/angus-mail.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/angus-mail</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/eclipse-ee4j/angus-mail/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>EDL 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.commonResourcesDirectory>${project.build.directory}/common-resources</project.build.commonResourcesDirectory>
+        <legal.doc.source>${project.build.commonResourcesDirectory}/legal</legal.doc.source>
+        <copyright.exclude>${project.build.commonResourcesDirectory}/config/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.update>false</copyright.update>
+        <spotbugs.skip>true</spotbugs.skip>
+        <spotbugs.threshold>High</spotbugs.threshold>
+        <spotbugs.plugin.version>4.5.0.0</spotbugs.plugin.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javadoc.title>Angus Mail API documentation</javadoc.title>
+
+        <mail.spec.version>2.1</mail.spec.version>
+        <mail-api.version>2.1.0</mail-api.version>
+        <activation-api.version>2.1.0</activation-api.version>
+        <jsp-api.version>3.0.0</jsp-api.version>
+        <servlet-api.version>5.0.0</servlet-api.version>
+        <angus.activation.version>1.0.0</angus.activation.version>
+    </properties>
+
+    <developers>
+        <developer>
+            <id>shannon</id>
+            <name>Bill Shannon</name>
+            <email>bill.shannon@oracle.com</email>
+            <organization>Oracle</organization>
+            <roles>
+                <role>lead</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!-- following to enable use of "mvn site:stage" -->
+    <distributionManagement>
+        <site>
+            <id>oracle.com</id>
+            <url>file:/tmp</url> <!-- not used -->
+        </site>
+    </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${activation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.mail</groupId>
+                <artifactId>jakarta.mail-api</artifactId>
+                <version>${mail-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>angus-activation</artifactId>
+                <version>${angus.activation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>angus-mail</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>angus-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>dsn</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>imap</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>smtp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>pop3</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>logging-mailhandler</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>gimap</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>mbox</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>taglib</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet.jsp</groupId>
+                <artifactId>jakarta.servlet.jsp-api</artifactId>
+                <version>${jsp-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!--
+        I'm leaving this here but commented out to remind myself
+        NOT to add this back in because it breaks the Android
+        version of Jakarta Mail.
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-activation</artifactId>
+        </dependency>
+    </dependencies>
+    -->
+
+    <modules>
+        <module>core</module>
+        <module>dsn</module>
+        <module>mailhandler</module>
+        <module>providers</module>
+    </modules>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <!--
+                    By default, disable the SpotBugs plugin for all modules.
+                    It's enabled in the modules where we actually want to
+                    run it.
+                    -->
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.plugin.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.3.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.4</version>
+                    <configuration>
+                        <excludeFile>${copyright.exclude}</excludeFile>
+                        <!-- skip files not under SCM-->
+                        <scmOnly>${copyright.scmonly}</scmOnly>
+                        <!-- for use with repair -->
+                        <update>${copyright.update}</update>
+                        <!-- check that year is correct -->
+                        <ignoreYear>${copyright.ignoreyear}</ignoreYear>
+                        <quiet>false</quiet>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant</artifactId>
+                            <version>1.10.11</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <!--
+            Make sure we're using the correct version of maven and JDK.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-version</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.6.3,)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[11,)</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>common-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/resources.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.eclipse.angus</groupId>
+                                    <artifactId>all</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>resources</classifier>
+                                    <type>zip</type>
+                                    <outputDirectory>${project.build.commonResourcesDirectory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+            This plugin is reponsible for packaging artifacts
+            as OSGi bundles.  Please refer to
+            http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html
+            for more information about how to use this plugin.
+            -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <_noextraheaders>true</_noextraheaders>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                    </instructions>
+                    <niceManifest>true</niceManifest>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <!--
+                    Since we don't change the packaging type to bundle, we
+                    need to configure the plugin to execute the manifest goal
+                    during the process-classes phase of the build life cycle.
+                -->
+                <executions>
+                    <execution>
+                        <id>osgi-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+            Use the JDK 11+ compiler for Jakarta Mail itself,
+            but restrict it to 1.8 source and target.
+                    The 11+ compiler is used *only* to compile module-info descriptors.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <release>9</release>
+                            <showDeprecation>true</showDeprecation>
+                            <showWarnings>true</showWarnings>
+                            <!--
+                                Configure compiler plugin to print lint warnings.
+                                Need to exclude options warning because bootstrap
+                                classpath isn't set (on purpose).
+                                Need to exclude path warnings because Maven includes
+                                source directories that don't exist (e.g., generated-sources).
+                            -->
+                            <compilerArgs>
+                                <arg>-Xlint</arg>
+                                <arg>-Xlint:-options</arg>
+                                <arg>-Xlint:-path</arg>
+                                <!--
+                                    Too many finalize warnings.
+                                <arg>-Werror</arg>
+                                -->
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>base-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>8</release>
+                            <excludes>
+                                <exclude>module-info.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <configuration>
+                            <release>8</release>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <!--
+                            Configure the maven-jar-plugin to pick up
+                            META-INF/MANIFEST.MF that's generated by
+                            the maven-bundle-plugin.
+                        -->
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!--
+            Tell the source plugin about the sources that may have
+            been downloaded by the maven-dependency-plugin.
+
+            Also, need this plugin to define target/classes as another
+            source directory so that the filtered Version.java
+            that's copied there will also be compiled when using
+            the latest version of the maven-compiler-plugin.
+            -->
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>currentyear-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <name>current.year</name>
+                            <locale>en,US</locale>
+                            <pattern>yyyy</pattern>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-legal-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${legal.doc.source}</directory>
+                                    <targetPath>META-INF</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+            Configure the source plugin here so that it will know
+            about the sources that may have been downloaded by the
+            maven-dependency-plugin and configured by the
+            build-helper-maven-plugin.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>false</addDefaultEntries>
+                        </manifest>
+                    </archive>
+                    <source>11</source>
+                    <author>false</author>
+                    <description>${javadoc.title}</description>
+                    <doctitle>${javadoc.title}</doctitle>
+                    <windowtitle>${javadoc.title}</windowtitle>
+                    <splitindex>true</splitindex>
+                    <use>true</use>
+                    <notimestamp>true</notimestamp>
+                    <serialwarn>true</serialwarn>
+                    <quiet>true</quiet>
+                    <header><![CDATA[<br>Angus Mail v${project.version}]]></header>
+                    <bottom>
+                        <![CDATA[
+Comments to : <a href="mailto:angus-dev@eclipse.org">angus-dev@eclipse.org</a>.<br>
+Copyright &#169; 2019, ${current.year} Eclipse Foundation. All rights reserved.]]>
+                    </bottom>
+                    <!-- force the doc-files directory to be copied -->
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <detectJavaApiLink>false</detectJavaApiLink>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <!--
+            Configure SpotBugs to run with "mvn site" and
+            generate html output that can be viewed directly.
+            -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <!--<version>${findbugs.version}</version>-->
+                <configuration>
+                    <skip>${spotbugs.skip}</skip>
+                    <threshold>${spotbugs.threshold}</threshold>
+                    <excludeFilterFile>${spotbugs.exclude}</excludeFilterFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <profiles>
+        <!--
+            This profile contains modules that should only be built
+            but not installed or deployed.
+        -->
+        <profile>
+            <id>build-only</id>
+            <modules>
+                <module>demos</module>
+                <module>javadoc</module>
+                <module>publish</module>
+            </modules>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <!--
+            This profile is used for deploying a Jakarta Mail final release.
+
+            Activating this profile manually for deployment causes
+            the above profile to be deactivated, which works around
+            an apparent bug in maven that prevents me from manually
+            deactivating a profile.  This profile purposely has none
+            of the modules I don't want to be deployed.
+        -->
+        <profile>
+            <id>oss-release</id>
+        </profile>
+
+        <profile>
+            <id>coverage</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.jacoco</groupId>
+                            <artifactId>jacoco-maven-plugin</artifactId>
+                            <version>0.8.7</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>default-report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/logging-mailhandler/src/test' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ exited 22 in 608ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 20 May 2026 13:39:29 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=ICzIYCbKG%2B90t842neBTQ5n7vp6uSa3TpjaY4Qt8duawFKPg9l2BUs86hN%2BgGgV03Kh69tuGRKW9kwUrEz8u%2Bi8Ey5HKRuhPvbh%2FIXR2WojNzdiVowDP3mmOjzgd23VxS2NXVQa%2BbmF0JGSesGyu4VSIHJWwYFQBY%2F%2BT7P3gXR%2FWO1N56GqDV68NC401nZ8o2RSkxDglkhY981ntTcXIFgYPkMZQ1W7gsv2m%2BpjLt9iCgx5DZPoJelxdMGY%2Bna7r%2FP0z5U9h4TTrkCaVpx55Pw%3D%3D--1vSWFepecA%2FJK%2BCP--g8zcn8wc3ngUUqlOKdykhQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.229334825.1779284369; expires=Thu, 20 May 2027 13:39:29 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 20 May 2027 13:39:29 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620E:19D1B9:82BD62B:67C2EA7:6A0DB991
+
+
+ succeeded in 1072ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 13:39:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2effdd586daa1f867db3fcf07f638f6b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=T1Son5d9L4dEvmaDPbcYccvkD9FqTqfghYRozl5K9CU4j6Q8z0Bptb7pwDhqvuzPb%2FLIs1V27LN7QEvZeFKv075ek88S2RPPDxgmSoruoKRKlDWmUNXBVeAIfXgQWEzQa3LEjCB4tOg0rsWItCWcB5MfzrzuZhwVgKc6UdTIIFIMtLuqHDLnN%2FKXPPAHTuUHR0qI5r3Q%2BIMlMsZGk0GryWUepzHLgFo3pOtlgMj1Cs%2FsJSKn0T1JFWw4nXODiQkRxIhgzFuvxHWT4wbRPQa6Zw%3D%3D--cvVOiFdVKKryMMzu--RqQ2sxcghteysR4GX7yjiw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1673008572.1779284369; expires=Thu, 20 May 2027 13:39:29 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 20 May 2027 13:39:29 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620D:252303:8435DD4:6900F34:6A0DB991
+
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/angus-mail.git | rg 'refs/tags/(1\\.0\\.0|angus-mail-1\\.0\\.0|.*1\\.0\\.0)'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/angus-mail/contents?ref=1.0.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mailhandler?ref=1.0.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mailhandler/src?ref=1.0.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 261ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "ce9b68180cea2bc81053fd88f27643875a0b2c16",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/.github?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/.github",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/ce9b68180cea2bc81053fd88f27643875a0b2c16",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/.github?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/ce9b68180cea2bc81053fd88f27643875a0b2c16",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "8ece2cefadc87a750ac7438ba1eb486034014f16",
+    "size": 96,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/.gitignore?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/.gitignore",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/8ece2cefadc87a750ac7438ba1eb486034014f16",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/.gitignore?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/8ece2cefadc87a750ac7438ba1eb486034014f16",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/.gitignore"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "82c7230f591fec44a091cdb052b1052ac7fbd683",
+    "size": 2751,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/CONTRIBUTING.md?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/82c7230f591fec44a091cdb052b1052ac7fbd683",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/CONTRIBUTING.md?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/82c7230f591fec44a091cdb052b1052ac7fbd683",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "Jenkinsfile",
+    "path": "Jenkinsfile",
+    "sha": "4dff4489d9c61172adb21592af1f5ac7adfc4b25",
+    "size": 2828,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/Jenkinsfile?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/Jenkinsfile",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/4dff4489d9c61172adb21592af1f5ac7adfc4b25",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/Jenkinsfile",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/Jenkinsfile?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/4dff4489d9c61172adb21592af1f5ac7adfc4b25",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/Jenkinsfile"
+    }
+  },
+  {
+    "name": "LICENSE.md",
+    "path": "LICENSE.md",
+    "sha": "5de3d1b40c199fba101ae1602548c5042587ed7b",
+    "size": 35084,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/LICENSE.md?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/LICENSE.md",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/5de3d1b40c199fba101ae1602548c5042587ed7b",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/LICENSE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/LICENSE.md?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/5de3d1b40c199fba101ae1602548c5042587ed7b",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/LICENSE.md"
+    }
+  },
+  {
+    "name": "NOTICE.md",
+    "path": "NOTICE.md",
+    "sha": "4061966c95df91126a18d0af4d0858bb079f9134",
+    "size": 1677,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/NOTICE.md?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/NOTICE.md",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/4061966c95df91126a18d0af4d0858bb079f9134",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/NOTICE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/NOTICE.md?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/4061966c95df91126a18d0af4d0858bb079f9134",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/NOTICE.md"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "71d35b8ce2b374e7381911fe75a41acabbba27d8",
+    "size": 70,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/README.md?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/README.md",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/71d35b8ce2b374e7381911fe75a41acabbba27d8",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/README.md?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/71d35b8ce2b374e7381911fe75a41acabbba27d8",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/README.md"
+    }
+  },
+  {
+    "name": "ant-common.xml",
+    "path": "ant-common.xml",
+    "sha": "4903ac7aaa2069b364dbf73edcab4138d130211c",
+    "size": 6330,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/ant-common.xml?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/ant-common.xml",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/4903ac7aaa2069b364dbf73edcab4138d130211c",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/ant-common.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/ant-common.xml?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/4903ac7aaa2069b364dbf73edcab4138d130211c",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/ant-common.xml"
+    }
+  },
+  {
+    "name": "build.properties",
+    "path": "build.properties",
+    "sha": "f93c927ef7621cbc7215de5020e8a62b0a9ce13c",
+    "size": 3658,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/build.properties?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/build.properties",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/f93c927ef7621cbc7215de5020e8a62b0a9ce13c",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/build.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/build.properties?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/f93c927ef7621cbc7215de5020e8a62b0a9ce13c",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/build.properties"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "build.xml",
+    "sha": "e4a3475eb49671e15c6be0ce215f2c9939f0a77c",
+    "size": 23028,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/build.xml?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/build.xml",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/e4a3475eb49671e15c6be0ce215f2c9939f0a77c",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/build.xml?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/e4a3475eb49671e15c6be0ce215f2c9939f0a77c",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/build.xml"
+    }
+  },
+  {
+    "name": "copyright-exclude",
+    "path": "copyright-exclude",
+    "sha": "9b02dd5fbe7d05b33c0a3581f7be0664b51d195d",
+    "size": 1136,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/copyright-exclude?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/copyright-exclude",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/9b02dd5fbe7d05b33c0a3581f7be0664b51d195d",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/copyright-exclude",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/copyright-exclude?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/9b02dd5fbe7d05b33c0a3581f7be0664b51d195d",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/copyright-exclude"
+    }
+  },
+  {
+    "name": "core",
+    "path": "core",
+    "sha": "6c70ed2028737b0b76922b622bb4144849c83f61",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/core?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/core",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/6c70ed2028737b0b76922b622bb4144849c83f61",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/core?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/6c70ed2028737b0b76922b622bb4144849c83f61",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/core"
+    }
+  },
+  {
+    "name": "demos",
+    "path": "demos",
+    "sha": "8bc68d03af8dec7b1a7cb6e2f63e8c507c833986",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/demos?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/demos",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/8bc68d03af8dec7b1a7cb6e2f63e8c507c833986",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/demos?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/8bc68d03af8dec7b1a7cb6e2f63e8c507c833986",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/demos"
+    }
+  },
+  {
+    "name": "doc",
+    "path": "doc",
+    "sha": "d36a9c1987c4d2ba09ec0b9c5b59cb6630986943",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/doc?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/doc",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/d36a9c1987c4d2ba09ec0b9c5b59cb6630986943",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/doc?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/d36a9c1987c4d2ba09ec0b9c5b59cb6630986943",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/doc"
+    }
+  },
+  {
+    "name": "docker",
+    "path": "docker",
+    "sha": "b648842dea20d82fd37a35b142fd036456a04f83",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/docker?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/docker",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/b648842dea20d82fd37a35b142fd036456a04f83",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/docker?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/b648842dea20d82fd37a35b142fd036456a04f83",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/docker"
+    }
+  },
+  {
+    "name": "dsn",
+    "path": "dsn",
+    "sha": "bfffe187be170393da07bd3aa5ff4f2606c055d9",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/dsn?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/dsn",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/bfffe187be170393da07bd3aa5ff4f2606c055d9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/dsn?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/bfffe187be170393da07bd3aa5ff4f2606c055d9",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/dsn"
+    }
+  },
+  {
+    "name": "javadoc",
+    "path": "javadoc",
+    "sha": "3c77be608d43dd920c9726c05846891cadf36630",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/javadoc?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/javadoc",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/3c77be608d43dd920c9726c05846891cadf36630",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/javadoc?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/3c77be608d43dd920c9726c05846891cadf36630",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/javadoc"
+    }
+  },
+  {
+    "name": "mail.sig",
+    "path": "mail.sig",
+    "sha": "07a2acb1cb443a5adf208d5fafa343b417c4e695",
+    "size": 79859,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mail.sig?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/mail.sig",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/07a2acb1cb443a5adf208d5fafa343b417c4e695",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/mail.sig",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mail.sig?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/07a2acb1cb443a5adf208d5fafa343b417c4e695",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/mail.sig"
+    }
+  },
+  {
+    "name": "mailhandler",
+    "path": "mailhandler",
+    "sha": "624bb20559cd5515d3096268b45e3b0469e45265",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mailhandler?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/mailhandler",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/624bb20559cd5515d3096268b45e3b0469e45265",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mailhandler?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/624bb20559cd5515d3096268b45e3b0469e45265",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/mailhandler"
+    }
+  },
+  {
+    "name": "mbox.xml",
+    "path": "mbox.xml",
+    "sha": "9769dd6cc3ed42bd0294c7a95a81249a966fd9f4",
+    "size": 7577,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mbox.xml?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/mbox.xml",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/9769dd6cc3ed42bd0294c7a95a81249a966fd9f4",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/mbox.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mbox.xml?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/9769dd6cc3ed42bd0294c7a95a81249a966fd9f4",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/mbox.xml"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "c63eb2a3b79cbd877d1dd2373a3c444098fd7a54",
+    "size": 28536,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/pom.xml?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/pom.xml",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/c63eb2a3b79cbd877d1dd2373a3c444098fd7a54",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/pom.xml?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/c63eb2a3b79cbd877d1dd2373a3c444098fd7a54",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/pom.xml"
+    }
+  },
+  {
+    "name": "project.properties",
+    "path": "project.properties",
+    "sha": "627c1e6cf6891b1c79de55f7a39913d96cd2d487",
+    "size": 783,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/project.properties?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/project.properties",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/627c1e6cf6891b1c79de55f7a39913d96cd2d487",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/project.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/project.properties?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/627c1e6cf6891b1c79de55f7a39913d96cd2d487",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/project.properties"
+    }
+  },
+  {
+    "name": "project.xml",
+    "path": "project.xml",
+    "sha": "6fe8dbdb29ab2e4e80074c55a5b870dafb38ee1c",
+    "size": 1778,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/project.xml?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/project.xml",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/6fe8dbdb29ab2e4e80074c55a5b870dafb38ee1c",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/project.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/project.xml?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/6fe8dbdb29ab2e4e80074c55a5b870dafb38ee1c",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/project.xml"
+    }
+  },
+  {
+    "name": "providers",
+    "path": "providers",
+    "sha": "b1df1bdabededc4cf39202bd49379b4dceb7396d",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/providers?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/providers",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/b1df1bdabededc4cf39202bd49379b4dceb7396d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/providers?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/b1df1bdabededc4cf39202bd49379b4dceb7396d",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/providers"
+    }
+  },
+  {
+    "name": "publish",
+    "path": "publish",
+    "sha": "693064403f977bbc83e466afa0317a7e15c2c32f",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/publish?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/publish",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/693064403f977bbc83e466afa0317a7e15c2c32f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/publish?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/693064403f977bbc83e466afa0317a7e15c2c32f",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/publish"
+    }
+  },
+  {
+    "name": "siggen",
+    "path": "siggen",
+    "sha": "8c337e2d34194c555ceec03304328909c857770d",
+    "size": 1535,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/siggen?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/siggen",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/8c337e2d34194c555ceec03304328909c857770d",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/siggen",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/siggen?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/8c337e2d34194c555ceec03304328909c857770d",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/siggen"
+    }
+  },
+  {
+    "name": "sigtest",
+    "path": "sigtest",
+    "sha": "e25c935b91494c3a2f26737081e3a816bd9fba07",
+    "size": 2058,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/sigtest?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/sigtest",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/e25c935b91494c3a2f26737081e3a816bd9fba07",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/sigtest",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/sigtest?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/e25c935b91494c3a2f26737081e3a816bd9fba07",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/sigtest"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "300a5328527df7099297292e7e7934eebd563366",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/src?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/src",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/300a5328527df7099297292e7e7934eebd563366",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/src?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/300a5328527df7099297292e7e7934eebd563366",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/src"
+    }
+  },
+  {
+    "name": "update_version",
+    "path": "update_version",
+    "sha": "2c2c857d7bf6552d1b94338e2baaac76d7d6e82c",
+    "size": 1522,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/update_version?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/update_version",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/2c2c857d7bf6552d1b94338e2baaac76d7d6e82c",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/update_version",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/update_version?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/2c2c857d7bf6552d1b94338e2baaac76d7d6e82c",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/update_version"
+    }
+  }
+]
+
+ succeeded in 207ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "mailhandler/pom.xml",
+    "sha": "2e175f22cacd84bd915c9d3d3c3ee13d2e4615ac",
+    "size": 1557,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mailhandler/pom.xml?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/mailhandler/pom.xml",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/2e175f22cacd84bd915c9d3d3c3ee13d2e4615ac",
+    "download_url": "https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/mailhandler/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mailhandler/pom.xml?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/blobs/2e175f22cacd84bd915c9d3d3c3ee13d2e4615ac",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/blob/1.0.0/mailhandler/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "mailhandler/src",
+    "sha": "4677f2280fb8b39a987f2a7e39fe943b638480ae",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mailhandler/src?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/mailhandler/src",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/4677f2280fb8b39a987f2a7e39fe943b638480ae",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mailhandler/src?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/4677f2280fb8b39a987f2a7e39fe943b638480ae",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/mailhandler/src"
+    }
+  }
+]
+
+ succeeded in 231ms:
+[
+  {
+    "name": "main",
+    "path": "mailhandler/src/main",
+    "sha": "f9c0dcc84cbfb2f628b4ca4020ae6cc381d68b48",
+    "size": 0,
+    "url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mailhandler/src/main?ref=1.0.0",
+    "html_url": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/mailhandler/src/main",
+    "git_url": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/f9c0dcc84cbfb2f628b4ca4020ae6cc381d68b48",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/eclipse-ee4j/angus-mail/contents/mailhandler/src/main?ref=1.0.0",
+      "git": "https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/f9c0dcc84cbfb2f628b4ca4020ae6cc381d68b48",
+      "html": "https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/mailhandler/src/main"
+    }
+  }
+]
+
+ succeeded in 377ms:
+79cfec376c41307bc46448c437f5a4dd1166edf3	refs/tags/1.0.0
+01fb4192a84e278015cb5f011c27bb2fd64c4385	refs/tags/1.0.0^{}
+788813b2c3c0e0a3d82ad33288b30b819bd6ff2a	refs/tags/1.0.0-M1
+b32d973e1c722d01fdbda53a1d081c577e4e499f	refs/tags/1.0.0-M1^{}
+4e83fc1ece4bddf7dfc1e17f18284b73592f349c	refs/tags/1.0.0-M2
+79bb3e61b2b948f27bea8a2c5f67b48ebb7cb5e3	refs/tags/1.0.0-M2^{}
+
+codex
+The upstream tag is exactly `1.0.0`, and the artifact’s module is `mailhandler` even though the published artifact is named `logging-mailhandler`. I found Maven-hosted source and javadoc jars, but no Maven test jar; I’m checking the tagged repository tree for any test suite that belongs to this module.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/angus-mail/git/trees/1.0.0?recursive=1 | rg '\"path\": \".*(test|Test|mailhandler).*\"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp" && curl -fsSLO https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/1.0.0/logging-mailhandler-1.0.0.jar && jar tf logging-mailhandler-1.0.0.jar | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/
+com/
+com/sun/
+com/sun/mail/
+com/sun/mail/util/
+com/sun/mail/util/logging/
+META-INF/maven/
+META-INF/maven/org.eclipse.angus/
+META-INF/maven/org.eclipse.angus/logging-mailhandler/
+META-INF/NOTICE.md
+META-INF/LICENSE.md
+com/sun/mail/util/logging/SeverityComparator.class
+com/sun/mail/util/logging/LogManagerProperties$1.class
+com/sun/mail/util/logging/LogManagerProperties.class
+com/sun/mail/util/logging/CollectorFormatter.class
+com/sun/mail/util/logging/CompactFormatter$Alternate.class
+com/sun/mail/util/logging/CompactFormatter.class
+com/sun/mail/util/logging/DurationFilter.class
+com/sun/mail/util/logging/MailHandler$DefaultAuthenticator.class
+com/sun/mail/util/logging/MailHandler$GetAndSetContext.class
+com/sun/mail/util/logging/MailHandler$TailNameFormatter.class
+com/sun/mail/util/logging/MailHandler.class
+META-INF/maven/org.eclipse.angus/logging-mailhandler/pom.xml
+META-INF/maven/org.eclipse.angus/logging-mailhandler/pom.properties
+module-info.class
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp" && curl -fsSLO https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/1.0.0/logging-mailhandler-1.0.0-sources.jar && jar tf logging-mailhandler-1.0.0-sources.jar | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp" && curl -fsSLO https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/1.0.0/logging-mailhandler-1.0.0-javadoc.jar && jar tf logging-mailhandler-1.0.0-javadoc.jar | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 101ms:
+META-INF/MANIFEST.MF
+META-INF/
+com/
+com/sun/
+com/sun/mail/
+com/sun/mail/util/
+com/sun/mail/util/logging/
+META-INF/maven/
+META-INF/maven/org.eclipse.angus/
+META-INF/maven/org.eclipse.angus/logging-mailhandler/
+com/sun/mail/util/logging/CollectorFormatter.java
+com/sun/mail/util/logging/CompactFormatter.java
+com/sun/mail/util/logging/DurationFilter.java
+com/sun/mail/util/logging/LogManagerProperties.java
+com/sun/mail/util/logging/MailHandler.java
+com/sun/mail/util/logging/SeverityComparator.java
+com/sun/mail/util/logging/package-info.java
+module-info.java
+META-INF/NOTICE.md
+META-INF/LICENSE.md
+META-INF/maven/org.eclipse.angus/logging-mailhandler/pom.xml
+META-INF/maven/org.eclipse.angus/logging-mailhandler/pom.properties
+
+ succeeded in 186ms:
+      "path": "demos/demo/src/main/java/internal/testidle.java",
+      "path": "dsn/src/test",
+      "path": "dsn/src/test/java",
+      "path": "dsn/src/test/java/com",
+      "path": "dsn/src/test/java/com/sun",
+      "path": "dsn/src/test/java/com/sun/mail",
+      "path": "dsn/src/test/java/com/sun/mail/dsn",
+      "path": "dsn/src/test/java/com/sun/mail/dsn/MultipartReportTest.java",
+      "path": "dsn/src/test/java/com/sun/mail/dsn/NullOutputStream.java",
+      "path": "mailhandler",
+      "path": "mailhandler/pom.xml",
+      "path": "mailhandler/src",
+      "path": "mailhandler/src/main",
+      "path": "mailhandler/src/main/java",
+      "path": "mailhandler/src/main/java/com",
+      "path": "mailhandler/src/main/java/com/sun",
+      "path": "mailhandler/src/main/java/com/sun/mail",
+      "path": "mailhandler/src/main/java/com/sun/mail/util",
+      "path": "mailhandler/src/main/java/com/sun/mail/util/logging",
+      "path": "mailhandler/src/main/java/com/sun/mail/util/logging/CollectorFormatter.java",
+      "path": "mailhandler/src/main/java/com/sun/mail/util/logging/CompactFormatter.java",
+      "path": "mailhandler/src/main/java/com/sun/mail/util/logging/DurationFilter.java",
+      "path": "mailhandler/src/main/java/com/sun/mail/util/logging/LogManagerProperties.java",
+      "path": "mailhandler/src/main/java/com/sun/mail/util/logging/MailHandler.java",
+      "path": "mailhandler/src/main/java/com/sun/mail/util/logging/SeverityComparator.java",
+      "path": "mailhandler/src/main/java/com/sun/mail/util/logging/package-info.java",
+      "path": "mailhandler/src/main/java/module-info.java",
+      "path": "providers/angus-mail/src/oldtest",
+      "path": "providers/angus-mail/src/oldtest/java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/decodetest",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/encodedheaders.data",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/messagecachetest.java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory/DummySSLSocketFactory.java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory/DummySocketFactory.java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory/DummyTrustManager.java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory/TestResult.java",
+      "path": "providers/angus-mail/src/oldtest/java/jakarta/mail/internet/socketfactory/socketfactorytest.java",
+      "path": "providers/angus-mail/src/test",
+      "path": "providers/angus-mail/src/test/java",
+      "path": "providers/angus-mail/src/test/java/com",
+      "path": "providers/angus-mail/src/test/java/com/sun",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/handlers",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/handlers/TextXmlTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/iap",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/iap/ProtocolTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/iap/ResponseInputStreamTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/iap/ResponseTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPAlertTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPAuthDebugTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPCloseFailureTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPConnectFailureTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPFetchProfileTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPFolderTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPIDTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPIdleManagerTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPIdleStateTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPIdleUntaggedResponseTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPLoginCapabilitiesTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPLoginFailureTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPLoginHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPLoginReferralTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPMessageNumberOutOfRangeTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPMessageTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPPlainHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPResponseEventTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPSaslHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPSaslLoginTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPSearchTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPStoreTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/IMAPUidExpungeTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/MessageCacheTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/BODYSTRUCTURETest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/EnvelopeTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/IMAPProtocolTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/MODSEQTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/NamespacesTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/StatusTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/StratoImapBugfixTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/imap/protocol/UIDSetTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3AuthDebugTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3FolderClosedExceptionTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3Handler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3MessageTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3ReadableMimeTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/pop3/POP3StoreTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/NopServer.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPAuthDebugTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPBdatTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPCloseTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPConnectFailureTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPIOExceptionTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPLoginHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPSaslHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPSaslLoginTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPUknownCodeTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPUtf8Test.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/smtp/SMTPWriteTimeoutTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/stream",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/stream/LineInputStreamTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/stream/LineInputStreamUtf8FailTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/stream/LineInputStreamUtf8Test.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/AsciiStringInputStream.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/NullOutputStream.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/ProtocolHandler.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/SavedSocketFactory.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/SessionTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/TestSSLSocketFactory.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/TestServer.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/test/TestSocketFactory.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/AddAddressHeaderTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/AddFromTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/AllowEncodedMessagesTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/BASE64Test.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/ContentTypeCleanerTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/DecodeParametersTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/EncodeFileNameNoEncodeParametersTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/EncodeFileNameTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/GetLocalAddressTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/InternetHeadersTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeBodyPartTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeMessageTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeMultipartBCSIndexTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeMultipartParseTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeMultipartPreambleTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeMultipartPropertyTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/MimeUtilityTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/ModifyMessageTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/NoEncodeFileNameNoEncodeParametersTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/NoEncodeFileNameTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/NonAsciiBoundaryTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/ParameterListDecode.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/ParametersNoStrictTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/PropUtilTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/QPEncoderStreamTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/ReferencesTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/RestrictEncodingTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/SocketFetcherTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/UUDecoderStreamTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/Utf8AddressTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/WriteTimeoutSocketTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/AbstractLogging.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/CollectorFormatterTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/CompactFormatterTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/DurationFilterTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/LogManagerPropertiesTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/MailHandlerTest.java",
+      "path": "providers/angus-mail/src/test/java/com/sun/mail/util/logging/SeverityComparatorTest.java",
+      "path": "providers/angus-mail/src/test/resources",
+      "path": "providers/angus-mail/src/test/resources/com",
+      "path": "providers/angus-mail/src/test/resources/com/sun",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/imap",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/imap/protocol",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/imap/protocol/uiddata",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/test",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/test/keystore.jks",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/util",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/util/paramdata",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/util/paramdatanostrict",
+      "path": "providers/angus-mail/src/test/resources/com/sun/mail/util/uudata",
+      "path": "providers/mbox/src/test",
+      "path": "providers/mbox/src/test/java",
+      "path": "providers/mbox/src/test/java/com",
+      "path": "providers/mbox/src/test/java/com/sun",
+      "path": "providers/mbox/src/test/java/com/sun/mail",
+      "path": "providers/mbox/src/test/java/com/sun/mail/mbox",
+      "path": "providers/mbox/src/test/java/com/sun/mail/mbox/MboxFolderExpungeTest.java",
+      "path": "providers/mbox/src/test/java/com/sun/mail/mbox/MboxFolderTest.java",
+      "path": "sigtest",
+
+ succeeded in 357ms:
+META-INF/MANIFEST.MF
+META-INF/
+src/
+src/com.sun.mail.util.logging/
+com.sun.mail.util.logging/
+com.sun.mail.util.logging/com/
+com.sun.mail.util.logging/com/sun/
+com.sun.mail.util.logging/com/sun/mail/
+com.sun.mail.util.logging/com/sun/mail/util/
+com.sun.mail.util.logging/com/sun/mail/util/logging/
+com.sun.mail.util.logging/com/sun/mail/util/logging/class-use/
+index-files/
+resources/
+jquery/
+jquery/external/
+jquery/external/jquery/
+jquery/jszip/
+jquery/jszip/dist/
+jquery/jszip-utils/
+jquery/jszip-utils/dist/
+jquery/images/
+META-INF/maven/
+META-INF/maven/org.eclipse.angus/
+META-INF/maven/org.eclipse.angus/logging-mailhandler/
+com.sun.mail.util.logging/com/sun/mail/util/logging/CollectorFormatter.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/CompactFormatter.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/DurationFilter.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/MailHandler.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/SeverityComparator.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/package-summary.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/package-tree.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/class-use/CollectorFormatter.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/class-use/CompactFormatter.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/class-use/DurationFilter.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/class-use/MailHandler.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/class-use/SeverityComparator.html
+com.sun.mail.util.logging/com/sun/mail/util/logging/package-use.html
+com.sun.mail.util.logging/module-summary.html
+element-list
+constant-values.html
+serialized-form.html
+overview-tree.html
+index-files/index-1.html
+index-files/index-2.html
+index-files/index-3.html
+index-files/index-4.html
+index-files/index-5.html
+index-files/index-6.html
+index-files/index-7.html
+index-files/index-8.html
+index-files/index-9.html
+index-files/index-10.html
+index-files/index-11.html
+index-files/index-12.html
+index-files/index-13.html
+module-search-index.js
+module-search-index.zip
+package-search-index.js
+package-search-index.zip
+type-search-index.js
+type-search-index.zip
+member-search-index.js
+member-search-index.zip
+allclasses-index.html
+allpackages-index.html
+deprecated-list.html
+allclasses.html
+index.html
+help-doc.html
+stylesheet.css
+script.js
+search.js
+resources/glass.png
+resources/x.png
+jquery/jquery-3.3.1.js
+jquery/jquery-migrate-3.0.1.js
+jquery/jquery-ui.js
+jquery/jquery-ui.css
+jquery/jquery-ui.min.js
+jquery/jquery-ui.min.css
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/providers/angus-mail/pom.xml | sed -n '1,240p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/providers/angus-mail/src/test/java/com/sun/mail/util/logging/MailHandlerTest.java | sed -n '1,100p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-ee4j/angus-mail/1.0.0/mailhandler/pom.xml | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 171ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>all</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.eclipse.angus</groupId>
+    <artifactId>logging-mailhandler</artifactId>
+    <packaging>jar</packaging>
+    <name>Angus Mail logging handler</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+
+ succeeded in 220ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>all</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>angus-mail</artifactId>
+    <packaging>jar</packaging>
+    <name>Angus Mail Provider</name>
+
+    <properties>
+        <mail.extensionName>jakarta.mail</mail.extensionName>
+        <mail.specificationTitle>Jakarta Mail API Design Specification</mail.specificationTitle>
+        <mail.implementationTitle>jakarta.mail</mail.implementationTitle>
+        <mail.probeFile>META-INF/gfprobe-provider.xml</mail.probeFile>
+        <findbugs.skip>false</findbugs.skip>
+        <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
+        <dep.sources>${project.build.directory}/generated-sources/dependencies</dep.sources>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>provided</includeScope>
+                            <classifier>sources</classifier>
+                            <excludeTransitive>true</excludeTransitive>
+                            <excludes>module-info.*,META-INF/versions/**,META-INF/MANIFEST.MF,META-INF/services/jakarta.mail.Provider</excludes>
+                            <outputDirectory>${dep.sources}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${dep.sources}</directory>
+                                    <excludes>
+                                        <exclude>**/*.java</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${dep.sources}</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <!-- CompactFormatterTest does not provide the expected results with modules, otherwise this can be removed -->
+                    <useModulePath>false</useModulePath>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-activation</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Provided dependencies -->
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>imap</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>smtp</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>pop3</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>logging-mailhandler</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+ succeeded in 448ms:
+/*
+ * Copyright (c) 2009, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2009, 2021 Jason Mehrens. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0, which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the
+ * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+ * version 2 with the GNU Classpath Exception, which is available at
+ * https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ */
+
+package com.sun.mail.util.logging;
+
+import java.io.*;
+import java.lang.management.CompilationMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.net.*;
+import java.util.*;
+import java.util.logging.*;
+import java.util.logging.Formatter;
+import jakarta.activation.*;
+import jakarta.mail.*;
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.internet.*;
+import jakarta.mail.util.StreamProvider;
+import jakarta.mail.util.StreamProvider.EncoderTypes;
+
+import org.junit.*;
+import static org.junit.Assert.*;
+
+/**
+ * Test case for the MailHandler spec.
+ *
+ * @author Jason Mehrens
+ */
+public class MailHandlerTest extends AbstractLogging {
+
+    /**
+     * See LogManager.
+     */
+    private static final String LOG_CFG_KEY = "java.util.logging.config.file";
+    /**
+     * Holder used to inject Throwables into other APIs.
+     */
+    private static final ThreadLocal<Throwable> PENDING = new ThreadLocal<>();
+    /**
+     * Holder used to inject ClassLoaders into other APIs.
+     */
+    private static final ThreadLocal<ClassLoader> LOADER = new ThreadLocal<>();
+    /**
+     * Stores the value of a port that is not used on the local machine.
+     */
+    private static volatile int OPEN_PORT = Integer.MIN_VALUE;
+    /**
+     * A host name that can not be resolved.
+     */
+    private static volatile String UNKNOWN_HOST;
+
+    /**
+     * Stores a writable directory that is in the class path and visible to the
+     * context class loader.
+     */
+    private static volatile File anyClassPathDir = null;
+    /**
+     * Used to prevent G.C. of loggers.
+     */
+    private volatile Object hardRef;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        checkJVMOptions();
+        OPEN_PORT = findOpenPort();
+        UNKNOWN_HOST = findUnknownHost();
+        assertTrue(findClassPathDir().isDirectory());
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        checkJVMOptions();
+        assertTrue(checkUnusedPort(OPEN_PORT));
+        OPEN_PORT = Integer.MIN_VALUE;
+        checkUnknownHost();
+        anyClassPathDir = null;
+    }
+
+    private static void assumeNoJit() {
+        CompilationMXBean c = ManagementFactory.getCompilationMXBean();
+        if (c != null) { //-Xint
+            Assume.assumeNoException(new IllegalArgumentException(
+
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f ! -name '"'org.eclipse.angus-logging-mailhandler-1.0.0.json' -print | head -5 | xargs -r -n1 sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:9:    "description" : "Spring Instrument provides a Java instrumentation agent that captures and exposes the JVM Instrumentation instance for later use by Spring-based applications. It supports Spring features that need load-time class transformation or other access to the JVM instrumentation API.",
+metadata/org.springframework/spring-context-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-sources.jar",
+metadata/org.springframework/spring-context-support/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-context-support/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-context-support/src/test",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:9:    "description" : "Spring Context Support provides integration classes that connect Spring's application context with common third-party libraries. It includes support for mail sending, Quartz scheduling, caching integrations, and templating facilities used by Spring applications.",
+metadata/org.springframework/spring-tx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-tx/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:9:    "description" : "Spring TX provides Spring Framework's transaction abstraction, including declarative and programmatic transaction management APIs for local and global transactions. It defines common transaction annotations, interceptors, synchronization infrastructure, and exception translation types used across Spring data access modules.",
+metadata/org.springframework/spring-tx/index.json:40:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:41:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-tx/index.json:42:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:44:    "description" : "Spring TX provides Spring Framework's transaction abstraction, including declarative and programmatic transaction management APIs for local and global transactions. It defines common transaction annotations, interceptors, synchronization infrastructure, and exception translation types used across Spring data access modules.",
+metadata/org.springframework/spring-tx/index.json:54:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:55:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-tx/index.json:56:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:58:    "description" : "Spring TX provides Spring Framework's transaction abstraction, including declarative and programmatic transaction management APIs for local and global transactions. It defines common transaction annotations, interceptors, synchronization infrastructure, and exception translation types used across Spring data access modules.",
+metadata/org.springframework/spring-expression/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-expression/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:9:    "description" : "Spring Expression Language (SpEL) provides an expression parser and evaluation engine for querying and manipulating object graphs at runtime. The spring-expression artifact supplies the core SpEL API and implementation used by Spring Framework features such as bean definitions, annotations, and data binding.",
+metadata/org.springframework/spring-expression/index.json:92:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:93:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-expression/index.json:94:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:95:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:96:    "description" : "Spring Expression Language (SpEL) provides an expression parser and evaluation engine for querying and manipulating object graphs at runtime. The spring-expression artifact supplies the core SpEL API and implementation used by Spring Framework features such as bean definitions, annotations, and data binding.",
+metadata/org.springframework/spring-expression/index.json:109:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:110:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-expression/index.json:111:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:112:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:113:    "description" : "Spring Expression Language (SpEL) provides an expression parser and evaluation engine for querying and manipulating object graphs at runtime. The spring-expression artifact supplies the core SpEL API and implementation used by Spring Framework features such as bean definitions, annotations, and data binding.",
+metadata/org.springframework/spring-expression/index.json:126:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:127:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-expression/index.json:128:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:129:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:130:    "description" : "Spring Expression Language (SpEL) provides an expression parser and evaluation engine for querying and manipulating object graphs at runtime. The spring-expression artifact supplies the core SpEL API and implementation used by Spring Framework features such as bean definitions, annotations, and data binding.",
+metadata/org.springframework/spring-expression/index.json:143:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:144:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-expression/index.json:145:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:146:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:147:    "description" : "Spring Expression Language (SpEL) provides an expression parser and evaluation engine for querying and manipulating object graphs at runtime. The spring-expression artifact supplies the core SpEL API and implementation used by Spring Framework features such as bean definitions, annotations, and data binding.",
+metadata/org.springframework/spring-expression/index.json:160:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:161:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-expression/index.json:162:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:163:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:164:    "description" : "Spring Expression Language (SpEL) provides an expression parser and evaluation engine for querying and manipulating object graphs at runtime. The spring-expression artifact supplies the core SpEL API and implementation used by Spring Framework features such as bean definitions, annotations, and data binding.",
+metadata/org.springframework/spring-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+metadata/org.springframework/spring-test/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-test/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/org.springframework.test/src/test/java",
+metadata/org.springframework/spring-test/index.json:8:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/test/package-summary.html",
+metadata/org.springframework/spring-test/index.json:9:    "description" : "Spring Test provides testing support for Spring applications, including mock objects and integration testing utilities for the Spring TestContext Framework. It helps developers run unit and integration tests that load and manage Spring application contexts across common Java testing frameworks.",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:9:    "description" : "Spring Aspects provides AspectJ aspects that let Spring facilities such as dependency injection, transaction management, caching, and asynchronous execution participate in AspectJ-weaved applications. It is part of the Spring Framework and supplies runtime support for applying those cross-cutting concerns outside standard proxy-based Spring AOP.",
+metadata/org.springframework/spring-webflux/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-sources.jar",
+metadata/org.springframework/spring-webflux/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-webflux/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-webflux/src/test",
+metadata/org.springframework/spring-webflux/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-javadoc.jar",
+metadata/org.springframework/spring-webflux/index.json:9:    "description" : "Spring WebFlux is Spring Framework's reactive web module for building asynchronous HTTP applications with annotated controllers or functional endpoints. It provides reactive server-side web support and a reactive WebClient built on Project Reactor and Reactive Streams.",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:6:    "repository-url" : "https://github.com/playframework/playframework",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:9:    "description" : "Play Exceptions provides the core Play Framework exception types used to carry structured error details such as titles, descriptions, source locations, attachments, and rich HTML descriptions. It supports Play's developer error reporting by exposing reusable exception classes that can identify relevant source lines and attach additional diagnostic content.",
+metadata/io.swagger/swagger-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/io.swagger/swagger-annotations/index.json:6:    "repository-url" : "https://github.com/swagger-api/swagger-core",
+metadata/io.swagger/swagger-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/io.swagger/swagger-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+metadata/io.swagger/swagger-annotations/index.json:9:    "description" : "Swagger Annotations provides Java annotations used by swagger-core to describe REST APIs, operations, models, parameters, responses, and security metadata for Swagger/OpenAPI 2.0 generation. It contains annotation types under io.swagger.annotations so JVM applications and frameworks can decorate code without bringing in the full swagger-core runtime.",
+
+codex
+I’m going to fill the metadata with Maven Central URLs for the source and javadocs, the GitHub repository root from the project POM, and the tagged logging test package from the upstream test tree. I’ll leave `language` and `not-for-native-image` absent because this is a Java/JVM jar with class files, not a Kotlin/Groovy/Scala or non-JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+index 50c13cdb0e53df0fc2a4cdd0537ea4313ffe6d33..345f3291dcf26c6a5395a0b2e65d0c56f55c6adc
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0"
++  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/util/logging",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-javadoc.jar",
++  "description" : "Angus Mail logging-mailhandler provides Java Util Logging handlers and formatters that send log records as email messages through Jakarta Mail. It includes the MailHandler implementation and related logging utilities used by Angus Mail and Jakarta Mail applications to route logging output to mail recipients."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+index 50c13cdb0e53df0fc2a4cdd0537ea4313ffe6d33..345f3291dcf26c6a5395a0b2e65d0c56f55c6adc
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0"
++  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/util/logging",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-javadoc.jar",
++  "description" : "Angus Mail logging-mailhandler provides Java Util Logging handlers and formatters that send log records as email messages through Jakarta Mail. It includes the MailHandler implementation and related logging utilities used by Angus Mail and Jakarta Mail applications to route logging output to mail recipients."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+{
+  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-sources.jar",
+  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
+  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/util/logging",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-javadoc.jar",
+  "description" : "Angus Mail logging-mailhandler provides Java Util Logging handlers and formatters that send log records as email messages through Jakarta Mail. It includes the MailHandler implementation and related logging utilities used by Angus Mail and Jakarta Mail applications to route logging output to mail recipients."
+}
+
+exec
+/usr/bin/bash -lc 'python3 -m json.tool build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json >/dev/null' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/1.0.0/logging-mailhandler-1.0.0-sources.jar \\
+  https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/1.0.0/logging-mailhandler-1.0.0-javadoc.jar \\
+  https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/providers/angus-mail/src/test/java/com/sun/mail/util/logging \\
+  https://github.com/eclipse-ee4j/angus-mail; do
+  status="'$(curl -fsSIL -o /dev/null -w '"'%{http_code}' \""'$url") || status=ERR
+  printf '"'%s %s\\n' \""'$status" "$url"
+done' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+index 50c13cdb0e53df0fc2a4cdd0537ea4313ffe6d33..345f3291dcf26c6a5395a0b2e65d0c56f55c6adc
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0"
++  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/util/logging",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-javadoc.jar",
++  "description" : "Angus Mail logging-mailhandler provides Java Util Logging handlers and formatters that send log records as email messages through Jakarta Mail. It includes the MailHandler implementation and related logging utilities used by Angus Mail and Jakarta Mail applications to route logging output to mail recipients."
+ }
+
+ succeeded in 2041ms:
+200 https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/1.0.0/logging-mailhandler-1.0.0-javadoc.jar
+200 https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/providers/angus-mail/src/test/java/com/sun/mail/util/logging
+200 https://github.com/eclipse-ee4j/angus-mail
+
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+index 50c13cdb0e53df0fc2a4cdd0537ea4313ffe6d33..345f3291dcf26c6a5395a0b2e65d0c56f55c6adc
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0"
++  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/util/logging",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-javadoc.jar",
++  "description" : "Angus Mail logging-mailhandler provides Java Util Logging handlers and formatters that send log records as email messages through Jakarta Mail. It includes the MailHandler implementation and related logging utilities used by Angus Mail and Jakarta Mail applications to route logging output to mail recipients."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+index 50c13cdb0e53df0fc2a4cdd0537ea4313ffe6d33..345f3291dcf26c6a5395a0b2e65d0c56f55c6adc
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0"
++  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/util/logging",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-javadoc.jar",
++  "description" : "Angus Mail logging-mailhandler provides Java Util Logging handlers and formatters that send log records as email messages through Jakarta Mail. It includes the MailHandler implementation and related logging utilities used by Angus Mail and Jakarta Mail applications to route logging output to mail recipients."
+ }
+
+web search: 
+web search: https://github.com/eclipse-ee4j/angus-mail/tree/1.0.0/providers/angus-mail/src/test/java/com/sun/mail/util/logging
+web search: 
+web search: repo1.maven.org org.eclipse.angus logging-mailhandler 1.0.0 sources javadoc jar
+codex
+Updated [org.eclipse.angus-logging-mailhandler-1.0.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json) with the repository, Maven-hosted sources/javadocs, tagged upstream logging tests, and a two-sentence description. Maven Central lists the `1.0.0` sources and javadoc jars, and the tagged GitHub tree contains the logging test suite used for this artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/1.0.0/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`; the artifact is a normal JVM jar with class files. Validation done: JSON parses successfully, and all resolved `1.0.0` URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+index 50c13cdb0e53df0fc2a4cdd0537ea4313ffe6d33..345f3291dcf26c6a5395a0b2e65d0c56f55c6adc
+--- a/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0"
++  "coordinates" : "org.eclipse.angus:logging-mailhandler:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++  "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/util/logging",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/$version$/logging-mailhandler-$version$-javadoc.jar",
++  "description" : "Angus Mail logging-mailhandler provides Java Util Logging handlers and formatters that send log records as email messages through Jakarta Mail. It includes the MailHandler implementation and related logging utilities used by Angus Mail and Jakarta Mail applications to route logging output to mail recipients."
+ }
+
+tokens used
+70,348
+Updated [org.eclipse.angus-logging-mailhandler-1.0.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5/build/discovered-artifact-metadata/org.eclipse.angus-logging-mailhandler-1.0.0.json) with the repository, Maven-hosted sources/javadocs, tagged upstream logging tests, and a two-sentence description. Maven Central lists the `1.0.0` sources and javadoc jars, and the tagged GitHub tree contains the logging test suite used for this artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/eclipse/angus/logging-mailhandler/1.0.0/?utm_source=openai))
+
+I left `language` absent and did not set `not-for-native-image`; the artifact is a normal JVM jar with class files. Validation done: JSON parses successfully, and all resolved `1.0.0` URLs returned HTTP 200.
+Ran agent for org.eclipse.angus:logging-mailhandler:1.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5/build/agent-artifact-discovery-logs/org.eclipse.angus-logging-mailhandler-1.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1527-b36fb2d5/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 54s
+9 actionable tasks: 9 executed
