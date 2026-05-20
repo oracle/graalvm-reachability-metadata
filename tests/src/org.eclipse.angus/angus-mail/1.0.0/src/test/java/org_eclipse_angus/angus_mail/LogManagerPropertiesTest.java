@@ -7,14 +7,18 @@
 package org_eclipse_angus.angus_mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.sun.mail.util.logging.CollectorFormatter;
 import com.sun.mail.util.logging.CompactFormatter;
 import com.sun.mail.util.logging.DurationFilter;
+import com.sun.mail.util.logging.MailHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
@@ -55,6 +59,24 @@ public class LogManagerPropertiesTest {
     }
 
     @Test
+    public void mailHandlerVerifiesLocalHostFromTransport() {
+        Properties properties = new Properties();
+        properties.setProperty("mail.transport.protocol", "smtp");
+        properties.setProperty("mail.smtp.host", "localhost");
+        properties.setProperty("mail.smtp.localhost", "localhost");
+        properties.setProperty("mail.to", "recipient@example.com");
+        properties.setProperty("mail.from", "sender@example.com");
+        properties.setProperty("verify", "local");
+
+        MailHandler handler = new MailHandler(properties);
+        try {
+            assertThat(handler.getLevel()).isNotNull();
+        } finally {
+            handler.close();
+        }
+    }
+
+    @Test
     public void collectorFormatterLoadsConfiguredFormatterAndReversesComparator() throws Exception {
         configureLogManager(
             "com.sun.mail.util.logging.CollectorFormatter.format={1}",
@@ -74,6 +96,45 @@ public class LogManagerPropertiesTest {
         assertThat(tail).contains("INFO:info message");
     }
 
+    @Test
+    public void collectorFormatterUsesContextClassLoaderBeforeFailing() throws Exception {
+        configureLogManager(
+            "com.sun.mail.util.logging.CollectorFormatter.format={1}",
+            "com.sun.mail.util.logging.CollectorFormatter.formatter=org.example.ContextFormatter",
+            "com.sun.mail.util.logging.CollectorFormatter.comparator=null",
+            "com.sun.mail.util.logging.CompactFormatter.format=%5$s%n");
+
+        UndeclaredThrowableException thrown = withContextClassLoader(
+            new FormatterContextClassLoader(),
+            () -> assertThrows(UndeclaredThrowableException.class, CollectorFormatter::new));
+
+        assertThat(thrown.getUndeclaredThrowable()).isInstanceOf(ClassNotFoundException.class);
+    }
+
+    @Test
+    public void collectorFormatterFailsWhenContextClassLoaderIsUnset() throws Exception {
+        configureLogManager(
+            "com.sun.mail.util.logging.CollectorFormatter.formatter="
+                + "org.example.DoesNotExist");
+
+        UndeclaredThrowableException thrown = withContextClassLoader(null,
+            () -> assertThrows(UndeclaredThrowableException.class, CollectorFormatter::new));
+
+        assertThat(thrown.getUndeclaredThrowable()).isInstanceOf(ClassNotFoundException.class);
+    }
+
+    private static <T> T withContextClassLoader(ClassLoader loader, ThrowingSupplier<T> supplier)
+            throws Exception {
+        Thread thread = Thread.currentThread();
+        ClassLoader previous = thread.getContextClassLoader();
+        thread.setContextClassLoader(loader);
+        try {
+            return supplier.get();
+        } finally {
+            thread.setContextClassLoader(previous);
+        }
+    }
+
     private static void configureLogManager(String... entries) throws IOException {
         StringBuilder builder = new StringBuilder();
         builder.append(".level=INFO\n");
@@ -84,6 +145,25 @@ public class LogManagerPropertiesTest {
         byte[] bytes = builder.toString().getBytes(StandardCharsets.ISO_8859_1);
         try (InputStream input = new ByteArrayInputStream(bytes)) {
             LogManager.getLogManager().readConfiguration(input);
+        }
+    }
+
+    @FunctionalInterface
+    private interface ThrowingSupplier<T> {
+        T get() throws Exception;
+    }
+
+    private static final class FormatterContextClassLoader extends ClassLoader {
+        private FormatterContextClassLoader() {
+            super(null);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if ("org.example.ContextFormatter".equals(name)) {
+                throw new ClassNotFoundException(name);
+            }
+            return super.loadClass(name, resolve);
         }
     }
 }
