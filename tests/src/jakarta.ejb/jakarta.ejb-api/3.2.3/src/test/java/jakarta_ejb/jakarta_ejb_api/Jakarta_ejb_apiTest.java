@@ -74,6 +74,9 @@ import javax.ejb.TransactionManagementType;
 import javax.ejb.TransactionRequiredLocalException;
 import javax.ejb.TransactionRolledbackLocalException;
 import javax.ejb.embeddable.EJBContainer;
+import javax.ejb.spi.EJBContainerProvider;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.xml.namespace.QName;
 import javax.xml.rpc.handler.GenericHandler;
 import javax.xml.rpc.handler.HandlerInfo;
@@ -251,6 +254,29 @@ public class Jakarta_ejb_apiTest {
                 .isThrownBy(() -> EJBContainer.createEJBContainer(properties))
                 .withMessageContaining("No EJBContainer provider available")
                 .withMessageContaining("missing-provider");
+    }
+
+    @Test
+    void embeddableContainerProviderCreatesCloseableContainers() throws Exception {
+        Map<String, Object> properties = new LinkedHashMap<>();
+        properties.put(EJBContainer.APP_NAME, "provider-test-app");
+        Context context = new InitialContext();
+        RecordingEJBContainerProvider provider = new RecordingEJBContainerProvider(context);
+
+        EJBContainer createdContainer = provider.createEJBContainer(properties);
+
+        assertThat(provider.getReceivedProperties()).isSameAs(properties);
+        assertThat(createdContainer.getContext()).isSameAs(context);
+        assertThat(createdContainer).isInstanceOf(RecordingEJBContainer.class);
+
+        RecordingEJBContainer container = (RecordingEJBContainer) createdContainer;
+        assertThat(container.isClosed()).isFalse();
+
+        try (EJBContainer closeableContainer = container) {
+            assertThat(closeableContainer.getContext()).isSameAs(context);
+        }
+
+        assertThat(container.isClosed()).isTrue();
     }
 
     @Test
@@ -480,6 +506,48 @@ public class Jakarta_ejb_apiTest {
     private static final class BusinessFailure extends Exception {
         private BusinessFailure(String message) {
             super(message);
+        }
+    }
+
+    private static final class RecordingEJBContainerProvider implements EJBContainerProvider {
+        private final Context context;
+        private Map<?, ?> receivedProperties;
+
+        private RecordingEJBContainerProvider(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public EJBContainer createEJBContainer(Map<?, ?> properties) {
+            receivedProperties = properties;
+            return new RecordingEJBContainer(context);
+        }
+
+        private Map<?, ?> getReceivedProperties() {
+            return receivedProperties;
+        }
+    }
+
+    private static final class RecordingEJBContainer extends EJBContainer {
+        private final Context context;
+        private boolean closed;
+
+        private RecordingEJBContainer(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public Context getContext() {
+            return context;
+        }
+
+        @Override
+        public void close() {
+            closed = true;
+        }
+
+        private boolean isClosed() {
+            return closed;
         }
     }
 
