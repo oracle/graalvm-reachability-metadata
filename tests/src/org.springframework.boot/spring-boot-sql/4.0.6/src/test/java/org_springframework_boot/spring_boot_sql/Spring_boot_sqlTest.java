@@ -9,6 +9,8 @@ package org_springframework_boot.spring_boot_sql;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -151,6 +153,23 @@ public class Spring_boot_sqlTest {
     }
 
     @Test
+    void scriptDatabaseInitializerRunsPatternResourcesInUrlOrder() {
+        DatabaseInitializationSettings settings = scriptSettings(DatabaseInitializationMode.ALWAYS);
+        settings.setSchemaLocations(List.of("classpath*:schema.sql"));
+        CapturingScriptDatabaseInitializer initializer = new CapturingScriptDatabaseInitializer(settings);
+        Resource later = resource("schema-later.sql", "create table later(id int)", "file:/schema-z.sql");
+        Resource earlier = resource("schema-earlier.sql", "create table earlier(id int)", "file:/schema-a.sql");
+        initializer.setResourceLoader(new TestResourceLoader(Map.of("classpath*:schema.sql", List.of(later,
+            earlier))));
+
+        assertThat(initializer.initializeDatabase()).isTrue();
+
+        assertThat(initializer.runs).hasSize(1);
+        assertThat(initializer.runs.get(0).contents()).containsExactly("create table earlier(id int)",
+            "create table later(id int)");
+    }
+
+    @Test
     void scriptDatabaseInitializerHonorsNeverAndEmbeddedModes() {
         DatabaseInitializationSettings neverSettings = scriptSettings(DatabaseInitializationMode.NEVER);
         CapturingScriptDatabaseInitializer neverInitializer = new CapturingScriptDatabaseInitializer(neverSettings);
@@ -236,11 +255,20 @@ public class Spring_boot_sqlTest {
     }
 
     private static Resource resource(String filename, String content) {
+        return resource(filename, content, null);
+    }
+
+    private static Resource resource(String filename, String content, String url) {
         return new ByteArrayResource(content.getBytes(StandardCharsets.UTF_8), filename) {
 
             @Override
             public String getFilename() {
                 return filename;
+            }
+
+            @Override
+            public URL getURL() throws IOException {
+                return (url != null) ? URI.create(url).toURL() : super.getURL();
             }
 
         };
