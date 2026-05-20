@@ -186,6 +186,32 @@ public class Swagger_annotations_jakartaTest {
     }
 
     @Test
+    void readsRequestBodyAndContentParameterAnnotationsAppliedToMethodParameters() throws NoSuchMethodException {
+        Method method = AnnotatedInventoryApi.class.getDeclaredMethod(
+                "submitMultipartItem", MultipartItemUpload.class, String.class);
+        AnnotatedElement uploadParameter = method.getParameters()[0];
+        AnnotatedElement filterParameter = method.getParameters()[1];
+
+        RequestBody requestBody = annotation(uploadParameter, RequestBody.class);
+        assertThat(requestBody.description()).isEqualTo("Multipart upload request");
+        assertThat(requestBody.required()).isTrue();
+        assertThat(requestBody.useParameterTypeSchema()).isTrue();
+        assertThat(requestBody.content()[0].mediaType()).isEqualTo("multipart/form-data");
+        assertThat(requestBody.content()[0].schema().implementation()).isEqualTo(MultipartItemUpload.class);
+        assertThat(requestBody.content()[0].encoding()[0].name()).isEqualTo("metadata");
+        assertThat(requestBody.extensions()[0].properties()[0].parseValue()).isTrue();
+
+        Parameter filter = annotation(filterParameter, Parameter.class);
+        assertThat(filter.name()).isEqualTo("filter");
+        assertThat(filter.in()).isEqualTo(ParameterIn.QUERY);
+        assertThat(filter.deprecated()).isTrue();
+        assertThat(filter.allowEmptyValue()).isTrue();
+        assertThat(filter.content()[0].mediaType()).isEqualTo("application/json");
+        assertThat(filter.content()[0].schema().implementation()).isEqualTo(SearchFilter.class);
+        assertThat(filter.content()[0].examples()[0].name()).isEqualTo("active-filter");
+    }
+
+    @Test
     void exposesEnumConstantsAndParameterValidationGroups() throws NoSuchMethodException {
         assertThat(ParameterIn.values()).containsExactly(
                 ParameterIn.DEFAULT, ParameterIn.HEADER, ParameterIn.QUERY, ParameterIn.PATH, ParameterIn.COOKIE);
@@ -433,6 +459,32 @@ public class Swagger_annotations_jakartaTest {
                 ItemUpdate update) {
             return update;
         }
+
+        void submitMultipartItem(
+                @RequestBody(
+                        description = "Multipart upload request",
+                        required = true,
+                        useParameterTypeSchema = true,
+                        content = @Content(
+                                mediaType = "multipart/form-data",
+                                schema = @Schema(implementation = MultipartItemUpload.class),
+                                encoding = @Encoding(name = "metadata", contentType = "application/json")),
+                        extensions = @Extension(
+                                name = "x-upload",
+                                properties = @ExtensionProperty(name = "streamed", value = "true", parseValue = true)))
+                        MultipartItemUpload upload,
+                @Parameter(
+                        name = "filter",
+                        in = ParameterIn.QUERY,
+                        description = "Structured upload filter",
+                        deprecated = true,
+                        allowEmptyValue = true,
+                        content = @Content(
+                                mediaType = "application/json",
+                                schema = @Schema(implementation = SearchFilter.class),
+                                examples = @ExampleObject(name = "active-filter", value = "{\"active\":true}")))
+                        String filter) {
+        }
     }
 
     @Schema(
@@ -527,6 +579,12 @@ public class Swagger_annotations_jakartaTest {
     }
 
     private static final class ItemUpdate {
+    }
+
+    private static final class MultipartItemUpload {
+    }
+
+    private static final class SearchFilter {
     }
 
     private static final class WebhookEvent {
