@@ -11,9 +11,11 @@ import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.ExitCode
 import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
 import org.jetbrains.kotlin.cli.common.config.KotlinSourceRoot
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageLocation
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSourceLocation
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
+import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
 import org.jetbrains.kotlin.cli.common.modules.ModuleChunk
 import org.jetbrains.kotlin.cli.common.modules.ModuleXmlParser
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
@@ -123,6 +125,43 @@ public class Kotlin_compiler_embeddableTest {
         assertThat(result.output)
             .contains("Broken.kt")
             .contains("error:")
+    }
+
+    @Test
+    fun rendersCompilerDiagnosticsWithLocationDetails(@TempDir tempDir: Path) {
+        val sourceFile: Path = tempDir.resolve("Diagnostics.kt")
+        val lineContent = "fun broken( = 1"
+        val location: CompilerMessageSourceLocation = requireNotNull(
+            CompilerMessageLocation.create(
+                sourceFile.toString(),
+                1,
+                13,
+                lineContent,
+            ),
+        )
+
+        val fullPathMessage: String = MessageRenderer.PLAIN_FULL_PATHS.render(
+            CompilerMessageSeverity.ERROR,
+            "expecting a parameter declaration",
+            location,
+        )
+        val withoutPathMessage: String = MessageRenderer.WITHOUT_PATHS.render(
+            CompilerMessageSeverity.WARNING,
+            "experimental compiler feature is enabled",
+            location,
+        )
+
+        assertThat(fullPathMessage)
+            .contains(sourceFile.toString())
+            .contains("1:13")
+            .contains("error:")
+            .contains("expecting a parameter declaration")
+            .contains(lineContent)
+            .contains("^")
+        assertThat(withoutPathMessage)
+            .doesNotContain(sourceFile.toString())
+            .contains("warning:")
+            .contains("experimental compiler feature is enabled")
     }
 
     @Test
