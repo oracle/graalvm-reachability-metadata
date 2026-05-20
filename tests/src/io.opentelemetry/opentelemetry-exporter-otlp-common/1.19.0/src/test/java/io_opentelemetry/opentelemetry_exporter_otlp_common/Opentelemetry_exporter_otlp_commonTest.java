@@ -222,6 +222,45 @@ public class Opentelemetry_exporter_otlp_commonTest {
     }
 
     @Test
+    void metricsRequestMarshalsHistogramExemplarsWithTraceContext() throws IOException {
+        InMemoryMetricReader metricReader = InMemoryMetricReader.create();
+        SdkMeterProvider meterProvider = SdkMeterProvider.builder()
+                .setResource(testResource())
+                .registerMetricReader(metricReader)
+                .build();
+        try {
+            try (Scope scope = Context.root().with(Span.wrap(spanContext(SPAN_ID))).makeCurrent()) {
+                meterProvider.get("exemplar.scope")
+                        .histogramBuilder("request.duration")
+                        .setDescription("Request duration")
+                        .setUnit("ms")
+                        .build()
+                        .record(42.5, Attributes.of(stringKey("route"), "/cart"));
+            }
+
+            Collection<MetricData> metrics = metricReader.collectAllMetrics();
+            assertThat(metrics)
+                    .filteredOn(metric -> metric.getName().equals("request.duration"))
+                    .singleElement()
+                    .satisfies(metric -> assertThat(metric.getHistogramData().getPoints())
+                            .singleElement()
+                            .satisfies(point -> assertThat(point.getExemplars()).hasSize(1)));
+
+            MetricsRequestMarshaler marshaler = MetricsRequestMarshaler.create(metrics);
+            assertBinarySizeMatches(marshaler);
+            assertThat(jsonOf(marshaler)).contains(
+                    "\"name\":\"request.duration\"",
+                    "\"histogram\"",
+                    "\"exemplars\"",
+                    "\"asDouble\":42.5",
+                    "\"traceId\":\"" + TRACE_ID + "\"",
+                    "\"spanId\":\"" + SPAN_ID + "\"");
+        } finally {
+            meterProvider.close();
+        }
+    }
+
+    @Test
     void logsRequestMarshalsBodySeverityAttributesAndTraceContext() throws IOException {
         InMemoryLogRecordExporter logExporter = InMemoryLogRecordExporter.create();
         SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
