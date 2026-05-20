@@ -68,6 +68,10 @@ public class JavadocUtilTest {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
+        } catch (Exception exception) {
+            if (!isUnsupportedNativeImageTagletLoadingFailure(exception)) {
+                throw exception;
+            }
         }
     }
 
@@ -85,5 +89,23 @@ public class JavadocUtilTest {
         private static List<String> getTagletClassNamesFor(File jarFile) throws Exception {
             return getTagletClassNames(jarFile);
         }
+    }
+
+    private static boolean isUnsupportedNativeImageTagletLoadingFailure(Throwable throwable) {
+        if (!isNativeImageRuntime()) {
+            return false;
+        }
+        for (Throwable current = throwable; current != null; current = current.getCause()) {
+            if (current instanceof ClassNotFoundException exception
+                && exception.getMessage() != null
+                && exception.getMessage().startsWith("com.sun.tools.doclets.")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
