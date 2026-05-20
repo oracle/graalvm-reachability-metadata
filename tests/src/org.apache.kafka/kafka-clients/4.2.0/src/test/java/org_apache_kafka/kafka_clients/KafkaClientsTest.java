@@ -65,7 +65,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class KafkaClientsTest {
+public class KafkaClientsTest {
 
     private static final String KAFKA_SERVER = "localhost:9092";
 
