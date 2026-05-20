@@ -42,6 +42,8 @@ public class ElementAnalyzerTest {
             return true;
         });
 
+        // Creating this injector initializes ElementAnalyzer; the runtime legacy Sisu dependency lets its
+        // legacy alias discovery resolve the old locator names while preserving normal wiring behavior.
         Injector injector = Guice.createInjector(wireModule);
 
         assertThat(injector.getInstance(NeedsCollaborator.class).collaborator()).isSameAs(collaborator);
