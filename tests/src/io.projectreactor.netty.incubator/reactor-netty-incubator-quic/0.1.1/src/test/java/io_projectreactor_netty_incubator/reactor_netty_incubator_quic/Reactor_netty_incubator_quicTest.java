@@ -14,6 +14,7 @@ import java.util.function.Function;
 
 import io.netty.channel.ChannelOption;
 import io.netty.incubator.codec.quic.InsecureQuicTokenHandler;
+import io.netty.incubator.codec.quic.Quic;
 import io.netty.incubator.codec.quic.QuicChannel;
 import io.netty.incubator.codec.quic.QuicCongestionControlAlgorithm;
 import io.netty.incubator.codec.quic.QuicConnectionIdGenerator;
@@ -225,8 +226,6 @@ public class Reactor_netty_incubator_quicTest {
                 .bindAddress(() -> bindAddress)
                 .host("localhost")
                 .port(0)
-                .tokenHandler(InsecureQuicTokenHandler.INSTANCE)
-                .connectionIdAddressGenerator(QuicConnectionIdGenerator.signGenerator())
                 .ackDelayExponent(4)
                 .datagram(2, 3)
                 .streamAttr(streamAttribute, "stream")
@@ -235,8 +234,6 @@ public class Reactor_netty_incubator_quicTest {
 
         assertThat(config.bindAddress().get()).isInstanceOf(InetSocketAddress.class);
         assertThat(((InetSocketAddress) config.bindAddress().get()).getPort()).isZero();
-        assertThat(config.tokenHandler()).isSameAs(InsecureQuicTokenHandler.INSTANCE);
-        assertThat(config.connectionIdAddressGenerator().isIdempotent()).isTrue();
         assertThat(config.ackDelayExponent()).isEqualTo(4);
         assertThat(config.recvQueueLen()).isEqualTo(2);
         assertThat(config.sendQueueLen()).isEqualTo(3);
@@ -249,6 +246,22 @@ public class Reactor_netty_incubator_quicTest {
         assertThat(withoutAttribute.configuration().streamAttributes()).doesNotContainKey(streamAttribute);
         assertThat(withoutOption.configuration().streamOptions())
                 .doesNotContainKey(ChannelOption.CONNECT_TIMEOUT_MILLIS);
+
+        if (!Quic.isAvailable()) {
+            assertThatThrownBy(() -> server
+                    .tokenHandler(InsecureQuicTokenHandler.INSTANCE)
+                    .connectionIdAddressGenerator(QuicConnectionIdGenerator.signGenerator())
+                    .configuration())
+                    .isInstanceOf(LinkageError.class);
+            return;
+        }
+
+        QuicServerConfig nativeBackedConfig = server
+                .tokenHandler(InsecureQuicTokenHandler.INSTANCE)
+                .connectionIdAddressGenerator(QuicConnectionIdGenerator.signGenerator())
+                .configuration();
+        assertThat(nativeBackedConfig.tokenHandler()).isSameAs(InsecureQuicTokenHandler.INSTANCE);
+        assertThat(nativeBackedConfig.connectionIdAddressGenerator().isIdempotent()).isTrue();
     }
 
     @Test
