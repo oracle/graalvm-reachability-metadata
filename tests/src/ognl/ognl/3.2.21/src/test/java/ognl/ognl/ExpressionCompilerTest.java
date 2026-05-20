@@ -6,6 +6,7 @@
  */
 package ognl.ognl;
 
+import javassist.NotFoundException;
 import ognl.AbstractMemberAccess;
 import ognl.Node;
 import ognl.Ognl;
@@ -43,9 +44,10 @@ public class ExpressionCompilerTest {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
-        } catch (RuntimeException exception) {
+        } catch (Exception exception) {
             final Error unsupportedFeatureError = findUnsupportedFeatureError(exception);
-            if (unsupportedFeatureError == null) {
+            if (unsupportedFeatureError == null
+                    && !isNativeImageRuntimeJavassistNotFound(exception)) {
                 throw exception;
             }
         }
@@ -64,6 +66,21 @@ public class ExpressionCompilerTest {
             current = current.getCause();
         }
         return null;
+    }
+
+    private static boolean isNativeImageRuntimeJavassistNotFound(Throwable throwable) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof NotFoundException
+                    && "java.lang.Object".equals(current.getMessage())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private static final class AllowAllMemberAccess extends AbstractMemberAccess {
