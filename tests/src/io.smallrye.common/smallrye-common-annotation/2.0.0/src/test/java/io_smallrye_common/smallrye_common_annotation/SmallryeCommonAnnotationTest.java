@@ -81,6 +81,22 @@ public class SmallryeCommonAnnotationTest {
     }
 
     @Test
+    void classLevelThreadingMarkersApplyToDeclaredMethodsWithoutMethodAnnotations() {
+        Method blockingOperation = declaredMethod(ClassLevelBlockingService.class, "blockingOperation");
+        Method nonBlockingOperation = declaredMethod(ClassLevelNonBlockingService.class, "nonBlockingOperation");
+        Method virtualThreadOperation = declaredMethod(ClassLevelVirtualThreadService.class, "virtualThreadOperation");
+
+        assertThat(blockingOperation.isAnnotationPresent(Blocking.class)).isFalse();
+        assertThat(hasMethodOrDeclaringClassAnnotation(blockingOperation, Blocking.class)).isTrue();
+        assertThat(nonBlockingOperation.isAnnotationPresent(NonBlocking.class)).isFalse();
+        assertThat(hasMethodOrDeclaringClassAnnotation(nonBlockingOperation, NonBlocking.class)).isTrue();
+        assertThat(virtualThreadOperation.isAnnotationPresent(RunOnVirtualThread.class)).isFalse();
+        assertThat(virtualThreadOperation.isAnnotationPresent(Blocking.class)).isFalse();
+        assertThat(hasMethodOrDeclaringClassAnnotation(virtualThreadOperation, RunOnVirtualThread.class)).isTrue();
+        assertThat(hasMethodOrDeclaringClassAnnotation(virtualThreadOperation, Blocking.class)).isTrue();
+    }
+
+    @Test
     void metaAnnotationsDescribeSmallRyeAnnotationContracts() {
         assertRetentionAndTarget(Blocking.class, ElementType.METHOD, ElementType.TYPE);
         assertRetentionAndTarget(NonBlocking.class, ElementType.METHOD, ElementType.TYPE);
@@ -130,6 +146,12 @@ public class SmallryeCommonAnnotationTest {
         }
     }
 
+    private static boolean hasMethodOrDeclaringClassAnnotation(Method method,
+            Class<? extends Annotation> annotationType) {
+        return method.isAnnotationPresent(annotationType)
+                || method.getDeclaringClass().isAnnotationPresent(annotationType);
+    }
+
     @Identifier("component")
     static final class IdentifiedComponent {
         @Identifier("field")
@@ -156,6 +178,28 @@ public class SmallryeCommonAnnotationTest {
         @NonBlocking
         String nonBlockingOperation() {
             return "ready";
+        }
+    }
+
+    @Blocking
+    static class ClassLevelBlockingService {
+        String blockingOperation() {
+            return "blocked by type contract";
+        }
+    }
+
+    @NonBlocking
+    static class ClassLevelNonBlockingService {
+        String nonBlockingOperation() {
+            return "ready by type contract";
+        }
+    }
+
+    @Blocking
+    @RunOnVirtualThread
+    static class ClassLevelVirtualThreadService {
+        String virtualThreadOperation() {
+            return "virtual by type contract";
         }
     }
 
