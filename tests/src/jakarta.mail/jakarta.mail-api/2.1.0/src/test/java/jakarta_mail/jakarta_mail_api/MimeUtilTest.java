@@ -58,7 +58,7 @@ public class MimeUtilTest {
         URL testClassesLocation = MimeUtilTest.class.getProtectionDomain().getCodeSource().getLocation();
 
         try (ChildFirstUrlClassLoader classLoader = new ChildFirstUrlClassLoader(
-                new URL[] { mailApiLocation, testClassesLocation },
+                new URL[] {mailApiLocation, testClassesLocation},
                 MimeUtilTest.class.getClassLoader())) {
             Runnable scenario = classLoader
                     .loadClass(IsolatedFallbackScenario.class.getName())
