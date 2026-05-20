@@ -8,6 +8,10 @@ package org_glassfish.jakarta_el;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
@@ -70,6 +74,22 @@ public class ComSunElUtilReflectionUtilTest {
         assertThat(method.getDeclaringClass()).isSameAs(PublicSuperclass.class);
     }
 
+    @Test
+    void resolvesConstructorFromPublicSuperclassForNonPublicSubclass() throws Throwable {
+        Constructor<?> localConstructor = ConstructorImplementation.class.getDeclaredConstructor(String.class);
+        MethodHandle getConstructor = MethodHandles.privateLookupIn(ReflectionUtil.class, MethodHandles.lookup())
+                .findStatic(
+                        ReflectionUtil.class,
+                        "getConstructor",
+                        MethodType.methodType(Constructor.class, Class.class, Constructor.class));
+
+        Constructor<?> resolvedConstructor =
+                (Constructor<?>) getConstructor.invoke(ConstructorImplementation.class, localConstructor);
+
+        assertThat(resolvedConstructor).isNotNull();
+        assertThat(resolvedConstructor.getDeclaringClass()).isSameAs(PublicConstructorSuperclass.class);
+    }
+
     public static final class VarArgFixture {
         public String join(String prefix, String... values) {
             return prefix + ":" + String.join(",", values);
@@ -94,5 +114,16 @@ public class ComSunElUtilReflectionUtilTest {
     }
 
     private static final class SuperclassImplementation extends PublicSuperclass {
+    }
+
+    public static class PublicConstructorSuperclass {
+        public PublicConstructorSuperclass(String value) {
+        }
+    }
+
+    private static final class ConstructorImplementation extends PublicConstructorSuperclass {
+        private ConstructorImplementation(String value) {
+            super(value);
+        }
     }
 }
