@@ -152,6 +152,50 @@ public class Reactor_netty_incubator_quicTest {
     }
 
     @Test
+    void channelAttributesAndOptionsAreCapturedAndCanBeRemoved() {
+        AttributeKey<String> clientAttribute = AttributeKey.valueOf("reactor.netty.quic.test.client.channelAttribute");
+        AttributeKey<String> serverAttribute = AttributeKey.valueOf("reactor.netty.quic.test.server.channelAttribute");
+
+        QuicClient client = QuicClient.create()
+                .attr(clientAttribute, "client")
+                .option(ChannelOption.SO_SNDBUF, 16_384);
+        QuicClientConfig clientConfig = client.configuration();
+
+        assertThat(clientConfig.attributes().get(clientAttribute)).isEqualTo("client");
+        assertThat(clientConfig.options().get(ChannelOption.SO_SNDBUF)).isEqualTo(16_384);
+        assertThat(clientConfig.streamAttributes()).doesNotContainKey(clientAttribute);
+        assertThat(clientConfig.streamOptions()).doesNotContainKey(ChannelOption.SO_SNDBUF);
+        assertThatThrownBy(() -> clientConfig.attributes().clear())
+                .isInstanceOf(UnsupportedOperationException.class);
+        assertThatThrownBy(() -> clientConfig.options().clear())
+                .isInstanceOf(UnsupportedOperationException.class);
+
+        QuicClient clientWithoutChannelSettings = client
+                .attr(clientAttribute, null)
+                .option(ChannelOption.SO_SNDBUF, null);
+        assertThat(clientWithoutChannelSettings.configuration().attributes()).doesNotContainKey(clientAttribute);
+        assertThat(clientWithoutChannelSettings.configuration().options()).doesNotContainKey(ChannelOption.SO_SNDBUF);
+        assertThat(client.option(ChannelOption.AUTO_READ, true)).isSameAs(client);
+
+        QuicServer server = QuicServer.create()
+                .attr(serverAttribute, "server")
+                .option(ChannelOption.SO_RCVBUF, 32_768);
+        QuicServerConfig serverConfig = server.configuration();
+
+        assertThat(serverConfig.attributes().get(serverAttribute)).isEqualTo("server");
+        assertThat(serverConfig.options().get(ChannelOption.SO_RCVBUF)).isEqualTo(32_768);
+        assertThat(serverConfig.streamAttributes()).doesNotContainKey(serverAttribute);
+        assertThat(serverConfig.streamOptions()).doesNotContainKey(ChannelOption.SO_RCVBUF);
+
+        QuicServer serverWithoutChannelSettings = server
+                .attr(serverAttribute, null)
+                .option(ChannelOption.SO_RCVBUF, null);
+        assertThat(serverWithoutChannelSettings.configuration().attributes()).doesNotContainKey(serverAttribute);
+        assertThat(serverWithoutChannelSettings.configuration().options()).doesNotContainKey(ChannelOption.SO_RCVBUF);
+        assertThat(server.option(ChannelOption.AUTO_READ, true)).isSameAs(server);
+    }
+
+    @Test
     void serverConfigurationCapturesServerSpecificAndStreamOptions() {
         AttributeKey<String> streamAttribute = AttributeKey.valueOf("reactor.netty.quic.test.server.streamAttribute");
         InetSocketAddress bindAddress = new InetSocketAddress("127.0.0.1", 0);
