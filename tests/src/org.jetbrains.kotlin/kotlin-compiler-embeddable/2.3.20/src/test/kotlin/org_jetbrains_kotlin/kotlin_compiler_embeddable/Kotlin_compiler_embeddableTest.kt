@@ -41,7 +41,9 @@ public class Kotlin_compiler_embeddableTest {
     @Test
     fun reportsVersionAndAdvancedOptions() {
         val versionResult: CompilerInvocation = invokeCompiler("-version")
-        assertThat(versionResult.exitCode).isEqualTo(ExitCode.OK)
+        assertThat(versionResult.exitCode)
+            .withFailMessage("Compiler output was:\n%s", versionResult.output)
+            .isEqualTo(ExitCode.OK)
         assertThat(versionResult.output).contains("kotlinc-jvm")
 
         val advancedHelpResult: CompilerInvocation = invokeCompiler("-X")
