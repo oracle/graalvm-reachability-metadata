@@ -1,0 +1,1301 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.131.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e43d8-98b6-7f83-896b-f7530b0e88e7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-sql:4.0.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.0.6" when "$version$" is replaced with "4.0.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+- Set "coordinates" to "org.springframework.boot:spring-boot-sql:4.0.6".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.6".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven/repository sources first, then patch the generated metadata JSON directly. After that I’ll run a quick JSON validation so the file is structurally clean.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+{
+  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'spring-boot-sql|org.springframework.boot:spring-boot' build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json:2:  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
+metadata/org.springframework.boot/spring-boot-starter-json/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-json:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/org.springframework.boot/spring-boot-starter-jackson/index.json:4:    "reason": "The published spring-boot-starter-jackson-4.0.2 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; the implementation classes are supplied by dependencies such as org.springframework.boot:spring-boot-jackson.",
+metadata/org.springframework.boot/spring-boot-starter-jackson/index.json:5:    "replacement": "Use the class-bearing dependency org.springframework.boot:spring-boot-jackson:4.0.2 for Spring Boot Jackson integration metadata."
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-aop:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-aop:5.3.31, org.aspectj:aspectjweaver:1.9.7, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-validation:3.4.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:5:    "replacement": "Use class-bearing dependencies such as org.hibernate.validator:hibernate-validator:8.0.2.Final, org.apache.tomcat.embed:tomcat-embed-el:10.1.36, org.springframework.boot:spring-boot:3.4.3, and org.springframework.boot:spring-boot-autoconfigure:3.4.3."
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-amqp:4.0.2 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-amqp:4.0.2, org.springframework.amqp:spring-rabbit:4.0.2, and org.springframework.boot:spring-boot-autoconfigure:4.0.2."
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-jpa:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-jpa:2.7.18, org.hibernate:hibernate-core:5.6.15.Final, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-starter-tomcat/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-tomcat:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-redis:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-redis:2.7.18, io.lettuce:lettuce-core:6.1.10.RELEASE, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/library-and-framework-list.json:2007:    "artifact": "org.springframework.boot:spring-boot-starter-actuator",
+metadata/library-and-framework-list.json:2023:    "artifact": "org.springframework.boot:spring-boot-starter-amqp",
+metadata/library-and-framework-list.json:2039:    "artifact": "org.springframework.boot:spring-boot-starter-cache",
+metadata/library-and-framework-list.json:2055:    "artifact": "org.springframework.boot:spring-boot-starter-data-jdbc",
+metadata/library-and-framework-list.json:2071:    "artifact": "org.springframework.boot:spring-boot-starter-data-jpa",
+metadata/library-and-framework-list.json:2089:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb",
+metadata/library-and-framework-list.json:2108:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb-reactive",
+metadata/library-and-framework-list.json:2127:    "artifact": "org.springframework.boot:spring-boot-starter-data-r2dbc",
+metadata/library-and-framework-list.json:2143:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis",
+metadata/library-and-framework-list.json:2160:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis-reactive",
+metadata/library-and-framework-list.json:2177:    "artifact": "org.springframework.boot:spring-boot-starter-data-rest",
+metadata/library-and-framework-list.json:2194:    "artifact": "org.springframework.boot:spring-boot-starter-freemarker",
+metadata/library-and-framework-list.json:2210:    "artifact": "org.springframework.boot:spring-boot-starter-graphql",
+metadata/library-and-framework-list.json:2227:    "artifact": "org.springframework.boot:spring-boot-starter-hateoas",
+metadata/library-and-framework-list.json:2246:    "artifact": "org.springframework.boot:spring-boot-starter-integration",
+metadata/library-and-framework-list.json:2266:    "artifact": "org.springframework.boot:spring-boot-starter-jdbc",
+metadata/library-and-framework-list.json:2282:    "artifact": "org.springframework.boot:spring-boot-starter-jetty",
+metadata/library-and-framework-list.json:2298:    "artifact": "org.springframework.boot:spring-boot-starter-json",
+metadata/library-and-framework-list.json:2315:    "artifact": "org.springframework.boot:spring-boot-starter-logging",
+metadata/library-and-framework-list.json:2332:    "artifact": "org.springframework.boot:spring-boot-starter-mail",
+metadata/library-and-framework-list.json:2348:    "artifact": "org.springframework.boot:spring-boot-starter-mustache",
+metadata/library-and-framework-list.json:2364:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-client",
+metadata/library-and-framework-list.json:2380:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
+metadata/library-and-framework-list.json:2396:    "artifact": "org.springframework.boot:spring-boot-starter-quartz",
+metadata/library-and-framework-list.json:2412:    "artifact": "org.springframework.boot:spring-boot-starter-reactor-netty",
+metadata/library-and-framework-list.json:2429:    "artifact": "org.springframework.boot:spring-boot-starter-rsocket",
+metadata/library-and-framework-list.json:2446:    "artifact": "org.springframework.boot:spring-boot-starter-security",
+metadata/library-and-framework-list.json:2463:    "artifact": "org.springframework.boot:spring-boot-starter-test",
+metadata/library-and-framework-list.json:2479:    "artifact": "org.springframework.boot:spring-boot-starter-thymeleaf",
+metadata/library-and-framework-list.json:2495:    "artifact": "org.springframework.boot:spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2511:    "artifact": "org.springframework.boot:spring-boot-starter-undertow",
+metadata/library-and-framework-list.json:2527:    "artifact": "org.springframework.boot:spring-boot-starter-validation",
+metadata/library-and-framework-list.json:2543:    "artifact": "org.springframework.boot:spring-boot-starter-web",
+metadata/library-and-framework-list.json:2562:    "artifact": "org.springframework.boot:spring-boot-starter-webflux",
+metadata/library-and-framework-list.json:2580:    "artifact": "org.springframework.boot:spring-boot-starter-websocket",
+tests/src/io.github.resilience4j/resilience4j-spring-boot3/2.3.0/build.gradle:15:    testImplementation 'org.springframework.boot:spring-boot-actuator:3.0.0'
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/build.gradle:14:    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-netty:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/build.gradle:16:    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/build.gradle:17:    testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-netty/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-netty:4.0.2
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-amqp:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-amqp/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-amqp:4.0.2
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/build.gradle:14:    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-reactor:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/build.gradle:16:    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-reactor/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-reactor:4.0.2
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-kafka:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/build.gradle:16:    testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-kafka/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-kafka:4.0.2
+tests/src/org.springframework.boot/spring-boot-jdbc/4.0.6/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-jdbc:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-jdbc/4.0.6/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-jdbc:4.0.6
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/build.gradle:14:    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-web-server:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-web-server/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-web-server:4.0.2
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-http-client:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-http-client/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-http-client:4.0.2
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-webflux:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-webflux/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-webflux:4.0.2
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-actuator-autoconfigure:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-actuator-autoconfigure/2.6.3/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-actuator-autoconfigure:2.6.3
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-restclient:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-http-converter:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-restclient/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-restclient:4.0.2
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-transaction:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-transaction/4.0.6/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-transaction:4.0.6
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/build.gradle:14:    testImplementation platform("org.springframework.boot:spring-boot-dependencies:$libraryVersion")
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/build.gradle:15:    testImplementation "org.springframework.boot:spring-boot-health:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/build.gradle:16:    testImplementation "org.springframework.boot:spring-boot-actuator:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-health/4.0.6/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-health:4.0.6
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-reactor-netty:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-reactor-netty/4.0.2/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-reactor-netty:4.0.2
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/build.gradle:21:    testImplementation "org.springframework.boot:spring-boot-configuration-processor:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-configuration-processor/2.7.18/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-configuration-processor:2.7.18
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/build.gradle:14:    testImplementation "org.springframework.boot:spring-boot-validation:$libraryVersion"
+tests/src/org.springframework.boot/spring-boot-validation/4.0.6/gradle.properties:4:library.coordinates = org.springframework.boot:spring-boot-validation:4.0.6
+tests/src/org.jboss.logging/jboss-logging/3.5.0.Final/build.gradle:17:    testImplementation 'org.springframework.boot:spring-boot-test:2.7.5'
+
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-sql 4.0.6
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.6
+codex
+The local file is just a coordinate stub. I found Spring Boot’s v4.0.6 tag and am checking Maven Central now because this repo prefers published source/test artifacts when they exist.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-sql/4.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-sql/4.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-sql-4.0.6-javadoc.jar" title="spring-boot-sql-4.0.6-javadoc.jar">spring-boot-sql-4.0.6-javadoc.jar</a>                 2026-04-23 15:18    163441      
+<a href="spring-boot-sql-4.0.6-javadoc.jar.asc" title="spring-boot-sql-4.0.6-javadoc.jar.asc">spring-boot-sql-4.0.6-javadoc.jar.asc</a>             2026-04-23 15:18       833      
+<a href="spring-boot-sql-4.0.6-javadoc.jar.md5" title="spring-boot-sql-4.0.6-javadoc.jar.md5">spring-boot-sql-4.0.6-javadoc.jar.md5</a>             2026-04-23 15:18        32      
+<a href="spring-boot-sql-4.0.6-javadoc.jar.sha1" title="spring-boot-sql-4.0.6-javadoc.jar.sha1">spring-boot-sql-4.0.6-javadoc.jar.sha1</a>            2026-04-23 15:18        40      
+<a href="spring-boot-sql-4.0.6-sources.jar" title="spring-boot-sql-4.0.6-sources.jar">spring-boot-sql-4.0.6-sources.jar</a>                 2026-04-23 15:18     30638      
+<a href="spring-boot-sql-4.0.6-sources.jar.asc" title="spring-boot-sql-4.0.6-sources.jar.asc">spring-boot-sql-4.0.6-sources.jar.asc</a>             2026-04-23 15:18       833      
+<a href="spring-boot-sql-4.0.6-sources.jar.md5" title="spring-boot-sql-4.0.6-sources.jar.md5">spring-boot-sql-4.0.6-sources.jar.md5</a>             2026-04-23 15:18        32      
+<a href="spring-boot-sql-4.0.6-sources.jar.sha1" title="spring-boot-sql-4.0.6-sources.jar.sha1">spring-boot-sql-4.0.6-sources.jar.sha1</a>            2026-04-23 15:18        40      
+<a href="spring-boot-sql-4.0.6.jar" title="spring-boot-sql-4.0.6.jar">spring-boot-sql-4.0.6.jar</a>                         2026-04-23 15:18     36059      
+<a href="spring-boot-sql-4.0.6.jar.asc" title="spring-boot-sql-4.0.6.jar.asc">spring-boot-sql-4.0.6.jar.asc</a>                     2026-04-23 15:18       833      
+<a href="spring-boot-sql-4.0.6.jar.md5" title="spring-boot-sql-4.0.6.jar.md5">spring-boot-sql-4.0.6.jar.md5</a>                     2026-04-23 15:18        32      
+<a href="spring-boot-sql-4.0.6.jar.sha1" title="spring-boot-sql-4.0.6.jar.sha1">spring-boot-sql-4.0.6.jar.sha1</a>                    2026-04-23 15:18        40      
+<a href="spring-boot-sql-4.0.6.module" title="spring-boot-sql-4.0.6.module">spring-boot-sql-4.0.6.module</a>                      2026-04-23 15:18      3924      
+<a href="spring-boot-sql-4.0.6.module.asc" title="spring-boot-sql-4.0.6.module.asc">spring-boot-sql-4.0.6.module.asc</a>                  2026-04-23 15:18       833      
+<a href="spring-boot-sql-4.0.6.module.md5" title="spring-boot-sql-4.0.6.module.md5">spring-boot-sql-4.0.6.module.md5</a>                  2026-04-23 15:18        32      
+<a href="spring-boot-sql-4.0.6.module.sha1" title="spring-boot-sql-4.0.6.module.sha1">spring-boot-sql-4.0.6.module.sha1</a>                 2026-04-23 15:18        40      
+<a href="spring-boot-sql-4.0.6.pom" title="spring-boot-sql-4.0.6.pom">spring-boot-sql-4.0.6.pom</a>                         2026-04-23 15:18      2030      
+<a href="spring-boot-sql-4.0.6.pom.asc" title="spring-boot-sql-4.0.6.pom.asc">spring-boot-sql-4.0.6.pom.asc</a>                     2026-04-23 15:18       833      
+<a href="spring-boot-sql-4.0.6.pom.md5" title="spring-boot-sql-4.0.6.pom.md5">spring-boot-sql-4.0.6.pom.md5</a>                     2026-04-23 15:18        32      
+<a href="spring-boot-sql-4.0.6.pom.sha1" title="spring-boot-sql-4.0.6.pom.sha1">spring-boot-sql-4.0.6.pom.sha1</a>                    2026-04-23 15:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-sql</artifactId>
+  <version>4.0.6</version>
+  <name>spring-boot-sql</name>
+  <description>Spring Boot SQL</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>4.0.6</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/git/trees/v4.0.6?recursive=1 | rg 'spring-boot-sql|sql.*/src/(main|test)'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 1359ms:
+      "path": "module/spring-boot-sql",
+      "path": "module/spring-boot-sql/build.gradle",
+      "path": "module/spring-boot-sql/src",
+      "path": "module/spring-boot-sql/src/main",
+      "path": "module/spring-boot-sql/src/main/java",
+      "path": "module/spring-boot-sql/src/main/java/org",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/ApplicationScriptDatabaseInitializer.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/ConditionalOnSqlInitialization.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/OnDatabaseInitializationCondition.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/OnSqlInitializationCondition.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/SettingsCreator.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/SqlInitializationProperties.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/SqlInitializationScriptsRuntimeHints.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/package-info.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/AbstractScriptDatabaseInitializer.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/DatabaseInitializationMode.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/DatabaseInitializationSettings.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/AbstractBeansOfTypeDatabaseInitializerDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/AbstractBeansOfTypeDependsOnDatabaseInitializationDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/AnnotationDependsOnDatabaseInitializationDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/BeansOfTypeDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/DatabaseInitializerDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/DependsOnDatabaseInitialization.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/DependsOnDatabaseInitializationDetector.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/dependency/package-info.java",
+      "path": "module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/package-info.java",
+      "path": "module/spring-boot-sql/src/main/resources",
+      "path": "module/spring-boot-sql/src/main/resources/META-INF",
+      "path": "module/spring-boot-sql/src/main/resources/META-INF/additional-spring-configuration-metadata.json",
+      "path": "module/spring-boot-sql/src/main/resources/META-INF/spring.factories",
+      "path": "module/spring-boot-sql/src/test",
+      "path": "module/spring-boot-sql/src/test/java",
+      "path": "module/spring-boot-sql/src/test/java/org",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/autoconfigure",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/autoconfigure/init",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/autoconfigure/init/OnDatabaseInitializationConditionTests.java",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/autoconfigure/init/SqlInitializationScriptsRuntimeHintsTests.java",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/init",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/init/dependency",
+      "path": "module/spring-boot-sql/src/test/java/org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurerTests.java",
+      "path": "module/spring-boot-sql/src/testFixtures",
+      "path": "module/spring-boot-sql/src/testFixtures/java",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework/boot",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework/boot/sql",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework/boot/sql/init",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework/boot/sql/init/AbstractScriptDatabaseInitializerTests.java",
+      "path": "module/spring-boot-sql/src/testFixtures/java/org/springframework/boot/sql/init/ScriptDatabaseInitializerSettings.java",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"' build/discovered-artifact-metadata metadata/org.springframework.boot metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+metadata/org.springframework.boot/spring-boot-netty/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-amqp/$version$/spring-boot-amqp-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-restclient/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-restclient/$version$/spring-boot-restclient-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-reactor/$version$/spring-boot-reactor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-transaction/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-kafka/$version$/spring-boot-kafka-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-health/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-health/$version$/spring-boot-health-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-jdbc/$version$/spring-boot-jdbc-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-reactor-netty/$version$/spring-boot-reactor-netty-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-web-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-web-server/$version$/spring-boot-web-server-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-http-client/$version$/spring-boot-http-client-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-webflux/$version$/spring-boot-webflux-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-validation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-validation/$version$/spring-boot-validation-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:38:    "documentation-url" : "https://hadoop.apache.org/docs/r$version$/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/apidocs/",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:50:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-mapreduce-client-shuffle/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-mapreduce-client-shuffle/$version$/hadoop-mapreduce-client-shuffle-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/com.twitter/hpack/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-registry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-registry/$version$/hadoop-yarn-registry-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:22:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-ldap-model/$version$/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-auth/index.json:8:    "documentation-url" : "https://hadoop.apache.org/docs/r$version$/hadoop-auth/index.html",
+metadata/org.apache.hadoop/hadoop-auth/index.json:58:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-auth/$version$/hadoop-auth-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:47:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/jakarta.batch/jakarta.batch-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/batch/jakarta.batch-api/$version$/jakarta.batch-api-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:40:    "documentation-url" : "N/A",
+metadata/org.apache.orc/orc-mapreduce/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:50:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:57:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:71:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:85:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:99:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:113:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jline/jline-terminal-jni/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jni/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'repo.maven.apache.org.*javadoc|javadoc.jar|docs.spring.io/spring-boot' build/discovered-artifact-metadata metadata | head -120" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:112:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:129:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:146:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-webflux/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:29:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:47:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:81:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:100:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.springframework/spring-context/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context/$version$/spring-context-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.datanucleus/javax.jdo/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/datanucleus/javax.jdo/$version$/javax.jdo-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.github.mwiede/jsch/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-json-provider/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-json-provider/$version$/jackson-jakarta-rs-json-provider-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:46:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-base/$version$/jackson-jakarta-rs-base-$version$-javadoc.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-exec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-exec/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/$version$/commons-dbcp2-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-function-context/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funspec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_3/$version$/scalatest-funspec_3-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-function-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-core/$version$/spring-cloud-function-core-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-text/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-javadoc.jar",
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/exposed/exposed-kotlin-datetime/$version$/exposed-kotlin-datetime-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream-binder-rabbit-core/$version$/spring-cloud-stream-binder-rabbit-core-$version$-javadoc.jar",
+metadata/org.codehaus.jettison/jettison/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://docs.spring.io/spring-boot/docs/4.0.6/api/java/org/springframework/boot/sql/init/package-summary.html | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+2026-05-20T05:26:11.457881Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+ succeeded in 11792ms:
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-sql
+web search: 
+web search: repo.maven.apache.org spring-boot-sql 4.0.6 sources javadoc
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.springframework.boot/spring-boot-jdbc/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-jdbc/$version$/spring-boot-jdbc-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-boot",
+    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-jdbc/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-jdbc/$version$/spring-boot-jdbc-$version$-javadoc.jar",
+    "description" : "Spring Boot JDBC provides auto-configuration and support classes for JDBC-based data access in Spring Boot applications. It configures data sources, JDBC templates, transaction managers, database initialization, health checks, connection pool metrics, and Docker Compose/Testcontainers connection details.",
+    "tested-versions" : [
+      "4.0.6",
+      "4.1.0-M1",
+      "4.1.0-M2",
+      "4.1.0-M3",
+      "4.1.0-M4",
+      "4.1.0-RC1"
+    ],
+    "allowed-packages" : [
+      "org.springframework.boot.jdbc"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.springframework.boot/spring-boot-transaction/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-boot",
+    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-transaction/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
+    "description" : "Spring Boot Transaction provides auto-configuration for Spring Framework transaction management, including transaction templates, reactive transactional operators, and enabling transaction management when a suitable transaction manager is present. It also includes transaction manager customization hooks and JTA-related auto-configuration for Boot applications.",
+    "tested-versions" : [
+      "4.0.6",
+      "4.1.0-M1",
+      "4.1.0-M2",
+      "4.1.0-M3",
+      "4.1.0-M4",
+      "4.1.0-RC1"
+    ],
+    "allowed-packages" : [
+      "org.springframework.boot.transaction.autoconfigure",
+      "org.springframework.boot.transaction.jta.autoconfigure"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.springframework.boot/spring-boot-validation/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.springframework.boot/spring-boot-health/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.6",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-health/$version$/spring-boot-health-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-boot",
+    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-health/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-health/$version$/spring-boot-health-$version$-javadoc.jar",
+    "description" : "Spring Boot Health provides the core health indicator and contributor APIs used to report application status. It also supplies auto-configuration for health endpoints, health groups, availability probes, and common indicators such as disk space, SSL, liveness, and readiness.",
+    "tested-versions" : [
+      "4.0.6",
+      "4.1.0-M1",
+      "4.1.0-M2",
+      "4.1.0-M3",
+      "4.1.0-M4",
+      "4.1.0-RC1"
+    ],
+    "allowed-packages" : [
+      "org.springframework.boot.health"
+    ]
+  }
+]
+
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-validation/$version$/spring-boot-validation-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-boot",
+    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-validation/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-validation/$version$/spring-boot-validation-$version$-javadoc.jar",
+    "description" : "Spring Boot Validation provides auto-configuration support for Jakarta Bean Validation in Spring Boot applications. It configures Boot's validation integration around Hibernate Validator and EL support so applications can expose validators consistently from the application context.",
+    "tested-versions" : [
+      "4.0.6",
+      "4.1.0-M1",
+      "4.1.0-M2",
+      "4.1.0-M3",
+      "4.1.0-M4",
+      "4.1.0-RC1"
+    ],
+    "allowed-packages" : [
+      "org.springframework.boot.validation.autoconfigure",
+      "org.springframework.context.annotation",
+      "org.springframework.core.annotation",
+      "org.springframework.core.type"
+    ]
+  }
+]
+
+codex
+Maven Central publishes the main JAR, sources JAR, and Javadoc JAR for `spring-boot-sql` 4.0.6, but there is no Maven test-sources artifact in that directory. I’m using the tagged GitHub module test directory for the test suite URL and keeping the language/native-image special fields absent because this is a Java/JVM class-bearing artifact.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6.jar -o /tmp/spring-boot-sql-4.0.6.jar && jar tf /tmp/spring-boot-sql-4.0.6.jar | rg '\\.class"'$'"' | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/module/spring-boot-sql/src/main/java/org/springframework/boot/sql/init/AbstractScriptDatabaseInitializer.java | sed -n '1,180p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/module/spring-boot-sql/src/main/java/org/springframework/boot/sql/autoconfigure/init/SqlInitializationProperties.java | sed -n '1,180p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 103ms:
+org/springframework/boot/sql/autoconfigure/init/ApplicationScriptDatabaseInitializer.class
+org/springframework/boot/sql/autoconfigure/init/ConditionalOnSqlInitialization.class
+org/springframework/boot/sql/autoconfigure/init/OnDatabaseInitializationCondition.class
+org/springframework/boot/sql/autoconfigure/init/OnSqlInitializationCondition.class
+org/springframework/boot/sql/autoconfigure/init/SettingsCreator.class
+org/springframework/boot/sql/autoconfigure/init/SqlInitializationProperties.class
+org/springframework/boot/sql/autoconfigure/init/SqlInitializationScriptsRuntimeHints.class
+org/springframework/boot/sql/autoconfigure/init/package-info.class
+org/springframework/boot/sql/init/AbstractScriptDatabaseInitializer$ScriptLocationResolver.class
+org/springframework/boot/sql/init/AbstractScriptDatabaseInitializer$Scripts.class
+org/springframework/boot/sql/init/AbstractScriptDatabaseInitializer.class
+org/springframework/boot/sql/init/DatabaseInitializationMode.class
+org/springframework/boot/sql/init/DatabaseInitializationSettings.class
+org/springframework/boot/sql/init/package-info.class
+org/springframework/boot/sql/init/dependency/AbstractBeansOfTypeDatabaseInitializerDetector.class
+org/springframework/boot/sql/init/dependency/AbstractBeansOfTypeDependsOnDatabaseInitializationDetector.class
+org/springframework/boot/sql/init/dependency/AnnotationDependsOnDatabaseInitializationDetector.class
+org/springframework/boot/sql/init/dependency/BeansOfTypeDetector.class
+org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer$DependsOnDatabaseInitializationPostProcessor$InitializerBeanNames.class
+org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer$DependsOnDatabaseInitializationPostProcessor.class
+org/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer.class
+org/springframework/boot/sql/init/dependency/DatabaseInitializerDetector.class
+org/springframework/boot/sql/init/dependency/DependsOnDatabaseInitialization.class
+org/springframework/boot/sql/init/dependency/DependsOnDatabaseInitializationDetector.class
+org/springframework/boot/sql/init/dependency/package-info.class
+
+ succeeded in 164ms:
+/*
+ * Copyright 2012-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.springframework.boot.sql.init;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternUtils;
+import org.springframework.util.CollectionUtils;
+
+/**
+ * Base class for an {@link InitializingBean} that performs SQL database initialization
+ * using schema (DDL) and data (DML) scripts.
+ *
+ * @author Andy Wilkinson
+ * @since 2.5.0
+ */
+public abstract class AbstractScriptDatabaseInitializer implements ResourceLoaderAware, InitializingBean {
+
+	private static final String OPTIONAL_LOCATION_PREFIX = "optional:";
+
+	private final DatabaseInitializationSettings settings;
+
+	@SuppressWarnings("NullAway.Init")
+	private volatile ResourceLoader resourceLoader;
+
+	/**
+	 * Creates a new {@link AbstractScriptDatabaseInitializer} that will initialize the
+	 * database using the given settings.
+	 * @param settings initialization settings
+	 */
+	protected AbstractScriptDatabaseInitializer(DatabaseInitializationSettings settings) {
+		this.settings = settings;
+	}
+
+	/**
+	 * Return the {@link DatabaseInitializationSettings} being used by the initializer.
+	 * @return the settings being used
+	 */
+	DatabaseInitializationSettings getSettings() {
+		return this.settings;
+	}
+
+	@Override
+	public void setResourceLoader(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		initializeDatabase();
+	}
+
+	/**
+	 * Initializes the database by applying schema and data scripts.
+	 * @return {@code true} if one or more scripts were applied to the database, otherwise
+	 * {@code false}
+	 */
+	public boolean initializeDatabase() {
+		ScriptLocationResolver locationResolver = new ScriptLocationResolver(this.resourceLoader);
+		boolean initialized = applySchemaScripts(locationResolver);
+		return applyDataScripts(locationResolver) || initialized;
+	}
+
+	private boolean isEnabled() {
+		if (this.settings.getMode() == DatabaseInitializationMode.NEVER) {
+			return false;
+		}
+		return this.settings.getMode() == DatabaseInitializationMode.ALWAYS || isEmbeddedDatabase();
+	}
+
+	/**
+	 * Returns whether the database that is to be initialized is embedded.
+	 * @return {@code true} if the database is embedded, otherwise {@code false}
+	 * @since 2.5.1
+	 */
+	protected boolean isEmbeddedDatabase() {
+		throw new IllegalStateException(
+				"Database initialization mode is '" + this.settings.getMode() + "' and database type is unknown");
+	}
+
+	private boolean applySchemaScripts(ScriptLocationResolver locationResolver) {
+		return applyScripts(this.settings.getSchemaLocations(), "schema", locationResolver);
+	}
+
+	private boolean applyDataScripts(ScriptLocationResolver locationResolver) {
+		return applyScripts(this.settings.getDataLocations(), "data", locationResolver);
+	}
+
+	private boolean applyScripts(@Nullable List<String> locations, String type,
+			ScriptLocationResolver locationResolver) {
+		List<Resource> scripts = getScripts(locations, type, locationResolver);
+		if (!scripts.isEmpty() && isEnabled()) {
+			runScripts(scripts);
+			return true;
+		}
+		return false;
+	}
+
+	private List<Resource> getScripts(@Nullable List<String> locations, String type,
+			ScriptLocationResolver locationResolver) {
+		if (CollectionUtils.isEmpty(locations)) {
+			return Collections.emptyList();
+		}
+		List<Resource> resources = new ArrayList<>();
+		for (String location : locations) {
+			boolean optional = location.startsWith(OPTIONAL_LOCATION_PREFIX);
+			if (optional) {
+				location = location.substring(OPTIONAL_LOCATION_PREFIX.length());
+			}
+			for (Resource resource : doGetResources(location, locationResolver)) {
+				if (resource.isReadable()) {
+					resources.add(resource);
+				}
+				else if (!optional) {
+					throw new IllegalStateException("No " + type + " scripts found at location '" + location + "'");
+				}
+			}
+		}
+		return resources;
+	}
+
+	private List<Resource> doGetResources(String location, ScriptLocationResolver locationResolver) {
+		try {
+			return locationResolver.resolve(location);
+		}
+		catch (Exception ex) {
+			throw new IllegalStateException("Unable to load resources from " + location, ex);
+		}
+	}
+
+	private void runScripts(List<Resource> resources) {
+		runScripts(new Scripts(resources).continueOnError(this.settings.isContinueOnError())
+			.separator(this.settings.getSeparator())
+			.encoding(this.settings.getEncoding()));
+	}
+
+	/**
+	 * Initialize the database by running the given {@code scripts}.
+	 * @param scripts the scripts to run
+	 * @since 3.0.0
+	 */
+	protected abstract void runScripts(Scripts scripts);
+
+	private static class ScriptLocationResolver {
+
+		private final ResourcePatternResolver resourcePatternResolver;
+
+		ScriptLocationResolver(ResourceLoader resourceLoader) {
+			this.resourcePatternResolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
+		}
+
+		private List<Resource> resolve(String location) throws IOException {
+			List<Resource> resources = new ArrayList<>(
+
+ succeeded in 162ms:
+/*
+ * Copyright 2012-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.springframework.boot.sql.autoconfigure.init;
+
+import java.nio.charset.Charset;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.sql.init.DatabaseInitializationMode;
+
+/**
+ * {@link ConfigurationProperties Configuration properties} for initializing an SQL
+ * database.
+ *
+ * @author Andy Wilkinson
+ * @since 4.0.0
+ */
+@ConfigurationProperties("spring.sql.init")
+public class SqlInitializationProperties {
+
+	/**
+	 * Locations of the schema (DDL) scripts to apply to the database.
+	 */
+	private @Nullable List<String> schemaLocations;
+
+	/**
+	 * Locations of the data (DML) scripts to apply to the database.
+	 */
+	private @Nullable List<String> dataLocations;
+
+	/**
+	 * Platform to use in the default schema or data script locations,
+	 * schema-${platform}.sql and data-${platform}.sql.
+	 */
+	private String platform = "all";
+
+	/**
+	 * Username of the database to use when applying initialization scripts (if
+	 * different).
+	 */
+	private @Nullable String username;
+
+	/**
+	 * Password of the database to use when applying initialization scripts (if
+	 * different).
+	 */
+	private @Nullable String password;
+
+	/**
+	 * Whether initialization should continue when an error occurs.
+	 */
+	private boolean continueOnError;
+
+	/**
+	 * Statement separator in the schema and data scripts.
+	 */
+	private String separator = ";";
+
+	/**
+	 * Encoding of the schema and data scripts.
+	 */
+	private @Nullable Charset encoding;
+
+	/**
+	 * Mode to apply when determining whether initialization should be performed.
+	 */
+	private DatabaseInitializationMode mode = DatabaseInitializationMode.EMBEDDED;
+
+	public @Nullable List<String> getSchemaLocations() {
+		return this.schemaLocations;
+	}
+
+	public void setSchemaLocations(@Nullable List<String> schemaLocations) {
+		this.schemaLocations = schemaLocations;
+	}
+
+	public @Nullable List<String> getDataLocations() {
+		return this.dataLocations;
+	}
+
+	public void setDataLocations(@Nullable List<String> dataLocations) {
+		this.dataLocations = dataLocations;
+	}
+
+	public String getPlatform() {
+		return this.platform;
+	}
+
+	public void setPlatform(String platform) {
+		this.platform = platform;
+	}
+
+	public @Nullable String getUsername() {
+		return this.username;
+	}
+
+	public void setUsername(@Nullable String username) {
+		this.username = username;
+	}
+
+	public @Nullable String getPassword() {
+		return this.password;
+	}
+
+	public void setPassword(@Nullable String password) {
+		this.password = password;
+	}
+
+	public boolean isContinueOnError() {
+		return this.continueOnError;
+	}
+
+	public void setContinueOnError(boolean continueOnError) {
+		this.continueOnError = continueOnError;
+	}
+
+	public String getSeparator() {
+		return this.separator;
+	}
+
+	public void setSeparator(String separator) {
+		this.separator = separator;
+	}
+
+	public @Nullable Charset getEncoding() {
+		return this.encoding;
+	}
+
+	public void setEncoding(@Nullable Charset encoding) {
+		this.encoding = encoding;
+	}
+
+	public DatabaseInitializationMode getMode() {
+		return this.mode;
+	}
+
+	public void setMode(DatabaseInitializationMode mode) {
+		this.mode = mode;
+	}
+
+}
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f -name '*.json' -print | wc -l" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -10 | xargs -r -n1 sh -c 'echo "'$0; sed -n "1,80p" "$0"'"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+{
+  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
+}
+
+codex
+I’m patching the discovered metadata object now. The URL shape matches the existing Spring Boot entries in this repository: Maven Central for sources and Javadocs, GitHub tag path for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+index 0be1e4e2e7b4cf9af13b5cec2b814a91ac7866d9..107c346c90692174199dee3a46c56244a845f0e5
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
++  "description" : "Spring Boot SQL provides support for initializing SQL databases in Spring Boot applications using schema (DDL) and data (DML) scripts. It supplies configuration properties, auto-configuration conditions, runtime hints, and dependency-detection helpers that coordinate database initialization with other beans."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+index 0be1e4e2e7b4cf9af13b5cec2b814a91ac7866d9..107c346c90692174199dee3a46c56244a845f0e5
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
++  "description" : "Spring Boot SQL provides support for initializing SQL databases in Spring Boot applications using schema (DDL) and data (DML) scripts. It supplies configuration properties, auto-configuration conditions, runtime hints, and dependency-detection helpers that coordinate database initialization with other beans."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot-sql:4.0.6",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
+  "description": "Spring Boot SQL provides support for initializing SQL databases in Spring Boot applications using schema (DDL) and data (DML) scripts. It supplies configuration properties, auto-configuration conditions, runtime hints, and dependency-detection helpers that coordinate database initialization with other beans."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 05:26:52 GMT
+content-type: application/java-archive
+content-length: 30638
+cf-ray: 9fe8edd19b1abac5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2296052
+etag: "efd64311a47dde2d3f66227478bc082f"
+last-modified: Thu, 23 Apr 2026 15:18:52 GMT
+x-checksum-md5: efd64311a47dde2d3f66227478bc082f
+x-checksum-sha1: ebc02c0fca1b1ce06ecc1c3eb3497c108f90afea
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6/spring-boot-sql-4.0.6-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 05:26:52 GMT
+content-type: application/java-archive
+content-length: 163441
+cf-ray: 9fe8edd19bd7bc71-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1557438
+etag: "8dd9e9bc86c69093537e8c1c615bb7a5"
+last-modified: Thu, 23 Apr 2026 15:18:46 GMT
+x-checksum-md5: 8dd9e9bc86c69093537e8c1c615bb7a5
+x-checksum-sha1: d5a42f3e3561eaf9b9e760539febe6b912a3b609
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-sql/src/test' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+index 0be1e4e2e7b4cf9af13b5cec2b814a91ac7866d9..107c346c90692174199dee3a46c56244a845f0e5
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
++  "description" : "Spring Boot SQL provides support for initializing SQL databases in Spring Boot applications using schema (DDL) and data (DML) scripts. It supplies configuration properties, auto-configuration conditions, runtime hints, and dependency-detection helpers that coordinate database initialization with other beans."
+ }
+
+ succeeded in 556ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 05:26:52 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ac47a363312f8c5cd5583ba42d6bb60a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=fxm%2FMRsoqSQadURnt%2F7TyQiUemuR72x7Ni5kjbTMcZROcChbmSC5MfNNt8eI%2FdblQxzra71LQWwhv1I7%2FKiiwyLfuSHYI4DJKwpkRRGUVewXnk93WUSL8XcpDWqo%2F6H0F8WTBfyIjWz%2FGtcxev28oglsYB6eJ4ke2gkMB9cISHbZnfgfmZ6%2FrBvs3TzJSK3zMo42B9uL8%2BE3bAR14%2Bu1%2FByRUkVgNe%2BUIJYeEE9HCAT6UHAryDZK8APUsUb8yN4rBHrP0L7NbEsTK2%2BXd3pfwg%3D%3D--IeADVH6ujtzT2n2e--XzdV9LX%2Bx%2BE03JNosoD6ZA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.762381454.1779254812; expires=Thu, 20 May 2027 05:26:52 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 20 May 2027 05:26:52 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FF:252303:1E66B54:17F86D7:6A0D461C
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+index 0be1e4e2e7b4cf9af13b5cec2b814a91ac7866d9..107c346c90692174199dee3a46c56244a845f0e5
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
++  "description" : "Spring Boot SQL provides support for initializing SQL databases in Spring Boot applications using schema (DDL) and data (DML) scripts. It supplies configuration properties, auto-configuration conditions, runtime hints, and dependency-detection helpers that coordinate database initialization with other beans."
+ }
+
+ succeeded in 281ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
+  "repository-url" : "https://github.com/spring-projects/spring-boot",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
+  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
+  "description" : "Spring Boot SQL provides support for initializing SQL databases in Spring Boot applications using schema (DDL) and data (DML) scripts. It supplies configuration properties, auto-configuration conditions, runtime hints, and dependency-detection helpers that coordinate database initialization with other beans."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+index 0be1e4e2e7b4cf9af13b5cec2b814a91ac7866d9..107c346c90692174199dee3a46c56244a845f0e5
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
++  "description" : "Spring Boot SQL provides support for initializing SQL databases in Spring Boot applications using schema (DDL) and data (DML) scripts. It supplies configuration properties, auto-configuration conditions, runtime hints, and dependency-detection helpers that coordinate database initialization with other beans."
+ }
+
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-sql/src/test
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/4.0.6 spring-boot-sql-4.0.6-sources.jar
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-actuator-test/
+web search: 
+web search: 'spring-boot-sql/' in https://repo.maven.apache.org/maven2/org/springframework/boot/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/
+web search: 
+web search: 
+codex
+Updated [org.springframework.boot-spring-boot-sql-4.0.6.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json) with repository, Maven source/Javadoc URLs, the tagged Spring Boot test URL, and a two-sentence description. The test URL targets the `v4.0.6` Spring Boot `module/spring-boot-sql/src/test` directory. ([github.com](https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-sql/src/test))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent: the artifact is a JVM JAR with `.class` files and is not Kotlin/Groovy/Scala-specific.
+
+Validation: `jq` passed, and the substituted source, Javadoc, and test URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+index 0be1e4e2e7b4cf9af13b5cec2b814a91ac7866d9..107c346c90692174199dee3a46c56244a845f0e5
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-sql:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-sql/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-sql/$version$/spring-boot-sql-$version$-javadoc.jar",
++  "description" : "Spring Boot SQL provides support for initializing SQL databases in Spring Boot applications using schema (DDL) and data (DML) scripts. It supplies configuration properties, auto-configuration conditions, runtime hints, and dependency-detection helpers that coordinate database initialization with other beans."
+ }
+
+tokens used
+87,484
+Updated [org.springframework.boot-spring-boot-sql-4.0.6.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-sql-4.0.6.json) with repository, Maven source/Javadoc URLs, the tagged Spring Boot test URL, and a two-sentence description. The test URL targets the `v4.0.6` Spring Boot `module/spring-boot-sql/src/test` directory. ([github.com](https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-sql/src/test))
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent: the artifact is a JVM JAR with `.class` files and is not Kotlin/Groovy/Scala-specific.
+
+Validation: `jq` passed, and the substituted source, Javadoc, and test URLs returned HTTP 200.
+Ran agent for org.springframework.boot:spring-boot-sql:4.0.6 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-sql-4.0.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7048-5ea56b93/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 18s
+9 actionable tasks: 9 executed
