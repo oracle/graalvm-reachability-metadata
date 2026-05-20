@@ -8,7 +8,7 @@ package org_apache_activemq.artemis_commons;
 
 import org.junit.jupiter.api.Test;
 
-class Artemis_commonsTest {
+public class Artemis_commonsTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
