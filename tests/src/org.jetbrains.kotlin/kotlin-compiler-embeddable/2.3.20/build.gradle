@@ -14,6 +14,12 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+
+    // The embeddable compiler shades JLine classes but keeps JLine native-image.properties resources.
+    testRuntimeOnly 'org.jline:jline-terminal:3.30.13'
+    testRuntimeOnly 'org.jline:jline-terminal-jansi:3.30.13'
+    testRuntimeOnly 'org.jline:jline-terminal-jna:3.30.13'
+    testRuntimeOnly 'org.jline:jline-terminal-jni:3.30.13'
 }
 
 kotlin {
