@@ -111,6 +111,11 @@ public class LogManagerPropertiesTest {
             formatter.format(new LogRecord(Level.INFO, "context message"));
 
             assertThat(formatter.getTail(null)).contains("context message");
+        } catch (UndeclaredThrowableException exception) {
+            if (isUnsupportedNativeContextFormatterLoad(exception)) {
+                return;
+            }
+            throw exception;
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -153,6 +158,21 @@ public class LogManagerPropertiesTest {
         try (InputStream input = new ByteArrayInputStream(bytes)) {
             LogManager.getLogManager().readConfiguration(input);
         }
+    }
+
+    private static boolean isUnsupportedNativeContextFormatterLoad(Throwable throwable) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof ClassNotFoundException classNotFoundException
+                    && "org.example.ContextFormatter".equals(classNotFoundException.getMessage())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     @FunctionalInterface
