@@ -18,10 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 public class LogManagerPropertiesTest {
@@ -97,18 +99,23 @@ public class LogManagerPropertiesTest {
     }
 
     @Test
-    public void collectorFormatterUsesContextClassLoaderBeforeFailing() throws Exception {
+    public void collectorFormatterLoadsFormatterThroughContextClassLoader() throws Exception {
         configureLogManager(
             "com.sun.mail.util.logging.CollectorFormatter.format={1}",
             "com.sun.mail.util.logging.CollectorFormatter.formatter=org.example.ContextFormatter",
-            "com.sun.mail.util.logging.CollectorFormatter.comparator=null",
-            "com.sun.mail.util.logging.CompactFormatter.format=%5$s%n");
+            "com.sun.mail.util.logging.CollectorFormatter.comparator=null");
 
-        UndeclaredThrowableException thrown = withContextClassLoader(
-            new FormatterContextClassLoader(),
-            () -> assertThrows(UndeclaredThrowableException.class, CollectorFormatter::new));
+        try {
+            CollectorFormatter formatter = withContextClassLoader(
+                new FormatterContextClassLoader(), CollectorFormatter::new);
+            formatter.format(new LogRecord(Level.INFO, "context message"));
 
-        assertThat(thrown.getUndeclaredThrowable()).isInstanceOf(ClassNotFoundException.class);
+            assertThat(formatter.getTail(null)).contains("context message");
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
     }
 
     @Test
@@ -154,16 +161,27 @@ public class LogManagerPropertiesTest {
     }
 
     private static final class FormatterContextClassLoader extends ClassLoader {
+        private static final byte[] FORMATTER_BYTES = Base64.getDecoder().decode("""
+            yv66vgAAADQAFQoAAgADBwAEDAAFAAYBABtqYXZhL3V0aWwvbG9nZ2luZy9Gb3JtYXR0ZXIB
+            AAY8aW5pdD4BAAMoKVYKAAgACQcACgwACwAMAQAbamF2YS91dGlsL2xvZ2dpbmcvTG9nUmVj
+            b3JkAQAKZ2V0TWVzc2FnZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7BwAOAQAcb3JnL2V4YW1w
+            bGUvQ29udGV4dEZvcm1hdHRlcgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAZmb3JtYXQB
+            ADEoTGphdmEvdXRpbC9sb2dnaW5nL0xvZ1JlY29yZDspTGphdmEvbGFuZy9TdHJpbmc7AQAK
+            U291cmNlRmlsZQEAFUNvbnRleHRGb3JtYXR0ZXIuamF2YQAhAA0AAgAAAAAAAgABAAUABgAB
+            AA8AAAAdAAEAAQAAAAUqtwABsQAAAAEAEAAAAAYAAQAAAAQAAQARABIAAQAPAAAAHQABAAIA
+            AAAFK7YAB7AAAAABABAAAAAGAAEAAAAFAAEAEwAAAAIAFA==
+            """.replaceAll("\\s", ""));
+
         private FormatterContextClassLoader() {
-            super(null);
+            super(ClassLoader.getPlatformClassLoader());
         }
 
         @Override
-        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
             if ("org.example.ContextFormatter".equals(name)) {
-                throw new ClassNotFoundException(name);
+                return defineClass(name, FORMATTER_BYTES, 0, FORMATTER_BYTES.length);
             }
-            return super.loadClass(name, resolve);
+            throw new ClassNotFoundException(name);
         }
     }
 }
