@@ -1,0 +1,891 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e44e5-5f37-7112-881c-639035a6648b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.logging.log4j:log4j-core:2.17.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.17.1" when "$version$" is replaced with "2.17.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+- Set "coordinates" to "org.apache.logging.log4j:log4j-core:2.17.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.17.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against the existing repo patterns and upstream/Maven evidence, then patch the JSON directly.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.apache\\.logging\\.log4j|log4j-core' . -g '*.json' | head -50" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 0ms:
+./metadata/com.atomikos/transactions/6.0.0/reachability-metadata.json:37:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.flywaydb/flyway-core/9.0.1/reachability-metadata.json:12:        "typeReached": "org.apache.logging.log4j.Logger"
+./metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json:42:        "typeReached": "org.apache.logging.log4j.Logger"
+./metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:49:      "type" : "org.apache.logging.log4j.util.EnvironmentPropertySource"
+./metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:55:      "type" : "org.apache.logging.log4j.util.SystemPropertiesPropertySource"
+./metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:459:      "glob" : "META-INF/services/org.apache.logging.log4j.spi.Provider"
+./metadata/org.flywaydb/flyway-core/12.3.0/reachability-metadata.json:465:      "glob" : "META-INF/services/org.apache.logging.log4j.util.PropertySource"
+./metadata/org.flywaydb/flyway-core/10.10.0/reachability-metadata.json:42:        "typeReached": "org.apache.logging.log4j.Logger"
+./metadata/org.flywaydb/flyway-core/12.5.0/reachability-metadata.json:148:      "type" : "org.apache.logging.log4j.util.EnvironmentPropertySource"
+./metadata/org.flywaydb/flyway-core/12.5.0/reachability-metadata.json:154:      "type" : "org.apache.logging.log4j.util.SystemPropertiesPropertySource"
+./metadata/org.flywaydb/flyway-core/12.5.0/reachability-metadata.json:715:      "glob" : "META-INF/services/org.apache.logging.log4j.spi.Provider"
+./metadata/org.flywaydb/flyway-core/12.5.0/reachability-metadata.json:721:      "glob" : "META-INF/services/org.apache.logging.log4j.util.PropertySource"
+./metadata/org.flywaydb/flyway-sqlserver/10.19.0/reachability-metadata.json:100:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json:61:      "type" : "org.apache.logging.log4j.Logger"
+./metadata/io.quarkus/quarkus-bootstrap-app-model/3.34.0/reachability-metadata.json:177:      "type": "org.apache.logging.log4j.Logger"
+./metadata/io.quarkus/quarkus-bootstrap-app-model/3.33.1/reachability-metadata.json:177:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/6.6.0.Final/reachability-metadata.json:115:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/6.6.0.Final/reachability-metadata.json:121:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/6.6.0.Final/reachability-metadata.json:127:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/6.6.0.Final/reachability-metadata.json:133:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.0.0.Final/reachability-metadata.json:2771:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.0.0.Final/reachability-metadata.json:2777:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.0.0.Final/reachability-metadata.json:2783:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.0.0.Final/reachability-metadata.json:2789:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/8.0.0.Alpha1/reachability-metadata.json:2915:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/8.0.0.Alpha1/reachability-metadata.json:2921:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/8.0.0.Alpha1/reachability-metadata.json:2927:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/8.0.0.Alpha1/reachability-metadata.json:2933:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.2.0.Final/reachability-metadata.json:2771:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.2.0.Final/reachability-metadata.json:2777:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.2.0.Final/reachability-metadata.json:2783:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.2.0.Final/reachability-metadata.json:2789:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.1.0.Final/reachability-metadata.json:2771:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.1.0.Final/reachability-metadata.json:2777:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.1.0.Final/reachability-metadata.json:2783:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.1.0.Final/reachability-metadata.json:2789:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1427:      "type": "org.apache.logging.log4j.core.Appender[]"
+./metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1433:      "type": "org.apache.logging.log4j.core.config.AppenderControl[]"
+./metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1439:      "type": "org.apache.logging.log4j.core.config.AppenderRef[]"
+./metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1445:      "type": "org.apache.logging.log4j.core.config.LoggerConfig[]"
+./metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1451:      "type": "org.apache.logging.log4j.core.config.Property[]"
+./metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:1457:      "type": "org.apache.logging.log4j.core.pattern.PatternFormatter[]"
+./metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:10977:      "glob": "META-INF/services/org.apache.logging.log4j.spi.Provider"
+./metadata/org.hibernate.orm/hibernate-core/6.1.1.Final/reachability-metadata.json:10983:      "glob": "META-INF/services/org.apache.logging.log4j.util.PropertySource"
+./metadata/org.hibernate.orm/hibernate-core/7.3.0.Final/reachability-metadata.json:2771:      "type" : "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.3.0.Final/reachability-metadata.json:2777:      "type" : "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.3.0.Final/reachability-metadata.json:2783:      "type" : "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/7.3.0.Final/reachability-metadata.json:2789:      "type" : "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/6.5.0.Final/reachability-metadata.json:115:      "type": "org.apache.logging.log4j.Logger"
+./metadata/org.hibernate.orm/hibernate-core/6.5.0.Final/reachability-metadata.json:121:      "type": "org.apache.logging.log4j.Logger"
+
+web search: 
+web search: Maven Central org.apache.logging.log4j log4j-core 2.17.1 sources tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/
+codex
+Maven Central has source, test-source, tests, and javadoc artifacts for `log4j-core` 2.17.1, so I’m going to use those for the Maven-preferred fields and the Apache GitHub root for the repository.
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' . -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 0ms:
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/io.suzaku/boopickle_2.13/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+./metadata/io.suzaku/boopickle_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+./metadata/io.suzaku/boopickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/io.suzaku/boopickle_3/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+./metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+./metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+./metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:8:    "documentation-url" : "https://github.com/google/closure-compiler/blob/v20150505/README.md",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:6:    "repository-url" : "https://github.com/raphw/byte-buddy",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:7:    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:6:    "repository-url" : "https://github.com/googleapis/java-firestore",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-tests.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-javadoc.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements. See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache license, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License. You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the license for the specific language governing permissions and
+  ~ limitations under the license.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>2.17.1</version>
+    <relativePath>../</relativePath>
+  </parent>
+  <artifactId>log4j-core</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache Log4j Core</name>
+  <description>The Apache Log4j Implementation</description>
+  <properties>
+    <log4jParentDir>${basedir}/..</log4jParentDir>
+    <docLabel>Core Documentation</docLabel>
+    <projectDir>/core</projectDir>
+    <maven.doap.skip>true</maven.doap.skip>
+    <!--<revapi.skip>true</revapi.skip>-->
+  </properties>
+  <dependencies>
+    <!-- Naturally, all implementations require the log4j-api JAR -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <!-- Used for OSGi bundle support -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Required for AsyncLoggers -->
+    <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Alternative implementation of BlockingQueue using Conversant Disruptor for AsyncAppender -->
+    <dependency>
+      <groupId>com.conversantmedia</groupId>
+      <artifactId>disruptor</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Alternative implementation of BlockingQueue using JCTools for AsyncAppender -->
+    <dependency>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for JSON support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for JSON support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for YAML support (including JSON requirements) -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for XML layout and receiver support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- POM for jackson-dataformat-xml depends on woodstox-core -->
+    <dependency>
+      <groupId>com.fasterxml.woodstox</groupId>
+      <artifactId>woodstox-core</artifactId>
+      <version>${woodstox.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for console color support in Windows -->
+    <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Required for SMTPAppender -->
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Used for JMS appenders (needs an implementation of course) -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.jms</groupId>
+      <artifactId>jboss-jms-api_1.1_spec</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <!-- Used for Kafka appender -->
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Used for ZeroMQ JeroMQ appender -->
+    <dependency>
+      <groupId>org.zeromq</groupId>
+      <artifactId>jeromq</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Used for compressing to formats other than zip and gz -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Used for the CSV layout -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- Kafka needs slf4j -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- TEST DEPENDENCIES -->
+
+    <!-- Pull in useful test classes from API -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <!--  Apache Commons Compress -->
+    <dependency>
+      <groupId>org.tukaani</groupId>
+      <artifactId>xz</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Zeroconf advertiser tests -->
+    <dependency>
+      <groupId>org.jmdns</groupId>
+      <artifactId>jmdns</artifactId>
+      <version>3.5.7</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Log4j 1.2 tests -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- SLF4J tests -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- JUnit, naturally -->
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Mocking framework for use with JUnit -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+    </dependency>
+    <!-- Embedded JDBC drivers for database appender tests -->
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1-test-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 589ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 10:19:22 GMT
+content-type: application/java-archive
+content-length: 1255970
+cf-ray: 9fea9a44a819edae-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "33bcfb91a4da5ab5a623f27eb66b89c3"
+last-modified: Mon, 27 Dec 2021 23:31:14 GMT
+x-checksum-md5: 33bcfb91a4da5ab5a623f27eb66b89c3
+x-checksum-sha1: 2a84996f09c646a47029aaf80744b0d4a026f984
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 20 May 2026 10:19:22 GMT
+content-type: application/java-archive
+content-length: 5447072
+cf-ray: 9fea9a479d3124c2-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 319842
+etag: "1bcab53f2f1c323eb3940ca17bda7151"
+last-modified: Mon, 27 Dec 2021 23:31:02 GMT
+x-checksum-md5: 1bcab53f2f1c323eb3940ca17bda7151
+x-checksum-sha1: 16f99519eeea267882ed64c08577c980f45b26f2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1-tests.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1-test-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 169ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 10:19:27 GMT
+content-type: application/java-archive
+content-length: 1255970
+cf-ray: 9fea9a699b9abc5d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 191941
+etag: "33bcfb91a4da5ab5a623f27eb66b89c3"
+last-modified: Mon, 27 Dec 2021 23:31:14 GMT
+x-checksum-md5: 33bcfb91a4da5ab5a623f27eb66b89c3
+x-checksum-sha1: 2a84996f09c646a47029aaf80744b0d4a026f984
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j/2.17.1/log4j-2.17.1.pom | rg -n -C 3 '<url>|<scm>|<connection>|<developerConnection>|<tag>|<description>|<name>'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 0ms:
+19-  <groupId>org.apache.logging.log4j</groupId>
+20-  <artifactId>log4j</artifactId>
+21-  <packaging>pom</packaging>
+22:  <name>Apache Log4j 2</name>
+23-  <version>2.17.1</version>
+24-  <parent>
+25-    <groupId>org.apache.logging</groupId>
+--
+27-    <version>3</version>
+28-    <relativePath />
+29-  </parent>
+30:  <description>Apache Log4j 2</description>
+31:  <url>https://logging.apache.org/log4j/2.x/</url>
+32-  <issueManagement>
+33-    <system>JIRA</system>
+34:    <url>https://issues.apache.org/jira/browse/LOG4J2</url>
+35-  </issueManagement>
+36-  <ciManagement>
+37-    <system>Jenkins</system>
+38:    <url>https://ci-builds.apache.org/job/Logging/job/log4j/</url>
+39-  </ciManagement>
+40-  <inceptionYear>1999</inceptionYear>
+41-  <developers>
+42-    <developer>
+43-      <id>rgoers</id>
+44:      <name>Ralph Goers</name>
+45-      <email>rgoers@apache.org</email>
+46-      <organization>Nextiva</organization>
+47-      <roles>
+--
+51-    </developer>
+52-    <developer>
+53-      <id>ggregory</id>
+54:      <name>Gary Gregory</name>
+55-      <email>ggregory@apache.org</email>
+56-      <organization>Rocket Software</organization>
+57-      <roles>
+--
+61-    </developer>
+62-    <developer>
+63-      <id>sdeboy</id>
+64:      <name>Scott Deboy</name>
+65-      <email>sdeboy@apache.org</email>
+66-      <roles>
+67-        <role>PMC Member</role>
+--
+70-    </developer>
+71-    <developer>
+72-      <id>rpopma</id>
+73:      <name>Remko Popma</name>
+74-      <email>rpopma@apache.org</email>
+75-      <roles>
+76-        <role>PMC Member</role>
+--
+82-    </developer>
+83-    <developer>
+84-      <id>nickwilliams</id>
+85:      <name>Nick Williams</name>
+86-      <email>nickwilliams@apache.org</email>
+87-      <roles>
+88-        <role>PMC Member</role>
+--
+91-    </developer>
+92-    <developer>
+93-      <id>mattsicker</id>
+94:      <name>Matt Sicker</name>
+95-      <email>mattsicker@apache.org</email>
+96-      <organization>CloudBees</organization>
+97-      <roles>
+--
+101-    </developer>
+102-    <developer>
+103-      <id>bbrouwer</id>
+104:      <name>Bruce Brouwer</name>
+105-      <email>bruce.brouwer@gmail.com</email>
+106-      <roles>
+107-        <role>Committer</role>
+--
+110-    </developer>
+111-    <developer>
+112-      <id>mikes</id>
+113:      <name>Mikael Ståldal</name>
+114-      <email>mikes@apache.org</email>
+115-      <organization>Spotify</organization>
+116-      <roles>
+--
+120-    </developer>
+121-    <developer>
+122-      <id>ckozak</id>
+123:      <name>Carter Kozak</name>
+124-      <email>ckozak@apache.org</email>
+125-      <roles>
+126-        <role>PMC Member</role>
+--
+129-    </developer>
+130-    <developer>
+131-      <id>vy</id>
+132:      <name>Volkan Yazıcı</name>
+133-      <email>vy@apache.org</email>
+134-      <roles>
+135-        <role>PMC Member</role>
+--
+140-  <!-- Contributors -->
+141-  <contributors>
+142-      <contributor>
+143:        <name>Murad Ersoy</name>
+144-        <email>muradersoy@gmail.com</email>
+145:        <url>https://www.behance.net/muradersoy</url>
+146-        <roles>
+147-          <role>Illustrator and Designer</role>
+148-          <role>created the new Log4j 2 logo.</role>
+--
+155-   </contributors>
+156-  <mailingLists>
+157-    <mailingList>
+158:      <name>log4j-user</name>
+159-      <subscribe>log4j-user-subscribe@logging.apache.org</subscribe>
+160-      <unsubscribe>log4j-user-unsubscribe@logging.apache.org</unsubscribe>
+161-      <post>log4j-user@logging.apache.org</post>
+--
+167-      </otherArchives>
+168-    </mailingList>
+169-    <mailingList>
+170:      <name>dev</name>
+171-      <subscribe>dev-subscribe@logging.apache.org</subscribe>
+172-      <unsubscribe>dev-unsubscribe@logging.apache.org</unsubscribe>
+173-      <post>dev@logging.apache.org</post>
+--
+179-      </otherArchives>
+180-    </mailingList>
+181-  </mailingLists>
+182:  <scm>
+183:    <connection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</connection>
+184:    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</developerConnection>
+185:    <url>https://gitbox.apache.org/repos/asf?p=logging-log4j2.git</url>
+186:    <tag>log4j-2.17.1-rc1</tag>
+187-  </scm>
+188-  <properties>
+189-    <!-- make sure to update these for each release! -->
+--
+266-  <pluginRepositories>
+267-    <pluginRepository>
+268-      <id>apache</id>
+269:      <url>https://repository.apache.org/content/repositories/releases/</url>
+270-    </pluginRepository>
+271-<!--     <pluginRepository> -->
+272-<!--       <id>apache.snapshots</id> -->
+273:<!--       <name>Apache snapshots repository</name> -->
+274:<!--       <url>http://repository.apache.org/content/groups/snapshots</url> -->
+275-<!--       <snapshots> -->
+276-<!--         <enabled>true</enabled> -->
+277-<!--       </snapshots> -->
+--
+1236-            </goals>
+1237-            <phase>pre-site</phase>
+1238-            <configuration>
+1239:              <name>currentYear</name>
+1240-              <pattern>yyyy</pattern>
+1241-            </configuration>
+1242-          </execution>
+--
+1452-          <customBundle>${project.basedir}/src/site/custom/project-info-report.properties</customBundle>
+1453-          <webAccessUrl>${project.scm.url}</webAccessUrl>
+1454-          <anonymousConnection>${project.scm.connection}</anonymousConnection>
+1455:          <developerConnection>${project.scm.developerConnection}</developerConnection>
+1456-          <scmTag>rel/${Log4jReleaseVersion}</scmTag>
+1457-        </configuration>
+1458-      </plugin>
+--
+1517-    <!-- site is only included to make maven-site-plugin stop complaining -->
+1518-    <site>
+1519-      <id>www.example.com</id>
+1520:      <url>scp://www.example.com/www/docs/project/</url>
+1521-    </site>
+1522-  </distributionManagement>
+1523-  <modules>
+
+web search: 
+web search: github apache logging-log4j2 2.17.1 tag log4j-core
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/
+codex
+I’m patching only the discovered metadata file. The artifact is a normal JVM JAR, not a Kotlin/Groovy/Scala cross-published artifact and not one of the non-Native-Image cases, so those optional fields stay absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+index 9fbfda68a0ecac9021129b75006505d5fb13d16f..0b899e8151c3f0fdc826f655a8b5f780552443ff
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-javadoc.jar",
++  "description" : "Apache Log4j Core is the runtime implementation for the Log4j 2 logging framework. It provides logger configuration, appenders, filters, layouts, plugins, and asynchronous logging support for JVM applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+index 9fbfda68a0ecac9021129b75006505d5fb13d16f..0b899e8151c3f0fdc826f655a8b5f780552443ff
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-javadoc.jar",
++  "description" : "Apache Log4j Core is the runtime implementation for the Log4j 2 logging framework. It provides logger configuration, appenders, filters, layouts, plugins, and asynchronous logging support for JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.logging.log4j:log4j-core:2.17.1",
+  "repository-url": "https://github.com/apache/logging-log4j2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-javadoc.jar",
+  "description": "Apache Log4j Core is the runtime implementation for the Log4j 2 logging framework. It provides logger configuration, appenders, filters, layouts, plugins, and asynchronous logging support for JVM applications."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1-sources.jar https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1-tests.jar https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/log4j-core-2.17.1-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 20 May 2026 10:19:48 GMT
+content-type: application/java-archive
+content-length: 1303724
+cf-ray: 9fea9aecb909edc0-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1098142
+etag: "48c27a7b2731f9627c1f44f04c3e2ec1"
+last-modified: Mon, 27 Dec 2021 23:31:12 GMT
+x-checksum-md5: 48c27a7b2731f9627c1f44f04c3e2ec1
+x-checksum-sha1: 311c00d3764db7fa3ba5f26d0acb5840e52454aa
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 20 May 2026 10:19:48 GMT
+content-type: application/java-archive
+content-length: 1696708
+cf-ray: 9fea9aece983edc0-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 472015
+etag: "dcb994ae651f9cbfd928adb8568c9d00"
+last-modified: Mon, 27 Dec 2021 23:31:06 GMT
+x-checksum-md5: dcb994ae651f9cbfd928adb8568c9d00
+x-checksum-sha1: fc340ae6bc0965182fd9d5cec997882354536eae
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 20 May 2026 10:19:48 GMT
+content-type: application/java-archive
+content-length: 5447072
+cf-ray: 9fea9aed09f1edc0-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 589819
+etag: "1bcab53f2f1c323eb3940ca17bda7151"
+last-modified: Mon, 27 Dec 2021 23:31:02 GMT
+x-checksum-md5: 1bcab53f2f1c323eb3940ca17bda7151
+x-checksum-sha1: 16f99519eeea267882ed64c08577c980f45b26f2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+index 9fbfda68a0ecac9021129b75006505d5fb13d16f..0b899e8151c3f0fdc826f655a8b5f780552443ff
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-javadoc.jar",
++  "description" : "Apache Log4j Core is the runtime implementation for the Log4j 2 logging framework. It provides logger configuration, appenders, filters, layouts, plugins, and asynchronous logging support for JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+index 9fbfda68a0ecac9021129b75006505d5fb13d16f..0b899e8151c3f0fdc826f655a8b5f780552443ff
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-javadoc.jar",
++  "description" : "Apache Log4j Core is the runtime implementation for the Log4j 2 logging framework. It provides logger configuration, appenders, filters, layouts, plugins, and asynchronous logging support for JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json && sed -n '1,120p' build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+index 9fbfda68a0ecac9021129b75006505d5fb13d16f..0b899e8151c3f0fdc826f655a8b5f780552443ff
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-javadoc.jar",
++  "description" : "Apache Log4j Core is the runtime implementation for the Log4j 2 logging framework. It provides logger configuration, appenders, filters, layouts, plugins, and asynchronous logging support for JVM applications."
+ }
+
+ succeeded in 289ms:
+{
+  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1",
+  "repository-url" : "https://github.com/apache/logging-log4j2",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-sources.jar",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-tests.jar",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-javadoc.jar",
+  "description" : "Apache Log4j Core is the runtime implementation for the Log4j 2 logging framework. It provides logger configuration, appenders, filters, layouts, plugins, and asynchronous logging support for JVM applications."
+}
+
+web search: 
+web search: Apache Log4j Core Maven Central 2.17.1 log4j-core sources tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/
+web search: 
+web search: https://github.com/apache/logging-log4j2
+codex
+Updated [org.apache.logging.log4j-log4j-core-2.17.1.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json) with Maven Central source, tests, and javadoc artifact URLs, plus the Apache Log4j GitHub repository root. Maven Central lists the 2.17.1 `sources.jar`, `tests.jar`, `javadoc.jar`, and JVM `jar`, and the repository describes Log4j as a Java/JVM logging API/backend. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/))
+
+I left `language` absent and did not set `not-for-native-image`, because this is a normal JVM artifact rather than Kotlin/Groovy/Scala-specific or a non-JVM package. Validated the JSON with `jq` and checked the rendered Maven URLs successfully.
+diff --git a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+index 9fbfda68a0ecac9021129b75006505d5fb13d16f..0b899e8151c3f0fdc826f655a8b5f780552443ff
+--- a/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
++++ b/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1"
++  "coordinates" : "org.apache.logging.log4j:log4j-core:2.17.1",
++  "repository-url" : "https://github.com/apache/logging-log4j2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-javadoc.jar",
++  "description" : "Apache Log4j Core is the runtime implementation for the Log4j 2 logging framework. It provides logger configuration, appenders, filters, layouts, plugins, and asynchronous logging support for JVM applications."
+ }
+
+tokens used
+73,057
+Updated [org.apache.logging.log4j-log4j-core-2.17.1.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1/build/discovered-artifact-metadata/org.apache.logging.log4j-log4j-core-2.17.1.json) with Maven Central source, tests, and javadoc artifact URLs, plus the Apache Log4j GitHub repository root. Maven Central lists the 2.17.1 `sources.jar`, `tests.jar`, `javadoc.jar`, and JVM `jar`, and the repository describes Log4j as a Java/JVM logging API/backend. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.17.1/))
+
+I left `language` absent and did not set `not-for-native-image`, because this is a normal JVM artifact rather than Kotlin/Groovy/Scala-specific or a non-JVM package. Validated the JSON with `jq` and checked the rendered Maven URLs successfully.
+Ran agent for org.apache.logging.log4j:log4j-core:2.17.1 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1/build/agent-artifact-discovery-logs/org.apache.logging.log4j-log4j-core-2.17.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2160-a6e96de1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 30s
+9 actionable tasks: 9 executed
