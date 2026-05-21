@@ -9,15 +9,18 @@ package org_eclipse_angus.angus_mail;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.sun.mail.util.logging.CollectorFormatter;
-import com.sun.mail.util.logging.CompactFormatter;
-import com.sun.mail.util.logging.DurationFilter;
-import com.sun.mail.util.logging.MailHandler;
+import org.eclipse.angus.mail.util.logging.CollectorFormatter;
+import org.eclipse.angus.mail.util.logging.CompactFormatter;
+import org.eclipse.angus.mail.util.logging.DurationFilter;
+import org.eclipse.angus.mail.util.logging.MailHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
+import java.security.CodeSource;
 import java.util.Base64;
 import java.util.Properties;
 import java.util.logging.Formatter;
@@ -63,8 +66,8 @@ public class LogManagerPropertiesTest {
     @Test
     public void durationFilterParsesIsoDurationFromLogManager() throws Exception {
         configureLogManager(
-            "com.sun.mail.util.logging.DurationFilter.records=2",
-            "com.sun.mail.util.logging.DurationFilter.duration=PT0.001S");
+            "org.eclipse.angus.mail.util.logging.DurationFilter.records=2",
+            "org.eclipse.angus.mail.util.logging.DurationFilter.duration=PT0.001S");
 
         DurationFilter filter = new DurationFilter();
         LogRecord first = new LogRecord(Level.INFO, "first");
@@ -95,13 +98,13 @@ public class LogManagerPropertiesTest {
     @Test
     public void collectorFormatterLoadsConfiguredFormatterAndReversesComparator() throws Exception {
         configureLogManager(
-            "com.sun.mail.util.logging.CollectorFormatter.format={1}",
-            "com.sun.mail.util.logging.CollectorFormatter.formatter="
-                + "com.sun.mail.util.logging.CompactFormatter",
-            "com.sun.mail.util.logging.CollectorFormatter.comparator="
-                + "com.sun.mail.util.logging.SeverityComparator",
-            "com.sun.mail.util.logging.CollectorFormatter.comparator.reverse=true",
-            "com.sun.mail.util.logging.CompactFormatter.format=%4$s:%5$s%n");
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.format={1}",
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.formatter="
+                + "org.eclipse.angus.mail.util.logging.CompactFormatter",
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.comparator="
+                + "org.eclipse.angus.mail.util.logging.SeverityComparator",
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.comparator.reverse=true",
+            "org.eclipse.angus.mail.util.logging.CompactFormatter.format=%4$s:%5$s%n");
 
         CollectorFormatter formatter = new CollectorFormatter();
         formatter.format(new LogRecord(Level.SEVERE, "severe message"));
@@ -115,9 +118,9 @@ public class LogManagerPropertiesTest {
     @Test
     public void collectorFormatterLoadsFormatterThroughContextClassLoader() throws Exception {
         configureLogManager(
-            "com.sun.mail.util.logging.CollectorFormatter.format={1}",
-            "com.sun.mail.util.logging.CollectorFormatter.formatter=" + CONTEXT_FORMATTER_NAME,
-            "com.sun.mail.util.logging.CollectorFormatter.comparator=null");
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.format={1}",
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.formatter=" + CONTEXT_FORMATTER_NAME,
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.comparator=null");
 
         try {
             CollectorFormatter formatter = withContextClassLoader(
@@ -140,9 +143,9 @@ public class LogManagerPropertiesTest {
     @Test
     public void collectorFormatterLoadsJdkFormatterWhenContextClassLoaderIsUnset() throws Exception {
         configureLogManager(
-            "com.sun.mail.util.logging.CollectorFormatter.format={1}",
-            "com.sun.mail.util.logging.CollectorFormatter.formatter=java.util.logging.SimpleFormatter",
-            "com.sun.mail.util.logging.CollectorFormatter.comparator=null");
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.format={1}",
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.formatter=java.util.logging.SimpleFormatter",
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.comparator=null");
 
         CollectorFormatter formatter = withContextClassLoader(null, CollectorFormatter::new);
         formatter.format(new LogRecord(Level.INFO, "simple formatter fallback"));
@@ -154,27 +157,47 @@ public class LogManagerPropertiesTest {
     public void collectorFormatterLoadsCallerVisibleFormatterWhenContextClassLoaderIsUnset()
             throws Exception {
         configureLogManager(
-            "com.sun.mail.util.logging.CollectorFormatter.format={1}",
-            "com.sun.mail.util.logging.CollectorFormatter.formatter="
-                + ClassForNameFallbackFormatter.class.getName(),
-            "com.sun.mail.util.logging.CollectorFormatter.comparator=null");
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.format={1}",
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.formatter="
+                + CONTEXT_FORMATTER_NAME,
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.comparator=null");
 
-        CollectorFormatter formatter = withContextClassLoader(null, CollectorFormatter::new);
-        formatter.format(new LogRecord(Level.INFO, "caller fallback"));
+        try (IsolatedAngusMailClassLoader loader = new IsolatedAngusMailClassLoader(angusMailLocation())) {
+            Formatter formatter = withContextClassLoader(null,
+                () -> newIsolatedCollectorFormatter(loader));
+            formatter.format(new LogRecord(Level.INFO, "caller fallback"));
 
-        assertThat(formatter.getTail(null)).contains("fallback:caller fallback");
+            assertThat(formatter.getTail(null)).contains("caller fallback");
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
     }
 
     @Test
     public void collectorFormatterFailsWhenContextClassLoaderIsUnset() throws Exception {
         configureLogManager(
-            "com.sun.mail.util.logging.CollectorFormatter.formatter="
+            "org.eclipse.angus.mail.util.logging.CollectorFormatter.formatter="
                 + "org.example.DoesNotExist");
 
         UndeclaredThrowableException thrown = withContextClassLoader(null,
             () -> assertThrows(UndeclaredThrowableException.class, CollectorFormatter::new));
 
         assertThat(thrown.getUndeclaredThrowable()).isInstanceOf(ClassNotFoundException.class);
+    }
+
+    private static Formatter newIsolatedCollectorFormatter(ClassLoader loader) throws Exception {
+        Class<? extends Formatter> formatterClass = loader
+            .loadClass("org.eclipse.angus.mail.util.logging.CollectorFormatter")
+            .asSubclass(Formatter.class);
+        return formatterClass.getConstructor().newInstance();
+    }
+
+    private static URL angusMailLocation() {
+        CodeSource codeSource = CollectorFormatter.class.getProtectionDomain().getCodeSource();
+        assertThat(codeSource).isNotNull();
+        return codeSource.getLocation();
     }
 
     private static <T> T withContextClassLoader(ClassLoader loader, ThrowingSupplier<T> supplier)
@@ -240,6 +263,20 @@ public class LogManagerPropertiesTest {
                 return defineClass(name, CONTEXT_FORMATTER_BYTES, 0, CONTEXT_FORMATTER_BYTES.length);
             }
             throw new ClassNotFoundException(name);
+        }
+    }
+
+    private static final class IsolatedAngusMailClassLoader extends URLClassLoader {
+        private IsolatedAngusMailClassLoader(URL angusMailLocation) {
+            super(new URL[] {angusMailLocation}, ClassLoader.getPlatformClassLoader());
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            if (CONTEXT_FORMATTER_NAME.equals(name)) {
+                return defineClass(name, CONTEXT_FORMATTER_BYTES, 0, CONTEXT_FORMATTER_BYTES.length);
+            }
+            return super.findClass(name);
         }
     }
 

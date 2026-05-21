@@ -8,7 +8,7 @@ package org_eclipse_angus.angus_mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.sun.mail.smtp.SMTPTransport;
+import org.eclipse.angus.mail.smtp.SMTPTransport;
 import jakarta.mail.Session;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

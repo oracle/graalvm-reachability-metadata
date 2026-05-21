@@ -8,10 +8,10 @@ package org_eclipse_angus.angus_mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.sun.mail.imap.IMAPFolder;
-import com.sun.mail.imap.IMAPStore;
-import com.sun.mail.imap.protocol.IMAPResponse;
-import com.sun.mail.imap.protocol.ListInfo;
+import org.eclipse.angus.mail.imap.IMAPFolder;
+import org.eclipse.angus.mail.imap.IMAPStore;
+import org.eclipse.angus.mail.imap.protocol.IMAPResponse;
+import org.eclipse.angus.mail.imap.protocol.ListInfo;
 import jakarta.mail.Session;
 import jakarta.mail.URLName;
 import java.io.ByteArrayOutputStream;

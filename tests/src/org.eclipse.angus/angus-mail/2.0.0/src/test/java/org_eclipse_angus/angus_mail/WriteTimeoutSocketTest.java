@@ -8,7 +8,7 @@ package org_eclipse_angus.angus_mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.sun.mail.util.WriteTimeoutSocket;
+import org.eclipse.angus.mail.util.WriteTimeoutSocket;
 import java.io.FileDescriptor;
 import java.net.Socket;
 import org.junit.jupiter.api.Test;
