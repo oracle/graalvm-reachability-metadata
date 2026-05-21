@@ -33,6 +33,7 @@ import waffle.windows.auth.IWindowsSecurityContext;
 import waffle.windows.auth.PrincipalFormat;
 import waffle.windows.auth.WindowsAccount;
 import waffle.windows.auth.impl.WindowsAuthProviderImpl;
+import waffle.windows.auth.impl.WindowsSecurityContextImpl;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -112,6 +113,27 @@ public class Waffle_jnaTest {
         assertThat(principal.hasRole("DOMAIN\\Admins")).isFalse();
         assertThat(principal.getRolesString()).contains("DOMAIN\\alice", "S-1-5-21-1000", "S-1-5-32-544");
         assertThat(principal).isEqualTo(new WindowsPrincipal(identity));
+    }
+
+    @Test
+    void windowsSecurityContextStoresNegotiationStateAndDefensivelyCopiesToken() {
+        WindowsSecurityContextImpl context = new WindowsSecurityContextImpl();
+        byte[] token = new byte[] { 1, 2, 3, 4 };
+
+        context.setPrincipalName("DOMAIN\\alice");
+        context.setSecurityPackage("Negotiate");
+        context.setToken(token);
+        context.setContinue(true);
+        token[0] = 9;
+
+        assertThat(context.getPrincipalName()).isEqualTo("DOMAIN\\alice");
+        assertThat(context.getSecurityPackage()).isEqualTo("Negotiate");
+        assertThat(context.isContinue()).isTrue();
+        assertThat(context.getToken()).containsExactly((byte) 1, (byte) 2, (byte) 3, (byte) 4);
+
+        byte[] returnedToken = context.getToken();
+        returnedToken[1] = 9;
+        assertThat(context.getToken()).containsExactly((byte) 1, (byte) 2, (byte) 3, (byte) 4);
     }
 
     @Test
