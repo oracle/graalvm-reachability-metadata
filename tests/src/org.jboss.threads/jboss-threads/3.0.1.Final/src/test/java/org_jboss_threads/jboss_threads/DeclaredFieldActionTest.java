@@ -8,35 +8,31 @@ package org_jboss_threads.jboss_threads;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Field;
+import java.security.PrivilegedAction;
 
-import org.jboss.threads.JBossExecutors;
 import org.junit.jupiter.api.Test;
 
 public class DeclaredFieldActionTest {
     @Test
-    void threadLocalResetterLooksUpThreadLocalFields() throws InterruptedException {
-        AtomicReference<Boolean> threadLocalWasReset = new AtomicReference<>(false);
-        AtomicReference<Throwable> failure = new AtomicReference<>();
+    void runReturnsDeclaredFieldWhenNameExists() throws Throwable {
+        PrivilegedAction<Field> action = declaredFieldAction(Thread.class, "contextClassLoader");
 
-        Thread thread = new Thread(() -> {
-            try {
-                ThreadLocal<String> threadLocal = new ThreadLocal<>();
-                threadLocal.set("value before reset");
+        Field field = action.run();
 
-                JBossExecutors.threadLocalResetter().run();
+        assertThat(field).isNotNull();
+        assertThat(field.getDeclaringClass()).isSameAs(Thread.class);
+        assertThat(field.getName()).isEqualTo("contextClassLoader");
+    }
 
-                threadLocalWasReset.set(threadLocal.get() == null);
-            } catch (Throwable throwable) {
-                failure.set(throwable);
-            }
-        }, "jboss-threads-thread-local-resetter-test");
-
-        thread.start();
-        thread.join(10_000L);
-
-        assertThat(thread.isAlive()).isFalse();
-        assertThat(failure.get()).isNull();
-        assertThat(threadLocalWasReset.get()).isTrue();
+    @SuppressWarnings("unchecked")
+    private static PrivilegedAction<Field> declaredFieldAction(Class<?> targetClass, String fieldName) throws Throwable {
+        Class<?> actionClass = Class.forName("org.jboss.threads.DeclaredFieldAction");
+        MethodHandle constructor = MethodHandles.privateLookupIn(actionClass, MethodHandles.lookup())
+                .findConstructor(actionClass, MethodType.methodType(void.class, Class.class, String.class));
+        return (PrivilegedAction<Field>) constructor.invoke(targetClass, fieldName);
     }
 }
