@@ -9,6 +9,7 @@ package org.graalvm.logback;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -21,7 +22,7 @@ import javax.net.ServerSocketFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.net.server.ServerSocketReceiver;
+import ch.qos.logback.classic.net.SimpleSocketServer;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
@@ -36,13 +37,13 @@ public class RemoteAppenderStreamClientTest {
   private static final int SOCKET_TIMEOUT_MILLIS = 5_000;
 
   @Test
-  void serverSocketReceiverDispatchesSerializedRemoteEvent() throws Exception {
+  void simpleSocketServerDispatchesSerializedRemoteEvent() throws Exception {
     LoggerContext loggerContext = new LoggerContext();
     loggerContext.setName("remote-appender-stream-client-test");
     loggerContext.setMDCAdapter(new LogbackMDCAdapter());
 
     CapturingAppender appender = new CapturingAppender();
-    CapturingServerSocketReceiver receiver = new CapturingServerSocketReceiver();
+    CapturingSimpleSocketServer server = new CapturingSimpleSocketServer(loggerContext);
     try {
       Logger remoteLogger = loggerContext.getLogger("org.graalvm.logback.RemoteAppenderStreamClientTest.remote");
       remoteLogger.setAdditive(false);
@@ -51,23 +52,22 @@ public class RemoteAppenderStreamClientTest {
       appender.start();
       remoteLogger.addAppender(appender);
 
-      receiver.setContext(loggerContext);
-      receiver.setAddress(InetAddress.getLoopbackAddress().getHostAddress());
-      receiver.setPort(0);
-      receiver.start();
+      server.setDaemon(true);
+      server.start();
 
       try (Socket socket = new Socket()) {
-        socket.connect(receiver.getSocketAddress(), SOCKET_TIMEOUT_MILLIS);
+        socket.connect(server.awaitSocketAddress(), SOCKET_TIMEOUT_MILLIS);
         try (ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream())) {
-          outputStream.writeObject(createLoggingEvent(remoteLogger, "message from remote appender stream client"));
+          outputStream.writeObject(createLoggingEvent(remoteLogger, "message from simple socket server"));
           outputStream.flush();
         }
       }
 
       ILoggingEvent receivedEvent = appender.awaitEvent();
-      assertThat(receivedEvent.getFormattedMessage()).isEqualTo("message from remote appender stream client");
+      assertThat(receivedEvent.getFormattedMessage()).isEqualTo("message from simple socket server");
     } finally {
-      receiver.stop();
+      server.close();
+      server.join(SOCKET_TIMEOUT_MILLIS);
       appender.stop();
       loggerContext.stop();
     }
@@ -79,23 +79,28 @@ public class RemoteAppenderStreamClientTest {
     return LoggingEventVO.build(loggingEvent);
   }
 
-  private static final class CapturingServerSocketReceiver extends ServerSocketReceiver {
+  private static final class CapturingSimpleSocketServer extends SimpleSocketServer {
 
     private final CapturingServerSocketFactory serverSocketFactory = new CapturingServerSocketFactory();
+
+    CapturingSimpleSocketServer(LoggerContext loggerContext) {
+      super(loggerContext, 0);
+    }
 
     @Override
     protected ServerSocketFactory getServerSocketFactory() {
       return serverSocketFactory;
     }
 
-    SocketAddress getSocketAddress() {
-      return serverSocketFactory.getSocketAddress();
+    SocketAddress awaitSocketAddress() throws InterruptedException {
+      return serverSocketFactory.awaitSocketAddress();
     }
   }
 
   private static final class CapturingServerSocketFactory extends ServerSocketFactory {
 
     private final ServerSocketFactory delegate = ServerSocketFactory.getDefault();
+    private final CountDownLatch serverSocketCreated = new CountDownLatch(1);
     private final AtomicReference<ServerSocket> serverSocketReference = new AtomicReference<>();
 
     @Override
@@ -113,14 +118,16 @@ public class RemoteAppenderStreamClientTest {
       return capture(delegate.createServerSocket(port, backlog, ifAddress));
     }
 
-    SocketAddress getSocketAddress() {
+    SocketAddress awaitSocketAddress() throws InterruptedException {
+      assertThat(serverSocketCreated.await(SOCKET_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)).isTrue();
       ServerSocket serverSocket = serverSocketReference.get();
       assertThat(serverSocket).isNotNull();
-      return serverSocket.getLocalSocketAddress();
+      return new InetSocketAddress(InetAddress.getLoopbackAddress(), serverSocket.getLocalPort());
     }
 
     private ServerSocket capture(ServerSocket serverSocket) {
       serverSocketReference.set(serverSocket);
+      serverSocketCreated.countDown();
       return serverSocket;
     }
   }
