@@ -32,7 +32,7 @@ public class ServerLocatorImplTest {
                     1L, "node-a", "backup-group", "scale-down-group", new Pair<>(live, backup), true);
 
             assertThat(internalLocator.getTopology().getMembers()).hasSize(1);
-            assertThat(internalLocator.getTopology().getMember("node-a").getLive()).isEqualTo(live);
+            assertThat(internalLocator.getTopology().getMember("node-a").getPrimary()).isEqualTo(live);
             assertThat(internalLocator.getTopology().getMember("node-a").getBackup()).isEqualTo(backup);
         }
     }
