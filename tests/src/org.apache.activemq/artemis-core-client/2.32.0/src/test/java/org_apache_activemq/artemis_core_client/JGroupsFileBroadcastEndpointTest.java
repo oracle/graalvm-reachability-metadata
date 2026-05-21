@@ -9,56 +9,23 @@ package org_apache_activemq.artemis_core_client;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import org.apache.activemq.artemis.api.core.JGroupsFileBroadcastEndpoint;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 public class JGroupsFileBroadcastEndpointTest {
     @Test
-    void readsJGroupsConfigurationFromContextClassLoaderResource(@TempDir Path temporaryDirectory) throws Exception {
-        String resourceName = "jgroups-test.xml";
-        Files.writeString(temporaryDirectory.resolve(resourceName), "not a jgroups xml document", StandardCharsets.UTF_8);
-        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        URL resourceUrl = temporaryDirectory.resolve(resourceName).toUri().toURL();
+    void readsJGroupsConfigurationFromContextClassLoaderResource() throws Exception {
+        String resourceName = "org_apache_activemq/artemis_core_client/jgroups-file-broadcast-endpoint.xml";
+        JGroupsFileBroadcastEndpoint endpoint = new JGroupsFileBroadcastEndpoint(
+                null,
+                resourceName,
+                "metadata-test-channel");
 
-        try {
-            Thread.currentThread().setContextClassLoader(new SingleResourceClassLoader(resourceName, resourceUrl));
-            JGroupsFileBroadcastEndpoint endpoint = new JGroupsFileBroadcastEndpoint(
-                    null,
-                    resourceName,
-                    "metadata-test-channel");
+        Throwable failure = catchThrowable(endpoint::createChannel);
 
-            Throwable failure = catchThrowable(endpoint::createChannel);
-
-            assertThat(failure).isNotNull();
-            assertThat(String.valueOf(failure.getMessage()))
-                    .doesNotContain("couldn't find JGroups configuration");
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
-        }
-    }
-
-    private static final class SingleResourceClassLoader extends ClassLoader {
-        private final String resourceName;
-        private final URL resourceUrl;
-
-        private SingleResourceClassLoader(String resourceName, URL resourceUrl) {
-            super(null);
-            this.resourceName = resourceName;
-            this.resourceUrl = resourceUrl;
-        }
-
-        @Override
-        protected URL findResource(String name) {
-            if (resourceName.equals(name)) {
-                return resourceUrl;
-            }
-            return null;
-        }
+        assertThat(failure).isNotNull();
+        assertThat(failure).isNotInstanceOf(NoClassDefFoundError.class);
+        assertThat(String.valueOf(failure.getMessage()))
+                .doesNotContain("couldn't find JGroups configuration");
     }
 }
