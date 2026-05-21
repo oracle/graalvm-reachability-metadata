@@ -1,0 +1,917 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e482f-c1a9-77f3-8a1b-8a0a0f2d5217
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.opencsv:opencsv:5.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [5.6].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/metadata/com.opencsv/opencsv/index.json
+- Entry selector: "metadata-version" = "5.6"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar
+- repository-url: https://sourceforge.net/p/opencsv/source/ci/master/tree/
+- test-code-url: https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$
+- documentation-url: https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar
+- description: Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations.
+- language: <missing>
+
+Context:
+- Coordinate version: 5.6
+- Entry metadata-version: 5.6
+- Entry test-version: 5.6
+- Entry tested-versions: [5.6]
+codex
+I’ll verify the Maven artifacts and upstream tag URLs before touching the JSON, then only patch fields that qualify under the instructions.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.opencsv/opencsv/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
+    "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
+    "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
+    "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations.",
+    "tested-versions" : [
+      "5.6"
+    ],
+    "allowed-packages" : [
+      "com.opencsv"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 104ms:
+?? metadata/com.opencsv/
+?? tests/src/com.opencsv/
+
+web search: 
+web search: Maven Central com.opencsv opencsv 5.6 sources javadoc jar
+web search: 
+web search: https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/opencsv/opencsv/
+web search: 
+web search: 
+codex
+The existing entry already has source, repository, test, documentation, and description values. I’m checking whether any of those are stale or invalid under the URL-maintenance rules, because the repository root in particular may need normalization even though it is non-blank.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/opencsv/opencsv/5.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/opencsv/opencsv/5.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="opencsv-5.6-javadoc.jar" title="opencsv-5.6-javadoc.jar">opencsv-5.6-javadoc.jar</a>                           2022-02-20 22:52    972144      
+<a href="opencsv-5.6-javadoc.jar.asc" title="opencsv-5.6-javadoc.jar.asc">opencsv-5.6-javadoc.jar.asc</a>                       2022-02-20 22:52       195      
+<a href="opencsv-5.6-javadoc.jar.asc.md5" title="opencsv-5.6-javadoc.jar.asc.md5">opencsv-5.6-javadoc.jar.asc.md5</a>                   2022-02-20 22:52        32      
+<a href="opencsv-5.6-javadoc.jar.asc.sha1" title="opencsv-5.6-javadoc.jar.asc.sha1">opencsv-5.6-javadoc.jar.asc.sha1</a>                  2022-02-20 22:52        40      
+<a href="opencsv-5.6-javadoc.jar.asc.sha256" title="opencsv-5.6-javadoc.jar.asc.sha256">opencsv-5.6-javadoc.jar.asc.sha256</a>                2022-02-20 22:52        64      
+<a href="opencsv-5.6-javadoc.jar.asc.sha512" title="opencsv-5.6-javadoc.jar.asc.sha512">opencsv-5.6-javadoc.jar.asc.sha512</a>                2022-02-20 22:52       128      
+<a href="opencsv-5.6-javadoc.jar.md5" title="opencsv-5.6-javadoc.jar.md5">opencsv-5.6-javadoc.jar.md5</a>                       2022-02-20 22:52        32      
+<a href="opencsv-5.6-javadoc.jar.sha1" title="opencsv-5.6-javadoc.jar.sha1">opencsv-5.6-javadoc.jar.sha1</a>                      2022-02-20 22:52        40      
+<a href="opencsv-5.6-javadoc.jar.sha256" title="opencsv-5.6-javadoc.jar.sha256">opencsv-5.6-javadoc.jar.sha256</a>                    2022-02-20 22:52        64      
+<a href="opencsv-5.6-javadoc.jar.sha512" title="opencsv-5.6-javadoc.jar.sha512">opencsv-5.6-javadoc.jar.sha512</a>                    2022-02-20 22:52       128      
+<a href="opencsv-5.6-sources.jar" title="opencsv-5.6-sources.jar">opencsv-5.6-sources.jar</a>                           2022-02-20 22:52    268994      
+<a href="opencsv-5.6-sources.jar.asc" title="opencsv-5.6-sources.jar.asc">opencsv-5.6-sources.jar.asc</a>                       2022-02-20 22:52       195      
+<a href="opencsv-5.6-sources.jar.asc.md5" title="opencsv-5.6-sources.jar.asc.md5">opencsv-5.6-sources.jar.asc.md5</a>                   2022-02-20 22:52        32      
+<a href="opencsv-5.6-sources.jar.asc.sha1" title="opencsv-5.6-sources.jar.asc.sha1">opencsv-5.6-sources.jar.asc.sha1</a>                  2022-02-20 22:52        40      
+<a href="opencsv-5.6-sources.jar.asc.sha256" title="opencsv-5.6-sources.jar.asc.sha256">opencsv-5.6-sources.jar.asc.sha256</a>                2022-02-20 22:52        64      
+<a href="opencsv-5.6-sources.jar.asc.sha512" title="opencsv-5.6-sources.jar.asc.sha512">opencsv-5.6-sources.jar.asc.sha512</a>                2022-02-20 22:52       128      
+<a href="opencsv-5.6-sources.jar.md5" title="opencsv-5.6-sources.jar.md5">opencsv-5.6-sources.jar.md5</a>                       2022-02-20 22:52        32      
+<a href="opencsv-5.6-sources.jar.sha1" title="opencsv-5.6-sources.jar.sha1">opencsv-5.6-sources.jar.sha1</a>                      2022-02-20 22:52        40      
+<a href="opencsv-5.6-sources.jar.sha256" title="opencsv-5.6-sources.jar.sha256">opencsv-5.6-sources.jar.sha256</a>                    2022-02-20 22:52        64      
+<a href="opencsv-5.6-sources.jar.sha512" title="opencsv-5.6-sources.jar.sha512">opencsv-5.6-sources.jar.sha512</a>                    2022-02-20 22:52       128      
+<a href="opencsv-5.6.jar" title="opencsv-5.6.jar">opencsv-5.6.jar</a>                                   2022-02-20 22:52    235746      
+<a href="opencsv-5.6.jar.asc" title="opencsv-5.6.jar.asc">opencsv-5.6.jar.asc</a>                               2022-02-20 22:52       195      
+<a href="opencsv-5.6.jar.asc.md5" title="opencsv-5.6.jar.asc.md5">opencsv-5.6.jar.asc.md5</a>                           2022-02-20 22:52        32      
+<a href="opencsv-5.6.jar.asc.sha1" title="opencsv-5.6.jar.asc.sha1">opencsv-5.6.jar.asc.sha1</a>                          2022-02-20 22:52        40      
+<a href="opencsv-5.6.jar.asc.sha256" title="opencsv-5.6.jar.asc.sha256">opencsv-5.6.jar.asc.sha256</a>                        2022-02-20 22:52        64      
+<a href="opencsv-5.6.jar.asc.sha512" title="opencsv-5.6.jar.asc.sha512">opencsv-5.6.jar.asc.sha512</a>                        2022-02-20 22:52       128      
+<a href="opencsv-5.6.jar.md5" title="opencsv-5.6.jar.md5">opencsv-5.6.jar.md5</a>                               2022-02-20 22:52        32      
+<a href="opencsv-5.6.jar.sha1" title="opencsv-5.6.jar.sha1">opencsv-5.6.jar.sha1</a>                              2022-02-20 22:52        40      
+<a href="opencsv-5.6.jar.sha256" title="opencsv-5.6.jar.sha256">opencsv-5.6.jar.sha256</a>                            2022-02-20 22:52        64      
+<a href="opencsv-5.6.jar.sha512" title="opencsv-5.6.jar.sha512">opencsv-5.6.jar.sha512</a>                            2022-02-20 22:52       128      
+<a href="opencsv-5.6.pom" title="opencsv-5.6.pom">opencsv-5.6.pom</a>                                   2022-02-20 22:52     32257      
+<a href="opencsv-5.6.pom.asc" title="opencsv-5.6.pom.asc">opencsv-5.6.pom.asc</a>                               2022-02-20 22:52       195      
+<a href="opencsv-5.6.pom.asc.md5" title="opencsv-5.6.pom.asc.md5">opencsv-5.6.pom.asc.md5</a>                           2022-02-20 22:52        32      
+<a href="opencsv-5.6.pom.asc.sha1" title="opencsv-5.6.pom.asc.sha1">opencsv-5.6.pom.asc.sha1</a>                          2022-02-20 22:52        40      
+<a href="opencsv-5.6.pom.asc.sha256" title="opencsv-5.6.pom.asc.sha256">opencsv-5.6.pom.asc.sha256</a>                        2022-02-20 22:52        64      
+<a href="opencsv-5.6.pom.asc.sha512" title="opencsv-5.6.pom.asc.sha512">opencsv-5.6.pom.asc.sha512</a>                        2022-02-20 22:52       128      
+<a href="opencsv-5.6.pom.md5" title="opencsv-5.6.pom.md5">opencsv-5.6.pom.md5</a>                               2022-02-20 22:52        32      
+<a href="opencsv-5.6.pom.sha1" title="opencsv-5.6.pom.sha1">opencsv-5.6.pom.sha1</a>                              2022-02-20 22:52        40      
+<a href="opencsv-5.6.pom.sha256" title="opencsv-5.6.pom.sha256">opencsv-5.6.pom.sha256</a>                            2022-02-20 22:52        64      
+<a href="opencsv-5.6.pom.sha512" title="opencsv-5.6.pom.sha512">opencsv-5.6.pom.sha512</a>                            2022-02-20 22:52       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6-sources.jar https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6-javadoc.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 01:39:34 GMT
+content-type: application/java-archive
+content-length: 268994
+cf-ray: 9fefde3f5c400229-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 220423
+etag: "fe938e19226f85c5f11a8d4d53283dbc"
+last-modified: Sun, 20 Feb 2022 22:52:56 GMT
+x-checksum-md5: fe938e19226f85c5f11a8d4d53283dbc
+x-checksum-sha1: 4baecf63b937b366b8b628041ce721b48e128589
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 21 May 2026 01:39:34 GMT
+content-type: application/java-archive
+content-length: 972144
+cf-ray: 9fefde3f9c720229-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 904523
+etag: "d2fb41d0b13180239bf819e0cba90bcb"
+last-modified: Sun, 20 Feb 2022 22:52:52 GMT
+x-checksum-md5: d2fb41d0b13180239bf819e0cba90bcb
+x-checksum-sha1: a65e0f47fd0911ec4f5a8de338b0ccbe523907b3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/ | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+exec
+/usr/bin/bash -lc "curl -fsSI https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/main/ | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 729ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 01:39:35 GMT
+content-type: text/html; charset=utf-8
+content-length: 65994
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/top.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; rel=preload; as=style
+content-security-policy: fenced-frame-src https:; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; script-src-attr 'none' 'report-sample'; upgrade-insecure-requests; object-src 'none'; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; frame-ancestors 'self'; form-action https://sourceforge.net; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=a376fb2d-db1c-45cf-9394-b6f74e1cf2a3; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:39:35 GMT; secure; HttpOnly
+set-cookie: _csrf_token=8e33ba7c7ca2fe70b809a50d7977fadce9b2eaa35fc177bca43eed09d9ee10f63dcbfc608da800d5; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=CtTTaTJoDNvQaL2idymMe1RSB1ybt_9za36Ooagpxjs-1779327574.939966-1.0.1.1-mxFH2UqPrBfjQd6kplZprFOCsgunQjPLW5beU089RESYni2OWFL8hO2lInDiMirtrPqfIJ_v5WXib.DMq9ciqdys4UZiY63gPXdK3tV9YNph7CfhEVbFvOwbZzZXeMYV; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:09:35 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefde3f5e0624c4-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 732ms:
+HTTP/2 103 
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/lato.css?1779299641>; as=style; rel=preload, <https://a.fsdn.com/con/css/top.css?1779299641>; as=style; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; as=style; rel=preload
+
+HTTP/2 200 
+date: Thu, 21 May 2026 01:39:35 GMT
+content-type: text/html; charset=utf-8
+content-length: 66831
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/top.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; rel=preload; as=style
+content-security-policy: script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; upgrade-insecure-requests; fenced-frame-src https:; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; form-action https://sourceforge.net; frame-ancestors 'self'; object-src 'none'; script-src-attr 'none' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=77284e02-acf3-4794-89aa-677505d70d72; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:39:35 GMT; secure; HttpOnly
+set-cookie: _csrf_token=f84c31069a984df679d3e6039a0f7dd5e171dbbf443d4de6d99ba5c57cd3a21861f838b7e9c4f3a5; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=5JVWyzIf.5DUXOZu7t1ClVkYV6PqSmTfp73BA9REPXY-1779327574.939816-1.0.1.1-pb1TkZeAIuBzcdJ5mUK9YLaIBF.rsToMecJpwASeSpIgLA6inN7082rE.I0pQrjToRVqw9WM6Fsf3x1h8LtpwaPWC0GOULU.AMUNS1kZ0z02zYt75aj2AZu4Kyen_kgx; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:09:35 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefde3f5e41bac0-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6.pom | sed -n '1,240p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.opencsv</groupId>
+    <artifactId>opencsv</artifactId>
+    <packaging>jar</packaging>
+    <version>5.6</version>
+    <name>opencsv</name>
+    <description>A simple library for reading and writing CSV in Java</description>
+    <url>http://opencsv.sf.net</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.surefire.version>2.22.2</maven.surefire.version>
+        <maven.site.version>3.9.1</maven.site.version>
+        <jacoco.version>0.8.7</jacoco.version>
+        <maven.javadoc.version>3.3.0</maven.javadoc.version>
+        <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
+        <argLine>-Dfile.encoding=UTF-8</argLine>
+        <junit.version>5.8.2</junit.version>
+        <junit.platform.version>1.8.2</junit.platform.version>
+        <asciidoctor.maven.plugin.version>2.1.0</asciidoctor.maven.plugin.version>
+        <asciidoctorj.version>2.5.1</asciidoctorj.version>
+        <jruby.version>9.2.19.0</jruby.version>
+        <asciidoctorj.diagram.version>2.1.2</asciidoctorj.diagram.version>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://git.code.sf.net/p/opencsv/source</connection>
+        <developerConnection>scm:git:ssh://sourceforgeId@git.code.sf.net/p/opencsv/source</developerConnection>
+        <url>https://sourceforge.net/p/opencsv/source/ci/master/tree/</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>scott_conway</id>
+            <name>Scott Conway</name>
+            <email>sconway@users.sourceforge.net</email>
+            <timezone>-6</timezone>
+            <roles>
+                <role>lead</role>
+                <role>architect</role>
+                <role>developer</role>
+                <role>maintainer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>aruckerjones</id>
+            <name>Andrew Rucker Jones</name>
+            <email>arjones@t-online.de</email>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+                <role>maintainer</role>
+            </roles>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Glen Smith</name>
+            <email>glen_a_smith@users.sourceforge.net</email>
+            <url>http://blogs.bytecode.com.au/glen</url>
+            <timezone>+10</timezone>
+            <roles>
+                <role>Founder</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Tom Squires</name>
+            <email>tom@tomsquires.com</email>
+            <roles>
+                <role>Developed Annotation-based bean logic.</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Maciek Opala</name>
+            <email>maciek.opala@gmail.com</email>
+            <roles>
+                <role>developer - version 3.0</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>J.C. Romanda</name>
+            <email>j_hah@users.sf.net</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Sean Sullivan</name>
+            <email>sullis@users.sourceforge.net</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Kyle Miller</name>
+            <roles>
+                <role>Developed bean logic.</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Vladimir Dolzhenko</name>
+            <roles>
+                <role>Work to make CSVReader and CSVWriter easier to extend.</role>
+            </roles>
+        </contributor>
+    </contributors>
+    <issueManagement>
+        <system>Sourceforge</system>
+        <url>https://sourceforge.net/p/opencsv/_list/tickets</url>
+    </issueManagement>
+    <profiles>
+        <profile>
+            <id>allTests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*Spec.java</include>
+                                <include>**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.junit.jupiter</groupId>
+                                <artifactId>junit-jupiter-engine</artifactId>
+                                <version>${junit.version}</version>
+                                <scope>test</scope>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.junit.vintage</groupId>
+                                <artifactId>junit-vintage-engine</artifactId>
+                                <version>${junit.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>skipPerformanceTests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*Spec.java</include>
+                                <include>**/*Test.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/*PerformanceTest.java</exclude>
+                            </excludes>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.junit.jupiter</groupId>
+                                <artifactId>junit-jupiter-engine</artifactId>
+                                <version>${junit.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.junit.vintage</groupId>
+                                <artifactId>junit-vintage-engine</artifactId>
+                                <version>${junit.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>runPerformanceTests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*PerformanceTest.java</include>
+                            </includes>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.junit.jupiter</groupId>
+                                <artifactId>junit-jupiter-engine</artifactId>
+                                <version>${junit.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.junit.vintage</groupId>
+                                <artifactId>junit-vintage-engine</artifactId>
+                                <version>${junit.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <build>
+        <defaultGoal>process-resources</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.gmavenplus</groupId>
+                                        <artifactId>gmavenplus-plugin</artifactId>
+                                        <versionRange>[1.12.1,)</versionRange>
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://sourceforge.net/p/opencsv/source/ | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+exec
+/usr/bin/bash -lc "curl -fsSI https://sourceforge.net/projects/opencsv/ | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 209ms:
+HTTP/2 301 
+date: Thu, 21 May 2026 01:39:45 GMT
+content-type: text/html; charset=UTF-8
+location: https://sourceforge.net/p/opencsv/source/ref/master/
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+content-security-policy: frame-ancestors 'self'; fenced-frame-src https:; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; script-src-attr 'none' 'report-sample'; form-action https://sourceforge.net; upgrade-insecure-requests; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; object-src 'none'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=422f4289-254c-46eb-8d1c-77ede56e1154; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:39:45 GMT; secure; HttpOnly
+set-cookie: _csrf_token=5bcd21bf8da1330bad74ad815fab03c5aa39bd6df90ac82d11a6131e41f33b34a8ef42cae139fd2e; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=hW6xG2.9UnYkCMHxcBHsLy54CSngLy.npN.m78oECNk-1779327585.6631315-1.0.1.1-sxBLLZ.T1U.dlM.R64qbQL5lTRgp5CSRJ1Q70f211qXaDu6.3WwBS2TSvitEZWGLzGaPa8mgriMwfVUga1_liKDoTpYiO_.UxQxJfqrlAA7TF5bN14MEQAV1_zdL_ISn; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:09:45 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefde826ff9bbf4-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 244ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 01:39:45 GMT
+content-type: text/html; charset=utf-8
+content-length: 117761
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1779310703>; rel=preload; as=script, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779310703>; rel=preload; as=style, <https://a.fsdn.com/con/css/sandiego.css?1779310703>; rel=preload; as=style, <https://a.fsdn.com/con/js/min/sf.sandiego-head.js?1779310703>; rel=preload; as=script, <https://a.fsdn.com/con/css/top.css?1779310703>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779310703>; rel=preload; as=style
+cross-origin-opener-policy: same-origin
+permissions-policy: geolocation=(), microphone=(), camera=(), payment=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: geolocation 'none'; microphone 'none'; camera 'none'; payment 'none'; document-domain 'none'; display-capture 'none'; autoplay 'none'
+x-frame-options: SAMEORIGIN
+content-security-policy: form-action https://sourceforge.net lists.sourceforge.net aistudio.google.com; object-src 'none'; script-src-attr 'unsafe-hashes' 'sha256-4d6SN0yYeMqJ0cKMQtg6WeJWMAytzagOyddgGs8IrQg=' 'sha256-tBDVzvq7nAZRA5cnijB1/8uEyvj+5hEDBhcx7F72AGE=' 'report-sample'; fenced-frame-src https:; frame-src 'self' a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.googletagmanager.com *.doubleclick.net *.gstatic.com *.recaptcha.net recaptcha.net *.youtube.com www.youtube-nocookie.com *.consentmanager.net player.twitch.tv app.hubspot.com; upgrade-insecure-requests; frame-ancestors 'self'; script-src 'self' *.licdn.com a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.cloudflareinsights.com *.google-analytics.com *.tiny.cloud *.recaptcha.net recaptcha.net *.gstatic.com *.googletagservices.com *.googlesyndication.com *.doubleclick.net *.googletagmanager.com *.consentmanager.net *.microsofttranslator.com translate.googleapis.com translate.google.cn *.gstatic.cn *.tds.bid esm.sh blob: *.adnxs.com *.bing.com *.slashdotmedia.com ml314.com j.6sc.co *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com fe.sitedataprocessing.com a.usbrowserspeed.com d-code.liadm.com frontend.id-visitors.com *.identitymatrix.ai 'unsafe-inline' 'unsafe-eval'
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=345a03ed-6c3c-4cfa-a1bd-d9d007ea2660; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:39:45 GMT; secure; HttpOnly
+set-cookie: __cf_bm=xjLst.u9rfVF6gngGnkXipF7kBNPKhtQTaIRLjNJgYg-1779327585.6621747-1.0.1.1-YILD7J3IzGVPZZ_sTF.bxDdYKugLB_Ey4SDaOmpoSDlrnMJygsT.dnsS82rvaCs8Rc79NRknOLiBsCERNf9JZ4n0F6E5j82nZLRP8h7CcEpOjujk.K2a6KBoI_LM5j4j; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:09:45 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefde826ea0bc05-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg 'sourceforge.net/p/.*/source' metadata -g 'index.json' | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+exec
+/usr/bin/bash -lc "rg 'git.code.sf.net|sourceforge.net/projects' metadata -g 'index.json' | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+metadata/com.opencsv/opencsv/index.json:    "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
+metadata/com.opencsv/opencsv/index.json:    "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+
+ succeeded in 0ms:
+metadata/findbugs/annotations/index.json:    "source-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/findbugs/annotations/index.json:    "test-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/findbugs/annotations/index.json:    "documentation-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/org.jboss.netty/netty/index.json:    "test-code-url" : "https://sourceforge.net/projects/jboss/files/Netty%20Project/Netty%203.2.2.Final/netty-$version$-dist.tar.bz2/download",
+metadata/org.jboss.netty/netty/index.json:    "documentation-url" : "https://sourceforge.net/projects/jboss/files/Netty%20Project/Netty%203.2.2.Final/netty-$version$-dist.tar.bz2/download",
+metadata/net.sf.kxml/kxml2/index.json:    "test-code-url" : "https://sourceforge.net/projects/kxml/files/kxml2/$version$/kxml2-src-$version$.zip/download",
+metadata/backport-util-concurrent/backport-util-concurrent/index.json:    "test-code-url" : "https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/$version$/backport-util-concurrent-$version$-src.tar.gz/download",
+metadata/aopalliance/aopalliance/index.json:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/$version$/aopalliance.zip/download",
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://git.code.sf.net/p/opencsv/source | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 436ms:
+curl: (22) The requested URL returned error: 404
+HTTP/1.1 404 Not Found
+Server: nginx
+Date: Thu, 21 May 2026 01:39:50 GMT
+Connection: keep-alive
+expires: Fri, 01 Jan 1980 00:00:00 GMT
+pragma: no-cache
+cache-control: no-cache, max-age=0, must-revalidate
+
+
+web search: 
+web search: opencsv 5.6 Maven Central opencsv-5.6-sources.jar javadoc
+exec
+/usr/bin/bash -lc "rg 'repository-url' -n docs buildSrc schema metadata | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+rg: buildSrc: No such file or directory (os error 2)
+rg: schema: No such file or directory (os error 2)
+docs/CONTRIBUTING.md:109:* `repository-url`: URL to the canonical project repository for this index entry.
+docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+docs/FUNCTIONAL_SPEC.md:169:The schema follows semver, and **minor- and patch-version bumps** (e.g., `v2.1.0` → `v2.1.1` or `v2.1.x` → `v2.2.0`) are guaranteed to be backward-compatible with native-build-tools. Minor bumps add new optional fields or non-plugin index formats used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`, `not-for-native-image`); patch bumps refine validation of those same auxiliary fields and formats. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. Only a **major-version bump** can break the contract, which NFR-4 forbids — schema changes are additive only.
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.google.truth/truth/index.json:6:    "repository-url" : "https://github.com/google/truth",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:34:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/net.postgis/postgis-geometry/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/org.glassfish.hk2/hk2-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:21:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:36:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/net.postgis/postgis-jdbc/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/com.opencsv/opencsv/index.json:6:    "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
+metadata/com.comcast/ip4s-core_3/index.json:6:    "repository-url" : "https://github.com/Comcast/ip4s",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:6:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.directory.api/api-ldap-model/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:20:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:34:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:48:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:6:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:6:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/org.apache.directory.api/api-i18n/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.jline/jline-terminal-jni/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-terminal-jni/index.json:41:    "repository-url" : "https://github.com/jline/jline3",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:6:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:21:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:36:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/com.rabbitmq/amqp-client/index.json:6:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/org.jline/jline-terminal-jna/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/org.openjfx/javafx-base/index.json:6:    "repository-url": "https://github.com/openjdk/jfx",
+metadata/org.openjfx/javafx-base/index.json:22:    "repository-url": "https://github.com/javafxports/openjdk-jfx",
+metadata/jakarta.batch/jakarta.batch-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/batch",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:6:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:20:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:34:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:48:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:62:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.springframework/spring-instrument/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/org.jline/jline-console/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-console/index.json:53:    "repository-url" : "https://github.com/jline/jline3",
+metadata/com.google.dagger/dagger/index.json:6:    "repository-url" : "https://github.com/google/dagger",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/org.springframework/spring-context-support/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.apache.hadoop/hadoop-mapreduce-client-shuffle/index.json:6:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:6:    "repository-url" : "https://github.com/sonatype/sisu",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/org.jline/jline-reader/index.json:7:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-reader/index.json:48:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/org.apache.hadoop/hadoop-yarn-registry/index.json:6:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:6:    "repository-url" : "https://github.com/apache/pulsar",
+metadata/org.apache.hadoop/hadoop-auth/index.json:6:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-auth/index.json:56:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:6:    "repository-url" : "https://github.com/apache/pulsar",
+metadata/io.smallrye.reactive/mutiny/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-mutiny",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+metadata/com.android.databinding/baseLibrary/index.json:6:    "repository-url" : "https://android.googlesource.com/platform/frameworks/data-binding",
+metadata/com.android.databinding/baseLibrary/index.json:20:    "repository-url" : "https://android.googlesource.com/platform/frameworks/data-binding",
+metadata/org.yaml/snakeyaml/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+metadata/org.yaml/snakeyaml/index.json:20:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml",
+metadata/com.github.javaparser/javaparser-core/index.json:7:    "repository-url" : "https://github.com/javaparser/javaparser",
+metadata/com.github.javaparser/javaparser-core/index.json:22:    "repository-url" : "https://github.com/javaparser/javaparser",
+metadata/com.spotify/completable-futures/index.json:6:    "repository-url" : "https://github.com/spotify/completable-futures",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\" : \".*/(tree|blob|src|branches|commits)/(master|main|v[0-9]|release|tags)' metadata -g 'index.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.8",
+metadata/at.yawk.lz4/lz4-java/index.json:    "repository-url" : "https://github.com/yawkat/lz4-java/tree/v1.10.4",
+metadata/com.google.protobuf/protobuf-java-util/index.json:    "repository-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.22.0",
+metadata/com.google.protobuf/protobuf-java-util/index.json:    "repository-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.21.12",
+
+codex
+Maven Central has the 5.6 source and javadoc jars, and it does not publish a test-sources jar for this artifact, so the SourceForge `release5_6` test path is the correct versioned test-suite fallback. I’m going to normalize the repository URL to the SourceForge repository root, leaving the valid Maven and tag URLs unchanged and keeping `language` absent because opencsv is a Java library, not a Kotlin/Groovy/Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/metadata/com.opencsv/opencsv/index.json
+diff --git a/metadata/com.opencsv/opencsv/index.json b/metadata/com.opencsv/opencsv/index.json
+index b92a2d479dd71f18f47fa6698c40554b4b864d87..8a5a7689a51b6db8ba007c504c63a35493491938
+--- a/metadata/com.opencsv/opencsv/index.json
++++ b/metadata/com.opencsv/opencsv/index.json
+@@ -3,7 +3,7 @@
+     "latest" : true,
+     "metadata-version" : "5.6",
+     "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
+-    "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++    "repository-url" : "https://sourceforge.net/p/opencsv/source/",
+     "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+     "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
+     "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations.",
+
+diff --git a/metadata/com.opencsv/opencsv/index.json b/metadata/com.opencsv/opencsv/index.json
+index b92a2d479dd71f18f47fa6698c40554b4b864d87..8a5a7689a51b6db8ba007c504c63a35493491938
+--- a/metadata/com.opencsv/opencsv/index.json
++++ b/metadata/com.opencsv/opencsv/index.json
+@@ -3,7 +3,7 @@
+     "latest" : true,
+     "metadata-version" : "5.6",
+     "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
+-    "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++    "repository-url" : "https://sourceforge.net/p/opencsv/source/",
+     "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+     "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
+     "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations.",
+
+exec
+/usr/bin/bash -lc 'jq . metadata/com.opencsv/opencsv/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.opencsv/opencsv/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6-sources.jar https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6-javadoc.jar https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=5.6 https://sourceforge.net/p/opencsv/source/ | rg -n '"'^(HTTP/|location:|content-type:)'"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+diff --git a/metadata/com.opencsv/opencsv/index.json b/metadata/com.opencsv/opencsv/index.json
+index b92a2d479dd71f18f47fa6698c40554b4b864d87..8a5a7689a51b6db8ba007c504c63a35493491938
+--- a/metadata/com.opencsv/opencsv/index.json
++++ b/metadata/com.opencsv/opencsv/index.json
+@@ -3,7 +3,7 @@
+     "latest" : true,
+     "metadata-version" : "5.6",
+     "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
+-    "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++    "repository-url" : "https://sourceforge.net/p/opencsv/source/",
+     "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+     "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
+     "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations.",
+
+ succeeded in 1065ms:
+1:HTTP/2 200 
+3:content-type: application/java-archive
+16:HTTP/2 200 
+18:content-type: application/java-archive
+31:HTTP/2 103 
+34:HTTP/2 200 
+36:content-type: text/html; charset=utf-8
+56:HTTP/2 301 
+58:content-type: text/html; charset=UTF-8
+59:location: https://sourceforge.net/p/opencsv/source/ref/master/
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/com.opencsv/opencsv/index.json tests/src/com.opencsv' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+?? metadata/com.opencsv/opencsv/index.json
+?? tests/src/com.opencsv/
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/com.opencsv/opencsv/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
+    "repository-url" : "https://sourceforge.net/p/opencsv/source/",
+    "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
+    "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations.",
+    "tested-versions" : [
+      "5.6"
+    ],
+    "allowed-packages" : [
+      "com.opencsv"
+    ]
+  }
+]
+
+diff --git a/metadata/com.opencsv/opencsv/index.json b/metadata/com.opencsv/opencsv/index.json
+index b92a2d479dd71f18f47fa6698c40554b4b864d87..8a5a7689a51b6db8ba007c504c63a35493491938
+--- a/metadata/com.opencsv/opencsv/index.json
++++ b/metadata/com.opencsv/opencsv/index.json
+@@ -3,7 +3,7 @@
+     "latest" : true,
+     "metadata-version" : "5.6",
+     "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
+-    "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++    "repository-url" : "https://sourceforge.net/p/opencsv/source/",
+     "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+     "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
+     "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations.",
+
+web search: 
+web search: https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/
+web search: 
+web search: repo.maven.apache.org/maven2 com opencsv opencsv 5.6 opencsv-5.6-sources.jar opencsv-5.6-javadoc.jar
+codex
+The JSON parses cleanly after the edit. I’m running the targeted metadata check now so the changed entry is validated by the repo tooling, not just by `jq`.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.opencsv:opencsv:5.6 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+diff --git a/metadata/com.opencsv/opencsv/index.json b/metadata/com.opencsv/opencsv/index.json
+index b92a2d479dd71f18f47fa6698c40554b4b864d87..8a5a7689a51b6db8ba007c504c63a35493491938
+--- a/metadata/com.opencsv/opencsv/index.json
++++ b/metadata/com.opencsv/opencsv/index.json
+@@ -3,7 +3,7 @@
+     "latest" : true,
+     "metadata-version" : "5.6",
+     "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
+-    "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++    "repository-url" : "https://sourceforge.net/p/opencsv/source/",
+     "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+     "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
+     "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations.",
+
+ succeeded in 3217ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles
+Metadata files check passed for com.opencsv:opencsv:5.6
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: SourceForge opencsv release5_6 src test
+web search: 
+web search: https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/
+web search: 
+web search: https://repo1.maven.org/maven2/com/opencsv/opencsv/5.6/
+codex
+Updated [metadata/com.opencsv/opencsv/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/metadata/com.opencsv/opencsv/index.json:6).
+
+Changed only `repository-url`, normalizing it to `https://sourceforge.net/p/opencsv/source/` because the existing value included a branch browser path. The Maven source and javadoc jar templates were already valid for `5.6`, and the SourceForge `release5_6` test path renders correctly. ([repo1.maven.org](https://repo1.maven.org/maven2/com/opencsv/opencsv/5.6/))
+
+No `language` field was added; this is a Java library, not Kotlin/Groovy/Scala-specific. The existing two-sentence description was already present and valid, so I left it unchanged.
+
+Validation passed:
+
+```bash
+./gradlew checkMetadataFiles -Pcoordinates=com.opencsv:opencsv:5.6 --stacktrace
+```
+diff --git a/metadata/com.opencsv/opencsv/index.json b/metadata/com.opencsv/opencsv/index.json
+index b92a2d479dd71f18f47fa6698c40554b4b864d87..8a5a7689a51b6db8ba007c504c63a35493491938
+--- a/metadata/com.opencsv/opencsv/index.json
++++ b/metadata/com.opencsv/opencsv/index.json
+@@ -3,7 +3,7 @@
+     "latest" : true,
+     "metadata-version" : "5.6",
+     "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
+-    "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++    "repository-url" : "https://sourceforge.net/p/opencsv/source/",
+     "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+     "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
+     "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations.",
+
+tokens used
+73,456
+Updated [metadata/com.opencsv/opencsv/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/metadata/com.opencsv/opencsv/index.json:6).
+
+Changed only `repository-url`, normalizing it to `https://sourceforge.net/p/opencsv/source/` because the existing value included a branch browser path. The Maven source and javadoc jar templates were already valid for `5.6`, and the SourceForge `release5_6` test path renders correctly. ([repo1.maven.org](https://repo1.maven.org/maven2/com/opencsv/opencsv/5.6/))
+
+No `language` field was added; this is a Java library, not Kotlin/Groovy/Scala-specific. The existing two-sentence description was already present and valid, so I left it unchanged.
+
+Validation passed:
+
+```bash
+./gradlew checkMetadataFiles -Pcoordinates=com.opencsv:opencsv:5.6 --stacktrace
+```
+Ran agent for com.opencsv:opencsv:5.6 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/build/agent-url-discovery-logs/com.opencsv-opencsv-5.6.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 54s
+9 actionable tasks: 1 executed, 8 up-to-date

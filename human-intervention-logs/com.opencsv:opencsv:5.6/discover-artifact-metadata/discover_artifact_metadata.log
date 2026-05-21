@@ -1,0 +1,1601 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e482d-78dc-7470-8db1-ef9d5731962d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.opencsv:opencsv:5.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "5.6" when "$version$" is replaced with "5.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+- Set "coordinates" to "com.opencsv:opencsv:5.6".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "5.6".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream project, then update the JSON in place with version-tokenized URLs where the repository supports them.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+{
+  "coordinates" : "com.opencsv:opencsv:5.6"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.opencsv-opencsv-5\\.6\\.json|opencsv'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"|\"not-for-native-image\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:6:    "repository-url": "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:6:    "repository-url" : "https://github.com/google/truth",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jni/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-terminal-jni/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/org.jline/jline-terminal-jni/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jni/index.json:40:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jni/index.json:41:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-terminal-jni/index.json:42:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-$version$/terminal-jni/src/test/java",
+metadata/org.jline/jline-terminal-jni/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:3:    "not-for-native-image": true,
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:5:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:25:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.8",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:44:    "repository-url" : "https://github.com/ben-manes/caffeine",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:45:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:46:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-$version$/terminal-jna/src/test",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:6:    "repository-url" : "http://svn.codehaus.org/jetty/servlet-api",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+
+web search: 
+web search: Maven Central com.opencsv opencsv 5.6 POM scm url sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/com/opencsv/opencsv/5.6/
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+Maven Central exposes both `sources.jar` and `javadoc.jar` for `5.6`, but not a test jar in the artifact listing. I’m checking the upstream SCM tags now so the test URL can point at the matching release tree.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.opencsv</groupId>
+    <artifactId>opencsv</artifactId>
+    <packaging>jar</packaging>
+    <version>5.6</version>
+    <name>opencsv</name>
+    <description>A simple library for reading and writing CSV in Java</description>
+    <url>http://opencsv.sf.net</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.surefire.version>2.22.2</maven.surefire.version>
+        <maven.site.version>3.9.1</maven.site.version>
+        <jacoco.version>0.8.7</jacoco.version>
+        <maven.javadoc.version>3.3.0</maven.javadoc.version>
+        <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
+        <argLine>-Dfile.encoding=UTF-8</argLine>
+        <junit.version>5.8.2</junit.version>
+        <junit.platform.version>1.8.2</junit.platform.version>
+        <asciidoctor.maven.plugin.version>2.1.0</asciidoctor.maven.plugin.version>
+        <asciidoctorj.version>2.5.1</asciidoctorj.version>
+        <jruby.version>9.2.19.0</jruby.version>
+        <asciidoctorj.diagram.version>2.1.2</asciidoctorj.diagram.version>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://git.code.sf.net/p/opencsv/source</connection>
+        <developerConnection>scm:git:ssh://sourceforgeId@git.code.sf.net/p/opencsv/source</developerConnection>
+        <url>https://sourceforge.net/p/opencsv/source/ci/master/tree/</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>scott_conway</id>
+            <name>Scott Conway</name>
+            <email>sconway@users.sourceforge.net</email>
+            <timezone>-6</timezone>
+            <roles>
+                <role>lead</role>
+                <role>architect</role>
+                <role>developer</role>
+                <role>maintainer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>aruckerjones</id>
+            <name>Andrew Rucker Jones</name>
+            <email>arjones@t-online.de</email>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+                <role>maintainer</role>
+            </roles>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Glen Smith</name>
+            <email>glen_a_smith@users.sourceforge.net</email>
+            <url>http://blogs.bytecode.com.au/glen</url>
+            <timezone>+10</timezone>
+            <roles>
+                <role>Founder</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Tom Squires</name>
+            <email>tom@tomsquires.com</email>
+            <roles>
+                <role>Developed Annotation-based bean logic.</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Maciek Opala</name>
+            <email>maciek.opala@gmail.com</email>
+            <roles>
+                <role>developer - version 3.0</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>J.C. Romanda</name>
+            <email>j_hah@users.sf.net</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Sean Sullivan</name>
+            <email>sullis@users.sourceforge.net</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Kyle Miller</name>
+            <roles>
+                <role>Developed bean logic.</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Vladimir Dolzhenko</name>
+            <roles>
+                <role>Work to make CSVReader and CSVWriter easier to extend.</role>
+            </roles>
+        </contributor>
+    </contributors>
+    <issueManagement>
+        <system>Sourceforge</system>
+        <url>https://sourceforge.net/p/opencsv/_list/tickets</url>
+    </issueManagement>
+    <profiles>
+        <profile>
+            <id>allTests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*Spec.java</include>
+                                <include>**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.junit.jupiter</groupId>
+                                <artifactId>junit-jupiter-engine</artifactId>
+                                <version>${junit.version}</version>
+                                <scope>test</scope>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.junit.vintage</groupId>
+                                <artifactId>junit-vintage-engine</artifactId>
+                                <version>${junit.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>skipPerformanceTests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*Spec.java</include>
+                                <include>**/*Test.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/*PerformanceTest.java</exclude>
+                            </excludes>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.junit.jupiter</groupId>
+                                <artifactId>junit-jupiter-engine</artifactId>
+                                <version>${junit.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.junit.vintage</groupId>
+                                <artifactId>junit-vintage-engine</artifactId>
+                                <version>${junit.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>runPerformanceTests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*PerformanceTest.java</include>
+                            </includes>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.junit.jupiter</groupId>
+                                <artifactId>junit-jupiter-engine</artifactId>
+                                <version>${junit.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.junit.vintage</groupId>
+                                <artifactId>junit-vintage-engine</artifactId>
+                                <version>${junit.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <build>
+        <defaultGoal>process-resources</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.gmavenplus</groupId>
+                                        <artifactId>gmavenplus-plugin</artifactId>
+                                        <versionRange>[1.12.1,)</versionRange>
+                                        <goals>
+                                            <goal>addTestSources</goal>
+                                            <goal>generateTestStubs</goal>
+                                            <goal>compileTests</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.felix</groupId>
+                                        <artifactId>maven-bundle-plugin</artifactId>
+                                        <versionRange>[5.1.1,)</versionRange>
+                                        <goals>
+                                            <goal>manifest</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>3.1.2</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>8.41.1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${maven.site.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctor-maven-plugin</artifactId>
+                        <version>${asciidoctor.maven.plugin.version}</version>
+                    </dependency>
+                    <!-- Comment this section to use the default jruby artifact provided by the plugin -->
+                    <dependency>
+                        <groupId>org.jruby</groupId>
+                        <artifactId>jruby-complete</artifactId>
+                        <version>${jruby.version}</version>
+                    </dependency>
+                    <!-- Comment this section to use the default AsciidoctorJ artifact provided by the plugin -->
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj</artifactId>
+                        <version>${asciidoctorj.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj-diagram</artifactId>
+                        <version>${asciidoctorj.diagram.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <!-- disable generateReports if you don't want to include the built-in reports -->
+                    <generateReports>true</generateReports>
+                    <generateSitemap>true</generateSitemap>
+                    <relativizeDecorationLinks>false</relativizeDecorationLinks>
+                    <locales>en</locales>
+                    <inputEncoding>UTF-8</inputEncoding>
+                    <outputEncoding>UTF-8</outputEncoding>
+                    <asciidoc>
+                        <sourceDirectory>${project.basedir}/src/site/asciidoc</sourceDirectory>
+                        <requires>
+                            <require>asciidoctor-diagram</require>
+                        </requires>
+                        <!-- optional site-wide AsciiDoc attributes -->
+                        <attributes>
+                            <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
+                            <imagesdir>./images</imagesdir>
+                            <icons>font</icons>
+                            <source-highlighter>coderay</source-highlighter>
+                            <coderay-css>style</coderay-css>
+                            <toclevels>7</toclevels>
+                        </attributes>
+                    </asciidoc>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.12.1</version>
+                <configuration>
+                    <testSources>
+                        <testSource>
+                            <directory>src/test/java</directory>
+                            <includes>
+                                <include>**/*.groovy</include>
+                            </includes>
+                        </testSource>
+                        <testSource>
+                            <directory>src/test/groovy</directory>
+                            <directory>src/test</directory>
+                            <includes>
+                                <include>**/*.groovy</include>
+                            </includes>
+                        </testSource>
+                    </testSources>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy</artifactId>
+                        <version>3.0.8</version>
+                        <exclusions>
+                            <exclusion>
+                                <artifactId>junit-dep</artifactId>
+                                <groupId>*</groupId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>addTestSources</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>compileTests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <useIncrementalCompilation>true</useIncrementalCompilation>
+                    <fork>true</fork>
+                    <meminitial>256m</meminitial>
+                    <maxmem>768m</maxmem>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Spec.java</include>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>${junit.version}</version>
+                        <scope>test</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.junit.vintage</groupId>
+                        <artifactId>junit-vintage-engine</artifactId>
+                        <version>${junit.version}</version>
+                        <scope>test</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.version}</version>
+                <configuration>
+                    <doclint>none</doclint>
+                    <source>8</source>
+                    <!--<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>project</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+            <!--
+                   gpg is required for Sonatype's publishing mechanism to central
+               -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[1.8,9)</version>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>[3.5.0,)</version>
+                                </requireMavenVersion>
+                                <dependencyConvergence/>
+                                <banDuplicatePomDependencyVersions/>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>com.opencsv</Automatic-Module-Name>
+                        </manifestEntries>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>5.1.2</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>3.4.3</version>
+            </extension>
+        </extensions>
+    </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${maven.site.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-engine</artifactId>
+                <version>${junit.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-commons</artifactId>
+                <version>${junit.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>2.2</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections4.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.12.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <version>2.0-groovy-3.0</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.platform</groupId>
+                    <artifactId>junit-platform-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency> <!-- enables mocking of classes (in addition to interfaces) -->
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>3.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${maven.site.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.14.0</version>
+                <configuration>
+                    <rulesets>
+                        <ruleset>pmd-ruleset.xml</ruleset>
+                    </rulesets>
+                    <analysisCache>true</analysisCache> <!-- enable incremental analysis -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+                    <configLocation>checkstyle.xml</configLocation>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${maven.surefire.version}</version>
+                <configuration>
+                    <goal>report-only</goal>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.3.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.version}</version>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+        </plugins>
+    </reporting>
+    <distributionManagement>
+        <!--
+            Deployment repos provided by Sonatype parent POM. For more info see:
+            https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
+        -->
+        <site>
+            <id>opencsv.sf.net</id>
+            <url>scp://shell.sourceforge.net/home/project-web/opencsv/htdocs/</url>
+        </site>
+    </distributionManagement>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 01:37:04 GMT
+content-type: application/java-archive
+content-length: 268994
+cf-ray: 9fefda945c17bc72-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 220273
+etag: "fe938e19226f85c5f11a8d4d53283dbc"
+last-modified: Sun, 20 Feb 2022 22:52:56 GMT
+x-checksum-md5: fe938e19226f85c5f11a8d4d53283dbc
+x-checksum-sha1: 4baecf63b937b366b8b628041ce721b48e128589
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://git.code.sf.net/p/opencsv/source' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 01:37:04 GMT
+content-type: application/java-archive
+content-length: 972144
+cf-ray: 9fefda94ffaabc59-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 904373
+etag: "d2fb41d0b13180239bf819e0cba90bcb"
+last-modified: Sun, 20 Feb 2022 22:52:52 GMT
+x-checksum-md5: d2fb41d0b13180239bf819e0cba90bcb
+x-checksum-sha1: a65e0f47fd0911ec4f5a8de338b0ccbe523907b3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 2873ms:
+3446cca7fcf8f0763d33397605c587343ffd3340	refs/tags/4.2-RELEASE
+2064b4c6e9609389b5f80b69366166cc7a53e712	refs/tags/4.7Snapshot
+03395be1e7abf1a208716992ddda470aae21d8fd	refs/tags/4.7Snapshot^{}
+5ce28c74eceaa974898752ea32782917a3255542	refs/tags/5.9Release
+cbc9d60aa4309619a4780adcd83da5f48a4b4bd9	refs/tags/5.9Release^{}
+2afcaed1e4bf6336cc31f118ca1326aed5708e42	refs/tags/5_8_Release
+73bd9ff5cea648e6bacf68112a939885520e8d6e	refs/tags/OPENCSV_1_7
+e07072b007845c76e1122411a16b35be42ded39b	refs/tags/Release5.10
+ddfb7bb9c588d16f44a801c3a3605d93adc60582	refs/tags/Release5_7_1
+ba3616b58efba0fa2ebd7134a96ad8655df7cac6	refs/tags/Release5_7_1^{}
+c718bafb258689c43df649c95bd4d1f9ff3834f9	refs/tags/Release_4_0
+3b168981209cc0c4f84a5b9e77799b00159317ca	refs/tags/Release_4_1
+1a8d01d569f81390a88299a5344f2685dc690127	refs/tags/Release_4_1^{}
+2b93be0763bfe2a755e7e4a8f95f10804187179c	refs/tags/Version5.5
+b52caa2085fc7e718c50e65e793774cfcea8cb02	refs/tags/Version5.5^{}
+bca58cdd018c1a24002a633b89a261f095b3f734	refs/tags/Version_5_5_1
+f215a64ed72295425201de1cf70be6ba45c0efe8	refs/tags/Version_5_5_1^{}
+d3d893e55bf5dee0121c89b422af0157b25dea81	refs/tags/feature_5.4
+78618961f4e230e13d5fdbbcd57496b6e75effb0	refs/tags/feature_5.4^{}
+8b86b7fd88ec433c3080a8e6479ae10053c2bdaa	refs/tags/opencsv-5.11.1
+aaf26d66ad40d2380907d0f8b7144149d1d74fd6	refs/tags/opencsv-5.11.2
+66171503e62056833297e9192830f8a9b83659c7	refs/tags/opencsv5.12.0
+92f899cbf1ee51d1286ece24e7f17ac57153146c	refs/tags/opencsv_5_11
+f36851904ca7a2e682ed89c977d6acd35f291c57	refs/tags/release-5.2
+1469717dfe5b00e809dcb1ef7ee29630537a8c15	refs/tags/release-5.2^{}
+c0245939ba80145e0a33909c9c26254ff9b01ea0	refs/tags/release5_5_2
+0b730ec60811aafeae9a64166be9d65703d282c8	refs/tags/release5_6
+5d7247adc50e465c9664becf53e9091d8b9f4572	refs/tags/release5_6^{}
+243aff15b6b73d5d6ddd233a8b0196223cf151ec	refs/tags/version-5.0
+d65716f3dd4c3c52a3bfcf19ae2699d0d88c6b07	refs/tags/version-5.1
+8c06299185fd6a868cefbcae7a075de30e4d0a6b	refs/tags/version-5.1^{}
+a99c00ef5bc9618a68e9e4c3732872fbc8a29bc5	refs/tags/version-5.3
+56ad8b3d1f1a5acfd4b26e6efe3dd0899d36791b	refs/tags/version-5.3^{}
+b62712ddbc0a10c6b3f7484a61d532ccf58f6d20	refs/tags/version4.3
+c8bfa12f6e96a749d7c3a1d57b5baf77c06d68fd	refs/tags/version4.3^{}
+6aa1a6c4438cee0004a4a0cfb5b94e4b92cd4f0f	refs/tags/version4.3.1
+129a4c1a7b933d2af192e65da51511d9e07c2a87	refs/tags/version4.3.1^{}
+975cb9a5174e73acbfac627a78f700b4cb90f316	refs/tags/version4.3.2
+930e9fb8b0c820af021629fc6b7f495405118397	refs/tags/version4.3.2^{}
+27059c1bbece595563c1f6f303f41b0f7769d489	refs/tags/version4.4
+046f6870a62fdd4f574e2c3e6f08b63c42a88a87	refs/tags/version4.4^{}
+8ba463e8568f10b538536f14cd59039afd4b6332	refs/tags/version4.5
+cf05a06096da1b209b49ec0d77a4b213ace40320	refs/tags/version4.5^{}
+a77f75a1d975d8b2206040b9f306a7c0760c23b6	refs/tags/version4.6
+3e1bc641835f32c27fb0459d815992abcd80a6b4	refs/tags/version4.6^{}
+
+codex
+The upstream tag for this version is `release5_6`, so the SourceForge tree URL can be versioned as `release$version$` only if the dot is not needed; here the actual tag uses an underscore. I’m checking the exact URL behavior before writing the metadata, since this field has to render correctly for `5.6`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/opencsv/opencsv/5.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/opencsv/opencsv/5.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="opencsv-5.6-javadoc.jar" title="opencsv-5.6-javadoc.jar">opencsv-5.6-javadoc.jar</a>                           2022-02-20 22:52    972144      
+<a href="opencsv-5.6-javadoc.jar.asc" title="opencsv-5.6-javadoc.jar.asc">opencsv-5.6-javadoc.jar.asc</a>                       2022-02-20 22:52       195      
+<a href="opencsv-5.6-javadoc.jar.asc.md5" title="opencsv-5.6-javadoc.jar.asc.md5">opencsv-5.6-javadoc.jar.asc.md5</a>                   2022-02-20 22:52        32      
+<a href="opencsv-5.6-javadoc.jar.asc.sha1" title="opencsv-5.6-javadoc.jar.asc.sha1">opencsv-5.6-javadoc.jar.asc.sha1</a>                  2022-02-20 22:52        40      
+<a href="opencsv-5.6-javadoc.jar.asc.sha256" title="opencsv-5.6-javadoc.jar.asc.sha256">opencsv-5.6-javadoc.jar.asc.sha256</a>                2022-02-20 22:52        64      
+<a href="opencsv-5.6-javadoc.jar.asc.sha512" title="opencsv-5.6-javadoc.jar.asc.sha512">opencsv-5.6-javadoc.jar.asc.sha512</a>                2022-02-20 22:52       128      
+<a href="opencsv-5.6-javadoc.jar.md5" title="opencsv-5.6-javadoc.jar.md5">opencsv-5.6-javadoc.jar.md5</a>                       2022-02-20 22:52        32      
+<a href="opencsv-5.6-javadoc.jar.sha1" title="opencsv-5.6-javadoc.jar.sha1">opencsv-5.6-javadoc.jar.sha1</a>                      2022-02-20 22:52        40      
+<a href="opencsv-5.6-javadoc.jar.sha256" title="opencsv-5.6-javadoc.jar.sha256">opencsv-5.6-javadoc.jar.sha256</a>                    2022-02-20 22:52        64      
+<a href="opencsv-5.6-javadoc.jar.sha512" title="opencsv-5.6-javadoc.jar.sha512">opencsv-5.6-javadoc.jar.sha512</a>                    2022-02-20 22:52       128      
+<a href="opencsv-5.6-sources.jar" title="opencsv-5.6-sources.jar">opencsv-5.6-sources.jar</a>                           2022-02-20 22:52    268994      
+<a href="opencsv-5.6-sources.jar.asc" title="opencsv-5.6-sources.jar.asc">opencsv-5.6-sources.jar.asc</a>                       2022-02-20 22:52       195      
+<a href="opencsv-5.6-sources.jar.asc.md5" title="opencsv-5.6-sources.jar.asc.md5">opencsv-5.6-sources.jar.asc.md5</a>                   2022-02-20 22:52        32      
+<a href="opencsv-5.6-sources.jar.asc.sha1" title="opencsv-5.6-sources.jar.asc.sha1">opencsv-5.6-sources.jar.asc.sha1</a>                  2022-02-20 22:52        40      
+<a href="opencsv-5.6-sources.jar.asc.sha256" title="opencsv-5.6-sources.jar.asc.sha256">opencsv-5.6-sources.jar.asc.sha256</a>                2022-02-20 22:52        64      
+<a href="opencsv-5.6-sources.jar.asc.sha512" title="opencsv-5.6-sources.jar.asc.sha512">opencsv-5.6-sources.jar.asc.sha512</a>                2022-02-20 22:52       128      
+<a href="opencsv-5.6-sources.jar.md5" title="opencsv-5.6-sources.jar.md5">opencsv-5.6-sources.jar.md5</a>                       2022-02-20 22:52        32      
+<a href="opencsv-5.6-sources.jar.sha1" title="opencsv-5.6-sources.jar.sha1">opencsv-5.6-sources.jar.sha1</a>                      2022-02-20 22:52        40      
+<a href="opencsv-5.6-sources.jar.sha256" title="opencsv-5.6-sources.jar.sha256">opencsv-5.6-sources.jar.sha256</a>                    2022-02-20 22:52        64      
+<a href="opencsv-5.6-sources.jar.sha512" title="opencsv-5.6-sources.jar.sha512">opencsv-5.6-sources.jar.sha512</a>                    2022-02-20 22:52       128      
+<a href="opencsv-5.6.jar" title="opencsv-5.6.jar">opencsv-5.6.jar</a>                                   2022-02-20 22:52    235746      
+<a href="opencsv-5.6.jar.asc" title="opencsv-5.6.jar.asc">opencsv-5.6.jar.asc</a>                               2022-02-20 22:52       195      
+<a href="opencsv-5.6.jar.asc.md5" title="opencsv-5.6.jar.asc.md5">opencsv-5.6.jar.asc.md5</a>                           2022-02-20 22:52        32      
+<a href="opencsv-5.6.jar.asc.sha1" title="opencsv-5.6.jar.asc.sha1">opencsv-5.6.jar.asc.sha1</a>                          2022-02-20 22:52        40      
+<a href="opencsv-5.6.jar.asc.sha256" title="opencsv-5.6.jar.asc.sha256">opencsv-5.6.jar.asc.sha256</a>                        2022-02-20 22:52        64      
+<a href="opencsv-5.6.jar.asc.sha512" title="opencsv-5.6.jar.asc.sha512">opencsv-5.6.jar.asc.sha512</a>                        2022-02-20 22:52       128      
+<a href="opencsv-5.6.jar.md5" title="opencsv-5.6.jar.md5">opencsv-5.6.jar.md5</a>                               2022-02-20 22:52        32      
+<a href="opencsv-5.6.jar.sha1" title="opencsv-5.6.jar.sha1">opencsv-5.6.jar.sha1</a>                              2022-02-20 22:52        40      
+<a href="opencsv-5.6.jar.sha256" title="opencsv-5.6.jar.sha256">opencsv-5.6.jar.sha256</a>                            2022-02-20 22:52        64      
+<a href="opencsv-5.6.jar.sha512" title="opencsv-5.6.jar.sha512">opencsv-5.6.jar.sha512</a>                            2022-02-20 22:52       128      
+<a href="opencsv-5.6.pom" title="opencsv-5.6.pom">opencsv-5.6.pom</a>                                   2022-02-20 22:52     32257      
+<a href="opencsv-5.6.pom.asc" title="opencsv-5.6.pom.asc">opencsv-5.6.pom.asc</a>                               2022-02-20 22:52       195      
+<a href="opencsv-5.6.pom.asc.md5" title="opencsv-5.6.pom.asc.md5">opencsv-5.6.pom.asc.md5</a>                           2022-02-20 22:52        32      
+<a href="opencsv-5.6.pom.asc.sha1" title="opencsv-5.6.pom.asc.sha1">opencsv-5.6.pom.asc.sha1</a>                          2022-02-20 22:52        40      
+<a href="opencsv-5.6.pom.asc.sha256" title="opencsv-5.6.pom.asc.sha256">opencsv-5.6.pom.asc.sha256</a>                        2022-02-20 22:52        64      
+<a href="opencsv-5.6.pom.asc.sha512" title="opencsv-5.6.pom.asc.sha512">opencsv-5.6.pom.asc.sha512</a>                        2022-02-20 22:52       128      
+<a href="opencsv-5.6.pom.md5" title="opencsv-5.6.pom.md5">opencsv-5.6.pom.md5</a>                               2022-02-20 22:52        32      
+<a href="opencsv-5.6.pom.sha1" title="opencsv-5.6.pom.sha1">opencsv-5.6.pom.sha1</a>                              2022-02-20 22:52        40      
+<a href="opencsv-5.6.pom.sha256" title="opencsv-5.6.pom.sha256">opencsv-5.6.pom.sha256</a>                            2022-02-20 22:52        64      
+<a href="opencsv-5.6.pom.sha512" title="opencsv-5.6.pom.sha512">opencsv-5.6.pom.sha512</a>                            2022-02-20 22:52       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/main/java/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://sourceforge.net/p/opencsv/source/ci/release5.6/tree/src/test/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ exited 22 in 342ms:
+HTTP/2 404 
+date: Thu, 21 May 2026 01:37:15 GMT
+content-type: text/html; charset=utf-8
+content-length: 49396
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/top.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; rel=preload; as=style
+content-security-policy: frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; fenced-frame-src https:; frame-ancestors 'self'; script-src-attr 'none' 'report-sample'; object-src 'none'; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; form-action https://sourceforge.net; upgrade-insecure-requests
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+set-cookie: VISITOR=c7d5c8be-2340-4d93-af6d-850ea2aadcb3; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:37:15 GMT; secure; HttpOnly
+set-cookie: _csrf_token=91f6bcc20070e50c732048a7cd0ec94dfcca31459b68ee3981d71084973939241a435e386d17a627; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=OjiHsoXRIzCK7p6KxSs9nuiuqDpjxITDDlcKrYALKcQ-1779327435.0658073-1.0.1.1-_O.5WjrKqZasUwFJFrxY74Xf0QzYyorm0Q5SljXwVvgCzjeM9erzcI6mdmmJjq15KUvy1JuFlHK2zNeLpUkjPs62LZ26QjbWPHWoT5DCV3fdxR.jw6Fo_FVhqI9HY16_; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:07:15 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefdad52b7fbbf3-ZRH
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 850ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 01:37:15 GMT
+content-type: text/html; charset=utf-8
+content-length: 66839
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/top.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; rel=preload; as=style
+content-security-policy: form-action https://sourceforge.net; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; script-src-attr 'none' 'report-sample'; fenced-frame-src https:; upgrade-insecure-requests; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; frame-ancestors 'self'; object-src 'none'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=ab34b084-3d7e-4353-bf3e-aa106450e9b6; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:37:15 GMT; secure; HttpOnly
+set-cookie: _csrf_token=c38ce5df39d41be6f6d34eaecd98eb1c4e0773ccc4186f9f51c272fbc5942bc9ac6ed77b404a1afe; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=rfcBVS1fN9kmmqE6ZRusGzYVIWejhNkiRF53q62daTM-1779327435.0657723-1.0.1.1-lzYtdSYJT_3Wd48Bj7WYEuYBMwUTflLoGSy1ZSbb0QslJpZUpV4IU6vqMjBfzgALrnwCITvIUPxmuy1SykEhvVDa4b8YGmnSyXUG_Kbr0VP.l4CVz5aVwtxwRzs0Pl9y; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:07:15 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefdad52d24021d-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 895ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 01:37:15 GMT
+content-type: text/html; charset=utf-8
+content-length: 65067
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/top.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; rel=preload; as=style
+content-security-policy: fenced-frame-src https:; upgrade-insecure-requests; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; object-src 'none'; frame-ancestors 'self'; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; form-action https://sourceforge.net; script-src-attr 'none' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=95eb456f-4bc7-4cac-8aaa-9d7e9ac9c1c3; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:37:15 GMT; secure; HttpOnly
+set-cookie: _csrf_token=a470b5160678200644890a105363ff3ae0341f8043eeb4e43237707d67ce4a43dcf67ca78459aae3; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=cTveUodujn.MIsdrk2nRLI2fZNPehCspXfq7CuBQfe4-1779327435.0659578-1.0.1.1-FdpIPAzpd2uxdOwbwVYi3TXQ97WTfcLgRl.6iFHmD14OkidiXaK.6S_VfaRGFhxcOZIS0DVXlpKvBb1HGQP110rqcB9kZW3lvkiJeCeWogaycRotWuza0BAA13gQ1SbG; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:07:15 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefdad52dd7bb0c-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg -n 'sourceforge.net/p/.+/source' metadata build/discovered-artifact-metadata -g '*.json' | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org maven2 com opencsv opencsv 5.6 opencsv-5.6-sources.jar opencsv-5.6-javadoc.jar
+web search: 
+web search: site:sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test opencsv
+codex
+I have enough to make the file update: Maven Central has the versioned source and javadoc artifacts, and the upstream tests live under `src/test` at the `release5_6` tag. Because the released artifact is a normal JVM `jar` with Java classes, I’m leaving the language and not-for-native-image fields out.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6.jar -o /tmp/opencsv-5.6.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -fsSL 'https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=5.6'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 786ms:
+HTTP/2 103 
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/lato.css?1779299641>; as=style; rel=preload, <https://a.fsdn.com/con/css/top.css?1779299641>; as=style; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; as=style; rel=preload
+
+HTTP/2 200 
+date: Thu, 21 May 2026 01:37:49 GMT
+content-type: text/html; charset=utf-8
+content-length: 66848
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/top.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; rel=preload; as=style
+content-security-policy: fenced-frame-src https:; frame-ancestors 'self'; form-action https://sourceforge.net; script-src-attr 'none' 'report-sample'; upgrade-insecure-requests; object-src 'none'; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=0765660b-f7f9-4abb-bcfd-abbc567c3bb2; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:37:49 GMT; secure; HttpOnly
+set-cookie: _csrf_token=941e4639ff242ffd7ff394af3f6c159a60ee309286cda8a9521490d41d3092419d807cde60b0ec40; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=AbYNAh1J2yRLcD5ed7pNI2pyjgY2SuWOCwEZysJ0s70-1779327468.6477337-1.0.1.1-dL_U9o2oHguXav5C26FfsYgh0euEGsmCyJTBw4vGBrNgPCLRMvK8jEoJGbKn2R25mtChJS1.R51.pjoKNtCFl.ZS05JdOvFIkcg6eSivDhFBO_i1CoBH.BmSjN9C26Xe; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:07:49 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefdba70d98bb0a-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/opencsv-5.6.jar | rg '\\.class"'$'"' | head" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+com/opencsv/CSVReaderBuilder.class
+com/opencsv/CSVParser.class
+com/opencsv/CSVIterator.class
+com/opencsv/CSVReaderBaseBuilder.class
+com/opencsv/CSVParser$1.class
+com/opencsv/CSVWriter.class
+com/opencsv/CSVWriterBuilder.class
+com/opencsv/bean/StatefulBeanToCsv.class
+com/opencsv/bean/CsvConverter.class
+com/opencsv/bean/FieldMapByPosition.class
+
+codex
+I’m updating the discovered metadata JSON now, keeping the Maven source and javadoc URLs because those versioned artifacts exist, and using the release-tagged SourceForge test tree for the tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+diff --git a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+index 4ded94f5b5cd255f0fe50a0be2fb8e022f61aee0..c5ad02ffdfacf688574166953f03425b5bd73e09
+--- a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
++++ b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.opencsv:opencsv:5.6"
++  "coordinates" : "com.opencsv:opencsv:5.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++  "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
++  "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+index 4ded94f5b5cd255f0fe50a0be2fb8e022f61aee0..c5ad02ffdfacf688574166953f03425b5bd73e09
+--- a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
++++ b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.opencsv:opencsv:5.6"
++  "coordinates" : "com.opencsv:opencsv:5.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++  "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
++  "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+{
+  "coordinates": "com.opencsv:opencsv:5.6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
+  "repository-url": "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
+  "test-code-url": "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
+  "description": "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 01:38:01 GMT
+content-type: application/java-archive
+content-length: 972144
+cf-ray: 9fefdbf9196bbc06-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 904430
+etag: "d2fb41d0b13180239bf819e0cba90bcb"
+last-modified: Sun, 20 Feb 2022 22:52:52 GMT
+x-checksum-md5: d2fb41d0b13180239bf819e0cba90bcb
+x-checksum-sha1: a65e0f47fd0911ec4f5a8de338b0ccbe523907b3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/opencsv-5.6-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 01:38:01 GMT
+content-type: application/java-archive
+content-length: 268994
+cf-ray: 9fefdbf91e08bc54-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 220330
+etag: "fe938e19226f85c5f11a8d4d53283dbc"
+last-modified: Sun, 20 Feb 2022 22:52:56 GMT
+x-checksum-md5: fe938e19226f85c5f11a8d4d53283dbc
+x-checksum-sha1: 4baecf63b937b366b8b628041ce721b48e128589
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL 'https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=5.6'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+diff --git a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+index 4ded94f5b5cd255f0fe50a0be2fb8e022f61aee0..c5ad02ffdfacf688574166953f03425b5bd73e09
+--- a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
++++ b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.opencsv:opencsv:5.6"
++  "coordinates" : "com.opencsv:opencsv:5.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++  "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
++  "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+ }
+
+ succeeded in 980ms:
+HTTP/2 103 
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/lato.css?1779299641>; as=style; rel=preload, <https://a.fsdn.com/con/css/top.css?1779299641>; as=style; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; as=style; rel=preload
+
+HTTP/2 200 
+date: Thu, 21 May 2026 01:38:02 GMT
+content-type: text/html; charset=utf-8
+content-length: 66844
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/top.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; rel=preload; as=style
+content-security-policy: frame-ancestors 'self'; fenced-frame-src https:; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; script-src-attr 'none' 'report-sample'; form-action https://sourceforge.net; upgrade-insecure-requests; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; object-src 'none'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=843f4c3f-8e7b-4bd9-b019-7b7b786c00ec; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:38:02 GMT; secure; HttpOnly
+set-cookie: _csrf_token=bfce99c5b89078591d942836dba0a24237a42697b3215f13efe0c7ba01bed22e356cc33616d2a181; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=7Mf0fOOKGAMDIz9oWalr61wFdI2lxDFiKPOO.Zy9sck-1779327481.7758322-1.0.1.1-fP.0bqBoJIfP8elYt8XTZQqWg.43JQZYNSOikXKBLCWQFKwRkDX6uYa99pMDIfeDlu_YYDcEvfMfpSL5mEYEdUV8Wz0xrzei.mQuV27cE91944rQtDZ7Km71i9DyuQhI; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:08:02 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefdbf91ec3bc68-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+index 4ded94f5b5cd255f0fe50a0be2fb8e022f61aee0..c5ad02ffdfacf688574166953f03425b5bd73e09
+--- a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
++++ b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.opencsv:opencsv:5.6"
++  "coordinates" : "com.opencsv:opencsv:5.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++  "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
++  "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+diff --git a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+index 4ded94f5b5cd255f0fe50a0be2fb8e022f61aee0..c5ad02ffdfacf688574166953f03425b5bd73e09
+--- a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
++++ b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.opencsv:opencsv:5.6"
++  "coordinates" : "com.opencsv:opencsv:5.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++  "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
++  "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+ }
+
+ succeeded in 288ms:
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/opencsv/opencsv/5.6/
+web search: 
+web search: "release5_6" "opencsv"
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "com.opencsv:opencsv:5.6",
+     3	  "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
+     4	  "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
+     5	  "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
+     7	  "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+index 4ded94f5b5cd255f0fe50a0be2fb8e022f61aee0..c5ad02ffdfacf688574166953f03425b5bd73e09
+--- a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
++++ b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.opencsv:opencsv:5.6"
++  "coordinates" : "com.opencsv:opencsv:5.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++  "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
++  "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+ }
+
+web search: 
+web search: https://sourceforge.net/p/opencsv/source/ci/master/tree/
+web search: 
+web search: opencsv 5.6 Maven Central sources javadoc jar
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://sourceforge.net/p/opencsv/source/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://sourceforge.net/p/opencsv/source/ci/master/tree/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6
+ succeeded in 788ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 01:38:41 GMT
+content-type: text/html; charset=utf-8
+content-length: 77742
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/top.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; rel=preload; as=style
+content-security-policy: fenced-frame-src https:; upgrade-insecure-requests; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; object-src 'none'; frame-ancestors 'self'; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; form-action https://sourceforge.net; script-src-attr 'none' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=cd5c6c87-bb1e-49cf-80fc-b5fefed9645c; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:38:41 GMT; secure; HttpOnly
+set-cookie: _csrf_token=f0cc3c3e6e81b18e9b18452b59f5e6a7f771a90a758d14118729fce5ceb935c682f7c685083e3e18; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=BO3VMreq_QiUIFpoEpIkCeT7pphTrk38xQw3.UBRNcw-1779327520.656613-1.0.1.1-ovVpZGOdnyyPT_p3pjDPHyY4r0cIj5SZrFQhSNJjMmQ.5fXE45pzZVWgWGBD7SgZFzwim2oaRT1PaJanm4niZf29YKlicCOkce0fE4rM199MGqqCdURUsPYKqKjgUIPQ; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:08:41 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefdcec1e83bc66-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+index 4ded94f5b5cd255f0fe50a0be2fb8e022f61aee0..c5ad02ffdfacf688574166953f03425b5bd73e09
+--- a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
++++ b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.opencsv:opencsv:5.6"
++  "coordinates" : "com.opencsv:opencsv:5.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++  "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
++  "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+ }
+
+ succeeded in 1219ms:
+HTTP/2 301 
+date: Thu, 21 May 2026 01:38:40 GMT
+content-type: text/html; charset=UTF-8
+location: https://sourceforge.net/p/opencsv/source/ref/master/
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+content-security-policy: form-action https://sourceforge.net; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; script-src-attr 'none' 'report-sample'; fenced-frame-src https:; upgrade-insecure-requests; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; frame-ancestors 'self'; object-src 'none'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=8a179675-a805-4826-9331-c6856151c962; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:38:40 GMT; secure; HttpOnly
+set-cookie: _csrf_token=9f07062bed575e705242712dafbbcf407113636d11f2b40178f2c37c31a288947c40402ccec814ed; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=fP4nVhoPuYDI6DiuZBhDaHXh78ei38tqbzOI6UrCqwY-1779327520.6559129-1.0.1.1-LysaCHLIrACPeZVfwGWXujc4GUvzOniTZD2vM60lV.OtwGiTZ6g3CtzH65XapF7KqK38JFABrKxfpjNMVSLklXIgzwmQYxszyh1uZPgLWpnvhh.3KwH9nmKW9cjtEFrm; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:08:40 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefdcec1e81bc66-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 301 
+date: Thu, 21 May 2026 01:38:41 GMT
+content-type: text/html; charset=UTF-8
+location: https://sourceforge.net/p/opencsv/source/ci/master/tree/
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+content-security-policy: form-action https://sourceforge.net; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; frame-ancestors 'self'; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; object-src 'none'; upgrade-insecure-requests; fenced-frame-src https:; script-src-attr 'none' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=45157f66-e789-4f44-bc6d-1c9b20b46bda; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:38:41 GMT; secure; HttpOnly
+set-cookie: _csrf_token=556f2fdb8ba0687873000806cfdd81a0c3799c8f1b4bc6c753be0e07a794c95e5198a603ed656a16; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=A_zXOVlmAseuSM7o7Qv6UqVvrBVGdCGMyps4G0WHYro-1779327520.8917086-1.0.1.1-mc3A2753PGPP7n9ScVLTNFKKK1QAAHEY1pBZhNG15tk.XxRZlz2qZbZLD9.epoT7nGF93IrH63AC5yur_IYemyn3LXwudaicKbuanwai4J96.43cyYmRxbJYMkT9wHAm; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:08:41 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefdced9f5fbc66-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 21 May 2026 01:38:41 GMT
+content-type: text/html; charset=utf-8
+content-length: 77736
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/top.css?1779299641>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779299641>; rel=preload; as=style
+content-security-policy: frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; fenced-frame-src https:; frame-ancestors 'self'; script-src-attr 'none' 'report-sample'; object-src 'none'; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; form-action https://sourceforge.net; upgrade-insecure-requests
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=fc1a7554-43f2-4156-8a46-b1cd480e2684; Max-Age=315360000; Path=/; expires=Sun, 18-May-2036 01:38:41 GMT; secure; HttpOnly
+set-cookie: _csrf_token=86122db604d3af8c50a28a74b462e530ce99514acebb232bb5d09084c16b45b6adbe1eeaeeaef36f; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=m9VRhBoQ.a_pAqkRHzN2Up5gM4N46Rcty8IHTuvWi3I-1779327521.162922-1.0.1.1-ufWQTc7SGi5UDoec06Y1DSspHp2Ss9KWPTj_T0lM39JbQkhzAAJUFDAsLeuwZUgQCRSmcMk.TP9wSUlfAehvoyQH6L2yzu3QDse_Kfw78MZG5lp9ei0U2UGbtfiRrFOe; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Thu, 21 May 2026 02:08:41 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9fefdcef4887bc66-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+index 4ded94f5b5cd255f0fe50a0be2fb8e022f61aee0..c5ad02ffdfacf688574166953f03425b5bd73e09
+--- a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
++++ b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.opencsv:opencsv:5.6"
++  "coordinates" : "com.opencsv:opencsv:5.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++  "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
++  "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+ }
+
+codex
+Updated [com.opencsv-opencsv-5.6.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json:1).
+
+I used Maven Central for the versioned source and javadoc artifacts, and the upstream SourceForge `release5_6` tag for the test suite. I left `language` and `not-for-native-image` absent because this is a normal JVM Java `jar` with class files.
+
+Verified:
+- JSON parses with `jq`.
+- Replaced URL targets for sources, tests, and documentation return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+index 4ded94f5b5cd255f0fe50a0be2fb8e022f61aee0..c5ad02ffdfacf688574166953f03425b5bd73e09
+--- a/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
++++ b/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.opencsv:opencsv:5.6"
++  "coordinates" : "com.opencsv:opencsv:5.6",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-sources.jar",
++  "repository-url" : "https://sourceforge.net/p/opencsv/source/ci/master/tree/",
++  "test-code-url" : "https://sourceforge.net/p/opencsv/source/ci/release5_6/tree/src/test/?version=$version$",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/opencsv/opencsv/$version$/opencsv-$version$-javadoc.jar",
++  "description" : "Opencsv is a Java library for reading and writing CSV data. It supports configurable parsing and writing as well as mapping CSV rows to and from Java beans through annotations."
+ }
+
+tokens used
+121,998
+Updated [com.opencsv-opencsv-5.6.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/build/discovered-artifact-metadata/com.opencsv-opencsv-5.6.json:1).
+
+I used Maven Central for the versioned source and javadoc artifacts, and the upstream SourceForge `release5_6` tag for the test suite. I left `language` and `not-for-native-image` absent because this is a normal JVM Java `jar` with class files.
+
+Verified:
+- JSON parses with `jq`.
+- Replaced URL targets for sources, tests, and documentation return HTTP 200.
+Ran agent for com.opencsv:opencsv:5.6 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/build/agent-artifact-discovery-logs/com.opencsv-opencsv-5.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1340-790b43a6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 31s
+9 actionable tasks: 9 executed
