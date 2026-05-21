@@ -46,7 +46,9 @@ import javax.servlet.http.HttpSessionListener;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.servlet.CookieWrapper;
-import org.glassfish.grizzly.servlet.ServletHandler;
+import org.glassfish.grizzly.servlet.FilterRegistration;
+import org.glassfish.grizzly.servlet.ServletRegistration;
+import org.glassfish.grizzly.servlet.WebappContext;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,14 +61,16 @@ public class Grizzly_http_servletTest {
     void servletHandlerServesRequestsThroughFiltersSessionsAndCookies() throws Exception {
         EchoServlet servlet = new EchoServlet();
         CapturingFilter filter = new CapturingFilter();
-        ServletHandler handler = new ServletHandler(servlet);
-        handler.setContextPath("/sample");
-        handler.setServletPath("/echo");
-        handler.addInitParameter("greeting", "hello");
-        handler.addContextParameter("application", "grizzly-servlet-test");
-        handler.addFilter(filter, "capturingFilter", Collections.singletonMap("role", "observed"));
+        WebappContext context = new WebappContext("sample", "/sample");
+        context.addContextInitParameter("application", "grizzly-servlet-test");
+        ServletRegistration servletRegistration = context.addServlet("echoServlet", servlet);
+        servletRegistration.setInitParameter("greeting", "hello");
+        servletRegistration.addMapping("/echo/*");
+        FilterRegistration filterRegistration = context.addFilter("capturingFilter", filter);
+        filterRegistration.setInitParameter("role", "observed");
+        filterRegistration.addMappingForUrlPatterns(null, "/echo/*");
 
-        ServerHandle server = startServer(handler, "/sample/echo/*");
+        ServerHandle server = startServer(context);
         try {
             HttpResponse response = get(server.port(),
                     "/sample/echo/details?name=GraalVM&multi=one&multi=two",
@@ -108,11 +112,11 @@ public class Grizzly_http_servletTest {
     @Test
     void requestDispatcherIncludesAndForwardsWithinServletContext() throws Exception {
         DispatchingServlet servlet = new DispatchingServlet();
-        ServletHandler handler = new ServletHandler(servlet);
-        handler.setContextPath("");
-        handler.setServletPath("/dispatch");
+        WebappContext context = new WebappContext("dispatch", "/");
+        ServletRegistration servletRegistration = context.addServlet("dispatchingServlet", servlet);
+        servletRegistration.addMapping("/dispatch/*");
 
-        ServerHandle server = startServer(handler, "/dispatch/*");
+        ServerHandle server = startServer(context);
         try {
             HttpResponse includeResponse = get(server.port(), "/dispatch/include", Collections.emptyMap());
 
@@ -135,11 +139,11 @@ public class Grizzly_http_servletTest {
 
     @Test
     void postRequestBodyAndFormParametersAreAvailableToServlet() throws Exception {
-        ServletHandler handler = new ServletHandler(new FormServlet());
-        handler.setContextPath("/forms");
-        handler.setServletPath("/submit");
+        WebappContext context = new WebappContext("forms", "/forms");
+        ServletRegistration servletRegistration = context.addServlet("formServlet", new FormServlet());
+        servletRegistration.addMapping("/submit");
 
-        ServerHandle server = startServer(handler, "/forms/submit");
+        ServerHandle server = startServer(context);
         try {
             HttpResponse response = post(server.port(), "/forms/submit", "alpha=one&beta=two&beta=three");
 
@@ -157,12 +161,13 @@ public class Grizzly_http_servletTest {
     @Test
     void servletHandlerNotifiesServletEventListenersRegisteredByClassName() throws Exception {
         ServletEventRecorder.reset();
-        ServletHandler handler = new ServletHandler(new ListenerDrivenServlet());
-        handler.setContextPath("/events");
-        handler.setServletPath("/capture");
-        handler.addServletListener(ServletEventRecorder.class.getName());
+        WebappContext context = new WebappContext("events", "/events");
+        ServletRegistration servletRegistration = context.addServlet("listenerDrivenServlet",
+                new ListenerDrivenServlet());
+        servletRegistration.addMapping("/capture");
+        context.addListener(ServletEventRecorder.class.getName());
 
-        ServerHandle server = startServer(handler, "/events/capture");
+        ServerHandle server = startServer(context);
         try {
             assertThat(ServletEventRecorder.events()).containsExactly("contextInitialized:/events");
 
@@ -191,19 +196,16 @@ public class Grizzly_http_servletTest {
 
     @Test
     void servletHandlersCreatedFromExistingHandlerShareServletContext() throws Exception {
-        ServletHandler writerHandler = new ServletHandler(new SharedContextWriterServlet());
-        writerHandler.setContextPath("/shared");
-        writerHandler.setServletPath("/write");
-        writerHandler.addContextParameter("scope", "application");
+        WebappContext context = new WebappContext("shared", "/shared");
+        context.addContextInitParameter("scope", "application");
+        ServletRegistration writerRegistration = context.addServlet("sharedContextWriterServlet",
+                new SharedContextWriterServlet());
+        writerRegistration.addMapping("/write");
+        ServletRegistration readerRegistration = context.addServlet("sharedContextReaderServlet",
+                new SharedContextReaderServlet());
+        readerRegistration.addMapping("/read");
 
-        ServletHandler readerHandler = writerHandler.newServletHandler(new SharedContextReaderServlet());
-        readerHandler.setServletPath("/read");
-
-        Map<String, ServletHandler> handlersByMapping = new LinkedHashMap<>();
-        handlersByMapping.put("/shared/write", writerHandler);
-        handlersByMapping.put("/shared/read", readerHandler);
-
-        ServerHandle server = startServer(handlersByMapping);
+        ServerHandle server = startServer(context);
         try {
             HttpResponse writeResponse = get(server.port(), "/shared/write?name=color&value=blue",
                     Collections.emptyMap());
@@ -248,29 +250,19 @@ public class Grizzly_http_servletTest {
         assertThat(wrapper.getVersion()).isEqualTo(1);
         assertThat(wrapper.getWrappedCookie()).isSameAs(servletCookie);
 
-        Cookie clone = (Cookie) wrapper.clone();
+        Cookie clone = (Cookie) wrapper.cloneCookie();
         assertThat(clone).isNotSameAs(servletCookie);
         assertThat(clone.getName()).isEqualTo("theme");
         assertThat(clone.getValue()).isEqualTo("dark");
     }
 
-    private static ServerHandle startServer(ServletHandler handler, String mapping) throws IOException {
+    private static ServerHandle startServer(WebappContext context) throws IOException {
         int port = availablePort();
         HttpServer server = new HttpServer();
         server.addListener(new NetworkListener("test-listener", HOST, port));
-        server.getServerConfiguration().addHttpHandler(handler, mapping);
+        context.deploy(server);
         server.start();
-        return new ServerHandle(server, port);
-    }
-
-    private static ServerHandle startServer(Map<String, ServletHandler> handlersByMapping) throws IOException {
-        int port = availablePort();
-        HttpServer server = new HttpServer();
-        server.addListener(new NetworkListener("test-listener", HOST, port));
-        handlersByMapping.forEach((mapping, handler) ->
-                server.getServerConfiguration().addHttpHandler(handler, mapping));
-        server.start();
-        return new ServerHandle(server, port);
+        return new ServerHandle(server, context, port);
     }
 
     private static int availablePort() throws IOException {
@@ -349,10 +341,11 @@ public class Grizzly_http_servletTest {
         return values == null ? "" : String.join(",", values);
     }
 
-    private record ServerHandle(HttpServer server, int port) implements AutoCloseable {
+    private record ServerHandle(HttpServer server, WebappContext context, int port) implements AutoCloseable {
         @Override
         public void close() {
             server.stop();
+            context.undeploy();
         }
     }
 
