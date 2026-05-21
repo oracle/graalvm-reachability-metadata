@@ -23,6 +23,17 @@ public class AccessorTest {
         assertThat(access.get(bean, "enabled")).isEqualTo(Boolean.TRUE);
     }
 
+    @Test
+    void discoversBooleanBeanIsGetterMethod() {
+        BeansAccess<BooleanIsGetterBean> access = BeansAccess.get(BooleanIsGetterBean.class);
+        BooleanIsGetterBean bean = access.newInstance();
+
+        access.set(bean, "active", Boolean.TRUE);
+
+        assertThat(bean.isActive()).isTrue();
+        assertThat(access.get(bean, "active")).isEqualTo(Boolean.TRUE);
+    }
+
     public static class BooleanGetterBean {
         private boolean enabled;
 
@@ -58,6 +69,44 @@ public class AccessorTest {
         @Override
         public BooleanGetterBean newInstance() {
             return new BooleanGetterBean();
+        }
+    }
+
+    public static class BooleanIsGetterBean {
+        private boolean active;
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+    }
+
+    public static class BooleanIsGetterBeanAccAccess extends BeansAccess<BooleanIsGetterBean> {
+        @Override
+        public void set(BooleanIsGetterBean object, int methodIndex, Object value) {
+            String name = getAccessors()[methodIndex].getName();
+            if ("active".equals(name)) {
+                object.setActive(((Boolean) value).booleanValue());
+                return;
+            }
+            throw new IllegalArgumentException("Unknown accessor index: " + methodIndex);
+        }
+
+        @Override
+        public Object get(BooleanIsGetterBean object, int methodIndex) {
+            String name = getAccessors()[methodIndex].getName();
+            if ("active".equals(name)) {
+                return Boolean.valueOf(object.isActive());
+            }
+            throw new IllegalArgumentException("Unknown accessor index: " + methodIndex);
+        }
+
+        @Override
+        public BooleanIsGetterBean newInstance() {
+            return new BooleanIsGetterBean();
         }
     }
 }
