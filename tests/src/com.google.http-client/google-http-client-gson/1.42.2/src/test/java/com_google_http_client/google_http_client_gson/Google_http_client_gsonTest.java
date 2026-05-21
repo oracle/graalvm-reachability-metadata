@@ -7,14 +7,17 @@
 package com_google_http_client.google_http_client_gson;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonGenerator;
+import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.JsonParser;
 import com.google.api.client.json.JsonToken;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.Key;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
@@ -24,6 +27,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 public class Google_http_client_gsonTest {
@@ -198,6 +202,41 @@ public class Google_http_client_gsonTest {
     }
 
     @Test
+    void objectParserUnwrapsResponseAndBindsAnnotatedFields() throws Exception {
+        GsonFactory factory = GsonFactory.getDefaultInstance();
+        JsonObjectParser objectParser = new JsonObjectParser.Builder(factory)
+                .setWrapperKeys(Set.of("response"))
+                .build();
+        assertSame(factory, objectParser.getJsonFactory());
+        assertEquals(Set.of("response"), objectParser.getWrapperKeys());
+
+        String wrappedDocument = """
+                {
+                  "ignored": {"display_name": "wrong"},
+                  "response": {
+                    "display_name": "Ada Lovelace",
+                    "score": 42,
+                    "active": true,
+                    "roles": ["admin", "writer"],
+                    "preferences": {
+                      "newsletter": false,
+                      "timezone": "UTC"
+                    }
+                  }
+                }
+                """;
+
+        Profile profile = objectParser.parseAndClose(new StringReader(wrappedDocument), Profile.class);
+
+        assertEquals("Ada Lovelace", profile.displayName);
+        assertEquals(42, profile.score);
+        assertTrue(profile.active);
+        assertEquals(List.of("admin", "writer"), profile.roles);
+        assertFalse(profile.preferences.newsletter);
+        assertEquals("UTC", profile.preferences.timezone);
+    }
+
+    @Test
     void stringParserNavigatesNestedDocumentsAndReadsFloatingPointNumbers() throws Exception {
         GsonFactory factory = GsonFactory.getDefaultInstance();
         String document = """
@@ -249,5 +288,30 @@ public class Google_http_client_gsonTest {
         } finally {
             parser.close();
         }
+    }
+
+    public static final class Profile {
+        @Key("display_name")
+        public String displayName;
+
+        @Key
+        public int score;
+
+        @Key
+        public boolean active;
+
+        @Key
+        public List<String> roles;
+
+        @Key
+        public Preferences preferences;
+    }
+
+    public static final class Preferences {
+        @Key
+        public boolean newsletter;
+
+        @Key
+        public String timezone;
     }
 }
