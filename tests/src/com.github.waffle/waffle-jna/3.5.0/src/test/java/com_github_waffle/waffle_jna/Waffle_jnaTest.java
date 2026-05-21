@@ -14,6 +14,7 @@ import org.w3c.dom.Element;
 
 import waffle.jaas.RolePrincipal;
 import waffle.jaas.UserPrincipal;
+import waffle.jaas.WindowsLoginModule;
 import waffle.servlet.WindowsPrincipal;
 import waffle.util.NtlmMessage;
 import waffle.util.SPNegoMessage;
@@ -23,15 +24,26 @@ import waffle.util.cache.CacheSupplier;
 import waffle.util.cache.CaffeineCache;
 import waffle.util.cache.CaffeineCacheSupplier;
 import waffle.windows.auth.IWindowsAccount;
+import waffle.windows.auth.IWindowsAuthProvider;
+import waffle.windows.auth.IWindowsComputer;
+import waffle.windows.auth.IWindowsDomain;
 import waffle.windows.auth.IWindowsIdentity;
 import waffle.windows.auth.IWindowsImpersonationContext;
+import waffle.windows.auth.IWindowsSecurityContext;
 import waffle.windows.auth.PrincipalFormat;
 import waffle.windows.auth.WindowsAccount;
 import waffle.windows.auth.impl.WindowsAuthProviderImpl;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.ServiceLoader;
 
+import javax.security.auth.Subject;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class Waffle_jnaTest {
@@ -133,6 +145,50 @@ public class Waffle_jnaTest {
     }
 
     @Test
+    void windowsLoginModuleAuthenticatesWithCallbackCredentialsAndPopulatesSubjectPrincipals() throws Exception {
+        TrackingWindowsIdentity identity = new TrackingWindowsIdentity("S-1-5-21-1000", new byte[] { 1, 2, 3, 4 },
+                "DOMAIN\\alice",
+                new TestWindowsAccount("S-1-5-32-544", "DOMAIN\\Admins", "Admins", "DOMAIN"),
+                new TestWindowsAccount("S-1-5-32-545", "DOMAIN\\Users", "Users", "DOMAIN"));
+        TestWindowsAuthProvider authProvider = new TestWindowsAuthProvider(identity);
+        Subject subject = new Subject();
+        WindowsLoginModule loginModule = new WindowsLoginModule();
+        CallbackHandler callbackHandler = callbacks -> {
+            for (Callback callback : callbacks) {
+                if (callback instanceof NameCallback nameCallback) {
+                    nameCallback.setName("DOMAIN\\alice");
+                } else if (callback instanceof PasswordCallback passwordCallback) {
+                    passwordCallback.setPassword("secret".toCharArray());
+                } else {
+                    throw new UnsupportedCallbackException(callback);
+                }
+            }
+        };
+
+        loginModule.setAuth(authProvider);
+        loginModule.setAllowGuestLogin(false);
+        loginModule.initialize(subject, callbackHandler, Map.of(), Map.of("debug", "true", "principalFormat", "both",
+                "roleFormat", "sid"));
+
+        assertThat(loginModule.isDebug()).isTrue();
+        assertThat(loginModule.isAllowGuestLogin()).isFalse();
+        assertThat(loginModule.getAuth()).isSameAs(authProvider);
+        assertThat(loginModule.login()).isTrue();
+        assertThat(authProvider.getLastUsername()).isEqualTo("DOMAIN\\alice");
+        assertThat(authProvider.getLastPassword()).isEqualTo("secret");
+        assertThat(identity.isDisposed()).isTrue();
+
+        assertThat(loginModule.commit()).isTrue();
+        assertThat(subject.getPrincipals()).contains(new UserPrincipal("DOMAIN\\alice"),
+                new UserPrincipal("S-1-5-21-1000"), new RolePrincipal("S-1-5-32-544"),
+                new RolePrincipal("S-1-5-32-545"));
+        assertThat(subject.getPrincipals()).doesNotContain(new RolePrincipal("DOMAIN\\Admins"));
+
+        assertThat(loginModule.logout()).isTrue();
+        assertThat(subject.getPrincipals()).isEmpty();
+    }
+
+    @Test
     void waffleInfoFormatsExceptionDetailsAsXml() throws Exception {
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         IllegalArgumentException failure = new IllegalArgumentException("bad account");
@@ -178,6 +234,123 @@ public class Waffle_jnaTest {
         @Override
         public String getDomain() {
             return domain;
+        }
+    }
+
+    private static final class TestWindowsAuthProvider implements IWindowsAuthProvider {
+        private final IWindowsIdentity identity;
+        private String lastUsername;
+        private String lastPassword;
+
+        private TestWindowsAuthProvider(IWindowsIdentity identity) {
+            this.identity = identity;
+        }
+
+        @Override
+        public IWindowsIdentity logonUser(String username, String password) {
+            this.lastUsername = username;
+            this.lastPassword = password;
+            return identity;
+        }
+
+        @Override
+        public IWindowsIdentity logonDomainUser(String username, String domain, String password) {
+            throw new UnsupportedOperationException("Domain logon is not used by this test.");
+        }
+
+        @Override
+        public IWindowsIdentity logonDomainUserEx(String username, String domain, String password, int logonType,
+                int logonProvider) {
+            throw new UnsupportedOperationException("Extended domain logon is not used by this test.");
+        }
+
+        @Override
+        public IWindowsAccount lookupAccount(String accountName) {
+            throw new UnsupportedOperationException("Account lookup is not used by this test.");
+        }
+
+        @Override
+        public IWindowsComputer getCurrentComputer() {
+            throw new UnsupportedOperationException("Computer lookup is not used by this test.");
+        }
+
+        @Override
+        public IWindowsDomain[] getDomains() {
+            throw new UnsupportedOperationException("Domain enumeration is not used by this test.");
+        }
+
+        @Override
+        public IWindowsSecurityContext acceptSecurityToken(String connectionId, byte[] token, String securityPackage) {
+            throw new UnsupportedOperationException("Security token acceptance is not used by this test.");
+        }
+
+        @Override
+        public void resetSecurityToken(String connectionId) {
+            throw new UnsupportedOperationException("Security token reset is not used by this test.");
+        }
+
+        private String getLastUsername() {
+            return lastUsername;
+        }
+
+        private String getLastPassword() {
+            return lastPassword;
+        }
+    }
+
+    private static final class TrackingWindowsIdentity implements IWindowsIdentity {
+        private final String sidString;
+        private final byte[] sid;
+        private final String fqn;
+        private final IWindowsAccount[] groups;
+        private boolean disposed;
+
+        private TrackingWindowsIdentity(String sidString, byte[] sid, String fqn, IWindowsAccount... groups) {
+            this.sidString = sidString;
+            this.sid = Arrays.copyOf(sid, sid.length);
+            this.fqn = fqn;
+            this.groups = Arrays.copyOf(groups, groups.length);
+        }
+
+        @Override
+        public String getSidString() {
+            return sidString;
+        }
+
+        @Override
+        public byte[] getSid() {
+            return Arrays.copyOf(sid, sid.length);
+        }
+
+        @Override
+        public String getFqn() {
+            return fqn;
+        }
+
+        @Override
+        public IWindowsAccount[] getGroups() {
+            return Arrays.copyOf(groups, groups.length);
+        }
+
+        @Override
+        public IWindowsImpersonationContext impersonate() {
+            return () -> {
+                // Test identity does not hold a native impersonation context.
+            };
+        }
+
+        @Override
+        public void dispose() {
+            disposed = true;
+        }
+
+        @Override
+        public boolean isGuest() {
+            return false;
+        }
+
+        private boolean isDisposed() {
+            return disposed;
         }
     }
 
