@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.apache.maven.plugin.surefire.HelpMojo;
+import org.apache.maven.plugins.maven_surefire_plugin.HelpMojo;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
