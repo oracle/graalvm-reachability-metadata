@@ -18,22 +18,31 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.Test;
 
 public class ServletHolderTest {
-    @Test
-    public void getNameOfJspClassUsesAvailableJasperUtility() {
-        ServletHolder holder = new ServletHolder();
-
-        String jspClassName = holder.getNameOfJspClass("/WEB-INF/pages/monthly-report.jsp");
-
-        assertThat(jspClassName).isEqualTo("javaIdentifier:monthly-report.jsp");
-    }
+    private static final String JSP_PATH = "/WEB-INF/pages/monthly-report.jsp";
+    private static final String PRECOMPILED_JSP_NAME = "org.apache.jsp.javaPackage:/WEB-INF/pages"
+            + ".javaIdentifier:monthly-report.jsp";
 
     @Test
-    public void getPackageOfJspClassUsesAvailableJasperUtility() {
+    public void startMapsForcedJspToPrecompiledServletClassUsingAvailableJasperUtility() throws Exception {
+        ServletHandler handler = new ServletHandler();
+        handler.setEnsureDefaultServlet(false);
+        ServletHolder precompiledJsp = new ServletHolder(PRECOMPILED_JSP_NAME, CountingServlet.class);
         ServletHolder holder = new ServletHolder();
+        holder.setName("monthly-report");
+        holder.setForcedPath(JSP_PATH);
 
-        String jspPackage = holder.getPackageOfJspClass("/WEB-INF/pages/monthly-report.jsp");
+        handler.addServlet(precompiledJsp);
+        handler.addServlet(holder);
 
-        assertThat(jspPackage).isEqualTo("javaPackage:/WEB-INF/pages");
+        try {
+            handler.start();
+
+            assertThat(holder.getClassName()).isEqualTo(CountingServlet.class.getName());
+        } finally {
+            if (handler.isRunning()) {
+                handler.stop();
+            }
+        }
     }
 
     @Test
