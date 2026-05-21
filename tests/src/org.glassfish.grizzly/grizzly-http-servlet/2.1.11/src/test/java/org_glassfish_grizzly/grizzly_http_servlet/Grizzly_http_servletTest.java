@@ -248,7 +248,7 @@ public class Grizzly_http_servletTest {
         assertThat(wrapper.getVersion()).isEqualTo(1);
         assertThat(wrapper.getWrappedCookie()).isSameAs(servletCookie);
 
-        Cookie clone = (Cookie) wrapper.clone();
+        Cookie clone = (Cookie) wrapper.cloneCookie();
         assertThat(clone).isNotSameAs(servletCookie);
         assertThat(clone.getName()).isEqualTo("theme");
         assertThat(clone.getValue()).isEqualTo("dark");
