@@ -228,7 +228,9 @@ public class Hadoop_yarn_apiTest {
                 1,
                 Resource.newInstance(2048, 2),
                 Resource.newInstance(1024, 1),
-                Resource.newInstance(4096, 4));
+                Resource.newInstance(4096, 4),
+                600L,
+                60L);
         ApplicationReport report = ApplicationReport.newInstance(
                 applicationId,
                 attemptId,
@@ -266,7 +268,9 @@ public class Hadoop_yarn_apiTest {
                 0.10f,
                 Collections.<QueueInfo>emptyList(),
                 Collections.<ApplicationReport>emptyList(),
-                QueueState.RUNNING);
+                QueueState.RUNNING,
+                Collections.<String>emptySet(),
+                "");
         QueueInfo queueInfo = QueueInfo.newInstance(
                 "root",
                 1.0f,
@@ -274,7 +278,9 @@ public class Hadoop_yarn_apiTest {
                 0.25f,
                 Collections.singletonList(childQueue),
                 Collections.singletonList(report),
-                QueueState.RUNNING);
+                QueueState.RUNNING,
+                Collections.singleton("gpu"),
+                "gpu");
         QueueUserACLInfo aclInfo = QueueUserACLInfo.newInstance(
                 "root",
                 Arrays.asList(QueueACL.SUBMIT_APPLICATIONS, QueueACL.ADMINISTER_QUEUE));
@@ -284,6 +290,8 @@ public class Hadoop_yarn_apiTest {
 
         assertThat(usage.getNumUsedContainers()).isEqualTo(2);
         assertThat(usage.getNeededResources().getVirtualCores()).isEqualTo(4);
+        assertThat(usage.getMemorySeconds()).isEqualTo(600L);
+        assertThat(usage.getVcoreSeconds()).isEqualTo(60L);
         assertThat(report.getApplicationId()).isEqualTo(applicationId);
         assertThat(report.getYarnApplicationState()).isEqualTo(YarnApplicationState.RUNNING);
         assertThat(report.getProgress()).isEqualTo(0.75f);
@@ -292,6 +300,8 @@ public class Hadoop_yarn_apiTest {
         assertThat(nodeReport.getCapability().getMemory()).isEqualTo(8192);
         assertThat(queueInfo.getChildQueues()).containsExactly(childQueue);
         assertThat(queueInfo.getApplications()).containsExactly(report);
+        assertThat(queueInfo.getAccessibleNodeLabels()).containsExactly("gpu");
+        assertThat(queueInfo.getDefaultNodeLabelExpression()).isEqualTo("gpu");
         assertThat(aclInfo.getUserAcls()).containsExactly(QueueACL.SUBMIT_APPLICATIONS, QueueACL.ADMINISTER_QUEUE);
         assertThat(metrics.getNumNodeManagers()).isEqualTo(5);
         assertThat(serialized.getMessage()).contains("top");
@@ -337,7 +347,9 @@ public class Hadoop_yarn_apiTest {
                         0,
                         Resource.newInstance(0, 0),
                         Resource.newInstance(0, 0),
-                        Resource.newInstance(0, 0)),
+                        Resource.newInstance(0, 0),
+                        0L,
+                        0L),
                 "N/A",
                 0.0f,
                 "YARN",
@@ -349,7 +361,9 @@ public class Hadoop_yarn_apiTest {
                 0.0f,
                 Collections.<QueueInfo>emptyList(),
                 Collections.singletonList(report),
-                QueueState.RUNNING);
+                QueueState.RUNNING,
+                Collections.<String>emptySet(),
+                "");
         NodeReport nodeReport = NodeReport.newInstance(
                 NodeId.newInstance("node", 8041),
                 NodeState.RUNNING,
@@ -387,7 +401,7 @@ public class Hadoop_yarn_apiTest {
         GetQueueUserAclsInfoResponse aclsResponse = GetQueueUserAclsInfoResponse.newInstance(Collections.singletonList(
                 QueueUserACLInfo.newInstance("default", Collections.singletonList(QueueACL.SUBMIT_APPLICATIONS))));
         KillApplicationRequest killRequest = KillApplicationRequest.newInstance(applicationId);
-        KillApplicationResponse killResponse = KillApplicationResponse.newInstance();
+        KillApplicationResponse killResponse = KillApplicationResponse.newInstance(true);
 
         assertThat(submitRequest.getApplicationSubmissionContext()).isEqualTo(submission);
         assertThat(submitResponse).isNotNull();
@@ -410,7 +424,7 @@ public class Hadoop_yarn_apiTest {
         assertThat(aclsRequest).isNotNull();
         assertThat(aclsResponse.getUserAclsInfoList()).hasSize(1);
         assertThat(killRequest.getApplicationId()).isEqualTo(applicationId);
-        assertThat(killResponse).isNotNull();
+        assertThat(killResponse.getIsKillCompleted()).isTrue();
     }
 
     @Test
@@ -470,7 +484,10 @@ public class Hadoop_yarn_apiTest {
                 Resource.newInstance(128, 1),
                 Resource.newInstance(8192, 8),
                 acls,
-                byteBuffer(3, 4));
+                byteBuffer(3, 4),
+                Collections.singletonList(container),
+                "default",
+                Collections.singletonList(nmToken));
         AllocateRequest allocateRequest = AllocateRequest.newInstance(
                 3,
                 0.5f,
@@ -510,6 +527,9 @@ public class Hadoop_yarn_apiTest {
         assertThat(registerResponse.getMaximumResourceCapability().getVirtualCores()).isEqualTo(8);
         assertThat(registerResponse.getApplicationACLs()).containsEntry(ApplicationAccessType.MODIFY_APP, "admin");
         assertThat(byteBufferToBytes(registerResponse.getClientToAMTokenMasterKey())).containsExactly(3, 4);
+        assertThat(registerResponse.getContainersFromPreviousAttempts()).containsExactly(container);
+        assertThat(registerResponse.getQueue()).isEqualTo("default");
+        assertThat(registerResponse.getNMTokensFromPreviousAttempts()).containsExactly(nmToken);
         assertThat(allocateRequest.getResponseId()).isEqualTo(3);
         assertThat(allocateRequest.getAskList()).containsExactly(ask);
         assertThat(allocateRequest.getReleaseList()).containsExactly(containerId);
