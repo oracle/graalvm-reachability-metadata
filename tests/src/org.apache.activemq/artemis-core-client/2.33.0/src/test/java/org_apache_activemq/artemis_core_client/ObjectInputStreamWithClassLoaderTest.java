@@ -71,8 +71,8 @@ public class ObjectInputStreamWithClassLoaderTest {
         thread.setContextClassLoader(contextClassLoader);
         try (ObjectInputStreamWithClassLoader input = new ObjectInputStreamWithClassLoader(
                 new ByteArrayInputStream(bytes))) {
-            input.setBlackList(null);
-            input.setWhiteList(ObjectInputStreamWithClassLoader.CATCH_ALL_WILDCARD);
+            input.setDenyList(null);
+            input.setAllowList(ObjectInputStreamWithClassLoader.CATCH_ALL_WILDCARD);
             return input.readObject();
         } finally {
             thread.setContextClassLoader(previousContextClassLoader);

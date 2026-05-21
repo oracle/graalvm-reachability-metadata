@@ -20,6 +20,35 @@ import org.junit.jupiter.api.io.TempDir;
 
 public class JGroupsFileBroadcastEndpointTest {
     @Test
+    void reportsMissingJGroupsConfigurationThroughDefaultContextClassLoader() throws Exception {
+        String missingResource = "missing-jgroups-configuration.xml";
+        JGroupsFileBroadcastEndpoint endpoint = new JGroupsFileBroadcastEndpoint(
+                null,
+                missingResource,
+                "metadata-test-channel");
+
+        Throwable failure = catchThrowable(endpoint::createChannel);
+
+        assertThat(failure)
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("couldn't find JGroups configuration " + missingResource);
+    }
+
+    @Test
+    void opensBundledClasspathResourceThroughDefaultContextClassLoader() throws Exception {
+        JGroupsFileBroadcastEndpoint endpoint = new JGroupsFileBroadcastEndpoint(
+                null,
+                "activemq-version.properties",
+                "metadata-test-channel");
+
+        Throwable failure = catchThrowable(endpoint::createChannel);
+
+        assertThat(failure).isNotNull();
+        assertThat(String.valueOf(failure.getMessage()))
+                .doesNotContain("couldn't find JGroups configuration");
+    }
+
+    @Test
     void readsJGroupsConfigurationFromContextClassLoaderResource(@TempDir Path temporaryDirectory) throws Exception {
         String resourceName = "jgroups-test.xml";
         Files.writeString(temporaryDirectory.resolve(resourceName), "not a jgroups xml document", StandardCharsets.UTF_8);
