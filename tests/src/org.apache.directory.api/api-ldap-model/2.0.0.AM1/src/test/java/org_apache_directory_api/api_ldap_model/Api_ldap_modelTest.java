@@ -24,7 +24,6 @@ import org.apache.directory.api.ldap.model.entry.DefaultModification;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.entry.Modification;
 import org.apache.directory.api.ldap.model.entry.ModificationOperation;
-import org.apache.directory.api.ldap.model.entry.StringValue;
 import org.apache.directory.api.ldap.model.filter.AndNode;
 import org.apache.directory.api.ldap.model.filter.EqualityNode;
 import org.apache.directory.api.ldap.model.filter.ExprNode;
@@ -79,13 +78,14 @@ public class Api_ldap_modelTest {
         assertThat(person.isDescendantOf(base)).isTrue();
         assertThat(person.getParent()).isEqualTo(people);
         assertThat(person.getRdn().getType()).isEqualTo("cn");
-        assertThat(person.getRdn().getValue().getString()).isEqualTo("John Doe");
+        assertThat(person.getRdn().getValue()).isEqualTo("John Doe");
         assertThat(multiValuedRdn.size()).isEqualTo(2);
         assertThat(multiValuedRdn.getAva("sn")).isNotNull();
         assertThat(Dn.isValid(person.getName())).isTrue();
         assertThat(Rdn.escapeValue(" leading,plus+hash# ")).contains("\\,", "\\+");
         assertThat(Rdn.unescapeValue("John\\, Doe")).isEqualTo("John, Doe");
-        assertThat(Dn.getBytes(person)).containsSequence("cn=John Doe".getBytes(StandardCharsets.UTF_8));
+        assertThat(person.getName().getBytes(StandardCharsets.UTF_8))
+                .containsSequence("cn=John Doe".getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class Api_ldap_modelTest {
         Dn dn = new Dn("cn=John Doe,ou=People,dc=example,dc=com");
         Entry entry = new DefaultEntry(dn);
         Attribute objectClass = new DefaultAttribute("objectClass", "top", "person", "inetOrgPerson");
-        Attribute cn = new DefaultAttribute("cn", new StringValue("John Doe"));
+        Attribute cn = new DefaultAttribute("cn", "John Doe");
         Attribute photo = new DefaultAttribute("jpegPhoto", new byte[] {1, 2, 3, 4});
 
         entry.add(objectClass, cn, photo);
@@ -135,7 +135,7 @@ public class Api_ldap_modelTest {
 
     @Test
     void searchRequestsAcceptParsedAndProgrammaticFilters() throws Exception {
-        EqualityNode<String> mailEquals = new EqualityNode<>("mail", new StringValue("john@example.com"));
+        EqualityNode<String> mailEquals = new EqualityNode<>("mail", "john@example.com");
         PresenceNode hasCn = new PresenceNode("cn");
         SubstringNode surnameStartsWithDo = new SubstringNode("sn", "Do", null);
         OrNode alternatives = new OrNode(mailEquals, surnameStartsWithDo);
@@ -224,11 +224,11 @@ public class Api_ldap_modelTest {
         assertThat(add.getEntry().get("objectClass").contains("top", "person")).isTrue();
         assertThat(add.getEntry().get("cn").contains("Jane Doe")).isTrue();
         assertThat(add.getResponseType()).isEqualTo(MessageTypeEnum.ADD_RESPONSE);
-        assertThat(compare.getAssertionValue().getString()).isEqualTo("Jane Doe");
+        assertThat(compare.getAssertionValue().getValue()).isEqualTo("Jane Doe");
         assertThat(compare.getResultResponse().getType()).isEqualTo(MessageTypeEnum.COMPARE_RESPONSE);
         assertThat(delete.getName().getName()).isEqualTo("cn=Obsolete,ou=People,dc=example,dc=com");
         assertThat(delete.getResponseType()).isEqualTo(MessageTypeEnum.DEL_RESPONSE);
-        assertThat(rename.getNewRdn().getValue().getString()).isEqualTo("Jane Smith");
+        assertThat(rename.getNewRdn().getValue()).isEqualTo("Jane Smith");
         assertThat(rename.getNewSuperior().getName()).isEqualTo("ou=Alumni,dc=example,dc=com");
         assertThat(rename.isMove()).isTrue();
         assertThat(rename.getDeleteOldRdn()).isTrue();
@@ -413,7 +413,7 @@ public class Api_ldap_modelTest {
         assertThat(persistentSearch.isReturnECs()).isTrue();
         assertThat(opaqueControl.hasEncodedValue()).isTrue();
         assertThat(opaqueControl.getEncodedValue()).containsExactly((byte) 1, (byte) 3, (byte) 3, (byte) 7);
-        assertThat(sortKey.getAttributeTypeOid()).isEqualTo("sn");
+        assertThat(sortKey.getAttributeTypeDesc()).isEqualTo("sn");
         assertThat(sortKey.getMatchingRuleId()).isEqualTo("caseIgnoreOrderingMatch");
         assertThat(sortKey.isReverseOrder()).isTrue();
 
