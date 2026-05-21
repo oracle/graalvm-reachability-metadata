@@ -40,8 +40,7 @@ public class IntolerantThreadPoolExecutorTest {
                     .isInstanceOf(RuntimeException.class)
                     .hasCauseInstanceOf(CsvDataTypeMismatchException.class)
                     .hasMessageContaining("Error parsing CSV line: 7");
-        }
-        finally {
+        } finally {
             executor.shutdownNow();
         }
     }
