@@ -38,6 +38,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.client.HttpClient;
 import org.junit.jupiter.api.Test;
 
@@ -248,6 +249,41 @@ public class Google_http_client_apache_v2Test {
         } finally {
             transport.shutdown();
         }
+    }
+
+    @Test
+    void customApacheClientInterceptorsCanModifyOutgoingRequests() throws Exception {
+        AtomicReference<RecordedRequest> recordedRequest = new AtomicReference<>();
+        try (TestHttpServer server = TestHttpServer.start(exchange -> {
+            recordedRequest.set(RecordedRequest.from(exchange));
+            exchange.sendResponseHeaders(204, -1);
+        })) {
+            HttpClient httpClient = ApacheHttpTransport.newDefaultHttpClientBuilder()
+                    .addInterceptorFirst((HttpRequestInterceptor) (request, context) ->
+                            request.addHeader("X-Apache-Interceptor", "applied"))
+                    .build();
+            ApacheHttpTransport transport = new ApacheHttpTransport(httpClient);
+            try {
+                HttpRequest request = transport.createRequestFactory()
+                        .buildGetRequest(new GenericUrl(server.url("/interceptor", null)));
+                request.setConnectTimeout(TIMEOUT_MILLIS);
+                request.setReadTimeout(TIMEOUT_MILLIS);
+
+                HttpResponse response = request.execute();
+                try {
+                    assertThat(response.getStatusCode()).isEqualTo(204);
+                } finally {
+                    response.disconnect();
+                }
+            } finally {
+                transport.shutdown();
+            }
+        }
+
+        RecordedRequest request = recordedRequest.get();
+        assertThat(request.method()).isEqualTo(HttpMethods.GET);
+        assertThat(request.path()).isEqualTo("/interceptor");
+        assertThat(request.firstHeader("X-Apache-Interceptor")).isEqualTo("applied");
     }
 
     @Test
