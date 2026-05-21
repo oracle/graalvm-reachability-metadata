@@ -13,14 +13,12 @@ import org.eclipse.angus.mail.util.logging.CollectorFormatter;
 import org.eclipse.angus.mail.util.logging.CompactFormatter;
 import org.eclipse.angus.mail.util.logging.DurationFilter;
 import org.eclipse.angus.mail.util.logging.MailHandler;
+import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
-import java.security.CodeSource;
 import java.util.Base64;
 import java.util.Properties;
 import java.util.logging.Formatter;
@@ -162,7 +160,7 @@ public class LogManagerPropertiesTest {
                 + CONTEXT_FORMATTER_NAME,
             "org.eclipse.angus.mail.util.logging.CollectorFormatter.comparator=null");
 
-        try (IsolatedAngusMailClassLoader loader = new IsolatedAngusMailClassLoader(angusMailLocation())) {
+        try (IsolatedAngusMailClassLoader loader = new IsolatedAngusMailClassLoader()) {
             Formatter formatter = withContextClassLoader(null,
                 () -> newIsolatedCollectorFormatter(loader));
             formatter.format(new LogRecord(Level.INFO, "caller fallback"));
@@ -192,12 +190,6 @@ public class LogManagerPropertiesTest {
             .loadClass("org.eclipse.angus.mail.util.logging.CollectorFormatter")
             .asSubclass(Formatter.class);
         return formatterClass.getConstructor().newInstance();
-    }
-
-    private static URL angusMailLocation() {
-        CodeSource codeSource = CollectorFormatter.class.getProtectionDomain().getCodeSource();
-        assertThat(codeSource).isNotNull();
-        return codeSource.getLocation();
     }
 
     private static <T> T withContextClassLoader(ClassLoader loader, ThrowingSupplier<T> supplier)
@@ -266,9 +258,29 @@ public class LogManagerPropertiesTest {
         }
     }
 
-    private static final class IsolatedAngusMailClassLoader extends URLClassLoader {
-        private IsolatedAngusMailClassLoader(URL angusMailLocation) {
-            super(new URL[] {angusMailLocation}, ClassLoader.getPlatformClassLoader());
+    private static final class IsolatedAngusMailClassLoader extends ClassLoader
+            implements AutoCloseable {
+        private static final String ANGUS_LOGGING_PACKAGE = "org.eclipse.angus.mail.util.logging.";
+
+        private IsolatedAngusMailClassLoader() {
+            super(ClassLoader.getPlatformClassLoader());
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                if (CONTEXT_FORMATTER_NAME.equals(name) || name.startsWith(ANGUS_LOGGING_PACKAGE)) {
+                    Class<?> loadedClass = findLoadedClass(name);
+                    if (loadedClass == null) {
+                        loadedClass = findClass(name);
+                    }
+                    if (resolve) {
+                        resolveClass(loadedClass);
+                    }
+                    return loadedClass;
+                }
+                return super.loadClass(name, resolve);
+            }
         }
 
         @Override
@@ -276,7 +288,33 @@ public class LogManagerPropertiesTest {
             if (CONTEXT_FORMATTER_NAME.equals(name)) {
                 return defineClass(name, CONTEXT_FORMATTER_BYTES, 0, CONTEXT_FORMATTER_BYTES.length);
             }
-            return super.findClass(name);
+            if (!name.startsWith(ANGUS_LOGGING_PACKAGE)) {
+                throw new ClassNotFoundException(name);
+            }
+            byte[] bytes = readClassBytes(name);
+            return defineClass(name, bytes, 0, bytes.length);
+        }
+
+        @Override
+        public void close() {
+            // No-op, included so try-with-resources still scopes the loader lifecycle.
+        }
+
+        private static byte[] readClassBytes(String name) throws ClassNotFoundException {
+            String resourceName = name.replace('.', '/') + ".class";
+            try (InputStream input = LogManagerPropertiesTest.class.getClassLoader()
+                    .getResourceAsStream(resourceName)) {
+                if (input == null) {
+                    throw new ClassNotFoundException(name);
+                }
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                input.transferTo(output);
+                return output.toByteArray();
+            } catch (IOException exception) {
+                ClassNotFoundException classNotFoundException = new ClassNotFoundException(name);
+                classNotFoundException.initCause(exception);
+                throw classNotFoundException;
+            }
         }
     }
 
