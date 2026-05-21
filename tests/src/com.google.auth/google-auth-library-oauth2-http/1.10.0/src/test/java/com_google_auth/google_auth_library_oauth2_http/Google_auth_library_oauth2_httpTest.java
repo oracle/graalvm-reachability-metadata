@@ -8,7 +8,7 @@ package com_google_auth.google_auth_library_oauth2_http;
 
 import org.junit.jupiter.api.Test;
 
-class Google_auth_library_oauth2_httpTest {
+public class Google_auth_library_oauth2_httpTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
