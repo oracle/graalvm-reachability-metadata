@@ -11,7 +11,9 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.apache.maven.plugins:maven-jar-plugin:$libraryVersion"
+    testImplementation("org.apache.maven.plugins:maven-jar-plugin:$libraryVersion") {
+        exclude group: "org.sonatype.sisu", module: "sisu-guice"
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
