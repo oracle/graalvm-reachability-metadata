@@ -1,0 +1,908 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e4c5e-03d3-74f3-a6e4-6a5e3cb321ec
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.vertx:vertx-sql-client:5.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [5.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c/metadata/io.vertx/vertx-sql-client/index.json
+- Entry selector: "metadata-version" = "5.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 5.0.0
+- Entry metadata-version: 5.0.0
+- Entry test-version: 5.0.0
+- Entry tested-versions: [5.0.0]
+codex
+I’ll verify the artifact URLs before editing the JSON, with Maven sources/tests preferred where they exist. Then I’ll patch only the missing fields on the `5.0.0` entry.
+exec
+/usr/bin/bash -lc "rg -n \"\\\"metadata-version\\\"\\s*:\\s*\\\"5\\.0\\.0\\\"|source-code-url|repository-url|test-code-url|documentation-url|description|language\" metadata/io.vertx/vertx-sql-client/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+ succeeded in 0ms:
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
+7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
+9:    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+48:    "metadata-version" : "5.0.0",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/io.vertx/vertx-sql-client/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.4.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
+    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
+    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+    "tested-versions" : [
+      "4.4.2",
+      "4.4.3",
+      "4.4.4",
+      "4.4.5",
+      "4.4.6",
+      "4.4.7",
+      "4.4.8",
+      "4.4.9",
+      "4.5.0",
+      "4.5.1",
+      "4.5.2",
+      "4.5.3",
+      "4.5.4",
+      "4.5.5",
+      "4.5.6",
+      "4.5.7",
+      "4.5.8",
+      "4.5.9",
+      "4.5.10",
+      "4.5.11",
+      "4.5.12",
+      "4.5.13",
+      "4.5.14",
+      "4.5.15",
+      "4.5.16",
+      "4.5.17",
+      "4.5.18",
+      "4.5.19",
+      "4.5.20",
+      "4.5.21",
+      "4.5.22"
+    ],
+    "allowed-packages" : [
+      "io.vertx.sqlclient"
+    ]
+  },
+  {
+    "metadata-version" : "5.0.0",
+    "tested-versions" : [
+      "5.0.0"
+    ],
+    "allowed-packages" : [
+      "io.vertx.sqlclient"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/io.vertx/vertx-sql-client/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+ succeeded in 0ms:
+web search: 
+web search: io.vertx vertx-sql-client 5.0.0 Maven sources test-sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/io.vertx/vertx-sql-client/5.0.0
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/5.0.0/
+web search: 
+web search: site:vertx.io/docs "vertx-sql-client" "5.0.0"
+codex
+The existing `4.4.2` entry already uses Maven Central templates for sources, test sources, and Javadocs, so I’m checking whether the same template resolves for `5.0.0` before reusing that pattern.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/5.0.0/vertx-sql-client-5.0.0-test-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/5.0.0/vertx-sql-client-5.0.0-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/5.0.0/vertx-sql-client-5.0.0.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (C) 2017 Julien Viet
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-sql-client-parent</artifactId>
+    <version>5.0.0</version>
+  </parent>
+
+  <artifactId>vertx-sql-client</artifactId>
+
+  <name>Vertx SQL Client</name>
+  <url>https://github.com/eclipse-vertx/vertx-sql-client</url>
+  <description>The Reactive SQL Client</description>
+
+
+  <dependencies>
+
+    <!-- Vert.x dependencies -->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-compile</id>
+              <configuration>
+                <annotationProcessorPaths>
+                  <annotationProcessorPath>
+                    <groupId>io.vertx</groupId>
+                    <artifactId>vertx-codegen</artifactId>
+                    <classifier>processor</classifier>
+                  </annotationProcessorPath>
+                </annotationProcessorPaths>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/5.0.0/vertx-sql-client-5.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+ succeeded in 212ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 21:08:45 GMT
+content-type: application/java-archive
+content-length: 109707
+cf-ray: 9ff68ee64acfbab9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "46a3b4c9f51dc13f3851a2fa95e9953c"
+last-modified: Wed, 14 May 2025 13:13:16 GMT
+x-checksum-md5: 46a3b4c9f51dc13f3851a2fa95e9953c
+x-checksum-sha1: 6c2becf9b04d3b22e4d03b414bb7e461e6838e9c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 349ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 21:08:45 GMT
+content-type: application/java-archive
+content-length: 49068
+cf-ray: 9ff68ee64e9d5234-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "a972afa77538ea12d5e522fc50470d36"
+last-modified: Wed, 14 May 2025 13:13:40 GMT
+x-checksum-md5: a972afa77538ea12d5e522fc50470d36
+x-checksum-sha1: 5368976d839fe47c01c2e07b72179e19920eae9b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 384ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 21:08:45 GMT
+content-type: application/java-archive
+content-length: 553185
+cf-ray: 9ff68ee6cdddee9f-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "3787cb4d4e50866a219ab5c97e542fd9"
+last-modified: Wed, 14 May 2025 13:13:53 GMT
+x-checksum-md5: 3787cb4d4e50866a219ab5c97e542fd9
+x-checksum-sha1: 121f6115d354f324be7c35ec403d1d8e31f566ab
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: central sonatype io.vertx vertx-sql-client 5.0.0
+web search: 
+web search: https://central.sonatype.com/artifact/io.vertx/vertx-sql-client/5.0.0
+codex
+The rendered Maven URLs for `5.0.0` all returned HTTP 200, including `sources.jar`, `test-sources.jar`, and `javadoc.jar`. I’m going to reuse those as `$version$` templates and add the repository URL plus a two-sentence description; no `language` field is appropriate here.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c/metadata/io.vertx/vertx-sql-client/index.json
+diff --git a/metadata/io.vertx/vertx-sql-client/index.json b/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f76d7d05fd819d0d59bc704cba12a587..070b203ddc78045b91fce01f9d55bb22b692829e
+--- a/metadata/io.vertx/vertx-sql-client/index.json
++++ b/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+diff --git a/metadata/io.vertx/vertx-sql-client/index.json b/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f76d7d05fd819d0d59bc704cba12a587..070b203ddc78045b91fce01f9d55bb22b692829e
+--- a/metadata/io.vertx/vertx-sql-client/index.json
++++ b/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+codex
+The JSON patch is in place. I’m doing a quick validity check and diff review now, then I’ll report exactly what changed.
+exec
+/usr/bin/bash -lc "nl -ba metadata/io.vertx/vertx-sql-client/index.json | sed -n '44,70p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+ succeeded in 0ms:
+    44	      "io.vertx.sqlclient"
+    45	    ]
+    46	  },
+    47	  {
+    48	    "metadata-version" : "5.0.0",
+    49	    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
+    50	    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
+    51	    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
+    52	    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
+    53	    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+    54	    "tested-versions" : [
+    55	      "5.0.0"
+    56	    ],
+    57	    "allowed-packages" : [
+    58	      "io.vertx.sqlclient"
+    59	    ]
+    60	  }
+    61	]
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/io.vertx/vertx-sql-client/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.vertx/vertx-sql-client/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+ succeeded in 0ms:
+diff --git i/metadata/io.vertx/vertx-sql-client/index.json w/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f7..070b203ddc 100644
+--- i/metadata/io.vertx/vertx-sql-client/index.json
++++ w/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+diff --git a/metadata/io.vertx/vertx-sql-client/index.json b/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f76d7d05fd819d0d59bc704cba12a587..070b203ddc78045b91fce01f9d55bb22b692829e
+--- a/metadata/io.vertx/vertx-sql-client/index.json
++++ b/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+web search: 
+web search: site:central.sonatype.com/artifact/io.vertx/vertx-sql-client/5.0.0 vertx-sql-client 5.0.0
+web search: 
+web search: site:vertx.io/docs/5.0.0/vertx-sql-client/java Vert.x SQL Client 5.0.0
+codex
+`jq` accepts the edited JSON, and the diff is limited to the requested entry. I’m running the repository’s metadata validator for this coordinate to catch any schema or URL-template issue.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=io.vertx:vertx-sql-client:5.0.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+diff --git a/metadata/io.vertx/vertx-sql-client/index.json b/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f76d7d05fd819d0d59bc704cba12a587..070b203ddc78045b91fce01f9d55bb22b692829e
+--- a/metadata/io.vertx/vertx-sql-client/index.json
++++ b/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+ exited 1 in 3179ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for io.vertx:vertx-sql-client:5.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c/metadata/io.vertx/vertx-sql-client/5.0.0/
+
+> Task :checkMetadataFiles FAILED
+
+
+FAILURE: Build failed with an exception.
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c/build/reports/problems/problems-report.html
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - io.vertx:vertx-sql-client:5.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c/metadata/io.vertx/vertx-sql-client/5.0.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - io.vertx:vertx-sql-client:5.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c/metadata/io.vertx/vertx-sql-client/5.0.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+diff --git a/metadata/io.vertx/vertx-sql-client/index.json b/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f76d7d05fd819d0d59bc704cba12a587..070b203ddc78045b91fce01f9d55bb22b692829e
+--- a/metadata/io.vertx/vertx-sql-client/index.json
++++ b/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+web search: 
+web search: Vert.x SQL Client GitHub eclipse-vertx vertx-sql-client
+web search: 
+web search: central.sonatype.com artifact io.vertx vertx-sql-client 5.0.0 Maven Central
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+diff --git a/metadata/io.vertx/vertx-sql-client/index.json b/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f76d7d05fd819d0d59bc704cba12a587..070b203ddc78045b91fce01f9d55bb22b692829e
+--- a/metadata/io.vertx/vertx-sql-client/index.json
++++ b/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+ succeeded in 107ms:
+ M metadata/io.vertx/vertx-sql-client/index.json
+
+web search: 
+web search: Vert.x SQL Client provides reactive asynchronous APIs SQL databases Vert.x
+web search: 
+web search: Maven Central io.vertx vertx-sql-client 5.0.0 sources test-sources javadoc
+web search: 
+web search: 
+web search: 
+web search: "Central Repository: io/vertx/vertx-sql-client/5.0.0"
+web search: 
+web search: https://central.sonatype.com/artifact/io.vertx/vertx-sql-client/5.0.0
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/5.0.0/vertx-sql-client-5.0.0-docs.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+exec
+/usr/bin/bash -lc 'curl -fsSI https://vertx.io/docs/5.0.0/vertx-sql-client/java/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+diff --git a/metadata/io.vertx/vertx-sql-client/index.json b/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f76d7d05fd819d0d59bc704cba12a587..070b203ddc78045b91fce01f9d55bb22b692829e
+--- a/metadata/io.vertx/vertx-sql-client/index.json
++++ b/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+ exited 22 in 338ms:
+HTTP/2 404 
+date: Thu, 21 May 2026 21:10:05 GMT
+content-type: text/html; charset=utf-8
+server: cloudflare
+x-origin-cache: HIT
+vary: Accept-Encoding
+access-control-allow-origin: *
+x-frame-options: sameorigin
+x-content-type-options: nosniff
+x-proxy-cache: MISS
+x-github-request-id: 2FA2:2C0885:501B3E:54E99A:6A0F74AD
+cf-cache-status: DYNAMIC
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=sqSwuWRQhPn2VUFMJ%2BEA9DbumBKIG1TVz6ycia%2FgnRz0LBbj9xY8t6KZA3CkAHBRvwrJLNr3QqQUaZyT2jdX7m11KvinDHrnPOF6jUkLLStmUFgQd1QZxnGiCb2CqYGWzObjh4RMkQ%3D%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+content-security-policy: default-src 'self'; img-src * data:; font-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.github.com
+strict-transport-security: "max-age=31536000; includeSubDomains; preload"
+cf-ray: 9ff690da1b4097e0-MRS
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 386ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 21:10:05 GMT
+content-type: application/zip
+content-length: 112
+cf-ray: 9ff690d9db8bba85-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "40124f5b2ab09d7814a2cb29dc60556c"
+last-modified: Wed, 14 May 2025 13:13:26 GMT
+x-checksum-md5: 40124f5b2ab09d7814a2cb29dc60556c
+x-checksum-sha1: 777dc3f2a350f1a09552a209fe78d548acd1a2e0
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/5.0.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+diff --git a/metadata/io.vertx/vertx-sql-client/index.json b/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f76d7d05fd819d0d59bc704cba12a587..070b203ddc78045b91fce01f9d55bb22b692829e
+--- a/metadata/io.vertx/vertx-sql-client/index.json
++++ b/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+ succeeded in 268ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/vertx/vertx-sql-client/5.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/vertx/vertx-sql-client/5.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="vertx-sql-client-5.0.0-cyclonedx.json" title="vertx-sql-client-5.0.0-cyclonedx.json">vertx-sql-client-5.0.0-cyclonedx.json</a>             2025-05-14 13:13     57693      
+<a href="vertx-sql-client-5.0.0-cyclonedx.json.asc" title="vertx-sql-client-5.0.0-cyclonedx.json.asc">vertx-sql-client-5.0.0-cyclonedx.json.asc</a>         2025-05-14 13:13       689      
+<a href="vertx-sql-client-5.0.0-cyclonedx.json.md5" title="vertx-sql-client-5.0.0-cyclonedx.json.md5">vertx-sql-client-5.0.0-cyclonedx.json.md5</a>         2025-05-14 13:13        32      
+<a href="vertx-sql-client-5.0.0-cyclonedx.json.sha1" title="vertx-sql-client-5.0.0-cyclonedx.json.sha1">vertx-sql-client-5.0.0-cyclonedx.json.sha1</a>        2025-05-14 13:13        40      
+<a href="vertx-sql-client-5.0.0-cyclonedx.json.sha256" title="vertx-sql-client-5.0.0-cyclonedx.json.sha256">vertx-sql-client-5.0.0-cyclonedx.json.sha256</a>      2025-05-14 13:13        64      
+<a href="vertx-sql-client-5.0.0-cyclonedx.json.sha512" title="vertx-sql-client-5.0.0-cyclonedx.json.sha512">vertx-sql-client-5.0.0-cyclonedx.json.sha512</a>      2025-05-14 13:13       128      
+<a href="vertx-sql-client-5.0.0-cyclonedx.xml" title="vertx-sql-client-5.0.0-cyclonedx.xml">vertx-sql-client-5.0.0-cyclonedx.xml</a>              2025-05-14 13:13     52317      
+<a href="vertx-sql-client-5.0.0-cyclonedx.xml.asc" title="vertx-sql-client-5.0.0-cyclonedx.xml.asc">vertx-sql-client-5.0.0-cyclonedx.xml.asc</a>          2025-05-14 13:13       689      
+<a href="vertx-sql-client-5.0.0-cyclonedx.xml.md5" title="vertx-sql-client-5.0.0-cyclonedx.xml.md5">vertx-sql-client-5.0.0-cyclonedx.xml.md5</a>          2025-05-14 13:13        32      
+<a href="vertx-sql-client-5.0.0-cyclonedx.xml.sha1" title="vertx-sql-client-5.0.0-cyclonedx.xml.sha1">vertx-sql-client-5.0.0-cyclonedx.xml.sha1</a>         2025-05-14 13:13        40      
+<a href="vertx-sql-client-5.0.0-cyclonedx.xml.sha256" title="vertx-sql-client-5.0.0-cyclonedx.xml.sha256">vertx-sql-client-5.0.0-cyclonedx.xml.sha256</a>       2025-05-14 13:13        64      
+<a href="vertx-sql-client-5.0.0-cyclonedx.xml.sha512" title="vertx-sql-client-5.0.0-cyclonedx.xml.sha512">vertx-sql-client-5.0.0-cyclonedx.xml.sha512</a>       2025-05-14 13:13       128      
+<a href="vertx-sql-client-5.0.0-docs.zip" title="vertx-sql-client-5.0.0-docs.zip">vertx-sql-client-5.0.0-docs.zip</a>                   2025-05-14 13:13       112      
+<a href="vertx-sql-client-5.0.0-docs.zip.asc" title="vertx-sql-client-5.0.0-docs.zip.asc">vertx-sql-client-5.0.0-docs.zip.asc</a>               2025-05-14 13:13       689      
+<a href="vertx-sql-client-5.0.0-docs.zip.md5" title="vertx-sql-client-5.0.0-docs.zip.md5">vertx-sql-client-5.0.0-docs.zip.md5</a>               2025-05-14 13:13        32      
+<a href="vertx-sql-client-5.0.0-docs.zip.sha1" title="vertx-sql-client-5.0.0-docs.zip.sha1">vertx-sql-client-5.0.0-docs.zip.sha1</a>              2025-05-14 13:13        40      
+<a href="vertx-sql-client-5.0.0-docs.zip.sha256" title="vertx-sql-client-5.0.0-docs.zip.sha256">vertx-sql-client-5.0.0-docs.zip.sha256</a>            2025-05-14 13:13        64      
+<a href="vertx-sql-client-5.0.0-docs.zip.sha512" title="vertx-sql-client-5.0.0-docs.zip.sha512">vertx-sql-client-5.0.0-docs.zip.sha512</a>            2025-05-14 13:13       128      
+<a href="vertx-sql-client-5.0.0-javadoc.jar" title="vertx-sql-client-5.0.0-javadoc.jar">vertx-sql-client-5.0.0-javadoc.jar</a>                2025-05-14 13:13    553185      
+<a href="vertx-sql-client-5.0.0-javadoc.jar.asc" title="vertx-sql-client-5.0.0-javadoc.jar.asc">vertx-sql-client-5.0.0-javadoc.jar.asc</a>            2025-05-14 13:13       689      
+<a href="vertx-sql-client-5.0.0-javadoc.jar.md5" title="vertx-sql-client-5.0.0-javadoc.jar.md5">vertx-sql-client-5.0.0-javadoc.jar.md5</a>            2025-05-14 13:13        32      
+<a href="vertx-sql-client-5.0.0-javadoc.jar.sha1" title="vertx-sql-client-5.0.0-javadoc.jar.sha1">vertx-sql-client-5.0.0-javadoc.jar.sha1</a>           2025-05-14 13:13        40      
+<a href="vertx-sql-client-5.0.0-javadoc.jar.sha256" title="vertx-sql-client-5.0.0-javadoc.jar.sha256">vertx-sql-client-5.0.0-javadoc.jar.sha256</a>         2025-05-14 13:13        64      
+<a href="vertx-sql-client-5.0.0-javadoc.jar.sha512" title="vertx-sql-client-5.0.0-javadoc.jar.sha512">vertx-sql-client-5.0.0-javadoc.jar.sha512</a>         2025-05-14 13:13       128      
+<a href="vertx-sql-client-5.0.0-sources.jar" title="vertx-sql-client-5.0.0-sources.jar">vertx-sql-client-5.0.0-sources.jar</a>                2025-05-14 13:13    109707      
+<a href="vertx-sql-client-5.0.0-sources.jar.asc" title="vertx-sql-client-5.0.0-sources.jar.asc">vertx-sql-client-5.0.0-sources.jar.asc</a>            2025-05-14 13:13       689      
+<a href="vertx-sql-client-5.0.0-sources.jar.md5" title="vertx-sql-client-5.0.0-sources.jar.md5">vertx-sql-client-5.0.0-sources.jar.md5</a>            2025-05-14 13:13        32      
+<a href="vertx-sql-client-5.0.0-sources.jar.sha1" title="vertx-sql-client-5.0.0-sources.jar.sha1">vertx-sql-client-5.0.0-sources.jar.sha1</a>           2025-05-14 13:13        40      
+<a href="vertx-sql-client-5.0.0-sources.jar.sha256" title="vertx-sql-client-5.0.0-sources.jar.sha256">vertx-sql-client-5.0.0-sources.jar.sha256</a>         2025-05-14 13:13        64      
+<a href="vertx-sql-client-5.0.0-sources.jar.sha512" title="vertx-sql-client-5.0.0-sources.jar.sha512">vertx-sql-client-5.0.0-sources.jar.sha512</a>         2025-05-14 13:13       128      
+<a href="vertx-sql-client-5.0.0-test-sources.jar" title="vertx-sql-client-5.0.0-test-sources.jar">vertx-sql-client-5.0.0-test-sources.jar</a>           2025-05-14 13:13     49068      
+<a href="vertx-sql-client-5.0.0-test-sources.jar.asc" title="vertx-sql-client-5.0.0-test-sources.jar.asc">vertx-sql-client-5.0.0-test-sources.jar.asc</a>       2025-05-14 13:13       689      
+<a href="vertx-sql-client-5.0.0-test-sources.jar.md5" title="vertx-sql-client-5.0.0-test-sources.jar.md5">vertx-sql-client-5.0.0-test-sources.jar.md5</a>       2025-05-14 13:13        32      
+<a href="vertx-sql-client-5.0.0-test-sources.jar.sha1" title="vertx-sql-client-5.0.0-test-sources.jar.sha1">vertx-sql-client-5.0.0-test-sources.jar.sha1</a>      2025-05-14 13:13        40      
+<a href="vertx-sql-client-5.0.0-test-sources.jar.sha256" title="vertx-sql-client-5.0.0-test-sources.jar.sha256">vertx-sql-client-5.0.0-test-sources.jar.sha25...</a>  2025-05-14 13:13        64      
+<a href="vertx-sql-client-5.0.0-test-sources.jar.sha512" title="vertx-sql-client-5.0.0-test-sources.jar.sha512">vertx-sql-client-5.0.0-test-sources.jar.sha51...</a>  2025-05-14 13:13       128      
+<a href="vertx-sql-client-5.0.0-tests.jar" title="vertx-sql-client-5.0.0-tests.jar">vertx-sql-client-5.0.0-tests.jar</a>                  2025-05-14 13:13    146313      
+<a href="vertx-sql-client-5.0.0-tests.jar.asc" title="vertx-sql-client-5.0.0-tests.jar.asc">vertx-sql-client-5.0.0-tests.jar.asc</a>              2025-05-14 13:13       689      
+<a href="vertx-sql-client-5.0.0-tests.jar.md5" title="vertx-sql-client-5.0.0-tests.jar.md5">vertx-sql-client-5.0.0-tests.jar.md5</a>              2025-05-14 13:13        32      
+<a href="vertx-sql-client-5.0.0-tests.jar.sha1" title="vertx-sql-client-5.0.0-tests.jar.sha1">vertx-sql-client-5.0.0-tests.jar.sha1</a>             2025-05-14 13:13        40      
+<a href="vertx-sql-client-5.0.0-tests.jar.sha256" title="vertx-sql-client-5.0.0-tests.jar.sha256">vertx-sql-client-5.0.0-tests.jar.sha256</a>           2025-05-14 13:13        64      
+<a href="vertx-sql-client-5.0.0-tests.jar.sha512" title="vertx-sql-client-5.0.0-tests.jar.sha512">vertx-sql-client-5.0.0-tests.jar.sha512</a>           2025-05-14 13:13       128      
+<a href="vertx-sql-client-5.0.0.jar" title="vertx-sql-client-5.0.0.jar">vertx-sql-client-5.0.0.jar</a>                        2025-05-14 13:13    172442      
+<a href="vertx-sql-client-5.0.0.jar.asc" title="vertx-sql-client-5.0.0.jar.asc">vertx-sql-client-5.0.0.jar.asc</a>                    2025-05-14 13:13       689      
+<a href="vertx-sql-client-5.0.0.jar.md5" title="vertx-sql-client-5.0.0.jar.md5">vertx-sql-client-5.0.0.jar.md5</a>                    2025-05-14 13:13        32      
+<a href="vertx-sql-client-5.0.0.jar.sha1" title="vertx-sql-client-5.0.0.jar.sha1">vertx-sql-client-5.0.0.jar.sha1</a>                   2025-05-14 13:13        40      
+<a href="vertx-sql-client-5.0.0.jar.sha256" title="vertx-sql-client-5.0.0.jar.sha256">vertx-sql-client-5.0.0.jar.sha256</a>                 2025-05-14 13:13        64      
+<a href="vertx-sql-client-5.0.0.jar.sha512" title="vertx-sql-client-5.0.0.jar.sha512">vertx-sql-client-5.0.0.jar.sha512</a>                 2025-05-14 13:13       128      
+<a href="vertx-sql-client-5.0.0.pom" title="vertx-sql-client-5.0.0.pom">vertx-sql-client-5.0.0.pom</a>                        2025-05-14 13:13      2136      
+<a href="vertx-sql-client-5.0.0.pom.asc" title="vertx-sql-client-5.0.0.pom.asc">vertx-sql-client-5.0.0.pom.asc</a>                    2025-05-14 13:13       689      
+<a href="vertx-sql-client-5.0.0.pom.md5" title="vertx-sql-client-5.0.0.pom.md5">vertx-sql-client-5.0.0.pom.md5</a>                    2025-05-14 13:13        32      
+<a href="vertx-sql-client-5.0.0.pom.sha1" title="vertx-sql-client-5.0.0.pom.sha1">vertx-sql-client-5.0.0.pom.sha1</a>                   2025-05-14 13:13        40      
+<a href="vertx-sql-client-5.0.0.pom.sha256" title="vertx-sql-client-5.0.0.pom.sha256">vertx-sql-client-5.0.0.pom.sha256</a>                 2025-05-14 13:13        64      
+<a href="vertx-sql-client-5.0.0.pom.sha512" title="vertx-sql-client-5.0.0.pom.sha512">vertx-sql-client-5.0.0.pom.sha512</a>                 2025-05-14 13:13       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: "repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/5.0.0/" "vertx-sql-client-5.0.0-sources.jar"
+web search: 
+web search: central.sonatype.com artifact io.vertx vertx-sql-client 5.0.0
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/io.vertx/vertx-sql-client/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c
+ succeeded in 0ms:
+diff --git a/metadata/io.vertx/vertx-sql-client/index.json b/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f76d7d05fd819d0d59bc704cba12a587..070b203ddc78045b91fce01f9d55bb22b692829e
+--- a/metadata/io.vertx/vertx-sql-client/index.json
++++ b/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c/metadata/io.vertx/vertx-sql-client/index.json:48) for `metadata-version` `5.0.0`. I filled the Maven Central source, test-source, and Javadoc templates, the canonical GitHub repository root, and a two-sentence description; `language` remains absent because this is not Kotlin/Groovy/Scala-specific. Maven Central identifies the artifact and project metadata for `io.vertx:vertx-sql-client:5.0.0`. citeturn1search0
+
+Verification:
+- `jq empty metadata/io.vertx/vertx-sql-client/index.json` passed.
+- `git diff --check -- metadata/io.vertx/vertx-sql-client/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=io.vertx:vertx-sql-client:5.0.0 --stacktrace` failed because `metadata/io.vertx/vertx-sql-client/5.0.0/reachability-metadata.json` is missing.
+diff --git a/metadata/io.vertx/vertx-sql-client/index.json b/metadata/io.vertx/vertx-sql-client/index.json
+index a6a13e75f76d7d05fd819d0d59bc704cba12a587..070b203ddc78045b91fce01f9d55bb22b692829e
+--- a/metadata/io.vertx/vertx-sql-client/index.json
++++ b/metadata/io.vertx/vertx-sql-client/index.json
+@@ -46,6 +46,11 @@
+   },
+   {
+     "metadata-version" : "5.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-vertx/vertx-sql-client",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
++    "description" : "Vert.x SQL Client provides reactive, asynchronous APIs for interacting with SQL databases from Vert.x applications. It supplies shared client, pool, row, query, tuple, and transaction abstractions used by Vert.x database-specific SQL client implementations.",
+     "tested-versions" : [
+       "5.0.0"
+     ],
+
+tokens used
+112,687
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c/metadata/io.vertx/vertx-sql-client/index.json:48) for `metadata-version` `5.0.0`. I filled the Maven Central source, test-source, and Javadoc templates, the canonical GitHub repository root, and a two-sentence description; `language` remains absent because this is not Kotlin/Groovy/Scala-specific. Maven Central identifies the artifact and project metadata for `io.vertx:vertx-sql-client:5.0.0`. citeturn1search0
+
+Verification:
+- `jq empty metadata/io.vertx/vertx-sql-client/index.json` passed.
+- `git diff --check -- metadata/io.vertx/vertx-sql-client/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=io.vertx:vertx-sql-client:5.0.0 --stacktrace` failed because `metadata/io.vertx/vertx-sql-client/5.0.0/reachability-metadata.json` is missing.
+Ran agent for io.vertx:vertx-sql-client:5.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c/build/agent-url-discovery-logs/io.vertx-vertx-sql-client-5.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7491-cdf29b3c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 26s
+9 actionable tasks: 1 executed, 8 up-to-date
