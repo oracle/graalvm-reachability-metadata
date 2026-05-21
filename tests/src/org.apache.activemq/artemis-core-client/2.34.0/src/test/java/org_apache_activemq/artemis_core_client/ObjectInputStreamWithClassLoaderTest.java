@@ -43,6 +43,16 @@ public class ObjectInputStreamWithClassLoaderTest {
     }
 
     @Test
+    void fallsBackToDefaultObjectInputStreamResolutionWhenContextLoaderFindsNullClass() throws Exception {
+        SamplePayload payload = new SamplePayload("null-finding-loader");
+        ClassLoader nullFindingContextLoader = new NullFindingClassLoader(SamplePayload.class.getName());
+
+        Object deserialized = deserializeWithContextClassLoader(serialize(payload), nullFindingContextLoader);
+
+        assertThat(deserialized).isEqualTo(payload);
+    }
+
+    @Test
     void readsSerializedDynamicProxyWithContextClassLoader() throws Exception {
         Greeting proxy = (Greeting) Proxy.newProxyInstance(
                 ObjectInputStreamWithClassLoaderTest.class.getClassLoader(),
@@ -118,6 +128,23 @@ public class ObjectInputStreamWithClassLoaderTest {
                 throw new ClassNotFoundException(name);
             }
             return super.loadClass(name, resolve);
+        }
+    }
+
+    private static final class NullFindingClassLoader extends ClassLoader {
+        private final String nullClassName;
+
+        private NullFindingClassLoader(String nullClassName) {
+            super(null);
+            this.nullClassName = nullClassName;
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            if (nullClassName.equals(name)) {
+                return null;
+            }
+            throw new ClassNotFoundException(name);
         }
     }
 
