@@ -9,6 +9,7 @@ package org_springframework.spring_expression;
 import org.junit.jupiter.api.Test;
 import org.springframework.expression.PropertyAccessor;
 import org.springframework.expression.TypedValue;
+import org.springframework.expression.spel.CompilablePropertyAccessor;
 import org.springframework.expression.spel.support.ReflectivePropertyAccessor;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -24,9 +25,16 @@ public class ReflectivePropertyAccessorInnerOptimalPropertyAccessorTest {
         PropertyAccessor accessor = reflectiveAccessor.createOptimalAccessor(context, sample, "name");
 
         assertThat(accessor)
-                .isInstanceOf(ReflectivePropertyAccessor.OptimalPropertyAccessor.class);
+                .isNotSameAs(reflectiveAccessor)
+                .isInstanceOf(CompilablePropertyAccessor.class);
         assertThat(accessor.canRead(context, sample, "name"))
                 .isTrue();
+
+        CompilablePropertyAccessor compilableAccessor = (CompilablePropertyAccessor) accessor;
+        assertThat(compilableAccessor.isCompilable())
+                .isTrue();
+        assertThat(compilableAccessor.getPropertyType())
+                .isEqualTo(String.class);
 
         TypedValue value = accessor.read(context, sample, "name");
 
@@ -43,9 +51,16 @@ public class ReflectivePropertyAccessorInnerOptimalPropertyAccessorTest {
         PropertyAccessor accessor = reflectiveAccessor.createOptimalAccessor(context, sample, "message");
 
         assertThat(accessor)
-                .isInstanceOf(ReflectivePropertyAccessor.OptimalPropertyAccessor.class);
+                .isNotSameAs(reflectiveAccessor)
+                .isInstanceOf(CompilablePropertyAccessor.class);
         assertThat(accessor.canRead(context, sample, "message"))
                 .isTrue();
+
+        CompilablePropertyAccessor compilableAccessor = (CompilablePropertyAccessor) accessor;
+        assertThat(compilableAccessor.isCompilable())
+                .isTrue();
+        assertThat(compilableAccessor.getPropertyType())
+                .isEqualTo(String.class);
 
         TypedValue value = accessor.read(context, sample, "message");
 
