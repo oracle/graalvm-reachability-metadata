@@ -10,8 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
@@ -52,7 +50,6 @@ import java.util.NoSuchElementException;
 import java.util.ServiceConfigurationError;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -402,11 +399,6 @@ public class Vertx_sql_clientTest {
         }
 
         @Override
-        public void getConnection(Handler<AsyncResult<SqlConnection>> handler) {
-            handler.handle(Future.succeededFuture(connection));
-        }
-
-        @Override
         public Future<SqlConnection> getConnection() {
             return Future.succeededFuture(connection);
         }
@@ -427,24 +419,8 @@ public class Vertx_sql_clientTest {
         }
 
         @Override
-        public void close(Handler<AsyncResult<Void>> handler) {
-            handler.handle(Future.succeededFuture());
-        }
-
-        @Override
         public Future<Void> close() {
             return Future.succeededFuture();
-        }
-
-        @Override
-        public Pool connectHandler(Handler<SqlConnection> handler) {
-            handler.handle(connection);
-            return this;
-        }
-
-        @Override
-        public Pool connectionProvider(Function<Context, Future<SqlConnection>> provider) {
-            return this;
         }
 
         @Override
@@ -472,18 +448,7 @@ public class Vertx_sql_clientTest {
         }
 
         @Override
-        public SqlConnection prepare(String sql, Handler<AsyncResult<PreparedStatement>> handler) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public Future<PreparedStatement> prepare(String sql) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public SqlConnection prepare(
-                String sql, PrepareOptions options, Handler<AsyncResult<PreparedStatement>> handler) {
             throw new UnsupportedOperationException();
         }
 
@@ -503,11 +468,6 @@ public class Vertx_sql_clientTest {
         }
 
         @Override
-        public void begin(Handler<AsyncResult<Transaction>> handler) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public Future<Transaction> begin() {
             throw new UnsupportedOperationException();
         }
@@ -520,12 +480,6 @@ public class Vertx_sql_clientTest {
         @Override
         public boolean isSSL() {
             return false;
-        }
-
-        @Override
-        public void close(Handler<AsyncResult<Void>> handler) {
-            closeCount++;
-            handler.handle(Future.succeededFuture());
         }
 
         @Override
@@ -569,19 +523,9 @@ public class Vertx_sql_clientTest {
         public Future<Void> close() {
             return Future.succeededFuture();
         }
-
-        @Override
-        public void close(Handler<AsyncResult<Void>> handler) {
-            handler.handle(Future.succeededFuture());
-        }
     }
 
     private static final class TestCursor implements Cursor {
-        @Override
-        public void read(int count, Handler<AsyncResult<RowSet<Row>>> handler) {
-            handler.handle(Future.succeededFuture());
-        }
-
         @Override
         public Future<RowSet<Row>> read(int count) {
             return Future.succeededFuture();
@@ -595,11 +539,6 @@ public class Vertx_sql_clientTest {
         @Override
         public Future<Void> close() {
             return Future.succeededFuture();
-        }
-
-        @Override
-        public void close(Handler<AsyncResult<Void>> handler) {
-            handler.handle(Future.succeededFuture());
         }
 
         @Override
@@ -642,11 +581,6 @@ public class Vertx_sql_clientTest {
         @Override
         public Future<Void> close() {
             return Future.succeededFuture();
-        }
-
-        @Override
-        public void close(Handler<AsyncResult<Void>> handler) {
-            handler.handle(Future.succeededFuture());
         }
     }
 
