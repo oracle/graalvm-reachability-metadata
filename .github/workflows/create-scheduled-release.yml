@@ -65,7 +65,6 @@ jobs:
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
       none-found: ${{ steps.set-matrix.outputs.none-found }}
     steps:
       - name: "☁️ Checkout repository"
@@ -83,7 +82,10 @@ jobs:
         id: set-matrix
         run: |
           LATEST_TAG=$(git tag --list | sort -V | tail -1)
-          ./gradlew generateChangedCoordinatesMatrix -PbaseCommit="$(git show-ref -s "$LATEST_TAG")" -PnewCommit="$(git rev-parse HEAD)"
+          # Keep the expanded matrix out of job outputs; the release job only needs none-found.
+          GRADLE_OUTPUT=$(mktemp)
+          GITHUB_OUTPUT="$GRADLE_OUTPUT" ./gradlew generateChangedCoordinatesMatrix -PbaseCommit="$(git show-ref -s "$LATEST_TAG")" -PnewCommit="$(git rev-parse HEAD)"
+          grep '^none-found=' "$GRADLE_OUTPUT" >> "$GITHUB_OUTPUT"
 
   release:
     needs: get-changed-metadata
