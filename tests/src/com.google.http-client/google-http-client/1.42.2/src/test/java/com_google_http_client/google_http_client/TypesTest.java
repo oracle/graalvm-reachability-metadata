@@ -6,7 +6,7 @@
  */
 package com_google_http_client.google_http_client;
 
-import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.GenericData;
 import com.google.api.client.util.Types;
 import java.lang.reflect.GenericArrayType;
@@ -28,10 +28,10 @@ public class TypesTest {
     }
 
     @Test
-    public void newInstanceExplainsMissingPublicDefaultConstructor() {
-        assertThatThrownBy(() -> Types.newInstance(JsonObjectParser.class))
+    public void newInstanceExplainsAbstractClass() {
+        assertThatThrownBy(() -> Types.newInstance(JsonFactory.class))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("has no accessible default constructor");
+                .hasMessageContaining("because it is abstract");
     }
 
     @Test
