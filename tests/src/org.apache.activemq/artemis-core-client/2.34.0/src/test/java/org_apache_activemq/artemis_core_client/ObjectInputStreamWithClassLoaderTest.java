@@ -7,6 +7,7 @@
 package org_apache_activemq.artemis_core_client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,6 +45,9 @@ public class ObjectInputStreamWithClassLoaderTest {
 
     @Test
     void fallsBackToDefaultObjectInputStreamResolutionWhenContextLoaderFindsNullClass() throws Exception {
+        assumeFalse(isNativeImageRuntime(),
+                "Null-returning ClassLoader implementations are not supported in native-image tests");
+
         SamplePayload payload = new SamplePayload("null-finding-loader");
         ClassLoader nullFindingContextLoader = new NullFindingClassLoader(SamplePayload.class.getName());
 
@@ -173,5 +177,9 @@ public class ObjectInputStreamWithClassLoaderTest {
         public int hashCode() {
             return value.hashCode();
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return System.getProperty("java.vm.name", "").contains("Substrate VM");
     }
 }
