@@ -13,27 +13,36 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.Test;
 
 public class ServletHolderTest {
     @Test
-    public void getNameOfJspClassUsesAvailableJasperUtility() {
-        ServletHolder holder = new ServletHolder();
+    public void startMapsForcedJspPathToJspServlet() throws Exception {
+        Server server = new Server();
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
+        context.setContextPath("/");
+        ServletHolder jspServlet = new ServletHolder("jsp", CountingServlet.class);
+        ServletHolder forcedJsp = new ServletHolder();
+        forcedJsp.setName("monthlyReport");
+        forcedJsp.setForcedPath("/WEB-INF/pages/monthly-report.jsp");
+        context.addServlet(jspServlet, "*.jsp");
+        context.addServlet(forcedJsp, "/reports/monthly");
+        server.setHandler(context);
 
-        String jspClassName = holder.getNameOfJspClass("/WEB-INF/pages/monthly-report.jsp");
+        try {
+            server.start();
 
-        assertThat(jspClassName).isEqualTo("javaIdentifier:monthly-report.jsp");
-    }
-
-    @Test
-    public void getPackageOfJspClassUsesAvailableJasperUtility() {
-        ServletHolder holder = new ServletHolder();
-
-        String jspPackage = holder.getPackageOfJspClass("/WEB-INF/pages/monthly-report.jsp");
-
-        assertThat(jspPackage).isEqualTo("javaPackage:/WEB-INF/pages");
+            assertThat(forcedJsp.getClassName()).isEqualTo(CountingServlet.class.getName());
+            assertThat(forcedJsp.getInitParameter("jspFile")).isEqualTo("/WEB-INF/pages/monthly-report.jsp");
+            assertThat(forcedJsp.getServlet()).isInstanceOf(CountingServlet.class);
+        } finally {
+            server.stop();
+            server.destroy();
+        }
     }
 
     @Test
