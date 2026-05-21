@@ -50,10 +50,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class Waffle_jnaTest {
     @Test
     void ntlmAndSpnegoMessagesAreRecognizedFromWireBytes() {
-        byte[] ntlmTypeOne = new byte[] { 'N', 'T', 'L', 'M', 'S', 'S', 'P', 0, 1, 0, 0, 0 };
-        byte[] nonNtlm = new byte[] { 'N', 'T', 'L', 'M', 'x' };
-        byte[] spnegoNegTokenInit = new byte[] { 0x60, 0x08, 0x06, 0x06, 0x2b, 0x06, 0x01, 0x05, 0x05, 0x02 };
-        byte[] spnegoNegTokenArg = new byte[] { (byte) 0xa1, 0x03, 0x01, 0x02, 0x03 };
+        byte[] ntlmTypeOne = new byte[] {'N', 'T', 'L', 'M', 'S', 'S', 'P', 0, 1, 0, 0, 0 };
+        byte[] nonNtlm = new byte[] {'N', 'T', 'L', 'M', 'x' };
+        byte[] spnegoNegTokenInit = new byte[] {0x60, 0x08, 0x06, 0x06, 0x2b, 0x06, 0x01, 0x05, 0x05, 0x02 };
+        byte[] spnegoNegTokenArg = new byte[] {(byte) 0xa1, 0x03, 0x01, 0x02, 0x03 };
 
         assertThat(NtlmMessage.isNtlmMessage(ntlmTypeOne)).isTrue();
         assertThat(NtlmMessage.getMessageType(ntlmTypeOne)).isEqualTo(1);
@@ -61,9 +61,9 @@ public class Waffle_jnaTest {
         assertThat(NtlmMessage.isNtlmMessage(null)).isFalse();
 
         assertThat(SPNegoMessage.isNegTokenInit(spnegoNegTokenInit)).isTrue();
-        assertThat(SPNegoMessage.isNegTokenInit(new byte[] { 0x60, 0x01 })).isFalse();
+        assertThat(SPNegoMessage.isNegTokenInit(new byte[] {0x60, 0x01 })).isFalse();
         assertThat(SPNegoMessage.isNegTokenArg(spnegoNegTokenArg)).isTrue();
-        assertThat(SPNegoMessage.isNegTokenArg(new byte[] { (byte) 0xa1, 0x04, 0x01 })).isFalse();
+        assertThat(SPNegoMessage.isNegTokenArg(new byte[] {(byte) 0xa1, 0x04, 0x01 })).isFalse();
     }
 
     @Test
@@ -95,7 +95,7 @@ public class Waffle_jnaTest {
     void windowsPrincipalBuildsRolesForRequestedPrincipalAndGroupFormats() {
         TestWindowsAccount admins = new TestWindowsAccount("S-1-5-32-544", "DOMAIN\\Admins", "Admins", "DOMAIN");
         TestWindowsAccount users = new TestWindowsAccount("S-1-5-32-545", "DOMAIN\\Users", "Users", "DOMAIN");
-        TestWindowsIdentity identity = new TestWindowsIdentity("S-1-5-21-1000", new byte[] { 1, 2, 3, 4 },
+        TestWindowsIdentity identity = new TestWindowsIdentity("S-1-5-21-1000", new byte[] {1, 2, 3, 4 },
                 "DOMAIN\\alice", admins, users);
 
         WindowsPrincipal principal = new WindowsPrincipal(identity, PrincipalFormat.BOTH, PrincipalFormat.SID);
@@ -118,7 +118,7 @@ public class Waffle_jnaTest {
     @Test
     void windowsSecurityContextStoresNegotiationStateAndDefensivelyCopiesToken() {
         WindowsSecurityContextImpl context = new WindowsSecurityContextImpl();
-        byte[] token = new byte[] { 1, 2, 3, 4 };
+        byte[] token = new byte[] {1, 2, 3, 4 };
 
         context.setPrincipalName("DOMAIN\\alice");
         context.setSecurityPackage("Negotiate");
@@ -168,7 +168,7 @@ public class Waffle_jnaTest {
 
     @Test
     void windowsLoginModuleAuthenticatesWithCallbackCredentialsAndPopulatesSubjectPrincipals() throws Exception {
-        TrackingWindowsIdentity identity = new TrackingWindowsIdentity("S-1-5-21-1000", new byte[] { 1, 2, 3, 4 },
+        TrackingWindowsIdentity identity = new TrackingWindowsIdentity("S-1-5-21-1000", new byte[] {1, 2, 3, 4 },
                 "DOMAIN\\alice",
                 new TestWindowsAccount("S-1-5-32-544", "DOMAIN\\Admins", "Admins", "DOMAIN"),
                 new TestWindowsAccount("S-1-5-32-545", "DOMAIN\\Users", "Users", "DOMAIN"));
