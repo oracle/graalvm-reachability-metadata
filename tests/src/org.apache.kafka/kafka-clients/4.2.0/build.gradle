@@ -16,7 +16,34 @@ dependencies {
     testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.20.1'
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'ch.qos.logback:logback-classic:1.4.5'
-    testRuntimeOnly 'org.robolectric:android-all:14-robolectric-10818077'
+    testImplementation 'org.bouncycastle:bcpkix-jdk18on:1.81'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release.unset()
+    options.release.unsetConvention()
+    options.compilerArgs.addAll(["--add-exports", "java.security.jgss/sun.security.krb5=ALL-UNNAMED"])
+}
+
+def kerberosVendorAgentJar = tasks.register("kerberosVendorAgentJar", Jar) {
+    archiveClassifier = "kerberos-vendor-agent"
+    from sourceSets.test.output
+    manifest {
+        attributes "Premain-Class": "org_apache_kafka.kafka_clients.KerberosVendorAgent"
+    }
+}
+
+tasks.withType(Test).configureEach {
+    dependsOn kerberosVendorAgentJar
+    maxHeapSize = "2g"
+    systemProperty "java.vendor", "IBM Corporation"
+    jvmArgs "--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED"
+    jacoco {
+        excludes = ["org_apache_kafka.kafka_clients.OrgApacheKafkaShadedComGoogleProtobufSchemaUtilTest*"]
+    }
+    doFirst {
+        jvmArgs "-javaagent:${kerberosVendorAgentJar.get().archiveFile.get().asFile.absolutePath}"
+    }
 }
 
 graalvmNative {
@@ -27,6 +54,14 @@ graalvmNative {
                 userCodeFilterPath = "metadata-user-code-filter.json"
                 extraFilterPath = "metadata-extra-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.add("--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED")
+        }
+        test {
+            runtimeArgs("-Djava.vendor=IBM Corporation")
         }
     }
 }
