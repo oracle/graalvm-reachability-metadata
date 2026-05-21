@@ -29,9 +29,17 @@ import com.github.dockerjava.api.model.BindPropagation;
 import com.github.dockerjava.api.model.Binds;
 import com.github.dockerjava.api.model.Capability;
 import com.github.dockerjava.api.model.ContainerConfig;
+import com.github.dockerjava.api.model.ContainerDNSConfig;
 import com.github.dockerjava.api.model.ContainerNetwork;
+import com.github.dockerjava.api.model.ContainerSpec;
+import com.github.dockerjava.api.model.ContainerSpecConfig;
+import com.github.dockerjava.api.model.ContainerSpecFile;
+import com.github.dockerjava.api.model.ContainerSpecSecret;
 import com.github.dockerjava.api.model.Device;
 import com.github.dockerjava.api.model.DeviceRequest;
+import com.github.dockerjava.api.model.Driver;
+import com.github.dockerjava.api.model.EndpointResolutionMode;
+import com.github.dockerjava.api.model.EndpointSpec;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.ExposedPorts;
 import com.github.dockerjava.api.model.Frame;
@@ -44,13 +52,31 @@ import com.github.dockerjava.api.model.LogConfig;
 import com.github.dockerjava.api.model.LogConfig.LoggingType;
 import com.github.dockerjava.api.model.Mount;
 import com.github.dockerjava.api.model.MountType;
+import com.github.dockerjava.api.model.NetworkAttachmentConfig;
 import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.PortConfig;
+import com.github.dockerjava.api.model.PortConfig.PublishMode;
+import com.github.dockerjava.api.model.PortConfigProtocol;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.PropagationMode;
+import com.github.dockerjava.api.model.ResourceRequirements;
+import com.github.dockerjava.api.model.ResourceSpecs;
 import com.github.dockerjava.api.model.RestartPolicy;
 import com.github.dockerjava.api.model.SELContext;
+import com.github.dockerjava.api.model.ServiceGlobalModeOptions;
+import com.github.dockerjava.api.model.ServiceMode;
+import com.github.dockerjava.api.model.ServiceModeConfig;
+import com.github.dockerjava.api.model.ServicePlacement;
+import com.github.dockerjava.api.model.ServiceReplicatedModeOptions;
+import com.github.dockerjava.api.model.ServiceRestartCondition;
+import com.github.dockerjava.api.model.ServiceRestartPolicy;
+import com.github.dockerjava.api.model.ServiceSpec;
 import com.github.dockerjava.api.model.StreamType;
+import com.github.dockerjava.api.model.TaskSpec;
 import com.github.dockerjava.api.model.Ulimit;
+import com.github.dockerjava.api.model.UpdateConfig;
+import com.github.dockerjava.api.model.UpdateFailureAction;
+import com.github.dockerjava.api.model.UpdateOrder;
 import com.github.dockerjava.api.model.Volume;
 import com.github.dockerjava.api.model.VolumeOptions;
 import com.github.dockerjava.api.model.Volumes;
@@ -349,6 +375,136 @@ public class Docker_java_apiTest {
         Frame frame = new Frame(StreamType.STDOUT, "hello".getBytes());
         assertThat(frame.getStreamType()).isEqualTo(StreamType.STDOUT);
         assertThat(frame.getPayload()).containsExactly((byte) 'h', (byte) 'e', (byte) 'l', (byte) 'l', (byte) 'o');
+    }
+
+    @Test
+    void buildsSwarmServiceSpecifications() {
+        ContainerSpecFile secretFile = new ContainerSpecFile()
+                .withName("/run/secrets/api-key")
+                .withUid("1000")
+                .withGid("1000")
+                .withMode(0400L);
+        ContainerSpecFile configFile = new ContainerSpecFile()
+                .withName("/etc/app/config.yml")
+                .withUid("0")
+                .withGid("0")
+                .withMode(0444L);
+        ContainerDNSConfig dnsConfig = new ContainerDNSConfig()
+                .withNameservers(List.of("1.1.1.1", "8.8.8.8"))
+                .withSearch(List.of("service.local"))
+                .withOptions(List.of("ndots:1"));
+        ContainerSpec containerSpec = new ContainerSpec()
+                .withImage("busybox:latest")
+                .withCommand(List.of("/bin/sh", "-c"))
+                .withArgs(List.of("while true; do sleep 60; done"))
+                .withEnv(List.of("APP_ENV=test"))
+                .withDir("/srv/app")
+                .withUser("1000:1000")
+                .withGroups("1000")
+                .withTty(false)
+                .withOpenStdin(false)
+                .withReadOnly(true)
+                .withHosts(List.of("127.0.0.1 local.test"))
+                .withHostname("worker")
+                .withStopSignal("SIGTERM")
+                .withStopGracePeriod(10_000_000_000L)
+                .withDnsConfig(dnsConfig)
+                .withSecrets(List.of(new ContainerSpecSecret()
+                        .withSecretId("secret-id")
+                        .withSecretName("api-key")
+                        .withFile(secretFile)))
+                .withConfigs(List.of(new ContainerSpecConfig()
+                        .withConfigID("config-id")
+                        .withConfigName("app-config")
+                        .withFile(configFile)));
+
+        ResourceRequirements resources = new ResourceRequirements()
+                .withLimits(new ResourceSpecs().withMemoryBytes(256L * 1024L * 1024L).withNanoCPUs(1_000_000_000L))
+                .withReservations(new ResourceSpecs().withMemoryBytes(64L * 1024L * 1024L).withNanoCPUs(250_000_000L));
+        ServiceRestartPolicy restartPolicy = new ServiceRestartPolicy()
+                .withCondition(ServiceRestartCondition.ON_FAILURE)
+                .withDelay(5_000_000_000L)
+                .withMaxAttempts(3L)
+                .withWindow(60_000_000_000L);
+        ServicePlacement placement = new ServicePlacement()
+                .withConstraints(List.of("node.labels.zone == test"))
+                .withMaxReplicas(2);
+        NetworkAttachmentConfig taskNetwork = new NetworkAttachmentConfig()
+                .withTarget("backend")
+                .withAliases(List.of("worker", "jobs"));
+        Driver logDriver = new Driver()
+                .withName("json-file")
+                .withOptions(Map.of("max-size", "5m"));
+        TaskSpec taskSpec = new TaskSpec()
+                .withContainerSpec(containerSpec)
+                .withResources(resources)
+                .withRestartPolicy(restartPolicy)
+                .withPlacement(placement)
+                .withLogDriver(logDriver)
+                .withForceUpdate(1)
+                .withRuntime("container")
+                .withNetworks(List.of(taskNetwork));
+
+        PortConfig publishedPort = new PortConfig()
+                .withName("http")
+                .withProtocol(PortConfigProtocol.TCP)
+                .withTargetPort(8080)
+                .withPublishedPort(18080)
+                .withPublishMode(PublishMode.ingress);
+        EndpointSpec endpointSpec = new EndpointSpec()
+                .withMode(EndpointResolutionMode.VIP)
+                .withPorts(List.of(publishedPort));
+        UpdateConfig updateConfig = new UpdateConfig()
+                .withParallelism(2L)
+                .withDelay(1_000_000_000L)
+                .withFailureAction(UpdateFailureAction.ROLLBACK)
+                .withMaxFailureRatio(0.25F)
+                .withMonitor(30_000_000_000L)
+                .withOrder(UpdateOrder.START_FIRST);
+        ServiceModeConfig modeConfig = new ServiceModeConfig()
+                .withReplicated(new ServiceReplicatedModeOptions().withReplicas(3));
+        ServiceSpec serviceSpec = new ServiceSpec()
+                .withName("background-worker")
+                .withLabels(Map.of("team", "platform"))
+                .withTaskTemplate(taskSpec)
+                .withMode(modeConfig)
+                .withNetworks(List.of(taskNetwork))
+                .withEndpointSpec(endpointSpec)
+                .withUpdateConfig(updateConfig)
+                .withRollbackConfig(new UpdateConfig().withParallelism(1L));
+
+        assertThat(containerSpec.getImage()).isEqualTo("busybox:latest");
+        assertThat(containerSpec.getCommand()).containsExactly("/bin/sh", "-c");
+        assertThat(containerSpec.getArgs()).containsExactly("while true; do sleep 60; done");
+        assertThat(containerSpec.getDnsConfig().getNameservers()).containsExactly("1.1.1.1", "8.8.8.8");
+        assertThat(containerSpec.getSecrets().get(0).getFile()).isEqualTo(secretFile);
+        assertThat(containerSpec.getConfigs().get(0).getConfigName()).isEqualTo("app-config");
+        assertThat(resources.getLimits().getMemoryBytes()).isEqualTo(256L * 1024L * 1024L);
+        assertThat(resources.getReservations().getNanoCPUs()).isEqualTo(250_000_000L);
+        assertThat(restartPolicy.getCondition()).isEqualTo(ServiceRestartCondition.ON_FAILURE);
+        assertThat(restartPolicy.getMaxAttempts()).isEqualTo(3L);
+        assertThat(placement.getConstraints()).containsExactly("node.labels.zone == test");
+        assertThat(placement.getMaxReplicas()).isEqualTo(2);
+        assertThat(taskSpec.getLogDriver().getOptions()).containsEntry("max-size", "5m");
+        assertThat(taskSpec.getNetworks()).containsExactly(taskNetwork);
+        assertThat(endpointSpec.getMode()).isEqualTo(EndpointResolutionMode.VIP);
+        assertThat(endpointSpec.getPorts()).containsExactly(publishedPort);
+        assertThat(publishedPort.getPublishMode()).isEqualTo(PublishMode.ingress);
+        assertThat(updateConfig.getFailureAction()).isEqualTo(UpdateFailureAction.ROLLBACK);
+        assertThat(updateConfig.getOrder()).isEqualTo(UpdateOrder.START_FIRST);
+        assertThat(modeConfig.getMode()).isEqualTo(ServiceMode.REPLICATED);
+        assertThat(modeConfig.getReplicated().getReplicas()).isEqualTo(3);
+        assertThat(serviceSpec.getName()).isEqualTo("background-worker");
+        assertThat(serviceSpec.getLabels()).containsEntry("team", "platform");
+        assertThat(serviceSpec.getTaskTemplate()).isEqualTo(taskSpec);
+        assertThat(serviceSpec.getNetworks()).containsExactly(taskNetwork);
+        assertThat(serviceSpec.getRollbackConfig().getParallelism()).isEqualTo(1L);
+
+        assertThatThrownBy(() -> modeConfig.withGlobal(new ServiceGlobalModeOptions()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Cannot set both global and replicated mode");
+        assertThatThrownBy(() -> new ServicePlacement().withMaxReplicas(-1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
