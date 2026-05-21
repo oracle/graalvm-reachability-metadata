@@ -9,6 +9,7 @@ package org_springframework.spring_expression;
 import org.junit.jupiter.api.Test;
 import org.springframework.expression.PropertyAccessor;
 import org.springframework.expression.TypedValue;
+import org.springframework.expression.spel.CompilablePropertyAccessor;
 import org.springframework.expression.spel.support.ReflectivePropertyAccessor;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -24,7 +25,7 @@ public class ReflectivePropertyAccessorInnerOptimalPropertyAccessorTest {
         PropertyAccessor accessor = reflectiveAccessor.createOptimalAccessor(context, sample, "name");
 
         assertThat(accessor)
-                .isInstanceOf(ReflectivePropertyAccessor.OptimalPropertyAccessor.class);
+                .isInstanceOf(CompilablePropertyAccessor.class);
         assertThat(accessor.canRead(context, sample, "name"))
                 .isTrue();
 
@@ -43,7 +44,7 @@ public class ReflectivePropertyAccessorInnerOptimalPropertyAccessorTest {
         PropertyAccessor accessor = reflectiveAccessor.createOptimalAccessor(context, sample, "message");
 
         assertThat(accessor)
-                .isInstanceOf(ReflectivePropertyAccessor.OptimalPropertyAccessor.class);
+                .isInstanceOf(CompilablePropertyAccessor.class);
         assertThat(accessor.canRead(context, sample, "message"))
                 .isTrue();
 
