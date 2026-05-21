@@ -45,7 +45,8 @@ public class ObjectPropertyAccessorTest {
 
     @Test
     void invokesWriteMethodFallbackWhenAccessCheckRejectsRegularSetterPath() throws OgnlException {
-        final OgnlContext context = newContext(new SetterAccessDenyingMemberAccess());
+        final FallbackAllowingMemberAccess memberAccess = new FallbackAllowingMemberAccess();
+        final OgnlContext context = newContext(memberAccess);
         final ObjectPropertyAccessor accessor = new ObjectPropertyAccessor();
         final SetterOnlyFixture fixture = new SetterOnlyFixture();
 
@@ -53,6 +54,7 @@ public class ObjectPropertyAccessorTest {
 
         assertThat(result).isNull();
         assertThat(fixture.assignedValue()).isEqualTo("updated");
+        assertThat(memberAccess.setterAccessChecks()).isEqualTo(2);
     }
 
     private static OgnlContext newContext(AbstractMemberAccess memberAccess) {
@@ -66,10 +68,20 @@ public class ObjectPropertyAccessorTest {
         }
     }
 
-    private static final class SetterAccessDenyingMemberAccess extends AbstractMemberAccess {
+    private static final class FallbackAllowingMemberAccess extends AbstractMemberAccess {
+        private int setterAccessChecks;
+
         @Override
         public boolean isAccessible(Map context, Object target, Member member, String propertyName) {
-            return !(member instanceof Method && "setAlias".equals(member.getName()));
+            if (member instanceof Method && "setAlias".equals(member.getName())) {
+                setterAccessChecks++;
+                return setterAccessChecks > 1;
+            }
+            return true;
+        }
+
+        int setterAccessChecks() {
+            return setterAccessChecks;
         }
     }
 

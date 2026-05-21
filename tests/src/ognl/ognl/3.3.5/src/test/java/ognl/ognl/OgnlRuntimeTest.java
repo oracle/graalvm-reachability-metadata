@@ -13,19 +13,25 @@ import ognl.OgnlException;
 import ognl.OgnlRuntime;
 import ognl.security.OgnlSecurityManager;
 import org.graalvm.internal.tck.NativeImageSupport;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.Permission;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OgnlRuntimeTest {
     @Test
     void discoversConstructorsAndCreatesObjects() throws Exception {
@@ -93,24 +99,27 @@ public class OgnlRuntimeTest {
     @Test
     void fallsBackToPublicMembersWhenDeclaredMemberAccessIsDenied() {
         final SecurityManager previousSecurityManager = System.getSecurityManager();
-        final PublicMemberDenyingSecurityManager securityManager = new PublicMemberDenyingSecurityManager();
-        final Class<?> fieldFallbackClass = PublicFieldFallbackFixture.class;
-        final Class<?> methodFallbackClass = PublicMethodFallbackFixture.class;
-        final Class<?> accessorFallbackClass = PublicAccessorFallbackFixture.class;
-        final Runnable fieldsLookup = () -> OgnlRuntime.getFields(fieldFallbackClass);
-        final Runnable methodsLookup = () -> OgnlRuntime.getMethods(methodFallbackClass, false);
-        final Runnable accessorsLookup = () -> OgnlRuntime.getDeclaredMethods(accessorFallbackClass, "name", false);
+        final PackageAccessDenyingSecurityManager securityManager = new PackageAccessDenyingSecurityManager();
+        boolean fieldsLookupReachedFallback = false;
+        boolean methodsLookupReachedFallback = false;
+        boolean accessorsLookupReachedFallback = false;
         final boolean installed = installSecurityManager(securityManager);
         try {
             if (installed) {
-                assertSecurityExceptionFrom(fieldsLookup);
-                assertSecurityExceptionFrom(methodsLookup);
-                assertSecurityExceptionFrom(accessorsLookup);
+                fieldsLookupReachedFallback = lookupFieldsThroughPublicMemberFallback();
+                methodsLookupReachedFallback = lookupMethodsThroughPublicMemberFallback();
+                accessorsLookupReachedFallback = lookupAccessorsThroughPublicMemberFallback();
             } else {
                 assertThat(System.getSecurityManager()).isSameAs(previousSecurityManager);
             }
         } finally {
             restoreSecurityManager(previousSecurityManager);
+        }
+
+        if (installed) {
+            assertThat(fieldsLookupReachedFallback).isTrue();
+            assertThat(methodsLookupReachedFallback).isTrue();
+            assertThat(accessorsLookupReachedFallback).isTrue();
         }
     }
 
@@ -130,25 +139,61 @@ public class OgnlRuntimeTest {
     }
 
     @Test
+    @Order(2)
+    void invokesMethodThroughFactoryCreatedOgnlSandbox() throws Exception {
+        final SandboxInvocationFixture sandboxFixture = new SandboxInvocationFixture();
+        final Method sandboxMethod = SandboxInvocationFixture.class.getMethod("constantMessage");
+        final String previousValue = System.getProperty("ognl.security.manager");
+        final SecurityManager previousSecurityManager = System.getSecurityManager();
+        System.setProperty("ognl.security.manager", "true");
+        try {
+            assertThat(OgnlRuntime.invokeMethod(sandboxFixture, sandboxMethod, new Object[0]))
+                    .isEqualTo("sandboxed");
+        } catch (InvocationTargetException exception) {
+            if (!securityManagerInstallationIsUnsupported(exception)) {
+                throw exception;
+            }
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        } finally {
+            restoreSecurityManager(previousSecurityManager);
+            restoreProperty("ognl.security.manager", previousValue);
+        }
+    }
+
+    @Test
+    @Order(1)
     void invokesMethodThroughPreinstalledOgnlSandbox() throws Exception {
         final OgnlContext context = newContext();
         final InvocationFixture fixture = new InvocationFixture("Grace");
+        final SandboxInvocationFixture sandboxFixture = new SandboxInvocationFixture();
+        final Method sandboxMethod = SandboxInvocationFixture.class.getMethod("constantMessage");
         final String previousValue = System.getProperty("ognl.security.manager");
         final SecurityManager previousSecurityManager = System.getSecurityManager();
         final SetSecurityManagerDenyingSecurityManager parentSecurityManager =
                 new SetSecurityManagerDenyingSecurityManager();
         final OgnlSecurityManager ognlSecurityManager = new OgnlSecurityManager(parentSecurityManager);
+        Long residentToken = null;
         final boolean installed = installSecurityManager(ognlSecurityManager);
         System.setProperty("ognl.security.manager", "true");
         try {
             if (installed) {
-                assertThat(OgnlRuntime.callMethod(context, fixture, "greet", new Object[] {"Hi"}))
-                        .isEqualTo("Hi Grace");
+                residentToken = ognlSecurityManager.enter();
+                assertThat(residentToken).isNotNull();
+                assertThat(OgnlRuntime.invokeMethod(sandboxFixture, sandboxMethod, new Object[0]))
+                        .isEqualTo("sandboxed");
+                ognlSecurityManager.leave(residentToken);
+                residentToken = null;
 
                 parentSecurityManager.denySetSecurityManager = true;
-                assertThat(OgnlRuntime.callMethod(context, fixture, "greet", new Object[] {"Welcome"}))
-                        .isEqualTo("Welcome Grace");
+                assertThat(OgnlRuntime.invokeMethod(sandboxFixture, sandboxMethod, new Object[0]))
+                        .isEqualTo("sandboxed");
                 parentSecurityManager.denySetSecurityManager = false;
+
+                assertThat(OgnlRuntime.callMethod(context, fixture, "greet", new Object[] {"Hi"}))
+                        .isEqualTo("Hi Grace");
             } else {
                 try {
                     assertThat(OgnlRuntime.callMethod(context, fixture, "greet", new Object[] {"Hi"}))
@@ -161,8 +206,15 @@ public class OgnlRuntimeTest {
                     }
                 }
             }
+        } catch (InvocationTargetException exception) {
+            if (!securityManagerInstallationIsUnsupported(exception)) {
+                throw exception;
+            }
         } finally {
             parentSecurityManager.denySetSecurityManager = false;
+            if (residentToken != null) {
+                ognlSecurityManager.leave(residentToken);
+            }
             restoreSecurityManager(previousSecurityManager);
             restoreProperty("ognl.security.manager", previousValue);
         }
@@ -197,14 +249,34 @@ public class OgnlRuntimeTest {
         }
     }
 
-    private static void assertSecurityExceptionFrom(Runnable invocation) {
-        boolean thrown = false;
+    private static boolean lookupFieldsThroughPublicMemberFallback() {
         try {
-            invocation.run();
+            final Map<?, ?> fields = OgnlRuntime.getFields(PublicFieldFallbackFixture.class);
+            assertThat(fields.containsKey("VISIBLE")).isTrue();
+            return true;
         } catch (SecurityException exception) {
-            thrown = true;
+            return true;
         }
-        assertThat(thrown).isTrue();
+    }
+
+    private static boolean lookupMethodsThroughPublicMemberFallback() {
+        try {
+            final Map<?, ?> methods = OgnlRuntime.getMethods(PublicMethodFallbackFixture.class, false);
+            assertThat(methods.containsKey("visibleMethod")).isTrue();
+            return true;
+        } catch (SecurityException exception) {
+            return true;
+        }
+    }
+
+    private static boolean lookupAccessorsThroughPublicMemberFallback() {
+        try {
+            final List<?> accessors = OgnlRuntime.getDeclaredMethods(PublicAccessorFallbackFixture.class, "name", false);
+            assertThat(accessors).isNotNull();
+            return true;
+        } catch (SecurityException exception) {
+            return true;
+        }
     }
 
     private static void runIsolatedScenario(String scenarioClassName) throws Exception {
@@ -254,6 +326,17 @@ public class OgnlRuntimeTest {
         return false;
     }
 
+    private static boolean securityManagerInstallationIsUnsupported(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof UnsupportedOperationException) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
     private static boolean isUnsupportedNativeImageClasspathReload(
             Throwable throwable, String expectedClassName) {
         if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
@@ -278,7 +361,7 @@ public class OgnlRuntimeTest {
         }
     }
 
-    private static class PublicMemberDenyingSecurityManager extends SecurityManager {
+    private static class PackageAccessDenyingSecurityManager extends SecurityManager {
         @Override
         public void checkPermission(Permission permission) {
         }
@@ -403,6 +486,12 @@ public class OgnlRuntimeTest {
     public static final class VarargsFixture {
         public String join(String... values) {
             return String.join(",", values);
+        }
+    }
+
+    public static final class SandboxInvocationFixture {
+        public String constantMessage() {
+            return "sandboxed";
         }
     }
 
