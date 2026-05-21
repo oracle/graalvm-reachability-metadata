@@ -30,6 +30,8 @@ import com.github.dockerjava.api.model.Binds;
 import com.github.dockerjava.api.model.Capability;
 import com.github.dockerjava.api.model.ContainerConfig;
 import com.github.dockerjava.api.model.ContainerNetwork;
+import com.github.dockerjava.api.model.Device;
+import com.github.dockerjava.api.model.DeviceRequest;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.ExposedPorts;
 import com.github.dockerjava.api.model.Frame;
@@ -38,6 +40,8 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.InternetProtocol;
 import com.github.dockerjava.api.model.Link;
 import com.github.dockerjava.api.model.Links;
+import com.github.dockerjava.api.model.LogConfig;
+import com.github.dockerjava.api.model.LogConfig.LoggingType;
 import com.github.dockerjava.api.model.Mount;
 import com.github.dockerjava.api.model.MountType;
 import com.github.dockerjava.api.model.PortBinding;
@@ -46,6 +50,7 @@ import com.github.dockerjava.api.model.PropagationMode;
 import com.github.dockerjava.api.model.RestartPolicy;
 import com.github.dockerjava.api.model.SELContext;
 import com.github.dockerjava.api.model.StreamType;
+import com.github.dockerjava.api.model.Ulimit;
 import com.github.dockerjava.api.model.Volume;
 import com.github.dockerjava.api.model.VolumeOptions;
 import com.github.dockerjava.api.model.Volumes;
@@ -235,6 +240,56 @@ public class Docker_java_apiTest {
         assertThat(hostConfig.getSysctls()).containsEntry("net.ipv4.ip_forward", "1");
         assertThat(hostConfig.getSecurityOpts()).containsExactly("no-new-privileges");
         assertThat(hostConfig.getMounts()).containsExactly(mount);
+    }
+
+    @Test
+    void configuresDeviceLoggingAndUlimitHostOptions() {
+        Device defaultDevice = Device.parse("/dev/fuse");
+        Device remappedReadOnlyDevice = Device.parse("/dev/sda:/dev/xvdc:r");
+        Device modeOnlyDevice = Device.parse("/dev/snd:mr");
+
+        assertThat(defaultDevice.getPathOnHost()).isEqualTo("/dev/fuse");
+        assertThat(defaultDevice.getPathInContainer()).isEqualTo("/dev/fuse");
+        assertThat(defaultDevice.getcGroupPermissions()).isEqualTo("rwm");
+        assertThat(remappedReadOnlyDevice.getPathOnHost()).isEqualTo("/dev/sda");
+        assertThat(remappedReadOnlyDevice.getPathInContainer()).isEqualTo("/dev/xvdc");
+        assertThat(remappedReadOnlyDevice.getcGroupPermissions()).isEqualTo("r");
+        assertThat(modeOnlyDevice.getPathInContainer()).isEqualTo("/dev/snd");
+        assertThat(modeOnlyDevice.getcGroupPermissions()).isEqualTo("mr");
+        assertThatThrownBy(() -> Device.parse("/dev/sda:/dev/xvdc:rx"))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        LogConfig logConfig = new LogConfig(LoggingType.JSON_FILE, Map.of("max-size", "10m", "max-file", "3"));
+        Ulimit nofileLimit = new Ulimit("nofile", 1024L, 2048L);
+        DeviceRequest gpuRequest = new DeviceRequest()
+                .withDriver("nvidia")
+                .withCount(1)
+                .withDeviceIds(List.of("GPU-123"))
+                .withCapabilities(List.of(List.of("gpu", "utility")))
+                .withOptions(Map.of("capabilities", "compute"));
+
+        HostConfig hostConfig = HostConfig.newHostConfig()
+                .withDevices(List.of(defaultDevice, remappedReadOnlyDevice))
+                .withDeviceCgroupRules(List.of("c 10:229 rwm"))
+                .withDeviceRequests(List.of(gpuRequest))
+                .withLogConfig(logConfig)
+                .withUlimits(List.of(nofileLimit));
+
+        assertThat(LoggingType.fromValue("json-file").getType()).isEqualTo("json-file");
+        assertThat(logConfig.getType()).isEqualTo(LoggingType.JSON_FILE);
+        assertThat(logConfig.getConfig()).containsEntry("max-size", "10m").containsEntry("max-file", "3");
+        assertThat(nofileLimit.getName()).isEqualTo("nofile");
+        assertThat(nofileLimit.getSoftLong()).isEqualTo(1024L);
+        assertThat(nofileLimit.getHardLong()).isEqualTo(2048L);
+        assertThat(gpuRequest.getDriver()).isEqualTo("nvidia");
+        assertThat(gpuRequest.getDeviceIds()).containsExactly("GPU-123");
+        assertThat(gpuRequest.getCapabilities()).containsExactly(List.of("gpu", "utility"));
+        assertThat(gpuRequest.getOptions()).containsEntry("capabilities", "compute");
+        assertThat(hostConfig.getDevices()).containsExactly(defaultDevice, remappedReadOnlyDevice);
+        assertThat(hostConfig.getDeviceCgroupRules()).containsExactly("c 10:229 rwm");
+        assertThat(hostConfig.getDeviceRequests()).containsExactly(gpuRequest);
+        assertThat(hostConfig.getLogConfig()).isEqualTo(logConfig);
+        assertThat(hostConfig.getUlimits()).containsExactly(nofileLimit);
     }
 
     @Test
