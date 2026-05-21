@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,6 +40,30 @@ public class OrgApacheKafkaCommonUtilsChildFirstClassLoaderTest {
             assertThat(loadedClass).isSameAs(String.class);
             assertThat(resource).isNotNull();
             assertThat(resources).contains(resource);
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
+    }
+
+    @Test
+    void findsResourceFromParentWhenMissingFromChildClassPath() throws Exception {
+        Path childRoot = Files.createDirectory(classPathRoot.resolve("child"));
+        Path parentRoot = Files.createDirectory(classPathRoot.resolve("parent"));
+        Path resourceFile = parentRoot.resolve("parent-only-resource.txt");
+        Files.writeString(resourceFile, "parent", StandardCharsets.UTF_8);
+
+        try (URLClassLoader parentClassLoader = new URLClassLoader(
+                new URL[] {parentRoot.toUri().toURL()},
+                null);
+                ChildFirstClassLoader classLoader = new ChildFirstClassLoader(
+                        childRoot.toString(),
+                        parentClassLoader)) {
+            URL resource = classLoader.getResource("parent-only-resource.txt");
+
+            assertThat(resource).isNotNull();
+            assertThat(Path.of(resource.toURI())).isEqualTo(resourceFile);
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
