@@ -8,7 +8,7 @@ package org_codehaus_plexus.plexus_utils;
 
 import java.lang.reflect.Method;
 
-import hidden.org.codehaus.plexus.interpolation.reflection.MethodMap;
+import org.codehaus.plexus.util.introspection.MethodMap;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
