@@ -96,6 +96,25 @@ public class Opencensus_contrib_http_utilTest {
     }
 
     @Test
+    void cloudTraceFormatHandlesUnsignedSpanIdsAndSampledOptionMasks() throws Exception {
+        SpanContext maxUnsignedSpanIdContext = spanContext(
+                TRACE_ID, "ffffffffffffffff", false);
+        Map<String, String> carrier = new HashMap<>();
+
+        CLOUD_TRACE_FORMAT.inject(maxUnsignedSpanIdContext, carrier, MAP_SETTER);
+
+        assertThat(carrier).containsEntry(
+                "X-Cloud-Trace-Context", TRACE_ID + "/18446744073709551615;o=0");
+
+        carrier.put("X-Cloud-Trace-Context", TRACE_ID + "/9223372036854775808;o=3");
+        SpanContext extracted = CLOUD_TRACE_FORMAT.extract(carrier, MAP_GETTER);
+
+        assertThat(extracted.getTraceId().toLowerBase16()).isEqualTo(TRACE_ID);
+        assertThat(extracted.getSpanId().toLowerBase16()).isEqualTo("8000000000000000");
+        assertThat(extracted.getTraceOptions().isSampled()).isTrue();
+    }
+
+    @Test
     void httpTraceUtilMapsResponseStatusCodesAndErrorDescriptions() {
         assertStatus(HttpTraceUtil.parseResponseStatus(204, null), Status.CanonicalCode.OK, null);
         assertStatus(HttpTraceUtil.parseResponseStatus(400, new IllegalArgumentException("bad input")),
