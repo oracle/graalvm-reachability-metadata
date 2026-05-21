@@ -24,6 +24,9 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -247,6 +250,61 @@ public class Google_http_client_apache_v2Test {
         }
     }
 
+    @Test
+    void defaultClientRoutesRequestsThroughProxySelector() throws Exception {
+        AtomicReference<RecordedRequest> recordedProxyRequest = new AtomicReference<>();
+        try (TestHttpServer proxyServer = TestHttpServer.start(exchange -> {
+            recordedProxyRequest.set(RecordedRequest.from(exchange));
+            byte[] responseBody = "served by proxy".getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().set("Content-Type", "text/plain");
+            exchange.getResponseHeaders().set("X-Proxy", "selected");
+            exchange.sendResponseHeaders(200, responseBody.length);
+            exchange.getResponseBody().write(responseBody);
+        })) {
+            ProxySelector originalProxySelector = ProxySelector.getDefault();
+            FixedProxySelector proxySelector = new FixedProxySelector(
+                    new InetSocketAddress("127.0.0.1", proxyServer.port()));
+            ApacheHttpTransport transport = null;
+            String targetUrl = "http://proxy-selector-target.example/proxy-target?via=selector";
+            ProxySelector.setDefault(proxySelector);
+            try {
+                transport = new ApacheHttpTransport();
+                HttpRequest request = transport.createRequestFactory()
+                        .buildGetRequest(new GenericUrl(targetUrl));
+                request.setConnectTimeout(TIMEOUT_MILLIS);
+                request.setReadTimeout(TIMEOUT_MILLIS);
+
+                HttpResponse response = request.execute();
+                try {
+                    assertThat(response.getStatusCode()).isEqualTo(200);
+                    assertThat(response.getHeaders().getFirstHeaderStringValue("X-Proxy"))
+                            .isEqualTo("selected");
+                    assertThat(response.parseAsString()).isEqualTo("served by proxy");
+                } finally {
+                    response.disconnect();
+                }
+            } finally {
+                if (transport != null) {
+                    transport.shutdown();
+                }
+                ProxySelector.setDefault(originalProxySelector);
+            }
+
+            assertThat(proxySelector.selectedUris()).anySatisfy(uri -> {
+                assertThat(uri.getScheme()).isEqualTo("http");
+                assertThat(uri.getHost()).isEqualTo("proxy-selector-target.example");
+            });
+            assertThat(proxySelector.connectionFailure()).isNull();
+        }
+
+        RecordedRequest proxyRequest = recordedProxyRequest.get();
+        assertThat(proxyRequest.method()).isEqualTo(HttpMethods.GET);
+        assertThat(proxyRequest.path()).isEqualTo("/proxy-target");
+        assertThat(proxyRequest.query()).isEqualTo("via=selector");
+        assertThat(proxyRequest.firstHeader("Host"))
+                .isEqualTo("proxy-selector-target.example");
+    }
+
     private record RecordedRequest(
             String method,
             String path,
@@ -307,10 +365,43 @@ public class Google_http_client_apache_v2Test {
                     .toString();
         }
 
+        int port() {
+            return server.getAddress().getPort();
+        }
+
         @Override
         public void close() {
             server.stop(0);
             executor.shutdownNow();
+        }
+    }
+
+    private static final class FixedProxySelector extends ProxySelector {
+        private final Proxy proxy;
+        private final List<URI> selectedUris = Collections.synchronizedList(new ArrayList<>());
+        private final AtomicReference<IOException> connectionFailure = new AtomicReference<>();
+
+        private FixedProxySelector(InetSocketAddress proxyAddress) {
+            this.proxy = new Proxy(Proxy.Type.HTTP, proxyAddress);
+        }
+
+        @Override
+        public List<Proxy> select(URI uri) {
+            selectedUris.add(uri);
+            return List.of(proxy);
+        }
+
+        @Override
+        public void connectFailed(URI uri, SocketAddress socketAddress, IOException exception) {
+            connectionFailure.set(exception);
+        }
+
+        List<URI> selectedUris() {
+            return selectedUris;
+        }
+
+        IOException connectionFailure() {
+            return connectionFailure.get();
         }
     }
 }
