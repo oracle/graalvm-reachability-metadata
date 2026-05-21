@@ -6,11 +6,334 @@
  */
 package com_github_docker_java.docker_java_api;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.exception.BadRequestException;
+import com.github.dockerjava.api.exception.ConflictException;
+import com.github.dockerjava.api.exception.DockerClientException;
+import com.github.dockerjava.api.exception.DockerException;
+import com.github.dockerjava.api.exception.InternalServerErrorException;
+import com.github.dockerjava.api.exception.NotFoundException;
+import com.github.dockerjava.api.model.AccessMode;
+import com.github.dockerjava.api.model.AuthConfig;
+import com.github.dockerjava.api.model.Bind;
+import com.github.dockerjava.api.model.BindOptions;
+import com.github.dockerjava.api.model.BindPropagation;
+import com.github.dockerjava.api.model.Binds;
+import com.github.dockerjava.api.model.Capability;
+import com.github.dockerjava.api.model.ContainerConfig;
+import com.github.dockerjava.api.model.ContainerNetwork;
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.ExposedPorts;
+import com.github.dockerjava.api.model.Frame;
+import com.github.dockerjava.api.model.HealthCheck;
+import com.github.dockerjava.api.model.HostConfig;
+import com.github.dockerjava.api.model.InternetProtocol;
+import com.github.dockerjava.api.model.Link;
+import com.github.dockerjava.api.model.Links;
+import com.github.dockerjava.api.model.Mount;
+import com.github.dockerjava.api.model.MountType;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
+import com.github.dockerjava.api.model.PropagationMode;
+import com.github.dockerjava.api.model.RestartPolicy;
+import com.github.dockerjava.api.model.SELContext;
+import com.github.dockerjava.api.model.StreamType;
+import com.github.dockerjava.api.model.Volume;
+import com.github.dockerjava.api.model.VolumeOptions;
+import com.github.dockerjava.api.model.Volumes;
 import org.junit.jupiter.api.Test;
 
-class Docker_java_apiTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+public class Docker_java_apiTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void parsesExposedPortsAndPortBindings() {
+        ExposedPort defaultPort = ExposedPort.parse("8080");
+        ExposedPort udpPort = ExposedPort.parse("5353/udp");
+        ExposedPort sctpPort = ExposedPort.sctp(9899);
+
+        assertThat(defaultPort.getPort()).isEqualTo(8080);
+        assertThat(defaultPort.getProtocol()).isEqualTo(InternetProtocol.TCP);
+        assertThat(defaultPort).isEqualTo(ExposedPort.tcp(8080));
+        assertThat(defaultPort.toString()).isEqualTo("8080/tcp");
+        assertThat(udpPort.getProtocol()).isEqualTo(InternetProtocol.UDP);
+        assertThat(sctpPort.toString()).isEqualTo("9899/sctp");
+        assertThat(InternetProtocol.parse("TCP")).isEqualTo(InternetProtocol.TCP);
+
+        Ports.Binding loopbackBinding = Ports.Binding.parse("127.0.0.1:18080");
+        Ports.Binding rangeBinding = Ports.Binding.bindPortRange(49153, 49155);
+        Ports.Binding hostOnlyBinding = Ports.Binding.parse("127.0.0.1");
+
+        assertThat(loopbackBinding.getHostIp()).isEqualTo("127.0.0.1");
+        assertThat(loopbackBinding.getHostPortSpec()).isEqualTo("18080");
+        assertThat(loopbackBinding.toString()).isEqualTo("127.0.0.1:18080");
+        assertThat(rangeBinding.getHostPortSpec()).isEqualTo("49153-49155");
+        assertThat(hostOnlyBinding.getHostIp()).isEqualTo("127.0.0.1");
+        assertThat(hostOnlyBinding.getHostPortSpec()).isNull();
+
+        PortBinding fullBinding = PortBinding.parse("127.0.0.1:18080:8080/tcp");
+        PortBinding dynamicBinding = PortBinding.parse("5353/udp");
+
+        assertThat(fullBinding.getBinding()).isEqualTo(loopbackBinding);
+        assertThat(fullBinding.getExposedPort()).isEqualTo(defaultPort);
+        assertThat(dynamicBinding.getBinding()).isEqualTo(Ports.Binding.empty());
+        assertThat(dynamicBinding.getExposedPort()).isEqualTo(udpPort);
+
+        assertThatThrownBy(() -> ExposedPort.parse("not-a-port/tcp")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> PortBinding.parse("too:many:parts:80/tcp"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void convertsPortsExposedPortsAndVolumesToPrimitiveApiShapes() {
+        Ports ports = new Ports();
+        ports.bind(ExposedPort.tcp(8080), Ports.Binding.bindIpAndPort("127.0.0.1", 18080));
+        ports.bind(ExposedPort.tcp(8080), Ports.Binding.bindPort(28080));
+        ports.add(new PortBinding(Ports.Binding.bindPort(15353), ExposedPort.udp(5353)));
+
+        Map<ExposedPort, Ports.Binding[]> bindings = ports.getBindings();
+        assertThat(bindings.get(ExposedPort.tcp(8080))).containsExactly(
+                Ports.Binding.bindIpAndPort("127.0.0.1", 18080),
+                Ports.Binding.bindPort(28080));
+        assertThat(bindings.get(ExposedPort.udp(5353))).containsExactly(Ports.Binding.bindPort(15353));
+
+        Map<String, List<Map<String, String>>> primitivePorts = ports.toPrimitive();
+        assertThat(primitivePorts.get("8080/tcp")).containsExactly(
+                Map.of("HostIp", "127.0.0.1", "HostPort", "18080"),
+                Map.of("HostIp", "", "HostPort", "28080"));
+        assertThat(Ports.fromPrimitive(primitivePorts).getBindings())
+                .containsKeys(ExposedPort.tcp(8080), ExposedPort.udp(5353));
+
+        Map<String, List<Map<String, String>>> primitiveWithUnpublishedPort = new HashMap<>();
+        primitiveWithUnpublishedPort.put("443/tcp", null);
+        Ports unpublishedPort = Ports.fromPrimitive(primitiveWithUnpublishedPort);
+        assertThat(unpublishedPort.getBindings().get(ExposedPort.tcp(443))).isNull();
+        assertThat(unpublishedPort.toPrimitive()).containsEntry("443/tcp", null);
+
+        ExposedPorts exposedPorts = new ExposedPorts(ExposedPort.tcp(80), ExposedPort.udp(53));
+        assertThat(exposedPorts.toPrimitive()).containsKeys("80/tcp", "53/udp");
+        assertThat(ExposedPorts.fromPrimitive(exposedPorts.toPrimitive()).getExposedPorts())
+                .containsExactlyInAnyOrder(ExposedPort.tcp(80), ExposedPort.udp(53));
+
+        Volumes volumes = new Volumes(new Volume("/data"), new Volume("/cache"));
+        assertThat(volumes.toPrimitive()).containsKeys("/data", "/cache");
+        assertThat(Volumes.fromPrimitive(volumes.toPrimitive()).getVolumes())
+                .containsExactlyInAnyOrder(new Volume("/data"), new Volume("/cache"));
+    }
+
+    @Test
+    void parsesMountsBindsLinksAndRestartPolicies() {
+        Bind bind = Bind.parse("/srv/app:/app:ro,Z,nocopy,shared");
+
+        assertThat(bind.getPath()).isEqualTo("/srv/app");
+        assertThat(bind.getVolume()).isEqualTo(new Volume("/app"));
+        assertThat(bind.getAccessMode()).isEqualTo(AccessMode.ro);
+        assertThat(bind.getSecMode()).isEqualTo(SELContext.single);
+        assertThat(bind.getNoCopy()).isTrue();
+        assertThat(bind.getPropagationMode()).isEqualTo(PropagationMode.SHARED);
+        assertThat(bind.toString()).isEqualTo("/srv/app:/app:ro,Z,nocopy,shared");
+        assertThat(AccessMode.fromBoolean(true).toBoolean()).isTrue();
+        assertThat(AccessMode.fromBoolean(false)).isEqualTo(AccessMode.ro);
+        assertThat(SELContext.fromString("z")).isEqualTo(SELContext.shared);
+        assertThat(PropagationMode.fromString("rslave")).isEqualTo(PropagationMode.RSLAVE);
+
+        Binds binds = new Binds(bind, new Bind("/tmp", new Volume("/scratch")));
+        assertThat(binds.toPrimitive()).containsExactly("/srv/app:/app:ro,Z,nocopy,shared", "/tmp:/scratch:rw");
+        assertThat(Binds.fromPrimitive(binds.toPrimitive()).getBinds()).containsExactly(binds.getBinds());
+
+        Link link = Link.parse("/database:/application/db");
+        Links links = new Links(link, new Link("redis", "cache"));
+        assertThat(link.getName()).isEqualTo("database");
+        assertThat(link.getAlias()).isEqualTo("db");
+        assertThat(links.toPrimitive()).containsExactly("database:db", "redis:cache");
+        assertThat(Links.fromPrimitive(links.toPrimitive()).getLinks()).containsExactly(links.getLinks());
+
+        RestartPolicy noRestart = RestartPolicy.parse("no");
+        RestartPolicy onFailure = RestartPolicy.parse("on-failure:3");
+        assertThat(noRestart).isEqualTo(RestartPolicy.noRestart());
+        assertThat(noRestart.toString()).isEqualTo("no");
+        assertThat(onFailure.getName()).isEqualTo("on-failure");
+        assertThat(onFailure.getMaximumRetryCount()).isEqualTo(3);
+        assertThat(onFailure.toString()).isEqualTo("on-failure:3");
+        assertThat(RestartPolicy.parse("always")).isEqualTo(RestartPolicy.alwaysRestart());
+        assertThat(RestartPolicy.parse("unless-stopped")).isEqualTo(RestartPolicy.unlessStoppedRestart());
+
+        assertThatThrownBy(() -> Bind.parse("/only-one-part")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> Link.parse("missing-alias")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> RestartPolicy.parse("sometimes")).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void buildsContainerAndHostConfigurationModels() {
+        ContainerConfig containerConfig = new ContainerConfig()
+                .withImage("busybox:latest")
+                .withCmd(new String[] {"sh", "-c", "echo ok"})
+                .withEntrypoint(new String[] {"/bin/sh"})
+                .withEnv(new String[] {"APP_ENV=test", "LOG_LEVEL=debug"})
+                .withLabels(Map.of("suite", "native-image", "component", "docker-java-api"))
+                .withExposedPorts(new ExposedPorts(ExposedPort.tcp(8080), ExposedPort.udp(5353)))
+                .withWorkingDir("/workspace")
+                .withUser("1000:1000")
+                .withAttachStdout(true)
+                .withAttachStderr(true)
+                .withStdinOpen(false)
+                .withTty(false);
+
+        assertThat(containerConfig.getImage()).isEqualTo("busybox:latest");
+        assertThat(containerConfig.getCmd()).containsExactly("sh", "-c", "echo ok");
+        assertThat(containerConfig.getEntrypoint()).containsExactly("/bin/sh");
+        assertThat(containerConfig.getEnv()).containsExactly("APP_ENV=test", "LOG_LEVEL=debug");
+        assertThat(containerConfig.getLabels()).containsEntry("component", "docker-java-api");
+        assertThat(containerConfig.getExposedPorts())
+                .containsExactlyInAnyOrder(ExposedPort.tcp(8080), ExposedPort.udp(5353));
+        assertThat(containerConfig.getWorkingDir()).isEqualTo("/workspace");
+        assertThat(containerConfig.getAttachStdout()).isTrue();
+
+        Mount mount = new Mount()
+                .withType(MountType.BIND)
+                .withSource("/srv/app")
+                .withTarget("/app")
+                .withReadOnly(true)
+                .withBindOptions(new BindOptions().withPropagation(BindPropagation.R_PRIVATE))
+                .withVolumeOptions(new VolumeOptions().withNoCopy(true).withLabels(Map.of("owner", "tests")));
+        HostConfig hostConfig = HostConfig.newHostConfig()
+                .withBinds(new Bind("/srv/app", new Volume("/app"), AccessMode.ro))
+                .withPortBindings(PortBinding.parse("127.0.0.1:18080:8080/tcp"))
+                .withRestartPolicy(RestartPolicy.onFailureRestart(2))
+                .withNetworkMode("custom-network")
+                .withCapAdd(Capability.NET_ADMIN)
+                .withCapDrop(Capability.MKNOD)
+                .withMemory(128L * 1024L * 1024L)
+                .withCpuShares(512)
+                .withPrivileged(false)
+                .withPublishAllPorts(false)
+                .withReadonlyRootfs(true)
+                .withTmpFs(Map.of("/run", "rw,noexec,nosuid,size=65536k"))
+                .withSysctls(Map.of("net.ipv4.ip_forward", "1"))
+                .withSecurityOpts(List.of("no-new-privileges"))
+                .withMounts(List.of(mount));
+
+        assertThat(hostConfig.getBinds()).containsExactly(new Bind("/srv/app", new Volume("/app"), AccessMode.ro));
+        assertThat(hostConfig.getPortBindings().getBindings().get(ExposedPort.tcp(8080)))
+                .containsExactly(Ports.Binding.bindIpAndPort("127.0.0.1", 18080));
+        assertThat(hostConfig.getRestartPolicy()).isEqualTo(RestartPolicy.onFailureRestart(2));
+        assertThat(hostConfig.isUserDefinedNetwork()).isTrue();
+        assertThat(hostConfig.getCapAdd()).containsExactly(Capability.NET_ADMIN);
+        assertThat(hostConfig.getCapDrop()).containsExactly(Capability.MKNOD);
+        assertThat(hostConfig.getMemory()).isEqualTo(128L * 1024L * 1024L);
+        assertThat(hostConfig.getCpuShares()).isEqualTo(512);
+        assertThat(hostConfig.getTmpFs()).containsEntry("/run", "rw,noexec,nosuid,size=65536k");
+        assertThat(hostConfig.getSysctls()).containsEntry("net.ipv4.ip_forward", "1");
+        assertThat(hostConfig.getSecurityOpts()).containsExactly("no-new-privileges");
+        assertThat(hostConfig.getMounts()).containsExactly(mount);
+    }
+
+    @Test
+    void buildsNetworkingHealthAuthAndFrameModels() {
+        ContainerNetwork network = new ContainerNetwork()
+                .withAliases("web", "api")
+                .withEndpointId("endpoint-1")
+                .withGateway("172.18.0.1")
+                .withIpv4Address("172.18.0.22")
+                .withIpPrefixLen(16)
+                .withMacAddress("02:42:ac:12:00:16")
+                .withLinks(new Link("database", "db"));
+
+        assertThat(network.getAliases()).containsExactly("web", "api");
+        assertThat(network.getEndpointId()).isEqualTo("endpoint-1");
+        assertThat(network.getGateway()).isEqualTo("172.18.0.1");
+        assertThat(network.getIpAddress()).isEqualTo("172.18.0.22");
+        assertThat(network.getIpPrefixLen()).isEqualTo(16);
+        assertThat(network.getMacAddress()).isEqualTo("02:42:ac:12:00:16");
+        assertThat(network.getLinks()).containsExactly(new Link("database", "db"));
+
+        HealthCheck healthCheck = new HealthCheck()
+                .withTest(List.of("CMD-SHELL", "wget -q -O - http://localhost:8080/health || exit 1"))
+                .withInterval(30_000_000_000L)
+                .withTimeout(5_000_000_000L)
+                .withRetries(3)
+                .withStartPeriod(10_000_000_000L);
+        assertThat(healthCheck.getTest()).containsExactly(
+                "CMD-SHELL", "wget -q -O - http://localhost:8080/health || exit 1");
+        assertThat(healthCheck.getInterval()).isEqualTo(30_000_000_000L);
+        assertThat(healthCheck.getTimeout()).isEqualTo(5_000_000_000L);
+        assertThat(healthCheck.getRetries()).isEqualTo(3);
+        assertThat(healthCheck.getStartPeriod()).isEqualTo(10_000_000_000L);
+
+        AuthConfig authConfig = new AuthConfig()
+                .withUsername("robot")
+                .withPassword("secret")
+                .withEmail("robot@example.test")
+                .withRegistryAddress(AuthConfig.DEFAULT_SERVER_ADDRESS)
+                .withAuth("encoded")
+                .withIdentityToken("identity-token")
+                .withRegistrytoken("registry-token");
+        authConfig.setStackOrchestrator("swarm");
+
+        assertThat(authConfig.getUsername()).isEqualTo("robot");
+        assertThat(authConfig.getPassword()).isEqualTo("secret");
+        assertThat(authConfig.getEmail()).isEqualTo("robot@example.test");
+        assertThat(authConfig.getRegistryAddress()).isEqualTo(AuthConfig.DEFAULT_SERVER_ADDRESS);
+        assertThat(authConfig.getAuth()).isEqualTo("encoded");
+        assertThat(authConfig.getIdentitytoken()).isEqualTo("identity-token");
+        assertThat(authConfig.getRegistrytoken()).isEqualTo("registry-token");
+        assertThat(authConfig.getStackOrchestrator()).isEqualTo("swarm");
+        assertThat(authConfig.toString())
+                .contains("username=robot", "registryAddress=" + AuthConfig.DEFAULT_SERVER_ADDRESS);
+        assertThat(authConfig.toString()).doesNotContain("secret", "identity-token", "registry-token");
+
+        Frame frame = new Frame(StreamType.STDOUT, "hello".getBytes());
+        assertThat(frame.getStreamType()).isEqualTo(StreamType.STDOUT);
+        assertThat(frame.getPayload()).containsExactly((byte) 'h', (byte) 'e', (byte) 'l', (byte) 'l', (byte) 'o');
+    }
+
+    @Test
+    void resultCallbackLifecycleCompletesAndPropagatesFailures() throws Exception {
+        AtomicInteger closedStreams = new AtomicInteger();
+        Closeable stream = closedStreams::incrementAndGet;
+        ResultCallback.Adapter<String> callback = new ResultCallback.Adapter<>();
+
+        assertThat(callback.awaitStarted(10, TimeUnit.MILLISECONDS)).isFalse();
+        callback.onStart(stream);
+        callback.onNext("first item");
+        assertThat(callback.awaitStarted(1, TimeUnit.SECONDS)).isTrue();
+        callback.onComplete();
+
+        assertThat(callback.awaitCompletion(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(closedStreams).hasValue(1);
+        callback.close();
+        assertThat(closedStreams).hasValue(1);
+
+        ResultCallback.Adapter<String> failingCallback = new ResultCallback.Adapter<>();
+        IOException failure = new IOException("stream failed");
+        failingCallback.onStart(() -> { });
+        failingCallback.onError(failure);
+
+        assertThatThrownBy(() -> failingCallback.awaitCompletion(1, TimeUnit.SECONDS))
+                .isInstanceOf(RuntimeException.class)
+                .hasCause(failure);
+    }
+
+    @Test
+    void dockerExceptionsExposeHttpStatusAndCauses() {
+        IllegalStateException cause = new IllegalStateException("root cause");
+        DockerException dockerException = new DockerException("daemon unavailable", 503, cause);
+
+        assertThat(dockerException).hasMessage("Status 503: daemon unavailable").hasCause(cause);
+        assertThat(dockerException.getHttpStatus()).isEqualTo(503);
+        assertThat(new BadRequestException("bad request").getHttpStatus()).isEqualTo(400);
+        assertThat(new NotFoundException("missing").getHttpStatus()).isEqualTo(404);
+        assertThat(new ConflictException("conflict").getHttpStatus()).isEqualTo(409);
+        assertThat(new InternalServerErrorException("server error").getHttpStatus()).isEqualTo(500);
+        assertThat(new DockerClientException("client error", cause)).hasMessage("client error").hasCause(cause);
     }
 }
