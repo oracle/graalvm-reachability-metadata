@@ -22,6 +22,8 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class Google_http_client_gsonTest {
@@ -178,6 +180,21 @@ public class Google_http_client_gsonTest {
         } finally {
             parser.close();
         }
+    }
+
+    @Test
+    void parserPopulatesExistingCollectionsFromJsonArrays() throws Exception {
+        GsonFactory factory = GsonFactory.getDefaultInstance();
+
+        JsonParser stringParser = factory.createJsonParser("[\"alpha\", \"beta\", \"gamma\"]");
+        List<String> labels = new ArrayList<>();
+        stringParser.parseArrayAndClose(labels, String.class);
+        assertEquals(List.of("alpha", "beta", "gamma"), labels);
+
+        JsonParser numberParser = factory.createJsonParser("[1, 2, 3]");
+        List<Integer> counts = new ArrayList<>();
+        numberParser.parseArrayAndClose(counts, Integer.class);
+        assertEquals(List.of(1, 2, 3), counts);
     }
 
     @Test
