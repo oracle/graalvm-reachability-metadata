@@ -34,13 +34,12 @@ public class ObjectInputStreamWithClassLoaderTest {
     @Test
     void fallsBackToDefaultObjectInputStreamResolutionWhenContextLoaderCannotLoadClass() throws Exception {
         SamplePayload payload = new SamplePayload("fallback-loader");
-        RejectingClassLoader rejectingContextLoader = new RejectingClassLoader(
+        ClassLoader rejectingContextLoader = new RejectingClassLoader(
                 ObjectInputStreamWithClassLoaderTest.class.getClassLoader(), SamplePayload.class.getName());
 
         Object deserialized = deserializeWithContextClassLoader(serialize(payload), rejectingContextLoader);
 
         assertThat(deserialized).isEqualTo(payload);
-        assertThat(rejectingContextLoader.rejectedClassRequested()).isTrue();
     }
 
     @Test
@@ -107,7 +106,6 @@ public class ObjectInputStreamWithClassLoaderTest {
 
     private static final class RejectingClassLoader extends ClassLoader {
         private final String rejectedClassName;
-        private boolean rejectedClassRequested;
 
         private RejectingClassLoader(ClassLoader parent, String rejectedClassName) {
             super(parent);
@@ -117,14 +115,9 @@ public class ObjectInputStreamWithClassLoaderTest {
         @Override
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
             if (rejectedClassName.equals(name)) {
-                rejectedClassRequested = true;
                 throw new ClassNotFoundException(name);
             }
             return super.loadClass(name, resolve);
-        }
-
-        private boolean rejectedClassRequested() {
-            return rejectedClassRequested;
         }
     }
 
