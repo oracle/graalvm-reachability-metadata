@@ -235,6 +235,31 @@ public class Opencensus_contrib_http_utilTest {
         assertThat(span.ended).isTrue();
     }
 
+    @Test
+    void serverHandlerIgnoresMalformedTraceHeaderAndStartsNewServerSpan() {
+        Map<String, String> carrier = new HashMap<>();
+        carrier.put("X-Cloud-Trace-Context", "not-a-valid-cloud-trace-header");
+        RecordingTracer tracer = new RecordingTracer(
+                spanContext("33333333333333333333333333333333", "0000000000000004", true));
+        HttpServerHandler<TestRequest, TestResponse, Map<String, String>> handler = new HttpServerHandler<>(
+                tracer, new TestExtractor(), CLOUD_TRACE_FORMAT, MAP_GETTER, false);
+        TestRequest request = new TestRequest("GET", "api.example.com", "/health", null,
+                "https://api.example.com/health", "health-check");
+
+        HttpRequestContext context = handler.handleStart(carrier, request);
+        handler.handleEnd(context, request, new TestResponse(200), null);
+
+        RecordingSpan span = tracer.startedSpans.get(0);
+        RecordingSpanBuilder builder = tracer.startedBuilders.get(0);
+        assertThat(builder.name).isEqualTo("/health");
+        assertThat(builder.kind).isEqualTo(Span.Kind.SERVER);
+        assertThat(builder.remoteParent).isNull();
+        assertThat(span.links).isEmpty();
+        assertThat(handler.getSpanFromContext(context)).isSameAs(span);
+        assertStatus(span.status, Status.CanonicalCode.OK, null);
+        assertThat(span.ended).isTrue();
+    }
+
     private static void assertStatus(Status status, Status.CanonicalCode canonicalCode, String description) {
         assertThat(status.getCanonicalCode()).isEqualTo(canonicalCode);
         assertThat(status.getDescription()).isEqualTo(description);
