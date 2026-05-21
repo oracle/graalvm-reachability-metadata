@@ -1,0 +1,1162 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e4960-c3d4-7e62-92ce-2db3acb2bca9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.ejb:jakarta.ejb-api:3.2.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [3.2.4].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+- Entry selector: "metadata-version" = "3.2.4"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 3.2.4
+- Entry metadata-version: 3.2.4
+- Entry test-version: 3.2.4
+- Entry tested-versions: [3.2.4]
+codex
+I’ll verify the artifact URLs against Maven and the upstream project, then update only the missing fields in the selected metadata entry. After that I’ll validate the JSON formatting.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/jakarta.ejb/jakarta.ejb-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+    "description" : "Jakarta Enterprise Beans API 3.2.3 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+    "tested-versions" : [
+      "3.2.3"
+    ],
+    "allowed-packages" : [
+      "javax.ejb",
+      "javax.xml.rpc.handler"
+    ]
+  },
+  {
+    "metadata-version" : "3.2.4",
+    "tested-versions" : [
+      "3.2.4"
+    ],
+    "allowed-packages" : [
+      "javax.ejb",
+      "javax.xml.rpc.handler"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n \"jakarta.ejb-api|jakarta.ejb\" metadata -g 'index.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 0ms:
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+
+web search: 
+web search: jakarta.ejb jakarta.ejb-api 3.2.4 maven sources javadoc
+web search: 
+web search: https://projects.eclipse.org/projects/ee4j.ejb/releases/3.2.4
+web search: 
+web search: https://github.com/jakartaee/enterprise-beans
+web search: 
+web search: https://github.com/jakartaee/enterprise-beans/tags
+codex
+The existing `3.2.3` entry already uses Maven Central source and Javadoc artifacts plus the Jakarta Enterprise Beans GitHub root. I found that `3.2.4` has Maven source and Javadoc artifacts, and I’m checking whether there is any published test artifact or versioned upstream test directory before writing `test-code-url`.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/3.2.4/jakarta.ejb-api-3.2.4-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 07:12:45 GMT
+content-type: application/java-archive
+content-length: 128604
+cf-ray: 9ff1c64b8ef6edd3-MXP
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 93115
+etag: "f666a8604a3f69ca881f0c2c515b81d5"
+last-modified: Fri, 18 Jan 2019 14:02:34 GMT
+x-checksum-md5: f666a8604a3f69ca881f0c2c515b81d5
+x-checksum-sha1: d426d487f78ab3dd01020eeabca9c15c85e293af
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/3.2.4/jakarta.ejb-api-3.2.4-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+exec
+/usr/bin/bash -lc "curl -fsS https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/3.2.4/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/ejb/jakarta.ejb-api/3.2.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/ejb/jakarta.ejb-api/3.2.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.ejb-api-3.2.4-javadoc.jar" title="jakarta.ejb-api-3.2.4-javadoc.jar">jakarta.ejb-api-3.2.4-javadoc.jar</a>                 2019-01-18 14:02    837516      
+<a href="jakarta.ejb-api-3.2.4-javadoc.jar.asc" title="jakarta.ejb-api-3.2.4-javadoc.jar.asc">jakarta.ejb-api-3.2.4-javadoc.jar.asc</a>             2019-01-18 14:02       833      
+<a href="jakarta.ejb-api-3.2.4-javadoc.jar.asc.md5" title="jakarta.ejb-api-3.2.4-javadoc.jar.asc.md5">jakarta.ejb-api-3.2.4-javadoc.jar.asc.md5</a>         2019-01-18 14:02        32      
+<a href="jakarta.ejb-api-3.2.4-javadoc.jar.asc.sha1" title="jakarta.ejb-api-3.2.4-javadoc.jar.asc.sha1">jakarta.ejb-api-3.2.4-javadoc.jar.asc.sha1</a>        2019-01-18 14:02        40      
+<a href="jakarta.ejb-api-3.2.4-javadoc.jar.md5" title="jakarta.ejb-api-3.2.4-javadoc.jar.md5">jakarta.ejb-api-3.2.4-javadoc.jar.md5</a>             2019-01-18 14:02        32      
+<a href="jakarta.ejb-api-3.2.4-javadoc.jar.sha1" title="jakarta.ejb-api-3.2.4-javadoc.jar.sha1">jakarta.ejb-api-3.2.4-javadoc.jar.sha1</a>            2019-01-18 14:02        40      
+<a href="jakarta.ejb-api-3.2.4-sources.jar" title="jakarta.ejb-api-3.2.4-sources.jar">jakarta.ejb-api-3.2.4-sources.jar</a>                 2019-01-18 14:02    128604      
+<a href="jakarta.ejb-api-3.2.4-sources.jar.asc" title="jakarta.ejb-api-3.2.4-sources.jar.asc">jakarta.ejb-api-3.2.4-sources.jar.asc</a>             2019-01-18 14:02       833      
+<a href="jakarta.ejb-api-3.2.4-sources.jar.asc.md5" title="jakarta.ejb-api-3.2.4-sources.jar.asc.md5">jakarta.ejb-api-3.2.4-sources.jar.asc.md5</a>         2019-01-18 14:02        32      
+<a href="jakarta.ejb-api-3.2.4-sources.jar.asc.sha1" title="jakarta.ejb-api-3.2.4-sources.jar.asc.sha1">jakarta.ejb-api-3.2.4-sources.jar.asc.sha1</a>        2019-01-18 14:02        40      
+<a href="jakarta.ejb-api-3.2.4-sources.jar.md5" title="jakarta.ejb-api-3.2.4-sources.jar.md5">jakarta.ejb-api-3.2.4-sources.jar.md5</a>             2019-01-18 14:02        32      
+<a href="jakarta.ejb-api-3.2.4-sources.jar.sha1" title="jakarta.ejb-api-3.2.4-sources.jar.sha1">jakarta.ejb-api-3.2.4-sources.jar.sha1</a>            2019-01-18 14:02        40      
+<a href="jakarta.ejb-api-3.2.4.jar" title="jakarta.ejb-api-3.2.4.jar">jakarta.ejb-api-3.2.4.jar</a>                         2019-01-18 14:02     72585      
+<a href="jakarta.ejb-api-3.2.4.jar.asc" title="jakarta.ejb-api-3.2.4.jar.asc">jakarta.ejb-api-3.2.4.jar.asc</a>                     2019-01-18 14:02       833      
+<a href="jakarta.ejb-api-3.2.4.jar.asc.md5" title="jakarta.ejb-api-3.2.4.jar.asc.md5">jakarta.ejb-api-3.2.4.jar.asc.md5</a>                 2019-01-18 14:02        32      
+<a href="jakarta.ejb-api-3.2.4.jar.asc.sha1" title="jakarta.ejb-api-3.2.4.jar.asc.sha1">jakarta.ejb-api-3.2.4.jar.asc.sha1</a>                2019-01-18 14:02        40      
+<a href="jakarta.ejb-api-3.2.4.jar.md5" title="jakarta.ejb-api-3.2.4.jar.md5">jakarta.ejb-api-3.2.4.jar.md5</a>                     2019-01-18 14:02        32      
+<a href="jakarta.ejb-api-3.2.4.jar.sha1" title="jakarta.ejb-api-3.2.4.jar.sha1">jakarta.ejb-api-3.2.4.jar.sha1</a>                    2019-01-18 14:02        40      
+<a href="jakarta.ejb-api-3.2.4.pom" title="jakarta.ejb-api-3.2.4.pom">jakarta.ejb-api-3.2.4.pom</a>                         2019-01-18 14:02     18743      
+<a href="jakarta.ejb-api-3.2.4.pom.asc" title="jakarta.ejb-api-3.2.4.pom.asc">jakarta.ejb-api-3.2.4.pom.asc</a>                     2019-01-18 14:02       833      
+<a href="jakarta.ejb-api-3.2.4.pom.asc.md5" title="jakarta.ejb-api-3.2.4.pom.asc.md5">jakarta.ejb-api-3.2.4.pom.asc.md5</a>                 2019-01-18 14:02        32      
+<a href="jakarta.ejb-api-3.2.4.pom.asc.sha1" title="jakarta.ejb-api-3.2.4.pom.asc.sha1">jakarta.ejb-api-3.2.4.pom.asc.sha1</a>                2019-01-18 14:02        40      
+<a href="jakarta.ejb-api-3.2.4.pom.md5" title="jakarta.ejb-api-3.2.4.pom.md5">jakarta.ejb-api-3.2.4.pom.md5</a>                     2019-01-18 14:02        32      
+<a href="jakarta.ejb-api-3.2.4.pom.sha1" title="jakarta.ejb-api-3.2.4.pom.sha1">jakarta.ejb-api-3.2.4.pom.sha1</a>                    2019-01-18 14:02        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jakartaee/enterprise-beans.git 'refs/tags/*3.2.4*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 392ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 07:12:45 GMT
+content-type: application/java-archive
+content-length: 837516
+cf-ray: 9ff1c64b8924baa5-MXP
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "ce74ed7c04947ede0c00b1655e0890c5"
+last-modified: Fri, 18 Jan 2019 14:02:32 GMT
+x-checksum-md5: ce74ed7c04947ede0c00b1655e0890c5
+x-checksum-sha1: fd48003caac5e2a6f0ad5a586f4f9c2ebb34bccf
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 369ms:
+6984c104b64686c8e01452811ec9d1c58585da04	refs/tags/3.2.4-RELEASE
+9bbc27a6d6b37987becb34a33f7f0bc80ef0666a	refs/tags/3.2.4-RELEASE^{}
+
+web search: 
+web search: https://github.com/jakartaee/enterprise-beans/tree/3.2.4-RELEASE
+web search: 
+web search: site:central.sonatype.com/artifact/jakarta.ejb/jakarta.ejb-api 3.2.4
+exec
+/usr/bin/bash -lc "curl -fsS https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/3.2.4/jakarta.ejb-api-3.2.4.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.5</version>
+    </parent>
+
+    <groupId>jakarta.ejb</groupId>
+    <artifactId>jakarta.ejb-api</artifactId>
+    <version>3.2.4</version>
+
+    <properties>
+        <extension.name>javax.ejb</extension.name>
+        <spec.version>3.2</spec.version>
+        <non.final>false</non.final>
+        <findbugs.version>3.0.5</findbugs.version>
+        <findbugs.exclude>exclude.xml</findbugs.exclude>
+        <findbugs.threshold>Low</findbugs.threshold>
+        <legal.doc.source>.</legal.doc.source>
+    </properties>
+
+    <name>${extension.name} API</name>
+    <description>Eclipse Project for EJB</description>
+
+    <url>https://github.com/eclipse-ee4j/ejb-api</url>
+
+    <developers>
+        <developer>
+            <id>yaminikb</id>
+            <name>Yamini K B</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </developer>
+    </developers>
+
+    <contributors>
+        <contributor>
+            <name>Marina Vatkina</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </contributor>
+      </contributors>
+
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/ejb-api/issues</url>
+    </issueManagement>
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse-ee4j/ejb-api.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/ejb-api.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/ejb-api</url>
+      <tag>HEAD</tag>
+  </scm>
+  
+    <build>
+
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.html</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.build</groupId>
+                    <artifactId>spec-version-maven-plugin</artifactId>
+                    <version>2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.build</groupId>
+                    <artifactId>glassfishbuild-maven-plugin</artifactId>
+                    <version>3.2.26</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>1.4.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-remote-resources-plugin</artifactId>
+                    <version>1.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.0.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>${findbugs.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.scm</groupId>
+                            <artifactId>maven-scm-provider-gitexe</artifactId>
+                            <version>1.11.1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.7.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                </plugin>
+                <plugin>
+                    <!-- Enables step-by-step staging deployment -->
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.7</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+		<configuration>
+                       <source>1.6</source>
+                       <target>1.6</target>
+               </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.build</groupId>
+                <artifactId>spec-version-maven-plugin</artifactId>
+                <configuration>
+		    <specMode>jakarta</specMode>
+                    <spec>
+                        <nonFinal>${non.final}</nonFinal>
+                        <jarType>api</jarType>
+                        <specVersion>${spec.version}</specVersion>
+                        <specImplVersion>${project.version}</specImplVersion>
+                        <apiPackage>${extension.name}</apiPackage>
+                    </spec>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>set-spec-properties</goal>
+                            <goal>check-module</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.build</groupId>
+                <artifactId>glassfishbuild-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-sources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack-sources</goal>
+                        </goals>
+                        <configuration>
+                            <attachSources>true</attachSources>
+                            <includeArtifactIds>javax.xml.rpc-api</includeArtifactIds>
+                            <includes>javax/xml/rpc/handler/*</includes>
+                            <excludeTransitive>true</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <supportedProjectTypes>
+                        <supportedProjectType>jar</supportedProjectType>
+                    </supportedProjectTypes>
+                    <instructions>
+                        <Bundle-Version>${spec.bundle.version}</Bundle-Version>
+                        <Bundle-SymbolicName>${spec.bundle.symbolic-name}</Bundle-SymbolicName>
+                        <Extension-Name>${spec.extension.name}</Extension-Name>
+                        <Implementation-Version>${spec.implementation.version}</Implementation-Version>
+                        <Specification-Version>${spec.specification.version}</Specification-Version>
+                        <Bundle-Description>
+                            Java(TM) EJB ${spec.version} API Design Specification
+                        </Bundle-Description>
+                        <Specification-Vendor>Oracle Corporation</Specification-Vendor>
+                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                        <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
+                        <Import-Package>javax.transaction;version="[1.3,2.0)",*</Import-Package>
+                        <Export-Package>javax.xml.rpc.handler.*;version="1.1.2",*</Export-Package>
+                        <Embed-Dependency>javax.xml.rpc;inline=javax/xml/rpc/handler/*.class</Embed-Dependency>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/3.2.4/jakarta.ejb-api-3.2.4-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/jakartaee/enterprise-beans/tree/3.2.4-RELEASE/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/jakartaee/enterprise-beans/tree/3.2.4-RELEASE/src/main' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ exited 22 in 251ms:
+HTTP/2 404 
+date: Thu, 21 May 2026 07:12:56 GMT
+content-type: text/html
+cf-ray: 9ff1c68d68a6bac3-MXP
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/jakarta/ejb/jakarta.ejb-api/3.2.4/jakarta.ejb-api-3.2.4-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 436ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Thu, 21 May 2026 07:12:56 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=TExyqaGHSy7SRdTXibUCgPYjzgghaNrhK79QBlKPXp7GCBMsSBfUlwsfV%2FiwFbxo5qjUKyvNPTXRBdUJr3nTq6NEQbZWlo48ZZ3GojuAYyxP5hZgCl70ShWNhRYaDpSOSG2OveoDbPljoAeZWPwZ9noYxSA%2B8k43RcoxnqV4vNBoWCKuwMWHIEKPlh3db8K27w5UTgbQa8Nq9%2Fvrhcs8hXjSVe11skEtNSE8qkToqz7452fIAFSCV1ixjICjRGxSr37IOrT5M6mH00bp5R%2BVrA%3D%3D--ckUAOixx0WbV6uUM--0JQtD3QbdEpdVctDY4ZElQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2106570617.1779347575; expires=Fri, 21 May 2027 07:12:55 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 21 May 2027 07:12:55 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FF:252303:11A41DB8:DE26AD1:6A0EB077
+
+
+ succeeded in 2277ms:
+HTTP/2 200 
+date: Thu, 21 May 2026 07:12:56 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"d329a4acbf4e8909e7951a355101af21"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=F9lPBRNtE0dHchGVIvWnN8VRQtt8cP7TwRbxYsdIBQNMZpjDGscED9YDAQMCA04gn5VWWe9v9FzP%2F7ocjWlV84QGWYmel6gfiiykRBFbsJxwJtxPrm7fg%2FKZFEukFgImhTVYZBjmlzuLZIZi0S1QEn6Zsp1AnwP5c0dbhSsR62KkTBXdjdTKhQ%2FQI3BSqaw3KEkd0FmRdqsxa4Y9ZHAPQ%2FTKnh3nQmnN2w0YDgHvK6Prke3aQZfvD1inYGTzrp772nMHFFUg4QJ8osAvxnlY0g%3D%3D--l7r9NlbKoA6kZs91--bAq5ouZia1r26AZJWWBHaQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.78748924.1779347576; expires=Fri, 21 May 2027 07:12:56 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 21 May 2027 07:12:56 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620C:9050A:1192C8A8:DD52179:6A0EB078
+
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/ejb-api.git 'refs/tags/*3.2.4*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/eclipse-ee4j/ejb-api/tree/3.2.4-RELEASE/src/main' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+exec
+/usr/bin/bash -lc 'curl -fsS https://api.github.com/repos/jakartaee/enterprise-beans/contents/src?ref=3.2.4-RELEASE' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/eclipse-ee4j/ejb-api' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 188ms:
+HTTP/2 301 
+date: Thu, 21 May 2026 07:13:05 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/jakartaee/enterprise-beans
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=9A5QzyfZaierAMaxH%2B3aYlXKX9CbM%2Fu%2BzahlpPeFc15Qe55bq2OWQCJ%2FenJjJjxx3fdT1AP7x1Ew3cAHgnm11Uq4%2FAdVWG28R8Yn1uh%2BDbzZnjacqWdYFLB3qGgBzFGipsfoknE14UR2%2Bn8PiozKoQgfm9tX7jZFBFMN%2BpUdGnxduJvLk9TMn84hEZJNEA%2Ff7qNW74HjxM%2BCXdReFqFzAgBOP1WWiwFYABoR5YU8JdpKXval%2FI%2BOXOr4Dq83AOFl5aEIZLFu6amJmGFAHjYZ2Q%3D%3D--AWHIooFYhI91n3Xp--Y5rItiGfjfRHrXKhezA0BQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.413684914.1779347584; expires=Fri, 21 May 2027 07:13:04 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 21 May 2027 07:13:04 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+content-length: 0
+x-github-request-id: 620C:9050A:11933D39:DD57F15:6A0EB080
+
+
+ succeeded in 189ms:
+[
+  {
+    "name": "main",
+    "path": "src/main",
+    "sha": "5c41fb1340cd3ff06fecdc88b370a801f517460c",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/enterprise-beans/contents/src/main?ref=3.2.4-RELEASE",
+    "html_url": "https://github.com/jakartaee/enterprise-beans/tree/3.2.4-RELEASE/src/main",
+    "git_url": "https://api.github.com/repos/jakartaee/enterprise-beans/git/trees/5c41fb1340cd3ff06fecdc88b370a801f517460c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/enterprise-beans/contents/src/main?ref=3.2.4-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/enterprise-beans/git/trees/5c41fb1340cd3ff06fecdc88b370a801f517460c",
+      "html": "https://github.com/jakartaee/enterprise-beans/tree/3.2.4-RELEASE/src/main"
+    }
+  }
+]
+
+ succeeded in 204ms:
+HTTP/2 301 
+date: Thu, 21 May 2026 07:13:05 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/jakartaee/enterprise-beans/tree/3.2.4-RELEASE/src/main
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=78rbnRLQTjQB8Ob5cc4xETGxStzdzL8LRTd5syX%2FAfn44XXoodkhKc7dGiFs1Vhrh2CvyWZzTD2Ktnzg5sMm9lqe1oJ4PSULCvbKLaYvEiBaZCNaqj6E4qExj2MaLaIYIxGf33n%2FBcwdK6Gd3OUNFtXAjFdypDVabeAWiZRbPCoZTKn78%2BSdYiJ4UeFRRh5GVC4UqalghVxBX6GNCDdPk9pa5SUa4%2BRtwz39esZEidlLCx91hF811YcUB%2F5d%2BH7BUlHCMVUGXyHTlaBBtuHCqg%3D%3D--1kEAk5pmw6Vna8CL--Fx6WuzYd4mpDN7HO6yxViQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1295308176.1779347584; expires=Fri, 21 May 2027 07:13:04 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 21 May 2027 07:13:04 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+content-length: 0
+x-github-request-id: 6218:3DBFE5:11FB2ECE:E2E4687:6A0EB080
+
+
+ succeeded in 345ms:
+6984c104b64686c8e01452811ec9d1c58585da04	refs/tags/3.2.4-RELEASE
+9bbc27a6d6b37987becb34a33f7f0bc80ef0666a	refs/tags/3.2.4-RELEASE^{}
+
+exec
+/usr/bin/bash -lc "curl -fsS 'https://api.github.com/repos/jakartaee/enterprise-beans/git/trees/3.2.4-RELEASE?recursive=1' | rg '\"path\": \"src/'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+exec
+/usr/bin/bash -lc "curl -fsS 'https://api.github.com/repos/jakartaee/enterprise-beans/git/trees/3.2.4-RELEASE?recursive=1' | rg '\"path\": \".*test|test.*\"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ exited 1 in 255ms:
+ succeeded in 256ms:
+      "path": "src/main",
+      "path": "src/main/java",
+      "path": "src/main/java/javax",
+      "path": "src/main/java/javax/ejb",
+      "path": "src/main/java/javax/ejb/AccessLocalException.java",
+      "path": "src/main/java/javax/ejb/AccessTimeout.java",
+      "path": "src/main/java/javax/ejb/ActivationConfigProperty.java",
+      "path": "src/main/java/javax/ejb/AfterBegin.java",
+      "path": "src/main/java/javax/ejb/AfterCompletion.java",
+      "path": "src/main/java/javax/ejb/ApplicationException.java",
+      "path": "src/main/java/javax/ejb/AsyncResult.java",
+      "path": "src/main/java/javax/ejb/Asynchronous.java",
+      "path": "src/main/java/javax/ejb/BeforeCompletion.java",
+      "path": "src/main/java/javax/ejb/ConcurrencyManagement.java",
+      "path": "src/main/java/javax/ejb/ConcurrencyManagementType.java",
+      "path": "src/main/java/javax/ejb/ConcurrentAccessException.java",
+      "path": "src/main/java/javax/ejb/ConcurrentAccessTimeoutException.java",
+      "path": "src/main/java/javax/ejb/CreateException.java",
+      "path": "src/main/java/javax/ejb/DependsOn.java",
+      "path": "src/main/java/javax/ejb/DuplicateKeyException.java",
+      "path": "src/main/java/javax/ejb/EJB.java",
+      "path": "src/main/java/javax/ejb/EJBAccessException.java",
+      "path": "src/main/java/javax/ejb/EJBContext.java",
+      "path": "src/main/java/javax/ejb/EJBException.java",
+      "path": "src/main/java/javax/ejb/EJBHome.java",
+      "path": "src/main/java/javax/ejb/EJBLocalHome.java",
+      "path": "src/main/java/javax/ejb/EJBLocalObject.java",
+      "path": "src/main/java/javax/ejb/EJBMetaData.java",
+      "path": "src/main/java/javax/ejb/EJBObject.java",
+      "path": "src/main/java/javax/ejb/EJBTransactionRequiredException.java",
+      "path": "src/main/java/javax/ejb/EJBTransactionRolledbackException.java",
+      "path": "src/main/java/javax/ejb/EJBs.java",
+      "path": "src/main/java/javax/ejb/EnterpriseBean.java",
+      "path": "src/main/java/javax/ejb/EntityBean.java",
+      "path": "src/main/java/javax/ejb/EntityContext.java",
+      "path": "src/main/java/javax/ejb/FinderException.java",
+      "path": "src/main/java/javax/ejb/Handle.java",
+      "path": "src/main/java/javax/ejb/HomeHandle.java",
+      "path": "src/main/java/javax/ejb/IllegalLoopbackException.java",
+      "path": "src/main/java/javax/ejb/Init.java",
+      "path": "src/main/java/javax/ejb/Local.java",
+      "path": "src/main/java/javax/ejb/LocalBean.java",
+      "path": "src/main/java/javax/ejb/LocalHome.java",
+      "path": "src/main/java/javax/ejb/Lock.java",
+      "path": "src/main/java/javax/ejb/LockType.java",
+      "path": "src/main/java/javax/ejb/MessageDriven.java",
+      "path": "src/main/java/javax/ejb/MessageDrivenBean.java",
+      "path": "src/main/java/javax/ejb/MessageDrivenContext.java",
+      "path": "src/main/java/javax/ejb/NoMoreTimeoutsException.java",
+      "path": "src/main/java/javax/ejb/NoSuchEJBException.java",
+      "path": "src/main/java/javax/ejb/NoSuchEntityException.java",
+      "path": "src/main/java/javax/ejb/NoSuchObjectLocalException.java",
+      "path": "src/main/java/javax/ejb/ObjectNotFoundException.java",
+      "path": "src/main/java/javax/ejb/PostActivate.java",
+      "path": "src/main/java/javax/ejb/PrePassivate.java",
+      "path": "src/main/java/javax/ejb/Remote.java",
+      "path": "src/main/java/javax/ejb/RemoteHome.java",
+      "path": "src/main/java/javax/ejb/Remove.java",
+      "path": "src/main/java/javax/ejb/RemoveException.java",
+      "path": "src/main/java/javax/ejb/Schedule.java",
+      "path": "src/main/java/javax/ejb/ScheduleExpression.java",
+      "path": "src/main/java/javax/ejb/Schedules.java",
+      "path": "src/main/java/javax/ejb/SessionBean.java",
+      "path": "src/main/java/javax/ejb/SessionContext.java",
+      "path": "src/main/java/javax/ejb/SessionSynchronization.java",
+      "path": "src/main/java/javax/ejb/Singleton.java",
+      "path": "src/main/java/javax/ejb/Startup.java",
+      "path": "src/main/java/javax/ejb/Stateful.java",
+      "path": "src/main/java/javax/ejb/StatefulTimeout.java",
+      "path": "src/main/java/javax/ejb/Stateless.java",
+      "path": "src/main/java/javax/ejb/TimedObject.java",
+      "path": "src/main/java/javax/ejb/Timeout.java",
+      "path": "src/main/java/javax/ejb/Timer.java",
+      "path": "src/main/java/javax/ejb/TimerConfig.java",
+      "path": "src/main/java/javax/ejb/TimerHandle.java",
+      "path": "src/main/java/javax/ejb/TimerService.java",
+      "path": "src/main/java/javax/ejb/TransactionAttribute.java",
+      "path": "src/main/java/javax/ejb/TransactionAttributeType.java",
+      "path": "src/main/java/javax/ejb/TransactionManagement.java",
+      "path": "src/main/java/javax/ejb/TransactionManagementType.java",
+      "path": "src/main/java/javax/ejb/TransactionRequiredLocalException.java",
+      "path": "src/main/java/javax/ejb/TransactionRolledbackLocalException.java",
+      "path": "src/main/java/javax/ejb/embeddable",
+      "path": "src/main/java/javax/ejb/embeddable/EJBContainer.java",
+      "path": "src/main/java/javax/ejb/embeddable/package.html",
+      "path": "src/main/java/javax/ejb/package.html",
+      "path": "src/main/java/javax/ejb/spi",
+      "path": "src/main/java/javax/ejb/spi/EJBContainerProvider.java",
+      "path": "src/main/java/javax/ejb/spi/HandleDelegate.java",
+      "path": "src/main/java/javax/ejb/spi/package.html",
+      "path": "src/main/resources",
+      "path": "src/main/resources/META-INF",
+      "path": "src/main/resources/META-INF/MANIFEST.MF",
+      "path": "src/main/resources/META-INF/README",
+
+codex
+The published Maven directory has source and Javadoc jars but no tests jar, and the `3.2.4-RELEASE` GitHub tag contains `src/main` only, with no test paths. I’m going to mirror the existing metadata style for Maven source/Javadoc, use the canonical redirected GitHub root, and mark tests as `N/A`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+diff --git a/metadata/jakarta.ejb/jakarta.ejb-api/index.json b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+index f66249cc02e32d995f2c54fb9855c0daa5e097ee..c8fb857bb2346ca9ce307c919369d8f0a150c135
+--- a/metadata/jakarta.ejb/jakarta.ejb-api/index.json
++++ b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "3.2.4",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
++    "description" : "Jakarta Enterprise Beans API 3.2.4 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+     "tested-versions" : [
+       "3.2.4"
+     ],
+
+diff --git a/metadata/jakarta.ejb/jakarta.ejb-api/index.json b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+index f66249cc02e32d995f2c54fb9855c0daa5e097ee..c8fb857bb2346ca9ce307c919369d8f0a150c135
+--- a/metadata/jakarta.ejb/jakarta.ejb-api/index.json
++++ b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "3.2.4",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
++    "description" : "Jakarta Enterprise Beans API 3.2.4 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+     "tested-versions" : [
+       "3.2.4"
+     ],
+
+codex
+The metadata entry is edited. I’m doing a quick structural validation now, then I’ll show the final changed values and any verification caveats.
+exec
+/usr/bin/bash -lc 'jq . metadata/jakarta.ejb/jakarta.ejb-api/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/jakarta.ejb/jakarta.ejb-api/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 0ms:
+diff --git i/metadata/jakarta.ejb/jakarta.ejb-api/index.json w/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+index f66249cc02..c8fb857bb2 100644
+--- i/metadata/jakarta.ejb/jakarta.ejb-api/index.json
++++ w/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "3.2.4",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
++    "description" : "Jakarta Enterprise Beans API 3.2.4 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+     "tested-versions" : [
+       "3.2.4"
+     ],
+
+diff --git a/metadata/jakarta.ejb/jakarta.ejb-api/index.json b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+index f66249cc02e32d995f2c54fb9855c0daa5e097ee..c8fb857bb2346ca9ce307c919369d8f0a150c135
+--- a/metadata/jakarta.ejb/jakarta.ejb-api/index.json
++++ b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "3.2.4",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
++    "description" : "Jakarta Enterprise Beans API 3.2.4 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+     "tested-versions" : [
+       "3.2.4"
+     ],
+
+codex
+JSON validation passed. I’m running the repository’s targeted metadata check for `jakarta.ejb:jakarta.ejb-api:3.2.4` as the last verification step.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=jakarta.ejb:jakarta.ejb-api:3.2.4 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+diff --git a/metadata/jakarta.ejb/jakarta.ejb-api/index.json b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+index f66249cc02e32d995f2c54fb9855c0daa5e097ee..c8fb857bb2346ca9ce307c919369d8f0a150c135
+--- a/metadata/jakarta.ejb/jakarta.ejb-api/index.json
++++ b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "3.2.4",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
++    "description" : "Jakarta Enterprise Beans API 3.2.4 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+     "tested-versions" : [
+       "3.2.4"
+     ],
+
+ exited 1 in 3205ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for jakarta.ejb:jakarta.ejb-api:3.2.4: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd/metadata/jakarta.ejb/jakarta.ejb-api/3.2.4/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd/build/reports/problems/problems-report.html
+FAILURE: 
+Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - jakarta.ejb:jakarta.ejb-api:3.2.4: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd/metadata/jakarta.ejb/jakarta.ejb-api/3.2.4/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - jakarta.ejb:jakarta.ejb-api:3.2.4: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd/metadata/jakarta.ejb/jakarta.ejb-api/3.2.4/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: https://github.com/jakartaee/enterprise-beans/tree/3.2.4-RELEASE
+web search: 
+web search: Maven Central jakarta.ejb-api 3.2.4 sources jar javadoc jar
+exec
+/usr/bin/bash -lc 'find metadata/jakarta.ejb/jakarta.ejb-api -maxdepth 2 -type f -print | sort' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 0ms:
+metadata/jakarta.ejb/jakarta.ejb-api/3.2.3/reachability-metadata.json
+metadata/jakarta.ejb/jakarta.ejb-api/index.json
+
+diff --git a/metadata/jakarta.ejb/jakarta.ejb-api/index.json b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+index f66249cc02e32d995f2c54fb9855c0daa5e097ee..c8fb857bb2346ca9ce307c919369d8f0a150c135
+--- a/metadata/jakarta.ejb/jakarta.ejb-api/index.json
++++ b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "3.2.4",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
++    "description" : "Jakarta Enterprise Beans API 3.2.4 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+     "tested-versions" : [
+       "3.2.4"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/jakarta.ejb/jakarta.ejb-api/index.json metadata/jakarta.ejb/jakarta.ejb-api/3.2.4' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 0ms:
+ M metadata/jakarta.ejb/jakarta.ejb-api/index.json
+
+diff --git a/metadata/jakarta.ejb/jakarta.ejb-api/index.json b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+index f66249cc02e32d995f2c54fb9855c0daa5e097ee..c8fb857bb2346ca9ce307c919369d8f0a150c135
+--- a/metadata/jakarta.ejb/jakarta.ejb-api/index.json
++++ b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "3.2.4",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
++    "description" : "Jakarta Enterprise Beans API 3.2.4 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+     "tested-versions" : [
+       "3.2.4"
+     ],
+
+web search: 
+web search: Maven Central jakarta.ejb jakarta.ejb-api 3.2.4 sources javadoc jar
+web search: 
+web search: site:github.com/jakartaee/enterprise-beans/releases/tag/3.2.4-RELEASE
+exec
+/usr/bin/bash -lc "nl -ba metadata/jakarta.ejb/jakarta.ejb-api/index.json | sed -n '15,34p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd
+ succeeded in 0ms:
+    15	      "javax.xml.rpc.handler"
+    16	    ]
+    17	  },
+    18	  {
+    19	    "metadata-version" : "3.2.4",
+    20	    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+    21	    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
+    22	    "test-code-url" : "N/A",
+    23	    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+    24	    "description" : "Jakarta Enterprise Beans API 3.2.4 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+    25	    "tested-versions" : [
+    26	      "3.2.4"
+    27	    ],
+    28	    "allowed-packages" : [
+    29	      "javax.ejb",
+    30	      "javax.xml.rpc.handler"
+    31	    ]
+    32	  }
+    33	]
+
+diff --git a/metadata/jakarta.ejb/jakarta.ejb-api/index.json b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+index f66249cc02e32d995f2c54fb9855c0daa5e097ee..c8fb857bb2346ca9ce307c919369d8f0a150c135
+--- a/metadata/jakarta.ejb/jakarta.ejb-api/index.json
++++ b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "3.2.4",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
++    "description" : "Jakarta Enterprise Beans API 3.2.4 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+     "tested-versions" : [
+       "3.2.4"
+     ],
+
+codex
+Updated [metadata/jakarta.ejb/jakarta.ejb-api/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd/metadata/jakarta.ejb/jakarta.ejb-api/index.json:19) for `metadata-version` `3.2.4`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url: "N/A"`
+- `documentation-url`
+- `description`
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Verification:
+- `jq` validation passed.
+- Maven source and Javadoc URLs returned `200`.
+- Maven had no tests jar, and the upstream `3.2.4-RELEASE` tree did not expose a test suite, so `test-code-url` is `N/A`.
+- `./gradlew checkMetadataFiles -Pcoordinates=jakarta.ejb:jakarta.ejb-api:3.2.4 --stacktrace` failed because `metadata/jakarta.ejb/jakarta.ejb-api/3.2.4/reachability-metadata.json` is missing, unrelated to the URL/description update.
+diff --git a/metadata/jakarta.ejb/jakarta.ejb-api/index.json b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+index f66249cc02e32d995f2c54fb9855c0daa5e097ee..c8fb857bb2346ca9ce307c919369d8f0a150c135
+--- a/metadata/jakarta.ejb/jakarta.ejb-api/index.json
++++ b/metadata/jakarta.ejb/jakarta.ejb-api/index.json
+@@ -17,6 +17,11 @@
+   },
+   {
+     "metadata-version" : "3.2.4",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
++    "description" : "Jakarta Enterprise Beans API 3.2.4 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+     "tested-versions" : [
+       "3.2.4"
+     ],
+
+tokens used
+87,523
+Updated [metadata/jakarta.ejb/jakarta.ejb-api/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd/metadata/jakarta.ejb/jakarta.ejb-api/index.json:19) for `metadata-version` `3.2.4`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url: "N/A"`
+- `documentation-url`
+- `description`
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Verification:
+- `jq` validation passed.
+- Maven source and Javadoc URLs returned `200`.
+- Maven had no tests jar, and the upstream `3.2.4-RELEASE` tree did not expose a test suite, so `test-code-url` is `N/A`.
+- `./gradlew checkMetadataFiles -Pcoordinates=jakarta.ejb:jakarta.ejb-api:3.2.4 --stacktrace` failed because `metadata/jakarta.ejb/jakarta.ejb-api/3.2.4/reachability-metadata.json` is missing, unrelated to the URL/description update.
+Ran agent for jakarta.ejb:jakarta.ejb-api:3.2.4 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd/build/agent-url-discovery-logs/jakarta.ejb-jakarta.ejb-api-3.2.4.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7377-3c5b8ebd/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 51s
+9 actionable tasks: 1 executed, 8 up-to-date
