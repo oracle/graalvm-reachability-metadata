@@ -143,4 +143,15 @@ jobs:
 
       - name: "📝 Publish a release"
         run: |
-          gh release create "${{ env.CURRENT_RELEASE_TAG }}" build/graalvm-reachability-metadata-*.zip --generate-notes --notes-start-tag "${{ env.PREVIOUS_RELEASE_TAG }}"
+          NOTES_JSON=$(mktemp)
+          NOTES_FILE=$(mktemp)
+          COMPARE_URL="https://github.com/${{ github.repository }}/compare/${{ env.PREVIOUS_RELEASE_TAG }}...${{ env.CURRENT_RELEASE_TAG }}"
+
+          gh api "repos/${{ github.repository }}/releases/generate-notes" \
+            -f tag_name="${{ env.CURRENT_RELEASE_TAG }}" \
+            -f previous_tag_name="${{ env.PREVIOUS_RELEASE_TAG }}" \
+            > "$NOTES_JSON"
+
+          jq -r --arg compareUrl "$COMPARE_URL" '.body | if length > 120000 then (.[0:120000] | split("\n")[:-1] | join("\n")) + "\n\n_Release notes truncated because GitHub release bodies are limited to 125,000 characters._\n\n_Full changelog: \($compareUrl)_" else . end' "$NOTES_JSON" > "$NOTES_FILE"
+
+          gh release create "${{ env.CURRENT_RELEASE_TAG }}" build/graalvm-reachability-metadata-*.zip --title "${{ env.CURRENT_RELEASE_TAG }}" --notes-file "$NOTES_FILE"
