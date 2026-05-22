@@ -42,6 +42,27 @@ public class FactoryFinderTest {
     }
 
     @Test
+    public void instantiatesRuntimeDelegateWithContextClassLoader() {
+        final Thread currentThread = Thread.currentThread();
+        final ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
+        final String originalProperty = System.getProperty(RUNTIME_DELEGATE_PROPERTY);
+        final ClassLoader contextClassLoader = new ServiceHidingClassLoader(originalContextClassLoader);
+
+        RuntimeDelegate.setInstance(null);
+        System.setProperty(RUNTIME_DELEGATE_PROPERTY, TEST_DELEGATE_CLASS_NAME);
+        currentThread.setContextClassLoader(contextClassLoader);
+        try {
+            final RuntimeDelegate delegate = RuntimeDelegate.getInstance();
+
+            assertThat(delegate).isInstanceOf(TestRuntimeDelegate.class);
+        } finally {
+            RuntimeDelegate.setInstance(null);
+            restoreSystemProperty(originalProperty);
+            currentThread.setContextClassLoader(originalContextClassLoader);
+        }
+    }
+
+    @Test
     public void fallsBackToApplicationClassLoaderWhenContextClassLoaderCannotLoadDelegateClass() {
         final Thread currentThread = Thread.currentThread();
         final ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
@@ -100,8 +121,8 @@ public class FactoryFinderTest {
         }
     }
 
-    private static final class DelegateHidingClassLoader extends ClassLoader {
-        private DelegateHidingClassLoader(ClassLoader parent) {
+    private static class ServiceHidingClassLoader extends ClassLoader {
+        private ServiceHidingClassLoader(ClassLoader parent) {
             super(parent);
         }
 
@@ -111,6 +132,12 @@ public class FactoryFinderTest {
                 return null;
             }
             return super.getResourceAsStream(name);
+        }
+    }
+
+    private static final class DelegateHidingClassLoader extends ServiceHidingClassLoader {
+        private DelegateHidingClassLoader(ClassLoader parent) {
+            super(parent);
         }
 
         @Override
