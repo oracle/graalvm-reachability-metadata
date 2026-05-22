@@ -57,6 +57,18 @@ object Search {
   given Schema[Search] = Schema.anyObject[Search].name(SName("Search"))
 }
 
+final case class CatalogItem(serialNumber: Long, price: Int)
+
+object CatalogItem {
+  given Encoder[CatalogItem] = Encoder.forProduct2("serialNumber", "price") { item =>
+    (item.serialNumber, item.price)
+  }
+
+  given Decoder[CatalogItem] = Decoder.forProduct2("serialNumber", "price")(CatalogItem.apply)
+
+  given Schema[CatalogItem] = Schema.anyObject[CatalogItem].name(SName("CatalogItem"))
+}
+
 class Tapir_json_circe_3Test {
   @Test
   def circeCodecEncodesAndDecodesJsonCaseClasses(): Unit = {
@@ -90,6 +102,22 @@ class Tapir_json_circe_3Test {
         assertEquals(invalidPages, original)
         assertTrue(error.errors.exists(_.path.map(_.name).contains("pages")), error.toString)
       case other => fail(s"Expected a JSON field decoding error, got: $other")
+    }
+  }
+
+  @Test
+  def circeCodecReportsAccumulatedArrayElementDecodingFailuresWithIndexedPaths(): Unit = {
+    val codec: Codec.JsonCodec[List[CatalogItem]] = circeCodec[List[CatalogItem]]
+    val invalidItems: String = """[{}]"""
+
+    codec.decode(invalidItems) match {
+      case DecodeResult.Error(original, error: DecodeResult.Error.JsonDecodeException) =>
+        val errorPaths: List[List[String]] = error.errors.map(_.path.map(_.name))
+
+        assertEquals(invalidItems, original)
+        assertEquals(List(List("[0]", "serialNumber"), List("[0]", "price")), errorPaths)
+        assertTrue(error.errors.forall(_.msg == "Missing required field"), error.toString)
+      case other => fail(s"Expected accumulated JSON array element decoding errors, got: $other")
     }
   }
 
