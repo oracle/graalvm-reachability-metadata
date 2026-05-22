@@ -6,11 +6,13 @@
  */
 package org.graalvm.internal.tck.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Build-local discovered metadata for a single library coordinate.
  */
+@JsonIgnoreProperties("metadata-version")
 public record DiscoveredArtifactMetadata(
         String coordinates,
         @JsonProperty("source-code-url")

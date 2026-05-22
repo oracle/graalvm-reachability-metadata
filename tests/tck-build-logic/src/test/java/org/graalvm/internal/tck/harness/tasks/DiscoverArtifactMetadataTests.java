@@ -51,12 +51,47 @@ class DiscoverArtifactMetadataTests {
                 .contains("{ \"name\": \"groovy\", \"version\": \"<groovy major.minor, e.g. 4.0>\" }")
                 .contains("{ \"name\": \"scala\", \"version\": \"3\" }")
                 .contains("If the library is not language-specific, leave the \"language\" field absent.")
-                .contains("The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version \"3.1.0\" when \"$version$\" is replaced with \"3.1.0\".")
+                .contains("The sources URL, the test suite URL, and the documentation URL must render to the metadata index version \"3.1.0\" when \"$version$\" is replaced with \"3.1.0\".")
                 .contains("Update this file directly:")
+                .contains("Use only these top-level JSON keys: \"coordinates\", \"repository-url\", \"source-code-url\", \"test-code-url\", \"documentation-url\", \"description\", \"language\", \"not-for-native-image\", \"reason\", and \"replacement\".")
+                .contains("Do not add \"metadata-version\"; the metadata index version is derived from the coordinate version later.")
                 .contains("Set \"coordinates\" to \"io.ktor:ktor-server-core-jvm:3.1.0\".")
                 .contains("Set \"source-code-url\", \"test-code-url\", and \"documentation-url\" to the discovered values with \"$version$\" replacing version \"3.1.0\".")
                 .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
         assertThat(tempDir.resolve("build/agent-artifact-discovery-logs")).doesNotExist();
+    }
+
+    @Test
+    void runAcceptsRedundantMetadataVersionFromAgent() throws IOException, InterruptedException {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(tempDir.toFile())
+                .build();
+        DiscoverArtifactMetadata task = project.getTasks().create("discoverArtifactMetadata", DiscoverArtifactMetadata.class);
+        task.setCoordinatesOption("io.ktor:ktor-server-core-jvm:3.1.0");
+
+        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+        Path agentScript = tempDir.resolve("write-discovery-json.sh");
+        Files.writeString(agentScript, """
+                #!/bin/sh
+                cat > '%s' <<'JSON'
+                {
+                  "coordinates": "io.ktor:ktor-server-core-jvm:3.1.0",
+                  "metadata-version": "3.1.0",
+                  "source-code-url": "https://github.com/ktorio/ktor/tree/$version$",
+                  "repository-url": "https://github.com/ktorio/ktor",
+                  "test-code-url": "https://github.com/ktorio/ktor/tree/$version$/ktor-server",
+                  "documentation-url": "https://github.com/ktorio/ktor/tree/$version$/README.md",
+                  "description": "Ktor server core provides the central APIs for building asynchronous JVM server applications. It supplies routing, pipeline, and application abstractions used by Ktor server integrations."
+                }
+                JSON
+                """.formatted(discoveryFile.toString()), StandardCharsets.UTF_8);
+        assertThat(agentScript.toFile().setExecutable(true)).isTrue();
+
+        task.setAgentCommandOption(agentScript.toString());
+
+        task.run();
+
+        assertThat(discoveryFile).exists();
     }
 
     @Test

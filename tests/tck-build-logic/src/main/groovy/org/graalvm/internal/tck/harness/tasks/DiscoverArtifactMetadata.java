@@ -161,7 +161,7 @@ public class DiscoverArtifactMetadata extends DefaultTask {
                 Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
                 If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
                 If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
-                The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "%s" when "$version$" is replaced with "%s".
+                The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "%s" when "$version$" is replaced with "%s".
                 The source, test suite, and documentation URLs should point to the right tag of the library.
                 If we have these source of these artifacts on maven, that should be prefered.
                 If there are tests on maven that should also be prefered.
@@ -169,6 +169,8 @@ public class DiscoverArtifactMetadata extends DefaultTask {
 
                 Update this file directly:
                 - File: %s
+                - Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+                - Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
                 - Set "coordinates" to "%s".
                 - Set "repository-url" to the discovered repository root URL.
                 - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
