@@ -11,13 +11,14 @@ import java.util.Map;
 
 import org.apache.lucene.util.Attribute;
 import org.apache.lucene.util.AttributeImpl;
+import org.apache.lucene.util.AttributeReflector;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AttributeImplTest {
     @Test
-    void defaultReflectWithReflectsDeclaredInstanceFields() {
+    void reflectWithReportsDeclaredAttributeValues() {
         SingleAttributeImpl attribute = new SingleAttributeImpl();
         attribute.setValues("sample", 12);
 
@@ -31,6 +32,7 @@ public class AttributeImplTest {
                 .containsEntry("term", "sample")
                 .containsEntry("position", 12)
                 .doesNotContainKey("STATIC_VALUE");
+        assertThat(attribute.reflectAsString(false)).isEqualTo("term=sample,position=12");
     }
 
     private interface SingleAttribute extends Attribute {
@@ -58,6 +60,12 @@ public class AttributeImplTest {
         @Override
         public int position() {
             return position;
+        }
+
+        @Override
+        public void reflectWith(AttributeReflector reflector) {
+            reflector.reflect(SingleAttribute.class, "term", term);
+            reflector.reflect(SingleAttribute.class, "position", position);
         }
 
         @Override
