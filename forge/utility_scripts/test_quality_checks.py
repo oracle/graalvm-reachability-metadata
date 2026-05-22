@@ -10,10 +10,10 @@ import subprocess
 
 
 SCAFFOLD_PLACEHOLDER_TEXT = "This is just a placeholder, implement your test"
-TEST_SOURCE_EXTENSIONS = (".java", ".kt", ".scala")
+TEST_SOURCE_EXTENSIONS = (".java", ".kt", ".scala", ".groovy")
 SCAFFOLD_PLACEHOLDER_TEST_PATTERNS = (
     re.compile(
-        r"@Test\s+(?:public\s+)?void\s+test\s*\(\s*\)\s+throws\s+Exception\s*\{\s*"
+        r"@Test\s+(?:public\s+)?void\s+test\s*\(\s*\)\s*(?:throws\s+Exception\s*)?\{\s*"
         + re.escape(f'System.out.println("{SCAFFOLD_PLACEHOLDER_TEXT}");')
         + r"\s*\}"
     ),
@@ -25,6 +25,11 @@ SCAFFOLD_PLACEHOLDER_TEST_PATTERNS = (
     re.compile(
         r"@Test\s+def\s+test\s*\(\s*\)\s*:\s*Unit\s*=\s*\{\s*"
         + re.escape(f'println("{SCAFFOLD_PLACEHOLDER_TEXT}")')
+        + r"\s*\}"
+    ),
+    re.compile(
+        r"@Test\s+(?:public\s+)?void\s+test\s*\(\s*\)\s*\{\s*"
+        + re.escape(f'println "{SCAFFOLD_PLACEHOLDER_TEXT}"')
         + r"\s*\}"
     ),
 )
@@ -109,12 +114,11 @@ def cleanup_scaffold_placeholder_tests(
         os.remove(file_path)
         removed_files.append(file_path)
 
-    remaining_placeholders: list[PlaceholderOccurrence] = []
     removed_file_set = set(removed_files)
-    for file_path in placeholder_files:
-        if file_path in removed_file_set:
-            continue
-        remaining_placeholders.extend(_placeholder_occurrences(file_path))
+    remaining_placeholders = [
+        occurrence for occurrence in find_scaffold_placeholder_occurrences(test_source_root)
+        if occurrence.file_path not in removed_file_set
+    ]
 
     return ScaffoldPlaceholderCleanupResult(removed_files, remaining_placeholders)
 
@@ -124,6 +128,20 @@ def format_placeholder_occurrence(occurrence: PlaceholderOccurrence, repo_path: 
     if repo_path:
         display_path = os.path.relpath(occurrence.file_path, repo_path)
     return f"{display_path}:{occurrence.line_number}"
+
+
+def find_scaffold_placeholder_occurrences(test_source_root: str) -> list[PlaceholderOccurrence]:
+    """Return all scaffold placeholder text occurrences in generated test sources."""
+    if not os.path.isdir(test_source_root):
+        return []
+
+    occurrences: list[PlaceholderOccurrence] = []
+    for root_dir, _, file_names in os.walk(test_source_root):
+        for file_name in file_names:
+            if not file_name.endswith(TEST_SOURCE_EXTENSIONS):
+                continue
+            occurrences.extend(_placeholder_occurrences(os.path.join(root_dir, file_name)))
+    return occurrences
 
 
 def collect_generated_test_validity_issues(test_source_root: str) -> list[GeneratedTestValidityIssue]:

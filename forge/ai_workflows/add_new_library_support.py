@@ -549,6 +549,7 @@ def main(argv=None):
         checkpoint_commit_hash=checkpoint_commit_hash,
     )
 
+    scaffold_placeholder_quality_gate_failed = False
     generated_test_validity_gate_failed = False
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         placeholder_cleanup = cleanup_scaffold_placeholder_tests(
@@ -565,9 +566,10 @@ def main(argv=None):
             for occurrence in placeholder_cleanup.remaining_placeholders:
                 log_stage(
                     "scaffold-cleanup",
-                    f"WARNING: Scaffold placeholder test remains in generated sources: "
+                    f"ERROR: Scaffold placeholder test remains in generated sources: "
                     f"{format_placeholder_occurrence(occurrence, reachability_repo_path)}",
                 )
+            scaffold_placeholder_quality_gate_failed = True
         generated_test_validity_issues = collect_generated_test_validity_issues(test_source_layout.source_root)
         for issue in generated_test_validity_issues:
             generated_test_validity_gate_failed = True
@@ -576,7 +578,7 @@ def main(argv=None):
                 "WARNING: Suspicious generated test target requires human review: "
                 f"{format_generated_test_validity_issue(issue, reachability_repo_path)}",
             )
-    if generated_test_validity_gate_failed:
+    if scaffold_placeholder_quality_gate_failed or generated_test_validity_gate_failed:
         workflow_status = RUN_STATUS_FAILURE
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
@@ -612,7 +614,20 @@ def main(argv=None):
     else:
         log_stage("status", "Test generation failed")
 
-    if unittest_number == 0 and workflow_status != SUCCESS_WITH_INTERVENTION_STATUS:
+    if scaffold_placeholder_quality_gate_failed:
+        log_stage("status", "Generated tests failed scaffold placeholder quality gate")
+        run_metrics = create_failure_run_metrics_output(
+            package=package,
+            artifact=artifact,
+            library_version=library_version,
+            agent=agent,
+            model_name=model_name,
+            global_iterations=global_iterations,
+            strategy_name=strategy_name,
+            starting_commit=checkpoint_commit_hash,
+            ending_commit=ending_commit_hash,
+        )
+    elif unittest_number == 0 and workflow_status != SUCCESS_WITH_INTERVENTION_STATUS:
         log_stage("status", "No valid unit test generated")
         run_metrics = create_failure_run_metrics_output(
             package=package,
