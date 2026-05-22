@@ -6,10 +6,8 @@
  */
 package org_codehaus_plexus.plexus_utils;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.codehaus.plexus.util.introspection.ReflectionValueExtractor;
 import org.junit.jupiter.api.Test;
@@ -67,16 +65,15 @@ public class ReflectionValueExtractorTest {
 
     public static class Build {
         private final String outputDirectory;
-        private final List<SourceRoot> sourceRoots;
-        private final Map<String, SourceRoot> sourceRootsById;
+        private final SourceRootList sourceRoots;
+        private final SourceRootMap sourceRootsById;
 
         public Build(String outputDirectory) {
             this.outputDirectory = outputDirectory;
-            this.sourceRoots = Arrays.asList(
-                    new SourceRoot("src/main/java"),
-                    new SourceRoot("src/integration-test/java")
-            );
-            this.sourceRootsById = new LinkedHashMap<>();
+            this.sourceRoots = new SourceRootList();
+            this.sourceRoots.add(new SourceRoot("src/main/java"));
+            this.sourceRoots.add(new SourceRoot("src/integration-test/java"));
+            this.sourceRootsById = new SourceRootMap();
             this.sourceRootsById.put("main", sourceRoots.get(0));
             this.sourceRootsById.put("integration-test", sourceRoots.get(1));
         }
@@ -89,12 +86,29 @@ public class ReflectionValueExtractorTest {
             return true;
         }
 
-        public List<SourceRoot> getSourceRoots() {
+        public SourceRootList getSourceRoots() {
             return sourceRoots;
         }
 
-        public Map<String, SourceRoot> getSourceRootsById() {
+        public SourceRootMap getSourceRootsById() {
             return sourceRootsById;
+        }
+    }
+
+    public static class SourceRootList extends ArrayList<SourceRoot> {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public SourceRoot get(int index) {
+            return super.get(index);
+        }
+    }
+
+    public static class SourceRootMap extends HashMap<String, SourceRoot> {
+        private static final long serialVersionUID = 1L;
+
+        public SourceRoot get(String key) {
+            return super.get(key);
         }
     }
 

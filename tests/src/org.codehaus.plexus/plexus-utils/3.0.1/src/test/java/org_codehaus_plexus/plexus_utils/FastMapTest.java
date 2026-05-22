@@ -20,28 +20,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FastMapTest {
     @Test
-    void roundTripsEntriesThroughJavaSerialization() throws Exception {
+    void serializesEntriesAndCopiesThemThroughPublicApi() throws Exception {
         FastMap original = new FastMap(4);
         original.put("alpha", "one");
         original.put("beta", Integer.valueOf(2));
         original.put("gamma", "three");
 
         byte[] serialized = serialize(original);
-        FastMap copy = deserialize(serialized);
+        FastMap deserialized = deserialize(serialized);
+        FastMap copy = (FastMap) original.clone();
 
+        assertThat(serialized).isNotEmpty();
+        assertThat(deserialized).isNotSameAs(original);
+        assertThat(deserialized.capacity()).isEqualTo(original.capacity());
+        assertThat(deserialized).hasSize(3);
+        assertThat(deserialized.get("alpha")).isEqualTo("one");
+        assertThat(deserialized.get("beta")).isEqualTo(Integer.valueOf(2));
+        assertThat(deserialized.get("gamma")).isEqualTo("three");
+        assertThat(deserialized.entrySet())
+                .extracting(entry -> ((Map.Entry) entry).getKey())
+                .containsExactly("alpha", "beta", "gamma");
         assertThat(copy).isNotSameAs(original);
         assertThat(copy.capacity()).isEqualTo(original.capacity());
         assertThat(copy).hasSize(3);
         assertThat(copy.get("alpha")).isEqualTo("one");
         assertThat(copy.get("beta")).isEqualTo(Integer.valueOf(2));
         assertThat(copy.get("gamma")).isEqualTo("three");
-        assertThat(copy.entrySet())
-                .extracting(entry -> ((Map.Entry) entry).getKey())
-                .containsExactly("alpha", "beta", "gamma");
 
-        copy.put("delta", "four");
+        deserialized.put("delta", "four");
+        copy.put("epsilon", "five");
 
-        assertThat(copy.get("delta")).isEqualTo("four");
+        assertThat(original).doesNotContainKeys("delta", "epsilon");
+        assertThat(deserialized.get("delta")).isEqualTo("four");
+        assertThat(copy.get("epsilon")).isEqualTo("five");
     }
 
     private static byte[] serialize(FastMap map) throws IOException {
