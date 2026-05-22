@@ -10,6 +10,7 @@ import io.circe.Decoder
 import io.circe.Encoder
 import io.circe.Json
 import io.circe.JsonObject
+import io.circe.Printer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -105,6 +106,23 @@ class Tapir_json_circe_3Test {
     assertEquals(CodecFormat.Json(), body.codec.format)
     assertEquals(DecodeResult.Value(book), body.codec.decode(body.codec.encode(book)))
     assertTrue(body.show.contains("application/json"), body.show)
+  }
+
+  @Test
+  def customCirceJsonPrinterIsUsedByJsonBodyCodec(): Unit = {
+    val prettyJsonSupport: TapirJsonCirce = new TapirJsonCirce {
+      override def jsonPrinter: Printer = Printer.spaces2
+    }
+    val body: EndpointIO.Body[String, Book] = prettyJsonSupport.jsonBody[Book]
+    val book: Book = Book("Pretty Tapir", 256, List("printer", "body"), available = true)
+
+    val encoded: String = body.codec.encode(book)
+
+    assertEquals(CodecFormat.Json(), body.codec.format)
+    assertTrue(encoded.contains("\n  \"title\""), encoded)
+    assertTrue(encoded.contains("\n  \"pages\""), encoded)
+    assertFalse(encoded.contains("\"title\":\"Pretty Tapir\""), encoded)
+    assertEquals(DecodeResult.Value(book), body.codec.decode(encoded))
   }
 
   @Test
