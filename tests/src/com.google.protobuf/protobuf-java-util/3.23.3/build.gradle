@@ -10,6 +10,9 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+// Protobuf 3.23.3 did not publish platform-specific protoc binaries to Maven Central.
+// Generate test fixtures with the previous compiler patch release and test them against 3.23.3 runtime libraries.
+String protocVersion = "3.23.2"
 
 dependencies {
     // Put well-known type .proto files on protoc include path only (do not generate code for them)
@@ -28,7 +31,7 @@ dependencies {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:$libraryVersion"
+        artifact = "com.google.protobuf:protoc:$protocVersion"
     }
 }
 

@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -430,6 +431,18 @@ public class TimestampsTest {
         Date date = new java.sql.Timestamp(1111);
         Timestamp timestamp = Timestamps.fromDate(date);
         assertThat(Timestamps.toString(timestamp)).isEqualTo("1970-01-01T00:00:01.111Z");
+    }
+
+    @Test
+    public void testNowReturnsCurrentTimestamp() {
+        Instant before = Instant.now();
+        Timestamp timestamp = Timestamps.now();
+        Instant after = Instant.now();
+
+        Instant actual = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+        assertThat(Timestamps.isValid(timestamp)).isTrue();
+        assertThat(actual.isBefore(before)).isFalse();
+        assertThat(actual.isAfter(after)).isFalse();
     }
 
     @Test
