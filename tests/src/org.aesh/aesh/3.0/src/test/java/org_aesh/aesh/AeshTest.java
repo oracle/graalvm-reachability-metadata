@@ -53,7 +53,7 @@ import org.aesh.io.filter.NoDotNamesFilter;
 import org.aesh.parser.LineParser;
 import org.aesh.parser.ParsedLine;
 import org.aesh.parser.ParserStatus;
-import org.aesh.readline.terminal.formatting.TerminalString;
+import org.aesh.terminal.formatting.TerminalString;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
