@@ -47,7 +47,7 @@ public class BlockJUnit4ClassRunnerWithParametersTest {
 
         @Parameters(name = "{index}: {0}={1}")
         public static Collection<Object[]> parameters() {
-            return Arrays.asList(new Object[][] { { "one", 1 }, { "two", 2 } });
+            return Arrays.asList(new Object[][] {{"one", 1}, {"two", 2}});
         }
 
         @org.junit.Test
@@ -67,7 +67,7 @@ public class BlockJUnit4ClassRunnerWithParametersTest {
 
         @Parameters(name = "{index}: {0}={1}")
         public static Collection<Object[]> parameters() {
-            return Arrays.asList(new Object[][] { { "three", 3 }, { "four", 4 } });
+            return Arrays.asList(new Object[][] {{"three", 3}, {"four", 4}});
         }
 
         @org.junit.Test

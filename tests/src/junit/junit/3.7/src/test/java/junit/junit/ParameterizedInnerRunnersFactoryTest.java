@@ -49,7 +49,7 @@ public class ParameterizedInnerRunnersFactoryTest {
 
         @Parameters(name = "{index}: {0}={1}")
         public static Collection<Object[]> parameters() {
-            return Arrays.asList(new Object[][] { { "one", 1 }, { "two", 2 } });
+            return Arrays.asList(new Object[][] {{"one", 1}, {"two", 2}});
         }
 
         @org.junit.Test
