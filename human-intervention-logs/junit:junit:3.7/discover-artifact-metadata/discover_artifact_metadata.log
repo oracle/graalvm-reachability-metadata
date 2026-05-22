@@ -1,0 +1,1271 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e4f4d-2376-7263-a975-118563f87239
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: junit:junit:3.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.7" when "$version$" is replaced with "3.7".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410/build/discovered-artifact-metadata/junit-junit-3.7.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "junit:junit:3.7".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.7".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream JUnit 3.x repository/tag, then update the JSON file directly with the strongest URLs I can establish.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/junit-junit-3.7.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+{
+  "coordinates" : "junit:junit:3.7"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'junit:junit|junit-junit|junit/3' ." in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+./tests/tck-test-support/build.gradle:23:    testImplementation platform('org.junit:junit-bom:5.11.4')
+./gradle/libs.versions.toml:16:test-junit-bom = { module = "org.junit:junit-bom", version.ref = "junitJupiter" }
+./COVERAGE.md:632:| `junit:junit` | [4.13.2](metadata/junit/junit/index.json) | <details><summary>Show</summary> JUnit 4 provides the classic Java unit testing framework, including annotations, assertions, assumptions, runners, and rules used directly by tests and by compatibility layers in newer JUnit Platform engines.</details> | [0.0% (0/70 calls)](stats/junit/junit/) |
+./tests/src/com.diffplug.durian/durian-collect/1.2.0/build.gradle:15:    testImplementation 'junit:junit:4.13.2'
+./tests/src/velocity/velocity-dep/1.4/build.gradle:15:    testImplementation 'junit:junit:3.8.2'
+./tests/src/velocity/velocity/1.4/build.gradle:15:    testImplementation 'junit:junit:3.8.2'
+./tests/src/org.jboss.arquillian.junit/arquillian-junit-container/1.1.10.Final/build.gradle:15:    testImplementation 'junit:junit:4.12'
+./tests/src/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/build.gradle:15:    testImplementation 'junit:junit:4.13.2'
+./tests/src/junit/junit/4.13.2/build.gradle:14:    testImplementation "junit:junit:$libraryVersion"
+./tests/src/junit/junit/4.13.2/gradle.properties:4:library.coordinates = junit:junit:4.13.2
+./tests/src/org.apache.kafka/kafka-streams/3.6.0/build.gradle:20:    testImplementation 'junit:junit:4.13.2'
+./tests/src/org.testng/testng/6.14.3/build.gradle:16:    testImplementation 'junit:junit:4.13.2'
+./tests/src/org.apache.maven.plugins/maven-compiler-plugin/3.8.1/build.gradle:16:    testImplementation 'junit:junit:4.13.2'
+./tests/src/com.google.protobuf/protobuf-java-util/3.22.0/build.gradle:25:    testImplementation 'junit:junit:4.13.2'
+./tests/src/com.google.protobuf/protobuf-java-util/3.21.12/build.gradle:17:    testImplementation 'junit:junit:4.13.2'
+./tests/src/org.apache.maven/maven-model/2.0.10/src/test/java/org_apache_maven/maven_model/Maven_modelTest.java:136:        assertThat(managedDependency.getManagementKey()).isEqualTo("junit:junit:jar");
+./tests/src/org.apache.maven/maven-model/2.0.6/src/test/java/org_apache_maven/maven_model/Maven_modelTest.java:136:        assertThat(managedDependency.getManagementKey()).isEqualTo("junit:junit:jar");
+
+web search: 
+web search: junit junit 3.7 maven pom scm source repository
+web search: 
+web search: https://repo1.maven.org/maven2/junit/junit/3.7/
+codex
+The Maven Central listing for `junit:junit:3.7` has only the jar and POM, so I’m checking upstream tags next instead of inventing a Maven sources URL that does not exist for this version.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/junit/junit/3.7/junit-3.7.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>junit</groupId>
+  <artifactId>junit</artifactId>
+  <version>3.7</version>
+  <name>JUnit</name>
+  <url>http://junit.org</url>
+  <description>
+    JUnit is a regression testing framework written by Erich Gamma and Kent Beck. It is used by the developer who implements unit tests in Java.
+  </description>
+  <organization>
+    <name>JUnit</name>
+    <url>http://www.junit.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Common Public License Version 1.0</name>
+      <url>http://www.opensource.org/licenses/cpl1.0.txt</url>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://junit.cvs.sourceforge.net/junit/</url>
+  </scm>
+  <dependencies>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/junit/junit/3.7/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: junit/junit/3.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>junit/junit/3.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="junit-3.7.jar" title="junit-3.7.jar">junit-3.7.jar</a>                                     2005-09-20 05:49    117522      
+<a href="junit-3.7.jar.md5" title="junit-3.7.jar.md5">junit-3.7.jar.md5</a>                                 2005-09-20 05:49        32      
+<a href="junit-3.7.jar.sha1" title="junit-3.7.jar.sha1">junit-3.7.jar.sha1</a>                                2005-09-20 05:49        40      
+<a href="junit-3.7.pom" title="junit-3.7.pom">junit-3.7.pom</a>                                     2005-09-20 05:49       745      
+<a href="junit-3.7.pom.md5" title="junit-3.7.pom.md5">junit-3.7.pom.md5</a>                                 2005-09-20 05:49        48      
+<a href="junit-3.7.pom.sha1" title="junit-3.7.pom.sha1">junit-3.7.pom.sha1</a>                                2005-09-20 05:49        56      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:49       107      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:49        71      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:49       126      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/junit-team/junit4.git | rg '3\\.7|r3|v3|junit3|3_7'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 353ms:
+a0f0ee1b3f72d9361eb09b3a25156c69a748aa47	refs/tags/r3.8.2
+
+web search: 
+web search: JUnit 3.7 source code tag
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -type f | head -20' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+build/discovered-artifact-metadata/junit-junit-3.7.json
+
+exec
+/usr/bin/bash -lc "find metadata -path '*junit*' -type f -maxdepth 4 | sort" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+metadata/com.github.sbt/junit-interface/0.13.3/reachability-metadata.json
+metadata/com.github.sbt/junit-interface/index.json
+metadata/io.kotest/kotest-runner-junit-platform-jvm/6.1.11/reachability-metadata.json
+metadata/io.kotest/kotest-runner-junit-platform-jvm/index.json
+metadata/io.quarkus/quarkus-junit-common/3.33.1/reachability-metadata.json
+metadata/io.quarkus/quarkus-junit-common/index.json
+metadata/junit/junit/4.13.2/reachability-metadata.json
+metadata/junit/junit/index.json
+metadata/org.apache.groovy/groovy-test-junit5/4.0.24/reachability-metadata.json
+metadata/org.apache.groovy/groovy-test-junit5/index.json
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/1.1.10.Final/reachability-metadata.json
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/1.1.10.Final/reachability-metadata.json
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json
+metadata/org.jetbrains.kotlin/kotlin-test-junit/1.2.21/reachability-metadata.json
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/2.3.21/reachability-metadata.json
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json
+metadata/org.junit.jupiter/junit-jupiter-engine/5.8.2/reachability-metadata.json
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json
+metadata/org.junit.jupiter/junit-jupiter-params/5.9.2/reachability-metadata.json
+metadata/org.junit.jupiter/junit-jupiter-params/index.json
+metadata/org.junit.jupiter/junit-jupiter/index.json
+metadata/org.junit.platform/junit-platform-commons/1.8.2/reachability-metadata.json
+metadata/org.junit.platform/junit-platform-commons/index.json
+metadata/org.junit.platform/junit-platform-engine/1.10.4/reachability-metadata.json
+metadata/org.junit.platform/junit-platform-engine/1.8.2/reachability-metadata.json
+metadata/org.junit.platform/junit-platform-engine/index.json
+metadata/org.junit.platform/junit-platform-launcher/1.9.2/reachability-metadata.json
+metadata/org.junit.platform/junit-platform-launcher/index.json
+metadata/org.junit.platform/junit-platform-reporting/1.9.2/reachability-metadata.json
+metadata/org.junit.platform/junit-platform-reporting/index.json
+metadata/org.junit.platform/junit-platform-suite-api/1.13.4/reachability-metadata.json
+metadata/org.junit.platform/junit-platform-suite-api/index.json
+metadata/org.junit.vintage/junit-vintage-engine/5.9.1/reachability-metadata.json
+metadata/org.junit.vintage/junit-vintage-engine/index.json
+metadata/org.mockito/mockito-junit-jupiter/4.5.1/reachability-metadata.json
+metadata/org.mockito/mockito-junit-jupiter/index.json
+metadata/org.scalameta/junit-interface/0.7.29/reachability-metadata.json
+metadata/org.scalameta/junit-interface/index.json
+metadata/org.testcontainers/junit-jupiter/1.18.3/reachability-metadata.json
+metadata/org.testcontainers/junit-jupiter/index.json
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url' metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/kernel/src/test",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/forms/src/test",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:6:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/$version$-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/runtime/src/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/layout/src/test",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/org.w3c.css/sac/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/w3c/css/sac/$version$/sac-$version$-sources.jar",
+metadata/org.w3c.css/sac/index.json:7:    "test-code-url" : "N/A",
+metadata/org.w3c.css/sac/index.json:8:    "documentation-url" : "https://www.w3.org/Style/CSS/SAC/doc/",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-sources.jar",
+metadata/com.itextpdf/svg/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/svg/src/test",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+metadata/com.google.dagger/dagger/index.json:7:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/com.twitter/hpack/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-sources.jar",
+metadata/com.twitter/hpack/index.json:7:    "test-code-url" : "https://github.com/twitter/hpack/tree/hpack-parent-$version$/hpack/src/test",
+metadata/com.twitter/hpack/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:48:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:50:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:100:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:102:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:103:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-sources.jar",
+metadata/com.itextpdf/io/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/$version$/io/src/test",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-javadoc.jar",
+metadata/org.springframework.integration/spring-integration-kafka/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-kafka/$version$/spring-integration-kafka-$version$-sources.jar",
+metadata/org.springframework.integration/spring-integration-kafka/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-integration/tree/v$version$/spring-integration-kafka/src/test",
+metadata/org.springframework.integration/spring-integration-kafka/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-kafka/$version$/spring-integration-kafka-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/org.springframework.integration/spring-integration-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-core/$version$/spring-integration-core-$version$-sources.jar",
+metadata/org.springframework.integration/spring-integration-core/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-integration/tree/v$version$/spring-integration-core/src/test",
+metadata/org.springframework.integration/spring-integration-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-core/$version$/spring-integration-core-$version$-javadoc.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-sources.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:7:    "test-code-url" : "https://github.com/eclipse/eclipse-collections/tree/$version$/unit-tests/src/test/java",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://sourceforge.net/projects/junit/files/junit/3.7/ | rg -n 'junit3\\.7|zip|src|doc'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+exec
+/usr/bin/bash -lc "curl -I -L -s https://sourceforge.net/projects/junit/files/junit/3.7/junit3.7.zip/download | sed -n '1,40p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+exec
+/usr/bin/bash -lc "curl -I -L -s https://downloads.sourceforge.net/project/junit/junit/3.7/junit3.7.zip | sed -n '1,40p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 274ms:
+1:<!doctype html><html class="no-js" lang="en">
+13:        <script src="//a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1779310703"></script>
+75:                SF.Ads.viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+76:                SF.Ads.viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+131:        <script src="//a.fsdn.com/con/js/min/sf.sandiego-head.js?1779310703"></script>
+141:<script src="//a.fsdn.com/con/js/ad_top.js?1779310703"></script>
+143:<script src="//a.fsdn.com/con/js/asg_embed.js?1779310703"></script>
+155:            _paq.push(['trackPageView', document.title, {
+207:                var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+208:                g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'sf.js'; s.parentNode.insertBefore(g,s);
+290:                    <li><a href="https://sourceforge.net/p/forge/documentation/Docs%20Home/">Site Documentation</a></li>
+316:    <img src="//a.fsdn.com/con/images/sandiego/sf-logo-full.svg"  alt="SourceForge logo" class="sf-logo-full"/>
+340:    <img src="//a.fsdn.com/con/images/sandiego/sf-logo-full.svg"  alt="SourceForge logo" class="sf-logo-full"/>
+724:        <p>The interactive file manager requires Javascript. Please enable it or use <a href="https://sourceforge.net/p/forge/documentation/Release%20Files%20for%20Download#scp">sftp or scp</a>.
+744:                <img src="//a.fsdn.com/con/images/sandiego/sf-icon-black.svg"  alt="" class="sf-download-icon" />
+749:    <img id="psp_newsletter_subscribe-icon" src="//a.fsdn.com/con/images/sandiego/sf_email_icon.svg"  alt="Email in envelope"  />
+830:                <tr title="junit3.7.zip" class="file ">
+831:                    <th scope="row" headers="files_name_h"><a href="https://sourceforge.net/projects/junit/files/junit/3.7/junit3.7.zip/download"
+832:                           title="Click to download junit3.7.zip">
+833:                        <span class="name">junit3.7.zip</span></a>
+839:                        <div class="stats show-for-medium"><a class="no-recent-downloads file" href="/projects/junit/files/junit/3.7/junit3.7.zip/stats/timeline" title="278,111 downloads (all-time), none recently." rel="nofollow">0</a></div>
+869:        $('body').append('<iframe src="https://c.sf-syn.com/conversion_outbound_tracker/sf" id="frame-zone-outbound" style="display: none;"></iframe>');
+912:            <img class="main-image" src="//a.fsdn.com/con/app/nel_img/20599" alt="Earn up to 15% annual interest with Nexo. Icon">
+991:            <img class="main-image" src="//a.fsdn.com/con/app/nel_img/10360" alt="Get full visibility and control over your tasks and projects with Wrike. Icon">
+1068:        $('body').append('<iframe src="https://c.sf-syn.com/conversion_outbound_tracker/sf" id="frame-zone-outbound" style="display: none;"></iframe>');
+1096:            <img class="main-image" src="//a.fsdn.com/con/app/nel_img/20599" alt="Earn up to 15% annual interest with Nexo. Icon">
+1177:src="//a.fsdn.com/allura/mirror/junit-4/icon?e45ba0311cafdf966122396e9a5cae63059c8c534da0a36cbdcb36dda4d6edc4?&amp;w=48"
+1178:    srcset="//a.fsdn.com/allura/mirror/junit-4/icon?e45ba0311cafdf966122396e9a5cae63059c8c534da0a36cbdcb36dda4d6edc4?&amp;w=72 1.5x
+1253:src="//a.fsdn.com/allura/mirror/junit-5/icon?dc3451ba4b14fad605b8113fb2a2ac65cf27ef6d5e936ce417839548adc6ba03?&amp;w=48"
+1375:                            <li><a href="/p/forge/documentation/Docs%20Home/" title="Site Documentation">Site Documentation</a></li>
+1387:    <img src="//a.fsdn.com/con/images/sandiego/sf-logo-full.svg"  alt="SourceForge logo" class="sf-logo-full"/>
+1501:        document.getElementById('vibe-main-row').parentNode.remove();
+1513:                var root = _root || document;
+1582:                  document.fonts.add(loaded);
+1617:              src="//a.fsdn.com/con/img/hi-logo.png"
+1622:              src="//a.fsdn.com/con/img/hi-text.png"
+1637:        document.getElementById('mdb-sticky-close').parentNode.remove();
+1646:        <script src="//a.fsdn.com/con/js/min/sf.sandiego-base.js?1779310703"></script>
+1657:        <script src="//a.fsdn.com/con/js/min/sf.sandiego-foundation-base.js?1779310703"></script>
+1664:        <script src="//a.fsdn.com/con/js/min/sf.sandiego-files.js?1779310703"></script>
+1674:            $(document).foundation();
+1727:                    var img = document.createElement('img');
+1728:                    img.src = url;
+1731:                    document.body.appendChild(img);
+1754:                (function(){var s = document.getElementsByTagName("script")[0];
+1755:                var b = document.createElement("script");
+1757:                b.src = "https://j.6sc.co/j/58729049-be80-466a-9abf-b3911430bbd8.js";
+1925:    net.sf.files = {"junit3.7.zip":{"name":"junit3.7.zip","path":"/junit/3.7","download_url":"https://sourceforge.net/projects/junit/files/junit/3.7/junit3.7.zip/download","url":"/projects/junit/files/junit/3.7/junit3.7.zip/","full_path":"junit/3.7/junit3.7.zip","type":"f","link":"","downloads":278111,"sha1":"42beaabbb4a321288f90e36adf0dcc05a255dda4","md5":"ff5816f35fa99bc4347af65fb40d86c9","default":"","download_label":"","exclude_reports":false,"downloadable":true,"legacy_release_notes":null,"staged":false,"stage":0,"staging_days":3,"files_url":"/projects/junit/files/","explicitly_staged":false,"authorized":null}};
+1962:            var s = document.getElementsByTagName('script')[0], cd = new Date(), mltag = document.createElement('script');
+1966:            mltag.src = '//ml314.com/tag.aspx?' + cd.getDate() + cd.getMonth() + cd.getFullYear();
+1992:            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+1993:        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+2044:            imageUrl = imageUrl.replace(encodeURIComponent("$PAGE_TITLE"), document.title);  
+2054:            image.src = imageUrl.toString();
+2058:            document.body.appendChild(image);
+2070:            !function(e,i){if(!e.pixie){var n=e.pixie=function(e,i,a){n.actionQueue.push({action:e,actionValue:i,params:a})};n.actionQueue=[];var a=i.createElement("script");a.async=!0,a.src="//acdn.adnxs.com/dmp/up/pixie.js";var t=i.getElementsByTagName("head")[0];t.insertBefore(a,t.firstChild)}}(window,document);
+
+ succeeded in 667ms:
+HTTP/2 302 
+date: Fri, 22 May 2026 10:49:07 GMT
+content-type: text/html; charset=UTF-8
+location: https://master.dl.sourceforge.net/project/junit/junit/3.7/junit3.7.zip?viasf=1&fid=e02c7a9d396f95f5
+server: cloudflare
+content-security-policy: upgrade-insecure-requests
+content-disposition: attachment; filename="junit3.7.zip"
+cf-cache-status: DYNAMIC
+set-cookie: sf_mirror_attempt=junit:master:junit/3.7/junit3.7.zip; Max-Age=120; Path=/; expires=Fri, 22-May-2026 10:51:07 GMT; secure
+set-cookie: __cf_bm=H1NJOeznw__UPC0P.OfUnkimw77azpCDOBUBYl5yGW4-1779446947.3738444-1.0.1.1-Ih9gfOyIhwX9BIy5KN.CMJI1Ef_Mu8tbIRZbKUemJTcrj7Q9yWYuILJe7LSPkh9bz9ys0ulh7Y44LeM8YjTzfCELbLdyQhKlyio4OnoXmPtei8QP8CNjmI26ppZo0NKC; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Fri, 22 May 2026 11:19:07 GMT
+cf-ray: 9ffb409d1f43fcc9-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/1.1 200 OK
+Server: nginx
+Date: Fri, 22 May 2026 10:49:07 GMT
+Content-Type: application/octet-stream
+Content-Length: 374491
+Connection: keep-alive
+last-modified: Mon, 21 May 2001 20:34:13 GMT
+etag: "3b097bc5-5b6db"
+accept-ranges: bytes
+
+
+ succeeded in 910ms:
+HTTP/2 302 
+date: Fri, 22 May 2026 10:49:07 GMT
+content-type: text/html; charset=UTF-8
+location: https://downloads.sourceforge.net/project/junit/junit/3.7/junit3.7.zip?ts=gAAAAABqEDSj6BEMHaY_6A1PZNS3I7tONzDUKf0NsiVA4JpvUFpdBfVs869tR2K8OCzWn4cY0LzOYPIkGmvyIWxPZwt_iDVeQg%3D%3D&use_mirror=master&r=
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+cross-origin-opener-policy: same-origin
+permissions-policy: geolocation=(), microphone=(), camera=(), payment=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: geolocation 'none'; microphone 'none'; camera 'none'; payment 'none'; document-domain 'none'; display-capture 'none'; autoplay 'none'
+x-frame-options: SAMEORIGIN
+content-security-policy: frame-src 'self' a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.googletagmanager.com *.doubleclick.net *.gstatic.com *.recaptcha.net recaptcha.net *.youtube.com www.youtube-nocookie.com *.consentmanager.net player.twitch.tv app.hubspot.com; form-action https://sourceforge.net lists.sourceforge.net aistudio.google.com; object-src 'none'; upgrade-insecure-requests; frame-ancestors 'self'; script-src 'self' *.licdn.com a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.cloudflareinsights.com *.google-analytics.com *.tiny.cloud *.recaptcha.net recaptcha.net *.gstatic.com *.googletagservices.com *.googlesyndication.com *.doubleclick.net *.googletagmanager.com *.consentmanager.net *.microsofttranslator.com translate.googleapis.com translate.google.cn *.gstatic.cn *.tds.bid esm.sh blob: *.adnxs.com *.bing.com *.slashdotmedia.com ml314.com j.6sc.co *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com fe.sitedataprocessing.com a.usbrowserspeed.com d-code.liadm.com frontend.id-visitors.com *.identitymatrix.ai 'unsafe-inline' 'unsafe-eval'; script-src-attr 'unsafe-hashes' 'sha256-4d6SN0yYeMqJ0cKMQtg6WeJWMAytzagOyddgGs8IrQg=' 'sha256-tBDVzvq7nAZRA5cnijB1/8uEyvj+5hEDBhcx7F72AGE=' 'report-sample'; fenced-frame-src https:
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=571ba4cd-eb79-485a-8f4f-00378188a410; Max-Age=315360000; Path=/; expires=Mon, 19-May-2036 10:49:07 GMT; secure; HttpOnly
+set-cookie: __cf_bm=kFOyZ5bXlCymwX12p.e7V36HmcM5VNe5gLCcSw0qapE-1779446947.3530488-1.0.1.1-TOSw7iLz8._Niq.51S35vjSVH9Gx_E6zYbAf8tlD7M_3trTMQ6pN2uCYB1f76wXne_vZCOhwW476E_WaTP92dB_kvKf9r4fJuF8ao_A0O8TSuddIG6fOWz_r5XEaMgdv; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Fri, 22 May 2026 11:19:07 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9ffb409cfa57be90-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 302 
+date: Fri, 22 May 2026 10:49:07 GMT
+content-type: text/html; charset=UTF-8
+location: https://master.dl.sourceforge.net/project/junit/junit/3.7/junit3.7.zip?viasf=1&fid=e02c7a9d396f95f5
+server: cloudflare
+content-security-policy: upgrade-insecure-requests
+content-disposition: attachment; filename="junit3.7.zip"
+cf-cache-status: DYNAMIC
+set-cookie: sf_mirror_attempt=junit:master:junit/3.7/junit3.7.zip; Max-Age=120; Path=/; expires=Fri, 22-May-2026 10:51:07 GMT; secure
+set-cookie: __cf_bm=wz15BxUfJA.h.Q0HppjOUID4qsXjypIB7_pK2WqXlwI-1779446947.6049042-1.0.1.1-P5DsfZz0P2wSkw9reHkS4yn7ld9JZkWt5qbMQU.rZXoKu8lFKvDcmuNaIUNOjiZ9loqF93rt4NkNb7V3.V66EvdZI9d3PkN_Loq3D4Qo6TD31FE3ugHqQeBBBf5XYr3F; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Fri, 22 May 2026 11:19:07 GMT
+cf-ray: 9ffb409e8be9739d-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/1.1 200 OK
+Server: nginx
+Date: Fri, 22 May 2026 10:49:08 GMT
+Content-Type: application/octet-stream
+Content-Length: 374491
+Connection: keep-alive
+last-modified: Mon, 21 May 2001 20:34:13 GMT
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/junit3.7.zip" https://downloads.sourceforge.net/project/junit/junit/3.7/junit3.7.zip; unzip -l "$tmp/junit3.7.zip" | sed -n '"'1,140p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+exec
+/usr/bin/bash -lc "curl -I -L -s https://junit.sourceforge.net/junit3.7/ | sed -n '1,40p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+exec
+/usr/bin/bash -lc "curl -I -L -s https://junit.org/junit3.7/ | sed -n '1,30p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 169ms:
+HTTP/2 404 
+date: Fri, 22 May 2026 10:49:12 GMT
+content-type: text/plain; charset=utf-8
+content-length: 13
+server: BunnyCDN-FR1-1219
+cdn-pullzone: 5193839
+cdn-requestcountrycode: CH
+cache-control: public, must-revalidate, max-age=0
+content-security-policy: frame-ancestors 'self' *.javadoc.io javadoc.io
+permissions-policy: geolocation=(), camera=(), microphone=()
+referrer-policy: strict-origin-when-cross-origin
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-content-type-options: nosniff
+cdn-proxyver: 1.53
+cdn-requestpullsuccess: True
+cdn-requestpullcode: 404
+cdn-cachedat: 05/22/2026 10:49:12
+cdn-edgestorageid: 1073
+cdn-requestid: e7adc5c122c0b155987a381de57a1ab7
+cdn-cache: MISS
+cdn-status: 404
+cdn-requesttime: 0
+
+
+ succeeded in 202ms:
+HTTP/2 404 
+date: Fri, 22 May 2026 10:49:12 GMT
+content-type: text/html
+content-length: 146
+server: cloudflare
+content-security-policy: upgrade-insecure-requests
+x-from: sfp-staticweb-2
+cf-cache-status: DYNAMIC
+set-cookie: __cf_bm=bhhCevVzbCnxiH8_4Oi0juhGGjWh1hYqAgAIuBY3zOU-1779446952.4855652-1.0.1.1-REFHf2Diz7d6_Ws3_tSKaiC7l3aBZDwqn4JtvEvGhs7m01wdwoeAgjbVs__6ujgJeoiS.rpYZyYzaR3j8CAU9p40oGWyu6MV3q4.nMOe6HftrdvHsdU0HOLjK8m_XeGW; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Fri, 22 May 2026 11:19:12 GMT
+cf-ray: 9ffb40bd08d3a625-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 2048ms:
+Archive:  /tmp/tmp.4Ao5HqxsBF/junit3.7.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2001-05-21 10:18   junit3.7/
+    53547  2001-05-21 10:18   junit3.7/src.jar
+        0  2001-05-21 10:18   junit3.7/junit/
+        0  2001-05-21 10:18   junit3.7/junit/samples/
+        0  2001-05-21 10:18   junit3.7/junit/samples/money/
+     2548  2001-05-21 10:18   junit3.7/junit/samples/money/Money.class
+     4691  2001-05-21 10:18   junit3.7/junit/samples/money/MoneyBag.class
+     3860  2001-05-21 10:18   junit3.7/junit/samples/money/MoneyBag.java
+     5342  2001-05-21 10:18   junit3.7/junit/samples/money/MoneyTest.java
+      665  2001-05-21 10:18   junit3.7/junit/samples/money/IMoney.class
+     1664  2001-05-21 10:18   junit3.7/junit/samples/money/Money.java
+     5665  2001-05-21 10:18   junit3.7/junit/samples/money/MoneyTest.class
+      854  2001-05-21 10:18   junit3.7/junit/samples/money/IMoney.java
+     1167  2001-05-21 10:18   junit3.7/junit/samples/SimpleTest.java
+     1903  2001-05-21 10:18   junit3.7/junit/samples/SimpleTest.class
+     2928  2001-05-21 10:18   junit3.7/junit/samples/VectorTest.class
+     1769  2001-05-21 10:18   junit3.7/junit/samples/VectorTest.java
+     1423  2001-05-21 10:18   junit3.7/junit/samples/AllTests.class
+      499  2001-05-21 10:18   junit3.7/junit/samples/AllTests.java
+        0  2001-05-21 10:18   junit3.7/junit/tests/
+     2179  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest.java
+      542  2001-05-21 10:18   junit3.7/junit/tests/RepeatedTestTest$SuccessTest.class
+     1358  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest$DoubleTestCase.class
+      545  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$4.class
+     2843  2001-05-21 10:18   junit3.7/junit/tests/SuiteTest.java
+     1029  2001-05-21 10:18   junit3.7/junit/tests/TextRunnerTest.java
+      783  2001-05-21 10:18   junit3.7/junit/tests/SorterTest.java
+     1862  2001-05-21 10:18   junit3.7/junit/tests/ClassLoaderTest.class
+      474  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$4.class
+     1508  2001-05-21 10:18   junit3.7/junit/tests/LoadedFromJar.class
+     2196  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest.class
+      290  2001-05-21 10:18   junit3.7/junit/tests/NotVoidTestCase.java
+      579  2001-05-21 10:18   junit3.7/junit/tests/OneTestCase.class
+      720  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest$ThrowExceptionTestCase.class
+      486  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest$3.class
+     3109  2001-05-21 10:18   junit3.7/junit/tests/AllTests.class
+      238  2001-05-21 10:18   junit3.7/junit/tests/NoTestCases.java
+     3942  2001-05-21 10:18   junit3.7/junit/tests/SuiteTest.class
+      459  2001-05-21 10:18   junit3.7/junit/tests/WasRun.class
+      427  2001-05-21 10:18   junit3.7/junit/tests/NoTestCases.class
+      519  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$7.class
+     1970  2001-05-21 10:18   junit3.7/junit/tests/StackFilterTest.java
+     1190  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest.class
+      515  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$3.class
+      495  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest$2.class
+      518  2001-05-21 10:18   junit3.7/junit/tests/NotPublicTestCase.class
+     3053  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest.class
+     1952  2001-05-21 10:18   junit3.7/junit/tests/ActiveTestTest.class
+      427  2001-05-21 10:18   junit3.7/junit/tests/NoTestCaseClass.class
+      577  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$3.class
+     3030  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest.java
+      213  2001-05-21 10:18   junit3.7/junit/tests/OverrideTestCase.java
+     1748  2001-05-21 10:18   junit3.7/junit/tests/ActiveTestTest.java
+     2167  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest.class
+      529  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$2.class
+     1061  2001-05-21 10:18   junit3.7/junit/tests/SorterTest.class
+     1234  2001-05-21 10:18   junit3.7/junit/tests/AllTests.java
+      675  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$TornDown.class
+      538  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest$2.class
+      584  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$TornDown.class
+      614  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$2.class
+      298  2001-05-21 10:18   junit3.7/junit/tests/WasRun.java
+      264  2001-05-21 10:18   junit3.7/junit/tests/Success.java
+      461  2001-05-21 10:18   junit3.7/junit/tests/Failure.class
+      732  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest$ThrowRuntimeExceptionTestCase.class
+      580  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$6.class
+      524  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest$1.class
+     2016  2001-05-21 10:18   junit3.7/junit/tests/TextRunnerTest.class
+      954  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest$1.class
+      275  2001-05-21 10:18   junit3.7/junit/tests/Failure.java
+     2446  2001-05-21 10:18   junit3.7/junit/tests/AssertTest.java
+      534  2001-05-21 10:18   junit3.7/junit/tests/ActiveTestTest$SuccessTest.class
+     1466  2001-05-21 10:18   junit3.7/junit/tests/RepeatedTestTest.java
+      515  2001-05-21 10:18   junit3.7/junit/tests/NotVoidTestCase.class
+      212  2001-05-21 10:18   junit3.7/junit/tests/InheritedTestCase.java
+      537  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$5.class
+      409  2001-05-21 10:18   junit3.7/junit/tests/Success.class
+     2565  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest.class
+      668  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest$ThrowNoExceptionTestCase.class
+     2235  2001-05-21 10:18   junit3.7/junit/tests/StackFilterTest.class
+      842  2001-05-21 10:18   junit3.7/junit/tests/ClassLoaderTest.java
+      289  2001-05-21 10:18   junit3.7/junit/tests/NotPublicTestCase.java
+      529  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest$1.class
+     1894  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest.java
+      307  2001-05-21 10:18   junit3.7/junit/tests/OneTestCase.java
+     1534  2001-05-21 10:18   junit3.7/junit/tests/TestCaseClassLoaderTest.java
+      512  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$1.class
+      439  2001-05-21 10:18   junit3.7/junit/tests/OverrideTestCase.class
+      558  2001-05-21 10:18   junit3.7/junit/tests/LoadedFromJar.java
+     1434  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest.java
+     2699  2001-05-21 10:18   junit3.7/junit/tests/AssertTest.class
+      759  2001-05-21 10:18   junit3.7/junit/tests/SorterTest$Swapper.class
+     1703  2001-05-21 10:18   junit3.7/junit/tests/TestCaseClassLoaderTest.class
+     1810  2001-05-21 10:18   junit3.7/junit/tests/RepeatedTestTest.class
+     1192  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest.java
+      526  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest$5.class
+      229  2001-05-21 10:18   junit3.7/junit/tests/NoTestCaseClass.java
+      439  2001-05-21 10:18   junit3.7/junit/tests/InheritedTestCase.class
+     1391  2001-05-21 10:18   junit3.7/junit/tests/test.jar
+        0  2001-05-21 10:18   junit3.7/javadoc/
+     6063  2001-05-21 10:19   junit3.7/javadoc/overview-tree.html
+    36139  2001-05-21 10:19   junit3.7/javadoc/index-all.html
+     5623  2001-05-21 10:19   junit3.7/javadoc/deprecated-list.html
+     1786  2001-05-21 10:19   junit3.7/javadoc/allclasses-frame.html
+      760  2001-05-21 10:19   junit3.7/javadoc/index.html
+      680  2001-05-21 10:19   junit3.7/javadoc/packages.html
+     4283  2001-05-21 10:19   junit3.7/javadoc/overview-summary.html
+     1027  2001-05-21 10:19   junit3.7/javadoc/overview-frame.html
+        0  2001-05-21 10:19   junit3.7/javadoc/junit/
+        0  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/
+     5230  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/package-summary.html
+     5508  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/package-tree.html
+     1085  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/package-frame.html
+    11718  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/ActiveTestSuite.html
+    14261  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/ExceptionTestCase.html
+    15469  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/RepeatedTest.html
+    16635  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/TestDecorator.html
+    15109  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/TestSetup.html
+        0  2001-05-21 10:19   junit3.7/javadoc/junit/framework/
+     6430  2001-05-21 10:19   junit3.7/javadoc/junit/framework/package-summary.html
+     5673  2001-05-21 10:19   junit3.7/javadoc/junit/framework/package-tree.html
+     1701  2001-05-21 10:19   junit3.7/javadoc/junit/framework/package-frame.html
+     6629  2001-05-21 10:19   junit3.7/javadoc/junit/framework/Protectable.html
+     7747  2001-05-21 10:19   junit3.7/javadoc/junit/framework/Test.html
+     8918  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestListener.html
+    31175  2001-05-21 10:19   junit3.7/javadoc/junit/framework/Assert.html
+    22458  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestCase.html
+    11656  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestFailure.html
+    22944  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestResult.html
+    17103  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestSuite.html
+     8206  2001-05-21 10:19   junit3.7/javadoc/junit/framework/AssertionFailedError.html
+     4475  2001-05-21 10:19   junit3.7/javadoc/serialized-form.html
+       35  2001-05-21 10:19   junit3.7/javadoc/package-list
+     7332  2001-05-21 10:19   junit3.7/javadoc/help-doc.html
+     1269  2001-05-21 10:19   junit3.7/javadoc/stylesheet.css
+        0  2001-05-21 10:19   junit3.7/doc/
+        0  2001-05-21 10:19   junit3.7/doc/cookstour/
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/junit3.7.zip" https://downloads.sourceforge.net/project/junit/junit/3.7/junit3.7.zip; unzip -l "$tmp/junit3.7.zip" | rg '"'("'^|/)src'"\\.jar|\\.java"'$|javadoc/|doc/'"' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 1972ms:
+    53547  2001-05-21 10:18   junit3.7/src.jar
+     3860  2001-05-21 10:18   junit3.7/junit/samples/money/MoneyBag.java
+     5342  2001-05-21 10:18   junit3.7/junit/samples/money/MoneyTest.java
+     1664  2001-05-21 10:18   junit3.7/junit/samples/money/Money.java
+      854  2001-05-21 10:18   junit3.7/junit/samples/money/IMoney.java
+     1167  2001-05-21 10:18   junit3.7/junit/samples/SimpleTest.java
+     1769  2001-05-21 10:18   junit3.7/junit/samples/VectorTest.java
+      499  2001-05-21 10:18   junit3.7/junit/samples/AllTests.java
+     2179  2001-05-21 10:18   junit3.7/junit/tests/ExceptionTestCaseTest.java
+     2843  2001-05-21 10:18   junit3.7/junit/tests/SuiteTest.java
+     1029  2001-05-21 10:18   junit3.7/junit/tests/TextRunnerTest.java
+      783  2001-05-21 10:18   junit3.7/junit/tests/SorterTest.java
+      290  2001-05-21 10:18   junit3.7/junit/tests/NotVoidTestCase.java
+      238  2001-05-21 10:18   junit3.7/junit/tests/NoTestCases.java
+     1970  2001-05-21 10:18   junit3.7/junit/tests/StackFilterTest.java
+     3030  2001-05-21 10:18   junit3.7/junit/tests/TestCaseTest.java
+      213  2001-05-21 10:18   junit3.7/junit/tests/OverrideTestCase.java
+     1748  2001-05-21 10:18   junit3.7/junit/tests/ActiveTestTest.java
+     1234  2001-05-21 10:18   junit3.7/junit/tests/AllTests.java
+      298  2001-05-21 10:18   junit3.7/junit/tests/WasRun.java
+      264  2001-05-21 10:18   junit3.7/junit/tests/Success.java
+      275  2001-05-21 10:18   junit3.7/junit/tests/Failure.java
+     2446  2001-05-21 10:18   junit3.7/junit/tests/AssertTest.java
+     1466  2001-05-21 10:18   junit3.7/junit/tests/RepeatedTestTest.java
+      212  2001-05-21 10:18   junit3.7/junit/tests/InheritedTestCase.java
+      842  2001-05-21 10:18   junit3.7/junit/tests/ClassLoaderTest.java
+      289  2001-05-21 10:18   junit3.7/junit/tests/NotPublicTestCase.java
+     1894  2001-05-21 10:18   junit3.7/junit/tests/ExtensionTest.java
+      307  2001-05-21 10:18   junit3.7/junit/tests/OneTestCase.java
+     1534  2001-05-21 10:18   junit3.7/junit/tests/TestCaseClassLoaderTest.java
+      558  2001-05-21 10:18   junit3.7/junit/tests/LoadedFromJar.java
+     1434  2001-05-21 10:18   junit3.7/junit/tests/TestListenerTest.java
+     1192  2001-05-21 10:18   junit3.7/junit/tests/TestImplementorTest.java
+      229  2001-05-21 10:18   junit3.7/junit/tests/NoTestCaseClass.java
+        0  2001-05-21 10:18   junit3.7/javadoc/
+     6063  2001-05-21 10:19   junit3.7/javadoc/overview-tree.html
+    36139  2001-05-21 10:19   junit3.7/javadoc/index-all.html
+     5623  2001-05-21 10:19   junit3.7/javadoc/deprecated-list.html
+     1786  2001-05-21 10:19   junit3.7/javadoc/allclasses-frame.html
+      760  2001-05-21 10:19   junit3.7/javadoc/index.html
+      680  2001-05-21 10:19   junit3.7/javadoc/packages.html
+     4283  2001-05-21 10:19   junit3.7/javadoc/overview-summary.html
+     1027  2001-05-21 10:19   junit3.7/javadoc/overview-frame.html
+        0  2001-05-21 10:19   junit3.7/javadoc/junit/
+        0  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/
+     5230  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/package-summary.html
+     5508  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/package-tree.html
+     1085  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/package-frame.html
+    11718  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/ActiveTestSuite.html
+    14261  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/ExceptionTestCase.html
+    15469  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/RepeatedTest.html
+    16635  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/TestDecorator.html
+    15109  2001-05-21 10:19   junit3.7/javadoc/junit/extensions/TestSetup.html
+        0  2001-05-21 10:19   junit3.7/javadoc/junit/framework/
+     6430  2001-05-21 10:19   junit3.7/javadoc/junit/framework/package-summary.html
+     5673  2001-05-21 10:19   junit3.7/javadoc/junit/framework/package-tree.html
+     1701  2001-05-21 10:19   junit3.7/javadoc/junit/framework/package-frame.html
+     6629  2001-05-21 10:19   junit3.7/javadoc/junit/framework/Protectable.html
+     7747  2001-05-21 10:19   junit3.7/javadoc/junit/framework/Test.html
+     8918  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestListener.html
+    31175  2001-05-21 10:19   junit3.7/javadoc/junit/framework/Assert.html
+    22458  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestCase.html
+    11656  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestFailure.html
+    22944  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestResult.html
+    17103  2001-05-21 10:19   junit3.7/javadoc/junit/framework/TestSuite.html
+     8206  2001-05-21 10:19   junit3.7/javadoc/junit/framework/AssertionFailedError.html
+     4475  2001-05-21 10:19   junit3.7/javadoc/serialized-form.html
+       35  2001-05-21 10:19   junit3.7/javadoc/package-list
+     7332  2001-05-21 10:19   junit3.7/javadoc/help-doc.html
+     1269  2001-05-21 10:19   junit3.7/javadoc/stylesheet.css
+        0  2001-05-21 10:19   junit3.7/doc/
+        0  2001-05-21 10:19   junit3.7/doc/cookstour/
+     5295  2001-05-21 10:19   junit3.7/doc/cookstour/Image7.gif
+     2946  2001-05-21 10:19   junit3.7/doc/cookstour/Image3.gif
+     3694  2001-05-21 10:19   junit3.7/doc/cookstour/Image4.gif
+    38905  2001-05-21 10:19   junit3.7/doc/cookstour/cookstour.htm
+     4858  2001-05-21 10:19   junit3.7/doc/cookstour/Image5.gif
+     1820  2001-05-21 10:19   junit3.7/doc/cookstour/Image1.gif
+     8950  2001-05-21 10:19   junit3.7/doc/cookstour/Image6.gif
+     2490  2001-05-21 10:19   junit3.7/doc/cookstour/Image2.gif
+        0  2001-05-21 10:19   junit3.7/doc/testinfected/
+     6426  2001-05-21 10:19   junit3.7/doc/testinfected/IMG00001.GIF
+    31615  2001-05-21 10:19   junit3.7/doc/testinfected/testing.htm
+     6934  2001-05-21 10:19   junit3.7/doc/testinfected/IMG00002.GIF
+     5992  2001-05-21 10:19   junit3.7/doc/testinfected/IMG00003.GIF
+      964  2001-05-21 10:19   junit3.7/doc/testinfected/logo.gif
+        0  2001-05-21 10:19   junit3.7/doc/cookbook/
+      964  2001-05-21 10:19   junit3.7/doc/cookbook/logo.gif
+     6934  2001-05-21 10:19   junit3.7/doc/cookbook/IMG00001.GIF
+    11304  2001-05-21 10:19   junit3.7/doc/cookbook/cookbook.htm
+     5992  2001-05-21 10:19   junit3.7/doc/cookbook/IMG00002.GIF
+     3733  2001-05-21 10:19   junit3.7/doc/changes21.html
+     6368  2001-05-21 10:19   junit3.7/doc/changes34.html
+        0  2001-05-21 10:19   junit3.7/doc/faq/
+     9224  2001-05-21 10:19   junit3.7/doc/faq/faq.htm
+     2776  2001-05-21 10:19   junit3.7/doc/JUnitProperties.html
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/junit/junit/3.7/ | rg 'sources|javadoc|tests|test'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -L -s https://javadoc.io/doc/junit/junit/3.7/ | sed -n '1,50p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+exec
+/usr/bin/bash -lc "curl -I -L -s https://javadoc.io/doc/junit/junit/3.7/index.html | sed -n '1,50p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 22 May 2026 10:49:29 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/junit/junit/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=LlcgsxfkzqJ61eGgIdLs7s0R43KKYQfFdaxhGQwci3aQ1wKB8MkSmDAfT5jUH893MhYCv9cOUxugrgOh1Vp86iyMrdS62N0X5W1xnIcQCqkr8l6FckjGWrbcR3zv8%2Bow0duqrcqwl6lv"}]}
+server: cloudflare
+cf-ray: 9ffb412759653b52-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 299ms:
+HTTP/2 301 
+date: Fri, 22 May 2026 10:49:29 GMT
+content-length: 0
+location: /doc/junit/junit/3.7
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=I5Uqi46qkGMODaeVnT3zzhI05%2FT%2BJyuViQUsS25LkerHgcH4drradaaOk9WiCfEgn0WZWD2NULEEmWzMFxCR325GM5WfY5RmFrfSeZZ5oOZsMPLef2MRdT8HalUrS3ivftgxG8EGwgxZ"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9ffb41275d6a3b64-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Fri, 22 May 2026 10:49:29 GMT
+content-length: 0
+location: /doc/junit/junit/3.7/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Wj2wGQI8o8Z9wxrP0Wz2hFuQo5QBtqGVY%2BDOMxk1Z2T35FXDS0vzA7kSvfozGqXsoTyAvqndMu7b6jeCVgHavp4P5EftHJ4kGe2sayqrIbD6d2ExMCciSkEdWYAOSR2PI6QcXnn%2FwobN"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9ffb41280ded3b64-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 22 May 2026 10:49:29 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/junit/junit/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=xAUc2T%2BN1VzoY2uUJdT%2FjdHu477VA3WB4V0j9Gz2kszM1224mjQlwmMiFPGCaKICbd%2FbvRiEIfILmKiBZ9BjkHwptQ5ejXNv7czWU3TmC6QEzHel7lCIppLCGc0sgCcHCgHOF40EdiGB"}]}
+server: cloudflare
+cf-ray: 9ffb4128ae353b64-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://junit.org | sed -n '1,50p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 22 May 2026 10:49:36 GMT
+content-type: text/html; charset=utf-8
+content-length: 15962
+vary: Accept-Encoding
+server: BunnyCDN-FR1-1219
+cdn-pullzone: 5193839
+cdn-requestcountrycode: CH
+cache-control: public, must-revalidate, max-age=0
+last-modified: Fri, 22 May 2026 09:36:58 GMT
+content-security-policy: frame-ancestors 'self' *.javadoc.io javadoc.io
+permissions-policy: geolocation=(), camera=(), microphone=()
+referrer-policy: strict-origin-when-cross-origin
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-content-type-options: nosniff
+cdn-proxyver: 1.53
+cdn-requestpullsuccess: True
+cdn-requestpullcode: 206
+cdn-cachedat: 05/22/2026 09:37:36
+cdn-edgestorageid: 1317
+cdn-requestid: 74e7f402fc60074ebf08b70df71161b5
+cdn-cache: HIT
+cdn-status: 200
+cdn-requesttime: 0
+accept-ranges: bytes
+
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://sourceforge.net/projects/junit/ | sed -n '1,50p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+exec
+/usr/bin/bash -lc "curl -I -L -s http://junit.cvs.sourceforge.net/junit/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 242ms:
+HTTP/2 200 
+date: Fri, 22 May 2026 10:49:36 GMT
+content-type: text/html; charset=utf-8
+content-length: 125148
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1779310703>; rel=preload; as=script, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779310703>; rel=preload; as=style, <https://a.fsdn.com/con/css/sandiego.css?1779310703>; rel=preload; as=style, <https://a.fsdn.com/con/js/min/sf.sandiego-head.js?1779310703>; rel=preload; as=script, <https://a.fsdn.com/con/css/top.css?1779310703>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779310703>; rel=preload; as=style
+cross-origin-opener-policy: same-origin
+permissions-policy: geolocation=(), microphone=(), camera=(), payment=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: geolocation 'none'; microphone 'none'; camera 'none'; payment 'none'; document-domain 'none'; display-capture 'none'; autoplay 'none'
+x-frame-options: SAMEORIGIN
+content-security-policy: upgrade-insecure-requests; frame-src 'self' a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.googletagmanager.com *.doubleclick.net *.gstatic.com *.recaptcha.net recaptcha.net *.youtube.com www.youtube-nocookie.com *.consentmanager.net player.twitch.tv app.hubspot.com; form-action https://sourceforge.net lists.sourceforge.net aistudio.google.com; script-src-attr 'unsafe-hashes' 'sha256-4d6SN0yYeMqJ0cKMQtg6WeJWMAytzagOyddgGs8IrQg=' 'sha256-tBDVzvq7nAZRA5cnijB1/8uEyvj+5hEDBhcx7F72AGE=' 'report-sample'; script-src 'self' *.licdn.com a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.cloudflareinsights.com *.google-analytics.com *.tiny.cloud *.recaptcha.net recaptcha.net *.gstatic.com *.googletagservices.com *.googlesyndication.com *.doubleclick.net *.googletagmanager.com *.consentmanager.net *.microsofttranslator.com translate.googleapis.com translate.google.cn *.gstatic.cn *.tds.bid esm.sh blob: *.adnxs.com *.bing.com *.slashdotmedia.com ml314.com j.6sc.co *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com fe.sitedataprocessing.com a.usbrowserspeed.com d-code.liadm.com frontend.id-visitors.com *.identitymatrix.ai 'unsafe-inline' 'unsafe-eval'; fenced-frame-src https:; frame-ancestors 'self'; object-src 'none'
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=35435bab-4edd-4c48-a3fb-4f95719ecd5b; Max-Age=315360000; Path=/; expires=Mon, 19-May-2036 10:49:36 GMT; secure; HttpOnly
+set-cookie: __cf_bm=qVP27daFJRKQCYFM2CdoAJOIkuHFOJQswzL9NiV5CRs-1779446976.1848807-1.0.1.1-JwUXMyzyEI2tvtgCf_3FwnC5um2hWbQxFOgEHmYe_uSNHuuKhMW168LatFIgS4nChIuZZrCAWxmQGVzBpzhuSn3oCFzxyVSvx.0YdC.AvEq.XIjF7qVa6RfU_1Z3pwBx; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Fri, 22 May 2026 11:19:36 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9ffb41512a652ff1-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 582ms:
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Fri, 22 May 2026 10:49:36 GMT
+Content-Type: text/html
+Content-Length: 162
+Connection: keep-alive
+Location: https://sourceforge.net/projects/junit/
+
+HTTP/2 103 
+link: <https://a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1779310703>; as=script; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/lato.css?1779310703>; as=style; rel=preload, <https://a.fsdn.com/con/css/sandiego.css?1779310703>; as=style; rel=preload, <https://a.fsdn.com/con/js/min/sf.sandiego-head.js?1779310703>; as=script; rel=preload, <https://a.fsdn.com/con/css/top.css?1779310703>; as=style; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; as=font; crossorigin; rel=preload, <https://a.fsdn.com/con/css/google-sans.css?1779310703>; as=style; rel=preload
+
+HTTP/2 200 
+date: Fri, 22 May 2026 10:49:36 GMT
+content-type: text/html; charset=utf-8
+content-length: 125108
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1779310703>; rel=preload; as=script, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779310703>; rel=preload; as=style, <https://a.fsdn.com/con/css/sandiego.css?1779310703>; rel=preload; as=style, <https://a.fsdn.com/con/js/min/sf.sandiego-head.js?1779310703>; rel=preload; as=script, <https://a.fsdn.com/con/css/top.css?1779310703>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779310703>; rel=preload; as=style
+cross-origin-opener-policy: same-origin
+permissions-policy: geolocation=(), microphone=(), camera=(), payment=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: geolocation 'none'; microphone 'none'; camera 'none'; payment 'none'; document-domain 'none'; display-capture 'none'; autoplay 'none'
+x-frame-options: SAMEORIGIN
+content-security-policy: object-src 'none'; script-src-attr 'unsafe-hashes' 'sha256-4d6SN0yYeMqJ0cKMQtg6WeJWMAytzagOyddgGs8IrQg=' 'sha256-tBDVzvq7nAZRA5cnijB1/8uEyvj+5hEDBhcx7F72AGE=' 'report-sample'; frame-src 'self' a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.googletagmanager.com *.doubleclick.net *.gstatic.com *.recaptcha.net recaptcha.net *.youtube.com www.youtube-nocookie.com *.consentmanager.net player.twitch.tv app.hubspot.com; frame-ancestors 'self'; form-action https://sourceforge.net lists.sourceforge.net aistudio.google.com; fenced-frame-src https:; upgrade-insecure-requests; script-src 'self' *.licdn.com a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.cloudflareinsights.com *.google-analytics.com *.tiny.cloud *.recaptcha.net recaptcha.net *.gstatic.com *.googletagservices.com *.googlesyndication.com *.doubleclick.net *.googletagmanager.com *.consentmanager.net *.microsofttranslator.com translate.googleapis.com translate.google.cn *.gstatic.cn *.tds.bid esm.sh blob: *.adnxs.com *.bing.com *.slashdotmedia.com ml314.com j.6sc.co *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com fe.sitedataprocessing.com a.usbrowserspeed.com d-code.liadm.com frontend.id-visitors.com *.identitymatrix.ai 'unsafe-inline' 'unsafe-eval'
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=81ababbe-eb50-437a-b003-f47cbcaec846; Max-Age=315360000; Path=/; expires=Mon, 19-May-2036 10:49:36 GMT; secure; HttpOnly
+set-cookie: __cf_bm=iI2uJj3y.GthZMkAjkcMt2zRdy.gplR3bngmzxqHIwk-1779446976.5391345-1.0.1.1-cD4LpI94faSXV__fxcsCJwDWSwMB7o5EVai1C3OnfMN3ThKh28ZbaEqs.iM7jB_uotewNeLlAPLLrYXusBtBhl6aI8th8sM0Q4SxzQ_JQyMvMckyefLjE8ZHRZo_oABb; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Fri, 22 May 2026 11:19:36 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9ffb41535926df5e-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: junit cvs sourceforge r3.7 tag junit 3.7
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/junit/junit/3.7/index.html | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>junit 3.7 javadoc (junit)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/junit">junit</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						junit
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/junit/junit" class="dropdown-item">
+							junit
+						</a>
+						
+						<a href="/doc/junit/junit-dep" class="dropdown-item">
+							junit-dep
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						3.7
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/junit/junit/latest/index.html" class="dropdown-item">
+							4.13.2
+						</a>
+
+						
+						<a href="/doc/junit/junit/4.13.1/index.html" class="dropdown-item">
+							4.13.1
+						</a>
+						
+						<a href="/doc/junit/junit/4.13/index.html" class="dropdown-item">
+							4.13
+						</a>
+						
+						<a href="/doc/junit/junit/4.13-rc-2/index.html" class="dropdown-item">
+							4.13-rc-2
+						</a>
+						
+						<a href="/doc/junit/junit/4.13-rc-1/index.html" class="dropdown-item">
+							4.13-rc-1
+						</a>
+						
+						<a href="/doc/junit/junit/4.13-beta-3/index.html" class="dropdown-item">
+							4.13-beta-3
+						</a>
+						
+						<a href="/doc/junit/junit/4.13-beta-2/index.html" class="dropdown-item">
+							4.13-beta-2
+						</a>
+						
+						<a href="/doc/junit/junit/4.13-beta-1/index.html" class="dropdown-item">
+							4.13-beta-1
+						</a>
+						
+						<a href="/doc/junit/junit/4.12/index.html" class="dropdown-item">
+							4.12
+						</a>
+						
+						<a href="/doc/junit/junit/4.12-beta-3/index.html" class="dropdown-item">
+							4.12-beta-3
+						</a>
+						
+						<a href="/doc/junit/junit/4.12-beta-2/index.html" class="dropdown-item">
+							4.12-beta-2
+						</a>
+						
+						<a href="/doc/junit/junit/4.12-beta-1/index.html" class="dropdown-item">
+							4.12-beta-1
+						</a>
+						
+						<a href="/doc/junit/junit/4.11/index.html" class="dropdown-item">
+							4.11
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://www.javadoc.io/doc/junit/junit/3.7/index.html | sed -n '1,30p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/junit/junit/3.7/junit-3.7-javadoc.jar | sed -n '1,30p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 102ms:
+HTTP/2 200 
+date: Fri, 22 May 2026 10:49:55 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/junit/junit/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=YrpkYQ955Ji6hgDeUlb%2B%2BxGI5tWjG%2BleOa8f%2FBYt6EalHansrm93iwCtEjKwrh2Te9dYFYTgXVykl1VXA8jeopvfAiT2tEGHkcizSaM%2BYD2KD3wUw%2BOlIA4zAROs8Qz9Yu7AcITc9VraRzqiBQ%3D%3D"}]}
+server: cloudflare
+cf-ray: 9ffb41c86c5d6aa0-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 225ms:
+HTTP/2 404 
+date: Fri, 22 May 2026 10:49:55 GMT
+content-type: text/html
+cf-ray: 9ffb41c8bc5c2ff1-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/junit/junit/3.7/junit-3.7-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I found a versioned SourceForge release archive for 3.7 that includes `src.jar`, `junit/tests`, and bundled docs, while Maven Central lacks sources, tests, or javadoc artifacts for this old release. I’m going to use the SourceForge release archive for source and tests, and the versioned javadoc.io page for documentation.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/junit-3.7.jar" https://repo1.maven.org/maven2/junit/junit/3.7/junit-3.7.jar; unzip -l "$tmp/junit-3.7.jar" | rg '"'\\.class"'$'"' | head" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+      685  2001-05-21 10:11   junit/awtui/AboutDialog$1.class
+      658  2001-05-21 10:11   junit/awtui/AboutDialog$2.class
+     2697  2001-05-21 09:55   junit/awtui/Logo.class
+     2605  2001-05-21 09:55   junit/awtui/ProgressBar.class
+    14789  2001-05-21 09:55   junit/awtui/TestRunner.class
+      692  2001-05-21 09:55   junit/awtui/TestRunner$1.class
+      581  2001-05-21 09:55   junit/awtui/TestRunner$2.class
+      727  2001-05-21 09:55   junit/awtui/TestRunner$3.class
+      688  2001-05-21 09:55   junit/awtui/TestRunner$4.class
+     1056  2001-05-21 09:55   junit/awtui/TestRunner$5.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/junit/junit/3.7/index.html | rg -n 'junit 3\\.7 javadoc|junit/framework/TestCase|3\\.7' | head -20" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 146ms:
+13:		<title>junit 3.7 javadoc (junit)</title>
+67:						3.7
+195:						<a href="/doc/junit/junit/3.7/index.html" class="dropdown-item">
+196:							3.7
+246:					<div>Current version <span class="text-monospace">3.7</span></div>
+248:						https://javadoc.io/doc/junit/junit/3.7
+249:						<a href="/doc/junit/junit/3.7" target="_blank" class="float-right">
+255:						https://javadoc.io/doc/junit/junit/3.7/package-list
+256:						<a href="/doc/junit/junit/3.7/package-list" target="_blank" class="float-right">
+269:		<v id="variables" isLatest="false" versionId="3.7"></v>
+273:  No JavaDoc is released for artifact <span class="font-italic">junit:junit:3.7</span>.
+281:      <a href='/retry/junit/junit/3.7'>Retry</a> this version.
+284:    <li>Is the <span class='font-italic'>junit-3.7-javadoc.jar</span> actually distributed to either maven or bintray?</li>
+285:    <li>Does the <span class='font-italic'>junit-3.7-javadoc.jar</span> file contains an <span class='font-italic'>index.html</span> in the extracted root folder? (you can rename .jar to .zip to extract the file)</li>
+
+web search: 
+web search: "junit3.7" "javadoc" "index.html"
+exec
+/usr/bin/bash -lc "for u in \\
+  https://junit.sourceforge.net/doc/cookbook/cookbook.htm \\
+  https://junit.sourceforge.net/doc/testinfected/testing.htm \\
+  https://junit.sourceforge.net/junit3.7/doc/cookbook/cookbook.htm \\
+  https://junit.sourceforge.net/junit3.7/javadoc/index.html \\
+  https://junit.org/junit3/javadoc/3.7/index.html \\
+  https://junit.org/junit3/javadoc/3.7/; do printf '%s\\n' \""'$u"; curl -I -L -s "$u" | sed -n '"'1,3p'; done" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 1876ms:
+HTTP/2 404 
+date: Fri, 22 May 2026 10:50:15 GMT
+content-type: text/html
+https://junit.sourceforge.net/doc/testinfected/testing.htm
+HTTP/2 404 
+date: Fri, 22 May 2026 10:50:15 GMT
+content-type: text/html
+https://junit.sourceforge.net/junit3.7/doc/cookbook/cookbook.htm
+HTTP/2 404 
+date: Fri, 22 May 2026 10:50:15 GMT
+content-type: text/html
+https://junit.sourceforge.net/junit3.7/javadoc/index.html
+HTTP/2 404 
+date: Fri, 22 May 2026 10:50:16 GMT
+content-type: text/html
+https://junit.org/junit3/javadoc/3.7/index.html
+HTTP/2 404 
+date: Fri, 22 May 2026 10:50:16 GMT
+content-type: text/plain; charset=utf-8
+https://junit.org/junit3/javadoc/3.7/
+HTTP/2 404 
+date: Fri, 22 May 2026 10:50:16 GMT
+content-type: text/plain; charset=utf-8
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://junit.org | rg -n 'JUnit 3|3\\.7|junit3|javadoc|archives|archive' | head -50" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+358:          <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Mastodon</title><path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/></svg>
+
+codex
+The artifact jar contains JVM `.class` files, so it remains a Native Image metadata target and does not need `not-for-native-image`. I’m updating only the allowed JSON keys now.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410/build/discovered-artifact-metadata/junit-junit-3.7.json
+diff --git a/build/discovered-artifact-metadata/junit-junit-3.7.json b/build/discovered-artifact-metadata/junit-junit-3.7.json
+index 1e07f41187ee86f672b5a8f69ef1d425fcde8557..0ecffb3344d924fd0681f4f05be9052b81494d20
+--- a/build/discovered-artifact-metadata/junit-junit-3.7.json
++++ b/build/discovered-artifact-metadata/junit-junit-3.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "junit:junit:3.7"
++  "coordinates" : "junit:junit:3.7",
++  "repository-url" : "https://sourceforge.net/projects/junit/",
++  "source-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "test-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "documentation-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "description" : "JUnit 3 provides a Java unit testing framework with assertions, test cases, test suites, test runners, and extension points. It lets developers write and run repeatable regression tests for Java code and is the predecessor to the annotation-based JUnit 4 API."
+ }
+
+diff --git a/build/discovered-artifact-metadata/junit-junit-3.7.json b/build/discovered-artifact-metadata/junit-junit-3.7.json
+index 1e07f41187ee86f672b5a8f69ef1d425fcde8557..0ecffb3344d924fd0681f4f05be9052b81494d20
+--- a/build/discovered-artifact-metadata/junit-junit-3.7.json
++++ b/build/discovered-artifact-metadata/junit-junit-3.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "junit:junit:3.7"
++  "coordinates" : "junit:junit:3.7",
++  "repository-url" : "https://sourceforge.net/projects/junit/",
++  "source-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "test-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "documentation-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "description" : "JUnit 3 provides a Java unit testing framework with assertions, test cases, test suites, test runners, and extension points. It lets developers write and run repeatable regression tests for Java code and is the predecessor to the annotation-based JUnit 4 API."
+ }
+
+exec
+/usr/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/junit-junit-3.7.json >/dev/null && sed -n '1,120p' build/discovered-artifact-metadata/junit-junit-3.7.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+{
+  "coordinates" : "junit:junit:3.7",
+  "repository-url" : "https://sourceforge.net/projects/junit/",
+  "source-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
+  "test-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
+  "documentation-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
+  "description" : "JUnit 3 provides a Java unit testing framework with assertions, test cases, test suites, test runners, and extension points. It lets developers write and run repeatable regression tests for Java code and is the predecessor to the annotation-based JUnit 4 API."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/junit-junit-3.7.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/junit-junit-3.7.json b/build/discovered-artifact-metadata/junit-junit-3.7.json
+index 1e07f41187ee86f672b5a8f69ef1d425fcde8557..0ecffb3344d924fd0681f4f05be9052b81494d20
+--- a/build/discovered-artifact-metadata/junit-junit-3.7.json
++++ b/build/discovered-artifact-metadata/junit-junit-3.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "junit:junit:3.7"
++  "coordinates" : "junit:junit:3.7",
++  "repository-url" : "https://sourceforge.net/projects/junit/",
++  "source-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "test-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "documentation-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "description" : "JUnit 3 provides a Java unit testing framework with assertions, test cases, test suites, test runners, and extension points. It lets developers write and run repeatable regression tests for Java code and is the predecessor to the annotation-based JUnit 4 API."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/junit-junit-3.7.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/junit-junit-3.7.json b/build/discovered-artifact-metadata/junit-junit-3.7.json
+index 1e07f41187ee86f672b5a8f69ef1d425fcde8557..0ecffb3344d924fd0681f4f05be9052b81494d20
+--- a/build/discovered-artifact-metadata/junit-junit-3.7.json
++++ b/build/discovered-artifact-metadata/junit-junit-3.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "junit:junit:3.7"
++  "coordinates" : "junit:junit:3.7",
++  "repository-url" : "https://sourceforge.net/projects/junit/",
++  "source-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "test-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "documentation-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "description" : "JUnit 3 provides a Java unit testing framework with assertions, test cases, test suites, test runners, and extension points. It lets developers write and run repeatable regression tests for Java code and is the predecessor to the annotation-based JUnit 4 API."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/junit/junit/3.7/
+web search: 
+web search: https://sourceforge.net/projects/junit/files/junit/3.7/
+codex
+Updated [junit-junit-3.7.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410/build/discovered-artifact-metadata/junit-junit-3.7.json).
+
+Maven Central only exposes the 3.7 jar and POM, so I used the SourceForge 3.7 release archive for source, tests, and bundled docs. The artifact contains JVM class files, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/junit/junit/3.7/))
+
+Validation: `python -m json.tool` passed.
+diff --git a/build/discovered-artifact-metadata/junit-junit-3.7.json b/build/discovered-artifact-metadata/junit-junit-3.7.json
+index 1e07f41187ee86f672b5a8f69ef1d425fcde8557..0ecffb3344d924fd0681f4f05be9052b81494d20
+--- a/build/discovered-artifact-metadata/junit-junit-3.7.json
++++ b/build/discovered-artifact-metadata/junit-junit-3.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "junit:junit:3.7"
++  "coordinates" : "junit:junit:3.7",
++  "repository-url" : "https://sourceforge.net/projects/junit/",
++  "source-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "test-code-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "documentation-url" : "https://downloads.sourceforge.net/project/junit/junit/$version$/junit$version$.zip",
++  "description" : "JUnit 3 provides a Java unit testing framework with assertions, test cases, test suites, test runners, and extension points. It lets developers write and run repeatable regression tests for Java code and is the predecessor to the annotation-based JUnit 4 API."
+ }
+
+tokens used
+101,495
+Updated [junit-junit-3.7.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410/build/discovered-artifact-metadata/junit-junit-3.7.json).
+
+Maven Central only exposes the 3.7 jar and POM, so I used the SourceForge 3.7 release archive for source, tests, and bundled docs. The artifact contains JVM class files, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/junit/junit/3.7/))
+
+Validation: `python -m json.tool` passed.
+Ran agent for junit:junit:3.7 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410/build/agent-artifact-discovery-logs/junit-junit-3.7.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/995-e57c7410/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 46s
+9 actionable tasks: 9 executed
