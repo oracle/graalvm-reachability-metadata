@@ -14,11 +14,27 @@ import org.junit.jupiter.api.Test;
 public class HK2LoaderImplTest {
     @Test
     void loadClassUsesConfiguredClassLoader() {
-        final ClassLoader classLoader = HK2LoaderImplTest.class.getClassLoader();
+        final RecordingClassLoader classLoader = new RecordingClassLoader(String.class);
         final HK2LoaderImpl loader = new HK2LoaderImpl(classLoader);
 
         final Class<?> loadedClass = loader.loadClass(HK2LoaderImpl.class.getName());
 
-        assertThat(loadedClass).isSameAs(HK2LoaderImpl.class);
+        assertThat(loadedClass).isSameAs(String.class);
+        assertThat(classLoader.requestedClassName).isEqualTo(HK2LoaderImpl.class.getName());
+    }
+
+    private static final class RecordingClassLoader extends ClassLoader {
+        private final Class<?> classToReturn;
+        private String requestedClassName;
+
+        private RecordingClassLoader(Class<?> classToReturn) {
+            this.classToReturn = classToReturn;
+        }
+
+        @Override
+        public Class<?> loadClass(String name) {
+            requestedClassName = name;
+            return classToReturn;
+        }
     }
 }
