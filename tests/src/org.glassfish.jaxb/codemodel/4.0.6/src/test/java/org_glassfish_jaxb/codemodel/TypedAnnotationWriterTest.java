@@ -42,7 +42,7 @@ public class TypedAnnotationWriterTest {
         writer.nestedItems().text("itemText");
 
         Map<String, ?> members = annotationUse.getAnnotationMembers();
-        assertThat(members).containsOnlyKeys("name", "number", "target", "kind", "tags", "nested", "nestedItems");
+        assertThat(members.keySet()).containsExactlyInAnyOrder("name", "number", "target", "kind", "tags", "nested", "nestedItems");
 
         ByteArrayOutputStream generatedSource = new ByteArrayOutputStream();
         codeModel.build(new SingleStreamCodeWriter(generatedSource));
