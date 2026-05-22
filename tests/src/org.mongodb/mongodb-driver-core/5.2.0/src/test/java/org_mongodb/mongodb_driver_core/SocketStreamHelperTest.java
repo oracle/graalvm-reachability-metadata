@@ -8,9 +8,12 @@ package org_mongodb.mongodb_driver_core;
 
 import com.mongodb.ServerAddress;
 import com.mongodb.connection.SocketSettings;
-import com.mongodb.connection.SocketStreamFactory;
 import com.mongodb.connection.SslSettings;
-import com.mongodb.connection.Stream;
+import com.mongodb.internal.TimeoutSettings;
+import com.mongodb.internal.connection.OperationContext;
+import com.mongodb.internal.connection.PowerOfTwoBufferPool;
+import com.mongodb.internal.connection.SocketStream;
+import com.mongodb.internal.connection.Stream;
 import org.junit.jupiter.api.Test;
 
 import javax.net.SocketFactory;
@@ -23,6 +26,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketOption;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -42,10 +46,13 @@ public class SocketStreamHelperTest {
                 .sendBufferSize(2048)
                 .build();
         final SslSettings sslSettings = SslSettings.builder().build();
-        final SocketStreamFactory streamFactory = new SocketStreamFactory(socketSettings, sslSettings, socketFactory);
-        final Stream stream = streamFactory.create(new ServerAddress("127.0.0.1", 27017));
+        final Stream stream = new SocketStream(new ServerAddress("127.0.0.1", 27017),
+                host -> Collections.singletonList(InetAddress.getByName(host)), socketSettings, sslSettings, socketFactory,
+                PowerOfTwoBufferPool.DEFAULT);
+        final OperationContext operationContext = OperationContext.simpleOperationContext(
+                new TimeoutSettings(5_000, 250, 750, null, 5_000), null);
 
-        stream.open();
+        stream.open(operationContext);
         try {
             assertThat(stream.isClosed()).isFalse();
             assertThat(socket.connected).isTrue();
