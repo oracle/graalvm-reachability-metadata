@@ -11,6 +11,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.h2.jdbcx.JdbcDataSource
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.columnTransformer
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
@@ -18,6 +19,7 @@ import org.jetbrains.exposed.v1.core.dao.id.UuidTable
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.dao.EntityChange
 import org.jetbrains.exposed.v1.dao.EntityChangeType
+import org.jetbrains.exposed.v1.dao.EntityFieldWithTransform
 import org.jetbrains.exposed.v1.dao.IntEntity
 import org.jetbrains.exposed.v1.dao.IntEntityClass
 import org.jetbrains.exposed.v1.dao.LongEntity
@@ -29,6 +31,7 @@ import org.jetbrains.exposed.v1.dao.withHook
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.SizedCollection
+import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.Test
 import java.util.UUID as JavaUUID
@@ -213,6 +216,36 @@ public class ExposedDaoTest {
             }
         }
     }
+
+    @Test
+    public fun entityFieldWithTransformPersistsAndReadsWrappedValues(): Unit {
+        withDatabase(DaoDocuments) { database: Database ->
+            val documentId: Int = transaction(database) {
+                DaoDocument.new {
+                    title = "Release notes"
+                    status = DaoDocumentStatus.DRAFT
+                }.id.value
+            }
+
+            transaction(database) {
+                val document: DaoDocument = DaoDocument[documentId]
+                assertThat(document.status).isEqualTo(DaoDocumentStatus.DRAFT)
+
+                document.status = DaoDocumentStatus.PUBLISHED
+                document.flush()
+
+                assertThat(document.status).isEqualTo(DaoDocumentStatus.PUBLISHED)
+                val storedStatus: String = DaoDocuments.selectAll()
+                    .where { DaoDocuments.id eq document.id }
+                    .single()[DaoDocuments.statusCode]
+                assertThat(storedStatus).isEqualTo(DaoDocumentStatus.PUBLISHED.code)
+            }
+
+            transaction(database) {
+                assertThat(DaoDocument.findById(documentId)!!.status).isEqualTo(DaoDocumentStatus.PUBLISHED)
+            }
+        }
+    }
 }
 
 private fun <T> withDatabase(vararg tables: Table, block: (Database) -> T): T {
@@ -328,4 +361,29 @@ public class DaoApiKey(id: EntityID<Uuid>) : UuidEntity(id) {
     companion object : UuidEntityClass<DaoApiKey>(DaoApiKeys)
 
     var label: String by DaoApiKeys.label
+}
+
+public enum class DaoDocumentStatus(public val code: String) {
+    DRAFT("draft"),
+    PUBLISHED("published"),
+}
+
+private object DaoDocuments : IntIdTable("dao_documents") {
+    val title = varchar("title", 120)
+    val statusCode = varchar("status_code", 32)
+}
+
+public class DaoDocument(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<DaoDocument>(DaoDocuments)
+
+    var title: String by DaoDocuments.title
+    var status: DaoDocumentStatus by EntityFieldWithTransform(
+        DaoDocuments.statusCode,
+        columnTransformer(
+            unwrap = { status: DaoDocumentStatus -> status.code },
+            wrap = { code: String ->
+                DaoDocumentStatus.entries.single { status: DaoDocumentStatus -> status.code == code }
+            }
+        )
+    )
 }
