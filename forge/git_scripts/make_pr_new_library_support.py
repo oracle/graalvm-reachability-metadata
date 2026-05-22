@@ -43,6 +43,10 @@ from utility_scripts.local_ci_verification import (
     run_local_ci_verification,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
+from utility_scripts.test_quality_checks import (
+    collect_generated_test_validity_issues,
+    format_generated_test_validity_issue,
+)
 
 REPO = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = 'master'
@@ -606,10 +610,18 @@ def update_large_library_state_after_publish(
     state.save(state_path)
 
 
-def validate_run_quality(coordinates: str, metrics_repo_path: str) -> None:
+def validate_run_quality(coordinates: str, metrics_repo_path: str, repo_path: str) -> None:
     """Raise ValueError if the run metrics are not good enough for a PR."""
     matched = read_pending_metrics(metrics_repo_path)
     quality_issues = collect_new_library_support_quality_issues(matched)
+    group, artifact, version = coordinates.split(":")
+    test_source_root = os.path.join(repo_path, "tests", "src", group, artifact, version, "src", "test")
+    generated_test_validity_issues = collect_generated_test_validity_issues(test_source_root)
+    quality_issues.extend(
+        "suspicious generated test target requires human review: "
+        f"{format_generated_test_validity_issue(issue, repo_path)}"
+        for issue in generated_test_validity_issues
+    )
     if quality_issues:
         details = "; ".join(quality_issues)
         raise ValueError(f"Refusing to create PR for {coordinates}: {details}")
@@ -628,7 +640,7 @@ def main(argv=None):
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     ensure_gh_authenticated()
-    validate_run_quality(coordinates, metrics_repo_path)
+    validate_run_quality(coordinates, metrics_repo_path, repo_path)
 
     branch = push_current_branch_to_origin(
         coordinates=coordinates,

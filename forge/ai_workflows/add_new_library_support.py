@@ -47,7 +47,12 @@ from utility_scripts.source_context import (
     resolve_test_source_layout,
 )
 from utility_scripts.stage_logger import log_stage
-from utility_scripts.test_quality_checks import cleanup_scaffold_placeholder_tests, format_placeholder_occurrence
+from utility_scripts.test_quality_checks import (
+    cleanup_scaffold_placeholder_tests,
+    collect_generated_test_validity_issues,
+    format_generated_test_validity_issue,
+    format_placeholder_occurrence,
+)
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
@@ -544,7 +549,7 @@ def main(argv=None):
         checkpoint_commit_hash=checkpoint_commit_hash,
     )
 
-    scaffold_placeholder_quality_gate_failed = False
+    generated_test_validity_gate_failed = False
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         placeholder_cleanup = cleanup_scaffold_placeholder_tests(
             test_source_layout.source_root,
@@ -563,6 +568,16 @@ def main(argv=None):
                     f"WARNING: Scaffold placeholder test remains in generated sources: "
                     f"{format_placeholder_occurrence(occurrence, reachability_repo_path)}",
                 )
+        generated_test_validity_issues = collect_generated_test_validity_issues(test_source_layout.source_root)
+        for issue in generated_test_validity_issues:
+            generated_test_validity_gate_failed = True
+            log_stage(
+                "generated-test-quality",
+                "WARNING: Suspicious generated test target requires human review: "
+                f"{format_generated_test_validity_issue(issue, reachability_repo_path)}",
+            )
+    if generated_test_validity_gate_failed:
+        workflow_status = RUN_STATUS_FAILURE
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         if is_benchmark_mode:
