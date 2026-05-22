@@ -13,6 +13,7 @@ from git_scripts.make_pr_new_library_support import (
     DynamicAccessMetadataEvidence,
     build_pull_request_body,
     load_dynamic_access_metadata_evidence,
+    validate_no_scaffold_placeholders,
     validate_run_quality,
 )
 
@@ -233,6 +234,7 @@ class MakePrNewLibrarySupportTests(unittest.TestCase):
                     },
                     file,
                 )
+
             test_file = os.path.join(
                 repo_path,
                 "tests",
@@ -266,6 +268,39 @@ class ReflectorTest {
 
             with self.assertRaisesRegex(ValueError, "suspicious generated test target"):
                 validate_run_quality("plexus:plexus-utils:1.0.2", metrics_repo_path, repo_path)
+
+    def test_validate_no_scaffold_placeholders_rejects_placeholder_text(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            test_file = os.path.join(
+                repo_path,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+                "src",
+                "test",
+                "java",
+                "org_example",
+                "demo",
+                "DemoTest.java",
+            )
+            os.makedirs(os.path.dirname(test_file), exist_ok=True)
+            with open(test_file, "w", encoding="utf-8") as file:
+                file.write(
+                    """
+package org_example.demo;
+
+class DemoTest {
+    void test() {
+        System.out.println("This is just a placeholder, implement your test");
+    }
+}
+""",
+                )
+
+            with self.assertRaisesRegex(ValueError, "scaffold placeholder remains"):
+                validate_no_scaffold_placeholders("org.example:demo:1.0.0", repo_path)
 
 
 if __name__ == "__main__":

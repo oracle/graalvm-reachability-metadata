@@ -45,7 +45,9 @@ from utility_scripts.local_ci_verification import (
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.test_quality_checks import (
     collect_generated_test_validity_issues,
+    find_scaffold_placeholder_occurrences,
     format_generated_test_validity_issue,
+    format_placeholder_occurrence,
 )
 
 REPO = "oracle/graalvm-reachability-metadata"
@@ -627,6 +629,19 @@ def validate_run_quality(coordinates: str, metrics_repo_path: str, repo_path: st
         raise ValueError(f"Refusing to create PR for {coordinates}: {details}")
 
 
+def validate_no_scaffold_placeholders(coordinates: str, repo_path: str) -> None:
+    """Raise ValueError if generated tests still contain scaffold placeholder text."""
+    group, artifact, library_version = parse_coordinate_parts(coordinates)
+    module_dir = os.path.join(repo_path, "tests", "src", group, artifact, library_version)
+    occurrences = find_scaffold_placeholder_occurrences(module_dir)
+    if occurrences:
+        details = ", ".join(
+            format_placeholder_occurrence(occurrence, repo_path)
+            for occurrence in occurrences
+        )
+        raise ValueError(f"Refusing to create PR for {coordinates}: scaffold placeholder remains in {details}")
+
+
 def main(argv=None):
     (
         coordinates,
@@ -641,6 +656,7 @@ def main(argv=None):
 
     ensure_gh_authenticated()
     validate_run_quality(coordinates, metrics_repo_path, repo_path)
+    validate_no_scaffold_placeholders(coordinates, repo_path)
 
     branch = push_current_branch_to_origin(
         coordinates=coordinates,
