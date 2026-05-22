@@ -353,6 +353,44 @@ public class Jandex_gizmo2Test {
     }
 
     @Test
+    void methodTypeParametersCanBeCopiedToGeneratedMethods() throws IOException {
+        ClassInfo sourceClass = Index.singleClass(GenericSample.class);
+        MethodInfo sourceMethod = sourceClass.firstMethod("join");
+        assertNotNull(sourceMethod);
+
+        Map<String, byte[]> generated = new HashMap<>();
+        Gizmo gizmo = Gizmo.create(generated::put).withDebugInfo(false).withParameters(false);
+        gizmo.class_("io_smallrye.jandex_gizmo2.GeneratedMethodTypeParameters", creator -> {
+            creator.staticMethod("copiedJoin", method -> {
+                method.public_();
+                Jandex2Gizmo.copyTypeParameters(sourceMethod, method);
+                method.returning(Jandex2Gizmo.genericTypeOf(sourceMethod.returnType()));
+                method.parameter("first", Jandex2Gizmo.genericTypeOf(sourceMethod.parameterType(0)));
+                method.parameter("second", Jandex2Gizmo.genericTypeOf(sourceMethod.parameterType(1)));
+                method.parameter("third", Jandex2Gizmo.genericTypeOf(sourceMethod.parameterType(2)));
+                method.parameter("value", Jandex2Gizmo.genericTypeOf(sourceMethod.parameterType(3)));
+                method.body(block -> block.return_("copied"));
+            });
+        });
+
+        byte[] classBytes = generated.get("io_smallrye/jandex_gizmo2/GeneratedMethodTypeParameters.class");
+        assertThat(classBytes).isNotNull().hasSizeGreaterThan(64);
+
+        ClassInfo generatedClass = Index.singleClass(classBytes);
+        MethodInfo copiedJoin = generatedClass.firstMethod("copiedJoin");
+        assertNotNull(copiedJoin);
+        assertThat(copiedJoin.typeParameters()).hasSize(1);
+        TypeVariable copiedTypeParameter = copiedJoin.typeParameters().get(0);
+        assertEquals("X", copiedTypeParameter.identifier());
+        assertThat(copiedTypeParameter.bounds()).hasSize(1);
+        assertEquals(DotName.createSimple(CharSequence.class), copiedTypeParameter.bounds().get(0).name());
+        assertEquals("java.util.List<? super java.lang.String>", copiedJoin.parameterType(0).toString());
+        assertEquals("java.util.List<? extends java.lang.Number>", copiedJoin.parameterType(1).toString());
+        assertEquals("java.util.List<?>", copiedJoin.parameterType(2).toString());
+        assertEquals("X", copiedJoin.parameterType(3).asTypeVariable().identifier());
+    }
+
+    @Test
     void jandexMetadataCanDriveGizmoGeneration() throws IOException {
         Index index = Index.of(RichAnnotation.class, NestedAnnotation.class, AnnotatedSample.class, SampleEnum.class,
                 GenericSample.class);
