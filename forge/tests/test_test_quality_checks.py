@@ -223,7 +223,7 @@ class MixedTest {{
             self.assertTrue(os.path.exists(placeholder_file))
             self.assertEqual(len(result.remaining_placeholders), 1)
 
-    def test_reports_placeholder_when_only_test_is_not_scaffold_method(self) -> None:
+    def test_removes_placeholder_when_only_test_method_is_renamed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             self._init_git_repo(tmp_dir)
             placeholder_file = os.path.join(tmp_dir, "ExampleTest.java")
@@ -261,9 +261,9 @@ class ExampleTest {
 
             result = cleanup_scaffold_placeholder_tests(tmp_dir, tmp_dir, scaffold_commit)
 
-            self.assertEqual(result.removed_files, [])
-            self.assertTrue(os.path.exists(placeholder_file))
-            self.assertEqual(len(result.remaining_placeholders), 1)
+            self.assertEqual(result.removed_files, [placeholder_file])
+            self.assertFalse(os.path.exists(placeholder_file))
+            self.assertEqual(result.remaining_placeholders, [])
 
     def test_reports_version_specific_broken_behavior_exception_target(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:

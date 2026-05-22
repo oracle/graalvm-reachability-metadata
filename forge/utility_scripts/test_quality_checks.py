@@ -11,28 +11,6 @@ import subprocess
 
 SCAFFOLD_PLACEHOLDER_TEXT = "This is just a placeholder, implement your test"
 TEST_SOURCE_EXTENSIONS = (".java", ".kt", ".scala", ".groovy")
-SCAFFOLD_PLACEHOLDER_TEST_PATTERNS = (
-    re.compile(
-        r"@Test\s+(?:public\s+)?void\s+test\s*\(\s*\)\s*(?:throws\s+Exception\s*)?\{\s*"
-        + re.escape(f'System.out.println("{SCAFFOLD_PLACEHOLDER_TEXT}");')
-        + r"\s*\}"
-    ),
-    re.compile(
-        r"@Test\s+fun\s+test\s*\(\s*\)\s*\{\s*"
-        + re.escape(f'println("{SCAFFOLD_PLACEHOLDER_TEXT}")')
-        + r"\s*\}"
-    ),
-    re.compile(
-        r"@Test\s+def\s+test\s*\(\s*\)\s*:\s*Unit\s*=\s*\{\s*"
-        + re.escape(f'println("{SCAFFOLD_PLACEHOLDER_TEXT}")')
-        + r"\s*\}"
-    ),
-    re.compile(
-        r"@Test\s+(?:public\s+)?void\s+test\s*\(\s*\)\s*\{\s*"
-        + re.escape(f'println "{SCAFFOLD_PLACEHOLDER_TEXT}"')
-        + r"\s*\}"
-    ),
-)
 TEST_ANNOTATION_PATTERN = re.compile(r"(?m)^\s*@Test\b")
 TEST_BLOCK_ANNOTATION_PATTERN = re.compile(
     r"(?m)^\s*@(?:Test|ParameterizedTest|RepeatedTest|TestFactory|TestTemplate)\b"
@@ -106,7 +84,7 @@ def cleanup_scaffold_placeholder_tests(
     ]
     scaffold_files = [
         file_path for file_path in placeholder_files
-        if _contains_only_scaffold_junit_placeholder_test(file_path)
+        if _contains_only_scaffold_placeholder_test(file_path)
     ]
 
     removed_files: list[str] = []
@@ -219,14 +197,14 @@ def _placeholder_occurrences(file_path: str) -> list[PlaceholderOccurrence]:
     return occurrences
 
 
-def _contains_only_scaffold_junit_placeholder_test(file_path: str) -> bool:
+def _contains_only_scaffold_placeholder_test(file_path: str) -> bool:
     try:
         with open(file_path, "r", encoding="utf-8") as source_file:
             source = source_file.read()
     except OSError:
         return False
     return (
-        any(pattern.search(source) for pattern in SCAFFOLD_PLACEHOLDER_TEST_PATTERNS)
+        SCAFFOLD_PLACEHOLDER_TEXT in source
         and len(TEST_ANNOTATION_PATTERN.findall(source)) == 1
     )
 
