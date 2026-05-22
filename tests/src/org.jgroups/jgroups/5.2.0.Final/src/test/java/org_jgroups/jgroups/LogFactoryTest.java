@@ -23,6 +23,7 @@ import org.jgroups.logging.LogFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class LogFactoryTest {
     private static final String SCENARIO_CLASS_NAME = LogFactoryTest.class.getName() + "$LogFactoryScenario";
@@ -41,6 +42,8 @@ public class LogFactoryTest {
 
     @Test
     void createsConfiguredLoggerClassThroughPublicFactory() throws Exception {
+        assumeFalse(isNativeImageRuntime(), "LogFactory log_class initialization scenario is JVM-only");
+
         String[] result = invokeScenario("configuredLoggerType");
         if (result == null) {
             return;
@@ -80,6 +83,10 @@ public class LogFactoryTest {
             urls.add(Path.of(entry).toUri().toURL());
         }
         return urls.toArray(URL[]::new);
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     public static class LogFactoryScenario {

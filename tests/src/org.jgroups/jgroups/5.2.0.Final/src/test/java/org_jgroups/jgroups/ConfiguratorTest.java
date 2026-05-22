@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jgroups.annotations.Property;
+import org.jgroups.logging.LogFactory;
 import org.jgroups.protocols.HDRS;
 import org.jgroups.protocols.SHARED_LOOPBACK;
 import org.jgroups.protocols.pbcast.GMS;
@@ -36,36 +37,48 @@ public class ConfiguratorTest {
 
     @Test
     void initializesAnnotatedFieldsAndMethodsThroughPropertyDependencies() throws Exception {
-        GMS protocol = new GMS();
-        Map<String, String> properties = new HashMap<>();
-        properties.put("join_timeout", "3210");
-        properties.put("level", "warn");
+        boolean previousUseJdkLogger = LogFactory.useJdkLogger();
+        LogFactory.useJdkLogger(true);
+        try {
+            GMS protocol = new GMS();
+            Map<String, String> properties = new HashMap<>();
+            properties.put("join_timeout", "3210");
+            properties.put("level", "warn");
 
-        Configurator.initializeAttrs(protocol, properties, StackType.IPv4);
+            Configurator.initializeAttrs(protocol, properties, StackType.IPv4);
 
-        assertThat(protocol.getJoinTimeout()).isEqualTo(3210);
-        assertThat(protocol.getLevel()).isEqualTo("WARNING");
-        assertThat(properties).isEmpty();
+            assertThat(protocol.getJoinTimeout()).isEqualTo(3210);
+            assertThat(protocol.getLevel()).isEqualTo("WARNING");
+            assertThat(properties).isEmpty();
+        } finally {
+            LogFactory.useJdkLogger(previousUseJdkLogger);
+        }
     }
 
     @Test
     void resolvesAnnotatedMethodsAndFieldsThroughPublicConfiguratorApi() throws Exception {
-        GMS protocol = new GMS();
-        Map<String, String> methodProperties = new HashMap<>();
-        methodProperties.put("level", "error");
+        boolean previousUseJdkLogger = LogFactory.useJdkLogger();
+        LogFactory.useJdkLogger(true);
+        try {
+            GMS protocol = new GMS();
+            Map<String, String> methodProperties = new HashMap<>();
+            methodProperties.put("level", "error");
 
-        Configurator.resolveAndInvokePropertyMethods(protocol, methodProperties, StackType.IPv4);
+            Configurator.resolveAndInvokePropertyMethods(protocol, methodProperties, StackType.IPv4);
 
-        assertThat(protocol.getLevel()).isEqualTo("SEVERE");
-        assertThat(methodProperties).isEmpty();
+            assertThat(protocol.getLevel()).isEqualTo("SEVERE");
+            assertThat(methodProperties).isEmpty();
 
-        Map<String, String> fieldProperties = new HashMap<>();
-        fieldProperties.put("max_join_attempts", "4");
+            Map<String, String> fieldProperties = new HashMap<>();
+            fieldProperties.put("max_join_attempts", "4");
 
-        Configurator.resolveAndAssignFields(protocol, fieldProperties, StackType.IPv4);
+            Configurator.resolveAndAssignFields(protocol, fieldProperties, StackType.IPv4);
 
-        assertThat(protocol.getMaxJoinAttempts()).isEqualTo(4);
-        assertThat(fieldProperties).isEmpty();
+            assertThat(protocol.getMaxJoinAttempts()).isEqualTo(4);
+            assertThat(fieldProperties).isEmpty();
+        } finally {
+            LogFactory.useJdkLogger(previousUseJdkLogger);
+        }
     }
 
     @Test
