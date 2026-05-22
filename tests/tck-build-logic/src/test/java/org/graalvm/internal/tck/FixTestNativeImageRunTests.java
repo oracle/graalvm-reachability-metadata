@@ -6,6 +6,8 @@
  */
 package org.graalvm.internal.tck;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.Test;
@@ -16,11 +18,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FixTestNativeImageRunTests {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String BASE_COORDINATES = "io.netty:netty-codec-smtp:4.1.74.Final";
     private static final String NEW_VERSION = "4.2.2.Final";
     private static final String NEW_COORDINATES = "io.netty:netty-codec-smtp:" + NEW_VERSION;
@@ -70,6 +75,34 @@ class FixTestNativeImageRunTests {
                 .contains("4.2.2.Final|test -Pcoordinates=" + NEW_COORDINATES);
     }
 
+    @Test
+    void runPreservesLatestForHistoricalNativeImageRunBackfill() throws IOException {
+        String latestVersion = "4.2.2.Final";
+        String historicalVersion = "4.1.74.Final";
+        String latestCoordinates = "io.netty:netty-codec-smtp:" + latestVersion;
+        String historicalCoordinates = "io.netty:netty-codec-smtp:" + historicalVersion;
+
+        Project project = createProject();
+        prepareLibraryProject(latestVersion);
+        createGradlewScript(false);
+        TestFixTestNativeImageRun task = registerTask(project, latestCoordinates, historicalVersion);
+
+        task.run();
+
+        List<Map<String, Object>> entries = readIndex();
+        assertThat(entries.stream()
+                .filter(entry -> Boolean.TRUE.equals(entry.get("latest")))
+                .map(entry -> entry.get("metadata-version"))
+                .toList())
+                .containsExactly(latestVersion);
+        assertThat(findEntry(entries, historicalVersion))
+                .doesNotContainKey("latest")
+                .containsEntry("test-version", latestVersion)
+                .containsEntry("tested-versions", List.of(historicalVersion));
+        assertThat(readGradlewInvocations())
+                .contains(historicalVersion + "|test -Pcoordinates=" + historicalCoordinates);
+    }
+
     private Project createProject() {
         return ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
@@ -77,35 +110,43 @@ class FixTestNativeImageRunTests {
     }
 
     private TestFixTestNativeImageRun registerTask(Project project) {
+        return registerTask(project, BASE_COORDINATES, NEW_VERSION);
+    }
+
+    private TestFixTestNativeImageRun registerTask(Project project, String testLibraryCoordinates, String newVersion) {
         TestFixTestNativeImageRun task = project.getTasks().register("fixTestNativeImageRun", TestFixTestNativeImageRun.class).get();
-        task.setTestLibraryCoordinates(BASE_COORDINATES);
-        task.setNewLibraryVersion(NEW_VERSION);
+        task.setTestLibraryCoordinates(testLibraryCoordinates);
+        task.setNewLibraryVersion(newVersion);
         return task;
     }
 
     private void prepareLibraryProject() throws IOException {
-        Files.createDirectories(metadataDirectory("4.1.74.Final"));
-        Files.writeString(metadataFile("4.1.74.Final"), "{\"reflection\":[]}\n", StandardCharsets.UTF_8);
+        prepareLibraryProject("4.1.74.Final");
+    }
+
+    private void prepareLibraryProject(String latestVersion) throws IOException {
+        Files.createDirectories(metadataDirectory(latestVersion));
+        Files.writeString(metadataFile(latestVersion), "{\"reflection\":[]}\n", StandardCharsets.UTF_8);
         Files.writeString(
                 indexFile(),
                 """
                 [
                   {
                     "latest" : true,
-                    "metadata-version" : "4.1.74.Final",
+                    "metadata-version" : "%s",
                     "tested-versions" : [
-                      "4.1.74.Final"
+                      "%s"
                     ],
                     "allowed-packages" : [
                       "io.netty.handler.codec.smtp"
                     ]
                   }
                 ]
-                """,
+                """.formatted(latestVersion, latestVersion),
                 StandardCharsets.UTF_8
         );
 
-        Path testDirectory = tempDir.resolve("tests/src/io.netty/netty-codec-smtp/4.1.74.Final");
+        Path testDirectory = tempDir.resolve("tests/src/io.netty/netty-codec-smtp/" + latestVersion);
         Files.createDirectories(testDirectory);
         Files.writeString(
                 testDirectory.resolve("build.gradle"),
@@ -193,6 +234,21 @@ class FixTestNativeImageRunTests {
 
     private Path metadataFile(String version) {
         return metadataDirectory(version).resolve("reachability-metadata.json");
+    }
+
+    private List<Map<String, Object>> readIndex() throws IOException {
+        return OBJECT_MAPPER.readValue(
+                indexFile().toFile(),
+                new TypeReference<>() {
+                }
+        );
+    }
+
+    private Map<String, Object> findEntry(List<Map<String, Object>> entries, String metadataVersion) {
+        return entries.stream()
+                .filter(entry -> metadataVersion.equals(entry.get("metadata-version")))
+                .findFirst()
+                .orElseThrow();
     }
 
     abstract static class TestFixTestNativeImageRun extends FixTestNativeImageRun {

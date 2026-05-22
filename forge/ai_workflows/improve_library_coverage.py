@@ -50,6 +50,7 @@ from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import (
     MATCH_NEW_VERSION,
     LibraryUpdateTarget,
+    is_newer_than_latest_metadata_version,
     load_index_entries,
     resolve_library_update_target,
 )
@@ -471,6 +472,7 @@ def _new_index_entry_from_baseline(
         baseline_entry: dict[str, Any],
         requested_version: str,
         tested_versions: list[str] | None = None,
+        mark_latest: bool = True,
 ) -> dict[str, Any]:
     old_versions = {
         str(value)
@@ -483,7 +485,10 @@ def _new_index_entry_from_baseline(
     }
     new_entry = copy.deepcopy(baseline_entry)
     new_entry = _replace_version_in_value(new_entry, old_versions, requested_version)
-    new_entry["latest"] = True
+    if mark_latest:
+        new_entry["latest"] = True
+    else:
+        new_entry.pop("latest", None)
     new_entry["metadata-version"] = requested_version
     new_entry.pop("test-version", None)
     new_entry.pop("default-for", None)
@@ -572,17 +577,22 @@ def clone_library_update_support(
         tested_versions = baseline_entry.get("tested-versions")
         if isinstance(tested_versions, list):
             new_entry_tested_versions = [str(version) for version in tested_versions]
+    mark_new_entry_latest = (
+        baseline_metadata_version == requested_version
+        and baseline_entry.get("latest") is True
+    ) or is_newer_than_latest_metadata_version(repo_path, group, artifact, requested_version)
     updated_entries: list[dict[str, Any]] = []
     new_entry = _new_index_entry_from_baseline(
         baseline_entry,
         requested_version,
         new_entry_tested_versions,
+        mark_latest=mark_new_entry_latest,
     )
     for entry in entries:
         if not isinstance(entry, dict):
             continue
         entry_copy = copy.deepcopy(entry)
-        if entry_copy.get("latest") is True:
+        if mark_new_entry_latest and entry_copy.get("latest") is True:
             entry_copy.pop("latest", None)
         if entry_copy.get("metadata-version") == baseline_metadata_version:
             if baseline_metadata_version == requested_version:
