@@ -9,6 +9,34 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+File generatedTestResourcesDir = layout.buildDirectory.dir("generated/test-resources").get().asFile
+
+sourceSets {
+    test {
+        resources.srcDir generatedTestResourcesDir
+    }
+}
+
+tasks.register("generateNativeImageResourceConfig") {
+    outputs.dir(generatedTestResourcesDir)
+    doLast {
+        File baseDir = new File(generatedTestResourcesDir, "META-INF/native-image/io.smallrye/jandex-gizmo2")
+        baseDir.mkdirs()
+        new File(baseDir, "resource-config.json").text = """
+                {
+                  "resources": {
+                    "includes": [
+                      { "pattern": "io_smallrye/jandex_gizmo2/.*[.]class" }
+                    ]
+                  }
+                }
+                """.stripIndent()
+    }
+}
+
+tasks.named("processTestResources") {
+    dependsOn("generateNativeImageResourceConfig")
+}
 
 dependencies {
     testImplementation "io.smallrye:jandex-gizmo2:$libraryVersion"
