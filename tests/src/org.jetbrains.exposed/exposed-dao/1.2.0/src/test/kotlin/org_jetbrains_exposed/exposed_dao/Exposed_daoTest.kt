@@ -12,11 +12,15 @@ import org.h2.jdbcx.JdbcDataSource
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.columnTransformer
+import org.jetbrains.exposed.v1.core.dao.id.CompositeID
+import org.jetbrains.exposed.v1.core.dao.id.CompositeIdTable
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 import org.jetbrains.exposed.v1.core.dao.id.UuidTable
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.dao.CompositeEntity
+import org.jetbrains.exposed.v1.dao.CompositeEntityClass
 import org.jetbrains.exposed.v1.dao.EntityChange
 import org.jetbrains.exposed.v1.dao.EntityChangeType
 import org.jetbrains.exposed.v1.dao.EntityFieldWithTransform
@@ -218,6 +222,41 @@ public class ExposedDaoTest {
     }
 
     @Test
+    public fun compositeEntityClassPersistsAndFindsRowsByCompositeIdentifiers(): Unit {
+        withDatabase(DaoEnrollments) { database: Database ->
+            val databaseCourse: CompositeID = enrollmentId(1001, "DB101")
+            val algorithmsCourse: CompositeID = enrollmentId(1001, "CS201")
+
+            transaction(database) {
+                DaoEnrollment.new(databaseCourse) {
+                    grade = "A"
+                }
+                DaoEnrollment.new(algorithmsCourse) {
+                    grade = "B"
+                }
+            }
+
+            transaction(database) {
+                val enrollment: DaoEnrollment = DaoEnrollment[databaseCourse]
+                assertThat(enrollment.id.value[DaoEnrollments.studentNumber].value).isEqualTo(1001)
+                assertThat(enrollment.id.value[DaoEnrollments.courseCode].value).isEqualTo("DB101")
+                assertThat(enrollment.grade).isEqualTo("A")
+
+                enrollment.grade = "A+"
+                enrollment.flush()
+
+                assertThat(DaoEnrollment.findById(databaseCourse)!!.grade).isEqualTo("A+")
+                assertThat(DaoEnrollment.findById(algorithmsCourse)!!.grade).isEqualTo("B")
+                assertThat(
+                    DaoEnrollment.all()
+                        .orderBy(DaoEnrollments.courseCode to SortOrder.ASC)
+                        .map { enrollment: DaoEnrollment -> enrollment.grade }
+                ).containsExactly("B", "A+")
+            }
+        }
+    }
+
+    @Test
     public fun entityFieldWithTransformPersistsAndReadsWrappedValues(): Unit {
         withDatabase(DaoDocuments) { database: Database ->
             val documentId: Int = transaction(database) {
@@ -343,6 +382,25 @@ private object DaoTaskTags : Table("dao_task_tags") {
 
 private object DaoAuditEvents : LongIdTable("dao_audit_events") {
     val message = varchar("message", 160)
+}
+
+private object DaoEnrollments : CompositeIdTable("dao_enrollments") {
+    val studentNumber = integer("student_number").entityId()
+    val courseCode = varchar("course_code", 12).entityId()
+    val grade = varchar("grade", 2)
+
+    override val primaryKey = PrimaryKey(studentNumber, courseCode)
+}
+
+public class DaoEnrollment(id: EntityID<CompositeID>) : CompositeEntity(id) {
+    companion object : CompositeEntityClass<DaoEnrollment>(DaoEnrollments, entityCtor = ::DaoEnrollment)
+
+    var grade: String by DaoEnrollments.grade
+}
+
+private fun enrollmentId(studentNumber: Int, courseCode: String): CompositeID = CompositeID {
+    it[DaoEnrollments.studentNumber] = studentNumber
+    it[DaoEnrollments.courseCode] = courseCode
 }
 
 public class DaoAuditEvent(id: EntityID<Long>) : LongEntity(id) {
