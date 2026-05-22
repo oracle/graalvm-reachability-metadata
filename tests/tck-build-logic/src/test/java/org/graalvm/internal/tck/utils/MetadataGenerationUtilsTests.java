@@ -189,6 +189,83 @@ class MetadataGenerationUtilsTests {
     }
 
     @Test
+    void addVersionToIndexJsonUpdatingLatestWhenNewerPromotesFinalReleaseOverClassifierPrerelease() throws IOException {
+        String group = "com.example";
+        String artifact = "demo";
+        writeIndex(
+                group,
+                artifact,
+                """
+                [
+                  {
+                    "latest" : true,
+                    "metadata-version" : "3.0.0-M5-javax",
+                    "tested-versions" : [
+                      "3.0.0-M5-javax"
+                    ],
+                    "allowed-packages" : [
+                      "com.example"
+                    ]
+                  }
+                ]
+                """
+        );
+
+        MetadataGenerationUtils.addVersionToIndexJsonUpdatingLatestWhenNewer(
+                createProject().getLayout(),
+                Coordinates.parse(group + ":" + artifact + ":3.0.0"),
+                null
+        );
+
+        List<Map<String, Object>> entries = readIndex(group, artifact);
+        assertThat(entries.stream()
+                .filter(entry -> Boolean.TRUE.equals(entry.get("latest")))
+                .map(entry -> entry.get("metadata-version")))
+                .containsExactly("3.0.0");
+        assertThat(findEntry(entries, "3.0.0-M5-javax"))
+                .doesNotContainKey("latest");
+    }
+
+    @Test
+    void addVersionToIndexJsonUpdatingLatestWhenNewerPreservesLatestForClassifierPrerelease() throws IOException {
+        String group = "com.example";
+        String artifact = "demo";
+        writeIndex(
+                group,
+                artifact,
+                """
+                [
+                  {
+                    "latest" : true,
+                    "metadata-version" : "3.0.0",
+                    "tested-versions" : [
+                      "3.0.0"
+                    ],
+                    "allowed-packages" : [
+                      "com.example"
+                    ]
+                  }
+                ]
+                """
+        );
+
+        MetadataGenerationUtils.addVersionToIndexJsonUpdatingLatestWhenNewer(
+                createProject().getLayout(),
+                Coordinates.parse(group + ":" + artifact + ":3.0.0-M5-javax"),
+                null
+        );
+
+        List<Map<String, Object>> entries = readIndex(group, artifact);
+        assertThat(entries.stream()
+                .filter(entry -> Boolean.TRUE.equals(entry.get("latest")))
+                .map(entry -> entry.get("metadata-version")))
+                .containsExactly("3.0.0");
+        assertThat(findEntry(entries, "3.0.0-M5-javax"))
+                .doesNotContainKey("latest")
+                .containsEntry("tested-versions", List.of("3.0.0-M5-javax"));
+    }
+
+    @Test
     void discoverTestOnlyMetadataPackagesIgnoresDependencyApiStubs() throws IOException {
         Path testsDirectory = tempDir.resolve("tests/src/io.grpc/grpc-auth/1.79.0");
         writeSource(

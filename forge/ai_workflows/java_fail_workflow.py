@@ -22,6 +22,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.metadata_index import is_newer_than_latest_metadata_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.schema_validator import validate_run_metrics
@@ -35,6 +36,8 @@ from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
 
 DEFAULT_MODEL_NAME = "oca/gpt5"
+ADD_LIBRARY_METADATA_INDEX_TASK = "addLibraryMetadataIndexJson"
+ADD_LIBRARY_AS_LATEST_METADATA_INDEX_TASK = "addLibraryAsLatestMetadataIndexJson"
 
 # Default strategy names per mode
 DEFAULT_JAVAC_STRATEGY = "javac_iterative_with_coverage_sources_pi_gpt-5.5"
@@ -52,14 +55,12 @@ class JavaFailWorkflowConfig:
         task_type: str,
         branch_prefix: str,
         metrics_filename: str,
-        metadata_index_task: str,
     ):
         self.mode = mode
         self.default_strategy_name = default_strategy_name
         self.task_type = task_type
         self.branch_prefix = branch_prefix
         self.metrics_filename = metrics_filename
-        self.metadata_index_task = metadata_index_task
 
 
 JAVAC_CONFIG = JavaFailWorkflowConfig(
@@ -68,7 +69,6 @@ JAVAC_CONFIG = JavaFailWorkflowConfig(
     task_type="fix-javac-fail",
     branch_prefix="fix-javac",
     metrics_filename="fix_javac_fail.json",
-    metadata_index_task="addLibraryMetadataIndexJson",
 )
 
 JAVA_RUN_CONFIG = JavaFailWorkflowConfig(
@@ -77,7 +77,6 @@ JAVA_RUN_CONFIG = JavaFailWorkflowConfig(
     task_type="fix-java-run-fail",
     branch_prefix="fix-java-run",
     metrics_filename="fix_java_run_fail.json",
-    metadata_index_task="addLibraryAsLatestMetadataIndexJson",
 )
 
 
@@ -243,7 +242,15 @@ def update_metadata_index_json(
 ) -> None:
     """Update metadata index.json for the target library version."""
     new_version_coordinates = f"{group}:{artifact}:{updated_library_version}"
-    run_gradle_task(config.metadata_index_task, new_version_coordinates)
+    metadata_index_task = metadata_index_update_task(group, artifact, updated_library_version)
+    run_gradle_task(metadata_index_task, new_version_coordinates)
+
+
+def metadata_index_update_task(group: str, artifact: str, updated_library_version: str) -> str:
+    """Return the metadata index task for the target version."""
+    if is_newer_than_latest_metadata_version(os.getcwd(), group, artifact, updated_library_version):
+        return ADD_LIBRARY_AS_LATEST_METADATA_INDEX_TASK
+    return ADD_LIBRARY_METADATA_INDEX_TASK
 
 
 def create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version):

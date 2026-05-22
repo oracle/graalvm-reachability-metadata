@@ -104,7 +104,7 @@ public abstract class FixTestNativeImageRun extends DefaultTask {
                 newLibraryVersion
         );
         verifyGeneratedMetadata(metadataDirectory);
-        MetadataGenerationUtils.makeVersionLatestInIndexJson(getLayout(), newCoords, baseCoords.version());
+        MetadataGenerationUtils.addVersionToIndexJsonUpdatingLatestWhenNewer(getLayout(), newCoords, baseCoords.version());
 
         // At the end, attempt to run tests with the new library version.
         // If the build fails, it can be due agent's non-deterministic nature.

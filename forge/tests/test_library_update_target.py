@@ -211,7 +211,8 @@ class LibraryUpdateTargetTests(unittest.TestCase):
             self.assertEqual(new_entry["tested-versions"], ["1.2.4"])
             self.assertEqual(new_entry["source-code-url"], "https://example.test/demo-1.2.4-sources.jar")
             self.assertEqual(new_entry["allowed-packages"], ["org.example"])
-            self.assertNotIn("latest", [entry for entry in entries if entry.get("metadata-version") == "2.0.0"][0])
+            self.assertNotIn("latest", new_entry)
+            self.assertTrue([entry for entry in entries if entry.get("metadata-version") == "2.0.0"][0]["latest"])
 
     def test_cloned_support_rewrites_versions_only_in_safe_contexts(self) -> None:
         with tempfile.TemporaryDirectory() as repo:
@@ -394,6 +395,7 @@ class LibraryUpdateTargetTests(unittest.TestCase):
                 entries = json.load(file)
             matching_entries = [entry for entry in entries if entry.get("metadata-version") == "3.22.0"]
             self.assertEqual(len(matching_entries), 1)
+            self.assertTrue(matching_entries[0]["latest"])
             self.assertNotIn("test-version", matching_entries[0])
             self.assertEqual(matching_entries[0]["tested-versions"], ["3.22.0", "3.23.0"])
 

@@ -41,8 +41,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -61,6 +63,28 @@ public final class MetadataGenerationUtils {
             "org.testng.",
             "spock.lang.",
             "org.scalatest."
+    );
+    private static final String RELEASE_QUALIFIER = "release";
+    private static final Pattern METADATA_VERSION_PATTERN = Pattern.compile(
+            "^(\\d+(?:\\.\\d+)*)(?:\\.(?:Final|RELEASE))?"
+                    + "(?:[-.](alpha\\d*|beta\\d*|rc\\d*|cr\\d*|m\\d+|ea\\d*|b\\d+|\\d+|preview)(?:[-.](.*))?)?$",
+            Pattern.CASE_INSENSITIVE
+    );
+    private static final Pattern QUALIFIER_PATTERN = Pattern.compile(
+            "^(alpha|beta|rc|cr|m|ea|b|preview)(\\d*)$",
+            Pattern.CASE_INSENSITIVE
+    );
+    private static final Map<String, Integer> QUALIFIER_RANKS = Map.ofEntries(
+            Map.entry("alpha", 10),
+            Map.entry("beta", 20),
+            Map.entry("m", 30),
+            Map.entry("ea", 35),
+            Map.entry("preview", 40),
+            Map.entry("rc", 50),
+            Map.entry("cr", 50),
+            Map.entry("b", 60),
+            Map.entry("number", 70),
+            Map.entry(RELEASE_QUALIFIER, 100)
     );
 
     private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -491,6 +515,106 @@ public final class MetadataGenerationUtils {
         addVersionToIndexJson(layout, newCoords, testVersion, false);
     }
 
+    /**
+     * Adds a metadata entry for {@code newCoords}, promoting it to {@code latest}
+     * only when it is parseably newer than the current latest metadata version.
+     */
+    public static void addVersionToIndexJsonUpdatingLatestWhenNewer(
+            ProjectLayout layout,
+            Coordinates newCoords,
+            String testVersion
+    ) throws IOException {
+        addVersionToIndexJson(layout, newCoords, testVersion, isNewerThanLatestInIndexJson(layout, newCoords));
+    }
+
+    private static boolean isNewerThanLatestInIndexJson(ProjectLayout layout, Coordinates newCoords) throws IOException {
+        String indexPathTemplate = "metadata/$group$/$artifact$/index.json";
+        File indexFile = GeneralUtils.getPathFromProject(layout, CoordinateUtils.replace(indexPathTemplate, newCoords)).toFile();
+        if (!indexFile.exists()) {
+            return false;
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(indexFile, new TypeReference<>() {});
+        String latestVersion = findSingleLatestMetadataVersion(entries);
+        if (latestVersion == null) {
+            return false;
+        }
+        return compareParseableMetadataVersions(newCoords.version(), latestVersion) > 0;
+    }
+
+    private static String findSingleLatestMetadataVersion(List<MetadataVersionsIndexEntry> entries) {
+        String latestVersion = null;
+        for (MetadataVersionsIndexEntry entry : entries) {
+            if (!Boolean.TRUE.equals(entry.latest())) {
+                continue;
+            }
+            if (latestVersion != null || entry.metadataVersion() == null || entry.metadataVersion().isBlank()) {
+                return null;
+            }
+            latestVersion = entry.metadataVersion();
+        }
+        return latestVersion;
+    }
+
+    private static int compareParseableMetadataVersions(String firstVersion, String secondVersion) {
+        ParsedMetadataVersion first = parseMetadataVersion(firstVersion);
+        ParsedMetadataVersion second = parseMetadataVersion(secondVersion);
+        if (first == null || second == null) {
+            return 0;
+        }
+        return first.compareTo(second);
+    }
+
+    private static ParsedMetadataVersion parseMetadataVersion(String version) {
+        if (version == null) {
+            return null;
+        }
+
+        Matcher versionMatcher = METADATA_VERSION_PATTERN.matcher(version);
+        if (!versionMatcher.matches()) {
+            return null;
+        }
+
+        List<Integer> baseComponents = new ArrayList<>();
+        for (String component : versionMatcher.group(1).split("\\.")) {
+            baseComponents.add(Integer.parseInt(component));
+        }
+
+        String qualifierToken = versionMatcher.group(2);
+        String qualifierTail = versionMatcher.group(3);
+        if (qualifierToken == null) {
+            return new ParsedMetadataVersion(baseComponents, QUALIFIER_RANKS.get(RELEASE_QUALIFIER), 0);
+        }
+
+        if (qualifierToken.chars().allMatch(Character::isDigit)) {
+            if (qualifierTail != null && Stream.of(qualifierTail.split("[-.]"))
+                    .anyMatch(part -> part.isBlank() || !part.chars().allMatch(Character::isDigit))) {
+                return null;
+            }
+            return new ParsedMetadataVersion(baseComponents, QUALIFIER_RANKS.get("number"), Integer.parseInt(qualifierToken));
+        }
+
+        Matcher qualifierMatcher = QUALIFIER_PATTERN.matcher(qualifierToken);
+        if (!qualifierMatcher.matches()) {
+            return null;
+        }
+
+        String qualifier = qualifierMatcher.group(1).toLowerCase(Locale.ROOT);
+        String qualifierNumber = qualifierMatcher.group(2);
+        if (qualifierNumber.isBlank() && qualifierTail != null) {
+            String firstTailPart = qualifierTail.split("[-.]")[0];
+            if (firstTailPart.chars().allMatch(Character::isDigit)) {
+                qualifierNumber = firstTailPart;
+            }
+        }
+        return new ParsedMetadataVersion(
+                baseComponents,
+                QUALIFIER_RANKS.get(qualifier),
+                Integer.parseInt(qualifierNumber.isBlank() ? "0" : qualifierNumber)
+        );
+    }
+
     private static void addVersionToIndexJson(ProjectLayout layout, Coordinates newCoords, String testVersion, boolean markAsLatest) throws IOException {
         String indexPathTemplate = "metadata/$group$/$artifact$/index.json";
         File indexFile = GeneralUtils.getPathFromProject(layout, CoordinateUtils.replace(indexPathTemplate, newCoords)).toFile();
@@ -700,5 +824,31 @@ public final class MetadataGenerationUtils {
                 entry.reason(),
                 entry.replacement()
         );
+    }
+
+    private record ParsedMetadataVersion(List<Integer> baseComponents, int qualifierRank, int qualifierNumber)
+            implements Comparable<ParsedMetadataVersion> {
+        private ParsedMetadataVersion {
+            baseComponents = List.copyOf(baseComponents);
+        }
+
+        @Override
+        public int compareTo(ParsedMetadataVersion other) {
+            int componentCount = Math.max(baseComponents.size(), other.baseComponents.size());
+            for (int i = 0; i < componentCount; i++) {
+                int component = i < baseComponents.size() ? baseComponents.get(i) : 0;
+                int otherComponent = i < other.baseComponents.size() ? other.baseComponents.get(i) : 0;
+                int componentComparison = Integer.compare(component, otherComponent);
+                if (componentComparison != 0) {
+                    return componentComparison;
+                }
+            }
+
+            int rankComparison = Integer.compare(qualifierRank, other.qualifierRank);
+            if (rankComparison != 0) {
+                return rankComparison;
+            }
+            return Integer.compare(qualifierNumber, other.qualifierNumber);
+        }
     }
 }
