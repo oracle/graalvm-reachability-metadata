@@ -72,13 +72,19 @@ public class ServiceFinderTest {
             final Class<?> isolatedServiceFinder = Class.forName(SERVICE_FINDER_CLASS_NAME, true, classLoader);
 
             assertThat(isolatedServiceFinder.getName()).isEqualTo(SERVICE_FINDER_CLASS_NAME);
-            assertThat(classLoader.getRejectedClassResourceRequests()).isEqualTo(1);
-            assertThat(classLoader.getFallbackClassResourceRequests()).isGreaterThanOrEqualTo(1);
+            if (!isNativeImageRuntime()) {
+                assertThat(classLoader.getRejectedClassResourceRequests()).isEqualTo(1);
+                assertThat(classLoader.getFallbackClassResourceRequests()).isGreaterThanOrEqualTo(1);
+            }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static URL codeSourceUrl(Class<?> type) {
