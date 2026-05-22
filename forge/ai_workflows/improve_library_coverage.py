@@ -972,7 +972,7 @@ def main(argv=None) -> int:
     workflow_status, iterations = run_result[0], run_result[1]
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
-        finalize_status, _ = strategy_obj._finalize_successful_iteration()
+        finalize_status, _ = strategy_obj._finalize_successful_iteration(base_commit=checkpoint_commit)
         if finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} and workflow_status == RUN_STATUS_CHUNK_READY:
             workflow_status = RUN_STATUS_CHUNK_READY
         else:

@@ -19,6 +19,11 @@ from pathlib import Path
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, read_pending_metrics, write_pending_metrics
+from utility_scripts.native_image_config_policy import (
+    find_changed_legacy_test_native_image_config_files,
+    format_legacy_test_native_image_config_error,
+    is_legacy_test_native_image_config_path,
+)
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
 LOCAL_CI_VERIFICATION_KEY = "local_ci_verification"
@@ -237,6 +242,9 @@ def _run_verification_once(
         result: LocalCIVerificationResult,
 ) -> CommandRecord | None:
     changed_files = changed_files_for_ci(repo_path, base_commit)
+    failed = _run_legacy_test_native_image_config_validation(repo_path, base_commit, result, changed_files)
+    if failed is not None:
+        return failed
 
     try:
         changed_metadata_matrix = _gradle_json_output(
@@ -300,6 +308,35 @@ def _run_verification_once(
             return failed
 
     return None
+
+
+def _run_legacy_test_native_image_config_validation(
+        repo_path: str,
+        base_commit: str,
+        result: LocalCIVerificationResult,
+        changed_files: list[str] | None = None,
+) -> CommandRecord | None:
+    legacy_paths = (
+        sorted(path for path in changed_files if is_legacy_test_native_image_config_path(path))
+        if changed_files is not None
+        else find_changed_legacy_test_native_image_config_files(repo_path, base_commit)
+    )
+    if not legacy_paths:
+        return None
+
+    output = format_legacy_test_native_image_config_error(legacy_paths) + "\n"
+    log_path = build_timestamped_task_log_path("local-ci", "legacy-test-native-image-config", "policy")
+    with open(log_path, "w", encoding="utf-8") as log_file:
+        log_file.write(output)
+    record = CommandRecord(
+        gate="legacy-test-native-image-config",
+        command=["legacy-test-native-image-config-policy"],
+        returncode=1,
+        log_path=display_log_path(log_path),
+        output_excerpt=output[:MAX_OUTPUT_CHARS],
+    )
+    result.commands.append(record)
+    return record
 
 
 def _run_test_matrix_entries(

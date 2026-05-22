@@ -21,6 +21,7 @@ from utility_scripts.local_ci_verification import (
     run_local_ci_verification,
     _github_repo_slug_from_url,
     _graalvm_home_for_java_version,
+    _run_legacy_test_native_image_config_validation,
     _run_infrastructure_matrix_entries,
     _run_recorded_command,
     _run_recorded_command_without_new_docker_images,
@@ -285,6 +286,49 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertEqual(gates, ["check-metadata-files", "run-consecutive-tests"])
         self.assertNotIn("disable-docker-networking", gates)
         self.assertNotIn("restore-docker-networking", gates)
+
+    def test_legacy_test_native_image_config_validation_fails_changed_legacy_file(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
+            _git(repo_path, "init")
+            with open(os.path.join(repo_path, "README.md"), "w", encoding="utf-8") as file:
+                file.write("base\n")
+            base = _commit_all(repo_path, "base")
+            legacy_dir = os.path.join(
+                repo_path,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+                "src",
+                "test",
+                "resources",
+                "META-INF",
+                "native-image",
+            )
+            os.makedirs(legacy_dir)
+            with open(os.path.join(legacy_dir, "reflect-config.json"), "w", encoding="utf-8") as file:
+                file.write("[]\n")
+
+            result = LocalCIVerificationResult(status="running", base_commit=base)
+            with patch(
+                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    return_value=os.path.join(log_path, "policy.log"),
+            ):
+                failed = _run_legacy_test_native_image_config_validation(
+                    repo_path,
+                    base,
+                    result,
+                    [
+                        "tests/src/org.example/demo/1.0.0/src/test/resources/"
+                        "META-INF/native-image/reflect-config.json",
+                    ],
+                )
+
+        self.assertIsNotNone(failed)
+        self.assertEqual(failed.gate, "legacy-test-native-image-config")
+        self.assertIn("reflect-config.json", result.commands[0].output_excerpt)
+        self.assertIn("reachability-metadata.json", result.commands[0].output_excerpt)
 
     def test_test_matrix_prepulls_docker_images_without_privileged_network_scripts(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:

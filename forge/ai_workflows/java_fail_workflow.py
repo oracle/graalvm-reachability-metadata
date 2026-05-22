@@ -555,7 +555,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         if last_passing_candidate_commit is None:
             workflow_status = RUN_STATUS_FAILURE
         else:
-            finalize_status, _ = strategy_obj._finalize_successful_iteration()
+            finalize_status, _ = strategy_obj._finalize_successful_iteration(base_commit=commit_checkpoint)
             workflow_status = finalize_status
 
     if workflow_status not in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}:
