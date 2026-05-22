@@ -1,0 +1,32 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.orc:orc-mapreduce:$libraryVersion"
+    testImplementation 'org.apache.hive:hive-storage-api:2.8.1'
+    testRuntimeOnly 'com.google.protobuf:protobuf-java:3.22.3'
+    testRuntimeOnly 'org.objenesis:objenesis:2.5.1'
+    testImplementation 'org.apache.hadoop:hadoop-client-api:3.3.4'
+    testRuntimeOnly 'org.apache.hadoop:hadoop-client-runtime:3.3.4'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
