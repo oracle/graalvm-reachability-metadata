@@ -13,14 +13,10 @@ import org.junit.jupiter.api.Test
 
 class GeneratedFileTest {
   @Test
-  def addOptionalExtensionLoadsPublicGeneratedExtensionField(): Unit = {
+  def registerAllExtensionsLoadsPublicGeneratedExtensionField(): Unit = {
     val registry: ExtensionRegistry = ExtensionRegistry.newInstance()
 
-    GeneratedFileProbe.addExtensionByName(
-      registry,
-      classOf[JavaFeaturesProto].getName,
-      "java_"
-    )
+    JavaFeaturesProto.registerAllExtensions(registry)
 
     val extensionInfo: ExtensionRegistry.ExtensionInfo = registry.findExtensionByName(
       JavaFeaturesProto.java_.getDescriptor.getFullName
