@@ -39,6 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
 public class ProcessedOptionTest {
     private static ScalarValues scalarValues;
     private static GroupValues groupValues;
+    private static Boolean negatedFlag;
     private static LinkedList<String> concreteItems;
     private static String redirectedInput;
 
@@ -66,6 +67,16 @@ public class ProcessedOptionTest {
         assertThat(groupValues.priorities())
                 .isInstanceOf(LinkedHashMap.class)
                 .containsEntry("batch", 2);
+    }
+
+    @Test
+    void negatedBooleanOptionInjectsFalseValue() throws Exception {
+        negatedFlag = null;
+
+        CommandResult result = runtimeFor(NegatableFlagCommand.class).executeCommand("flags --no-enabled");
+
+        assertThat(result).isEqualTo(CommandResult.SUCCESS);
+        assertThat(negatedFlag).isFalse();
     }
 
     @Test
@@ -134,6 +145,18 @@ public class ProcessedOptionTest {
         @Override
         public CommandResult execute(CommandInvocation commandInvocation) {
             groupValues = new GroupValues(defines, priorities);
+            return CommandResult.SUCCESS;
+        }
+    }
+
+    @CommandDefinition(name = "flags", description = "Receives a negated boolean option")
+    public static class NegatableFlagCommand implements Command<CommandInvocation> {
+        @Option(name = "enabled", hasValue = false, negatable = true)
+        private boolean enabled = true;
+
+        @Override
+        public CommandResult execute(CommandInvocation commandInvocation) {
+            negatedFlag = enabled;
             return CommandResult.SUCCESS;
         }
     }
