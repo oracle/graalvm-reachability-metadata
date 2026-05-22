@@ -16,16 +16,17 @@ import com.mongodb.connection.ClusterConnectionMode;
 import com.mongodb.connection.ClusterSettings;
 import com.mongodb.connection.ConnectionPoolSettings;
 import com.mongodb.connection.ServerSettings;
-import com.mongodb.connection.Stream;
-import com.mongodb.connection.StreamFactory;
 import com.mongodb.event.CommandListener;
 import com.mongodb.event.CommandStartedEvent;
-import com.mongodb.internal.IgnorableRequestContext;
+import com.mongodb.internal.TimeoutSettings;
 import com.mongodb.internal.binding.ClusterBinding;
 import com.mongodb.internal.connection.Cluster;
 import com.mongodb.internal.connection.DefaultClusterFactory;
 import com.mongodb.internal.connection.InternalConnectionPoolSettings;
+import com.mongodb.internal.connection.OperationContext;
 import com.mongodb.internal.connection.PowerOfTwoBufferPool;
+import com.mongodb.internal.connection.Stream;
+import com.mongodb.internal.connection.StreamFactory;
 import com.mongodb.internal.operation.CommandReadOperation;
 import org.bson.BsonArray;
 import org.bson.BsonBinaryWriter;
@@ -62,6 +63,7 @@ public class ByteBufBsonArrayTest {
         final ServerAddress serverAddress = new ServerAddress("127.0.0.1", 27017);
         final RecordingCommandListener commandListener = new RecordingCommandListener();
         final RespondingStreamFactory streamFactory = new RespondingStreamFactory(serverAddress);
+        final TimeoutSettings timeoutSettings = TimeoutSettings.DEFAULT.withServerSelectionTimeoutMS(5_000);
         final Cluster cluster = new DefaultClusterFactory().createCluster(
                 ClusterSettings.builder()
                         .hosts(Collections.singletonList(serverAddress))
@@ -76,7 +78,9 @@ public class ByteBufBsonArrayTest {
                         .maxSize(1)
                         .build(),
                 InternalConnectionPoolSettings.builder().build(),
+                timeoutSettings,
                 streamFactory,
+                timeoutSettings,
                 streamFactory,
                 null,
                 LoggerSettings.builder().build(),
@@ -85,10 +89,10 @@ public class ByteBufBsonArrayTest {
                 MongoDriverInformation.builder().build(),
                 Collections.emptyList(),
                 null,
-                null,
                 null);
-        final ClusterBinding binding = new ClusterBinding(cluster, ReadPreference.primary(), ReadConcern.DEFAULT, null,
-                IgnorableRequestContext.INSTANCE);
+        final OperationContext operationContext = OperationContext.simpleOperationContext(timeoutSettings, null);
+        final ClusterBinding binding = new ClusterBinding(
+                cluster, ReadPreference.primary(), ReadConcern.DEFAULT, operationContext);
         try {
             final BsonDocument matchStage = new BsonDocument("$match",
                     new BsonDocument("status", new BsonString("active")));
@@ -153,17 +157,17 @@ public class ByteBufBsonArrayTest {
         }
 
         @Override
-        public void open() {
+        public void open(final OperationContext operationContext) {
             closed = false;
         }
 
         @Override
-        public void openAsync(final AsyncCompletionHandler<Void> handler) {
+        public void openAsync(final OperationContext operationContext, final AsyncCompletionHandler<Void> handler) {
             handler.completed(null);
         }
 
         @Override
-        public void write(final List<ByteBuf> byteBuffers) {
+        public void write(final List<ByteBuf> byteBuffers, final OperationContext operationContext) {
             final byte[] header = new byte[MESSAGE_HEADER_LENGTH];
             byteBuffers.get(0).get(byteBuffers.get(0).position(), header);
             lastRequestId = getInt32LittleEndian(header, 4);
@@ -173,25 +177,22 @@ public class ByteBufBsonArrayTest {
         }
 
         @Override
-        public ByteBuf read(final int numBytes) throws IOException {
+        public ByteBuf read(final int numBytes, final OperationContext operationContext) throws IOException {
             return readResponseBytes(numBytes);
         }
 
         @Override
-        public ByteBuf read(final int numBytes, final int additionalTimeout) throws IOException {
-            return readResponseBytes(numBytes);
-        }
-
-        @Override
-        public void writeAsync(final List<ByteBuf> byteBuffers, final AsyncCompletionHandler<Void> handler) {
-            write(byteBuffers);
+        public void writeAsync(final List<ByteBuf> byteBuffers, final OperationContext operationContext,
+                               final AsyncCompletionHandler<Void> handler) {
+            write(byteBuffers, operationContext);
             handler.completed(null);
         }
 
         @Override
-        public void readAsync(final int numBytes, final AsyncCompletionHandler<ByteBuf> handler) {
+        public void readAsync(final int numBytes, final OperationContext operationContext,
+                              final AsyncCompletionHandler<ByteBuf> handler) {
             try {
-                handler.completed(read(numBytes));
+                handler.completed(read(numBytes, operationContext));
             } catch (IOException e) {
                 handler.failed(e);
             }
