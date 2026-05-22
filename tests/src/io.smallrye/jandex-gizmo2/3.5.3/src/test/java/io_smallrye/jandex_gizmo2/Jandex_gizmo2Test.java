@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -181,6 +182,11 @@ public class Jandex_gizmo2Test {
         String transform(String value);
     }
 
+    static final class ThrowingMethods {
+        static <E extends IOException> void checkedExceptions() throws E, FileNotFoundException {
+        }
+    }
+
     static final class GenericMethods {
         static <T> void annotatedParameters(
                 @NestedAnnotation("primitive") int primitive,
@@ -291,6 +297,19 @@ public class Jandex_gizmo2Test {
         assertThrows(IllegalArgumentException.class, () -> Jandex2Gizmo.genericTypeOfReference(PrimitiveType.INT));
         assertThrows(IllegalArgumentException.class, () -> Jandex2Gizmo.genericTypeOfArray(ClassType.STRING_TYPE));
         assertThrows(IllegalArgumentException.class, () -> Jandex2Gizmo.typeArgumentOf(PrimitiveType.INT));
+    }
+
+    @Test
+    void throwsTypesPreserveDeclaredExceptionShapes() throws IOException {
+        ClassInfo clazz = Index.singleClass(ThrowingMethods.class);
+        MethodInfo method = clazz.firstMethod("checkedExceptions");
+        assertNotNull(method);
+
+        List<Type> exceptions = method.exceptions();
+        assertEquals(2, exceptions.size());
+        assertEquals("E", Jandex2Gizmo.genericTypeOfThrows(exceptions.get(0)).toString());
+        assertEquals("java.io.FileNotFoundException",
+                Jandex2Gizmo.genericTypeOfThrows(exceptions.get(1)).toString());
     }
 
     @Test
