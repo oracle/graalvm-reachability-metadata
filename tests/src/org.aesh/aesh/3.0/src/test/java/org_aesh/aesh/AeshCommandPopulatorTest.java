@@ -56,6 +56,7 @@ public class AeshCommandPopulatorTest {
 
         assertThat(result).isEqualTo(CommandResult.SUCCESS);
         assertThat(primitiveValues.booleanValue()).isFalse();
+        assertThat(primitiveValues.wrapperBooleanValue()).isFalse();
         assertThat(primitiveValues.intValue()).isZero();
         assertThat(primitiveValues.charValue()).isEqualTo('\u0000');
         assertThat(primitiveValues.longValue()).isZero();
@@ -107,6 +108,9 @@ public class AeshCommandPopulatorTest {
         @Option(name = "boolean-value", shortName = 'b')
         private boolean booleanValue = true;
 
+        @Option(name = "wrapper-boolean-value", shortName = 'w', hasValue = false)
+        private Boolean wrapperBooleanValue = Boolean.TRUE;
+
         @Option(name = "int-value", shortName = 'i')
         private int intValue = 42;
 
@@ -126,6 +130,7 @@ public class AeshCommandPopulatorTest {
         public CommandResult execute(TestInvocation commandInvocation) {
             primitiveValues = new PrimitiveValues(
                     booleanValue,
+                    wrapperBooleanValue,
                     intValue,
                     charValue,
                     longValue,
@@ -307,6 +312,7 @@ public class AeshCommandPopulatorTest {
 
     private record PrimitiveValues(
             boolean booleanValue,
+            Boolean wrapperBooleanValue,
             int intValue,
             char charValue,
             long longValue,
