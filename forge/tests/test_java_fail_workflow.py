@@ -222,7 +222,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             "org.example:demo:2021-08-19T04-04-25-efb3c9d",
         )
 
-    def test_java_run_metadata_index_update_keeps_configured_latest_task(self) -> None:
+    def test_java_run_metadata_index_update_preserves_latest_for_historical_version(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             self._write_index(
                 temp_dir,
@@ -246,8 +246,36 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
                 os.chdir(previous_cwd)
 
         run_gradle_task.assert_called_once_with(
-            "addLibraryAsLatestMetadataIndexJson",
+            "addLibraryMetadataIndexJson",
             "org.example:demo:1.5.0",
+        )
+
+    def test_java_run_metadata_index_update_promotes_newer_version(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self._write_index(
+                temp_dir,
+                "org.example",
+                "demo",
+                [
+                    {
+                        "latest": True,
+                        "metadata-version": "1.5.0",
+                        "tested-versions": ["1.5.0"],
+                    },
+                ],
+            )
+
+            previous_cwd = os.getcwd()
+            try:
+                os.chdir(temp_dir)
+                with patch("ai_workflows.java_fail_workflow.run_gradle_task") as run_gradle_task:
+                    update_metadata_index_json(JAVA_RUN_CONFIG, "org.example", "demo", "2.0.0")
+            finally:
+                os.chdir(previous_cwd)
+
+        run_gradle_task.assert_called_once_with(
+            "addLibraryAsLatestMetadataIndexJson",
+            "org.example:demo:2.0.0",
         )
 
     def test_copy_and_prepare_project_dir_skips_same_source_and_destination(self) -> None:
