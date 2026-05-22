@@ -1,0 +1,1208 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e512a-e32c-7542-b85d-be2c9e1ce26d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.bouncycastle:bcprov-jdk15on:1.48
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.48" when "$version$" is replaced with "1.48".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.bouncycastle:bcprov-jdk15on:1.48".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.48".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream Bouncy Castle repository, then update the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.bouncycastle-bcprov-jdk15on-1\\.48\\.json"'$'"'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+{
+  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48"
+}
+
+web search: 
+web search: Maven Central org.bouncycastle bcprov-jdk15on 1.48 sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/
+web search: 
+web search: 
+codex
+Maven Central has the compiled jar, sources jar, and javadoc jar for `1.48`, but not an obvious test jar in the directory listing. I’m checking the upstream tag naming now so the test URL points at the exact release tree rather than a moving branch.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.bouncycastle</groupId>
+  <artifactId>bcprov-jdk15on</artifactId>
+  <packaging>jar</packaging>
+  <name>Bouncy Castle Provider</name>
+  <version>1.48</version>
+  <description>The Bouncy Castle Crypto package is a Java implementation of cryptographic algorithms. This jar contains JCE provider and lightweight API for the Bouncy Castle Cryptography APIs for JDK 1.5 to JDK 1.7.</description>
+  <url>http://www.bouncycastle.org/java.html</url>
+  <licenses>
+    <license>
+      <name>Bouncy Castle Licence</name>
+      <url>http://www.bouncycastle.org/licence.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://www.bouncycastle.org/viewcvs/viewcvs.cgi/java</url>
+  </scm>
+  <developers>
+    <developer>
+      <id>feedback-crypto</id>
+      <name>The Legion of the Bouncy Castle</name>
+      <email>feedback-crypto@bouncycastle.org</email>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/bcgit/bc-java/tags?per_page=100' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-tests.jar || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 225ms:
+HTTP/2 404 
+date: Fri, 22 May 2026 19:30:49 GMT
+content-type: text/html
+cf-ray: 9ffe3cd2384f8822-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 244ms:
+[
+  {
+    "name": "r1v60",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1v60",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1v60",
+    "commit": {
+      "sha": "52b0902592e770b8116f80f2eab7a4048b589d7d",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/52b0902592e770b8116f80f2eab7a4048b589d7d"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxdjYw"
+  },
+  {
+    "name": "r1rv84",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv84",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv84",
+    "commit": {
+      "sha": "d716d7716a452bad283323aefd88ff21eba8deef",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/d716d7716a452bad283323aefd88ff21eba8deef"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY4NA=="
+  },
+  {
+    "name": "r1rv83",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv83",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv83",
+    "commit": {
+      "sha": "d4cc9614fc849e840ffdc7941f4a2941131d0c9c",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/d4cc9614fc849e840ffdc7941f4a2941131d0c9c"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY4Mw=="
+  },
+  {
+    "name": "r1rv82",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv82",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv82",
+    "commit": {
+      "sha": "de42702b6cda2631e8e3ff94f8458198860b328e",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/de42702b6cda2631e8e3ff94f8458198860b328e"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY4Mg=="
+  },
+  {
+    "name": "r1rv81",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv81",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv81",
+    "commit": {
+      "sha": "228211ecb973fe87fdd0fc4ab16ba0446ec1a29c",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/228211ecb973fe87fdd0fc4ab16ba0446ec1a29c"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY4MQ=="
+  },
+  {
+    "name": "r1rv81v1",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv81v1",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv81v1",
+    "commit": {
+      "sha": "dd0e7f83eef6b5d157139c9da21852d44bfcef71",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/dd0e7f83eef6b5d157139c9da21852d44bfcef71"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY4MXYx"
+  },
+  {
+    "name": "r1rv80",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv80",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv80",
+    "commit": {
+      "sha": "5ce0d4d4536bcb622c1077a6b9157b02ad8adcc5",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/5ce0d4d4536bcb622c1077a6b9157b02ad8adcc5"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY4MA=="
+  },
+  {
+    "name": "r1rv80v2",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv80v2",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv80v2",
+    "commit": {
+      "sha": "d3fbd45fd5e27fbc3a69b8ab150619f0dc8a6a44",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/d3fbd45fd5e27fbc3a69b8ab150619f0dc8a6a44"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY4MHYy"
+  },
+  {
+    "name": "r1rv80v1",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv80v1",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv80v1",
+    "commit": {
+      "sha": "400e8e99dcc3cf4c18d16c9079dbeb85f6b1db7c",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/400e8e99dcc3cf4c18d16c9079dbeb85f6b1db7c"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY4MHYx"
+  },
+  {
+    "name": "r1rv79",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv79",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv79",
+    "commit": {
+      "sha": "b6cb37c83caabba2f3a6b87787dd08a51124dffe",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/b6cb37c83caabba2f3a6b87787dd08a51124dffe"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3OQ=="
+  },
+  {
+    "name": "r1rv78",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv78",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv78",
+    "commit": {
+      "sha": "30c6cc60ef5aa9062a083a8cea3e5c4f96d91a2a",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/30c6cc60ef5aa9062a083a8cea3e5c4f96d91a2a"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3OA=="
+  },
+  {
+    "name": "r1rv78v1",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv78v1",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv78v1",
+    "commit": {
+      "sha": "ada71e4cf20c990e045a57ee1d42378d84050e03",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/ada71e4cf20c990e045a57ee1d42378d84050e03"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3OHYx"
+  },
+  {
+    "name": "r1rv77",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv77",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv77",
+    "commit": {
+      "sha": "f1367f0b89962b29460eea381a12063fa7cd2428",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/f1367f0b89962b29460eea381a12063fa7cd2428"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3Nw=="
+  },
+  {
+    "name": "r1rv76",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv76",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv76",
+    "commit": {
+      "sha": "91c3c6018ab353f653749b9b56d6de384a31ec3c",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/91c3c6018ab353f653749b9b56d6de384a31ec3c"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3Ng=="
+  },
+  {
+    "name": "r1rv75",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv75",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv75",
+    "commit": {
+      "sha": "739a5316dea4c2d05a14933ad77082e671745a7b",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/739a5316dea4c2d05a14933ad77082e671745a7b"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3NQ=="
+  },
+  {
+    "name": "r1rv74",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv74",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv74",
+    "commit": {
+      "sha": "434cab9b79adfcc7d0313fbaec765a5bbfb27128",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/434cab9b79adfcc7d0313fbaec765a5bbfb27128"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3NA=="
+  },
+  {
+    "name": "r1rv73",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv73",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv73",
+    "commit": {
+      "sha": "9032821b326fba9fec7528899dfffa79f9f19aef",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/9032821b326fba9fec7528899dfffa79f9f19aef"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3Mw=="
+  },
+  {
+    "name": "r1rv72",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv72",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv72",
+    "commit": {
+      "sha": "ab485a5d2d5ad2b2f9caa000c78b69c62d0d6bb3",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/ab485a5d2d5ad2b2f9caa000c78b69c62d0d6bb3"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3Mg=="
+  },
+  {
+    "name": "r1rv72v2",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv72v2",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv72v2",
+    "commit": {
+      "sha": "c5d24562fe5220f7cd32ea16b0e1a9da4762fb4d",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/c5d24562fe5220f7cd32ea16b0e1a9da4762fb4d"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3MnYy"
+  },
+  {
+    "name": "r1rv71",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv71",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv71",
+    "commit": {
+      "sha": "1349bb03cff0b0023ef3247690410441f33b05b0",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/1349bb03cff0b0023ef3247690410441f33b05b0"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3MQ=="
+  },
+  {
+    "name": "r1rv70",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv70",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv70",
+    "commit": {
+      "sha": "1ef1da015e116c1c2d09719674dfdd437971077f",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/1ef1da015e116c1c2d09719674dfdd437971077f"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY3MA=="
+  },
+  {
+    "name": "r1rv69",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv69",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv69",
+    "commit": {
+      "sha": "273f09ff3c0842254b61bb8b6afab4246f356731",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/273f09ff3c0842254b61bb8b6afab4246f356731"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY2OQ=="
+  },
+  {
+    "name": "r1rv68",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv68",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv68",
+    "commit": {
+      "sha": "b9891bd460a7a938cf642444a0164d5e5c94fba2",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/b9891bd460a7a938cf642444a0164d5e5c94fba2"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY2OA=="
+  },
+  {
+    "name": "r1rv67",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv67",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv67",
+    "commit": {
+      "sha": "a603a13b2b7dc6b6d301fd4af3bcf5e2ac782c3b",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/a603a13b2b7dc6b6d301fd4af3bcf5e2ac782c3b"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY2Nw=="
+  },
+  {
+    "name": "r1rv66",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv66",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv66",
+    "commit": {
+      "sha": "ed1c8899b1b5ce0ff26feda81708c21b011f9750",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/ed1c8899b1b5ce0ff26feda81708c21b011f9750"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY2Ng=="
+  },
+  {
+    "name": "r1rv65",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv65",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv65",
+    "commit": {
+      "sha": "3b40be3ca8f72c84cc4092aadde3a1edea2cf726",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/3b40be3ca8f72c84cc4092aadde3a1edea2cf726"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY2NQ=="
+  },
+  {
+    "name": "r1rv64",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv64",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv64",
+    "commit": {
+      "sha": "503239b7f6b4a534bd8aae72a6522199017eb309",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/503239b7f6b4a534bd8aae72a6522199017eb309"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY2NA=="
+  },
+  {
+    "name": "r1rv63",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv63",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv63",
+    "commit": {
+      "sha": "c04b44271fa776c229f7085373897714ae4e71d7",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/c04b44271fa776c229f7085373897714ae4e71d7"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY2Mw=="
+  },
+  {
+    "name": "r1rv62",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv62",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv62",
+    "commit": {
+      "sha": "dce08dc90ff21be049c1b91ed25e81c1acb35067",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/dce08dc90ff21be049c1b91ed25e81c1acb35067"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY2Mg=="
+  },
+  {
+    "name": "r1rv61",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv61",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv61",
+    "commit": {
+      "sha": "0f1260dc7e3c42be130c45fdad5b4363170ddf32",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/0f1260dc7e3c42be130c45fdad5b4363170ddf32"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY2MQ=="
+  },
+  {
+    "name": "r1rv60",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv60",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv60",
+    "commit": {
+      "sha": "52b0902592e770b8116f80f2eab7a4048b589d7d",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/52b0902592e770b8116f80f2eab7a4048b589d7d"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY2MA=="
+  },
+  {
+    "name": "r1rv59",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv59",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv59",
+    "commit": {
+      "sha": "6de1c17dda8ffdb19431ffcadbce1836867a27a9",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/6de1c17dda8ffdb19431ffcadbce1836867a27a9"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY1OQ=="
+  },
+  {
+    "name": "r1rv58",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv58",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv58",
+    "commit": {
+      "sha": "816e35d947172edc2a9be110f468f3080c142fdf",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/816e35d947172edc2a9be110f468f3080c142fdf"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY1OA=="
+  },
+  {
+    "name": "r1rv57",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv57",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv57",
+    "commit": {
+      "sha": "531aaa6b9a0d917114a1692886872816e96864c7",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/531aaa6b9a0d917114a1692886872816e96864c7"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY1Nw=="
+  },
+  {
+    "name": "r1rv56",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv56",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv56",
+    "commit": {
+      "sha": "996763c72e128cd677fcd97d3fa74beb2c12124b",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/996763c72e128cd677fcd97d3fa74beb2c12124b"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY1Ng=="
+  },
+  {
+    "name": "r1rv55",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv55",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv55",
+    "commit": {
+      "sha": "70b39c9a84327f522bcbe89d5a5fda65ebf630ac",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/70b39c9a84327f522bcbe89d5a5fda65ebf630ac"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY1NQ=="
+  },
+  {
+    "name": "r1rv54",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv54",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv54",
+    "commit": {
+      "sha": "47dc38fa0e7e4ad000f37f66474788d74dce8c93",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/47dc38fa0e7e4ad000f37f66474788d74dce8c93"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY1NA=="
+  },
+  {
+    "name": "r1rv53",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv53",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv53",
+    "commit": {
+      "sha": "37389a116a70cce57d7dcca190358e8d6eeedeb8",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/37389a116a70cce57d7dcca190358e8d6eeedeb8"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY1Mw=="
+  },
+  {
+    "name": "r1rv52",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv52",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv52",
+    "commit": {
+      "sha": "ef676b6f7bf6c66481f128732f7f376b1f369910",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/ef676b6f7bf6c66481f128732f7f376b1f369910"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY1Mg=="
+  },
+  {
+    "name": "r1rv51",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv51",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv51",
+    "commit": {
+      "sha": "7107f91d9199401a19d4518d7c6b0f89e509d378",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/7107f91d9199401a19d4518d7c6b0f89e509d378"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY1MQ=="
+  },
+  {
+    "name": "r1rv50",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv50",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv50",
+    "commit": {
+      "sha": "f6f530b18826c26347c4cbd8c459b880f3d39aa4",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/f6f530b18826c26347c4cbd8c459b880f3d39aa4"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY1MA=="
+  },
+  {
+    "name": "r1rv49",
+    "zipball_url": "https://api.github.com/repos/bcgit/bc-java/zipball/refs/tags/r1rv49",
+    "tarball_url": "https://api.github.com/repos/bcgit/bc-java/tarball/refs/tags/r1rv49",
+    "commit": {
+      "sha": "4f7f299340043738ff3a269724d4a9ab18e739d2",
+      "url": "https://api.github.com/repos/bcgit/bc-java/commits/4f7f299340043738ff3a269724d4a9ab18e739d2"
+    },
+    "node_id": "MDM6UmVmMTA0MTY2NDg6cmVmcy90YWdzL3IxcnY0OQ=="
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/bouncycastle/bcprov-jdk15on/1.48</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/bouncycastle/bcprov-jdk15on/1.48</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="bcprov-jdk15on-1.48-javadoc.jar" title="bcprov-jdk15on-1.48-javadoc.jar">bcprov-jdk15on-1.48-javadoc.jar</a>                   2013-02-12 06:18   6304872      
+<a href="bcprov-jdk15on-1.48-javadoc.jar.asc" title="bcprov-jdk15on-1.48-javadoc.jar.asc">bcprov-jdk15on-1.48-javadoc.jar.asc</a>               2013-02-12 06:18       198      
+<a href="bcprov-jdk15on-1.48-javadoc.jar.asc.md5" title="bcprov-jdk15on-1.48-javadoc.jar.asc.md5">bcprov-jdk15on-1.48-javadoc.jar.asc.md5</a>           2013-02-12 06:18        32      
+<a href="bcprov-jdk15on-1.48-javadoc.jar.asc.sha1" title="bcprov-jdk15on-1.48-javadoc.jar.asc.sha1">bcprov-jdk15on-1.48-javadoc.jar.asc.sha1</a>          2013-02-12 06:18        40      
+<a href="bcprov-jdk15on-1.48-javadoc.jar.md5" title="bcprov-jdk15on-1.48-javadoc.jar.md5">bcprov-jdk15on-1.48-javadoc.jar.md5</a>               2013-02-12 06:18        32      
+<a href="bcprov-jdk15on-1.48-javadoc.jar.sha1" title="bcprov-jdk15on-1.48-javadoc.jar.sha1">bcprov-jdk15on-1.48-javadoc.jar.sha1</a>              2013-02-12 06:18        40      
+<a href="bcprov-jdk15on-1.48-sources.jar" title="bcprov-jdk15on-1.48-sources.jar">bcprov-jdk15on-1.48-sources.jar</a>                   2013-02-12 06:18   1906726      
+<a href="bcprov-jdk15on-1.48-sources.jar.asc" title="bcprov-jdk15on-1.48-sources.jar.asc">bcprov-jdk15on-1.48-sources.jar.asc</a>               2013-02-12 06:18       198      
+<a href="bcprov-jdk15on-1.48-sources.jar.asc.md5" title="bcprov-jdk15on-1.48-sources.jar.asc.md5">bcprov-jdk15on-1.48-sources.jar.asc.md5</a>           2013-02-12 06:18        32      
+<a href="bcprov-jdk15on-1.48-sources.jar.asc.sha1" title="bcprov-jdk15on-1.48-sources.jar.asc.sha1">bcprov-jdk15on-1.48-sources.jar.asc.sha1</a>          2013-02-12 06:18        40      
+<a href="bcprov-jdk15on-1.48-sources.jar.md5" title="bcprov-jdk15on-1.48-sources.jar.md5">bcprov-jdk15on-1.48-sources.jar.md5</a>               2013-02-12 06:18        32      
+<a href="bcprov-jdk15on-1.48-sources.jar.sha1" title="bcprov-jdk15on-1.48-sources.jar.sha1">bcprov-jdk15on-1.48-sources.jar.sha1</a>              2013-02-12 06:18        40      
+<a href="bcprov-jdk15on-1.48.jar" title="bcprov-jdk15on-1.48.jar">bcprov-jdk15on-1.48.jar</a>                           2013-02-12 06:18   2318161      
+<a href="bcprov-jdk15on-1.48.jar.asc" title="bcprov-jdk15on-1.48.jar.asc">bcprov-jdk15on-1.48.jar.asc</a>                       2013-02-12 06:18       198      
+<a href="bcprov-jdk15on-1.48.jar.asc.md5" title="bcprov-jdk15on-1.48.jar.asc.md5">bcprov-jdk15on-1.48.jar.asc.md5</a>                   2013-02-12 06:18        32      
+<a href="bcprov-jdk15on-1.48.jar.asc.sha1" title="bcprov-jdk15on-1.48.jar.asc.sha1">bcprov-jdk15on-1.48.jar.asc.sha1</a>                  2013-02-12 06:18        40      
+<a href="bcprov-jdk15on-1.48.jar.md5" title="bcprov-jdk15on-1.48.jar.md5">bcprov-jdk15on-1.48.jar.md5</a>                       2013-02-12 06:18        32      
+<a href="bcprov-jdk15on-1.48.jar.sha1" title="bcprov-jdk15on-1.48.jar.sha1">bcprov-jdk15on-1.48.jar.sha1</a>                      2013-02-12 06:18        40      
+<a href="bcprov-jdk15on-1.48.pom" title="bcprov-jdk15on-1.48.pom">bcprov-jdk15on-1.48.pom</a>                           2013-02-12 06:18      1032      
+<a href="bcprov-jdk15on-1.48.pom.asc" title="bcprov-jdk15on-1.48.pom.asc">bcprov-jdk15on-1.48.pom.asc</a>                       2013-02-12 06:18       198      
+<a href="bcprov-jdk15on-1.48.pom.asc.md5" title="bcprov-jdk15on-1.48.pom.asc.md5">bcprov-jdk15on-1.48.pom.asc.md5</a>                   2013-02-12 06:18        32      
+<a href="bcprov-jdk15on-1.48.pom.asc.sha1" title="bcprov-jdk15on-1.48.pom.asc.sha1">bcprov-jdk15on-1.48.pom.asc.sha1</a>                  2013-02-12 06:18        40      
+<a href="bcprov-jdk15on-1.48.pom.md5" title="bcprov-jdk15on-1.48.pom.md5">bcprov-jdk15on-1.48.pom.md5</a>                       2013-02-12 06:18        32      
+<a href="bcprov-jdk15on-1.48.pom.sha1" title="bcprov-jdk15on-1.48.pom.sha1">bcprov-jdk15on-1.48.pom.sha1</a>                      2013-02-12 06:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/bcgit/bc-java/tags?per_page=100&page=2' | rg '\"name\": \"r1rv48\"|\"name\": \"r1rv47\"|\"name\":' -n" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-javadoc.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 22 May 2026 19:30:54 GMT
+content-type: application/java-archive
+content-length: 1906726
+cf-ray: 9ffe3cf02fc303a9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 471920
+etag: "bd0faddcb254f1808c59dcf8f157f12b"
+last-modified: Tue, 12 Feb 2013 06:19:35 GMT
+x-checksum-md5: bd0faddcb254f1808c59dcf8f157f12b
+x-checksum-sha1: 3824866f059053c43b118eb5a067ea1800d8c913
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 22 May 2026 19:30:54 GMT
+content-type: application/java-archive
+content-length: 6304872
+cf-ray: 9ffe3cf0897d24c0-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 34885
+etag: "d70e4b1697eb372849ae4d9bb9e47c15"
+last-modified: Tue, 12 Feb 2013 06:19:09 GMT
+x-checksum-md5: d70e4b1697eb372849ae4d9bb9e47c15
+x-checksum-sha1: 4916297ae325bd98197a752491c6528f535bedbb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 1 in 201ms:
+exec
+/usr/bin/bash -lc "curl -fsSL -D /tmp/bc-tags-page2.headers 'https://api.github.com/repos/bcgit/bc-java/tags?per_page=100&page=2' -o /tmp/bc-tags-page2.json; wc -c /tmp/bc-tags-page2.json; sed -n '1,40p' /tmp/bc-tags-page2.headers; sed -n '1,120p' /tmp/bc-tags-page2.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+5 /tmp/bc-tags-page2.json
+HTTP/2 200 
+date: Fri, 22 May 2026 19:30:54 GMT
+content-type: application/json; charset=utf-8
+content-length: 5
+cache-control: public, max-age=60, s-maxage=60
+vary: Accept,Accept-Encoding, Accept, X-Requested-With
+etag: "992aaf92b487506974e4305db4a64326866f3ed48b2ba424cef8fbe4e28f72b0"
+last-modified: Fri, 22 May 2026 13:13:55 GMT
+x-github-media-type: github.v3; format=json
+link: <https://api.github.com/repositories/10416648/tags?per_page=100&page=1>; rel="prev", <https://api.github.com/repositories/10416648/tags?per_page=100&page=1>; rel="last", <https://api.github.com/repositories/10416648/tags?per_page=100&page=1>; rel="first"
+x-github-api-version-selected: 2022-11-28
+access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning
+access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'
+server: github.com
+accept-ranges: bytes
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 56
+x-ratelimit-used: 4
+x-ratelimit-resource: core
+x-ratelimit-reset: 1779481849
+x-github-request-id: 620E:199168:8703C7D:8069BC9:6A10AEF3
+
+[
+
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/bcgit/bc-java/tree/r1rv48 || true && curl -fsI https://github.com/bcgit/bc-java/tree/r1v48 || true && curl -fsI https://github.com/bcgit/bc-java/tree/r148 || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/bcgit/bc-java/git/ref/tags/r1rv48 || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 219ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 1206ms:
+HTTP/2 404 
+date: Fri, 22 May 2026 19:31:00 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=tAPhyc73294vzsijoPKC9MP0MknK%2BDzMJPqREeRSTCDduxhYiFsm5N15A2ZyeFNs6Pn3YBL5a%2Br8ycPNuWqBoxVJUVE6kkXiVEiTIpFxg2YAYR0pQxTR3fd1rrkEK766Xjng2UmTewduPuz2apK%2BZzk1XhdxLtbkFT4vw%2Bfw5s4uYLUnfpx3fPLv2PpLwjdNPlGblmopV3AkoR05cQABaEFu8VO7CFXrRrKZk%2BBr1BMcQvE0H1niqnYqWCuIVXNCUhlBlgLba4K8aESdo62RPA%3D%3D--xowm28L%2FEO77brw8--zdlzUrWiGl%2FlG8ZkaE6Bgw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1361744506.1779478259; expires=Sat, 22 May 2027 19:30:59 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 22 May 2027 19:30:59 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6208:1CA578:C7CE57F:9B79CD0:6A10AEF3
+
+HTTP/2 404 
+date: Fri, 22 May 2026 19:31:00 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=00LsjCW8gkza9cRszogaNucCunFpdecek%2F6UMOdsfFeOO5O3pTDIFEBSB3yKU%2Fl3vejg%2F9Ps4%2B5aAytDuFeHzIDKVpykQ8K3UyPJVp2GzKvYaNbOpIHeFQBBvK7RoTB1YhXZD2n9zyAvjxdLEDsiixCt9dYqsyxAnxf%2FkvqbiZ5kRjj6QxUqtFvK%2F5pxhWpb4lTrQM1q%2BfjWtC1tAZdyXvoUUfTlplpV0SABv73mZVDt%2BixT3WrI8SHJrnGaHaRAwTraGx3R%2BJtTbPXap7MJOQ%3D%3D--Z49EfMzWkijlodSF--wLWFaFvAkphyDmaSmtO55Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1752684201.1779478260; expires=Sat, 22 May 2027 19:31:00 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 22 May 2027 19:31:00 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6210:1BF4D5:CDA5854:9FE7672:6A10AEF4
+
+HTTP/2 404 
+date: Fri, 22 May 2026 19:31:00 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=zg6r0fIt%2FWTIMGyNQW1mQ005ZBrKV%2BcZBKd9r0vUryu13L1yco3KDmzG8xPjP7Vy7vgJQ00CuEQy6N9pc%2BK3WpNv7bxkz7nVPYzJoUt03FZ1uDDwm2hbvL%2Fhr4gr0n168oBE0%2BTXxEHbmAtuDXpd%2Fr59hvH64C76eMz4DJrR59EkQhnFzTvEXtRkty8LM2Nu0NXqTfAVVNJNt1TQw3hTshTuYASLmXTpIjgUmmAeMeYRAH1jBN3rAE7nkMUllxPqCqym%2FMG7yeiHwuFdEzIMow%3D%3D--KliJsq0iazFaV1nO--TlhhudDuEZZEsYltuFGzFQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2060722354.1779478260; expires=Sat, 22 May 2027 19:31:00 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 22 May 2027 19:31:00 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6211:36854:CBB10AE:9E57617:6A10AEF4
+
+
+web search: 
+web search: bcprov-jdk15on 1.48 source tests Bouncy Castle 1.48
+web search: 
+web search: site:downloads.bouncycastle.org/java 1.48 source Bouncy Castle "bcprov-jdk15on"
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/ | rg 'bctest'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://downloads.bouncycastle.org/java/ | rg '148|1\\.48|bcprov-jdk15on-148|bctest.*148'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+exec
+/usr/bin/bash -lc 'curl -fsI https://downloads.bouncycastle.org/java/bcprov-jdk15on-148.tar.gz || true; curl -fsI https://downloads.bouncycastle.org/java/bcprov-jdk15on-148.zip || true; curl -fsI https://downloads.bouncycastle.org/java/bctest-jdk15on-148.jar || true; curl -fsI https://downloads.bouncycastle.org/java/bctest-jdk15on-148.tar.gz || true; curl -fsI https://downloads.bouncycastle.org/java/bcprov-jdk15on-1.48.tar.gz || true; curl -fsI https://downloads.bouncycastle.org/java/bctest-jdk15on-1.48.jar || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ exited 1 in 1146ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 5668ms:
+HTTP/2 302 
+date: Fri, 22 May 2026 19:31:14 GMT
+server: LiteSpeed
+cache-control: no-cache, no-store, must-revalidate, max-age=0
+location: http://www.bouncycastle.org/archive/148/bcprov-jdk15on-148.tar.gz
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+HTTP/2 302 
+date: Fri, 22 May 2026 19:31:15 GMT
+server: LiteSpeed
+cache-control: no-cache, no-store, must-revalidate, max-age=0
+location: http://www.bouncycastle.org/archive/148/bcprov-jdk15on-148.zip
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+HTTP/2 302 
+date: Fri, 22 May 2026 19:31:16 GMT
+server: LiteSpeed
+cache-control: no-cache, no-store, must-revalidate, max-age=0
+location: http://www.bouncycastle.org/archive/148/bctest-jdk15on-148.jar
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+HTTP/2 302 
+date: Fri, 22 May 2026 19:31:17 GMT
+server: LiteSpeed
+cache-control: no-cache, no-store, must-revalidate, max-age=0
+location: http://www.bouncycastle.org/archive/148/bctest-jdk15on-148.tar.gz
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+HTTP/2 302 
+date: Fri, 22 May 2026 19:31:18 GMT
+server: LiteSpeed
+cache-control: no-cache, no-store, must-revalidate, max-age=0
+location: http://www.bouncycastle.org/archive/1/bcprov-jdk15on-1.48.tar.gz
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+HTTP/2 302 
+date: Fri, 22 May 2026 19:31:19 GMT
+server: LiteSpeed
+cache-control: no-cache, no-store, must-revalidate, max-age=0
+location: http://www.bouncycastle.org/archive/1/bctest-jdk15on-1.48.jar
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+codex
+The exact release is older than the GitHub tag history exposed for `bc-java`, but Bouncy Castle’s archive redirects expose the old `148` release artifacts. I’m verifying which of those are actual files and whether the archived test artifact is suitable for `test-code-url`.
+exec
+/usr/bin/bash -lc 'curl -fsIL https://downloads.bouncycastle.org/java/bcprov-jdk15on-148.tar.gz || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+exec
+/usr/bin/bash -lc 'curl -fsIL https://downloads.bouncycastle.org/java/bctest-jdk15on-148.jar || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+exec
+/usr/bin/bash -lc 'curl -fsIL https://downloads.bouncycastle.org/java/bcprov-jdk15on-148-jdk15on-javadoc.zip || true; curl -fsIL https://downloads.bouncycastle.org/java/bcprov-jdk15on-148-javadoc.zip || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 2966ms:
+HTTP/2 302 
+date: Fri, 22 May 2026 19:31:28 GMT
+server: LiteSpeed
+cache-control: no-cache, no-store, must-revalidate, max-age=0
+location: http://www.bouncycastle.org/archive/148/bcprov-jdk15on-148.tar.gz
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+HTTP/1.1 301 Moved Permanently
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=100
+Date: Fri, 22 May 2026 19:31:29 GMT
+Server: LiteSpeed
+Location: https://www.bouncycastle.org/archive/148/bcprov-jdk15on-148.tar.gz
+
+HTTP/2 404 
+x-powered-by: PHP/8.2.31
+expires: Wed, 11 Jan 1984 05:00:00 GMT
+cache-control: no-cache, must-revalidate, max-age=0, no-store, private
+content-type: text/html; charset=UTF-8
+date: Fri, 22 May 2026 19:31:30 GMT
+server: LiteSpeed
+vary: Accept-Encoding
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+x-xss-protection: 1
+referrer-policy: same-origin
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+ succeeded in 2968ms:
+HTTP/2 302 
+date: Fri, 22 May 2026 19:31:28 GMT
+server: LiteSpeed
+cache-control: no-cache, no-store, must-revalidate, max-age=0
+location: http://www.bouncycastle.org/archive/148/bctest-jdk15on-148.jar
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+HTTP/1.1 301 Moved Permanently
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=100
+Date: Fri, 22 May 2026 19:31:29 GMT
+Server: LiteSpeed
+Location: https://www.bouncycastle.org/archive/148/bctest-jdk15on-148.jar
+
+HTTP/2 404 
+x-powered-by: PHP/8.2.31
+expires: Wed, 11 Jan 1984 05:00:00 GMT
+cache-control: no-cache, must-revalidate, max-age=0, no-store, private
+content-type: text/html; charset=UTF-8
+date: Fri, 22 May 2026 19:31:30 GMT
+server: LiteSpeed
+vary: Accept-Encoding
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+x-xss-protection: 1
+referrer-policy: same-origin
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+ succeeded in 5053ms:
+HTTP/2 302 
+date: Fri, 22 May 2026 19:31:30 GMT
+server: LiteSpeed
+cache-control: no-cache, no-store, must-revalidate, max-age=0
+location: http://www.bouncycastle.org/archive/148/bcprov-jdk15on-148.jdk15on-javadoc.zip
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+HTTP/1.1 301 Moved Permanently
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=100
+Date: Fri, 22 May 2026 19:31:30 GMT
+Server: LiteSpeed
+Location: https://www.bouncycastle.org/archive/148/bcprov-jdk15on-148.jdk15on-javadoc.zip
+
+HTTP/2 404 
+x-powered-by: PHP/8.2.31
+expires: Wed, 11 Jan 1984 05:00:00 GMT
+cache-control: no-cache, must-revalidate, max-age=0, no-store, private
+content-type: text/html; charset=UTF-8
+date: Fri, 22 May 2026 19:31:31 GMT
+server: LiteSpeed
+vary: Accept-Encoding
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+x-xss-protection: 1
+referrer-policy: same-origin
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+HTTP/2 302 
+date: Fri, 22 May 2026 19:31:32 GMT
+server: LiteSpeed
+cache-control: no-cache, no-store, must-revalidate, max-age=0
+location: http://www.bouncycastle.org/archive/148/bcprov-jdk15on-148.javadoc.zip
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+HTTP/1.1 301 Moved Permanently
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=100
+Date: Fri, 22 May 2026 19:31:33 GMT
+Server: LiteSpeed
+Location: https://www.bouncycastle.org/archive/148/bcprov-jdk15on-148.javadoc.zip
+
+HTTP/2 404 
+x-powered-by: PHP/8.2.31
+expires: Wed, 11 Jan 1984 05:00:00 GMT
+cache-control: no-cache, must-revalidate, max-age=0, no-store, private
+content-type: text/html; charset=UTF-8
+date: Fri, 22 May 2026 19:31:34 GMT
+server: LiteSpeed
+vary: Accept-Encoding
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+x-xss-protection: 1
+referrer-policy: same-origin
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.bouncycastle%22%20AND%20a:%22bctest-jdk15on%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.bouncycastle%22%20AND%20bctest&rows=50&wt=json'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/bcprov-1.48-sources.jar https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-sources.jar && jar tf /tmp/bcprov-1.48-sources.jar | rg '("'^|/)test|Test'"\\.java"'$|/tests?/'"' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 147ms:
+{"responseHeader":{"status":0,"QTime":3,"params":{"q":"g:\"org.bouncycastle\" AND bctest","core":"","indent":"off","spellcheck":"true","fl":"id,g,a,latestVersion,p,ec,repositoryId,text,timestamp,versionCount","start":"","spellcheck.count":"5","sort":"score desc,timestamp desc,g asc,a asc","rows":"50","wt":"json","version":"2.2"}},"response":{"numFound":0,"start":0,"docs":[]},"spellcheck":{"suggestions":["bctest",{"numFound":5,"startOffset":25,"endOffset":31,"suggestion":["xctest","bctester","doctest","mvctest","kotest"]}]}}
+ succeeded in 150ms:
+{"responseHeader":{"status":0,"QTime":4,"params":{"q":"g:\"org.bouncycastle\" AND a:\"bctest-jdk15on\"","core":"","indent":"off","spellcheck":"true","fl":"id,g,a,latestVersion,p,ec,repositoryId,text,timestamp,versionCount","start":"","spellcheck.count":"5","sort":"score desc,timestamp desc,g asc,a asc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":0,"start":0,"docs":[]},"spellcheck":{"suggestions":["bctest",{"numFound":5,"startOffset":28,"endOffset":42,"suggestion":["xctest","bctester","doctest","mvctest","kotest"]}]}}
+ succeeded in 191ms:
+org/bouncycastle/util/test/
+org/bouncycastle/util/test/FixedSecureRandom.java
+org/bouncycastle/util/test/SimpleTestResult.java
+org/bouncycastle/util/test/TestResult.java
+org/bouncycastle/util/test/SimpleTest.java
+org/bouncycastle/util/test/NumberParsing.java
+org/bouncycastle/util/test/UncloseableOutputStream.java
+org/bouncycastle/util/test/TestFailedException.java
+org/bouncycastle/util/test/Test.java
+
+web search: 
+web search: "bctest-jdk15on-1.48.jar"
+exec
+/usr/bin/bash -lc "jar tf /tmp/bcprov-1.48-sources.jar | head -20 && jar tf /tmp/bcprov-1.48-sources.jar | rg 'org/bouncycastle/.*test/.*Test\\.java|org/bouncycastle/.*tests/' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/bouncycastle/
+org/bouncycastle/x509/
+org/bouncycastle/x509/X509AttributeCertStoreSelector.java
+org/bouncycastle/x509/X509StoreParameters.java
+org/bouncycastle/x509/X509Util.java
+org/bouncycastle/x509/X509V3CertificateGenerator.java
+org/bouncycastle/x509/CertPathReviewerException.java
+org/bouncycastle/x509/X509V2CRLGenerator.java
+org/bouncycastle/x509/AttributeCertificateHolder.java
+org/bouncycastle/x509/X509Attribute.java
+org/bouncycastle/x509/X509CertStoreSelector.java
+org/bouncycastle/x509/X509V1CertificateGenerator.java
+org/bouncycastle/x509/ExtCertificateEncodingException.java
+org/bouncycastle/x509/util/
+org/bouncycastle/x509/util/LDAPStoreHelper.java
+org/bouncycastle/x509/util/StreamParsingException.java
+org/bouncycastle/x509/util/StreamParser.java
+org/bouncycastle/util/test/SimpleTest.java
+org/bouncycastle/util/test/Test.java
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-test-sources.jar || true; curl -fsI https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-tests-sources.jar || true; curl -fsI https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-test.jar || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.bouncycastle%22%20AND%20a:%22bcprov-jdk15on%22%20AND%20v:%221.48%22&core=gav&rows=20&wt=json'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+{"responseHeader":{"status":0,"QTime":3,"params":{"q":"g:\"org.bouncycastle\" AND a:\"bcprov-jdk15on\" AND v:\"1.48\"","core":"gav","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"org.bouncycastle:bcprov-jdk15on:1.48","g":"org.bouncycastle","a":"bcprov-jdk15on","v":"1.48","p":"jar","timestamp":1360649881000,"ec":["-sources.jar","-javadoc.jar",".jar",".pom"],"tags":["apis","cryptographic","package","contains","provider","crypto","cryptography","implementation","castle","java","bouncy","algorithms","lightweight","this"]}]}}
+ succeeded in 1061ms:
+HTTP/2 404 
+date: Fri, 22 May 2026 19:31:54 GMT
+content-type: text/html
+cf-ray: 9ffe3e660fd203a9-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Fri, 22 May 2026 19:31:54 GMT
+content-type: text/html
+cf-ray: 9ffe3e6889117a85-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-tests-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Fri, 22 May 2026 19:31:54 GMT
+content-type: text/html
+cf-ray: 9ffe3e6aad0adf5e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-test.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: Maven Central org.bouncycastle bcprov-jdk15on 1.48
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -5 | xargs -r sed -n '1,40p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+{
+  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48"
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 301ms:
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | wc -l' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' build/discovered-artifact-metadata -m 3 -n" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ exited 1 in 0ms:
+codex
+I found Maven Central publishes only the main jar, POM, sources jar, and javadoc jar for `1.48`; the usual test classifier URLs return 404, and the old Bouncy Castle archive redirects do not resolve to retrievable files. I’m going to use Maven Central for source and documentation, mark the test suite URL as `N/A`, and leave language/native-image exclusion fields absent because this is a JVM Java jar.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+index 944df5e8d2fd512bff17112d339abb08e59177ff..dc150298a3acb356c79c91ea41069f370dd6b554
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48"
++  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-javadoc.jar",
++  "description" : "Bouncy Castle Provider is a Java cryptography provider and lightweight API implementation for the Bouncy Castle Crypto APIs. The 1.48 bcprov-jdk15on artifact targets JDK 1.5 through JDK 1.7 and supplies cryptographic algorithms for JCA/JCE-based applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+index 944df5e8d2fd512bff17112d339abb08e59177ff..dc150298a3acb356c79c91ea41069f370dd6b554
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48"
++  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-javadoc.jar",
++  "description" : "Bouncy Castle Provider is a Java cryptography provider and lightweight API implementation for the Bouncy Castle Crypto APIs. The 1.48 bcprov-jdk15on artifact targets JDK 1.5 through JDK 1.7 and supplies cryptographic algorithms for JCA/JCE-based applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+{
+  "coordinates": "org.bouncycastle:bcprov-jdk15on:1.48",
+  "repository-url": "https://github.com/bcgit/bc-java",
+  "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-javadoc.jar",
+  "description": "Bouncy Castle Provider is a Java cryptography provider and lightweight API implementation for the Bouncy Castle Crypto APIs. The 1.48 bcprov-jdk15on artifact targets JDK 1.5 through JDK 1.7 and supplies cryptographic algorithms for JCA/JCE-based applications."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-javadoc.jar >/tmp/bc-doc.head && sed -n '1,8p' /tmp/bc-doc.head" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 22 May 2026 19:32:32 GMT
+content-type: application/java-archive
+content-length: 6304872
+cf-ray: 9ffe3f595905b86b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 34983
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/bcprov-jdk15on-1.48-sources.jar >/tmp/bc-src.head && sed -n '1,8p' /tmp/bc-src.head" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 22 May 2026 19:32:32 GMT
+content-type: application/java-archive
+content-length: 1906726
+cf-ray: 9ffe3f596a80be81-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 472019
+
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+index 944df5e8d2fd512bff17112d339abb08e59177ff..dc150298a3acb356c79c91ea41069f370dd6b554
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48"
++  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-javadoc.jar",
++  "description" : "Bouncy Castle Provider is a Java cryptography provider and lightweight API implementation for the Bouncy Castle Crypto APIs. The 1.48 bcprov-jdk15on artifact targets JDK 1.5 through JDK 1.7 and supplies cryptographic algorithms for JCA/JCE-based applications."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+index 944df5e8d2fd512bff17112d339abb08e59177ff..dc150298a3acb356c79c91ea41069f370dd6b554
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48"
++  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-javadoc.jar",
++  "description" : "Bouncy Castle Provider is a Java cryptography provider and lightweight API implementation for the Bouncy Castle Crypto APIs. The 1.48 bcprov-jdk15on artifact targets JDK 1.5 through JDK 1.7 and supplies cryptographic algorithms for JCA/JCE-based applications."
+ }
+
+web search: 
+web search: repo1.maven.org org bouncycastle bcprov-jdk15on 1.48 sources javadoc
+codex
+Updated [org.bouncycastle-bcprov-jdk15on-1.48.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json) with the repository, Maven Central source and javadoc URLs, `test-code-url: "N/A"`, and a two-sentence description. Maven Central publishes sources and javadocs for `1.48`, and `bcgit/bc-java` is the Bouncy Castle Java repository mirror. ([repo1.maven.org](https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/?utm_source=openai))
+
+I validated the JSON with `jq` and verified the source/javadoc URLs return HTTP 200 when `$version$` is replaced with `1.48`. No `language` or `not-for-native-image` fields were added because this is a JVM Java jar, not a Kotlin/Groovy/Scala or non-JVM artifact.
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+index 944df5e8d2fd512bff17112d339abb08e59177ff..dc150298a3acb356c79c91ea41069f370dd6b554
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48"
++  "coordinates" : "org.bouncycastle:bcprov-jdk15on:1.48",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/$version$/bcprov-jdk15on-$version$-javadoc.jar",
++  "description" : "Bouncy Castle Provider is a Java cryptography provider and lightweight API implementation for the Bouncy Castle Crypto APIs. The 1.48 bcprov-jdk15on artifact targets JDK 1.5 through JDK 1.7 and supplies cryptographic algorithms for JCA/JCE-based applications."
+ }
+
+tokens used
+88,343
+Updated [org.bouncycastle-bcprov-jdk15on-1.48.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15on-1.48.json) with the repository, Maven Central source and javadoc URLs, `test-code-url: "N/A"`, and a two-sentence description. Maven Central publishes sources and javadocs for `1.48`, and `bcgit/bc-java` is the Bouncy Castle Java repository mirror. ([repo1.maven.org](https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.48/?utm_source=openai))
+
+I validated the JSON with `jq` and verified the source/javadoc URLs return HTTP 200 when `$version$` is replaced with `1.48`. No `language` or `not-for-native-image` fields were added because this is a JVM Java jar, not a Kotlin/Groovy/Scala or non-JVM artifact.
+Ran agent for org.bouncycastle:bcprov-jdk15on:1.48 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599/build/agent-artifact-discovery-logs/org.bouncycastle-bcprov-jdk15on-1.48.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1496-32a44599/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 42s
+9 actionable tasks: 9 executed
