@@ -17,6 +17,7 @@ import java.util.Enumeration;
 import javax.ws.rs.core.MultivaluedMap;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,7 +70,18 @@ public class ServiceFinderTest {
         try (FallbackTrackingClassLoader classLoader = new FallbackTrackingClassLoader(
                 new URL[] {codeSourceUrl(ServiceFinder.class)},
                 ServiceFinderTest.class.getClassLoader())) {
-            final Class<?> isolatedServiceFinder = Class.forName(SERVICE_FINDER_CLASS_NAME, true, classLoader);
+            final Class<?> isolatedServiceFinder;
+            try {
+                isolatedServiceFinder = Class.forName(SERVICE_FINDER_CLASS_NAME, true, classLoader);
+            } catch (ClassNotFoundException exception) {
+                if (isNativeImageRuntime()) {
+                    throw new TestAbortedException(
+                            "Native image runtime does not support reloading ServiceFinder via isolated URLClassLoader",
+                            exception
+                    );
+                }
+                throw exception;
+            }
 
             assertThat(isolatedServiceFinder.getName()).isEqualTo(SERVICE_FINDER_CLASS_NAME);
             if (!isNativeImageRuntime()) {
