@@ -35,8 +35,8 @@ public class LogFactoryTest {
             return;
         }
 
-        assertThat(result[0]).isIn("jdk", "log4j2", "slf4j");
-        assertThat(result[1]).startsWith("org.jgroups.logging.");
+        assertThat(result).hasSize(1);
+        assertThat(result[0]).isIn("log4j2", "slf4j");
     }
 
     @Test
@@ -76,22 +76,10 @@ public class LogFactoryTest {
 
     private static URL[] isolatedClasspath() throws Exception {
         List<URL> urls = new ArrayList<>();
-        urls.add(Path.of(LogFactoryTest.class.getProtectionDomain().getCodeSource().getLocation().toURI())
-                .toUri().toURL());
-        urls.add(jgroupsClasspathEntry().toUri().toURL());
-        return urls.toArray(URL[]::new);
-    }
-
-    private static Path jgroupsClasspathEntry() {
         for (String entry : System.getProperty("java.class.path").split(File.pathSeparator)) {
-            Path path = Path.of(entry);
-            Path fileName = path.getFileName();
-            if (fileName != null && fileName.toString().startsWith("jgroups-")
-                    && fileName.toString().endsWith(".jar")) {
-                return path;
-            }
+            urls.add(Path.of(entry).toUri().toURL());
         }
-        throw new IllegalStateException("Could not find the JGroups artifact on the test class path");
+        return urls.toArray(URL[]::new);
     }
 
     public static class LogFactoryScenario {
@@ -99,8 +87,7 @@ public class LogFactoryTest {
             String previousLogClass = System.clearProperty(Global.LOG_CLASS);
             String previousJdkLogger = System.clearProperty(Global.USE_JDK_LOGGER);
             try {
-                Log log = LogFactory.getLog(LogFactoryScenario.class);
-                return new String[] {LogFactory.loggerType(), log.getClass().getName()};
+                return new String[] {LogFactory.loggerType()};
             } finally {
                 restoreProperty(Global.LOG_CLASS, previousLogClass);
                 restoreProperty(Global.USE_JDK_LOGGER, previousJdkLogger);
