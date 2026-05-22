@@ -49,6 +49,90 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             "org.example:demo:1.0.0",
         )
 
+    def test_javac_metadata_index_update_promotes_final_after_classifier_prerelease(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self._write_index(
+                temp_dir,
+                "org.example",
+                "demo",
+                [
+                    {
+                        "latest": True,
+                        "metadata-version": "3.0.0-M5-javax",
+                        "tested-versions": ["3.0.0-M5-javax"],
+                    },
+                ],
+            )
+
+            previous_cwd = os.getcwd()
+            try:
+                os.chdir(temp_dir)
+                with patch("ai_workflows.java_fail_workflow.run_gradle_task") as run_gradle_task:
+                    update_metadata_index_json(JAVAC_CONFIG, "org.example", "demo", "3.0.0")
+            finally:
+                os.chdir(previous_cwd)
+
+        run_gradle_task.assert_called_once_with(
+            "addLibraryAsLatestMetadataIndexJson",
+            "org.example:demo:3.0.0",
+        )
+
+    def test_javac_metadata_index_update_promotes_newer_classifier_prerelease(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self._write_index(
+                temp_dir,
+                "org.example",
+                "demo",
+                [
+                    {
+                        "latest": True,
+                        "metadata-version": "3.0.0-M4-javax",
+                        "tested-versions": ["3.0.0-M4-javax"],
+                    },
+                ],
+            )
+
+            previous_cwd = os.getcwd()
+            try:
+                os.chdir(temp_dir)
+                with patch("ai_workflows.java_fail_workflow.run_gradle_task") as run_gradle_task:
+                    update_metadata_index_json(JAVAC_CONFIG, "org.example", "demo", "3.0.0-M5-javax")
+            finally:
+                os.chdir(previous_cwd)
+
+        run_gradle_task.assert_called_once_with(
+            "addLibraryAsLatestMetadataIndexJson",
+            "org.example:demo:3.0.0-M5-javax",
+        )
+
+    def test_javac_metadata_index_update_promotes_newer_separated_qualifier_number(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self._write_index(
+                temp_dir,
+                "org.example",
+                "demo",
+                [
+                    {
+                        "latest": True,
+                        "metadata-version": "1.0-alpha-7",
+                        "tested-versions": ["1.0-alpha-7"],
+                    },
+                ],
+            )
+
+            previous_cwd = os.getcwd()
+            try:
+                os.chdir(temp_dir)
+                with patch("ai_workflows.java_fail_workflow.run_gradle_task") as run_gradle_task:
+                    update_metadata_index_json(JAVAC_CONFIG, "org.example", "demo", "1.0-alpha-8")
+            finally:
+                os.chdir(previous_cwd)
+
+        run_gradle_task.assert_called_once_with(
+            "addLibraryAsLatestMetadataIndexJson",
+            "org.example:demo:1.0-alpha-8",
+        )
+
     def test_javac_metadata_index_update_promotes_newer_patch_version(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             self._write_index(
