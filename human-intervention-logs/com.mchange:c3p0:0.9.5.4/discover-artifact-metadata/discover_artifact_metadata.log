@@ -1,0 +1,758 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e50d7-f697-7402-87a5-d07e99f87b5e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.mchange:c3p0:0.9.5.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "0.9.5.4" when "$version$" is replaced with "0.9.5.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.mchange:c3p0:0.9.5.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.9.5.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and upstream sources, then write the JSON directly in the requested file.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json && sed -n '1,160p' build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+-rw-rw-r-- 1 vjovanov vjovanov 49 May 22 19:59 build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+{
+  "coordinates" : "com.mchange:c3p0:0.9.5.4"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'com\\.mchange:c3p0|mchange.*c3p0|c3p0' . -g '*.json' -g '*.xml' -g '*.gradle'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+ exited 1 in 0ms:
+web search: 
+web search: Maven com.mchange c3p0 0.9.5.4 source jar test jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/
+web search: 
+web search: site:github.com/swaldman/c3p0 0.9.5.4 tag
+web search: 
+web search: https://github.com/swaldman/c3p0/tags
+codex
+Maven Central has the main jar, sources jar, and javadoc jar for `0.9.5.4`; it does not list a test jar, so I’m checking the upstream tag for the version-specific test path.
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+ succeeded in 0ms:
+metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:7:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-sources.jar",
+metadata/org.springframework/spring-context-support/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-context-support/src/test",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:6:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:40:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:42:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:54:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:56:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:6:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:92:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:94:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:95:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:109:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:111:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:112:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:126:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:128:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:129:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:143:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:145:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:146:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:160:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:162:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:163:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:177:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:179:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:180:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:194:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:196:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:197:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:211:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:213:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:214:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:26:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:28:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:29:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/org.springframework/spring-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+metadata/org.springframework/spring-test/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/org.springframework.test/src/test/java",
+metadata/org.springframework/spring-test/index.json:8:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/test/package-summary.html",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/swaldman/c3p0.git '*0.9.5.4*'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/swaldman/c3p0/contents?ref=c3p0-0.9.5.4 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+ succeeded in 281ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "e48580de2422d3db940a3c5cea6896d46d3d51e4",
+    "size": 122,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/.gitignore?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/.gitignore",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/e48580de2422d3db940a3c5cea6896d46d3d51e4",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/.gitignore?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/e48580de2422d3db940a3c5cea6896d46d3d51e4",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "cfa0503d4b596f186f2c4403cb090f6a4ec4bf90",
+    "size": 1101,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/cfa0503d4b596f186f2c4403cb090f6a4ec4bf90",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/cfa0503d4b596f186f2c4403cb090f6a4ec4bf90",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE"
+    }
+  },
+  {
+    "name": "LICENSE-EPL",
+    "path": "LICENSE-EPL",
+    "sha": "5a7d9d4a4ffb86482f2b89496b9495bf018c8ce1",
+    "size": 11481,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE-EPL?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE-EPL",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/5a7d9d4a4ffb86482f2b89496b9495bf018c8ce1",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/LICENSE-EPL",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE-EPL?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/5a7d9d4a4ffb86482f2b89496b9495bf018c8ce1",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE-EPL"
+    }
+  },
+  {
+    "name": "LICENSE-LGPL",
+    "path": "LICENSE-LGPL",
+    "sha": "f349ccd9fa3766f62acced61ce14f492e3f31d2f",
+    "size": 26326,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE-LGPL?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE-LGPL",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/f349ccd9fa3766f62acced61ce14f492e3f31d2f",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/LICENSE-LGPL",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE-LGPL?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/f349ccd9fa3766f62acced61ce14f492e3f31d2f",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE-LGPL"
+    }
+  },
+  {
+    "name": "README-SRC",
+    "path": "README-SRC",
+    "sha": "075021412809621e71a36e54092b689dfaa16428",
+    "size": 1271,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/README-SRC?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/README-SRC",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/075021412809621e71a36e54092b689dfaa16428",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/README-SRC",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/README-SRC?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/075021412809621e71a36e54092b689dfaa16428",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/README-SRC"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "530bd433baf270afad70d31284a933fcae74b9b2",
+    "size": 1710,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/README.md?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/README.md",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/530bd433baf270afad70d31284a933fcae74b9b2",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/README.md?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/530bd433baf270afad70d31284a933fcae74b9b2",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/README.md"
+    }
+  },
+  {
+    "name": "build.properties",
+    "path": "build.properties",
+    "sha": "cf5555b0265d63ca6711e9214f8a53773e0a053e",
+    "size": 2741,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/build.properties?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/build.properties",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/cf5555b0265d63ca6711e9214f8a53773e0a053e",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/build.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/build.properties?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/cf5555b0265d63ca6711e9214f8a53773e0a053e",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/build.properties"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "build.xml",
+    "sha": "e872afe0de93d99b3f3b6cbc3d7e554197873fe8",
+    "size": 37165,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/build.xml?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/build.xml",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/e872afe0de93d99b3f3b6cbc3d7e554197873fe8",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/build.xml?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/e872afe0de93d99b3f3b6cbc3d7e554197873fe8",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/build.xml"
+    }
+  },
+  {
+    "name": "dbms",
+    "path": "dbms",
+    "sha": "14407d65d8aa8bc09bb1f244aebb4c1ed0162314",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/dbms?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/dbms",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/14407d65d8aa8bc09bb1f244aebb4c1ed0162314",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/dbms?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/14407d65d8aa8bc09bb1f244aebb4c1ed0162314",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/dbms"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "b29b59d08eaa1b28097c9ecee77ddac042b2eae4",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/b29b59d08eaa1b28097c9ecee77ddac042b2eae4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/b29b59d08eaa1b28097c9ecee77ddac042b2eae4",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src"
+    }
+  }
+]
+
+ succeeded in 374ms:
+c61c00b1f7e3d6cf23501cd02b429474e4d22c73	refs/tags/c3p0-0.9.5.4
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+ <modelVersion>4.0.0</modelVersion>
+
+ <groupId>com.mchange</groupId>
+ <artifactId>c3p0</artifactId> 
+ <packaging>jar</packaging> 
+ <version>0.9.5.4</version>
+
+ <name>c3p0</name>
+ <description>a JDBC Connection pooling / Statement caching library</description>
+ <url>https://github.com/swaldman/c3p0</url>
+ <licenses>
+   <license>
+     <name>GNU Lesser General Public License, Version 2.1</name>
+     <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+     <distribution>repo</distribution>
+   </license>
+   <license>                                      
+     <name>Eclipse Public License, Version 1.0</name>
+     <url>http://www.eclipse.org/org/documents/epl-v10.php</url> 
+     <distribution>repo</distribution>
+   </license>
+</licenses>
+ <scm>
+   <url>scm:git:git@github.com:swaldman/c3p0.git</url>              
+   <connection>scm:git:git@github.com:swaldman/c3p0.git</connection>
+ </scm>
+ <developers>
+   <developer>
+     <id>swaldman</id>                  
+     <name>Steve Waldman</name>         
+     <email>swaldman@mchange.com</email>
+   </developer>
+ </developers>
+ <dependencies>
+   <dependency>
+     <groupId>com.mchange</groupId>
+     <artifactId>mchange-commons-java</artifactId>
+     <version>0.2.15</version>
+   </dependency>
+ </dependencies>
+</project>
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/swaldman/c3p0/git/trees/c3p0-0.9.5.4?recursive=1' | rg 'test|Test|JUnit|src/java' | head -120" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/mchange/c3p0/0.9.5.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/mchange/c3p0/0.9.5.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="c3p0-0.9.5.4-javadoc.jar" title="c3p0-0.9.5.4-javadoc.jar">c3p0-0.9.5.4-javadoc.jar</a>                          2019-03-24 06:01    635698      
+<a href="c3p0-0.9.5.4-javadoc.jar.asc" title="c3p0-0.9.5.4-javadoc.jar.asc">c3p0-0.9.5.4-javadoc.jar.asc</a>                      2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4-javadoc.jar.asc.md5" title="c3p0-0.9.5.4-javadoc.jar.asc.md5">c3p0-0.9.5.4-javadoc.jar.asc.md5</a>                  2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-javadoc.jar.asc.sha1" title="c3p0-0.9.5.4-javadoc.jar.asc.sha1">c3p0-0.9.5.4-javadoc.jar.asc.sha1</a>                 2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4-javadoc.jar.md5" title="c3p0-0.9.5.4-javadoc.jar.md5">c3p0-0.9.5.4-javadoc.jar.md5</a>                      2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-javadoc.jar.sha1" title="c3p0-0.9.5.4-javadoc.jar.sha1">c3p0-0.9.5.4-javadoc.jar.sha1</a>                     2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4-sources.jar" title="c3p0-0.9.5.4-sources.jar">c3p0-0.9.5.4-sources.jar</a>                          2019-03-24 06:01    361569      
+<a href="c3p0-0.9.5.4-sources.jar.asc" title="c3p0-0.9.5.4-sources.jar.asc">c3p0-0.9.5.4-sources.jar.asc</a>                      2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4-sources.jar.asc.md5" title="c3p0-0.9.5.4-sources.jar.asc.md5">c3p0-0.9.5.4-sources.jar.asc.md5</a>                  2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-sources.jar.asc.sha1" title="c3p0-0.9.5.4-sources.jar.asc.sha1">c3p0-0.9.5.4-sources.jar.asc.sha1</a>                 2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4-sources.jar.md5" title="c3p0-0.9.5.4-sources.jar.md5">c3p0-0.9.5.4-sources.jar.md5</a>                      2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-sources.jar.sha1" title="c3p0-0.9.5.4-sources.jar.sha1">c3p0-0.9.5.4-sources.jar.sha1</a>                     2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.jar" title="c3p0-0.9.5.4.jar">c3p0-0.9.5.4.jar</a>                                  2019-03-24 06:01    499844      
+<a href="c3p0-0.9.5.4.jar.asc" title="c3p0-0.9.5.4.jar.asc">c3p0-0.9.5.4.jar.asc</a>                              2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4.jar.asc.md5" title="c3p0-0.9.5.4.jar.asc.md5">c3p0-0.9.5.4.jar.asc.md5</a>                          2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.jar.asc.sha1" title="c3p0-0.9.5.4.jar.asc.sha1">c3p0-0.9.5.4.jar.asc.sha1</a>                         2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.jar.md5" title="c3p0-0.9.5.4.jar.md5">c3p0-0.9.5.4.jar.md5</a>                              2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.jar.sha1" title="c3p0-0.9.5.4.jar.sha1">c3p0-0.9.5.4.jar.sha1</a>                             2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.pom" title="c3p0-0.9.5.4.pom">c3p0-0.9.5.4.pom</a>                                  2019-03-24 06:01      1527      
+<a href="c3p0-0.9.5.4.pom.asc" title="c3p0-0.9.5.4.pom.asc">c3p0-0.9.5.4.pom.asc</a>                              2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4.pom.asc.md5" title="c3p0-0.9.5.4.pom.asc.md5">c3p0-0.9.5.4.pom.asc.md5</a>                          2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.pom.asc.sha1" title="c3p0-0.9.5.4.pom.asc.sha1">c3p0-0.9.5.4.pom.asc.sha1</a>                         2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.pom.md5" title="c3p0-0.9.5.4.pom.md5">c3p0-0.9.5.4.pom.md5</a>                              2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.pom.sha1" title="c3p0-0.9.5.4.pom.sha1">c3p0-0.9.5.4.pom.sha1</a>                             2019-03-24 06:01        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 309ms:
+      "path": "src/java",
+      "path": "src/java/com",
+      "path": "src/java/com/mchange",
+      "path": "src/java/com/mchange/v2",
+      "path": "src/java/com/mchange/v2/c3p0",
+      "path": "src/java/com/mchange/v2/c3p0/AbstractComboPooledDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/AbstractConnectionCustomizer.java",
+      "path": "src/java/com/mchange/v2/c3p0/AbstractConnectionTester.java",
+      "path": "src/java/com/mchange/v2/c3p0/C3P0ProxyConnection.java",
+      "path": "src/java/com/mchange/v2/c3p0/C3P0ProxyStatement.java",
+      "path": "src/java/com/mchange/v2/c3p0/C3P0Registry.java",
+      "path": "src/java/com/mchange/v2/c3p0/ComboPooledDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/ConnectionCustomizer.java",
+      "path": "src/java/com/mchange/v2/c3p0/ConnectionTester.java",
+      "path": "src/java/com/mchange/v2/c3p0/DataSources.java",
+      "path": "src/java/com/mchange/v2/c3p0/DriverManagerDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/DriverManagerDataSourceFactory.java",
+      "path": "src/java/com/mchange/v2/c3p0/FullQueryConnectionTester.java",
+      "path": "src/java/com/mchange/v2/c3p0/JndiRefConnectionPoolDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/JndiRefForwardingDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/PoolBackedDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/PoolBackedDataSourceFactory.java",
+      "path": "src/java/com/mchange/v2/c3p0/PoolConfig.java",
+      "path": "src/java/com/mchange/v2/c3p0/PooledDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/QueryConnectionTester.java",
+      "path": "src/java/com/mchange/v2/c3p0/SQLWarnings.java",
+      "path": "src/java/com/mchange/v2/c3p0/UnifiedConnectionTester.java",
+      "path": "src/java/com/mchange/v2/c3p0/WrapperConnectionPoolDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/cfg",
+      "path": "src/java/com/mchange/v2/c3p0/cfg/C3P0Config.java",
+      "path": "src/java/com/mchange/v2/c3p0/cfg/C3P0ConfigFinder.java",
+      "path": "src/java/com/mchange/v2/c3p0/cfg/C3P0ConfigUtils.java",
+      "path": "src/java/com/mchange/v2/c3p0/cfg/C3P0ConfigXmlUtils.java",
+      "path": "src/java/com/mchange/v2/c3p0/cfg/DefaultC3P0ConfigFinder.java",
+      "path": "src/java/com/mchange/v2/c3p0/cfg/NamedScope.java",
+      "path": "src/java/com/mchange/v2/c3p0/codegen",
+      "path": "src/java/com/mchange/v2/c3p0/codegen/BeangenDataSourceGenerator.java",
+      "path": "src/java/com/mchange/v2/c3p0/codegen/C3P0ImplUtilsParentLoggerGeneratorExtension.java",
+      "path": "src/java/com/mchange/v2/c3p0/codegen/JdbcProxyGenerator.java",
+      "path": "src/java/com/mchange/v2/c3p0/codegen/UnsupportedParentLoggerGeneratorExtension.java",
+      "path": "src/java/com/mchange/v2/c3p0/debug",
+      "path": "src/java/com/mchange/v2/c3p0/debug/AfterCloseLoggingComboPooledDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/debug/AfterCloseLoggingConnectionWrapper.java",
+      "path": "src/java/com/mchange/v2/c3p0/debug/CloseLoggingComboPooledDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/debug/CloseLoggingConnectionWrapper.java",
+      "path": "src/java/com/mchange/v2/c3p0/debug/ConstructionLoggingComboPooledDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/example",
+      "path": "src/java/com/mchange/v2/c3p0/example/InitSqlConnectionCustomizer.java",
+      "path": "src/java/com/mchange/v2/c3p0/example/IsValidOnlyConnectionTester30.java",
+      "path": "src/java/com/mchange/v2/c3p0/filter",
+      "path": "src/java/com/mchange/v2/c3p0/filter/FilterDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl",
+      "path": "src/java/com/mchange/v2/c3p0/impl/AbstractC3P0PooledConnection.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/AbstractIdentityTokenized.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/AbstractPoolBackedDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/AuthMaskingProperties.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/C3P0Defaults.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/C3P0ImplUtils.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/C3P0JavaBeanObjectFactory.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/C3P0PooledConnection.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/C3P0PooledConnectionPool.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/C3P0PooledConnectionPoolManager.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/DbAuth.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/DefaultConnectionTester.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/IdentityTokenResolvable.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/IdentityTokenized.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/IdentityTokenizedCoalesceChecker.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/InternalPooledConnection.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/NewPooledConnection.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/NullStatementSetManagedResultSet.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/ProxyResultSetDetachable.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/SetManagedDatabaseMetaData.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/SetManagedResultSet.java",
+      "path": "src/java/com/mchange/v2/c3p0/impl/SnatchFromSetResultSet.java",
+      "path": "src/java/com/mchange/v2/c3p0/jboss",
+      "path": "src/java/com/mchange/v2/c3p0/jboss/C3P0PooledDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/jboss/C3P0PooledDataSourceMBean.java",
+      "path": "src/java/com/mchange/v2/c3p0/management",
+      "path": "src/java/com/mchange/v2/c3p0/management/ActiveManagementCoordinator.java",
+      "path": "src/java/com/mchange/v2/c3p0/management/C3P0RegistryManager.java",
+      "path": "src/java/com/mchange/v2/c3p0/management/C3P0RegistryManagerMBean.java",
+      "path": "src/java/com/mchange/v2/c3p0/management/DynamicPooledDataSourceManagerMBean.java",
+      "path": "src/java/com/mchange/v2/c3p0/management/ManagementCoordinator.java",
+      "path": "src/java/com/mchange/v2/c3p0/management/NullManagementCoordinator.java",
+      "path": "src/java/com/mchange/v2/c3p0/management/PooledDataSourceManager.java",
+      "path": "src/java/com/mchange/v2/c3p0/management/PooledDataSourceManagerMBean.java",
+      "path": "src/java/com/mchange/v2/c3p0/mbean",
+      "path": "src/java/com/mchange/v2/c3p0/mbean/C3P0PooledDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/mbean/C3P0PooledDataSourceMBean.java",
+      "path": "src/java/com/mchange/v2/c3p0/off",
+      "path": "src/java/com/mchange/v2/c3p0/off/servlet",
+      "path": "src/java/com/mchange/v2/c3p0/off/servlet/C3P0StatusServlet.java",
+      "path": "src/java/com/mchange/v2/c3p0/stmt",
+      "path": "src/java/com/mchange/v2/c3p0/stmt/DoubleMaxStatementCache.java",
+      "path": "src/java/com/mchange/v2/c3p0/stmt/GlobalMaxOnlyStatementCache.java",
+      "path": "src/java/com/mchange/v2/c3p0/stmt/GooGooStatementCache.java",
+      "path": "src/java/com/mchange/v2/c3p0/stmt/MemoryCoalescedStatementCacheKey.java",
+      "path": "src/java/com/mchange/v2/c3p0/stmt/PerConnectionMaxOnlyStatementCache.java",
+      "path": "src/java/com/mchange/v2/c3p0/stmt/SimpleStatementCacheKey.java",
+      "path": "src/java/com/mchange/v2/c3p0/stmt/StatementCache.java",
+      "path": "src/java/com/mchange/v2/c3p0/stmt/StatementCacheBenchmark.java",
+      "path": "src/java/com/mchange/v2/c3p0/stmt/StatementCacheKey.java",
+      "path": "src/java/com/mchange/v2/c3p0/stmt/ValueIdentityStatementCacheKey.java",
+      "path": "src/java/com/mchange/v2/c3p0/subst",
+      "path": "src/java/com/mchange/v2/c3p0/subst/C3P0Substitutions.java",
+      "path": "src/java/com/mchange/v2/c3p0/test",
+      "path": "src/java/com/mchange/v2/c3p0/test/AlwaysFailConnectionTester.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/AlwaysFailDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/C3P0BenchmarkApp.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/ConnectionDispersionTest.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/FreezableDriverManagerDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/InterruptedBatchTest.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/JavaBeanRefTest.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/JndiBindTest.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/JndiLookupTest.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/ListTablesTest.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/LoadPoolBackedDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/OneThreadRepeatedInsertOrQueryTest.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/PSLoadPoolBackedDataSource.java",
+      "path": "src/java/com/mchange/v2/c3p0/test/ProxyWrappersTest.java",
+
+codex
+I have the needed paths: Maven Central is the right source and Javadoc location, and the version tag is `c3p0-0.9.5.4` with tests under the upstream `src/java/com/mchange/v2/c3p0/test` directory. I’m updating the JSON now and omitting language and not-for-native-image fields because this is a regular Java/JVM jar.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..339fc7ac0a013184388fd393f40b8685953118ba
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a Java JDBC connection pooling library that manages reusable database connections and caches prepared statements for applications using JDBC. It provides configurable DataSource implementations, pool management, and connection testing features to improve database access performance and reliability."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..339fc7ac0a013184388fd393f40b8685953118ba
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a Java JDBC connection pooling library that manages reusable database connections and caches prepared statements for applications using JDBC. It provides configurable DataSource implementations, pool management, and connection testing features to improve database access performance and reliability."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+ succeeded in 0ms:
+{
+  "coordinates": "com.mchange:c3p0:0.9.5.4",
+  "repository-url": "https://github.com/swaldman/c3p0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
+  "test-code-url": "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
+  "description": "c3p0 is a Java JDBC connection pooling library that manages reusable database connections and caches prepared statements for applications using JDBC. It provides configurable DataSource implementations, pool management, and connection testing features to improve database access performance and reliability."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-sources.jar' \\
+  'https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test' \\
+  'https://repo.maven.apache.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-javadoc.jar'; do
+  printf '%s -> ' \""'$url"
+  curl -fsSIL -o /dev/null -w '"'%{http_code}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..339fc7ac0a013184388fd393f40b8685953118ba
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a Java JDBC connection pooling library that manages reusable database connections and caches prepared statements for applications using JDBC. It provides configurable DataSource implementations, pool management, and connection testing features to improve database access performance and reliability."
+ }
+
+ succeeded in 922ms:
+200
+https://repo.maven.apache.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-javadoc.jar -> 200
+
+web search: 
+web search: Maven Repository com.mchange c3p0 0.9.5.4 sources javadoc
+web search: 
+web search: https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json >/dev/null && printf 'valid json\\n'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+ succeeded in 0ms:
+valid json
+
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..339fc7ac0a013184388fd393f40b8685953118ba
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a Java JDBC connection pooling library that manages reusable database connections and caches prepared statements for applications using JDBC. It provides configurable DataSource implementations, pool management, and connection testing features to improve database access performance and reliability."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json && sed -n '1,120p' build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397
+ succeeded in 0ms:
+{
+  "coordinates" : "com.mchange:c3p0:0.9.5.4",
+  "repository-url" : "https://github.com/swaldman/c3p0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
+  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
+  "description" : "c3p0 is a Java JDBC connection pooling library that manages reusable database connections and caches prepared statements for applications using JDBC. It provides configurable DataSource implementations, pool management, and connection testing features to improve database access performance and reliability."
+}
+
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..339fc7ac0a013184388fd393f40b8685953118ba
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a Java JDBC connection pooling library that manages reusable database connections and caches prepared statements for applications using JDBC. It provides configurable DataSource implementations, pool management, and connection testing features to improve database access performance and reliability."
+ }
+
+web search: 
+web search: repo.maven.apache.org com/mchange/c3p0/0.9.5.4 c3p0-0.9.5.4-sources.jar javadoc
+web search: 
+web search: https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test
+web search: 
+web search: https://central.sonatype.com/artifact/com.mchange/c3p0/0.9.5.4
+codex
+Updated [com.mchange-c3p0-0.9.5.4.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json).
+
+I used the Maven POM’s project URL and jar packaging, Maven Central’s available sources/Javadoc artifacts, and the upstream tagged GitHub test directory. ([central.sonatype.com](https://central.sonatype.com/artifact/com.mchange/c3p0/0.9.5.4)) The artifact is a regular JVM jar, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent.
+
+Validation done: JSON parses successfully, and the substituted source, test, and documentation URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..339fc7ac0a013184388fd393f40b8685953118ba
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://github.com/swaldman/c3p0/tree/c3p0-$version$/src/java/com/mchange/v2/c3p0/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a Java JDBC connection pooling library that manages reusable database connections and caches prepared statements for applications using JDBC. It provides configurable DataSource implementations, pool management, and connection testing features to improve database access performance and reliability."
+ }
+
+tokens used
+70,881
+Updated [com.mchange-c3p0-0.9.5.4.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json).
+
+I used the Maven POM’s project URL and jar packaging, Maven Central’s available sources/Javadoc artifacts, and the upstream tagged GitHub test directory. ([central.sonatype.com](https://central.sonatype.com/artifact/com.mchange/c3p0/0.9.5.4)) The artifact is a regular JVM jar, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent.
+
+Validation done: JSON parses successfully, and the substituted source, test, and documentation URLs all returned HTTP 200.
+Ran agent for com.mchange:c3p0:0.9.5.4 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397/build/agent-artifact-discovery-logs/com.mchange-c3p0-0.9.5.4.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-4502f397/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 53s
+9 actionable tasks: 9 executed
