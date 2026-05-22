@@ -13,6 +13,8 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.Test;
@@ -37,14 +39,45 @@ public class ServletHolderTest {
     }
 
     @Test
-    public void getServletCreatesServletInstanceFromHeldClass() throws ServletException {
+    public void getServletCreatesServletInstanceFromHeldClass() throws Exception {
+        Server server = new Server();
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
+        context.setContextPath("/");
         ServletHolder holder = new ServletHolder("counting", CountingServlet.class);
-        holder.setServletHandler(new ServletHandler());
+        context.addServlet(holder, "/counting");
+        server.setHandler(context);
 
-        Servlet servlet = holder.getServlet();
+        try {
+            server.start();
 
-        assertThat(servlet).isInstanceOf(CountingServlet.class);
-        assertThat(((CountingServlet) servlet).getServletConfig()).isNotNull();
+            Servlet servlet = holder.getServlet();
+
+            assertThat(servlet).isInstanceOf(CountingServlet.class);
+            assertThat(((CountingServlet) servlet).getServletConfig()).isNotNull();
+        } finally {
+            server.stop();
+            server.destroy();
+        }
+    }
+
+    @Test
+    public void standaloneServletHandlerCreatesServletInstanceFromHeldClass() throws Exception {
+        ServletHandler handler = new ServletHandler();
+        handler.setEnsureDefaultServlet(false);
+        ServletHolder holder = handler.addServletWithMapping(CountingServlet.class, "/counting");
+
+        try {
+            handler.start();
+
+            Servlet servlet = holder.getServlet();
+
+            assertThat(handler.getServletContext()).isNotInstanceOf(ServletContextHandler.Context.class);
+            assertThat(servlet).isInstanceOf(CountingServlet.class);
+            assertThat(((CountingServlet) servlet).getServletConfig()).isNotNull();
+        } finally {
+            handler.stop();
+            handler.destroy();
+        }
     }
 
     public static class CountingServlet extends HttpServlet {
