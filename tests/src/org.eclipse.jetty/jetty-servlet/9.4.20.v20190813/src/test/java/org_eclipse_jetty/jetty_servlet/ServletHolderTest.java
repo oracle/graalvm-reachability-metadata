@@ -61,21 +61,21 @@ public class ServletHolderTest {
     }
 
     @Test
-    public void standaloneServletHandlerCreatesServletInstanceFromHeldClass() throws Exception {
+    public void standaloneServletHolderCreatesServletInstanceFromHeldClass() throws Exception {
         ServletHandler handler = new ServletHandler();
-        handler.setEnsureDefaultServlet(false);
         ServletHolder holder = handler.addServletWithMapping(CountingServlet.class, "/counting");
 
         try {
-            handler.start();
+            holder.start();
 
             Servlet servlet = holder.getServlet();
 
-            assertThat(handler.getServletContext()).isNotInstanceOf(ServletContextHandler.Context.class);
+            assertThat(handler.getServletContext()).isNull();
+            assertThat(handler.getServletMapping("/counting")).isNotNull();
             assertThat(servlet).isInstanceOf(CountingServlet.class);
             assertThat(((CountingServlet) servlet).getServletConfig()).isNotNull();
         } finally {
-            handler.stop();
+            holder.stop();
             handler.destroy();
         }
     }
