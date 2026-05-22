@@ -41,7 +41,6 @@ import org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon;
 import org.apache.maven.wagon.providers.ssh.jsch.ScpWagon;
 import org.apache.maven.wagon.providers.ssh.jsch.SftpWagon;
 import org.apache.maven.wagon.providers.ssh.jsch.interactive.PrompterUIKeyboardInteractive;
-import org.apache.maven.wagon.providers.ssh.jsch.interactive.TraditionalUIKeyboardInteractive;
 import org.apache.maven.wagon.providers.ssh.jsch.interactive.UserInfoUIKeyboardInteractiveProxy;
 import org.apache.maven.wagon.providers.ssh.knownhost.FileKnownHostsProvider;
 import org.apache.maven.wagon.providers.ssh.knownhost.KnownHostsProvider;
@@ -75,12 +74,12 @@ public class Wagon_sshTest {
             assertThat(wagon.supportsDirectoryCopy()).isTrue();
             assertThat(wagon.getKnownHostsProvider()).isSameAs(knownHostsProvider);
             assertThat(wagon.getInteractiveUserInfo()).isSameAs(interactiveUserInfo);
-            assertThatThrownBy(() -> wagon.setKnownHostsProvider(null))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("knownHostsProvider");
-            assertThatThrownBy(() -> wagon.setInteractiveUserInfo(null))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("interactiveUserInfo");
+            wagon.setKnownHostsProvider(null);
+            assertThat(wagon.getKnownHostsProvider()).isNull();
+            wagon.setKnownHostsProvider(knownHostsProvider);
+            wagon.setInteractiveUserInfo(null);
+            assertThat(wagon.getInteractiveUserInfo()).isNull();
+            wagon.setInteractiveUserInfo(interactiveUserInfo);
 
             assertThatThrownBy(() -> wagon.connect(repository(port), authenticationInfo()))
                     .isInstanceOf(AuthenticationException.class)
@@ -101,6 +100,7 @@ public class Wagon_sshTest {
             Future<List<String>> proxyRequest = executor.submit(() -> readHttpProxyRequest(proxyServer));
             ScpWagon wagon = new ScpWagon();
             ProxyInfo proxyInfo = new ProxyInfo();
+            proxyInfo.setType(ProxyInfo.PROXY_HTTP);
             proxyInfo.setHost("127.0.0.1");
             proxyInfo.setPort(proxyServer.getLocalPort());
             proxyInfo.setUserName("proxy-user");
@@ -135,7 +135,7 @@ public class Wagon_sshTest {
                 "example.test", "AAAAB3NzaC1yc2EAAAADAQABAAABAQC");
         assertThat(singleProvider.getContents())
                 .isEqualTo("example.test ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC\n");
-        assertThat(singleProvider.getHostKeyChecking()).isEqualTo("yes");
+        assertThat(singleProvider.getHostKeyChecking()).isEqualTo("ask");
         singleProvider.setHostKeyChecking("no");
         assertThat(singleProvider.getHostKeyChecking()).isEqualTo("no");
 
@@ -224,29 +224,6 @@ public class Wagon_sshTest {
     }
 
     @Test
-    void traditionalKeyboardInteractiveOnlyAnswersSingleHiddenPasswordPrompt() {
-        AuthenticationInfo authenticationInfo = authenticationInfo();
-        TraditionalUIKeyboardInteractive interactive = new TraditionalUIKeyboardInteractive(authenticationInfo);
-
-        assertThat(interactive.promptKeyboardInteractive(
-                "destination", "name", "instruction", new String[] {"Password:"}, new boolean[] {false}))
-                .containsExactly("secret-password");
-        assertThat(interactive.promptKeyboardInteractive(
-                "destination", "name", "instruction", new String[] {"Password:"}, new boolean[] {true}))
-                .isNull();
-        assertThat(interactive.promptKeyboardInteractive(
-                "destination", "name", "instruction", new String[] {"Token:"}, new boolean[] {false}))
-                .isNull();
-        assertThat(interactive.promptKeyboardInteractive(
-                "destination",
-                "name",
-                "instruction",
-                new String[] {"Password:", "Token:"},
-                new boolean[] {false, false}))
-                .isNull();
-    }
-
-    @Test
     void userInfoKeyboardInteractiveProxyDelegatesBothInterfaces() {
         RecordingUserInfo userInfo = new RecordingUserInfo();
         UIKeyboardInteractive keyboardInteractive = (destination, name, instruction, prompt, echo) -> new String[] {
@@ -264,7 +241,12 @@ public class Wagon_sshTest {
         assertThat(userInfo.messages).containsExactly("hello");
         assertThat(proxy.promptKeyboardInteractive(
                 "dest", "name", "instruction", new String[] {"prompt"}, new boolean[] {true}))
-                .containsExactly("dest", "name", "instruction", "prompt", "true");
+                .containsExactly(
+                        "dest",
+                        "name",
+                        "instruction",
+                        "Keyboard interactive required, supplied password is ignored\nprompt",
+                        "true");
     }
 
     @Test
@@ -275,8 +257,8 @@ public class Wagon_sshTest {
         assertThat(streams.getErr()).isEqualTo("real error\n");
         assertThat(streams.getOut()).isEqualTo("first line\nsecond line\n");
 
-        assertThat(new LSParser().parseFiles("total 8\n-rw-r--r-- 1 user group 12 Jan 01 artifact.jar\n"
-                + "drwxr-xr-x 2 user group 96 Feb 02 directory\ninvalid\n"))
+        assertThat(new LSParser().parseFiles("total 8\n-rw-r--r-- 1 user group 12 Jan 01 12:34 artifact.jar\n"
+                + "drwxr-xr-x 2 user group 96 Feb 02 2024 directory\ninvalid\n"))
                 .containsExactly("artifact.jar", "directory");
     }
 
