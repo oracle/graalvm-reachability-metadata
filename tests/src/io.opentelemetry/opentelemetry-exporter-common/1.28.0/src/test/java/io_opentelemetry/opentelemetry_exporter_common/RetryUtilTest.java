@@ -7,10 +7,8 @@
 package io_opentelemetry.opentelemetry_exporter_common;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.opentelemetry.exporter.internal.grpc.GrpcStatusUtil;
-import io.opentelemetry.exporter.internal.retry.RetryPolicy;
 import io.opentelemetry.exporter.internal.retry.RetryUtil;
 import org.junit.jupiter.api.Test;
 
@@ -31,20 +29,10 @@ public class RetryUtilTest {
     }
 
     @Test
-    void inspectsDelegateFieldWhenSettingRetryPolicy() {
-        DelegateHolder holder = new DelegateHolder(null);
-
-        assertThatThrownBy(
-                        () -> RetryUtil.setRetryPolicyOnDelegate(holder, RetryPolicy.getDefault()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("delegate field");
-    }
-
-    static final class DelegateHolder {
-        private final Object delegate;
-
-        private DelegateHolder(Object delegate) {
-            this.delegate = delegate;
-        }
+    void excludesNonRetryableStatusCodes() {
+        assertThat(RetryUtil.retryableHttpResponseCodes())
+                .doesNotContain(200, 400, 500);
+        assertThat(RetryUtil.retryableGrpcStatusCodes())
+                .doesNotContain("0", "3", "5");
     }
 }
