@@ -10,8 +10,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configuration.IntegerRanges;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.hadoop.hive.ql.io.sarg.ExpressionTree;
 import org.apache.hadoop.hive.ql.io.sarg.PredicateLeaf;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument;
+import org.apache.hadoop.hive.ql.io.sarg.SearchArgument.TruthValue;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgumentFactory;
 import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.io.BytesWritable;
@@ -207,12 +209,11 @@ public class Orc_mapreduceTest {
 
     @Test
     void inputFormatsStoreSearchArgumentsForPredicatePushdown() {
-        SearchArgument searchArgument = SearchArgumentFactory.newBuilder()
-                .startAnd()
-                .equals("id", PredicateLeaf.Type.LONG, 7L)
-                .lessThan("label", PredicateLeaf.Type.STRING, "m")
-                .end()
-                .build();
+        SearchArgument searchArgument = KryoSerializableSearchArgument.INSTANCE;
+        assertThat(searchArgument.getLeaves()).extracting(PredicateLeaf::getColumnName)
+                .containsExactly("id", "label");
+        assertThat(searchArgument.evaluate(new TruthValue[] {TruthValue.YES, TruthValue.YES}))
+                .isEqualTo(TruthValue.YES);
 
         Configuration mapredConf = new Configuration(false);
         org.apache.orc.mapred.OrcInputFormat.setSearchArgument(mapredConf, searchArgument, new String[] {"id", "label"});
@@ -318,6 +319,37 @@ public class Orc_mapreduceTest {
                     batch.cols[field], rowIndex, schema.getChildren().get(field), null));
         }
         return result;
+    }
+
+    private enum KryoSerializableSearchArgument implements SearchArgument {
+        INSTANCE;
+
+        private final SearchArgument delegate = SearchArgumentFactory.newBuilder()
+                .startAnd()
+                .equals("id", PredicateLeaf.Type.LONG, 7L)
+                .lessThan("label", PredicateLeaf.Type.STRING, "m")
+                .end()
+                .build();
+
+        @Override
+        public List<PredicateLeaf> getLeaves() {
+            return delegate.getLeaves();
+        }
+
+        @Override
+        public ExpressionTree getExpression() {
+            return delegate.getExpression();
+        }
+
+        @Override
+        public ExpressionTree getCompactExpression() {
+            return delegate.getCompactExpression();
+        }
+
+        @Override
+        public TruthValue evaluate(TruthValue[] leaves) {
+            return delegate.evaluate(leaves);
+        }
     }
 
     private static final class SimpleTaskAttemptContext implements TaskAttemptContext {
