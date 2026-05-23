@@ -29,6 +29,7 @@ TaskProvider<Jar> androidLibcoreMemoryJar = tasks.register("androidLibcoreMemory
 dependencies {
     testImplementation "com.google.protobuf:protobuf-javalite:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+    testRuntimeOnly "com.google.protobuf:protobuf-java:$libraryVersion"
 
     androidAll 'org.robolectric:android-all:4.3_r2-robolectric-0'
     testRuntimeOnly files(androidLibcoreMemoryJar).builtBy(androidLibcoreMemoryJar)
