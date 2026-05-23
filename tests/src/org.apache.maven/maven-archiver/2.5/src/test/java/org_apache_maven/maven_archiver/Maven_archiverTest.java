@@ -375,7 +375,7 @@ public class Maven_archiverTest {
 
     private File createEmptyJar(String fileName) throws IOException {
         Path jarPath = tempDir.resolve(fileName);
-        Files.write(jarPath, new byte[] { 'P', 'K', 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+        Files.write(jarPath, new byte[] {'P', 'K', 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
         return jarPath.toFile();
     }
 
