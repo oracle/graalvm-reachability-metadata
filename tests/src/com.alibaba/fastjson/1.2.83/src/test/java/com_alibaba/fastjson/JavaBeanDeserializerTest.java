@@ -197,6 +197,7 @@ public class JavaBeanDeserializerTest {
         JavaBeanInfo beanInfo = new JavaBeanInfo(
                 KotlinLikeBean.class, null, defaultConstructor, creatorConstructor, null, null, null, fields);
         beanInfo.kotlin = true;
+        beanInfo.creatorConstructorParameters = new String[] {"name", "number"};
         beanInfo.kotlinDefaultConstructor = defaultConstructor;
         return new JavaBeanDeserializer(noAsmConfig(), beanInfo);
     }
