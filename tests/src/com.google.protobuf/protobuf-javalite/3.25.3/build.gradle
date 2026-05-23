@@ -4,15 +4,34 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.gradle.api.tasks.TaskProvider
+
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+configurations {
+    androidAll
+}
+
+// android-all also contains java.* classes, so only expose the libcore probe class to tests.
+TaskProvider<Jar> androidLibcoreMemoryJar = tasks.register("androidLibcoreMemoryJar", Jar) {
+    archiveFileName = "android-libcore-memory.jar"
+    from({
+        zipTree(configurations.androidAll.singleFile)
+    }) {
+        include "libcore/io/Memory.class"
+    }
+}
+
 dependencies {
     testImplementation "com.google.protobuf:protobuf-javalite:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+
+    androidAll 'org.robolectric:android-all:4.3_r2-robolectric-0'
+    testRuntimeOnly files(androidLibcoreMemoryJar).builtBy(androidLibcoreMemoryJar)
 }
 
 graalvmNative {
