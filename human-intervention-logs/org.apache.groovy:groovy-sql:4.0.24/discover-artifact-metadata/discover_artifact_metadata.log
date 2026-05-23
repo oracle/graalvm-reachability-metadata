@@ -1,0 +1,2110 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e5319-cef7-7c23-8f63-7bd22367aac9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.groovy:groovy-sql:4.0.24
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "4.0.24" when "$version$" is replaced with "4.0.24".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.apache.groovy:groovy-sql:4.0.24".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.24".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates and upstream tag layout, then update the requested JSON directly. Since these URLs need to resolve for a specific release, I’ll use authoritative sources rather than guessing.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.apache\\.groovy:groovy-sql|groovy-sql|apache/groovy|language\" . -g '*.json'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 0ms:
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+./metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+./metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+./metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+./metadata/org.apache.thrift/libthrift/index.json:9:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+./metadata/org.apache.thrift/libthrift/index.json:30:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+./metadata/org.scalatest/scalatest-mustmatchers_3/index.json:10:    "language" : {
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/org.playframework.twirl/twirl-api_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language" : {
+./metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+./metadata/dev.profunktor/redis4cats-core_3/index.json:29:    "language" : {
+./metadata/org.scalatest/scalatest-diagrams_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-refspec_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:10:    "language" : {
+./metadata/io.getquill/quill-engine_3/index.json:9:    "description" : "ZIO Quill is a Scala library that provides a quoted DSL for expressing database queries and translating them to target languages such as SQL and CQL. The quill-engine module contains the shared query AST, normalization, idiom, dialect, and rendering infrastructure used by Quill contexts.",
+./metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:10:    "language" : {
+./metadata/io.getquill/quill-engine_2.13/index.json:9:    "description" : "ZIO Quill is a Scala library that provides a quoted DSL for expressing database queries and translating them to target languages such as SQL and CQL. The quill-engine module contains the shared query AST, normalization, idiom, dialect, and rendering infrastructure used by Quill contexts.",
+./metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-featurespec_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-funspec_3/index.json:10:    "language" : {
+./metadata/io.getquill/quill-util_3/index.json:9:    "description" : "Quill is a Scala library for compile-time language-integrated database queries that translates quoted Scala code into query ASTs and target SQL or CQL. The quill-util module provides shared utility helpers used by the Quill runtime, including throwable extension helpers and Scalafmt-based formatting support.",
+./metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-featurespec_2.13/index.json:10:    "language" : {
+./metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+./metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-funsuite_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-funsuite_2.13/index.json:10:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-funspec_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-flatspec_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-freespec_2.13/index.json:10:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-core/index.json:9:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-core/index.json:64:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-core/index.json:82:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-core/index.json:100:    "language" : {
+./metadata/org.scalatest/scalatest-wordspec_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-dao/index.json:10:    "language" : {
+./metadata/org.playframework/play-configuration_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+./metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+./metadata/org.playframework/play-server_3/index.json:10:    "language" : {
+./metadata/org.playframework/play-json_3/index.json:10:    "language" : {
+./metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+./metadata/org.playframework/play-functional_3/index.json:10:    "language" : {
+./metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+./metadata/com.github.ghostdogpr/caliban_3/index.json:10:    "language" : {
+./metadata/com.typesafe.akka/akka-parsing_3/index.json:10:    "language" : {
+./metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+./metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+./metadata/io.circe/circe-jawn_3/index.json:10:    "language" : {
+./metadata/io.circe/circe-parser_3/index.json:10:    "language" : {
+./metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+./metadata/io.circe/circe-numbers_3/index.json:10:    "language" : {
+./metadata/io.circe/circe-numbers_3/index.json:28:    "language" : {
+./metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+./metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+./metadata/io.circe/circe-core_3/index.json:10:    "language" : {
+./metadata/io.circe/circe-core_3/index.json:28:    "language" : {
+./metadata/io.circe/circe-core_3/index.json:50:    "language" : {
+./metadata/org.tpolecat/doobie-free_3/index.json:10:    "language" : {
+./metadata/org.tpolecat/doobie-free_3/index.json:38:    "language" : {
+./metadata/org.tpolecat/doobie-free_3/index.json:61:    "language" : {
+./metadata/org.tpolecat/typename_3/index.json:10:    "language" : {
+./metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+./metadata/org.tpolecat/skunk-core_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+./metadata/org.apache.commons/commons-lang3/index.json:9:    "description" : "Apache Commons Lang provides reusable Java utility classes that extend core `java.lang` functionality with helpers for strings, numbers, objects, reflection, concurrency, and more. It helps Java applications avoid reimplementing common low-level programming tasks by packaging widely used language-level utilities.",
+./metadata/dev.zio/zio_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-test_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:10:    "language" : {
+./metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+./metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+./metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+./metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:10:    "language" : {
+./metadata/org.scalacheck/scalacheck_2.13/index.json:10:    "language" : {
+./metadata/org.scalacheck/scalacheck_2.13/index.json:28:    "language" : {
+./metadata/dev.zio/zio-internal-macros_2.13/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:10:    "language" : {
+./metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+./metadata/com.typesafe.play/play_2.13/index.json:10:    "language" : {
+./metadata/dev.zio/zio-logging_2.13/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:10:    "language" : {
+./metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+./metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+./metadata/com.typesafe.play/play-ws_2.13/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+./metadata/com.typesafe.play/twirl-api_2.13/index.json:10:    "language" : {
+./metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+./metadata/com.typesafe.play/play-json_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-query_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+./metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+./metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:9:    "description" : "Kotlin Standard Library Common provides the platform-independent portion of Kotlin's standard library for multiplatform projects. It supplies common APIs and core language support that are shared across Kotlin/JVM, Kotlin/JS, and Kotlin/Native.",
+./metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:10:    "language" : {
+./metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+./metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+./metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+./metadata/com.typesafe.play/twirl-api_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+./metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+./metadata/com.github.jknack/handlebars/index.json:9:    "description" : "Handlebars.java is a Java implementation of the Handlebars template language for rendering logic-less, semantic templates on the JVM. It parses templates and applies them to Java objects with support for helpers, partials, loaders, escaping, and i18n.",
+./metadata/com.github.jknack/handlebars/index.json:25:    "description" : "Handlebars.java is a Java implementation of the Handlebars template language for rendering logic-less, semantic templates on the JVM. It parses templates and applies them to Java objects with support for helpers, partials, loaders, escaping, and i18n.",
+./metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-interop-cats_3/index.json:10:    "language" : {
+./metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+./metadata/com.github.pureconfig/pureconfig-core_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-managed_3/index.json:10:    "language" : {
+./metadata/org.antlr/antlr4-runtime/index.json:9:    "description" : "ANTLR 4 Runtime is the Java runtime library that supplies the core classes needed to execute parsers and lexers generated by ANTLR 4. It provides token streams, parse tree support, error handling, and other infrastructure used by generated language recognizers.",
+./metadata/dev.zio/zio-json_3/index.json:10:    "language" : {
+./metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+./metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:9:    "description" : "Jackson Module Scala adds support for serializing and deserializing Scala classes and standard Scala collection types with Jackson Databind. It provides Jackson modules and serializers/deserializers that understand Scala language constructs such as case classes, Option values, tuples, maps, sequences, and iterators.",
+./metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:10:    "language" : {
+./metadata/org.antlr/antlr-runtime/index.json:9:    "description" : "ANTLR 3 Runtime provides the Java runtime support needed by lexers, parsers, and tree parsers generated by ANTLR 3. It includes token streams, recognizer base classes, error handling, and tree APIs used to execute grammars generated from language descriptions.",
+./metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+./metadata/org.antlr/antlr/3.5.2/reachability-metadata.json:28:      "glob" : "org/antlr/tool/templates/messages/languages/en.stg"
+./metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-interop-tracer_3/index.json:10:    "language" : {
+./metadata/org.apache.camel/camel-core-reifier/index.json:9:    "description" : "Apache Camel Core Reifier converts Camel route model definitions into runtime processors used by the routing engine. It provides the reifier implementations for core enterprise integration patterns, data formats, languages, load balancers, REST definitions, transformers, and validators.",
+./metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+./metadata/org.scalatra/scalatra_3/index.json:10:    "language" : {
+./metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+./metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+./metadata/org.apache.camel/camel-core-processor/4.19.0/reachability-metadata.json:67:      "type" : "org.apache.camel.language.simple.SimpleLanguage",
+./metadata/org.apache.camel/camel-core-processor/4.19.0/reachability-metadata.json:79:      "type" : "org.apache.camel.language.simple.SimpleLanguage"
+./metadata/org.apache.camel/camel-core-processor/4.19.0/reachability-metadata.json:143:      "glob" : "META-INF/services/org/apache/camel/configurer/simple-language"
+./metadata/org.apache.camel/camel-core-processor/4.19.0/reachability-metadata.json:161:      "glob" : "META-INF/services/org/apache/camel/language/simple"
+./metadata/org.apache.camel/camel-core-processor/4.19.0/reachability-metadata.json:221:      "glob" : "org/apache/camel/util/META-INF/services/org/apache/camel/configurer/simple-language"
+./metadata/com.softwaremill.sttp.shared/zio_3/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.shared/fs2_3/index.json:10:    "language" : {
+./metadata/org.scala-lang/scalap/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+./metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+./metadata/org.log4s/log4s_3/index.json:10:    "language" : {
+./metadata/com.monovore/decline_3/index.json:10:    "language" : {
+./metadata/com.monovore/decline-effect_3/index.json:10:    "language" : {
+./metadata/org.jetbrains/annotations-java5/index.json:19:    "description" : "JetBrains Java Annotations is a set of annotations for code inspection support and code documentation. It provides annotations for nullability, contracts, API status, language injection, and related metadata used by IDEs and static analysis tools."
+./metadata/com.chuusai/shapeless_2.13/index.json:10:    "language" : {
+./metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+./metadata/org.w3c.css/sac/index.json:9:    "description" : "SAC is a standard Java interface for CSS parsers, defining events, selectors, lexical units, and parser callbacks for CSS and CSS-derived languages. The org.w3c.css:sac artifact provides the version 1.3 API classes that parser implementations and applications can use to exchange CSS parsing data.",
+./metadata/io.github.resilience4j/resilience4j-kotlin/index.json:10:    "language" : {
+./metadata/io.kotest/kotest-extensions-jvm/index.json:10:    "language" : {
+./metadata/io.kotest/kotest-common-jvm/index.json:10:    "language" : {
+./metadata/io.kotest/kotest-runner-junit-platform-jvm/index.json:10:    "language" : {
+./metadata/io.kotest/kotest-assertions-shared-jvm/index.json:10:    "language" : {
+./metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+./metadata/io.kotest/kotest-property-jvm/index.json:10:    "language" : {
+./metadata/org.json4s/json4s-jackson_2.13/index.json:10:    "language" : {
+./metadata/org.json4s/json4s-jackson_2.13/index.json:33:    "language" : {
+./metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+./metadata/org.json4s/json4s-ast_2.13/index.json:10:    "language" : {
+./metadata/jakarta.el/jakarta.el-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/expression-language",
+./metadata/jakarta.el/jakarta.el-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RI-COMB-RELEASE/src/test",
+./metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+./metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+./metadata/com.github.fd4s/fs2-kafka_3/index.json:10:    "language" : {
+./metadata/org.json4s/json4s-jackson-core_3/index.json:10:    "language" : {
+./metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+./metadata/org.json4s/json4s-core_2.13/index.json:10:    "language" : {
+./metadata/org.json4s/json4s-core_2.13/index.json:48:    "language" : {
+./metadata/org.json4s/json4s-scalap_2.13/index.json:10:    "language" : {
+./metadata/org.json4s/json4s-jackson_3/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+./metadata/org.typelevel/cats-core_3/index.json:10:    "language" : {
+./metadata/org.typelevel/twiddles-core_3/index.json:10:    "language" : {
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:5:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:7:      "glob": "org/apache/commons/codec/language/bm/ash_approx_any.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:11:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:13:      "glob": "org/apache/commons/codec/language/bm/ash_approx_common.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:17:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:19:      "glob": "org/apache/commons/codec/language/bm/ash_approx_cyrillic.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:23:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:25:      "glob": "org/apache/commons/codec/language/bm/ash_approx_english.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:29:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:31:      "glob": "org/apache/commons/codec/language/bm/ash_approx_french.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:35:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:37:      "glob": "org/apache/commons/codec/language/bm/ash_approx_german.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:41:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:43:      "glob": "org/apache/commons/codec/language/bm/ash_approx_hebrew.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:47:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:49:      "glob": "org/apache/commons/codec/language/bm/ash_approx_hungarian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:53:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:55:      "glob": "org/apache/commons/codec/language/bm/ash_approx_polish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:59:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:61:      "glob": "org/apache/commons/codec/language/bm/ash_approx_romanian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:65:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:67:      "glob": "org/apache/commons/codec/language/bm/ash_approx_russian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:71:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:73:      "glob": "org/apache/commons/codec/language/bm/ash_approx_spanish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:77:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:79:      "glob": "org/apache/commons/codec/language/bm/ash_exact_any.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:83:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:85:      "glob": "org/apache/commons/codec/language/bm/ash_exact_approx_common.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:89:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:91:      "glob": "org/apache/commons/codec/language/bm/ash_exact_common.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:95:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:97:      "glob": "org/apache/commons/codec/language/bm/ash_exact_cyrillic.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:101:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:103:      "glob": "org/apache/commons/codec/language/bm/ash_exact_english.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:107:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:109:      "glob": "org/apache/commons/codec/language/bm/ash_exact_french.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:113:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:115:      "glob": "org/apache/commons/codec/language/bm/ash_exact_german.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:119:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:121:      "glob": "org/apache/commons/codec/language/bm/ash_exact_hebrew.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:125:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:127:      "glob": "org/apache/commons/codec/language/bm/ash_exact_hungarian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:131:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:133:      "glob": "org/apache/commons/codec/language/bm/ash_exact_polish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:137:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:139:      "glob": "org/apache/commons/codec/language/bm/ash_exact_romanian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:143:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:145:      "glob": "org/apache/commons/codec/language/bm/ash_exact_russian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:149:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:151:      "glob": "org/apache/commons/codec/language/bm/ash_exact_spanish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:155:        "typeReached": "org.apache.commons.codec.language.bm.Lang"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:157:      "glob": "org/apache/commons/codec/language/bm/ash_lang.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:161:        "typeReached": "org.apache.commons.codec.language.bm.Languages"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:163:      "glob": "org/apache/commons/codec/language/bm/ash_languages.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:167:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:169:      "glob": "org/apache/commons/codec/language/bm/ash_rules_any.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:173:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:175:      "glob": "org/apache/commons/codec/language/bm/ash_rules_cyrillic.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:179:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:181:      "glob": "org/apache/commons/codec/language/bm/ash_rules_english.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:185:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:187:      "glob": "org/apache/commons/codec/language/bm/ash_rules_french.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:191:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:193:      "glob": "org/apache/commons/codec/language/bm/ash_rules_german.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:197:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:199:      "glob": "org/apache/commons/codec/language/bm/ash_rules_hebrew.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:203:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:205:      "glob": "org/apache/commons/codec/language/bm/ash_rules_hungarian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:209:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:211:      "glob": "org/apache/commons/codec/language/bm/ash_rules_polish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:215:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:217:      "glob": "org/apache/commons/codec/language/bm/ash_rules_romanian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:221:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:223:      "glob": "org/apache/commons/codec/language/bm/ash_rules_russian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:227:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:229:      "glob": "org/apache/commons/codec/language/bm/ash_rules_spanish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:233:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:235:      "glob": "org/apache/commons/codec/language/bm/gen_approx_any.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:239:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:241:      "glob": "org/apache/commons/codec/language/bm/gen_approx_arabic.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:245:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:247:      "glob": "org/apache/commons/codec/language/bm/gen_approx_common.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:251:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:253:      "glob": "org/apache/commons/codec/language/bm/gen_approx_cyrillic.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:257:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:259:      "glob": "org/apache/commons/codec/language/bm/gen_approx_czech.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:263:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:265:      "glob": "org/apache/commons/codec/language/bm/gen_approx_dutch.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:269:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:271:      "glob": "org/apache/commons/codec/language/bm/gen_approx_english.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:275:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:277:      "glob": "org/apache/commons/codec/language/bm/gen_approx_french.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:281:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:283:      "glob": "org/apache/commons/codec/language/bm/gen_approx_german.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:287:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:289:      "glob": "org/apache/commons/codec/language/bm/gen_approx_greek.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:293:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:295:      "glob": "org/apache/commons/codec/language/bm/gen_approx_greeklatin.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:299:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:301:      "glob": "org/apache/commons/codec/language/bm/gen_approx_hebrew.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:305:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:307:      "glob": "org/apache/commons/codec/language/bm/gen_approx_hungarian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:311:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:313:      "glob": "org/apache/commons/codec/language/bm/gen_approx_italian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:317:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:319:      "glob": "org/apache/commons/codec/language/bm/gen_approx_polish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:323:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:325:      "glob": "org/apache/commons/codec/language/bm/gen_approx_portuguese.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:329:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:331:      "glob": "org/apache/commons/codec/language/bm/gen_approx_romanian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:335:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:337:      "glob": "org/apache/commons/codec/language/bm/gen_approx_russian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:341:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:343:      "glob": "org/apache/commons/codec/language/bm/gen_approx_spanish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:347:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:349:      "glob": "org/apache/commons/codec/language/bm/gen_approx_turkish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:353:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:355:      "glob": "org/apache/commons/codec/language/bm/gen_exact_any.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:359:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:361:      "glob": "org/apache/commons/codec/language/bm/gen_exact_approx_common.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:365:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:367:      "glob": "org/apache/commons/codec/language/bm/gen_exact_arabic.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:371:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:373:      "glob": "org/apache/commons/codec/language/bm/gen_exact_common.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:377:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:379:      "glob": "org/apache/commons/codec/language/bm/gen_exact_cyrillic.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:383:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:385:      "glob": "org/apache/commons/codec/language/bm/gen_exact_czech.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:389:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:391:      "glob": "org/apache/commons/codec/language/bm/gen_exact_dutch.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:395:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:397:      "glob": "org/apache/commons/codec/language/bm/gen_exact_english.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:401:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:403:      "glob": "org/apache/commons/codec/language/bm/gen_exact_french.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:407:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:409:      "glob": "org/apache/commons/codec/language/bm/gen_exact_german.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:413:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:415:      "glob": "org/apache/commons/codec/language/bm/gen_exact_greek.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:419:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:421:      "glob": "org/apache/commons/codec/language/bm/gen_exact_greeklatin.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:425:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:427:      "glob": "org/apache/commons/codec/language/bm/gen_exact_hebrew.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:431:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:433:      "glob": "org/apache/commons/codec/language/bm/gen_exact_hungarian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:437:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:439:      "glob": "org/apache/commons/codec/language/bm/gen_exact_italian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:443:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:445:      "glob": "org/apache/commons/codec/language/bm/gen_exact_polish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:449:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:451:      "glob": "org/apache/commons/codec/language/bm/gen_exact_portuguese.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:455:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:457:      "glob": "org/apache/commons/codec/language/bm/gen_exact_romanian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:461:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:463:      "glob": "org/apache/commons/codec/language/bm/gen_exact_russian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:467:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:469:      "glob": "org/apache/commons/codec/language/bm/gen_exact_spanish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:473:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:475:      "glob": "org/apache/commons/codec/language/bm/gen_exact_turkish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:479:        "typeReached": "org.apache.commons.codec.language.bm.Lang"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:481:      "glob": "org/apache/commons/codec/language/bm/gen_lang.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:485:        "typeReached": "org.apache.commons.codec.language.bm.Languages"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:487:      "glob": "org/apache/commons/codec/language/bm/gen_languages.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:491:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:493:      "glob": "org/apache/commons/codec/language/bm/gen_rules_any.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:497:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:499:      "glob": "org/apache/commons/codec/language/bm/gen_rules_arabic.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:503:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:505:      "glob": "org/apache/commons/codec/language/bm/gen_rules_cyrillic.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:509:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:511:      "glob": "org/apache/commons/codec/language/bm/gen_rules_czech.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:515:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:517:      "glob": "org/apache/commons/codec/language/bm/gen_rules_dutch.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:521:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:523:      "glob": "org/apache/commons/codec/language/bm/gen_rules_english.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:527:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:529:      "glob": "org/apache/commons/codec/language/bm/gen_rules_french.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:533:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:535:      "glob": "org/apache/commons/codec/language/bm/gen_rules_german.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:539:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:541:      "glob": "org/apache/commons/codec/language/bm/gen_rules_greek.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:545:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:547:      "glob": "org/apache/commons/codec/language/bm/gen_rules_greeklatin.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:551:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:553:      "glob": "org/apache/commons/codec/language/bm/gen_rules_hebrew.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:557:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:559:      "glob": "org/apache/commons/codec/language/bm/gen_rules_hungarian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:563:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:565:      "glob": "org/apache/commons/codec/language/bm/gen_rules_italian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:569:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:571:      "glob": "org/apache/commons/codec/language/bm/gen_rules_polish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:575:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:577:      "glob": "org/apache/commons/codec/language/bm/gen_rules_portuguese.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:581:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:583:      "glob": "org/apache/commons/codec/language/bm/gen_rules_romanian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:587:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:589:      "glob": "org/apache/commons/codec/language/bm/gen_rules_russian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:593:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:595:      "glob": "org/apache/commons/codec/language/bm/gen_rules_spanish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:599:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:601:      "glob": "org/apache/commons/codec/language/bm/gen_rules_turkish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:605:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:607:      "glob": "org/apache/commons/codec/language/bm/sep_approx_any.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:611:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:613:      "glob": "org/apache/commons/codec/language/bm/sep_approx_common.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:617:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:619:      "glob": "org/apache/commons/codec/language/bm/sep_approx_french.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:623:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:625:      "glob": "org/apache/commons/codec/language/bm/sep_approx_hebrew.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:629:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:631:      "glob": "org/apache/commons/codec/language/bm/sep_approx_italian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:635:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:637:      "glob": "org/apache/commons/codec/language/bm/sep_approx_portuguese.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:641:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:643:      "glob": "org/apache/commons/codec/language/bm/sep_approx_spanish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:647:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:649:      "glob": "org/apache/commons/codec/language/bm/sep_exact_any.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:653:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:655:      "glob": "org/apache/commons/codec/language/bm/sep_exact_approx_common.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:659:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:661:      "glob": "org/apache/commons/codec/language/bm/sep_exact_common.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:665:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:667:      "glob": "org/apache/commons/codec/language/bm/sep_exact_french.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:671:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:673:      "glob": "org/apache/commons/codec/language/bm/sep_exact_hebrew.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:677:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:679:      "glob": "org/apache/commons/codec/language/bm/sep_exact_italian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:683:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:685:      "glob": "org/apache/commons/codec/language/bm/sep_exact_portuguese.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:689:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:691:      "glob": "org/apache/commons/codec/language/bm/sep_exact_spanish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:695:        "typeReached": "org.apache.commons.codec.language.bm.Lang"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:697:      "glob": "org/apache/commons/codec/language/bm/sep_lang.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:701:        "typeReached": "org.apache.commons.codec.language.bm.Languages"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:703:      "glob": "org/apache/commons/codec/language/bm/sep_languages.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:707:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:709:      "glob": "org/apache/commons/codec/language/bm/sep_rules_any.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:713:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:715:      "glob": "org/apache/commons/codec/language/bm/sep_rules_french.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:719:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:721:      "glob": "org/apache/commons/codec/language/bm/sep_rules_hebrew.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:725:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:727:      "glob": "org/apache/commons/codec/language/bm/sep_rules_italian.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:731:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:733:      "glob": "org/apache/commons/codec/language/bm/sep_rules_portuguese.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:737:        "typeReached": "org.apache.commons.codec.language.bm.Rule"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:739:      "glob": "org/apache/commons/codec/language/bm/sep_rules_spanish.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:743:        "typeReached": "org.apache.commons.codec.language.DaitchMokotoffSoundex"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:745:      "glob": "org/apache/commons/codec/language/dmrules.txt"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:749:        "typeReached": "org.apache.commons.codec.language.bm.Languages"
+./metadata/commons-codec/commons-codec/1.10/reachability-metadata.json:751:      "glob": "org/apache/commons/codec/language/bm/*.txt"
+./metadata/org.typelevel/cats-effect_3/index.json:10:    "language" : {
+./metadata/org.typelevel/cats-effect_3/index.json:121:    "language" : {
+./metadata/org.typelevel/munit-cats-effect_3/index.json:10:    "language" : {
+./metadata/org.typelevel/alleycats-core_3/index.json:10:    "language" : {
+./metadata/com.beachape/enumeratum-circe_3/index.json:10:    "language" : {
+./metadata/org.typelevel/scalac-compat-annotation_3/index.json:10:    "language" : {
+./metadata/com.beachape/enumeratum_3/index.json:10:    "language" : {
+./metadata/org.typelevel/cats-effect-kernel_3/index.json:10:    "language" : {
+./metadata/org.typelevel/scalac-compat-annotation_2.13/index.json:10:    "language" : {
+./metadata/org.typelevel/log4cats-slf4j_3/index.json:10:    "language" : {
+./metadata/app.cash.turbine/turbine-jvm/index.json:10:    "language" : {
+./metadata/org.typelevel/log4cats-core_3/index.json:10:    "language" : {
+./metadata/com.github.luben/zstd-jni/index.json:23:    "description" : "zstd-jni provides JNI bindings for the Zstandard compression library to Java and other JVM languages. It exposes byte-array and stream-based APIs for compressing and decompressing data using the bundled native implementation.",
+./metadata/com.github.luben/zstd-jni/index.json:51:    "description" : "zstd-jni provides JNI bindings for the Zstandard compression library to Java, Android, and other JVM languages. It offers byte-array and stream-based APIs for compressing and decompressing data using bundled native binaries.",
+./metadata/org.typelevel/cats-parse_3/index.json:10:    "language" : {
+./metadata/library-and-framework-list.json:1958:    "description": "RESTHeart Polyglot - JavaScript and polyglot language support for RESTHeart plugins",
+./metadata/org.typelevel/paiges-core_2.13/index.json:10:    "language" : {
+./metadata/org.apache.groovy/groovy-test-junit5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-sources.jar",
+./metadata/org.apache.groovy/groovy-test-junit5/index.json:6:    "repository-url" : "https://github.com/apache/groovy",
+./metadata/org.apache.groovy/groovy-test-junit5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-javadoc.jar",
+./metadata/com.cognitect/transit-java/index.json:9:    "description" : "Transit Java is the Java implementation of Transit, a data format for conveying values between applications written in different languages. It provides APIs for reading, writing, and marshalling Transit data in Java using JSON and MessagePack encodings.",
+./metadata/org.typelevel/vault_3/index.json:10:    "language" : {
+./metadata/org.typelevel/otel4s-core-common_3/index.json:10:    "language" : {
+./metadata/org.typelevel/otel4s-core-common_3/index.json:38:    "language" : {
+./metadata/org.typelevel/case-insensitive_3/index.json:10:    "language" : {
+./metadata/org.typelevel/otel4s-core-trace_3/index.json:10:    "language" : {
+./metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+./metadata/org.typelevel/jawn-parser_3/index.json:10:    "language" : {
+./metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+./metadata/org.typelevel/cats-mtl_3/index.json:10:    "language" : {
+./metadata/org.typelevel/keypool_3/index.json:10:    "language" : {
+./metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+./metadata/io.arrow-kt/arrow-resilience-jvm/index.json:10:    "language" : {
+./metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+./metadata/io.arrow-kt/arrow-core-jvm/index.json:10:    "language" : {
+./metadata/io.arrow-kt/arrow-fx-coroutines-jvm/index.json:10:    "language" : {
+./metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:10:    "language" : {
+./metadata/org.sangria-graphql/sangria-ast_3/index.json:10:    "language" : {
+./metadata/io.scalaland/chimney_3/index.json:10:    "language" : {
+./metadata/org.sangria-graphql/sangria-core_3/index.json:10:    "language" : {
+./metadata/org.sangria-graphql/sangria-parser_3/index.json:10:    "language" : {
+./metadata/com.geirsson/metaconfig-typesafe-config_2.13/index.json:10:    "language" : {
+./metadata/com.geirsson/metaconfig-pprint_2.13/index.json:10:    "language" : {
+./metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:10:    "language" : {
+./metadata/com.geirsson/metaconfig-core_2.13/index.json:10:    "language" : {
+./metadata/org.sangria-graphql/sangria-derivation_3/index.json:10:    "language" : {
+./metadata/org.apache-extras.beanshell/bsh/index.json:9:    "description" : "BeanShell is an embeddable Java source interpreter and scripting language that executes standard Java syntax dynamically. It adds scripting conveniences such as loose typing, commands, method closures, and interactive or embedded execution for Java applications.",
+./metadata/org.sangria-graphql/macro-visit_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+./metadata/org.codehaus.plexus/plexus-java/1.0.0/reachability-metadata.json:5:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/1.0.0/reachability-metadata.json:11:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/1.0.0/reachability-metadata.json:23:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/1.0.0/reachability-metadata.json:35:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/1.0.0/reachability-metadata.json:41:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/1.0.0/reachability-metadata.json:49:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/1.0.0/reachability-metadata.json:51:      "glob": "META-INF/versions/9/org/codehaus/plexus/languages/java/jpms/CmdModuleNameExtractor.class"
+./metadata/org.codehaus.plexus/plexus-java/0.9.11/reachability-metadata.json:5:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.11/reachability-metadata.json:11:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.11/reachability-metadata.json:23:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.11/reachability-metadata.json:35:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.11/reachability-metadata.json:41:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.11/reachability-metadata.json:49:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.11/reachability-metadata.json:51:      "glob": "META-INF/versions/9/org/codehaus/plexus/languages/java/jpms/CmdModuleNameExtractor.class"
+./metadata/org.codehaus.plexus/plexus-java/0.9.10/reachability-metadata.json:5:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.10/reachability-metadata.json:11:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.10/reachability-metadata.json:23:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.10/reachability-metadata.json:35:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.10/reachability-metadata.json:41:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.10/reachability-metadata.json:49:        "typeReached": "org.codehaus.plexus.languages.java.jpms.MainClassModuleNameExtractor"
+./metadata/org.codehaus.plexus/plexus-java/0.9.10/reachability-metadata.json:51:      "glob": "org/codehaus/plexus/languages/java/jpms/MainClassModuleNameExtractor.class"
+./metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+./metadata/org.codehaus.plexus/plexus-java/index.json:5:    "repository-url" : "https://github.com/codehaus-plexus/plexus-languages",
+./metadata/org.codehaus.plexus/plexus-java/index.json:6:    "test-code-url" : "https://github.com/codehaus-plexus/plexus-languages/tree/plexus-languages-$version$/plexus-java/src/test",
+./metadata/org.codehaus.plexus/plexus-java/index.json:8:    "description" : "Plexus Java is the Java-language module of Plexus Languages, providing JVM utilities for reading JPMS module descriptors and deriving module names from Java artifacts. It also includes Java version parsing helpers used by Maven and Plexus tooling when inspecting Java libraries.",
+./metadata/org.codehaus.plexus/plexus-java/index.json:13:      "org.codehaus.plexus.languages.java"
+./metadata/org.codehaus.plexus/plexus-java/index.json:20:    "repository-url" : "https://github.com/codehaus-plexus/plexus-languages",
+./metadata/org.codehaus.plexus/plexus-java/index.json:21:    "test-code-url" : "https://github.com/codehaus-plexus/plexus-languages/tree/plexus-languages-$version$/plexus-java/src/test",
+./metadata/org.codehaus.plexus/plexus-java/index.json:23:    "description" : "Plexus Java is the Java-language module of Plexus Languages, providing JVM utilities for reading JPMS module descriptors and deriving module names from Java artifacts. It also includes Java version parsing helpers used by Maven and Plexus tooling when inspecting Java libraries.",
+./metadata/org.codehaus.plexus/plexus-java/index.json:28:      "org.codehaus.plexus.languages.java"
+./metadata/org.codehaus.plexus/plexus-java/index.json:34:    "repository-url" : "https://github.com/codehaus-plexus/plexus-languages",
+./metadata/org.codehaus.plexus/plexus-java/index.json:35:    "test-code-url" : "https://github.com/codehaus-plexus/plexus-languages/tree/plexus-languages-$version$/plexus-java/src/test",
+./metadata/org.codehaus.plexus/plexus-java/index.json:37:    "description" : "Plexus Java is the Java-language module of Plexus Languages, providing JVM utilities for reading JPMS module descriptors and deriving module names from Java artifacts. It also includes Java version parsing helpers used by Maven and Plexus tooling when inspecting Java libraries.",
+./metadata/org.codehaus.plexus/plexus-java/index.json:42:      "org.codehaus.plexus.languages.java"
+./metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-coroutines-slf4j/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-coroutines-test-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactor/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx2/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-io-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-metadata-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+./metadata/org.specs2/specs2-fp_3/index.json:10:    "language" : {
+./metadata/org.specs2/specs2-fp_3/index.json:57:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-coroutines-guava/index.json:10:    "language" : {
+./metadata/com.github.takayahilton/sql-formatter_2.13/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.client4/core_3/index.json:10:    "language" : {
+./metadata/com.typesafe/ssl-config-core_3/index.json:10:    "language" : {
+./metadata/com.typesafe/ssl-config-core_3/index.json:29:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.client4/circe_3/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+./metadata/com.typesafe/ssl-config-core_2.13/index.json:10:    "language" : {
+./metadata/com.typesafe/ssl-config-core_2.13/index.json:29:    "language" : {
+./metadata/com.typesafe/ssl-config-core_2.13/index.json:49:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactive/index.json:10:    "language" : {
+./metadata/com.github.ajalt.colormath/colormath-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx3/index.json:10:    "language" : {
+./metadata/com.squareup.okhttp3/mockwebserver/index.json:10:    "language" : {
+./metadata/org.jetbrains.kotlinx/kotlinx-coroutines-jdk8/index.json:10:    "language" : {
+./metadata/org.scodec/scodec-bits_3/index.json:10:    "language" : {
+./metadata/org.scalameta/scalafmt-sysops_2.13/index.json:10:    "language" : {
+./metadata/org.scalameta/scalafmt-core_2.13/index.json:10:    "language" : {
+./metadata/org.scalameta/mdoc-parser_2.13/index.json:10:    "language" : {
+./metadata/com.github.ghik/silencer-lib_2.13.16/index.json:10:    "language" : {
+./metadata/org.scalameta/munit_3/index.json:10:    "language" : {
+./metadata/schemas/metadata-library-index-schema-v2.1.0.json:71:        "language": {
+./metadata/schemas/metadata-library-index-schema-v2.1.0.json:225:        "language": {
+./metadata/com.github.ghik/silencer-lib_2.13.5/index.json:10:    "language" : {
+./metadata/org.scalameta/munit-diff_3/index.json:10:    "language" : {
+./metadata/org.scala-sbt/util-interface/index.json:10:    "language" : {
+./metadata/com.github.ghik/silencer-lib_2.13/index.json:10:    "language" : {
+./metadata/org.scalameta/scalameta_2.13/index.json:10:    "language" : {
+./metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+./metadata/org.scalameta/scalafmt-config_2.13/index.json:10:    "language" : {
+./metadata/org.scala-sbt/compiler-interface/index.json:10:    "language" : {
+./metadata/org.scala-sbt/compiler-interface/index.json:35:    "language" : {
+./metadata/org.scala-sbt/compiler-interface/index.json:62:    "language" : {
+./metadata/org.scala-sbt/compiler-interface/index.json:103:    "language" : {
+./metadata/org.scala-sbt/compiler-interface/index.json:121:    "language" : {
+./metadata/eu.timepit/refined_3/index.json:10:    "language" : {
+./metadata/dev.langchain4j/langchain4j/index.json:9:    "description" : "LangChain4j is an open-source Java library that simplifies integrating large language models into Java applications through a unified API. It provides abstractions and integrations for building AI features such as chat, retrieval-augmented generation, tool calling, and agents.",
+./metadata/org.scala-lang.modules/scala-java8-compat_3/index.json:10:    "language" : {
+./metadata/org.scala-lang.modules/scala-parallel-collections_2.13/index.json:10:    "language" : {
+./metadata/org.scala-lang.modules/scala-parser-combinators_2.13/index.json:10:    "language" : {
+./metadata/org.scala-lang.modules/scala-collection-compat_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-network-jvm/index.json:10:    "language" : {
+./metadata/org.scala-lang.modules/scala-parallel-collections_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-test-dispatcher-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-network-tls-certificates-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-server-status-pages-jvm/index.json:10:    "language" : {
+./metadata/org.scala-lang.modules/scala-xml_2.13/index.json:10:    "language" : {
+./metadata/org.scala-lang.modules/scala-xml_2.13/index.json:33:    "language" : {
+./metadata/io.ktor/ktor-websocket-serialization-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-client-okhttp-jvm/index.json:10:    "language" : {
+./metadata/org.scala-lang.modules/scala-collection-compat_2.13/index.json:10:    "language" : {
+./metadata/org.scala-lang.modules/scala-xml_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-client-java-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-server-test-host-jvm/index.json:10:    "language" : {
+./metadata/org.scala-lang.modules/scala-parser-combinators_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-server-sessions-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-network-tls-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-network-tls-jvm/index.json:33:    "language" : {
+./metadata/io.ktor/ktor-sse-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-events-jvm/index.json:10:    "language" : {
+./metadata/co.fs2/fs2-reactive-streams_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-client-apache5-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-server-content-negotiation-jvm/index.json:10:    "language" : {
+./metadata/co.fs2/fs2-core_3/index.json:10:    "language" : {
+./metadata/co.fs2/fs2-core_3/index.json:30:    "language" : {
+./metadata/app.cash.sqldelight/coroutines-extensions-jvm/index.json:10:    "language" : {
+./metadata/co.fs2/fs2-io_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-server-auth-jwt-jvm/index.json:10:    "language" : {
+./metadata/app.cash.sqldelight/runtime-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-server-cio-jvm/index.json:10:    "language" : {
+./metadata/app.cash.sqldelight/async-extensions-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-server-auth-jvm/index.json:10:    "language" : {
+./metadata/app.cash.sqldelight/sqlite-driver/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-client-logging-jvm/index.json:10:    "language" : {
+./metadata/app.cash.sqldelight/jdbc-driver/index.json:10:    "language" : {
+./metadata/org.http4s/http4s-dsl_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-io-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-utils-jvm/index.json:10:    "language" : {
+./metadata/org.http4s/http4s-core_3/index.json:10:    "language" : {
+./metadata/org.http4s/http4s-core_3/index.json:30:    "language" : {
+./metadata/org.http4s/http4s-ember-server_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-websockets-jvm/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:10:    "language" : {
+./metadata/org.http4s/http4s-server_3/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.tapir/tapir-cats_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-client-content-negotiation-jvm/index.json:10:    "language" : {
+./metadata/org.http4s/http4s-ember-core_3/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.tapir/tapir-server_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-http-cio-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-http-cio-jvm/index.json:33:    "language" : {
+./metadata/org.http4s/http4s-circe_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-serialization-kotlinx-jvm/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-serialization-kotlinx-protobuf-jvm/index.json:10:    "language" : {
+./metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-serialization-kotlinx-json-jvm/index.json:10:    "language" : {
+./metadata/io.ktor/ktor-server-websockets-jvm/index.json:10:    "language" : {
+./metadata/tools.jackson.module/jackson-module-kotlin/index.json:9:    "description" : "Jackson Module Kotlin adds Jackson support for Kotlin classes by discovering constructor and method parameter names without requiring explicit property name annotations. It integrates Kotlin reflection with Jackson Databind so Kotlin data classes, nullability, singleton objects, value classes, sealed classes, and related Kotlin language features serialize and deserialize naturally.",
+./metadata/tools.jackson.module/jackson-module-kotlin/index.json:10:    "language" : {
+./metadata/io.github.pdvrieze.xmlutil/core-jvmcommon/index.json:10:    "language" : {
+./metadata/com.akuleshov7/ktoml-core-jvm/index.json:10:    "language" : {
+./metadata/io.mockk/mockk-dsl-jvm/index.json:10:    "language" : {
+./metadata/com.thesamet.scalapb/scalapb-runtime_2.13/index.json:10:    "language" : {
+./metadata/io.github.pdvrieze.xmlutil/serialization-jvm/index.json:10:    "language" : {
+./metadata/io.mockk/mockk-agent-api-jvm/index.json:10:    "language" : {
+./metadata/com.thesamet.scalapb/lenses_2.13/index.json:10:    "language" : {
+./metadata/io.mockk/mockk-agent-jvm/index.json:10:    "language" : {
+./metadata/io.mockk/mockk-core-jvm/index.json:10:    "language" : {
+./metadata/com.typesafe.scala-logging/scala-logging_3/index.json:10:    "language" : {
+./metadata/com.github.scopt/scopt_3/index.json:10:    "language" : {
+./metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:9:    "description" : "Jakarta Enterprise Language Model provides the reflection-free Java language model used by CDI build compatible extensions. It exposes APIs for representing classes, methods, fields, constructors, annotations, and types so CDI tooling can analyze application code at build time.",
+./metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:27:    "description" : "Jakarta Enterprise Language Model provides the reflection-free Java language model used by CDI build compatible extensions. It exposes APIs for representing classes, methods, fields, constructors, annotations, and types so CDI tooling can analyze application code at build time.",
+./metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:10:    "language" : {
+./metadata/org.scalactic/scalactic_3/index.json:10:    "language" : {
+./metadata/org.scalactic/scalactic_3/index.json:29:    "language" : {
+./metadata/org.apache.pekko/pekko-parsing_3/index.json:10:    "language" : {
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:9:    "language" : {
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:29:    "language" : {
+./metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:47:    "language" : {
+./metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:10:    "language" : {
+./metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:10:    "language" : {
+./metadata/com.google.protobuf/protobuf-java/index.json:9:    "description" : "Protocol Buffers are Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data. The protobuf-java artifact provides the Java runtime API used by generated Java message classes to parse, serialize, and work with Protocol Buffer messages.",
+./metadata/ognl/ognl/index.json:9:    "description" : "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+./metadata/com.lihaoyi/geny_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/fansi_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/upack_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/fastparse_3/index.json:9:    "description" : "FastParse is a Scala parser-combinator library for building efficient parsers for structured text such as programming languages, data formats, and domain-specific languages. It provides composable parsing primitives, error reporting, and cross-platform support that let applications define readable parsers directly in Scala code.",
+./metadata/com.lihaoyi/fastparse_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/upickle-implicits_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/scalatags_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/requests_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/ujson_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/ujson_3/index.json:31:    "language" : {
+./metadata/com.lihaoyi/unroll-annotation_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/sourcecode_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/upickle_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/upickle_3/index.json:31:    "language" : {
+./metadata/com.lihaoyi/pprint_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/sourcecode_2.13/index.json:10:    "language" : {
+./metadata/com.lihaoyi/fansi_2.13/index.json:10:    "language" : {
+./metadata/com.lihaoyi/upickle-core_3/index.json:10:    "language" : {
+./metadata/com.lihaoyi/os-lib_3/index.json:10:    "language" : {
+./metadata/commons-lang/commons-lang/index.json:9:    "description" : "Apache Commons Lang provides reusable Java utility classes that supplement the core java.lang API with helpers for strings, numbers, objects, reflection, dates, and system values. It helps applications avoid reimplementing common low-level programming tasks by packaging widely used language-level utilities for Java.",
+./metadata/commons-lang/commons-lang/index.json:27:    "description" : "Apache Commons Lang provides Java utility classes that extend core language functionality for strings, numbers, objects, system properties, serialization, exceptions, and builder-style helpers. Version 1.0 is a JVM library packaged as a JAR for use by Java applications.",
+./metadata/javax.servlet.jsp/jsp-api/index.json:9:    "description" : "This artifact provides the JavaServer Pages 2.1 API contracts, including core JSP, tag extension, and expression language interfaces used by JSP containers and applications. It defines standard types that JSP engines and custom tag libraries implement at compile time and runtime.",
+./tests/src/org.apache.camel/camel-support/4.20.0/src/test/resources/META-INF/native-image/reachability-metadata.json:37:        "typeReached" : "org.apache.camel.support.language.DefaultAnnotationExpressionFactory"
+./tests/src/org.codehaus.plexus/plexus-java/1.0.0/user-code-filter.json:7:      "includeClasses" : "org.codehaus.plexus.languages.java.**"
+./tests/src/org.codehaus.plexus/plexus-java/0.9.10/user-code-filter.json:7:      "includeClasses" : "org.codehaus.plexus.languages.java.**"
+./tests/src/org.codehaus.plexus/plexus-java/0.9.11/user-code-filter.json:7:      "includeClasses" : "org.codehaus.plexus.languages.java.**"
+
+web search: 
+web search: org.apache.groovy groovy-sql 4.0.24 Maven Central sources javadoc ...
+web search: 
+web search: https://javadoc.io/doc/org.apache.groovy/groovy-sql/latest/index.html
+codex
+The existing JSON only has the coordinate, so this is a metadata enrichment task. I found the Groovy repository and am checking the exact release tag plus whether Maven Central has versioned source or test artifacts before choosing the URLs.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.groovy</groupId>
+  <artifactId>groovy-sql</artifactId>
+  <version>4.0.24</version>
+  <name>Apache Groovy</name>
+  <description>Groovy: A powerful multi-faceted language for the JVM</description>
+  <url>https://groovy-lang.org</url>
+  <inceptionYear>2003</inceptionYear>
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>https://apache.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>glaforge</id>
+      <name>Guillaume Laforge</name>
+      <organization>Google</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bob</id>
+      <name>bob mcwhirter</name>
+      <email>bob@werken.com</email>
+      <organization>The Werken Company</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jstrachan</id>
+      <name>James Strachan</name>
+      <email>james@coredevelopers.com</email>
+      <organization>Core Developers Network</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>joe</id>
+      <name>Joe Walnes</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>skizz</id>
+      <name>Chris Stevenson</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jamiemc</id>
+      <name>Jamie McCrindle</name>
+      <organization>Three</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mattf</id>
+      <name>Matt Foemmel</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>alextkachman</id>
+      <name>Alex Tkachman</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>roshandawrani</id>
+      <name>Roshan Dawrani</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>spullara</id>
+      <name>Sam Pullara</name>
+      <email>sam@sampullara.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>kasper</id>
+      <name>Kasper Nielsen</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>travis</id>
+      <name>Travis Kay</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>zohar</id>
+      <name>Zohar Melamed</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jwilson</id>
+      <name>John Wilson</name>
+      <email>tug@wilson.co.uk</email>
+      <organization>The Wilson Partnership</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cpoirier</id>
+      <name>Chris Poirier</name>
+      <email>cpoirier@dreaming.org</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>ckl</id>
+      <name>Christiaan ten Klooster</name>
+      <email>ckl@dacelo.nl</email>
+      <organization>Dacelo WebDevelopment</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>goetze</id>
+      <name>Steve Goetze</name>
+      <email>goetze@dovetail.com</email>
+      <organization>Dovetailed Technologies, LLC</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bran</id>
+      <name>Bing Ran</name>
+      <email>b55r@sina.com</email>
+      <organization>Leadingcare</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jez</id>
+      <name>Jeremy Rayner</name>
+      <email>jeremy.rayner@gmail.com</email>
+      <organization>javanicus</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jstump</id>
+      <name>John Stump</name>
+      <email>johnstump2@yahoo.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>blackdrag</id>
+      <name>Jochen Theodorou</name>
+      <email>blackdrag@gmx.org</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>russel</id>
+      <name>Russel Winder</name>
+      <email>russel@winder.org.uk</email>
+      <organization>Concertant LLP &amp; It'z Interactive Ltd</organization>
+      <roles>
+        <role>Developer</role>
+        <role>Founder of Gant</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>phk</id>
+      <name>Pilho Kim</name>
+      <email>phkim@cluecom.co.kr</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cstein</id>
+      <name>Christian Stein</name>
+      <email>sormuras@gmx.de</email>
+      <organization>CTSR.de</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mittie</id>
+      <name>Dierk Koenig</name>
+      <organization>Karakun AG</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>paulk</id>
+      <name>Paul King</name>
+      <email>paulk@asert.com.au</email>
+      <organization>OCI, Australia</organization>
+      <roles>
+        <role>Project Manager</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>galleon</id>
+      <name>Guillaume Alleon</name>
+      <email>guillaume.alleon@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>user57</id>
+      <name>Jason Dillon</name>
+      <email>jason@planet57.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>shemnon</id>
+      <name>Danno Ferrin</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jwill</id>
+      <name>James Williams</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>timyates</id>
+      <name>Tim Yates</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>aalmiray</id>
+      <name>Andres Almiray</name>
+      <email>aalmiray@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mguillem</id>
+      <name>Marc Guillemot</name>
+      <email>mguillemot@yahoo.fr</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jimwhite</id>
+      <name>Jim White</name>
+      <email>jim@pagesmiths.com</email>
+      <organization>IFCX.org</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pniederw</id>
+      <name>Peter Niederwieser</name>
+      <email>pniederw@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>andresteingress</id>
+      <name>Andre Steingress</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>hamletdrc</id>
+      <name>Hamlet D'Arcy</name>
+      <email>hamletdrc@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>melix</id>
+      <name>Cedric Champeau</name>
+      <email>cedric.champeau@gmail.com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pascalschumacher</id>
+      <name>Pascal Schumacher</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>sunlan</id>
+      <name>Daniel Sun</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>rpopma</id>
+      <name>Remko Popma</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>grocher</id>
+      <name>Graeme Rocher</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>emilles</id>
+      <name>Eric Milles</name>
+      <organization>Thomson Reuters</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Joern Eyrich</name>
+    </contributor>
+    <contributor>
+      <name>Robert Kuzelj</name>
+    </contributor>
+    <contributor>
+      <name>Rod Cope</name>
+    </contributor>
+    <contributor>
+      <name>Yuri Schimke</name>
+    </contributor>
+    <contributor>
+      <name>James Birchfield</name>
+    </contributor>
+    <contributor>
+      <name>Robert Fuller</name>
+    </contributor>
+    <contributor>
+      <name>Sergey Udovenko</name>
+    </contributor>
+    <contributor>
+      <name>Hallvard Traetteberg</name>
+    </contributor>
+    <contributor>
+      <name>Peter Reilly</name>
+    </contributor>
+    <contributor>
+      <name>Brian McCallister</name>
+    </contributor>
+    <contributor>
+      <name>Richard Monson-Haefel</name>
+    </contributor>
+    <contributor>
+      <name>Brian Larson</name>
+    </contributor>
+    <contributor>
+      <name>Artur Biesiadowski</name>
+      <email>abies@pg.gda.pl</email>
+    </contributor>
+    <contributor>
+      <name>Ivan Z. Ganza</name>
+    </contributor>
+    <contributor>
+      <name>Larry Jacobson</name>
+    </contributor>
+    <contributor>
+      <name>Jake Gage</name>
+    </contributor>
+    <contributor>
+      <name>Arjun Nayyar</name>
+    </contributor>
+    <contributor>
+      <name>Masato Nagai</name>
+    </contributor>
+    <contributor>
+      <name>Mark Chu-Carroll</name>
+    </contributor>
+    <contributor>
+      <name>Mark Turansky</name>
+    </contributor>
+    <contributor>
+      <name>Jean-Louis Berliet</name>
+    </contributor>
+    <contributor>
+      <name>Graham Miller</name>
+    </contributor>
+    <contributor>
+      <name>Marc Palmer</name>
+    </contributor>
+    <contributor>
+      <name>Tugdual Grall</name>
+    </contributor>
+    <contributor>
+      <name>Edwin Tellman</name>
+    </contributor>
+    <contributor>
+      <name>Evan "Hippy" Slatis</name>
+    </contributor>
+    <contributor>
+      <name>Mike Dillon</name>
+    </contributor>
+    <contributor>
+      <name>Bernhard Huber</name>
+    </contributor>
+    <contributor>
+      <name>Yasuharu Nakano</name>
+    </contributor>
+    <contributor>
+      <name>Marc DeXeT</name>
+    </contributor>
+    <contributor>
+      <name>Dejan Bosanac</name>
+      <email>dejan@nighttale.net</email>
+    </contributor>
+    <contributor>
+      <name>Denver Dino</name>
+    </contributor>
+    <contributor>
+      <name>Ted Naleid</name>
+    </contributor>
+    <contributor>
+      <name>Ted Leung</name>
+    </contributor>
+    <contributor>
+      <name>Merrick Schincariol</name>
+    </contributor>
+    <contributor>
+      <name>Chanwit Kaewkasi</name>
+    </contributor>
+    <contributor>
+      <name>Stefan Matthias Aust</name>
+    </contributor>
+    <contributor>
+      <name>Andy Dwelly</name>
+    </contributor>
+    <contributor>
+      <name>Philip Milne</name>
+    </contributor>
+    <contributor>
+      <name>Tiago Fernandez</name>
+    </contributor>
+    <contributor>
+      <name>Steve Button</name>
+    </contributor>
+    <contributor>
+      <name>Joachim Baumann</name>
+    </contributor>
+    <contributor>
+      <name>Jochen Eddel+</name>
+    </contributor>
+    <contributor>
+      <name>Ilinca V. Hallberg</name>
+    </contributor>
+    <contributor>
+      <name>Björn Westlin</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Glover</name>
+    </contributor>
+    <contributor>
+      <name>Brad Long</name>
+    </contributor>
+    <contributor>
+      <name>John Bito</name>
+    </contributor>
+    <contributor>
+      <name>Jim Jagielski</name>
+    </contributor>
+    <contributor>
+      <name>Rodolfo Velasco</name>
+    </contributor>
+    <contributor>
+      <name>John Hurst</name>
+    </contributor>
+    <contributor>
+      <name>Merlyn Albery-Speyer</name>
+    </contributor>
+    <contributor>
+      <name>jeremi Joslin</name>
+    </contributor>
+    <contributor>
+      <name>UEHARA Junji</name>
+    </contributor>
+    <contributor>
+      <name>NAKANO Yasuharu</name>
+    </contributor>
+    <contributor>
+      <name>Dinko Srkoc</name>
+    </contributor>
+    <contributor>
+      <name>Raffaele Cigni</name>
+    </contributor>
+    <contributor>
+      <name>Alberto Vilches Raton</name>
+    </contributor>
+    <contributor>
+      <name>Paulo Poiati</name>
+    </contributor>
+    <contributor>
+      <name>Alexander Klein</name>
+    </contributor>
+    <contributor>
+      <name>Adam Murdoch</name>
+    </contributor>
+    <contributor>
+      <name>David Durham</name>
+    </contributor>
+    <contributor>
+      <name>Daniel Henrique Alves Lima</name>
+    </contributor>
+    <contributor>
+      <name>John Wagenleitner</name>
+    </contributor>
+    <contributor>
+      <name>Colin Harrington</name>
+    </contributor>
+    <contributor>
+      <name>Brian Alexander</name>
+    </contributor>
+    <contributor>
+      <name>Jan Weitz</name>
+    </contributor>
+    <contributor>
+      <name>Chris K Wensel</name>
+    </contributor>
+    <contributor>
+      <name>David Sutherland</name>
+    </contributor>
+    <contributor>
+      <name>Mattias Reichel</name>
+    </contributor>
+    <contributor>
+      <name>David Lee</name>
+    </contributor>
+    <contributor>
+      <name>Sergei Egorov</name>
+    </contributor>
+    <contributor>
+      <name>Hein Meling</name>
+    </contributor>
+    <contributor>
+      <name>Michael Baehr</name>
+    </contributor>
+    <contributor>
+      <name>Craig Andrews</name>
+    </contributor>
+    <contributor>
+      <name>Peter Ledbrook</name>
+    </contributor>
+    <contributor>
+      <name>Scott Stirling</name>
+    </contributor>
+    <contributor>
+      <name>Thibault Kruse</name>
+    </contributor>
+    <contributor>
+      <name>Tim Tiemens</name>
+    </contributor>
+    <contributor>
+      <name>Mike Spille</name>
+    </contributor>
+    <contributor>
+      <name>Nikolay Chugunov</name>
+    </contributor>
+    <contributor>
+      <name>Francesco Durbin</name>
+    </contributor>
+    <contributor>
+      <name>Paolo Di Tommaso</name>
+    </contributor>
+    <contributor>
+      <name>Rene Scheibe</name>
+    </contributor>
+    <contributor>
+      <name>Matias Bjarland</name>
+    </contributor>
+    <contributor>
+      <name>Tomasz Bujok</name>
+    </contributor>
+    <contributor>
+      <name>Richard Hightower</name>
+    </contributor>
+    <contributor>
+      <name>Andrey Bloschetsov</name>
+    </contributor>
+    <contributor>
+      <name>Yu Kobayashi</name>
+    </contributor>
+    <contributor>
+      <name>Nick Grealy</name>
+    </contributor>
+    <contributor>
+      <name>Vaclav Pech</name>
+    </contributor>
+    <contributor>
+      <name>Chuck Tassoni</name>
+    </contributor>
+    <contributor>
+      <name>Steven Devijver</name>
+    </contributor>
+    <contributor>
+      <name>Ben Manes</name>
+    </contributor>
+    <contributor>
+      <name>Troy Heninger</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Eisenberg</name>
+    </contributor>
+    <contributor>
+      <name>Eric Milles</name>
+    </contributor>
+    <contributor>
+      <name>Kohsuke Kawaguchi</name>
+    </contributor>
+    <contributor>
+      <name>Scott Vlaminck</name>
+    </contributor>
+    <contributor>
+      <name>Hjalmar Ekengren</name>
+    </contributor>
+    <contributor>
+      <name>Rafael Luque</name>
+    </contributor>
+    <contributor>
+      <name>Joachim Heldmann</name>
+    </contributor>
+    <contributor>
+      <name>dgouyette</name>
+    </contributor>
+    <contributor>
+      <name>Marcin Grzejszczak</name>
+    </contributor>
+    <contributor>
+      <name>Pap Lőrinc</name>
+    </contributor>
+    <contributor>
+      <name>Guillaume Balaine</name>
+    </contributor>
+    <contributor>
+      <name>Santhosh Kumar T</name>
+    </contributor>
+    <contributor>
+      <name>Alan Green</name>
+    </contributor>
+    <contributor>
+      <name>Marty Saxton</name>
+    </contributor>
+    <contributor>
+      <name>Marcel Overdijk</name>
+    </contributor>
+    <contributor>
+      <name>Jonathan Carlson</name>
+    </contributor>
+    <contributor>
+      <name>Thomas Heller</name>
+    </contributor>
+    <contributor>
+      <name>John Stump</name>
+    </contributor>
+    <contributor>
+      <name>Ivan Ganza</name>
+    </contributor>
+    <contributor>
+      <name>Alex Popescu</name>
+    </contributor>
+    <contributor>
+      <name>Martin Kempf</name>
+    </contributor>
+    <contributor>
+      <name>Martin Ghados</name>
+    </contributor>
+    <contributor>
+      <name>Martin Stockhammer</name>
+    </contributor>
+    <contributor>
+      <name>Martin C. Martin</name>
+    </contributor>
+    <contributor>
+      <name>Alexey Verkhovsky</name>
+    </contributor>
+    <contributor>
+      <name>Alberto Mijares</name>
+    </contributor>
+    <contributor>
+      <name>Matthias Cullmann</name>
+    </contributor>
+    <contributor>
+      <name>Tomek Bujok</name>
+    </contributor>
+    <contributor>
+      <name>Stephane Landelle</name>
+    </contributor>
+    <contributor>
+      <name>Stephane Maldini</name>
+    </contributor>
+    <contributor>
+      <name>Mark Volkmann</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Taylor</name>
+    </contributor>
+    <contributor>
+      <name>Vladimir Vivien</name>
+    </contributor>
+    <contributor>
+      <name>Vladimir Orany</name>
+    </contributor>
+    <contributor>
+      <name>Joe Wolf</name>
+    </contributor>
+    <contributor>
+      <name>Kent Inge Fagerland Simonsen</name>
+    </contributor>
+    <contributor>
+      <name>Tom Nichols</name>
+    </contributor>
+    <contributor>
+      <name>Ingo Hoffmann</name>
+    </contributor>
+    <contributor>
+      <name>Sergii Bondarenko</name>
+    </contributor>
+    <contributor>
+      <name>mgroovy</name>
+    </contributor>
+    <contributor>
+      <name>Dominik Przybysz</name>
+    </contributor>
+    <contributor>
+      <name>Jason Thomas</name>
+    </contributor>
+    <contributor>
+      <name>Trygve Amundsens</name>
+    </contributor>
+    <contributor>
+      <name>Morgan Hankins</name>
+    </contributor>
+    <contributor>
+      <name>Shruti Gupta</name>
+    </contributor>
+    <contributor>
+      <name>Ben Yu</name>
+    </contributor>
+    <contributor>
+      <name>Dejan Bosanac</name>
+    </contributor>
+    <contributor>
+      <name>Lidia Donajczyk-Lipinska</name>
+    </contributor>
+    <contributor>
+      <name>Peter Gromov</name>
+    </contributor>
+    <contributor>
+      <name>Johannes Link</name>
+    </contributor>
+    <contributor>
+      <name>Chris Reeves</name>
+    </contributor>
+    <contributor>
+      <name>Sean Timm</name>
+    </contributor>
+    <contributor>
+      <name>Dmitry Vyazelenko</name>
+    </contributor>
+  </contributors>
+  <mailingLists>
+    <mailingList>
+      <name>Groovy Developer List</name>
+      <archive>https://mail-archives.apache.org/mod_mbox/groovy-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Groovy User List</name>
+      <archive>https://mail-archives.apache.org/mod_mbox/groovy-users/</archive>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:git:https://github.com/apache/groovy.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/groovy.git</developerConnection>
+    <url>https://github.com/apache/groovy.git</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.apache.org/jira/browse/GROOVY</url>
+  </issueManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.groovy</groupId>
+        <artifactId>groovy-bom</artifactId>
+        <version>4.0.24</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>4.0.24</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/groovy/groovy-sql/4.0.24</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/groovy/groovy-sql/4.0.24</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="groovy-sql-4.0.24-groovydoc.jar" title="groovy-sql-4.0.24-groovydoc.jar">groovy-sql-4.0.24-groovydoc.jar</a>                   2024-11-05 01:24    140835      
+<a href="groovy-sql-4.0.24-groovydoc.jar.asc" title="groovy-sql-4.0.24-groovydoc.jar.asc">groovy-sql-4.0.24-groovydoc.jar.asc</a>               2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24-groovydoc.jar.asc.md5" title="groovy-sql-4.0.24-groovydoc.jar.asc.md5">groovy-sql-4.0.24-groovydoc.jar.asc.md5</a>           2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-groovydoc.jar.asc.sha1" title="groovy-sql-4.0.24-groovydoc.jar.asc.sha1">groovy-sql-4.0.24-groovydoc.jar.asc.sha1</a>          2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-groovydoc.jar.asc.sha256" title="groovy-sql-4.0.24-groovydoc.jar.asc.sha256">groovy-sql-4.0.24-groovydoc.jar.asc.sha256</a>        2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-groovydoc.jar.asc.sha512" title="groovy-sql-4.0.24-groovydoc.jar.asc.sha512">groovy-sql-4.0.24-groovydoc.jar.asc.sha512</a>        2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24-groovydoc.jar.md5" title="groovy-sql-4.0.24-groovydoc.jar.md5">groovy-sql-4.0.24-groovydoc.jar.md5</a>               2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-groovydoc.jar.sha1" title="groovy-sql-4.0.24-groovydoc.jar.sha1">groovy-sql-4.0.24-groovydoc.jar.sha1</a>              2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-groovydoc.jar.sha256" title="groovy-sql-4.0.24-groovydoc.jar.sha256">groovy-sql-4.0.24-groovydoc.jar.sha256</a>            2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-groovydoc.jar.sha512" title="groovy-sql-4.0.24-groovydoc.jar.sha512">groovy-sql-4.0.24-groovydoc.jar.sha512</a>            2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24-javadoc.jar" title="groovy-sql-4.0.24-javadoc.jar">groovy-sql-4.0.24-javadoc.jar</a>                     2024-11-05 01:24    191105      
+<a href="groovy-sql-4.0.24-javadoc.jar.asc" title="groovy-sql-4.0.24-javadoc.jar.asc">groovy-sql-4.0.24-javadoc.jar.asc</a>                 2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24-javadoc.jar.asc.md5" title="groovy-sql-4.0.24-javadoc.jar.asc.md5">groovy-sql-4.0.24-javadoc.jar.asc.md5</a>             2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-javadoc.jar.asc.sha1" title="groovy-sql-4.0.24-javadoc.jar.asc.sha1">groovy-sql-4.0.24-javadoc.jar.asc.sha1</a>            2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-javadoc.jar.asc.sha256" title="groovy-sql-4.0.24-javadoc.jar.asc.sha256">groovy-sql-4.0.24-javadoc.jar.asc.sha256</a>          2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-javadoc.jar.asc.sha512" title="groovy-sql-4.0.24-javadoc.jar.asc.sha512">groovy-sql-4.0.24-javadoc.jar.asc.sha512</a>          2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24-javadoc.jar.md5" title="groovy-sql-4.0.24-javadoc.jar.md5">groovy-sql-4.0.24-javadoc.jar.md5</a>                 2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-javadoc.jar.sha1" title="groovy-sql-4.0.24-javadoc.jar.sha1">groovy-sql-4.0.24-javadoc.jar.sha1</a>                2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-javadoc.jar.sha256" title="groovy-sql-4.0.24-javadoc.jar.sha256">groovy-sql-4.0.24-javadoc.jar.sha256</a>              2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-javadoc.jar.sha512" title="groovy-sql-4.0.24-javadoc.jar.sha512">groovy-sql-4.0.24-javadoc.jar.sha512</a>              2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24-sources.jar" title="groovy-sql-4.0.24-sources.jar">groovy-sql-4.0.24-sources.jar</a>                     2024-11-05 01:24     64044      
+<a href="groovy-sql-4.0.24-sources.jar.asc" title="groovy-sql-4.0.24-sources.jar.asc">groovy-sql-4.0.24-sources.jar.asc</a>                 2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24-sources.jar.asc.md5" title="groovy-sql-4.0.24-sources.jar.asc.md5">groovy-sql-4.0.24-sources.jar.asc.md5</a>             2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-sources.jar.asc.sha1" title="groovy-sql-4.0.24-sources.jar.asc.sha1">groovy-sql-4.0.24-sources.jar.asc.sha1</a>            2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-sources.jar.asc.sha256" title="groovy-sql-4.0.24-sources.jar.asc.sha256">groovy-sql-4.0.24-sources.jar.asc.sha256</a>          2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-sources.jar.asc.sha512" title="groovy-sql-4.0.24-sources.jar.asc.sha512">groovy-sql-4.0.24-sources.jar.asc.sha512</a>          2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24-sources.jar.md5" title="groovy-sql-4.0.24-sources.jar.md5">groovy-sql-4.0.24-sources.jar.md5</a>                 2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24-sources.jar.sha1" title="groovy-sql-4.0.24-sources.jar.sha1">groovy-sql-4.0.24-sources.jar.sha1</a>                2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24-sources.jar.sha256" title="groovy-sql-4.0.24-sources.jar.sha256">groovy-sql-4.0.24-sources.jar.sha256</a>              2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24-sources.jar.sha512" title="groovy-sql-4.0.24-sources.jar.sha512">groovy-sql-4.0.24-sources.jar.sha512</a>              2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.jar" title="groovy-sql-4.0.24.jar">groovy-sql-4.0.24.jar</a>                             2024-11-05 01:24     79568      
+<a href="groovy-sql-4.0.24.jar.asc" title="groovy-sql-4.0.24.jar.asc">groovy-sql-4.0.24.jar.asc</a>                         2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24.jar.asc.md5" title="groovy-sql-4.0.24.jar.asc.md5">groovy-sql-4.0.24.jar.asc.md5</a>                     2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.jar.asc.sha1" title="groovy-sql-4.0.24.jar.asc.sha1">groovy-sql-4.0.24.jar.asc.sha1</a>                    2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.jar.asc.sha256" title="groovy-sql-4.0.24.jar.asc.sha256">groovy-sql-4.0.24.jar.asc.sha256</a>                  2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.jar.asc.sha512" title="groovy-sql-4.0.24.jar.asc.sha512">groovy-sql-4.0.24.jar.asc.sha512</a>                  2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.jar.md5" title="groovy-sql-4.0.24.jar.md5">groovy-sql-4.0.24.jar.md5</a>                         2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.jar.sha1" title="groovy-sql-4.0.24.jar.sha1">groovy-sql-4.0.24.jar.sha1</a>                        2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.jar.sha256" title="groovy-sql-4.0.24.jar.sha256">groovy-sql-4.0.24.jar.sha256</a>                      2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.jar.sha512" title="groovy-sql-4.0.24.jar.sha512">groovy-sql-4.0.24.jar.sha512</a>                      2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.module" title="groovy-sql-4.0.24.module">groovy-sql-4.0.24.module</a>                          2024-11-05 01:24      5806      
+<a href="groovy-sql-4.0.24.module.asc" title="groovy-sql-4.0.24.module.asc">groovy-sql-4.0.24.module.asc</a>                      2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24.module.asc.md5" title="groovy-sql-4.0.24.module.asc.md5">groovy-sql-4.0.24.module.asc.md5</a>                  2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.module.asc.sha1" title="groovy-sql-4.0.24.module.asc.sha1">groovy-sql-4.0.24.module.asc.sha1</a>                 2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.module.asc.sha256" title="groovy-sql-4.0.24.module.asc.sha256">groovy-sql-4.0.24.module.asc.sha256</a>               2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.module.asc.sha512" title="groovy-sql-4.0.24.module.asc.sha512">groovy-sql-4.0.24.module.asc.sha512</a>               2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.module.md5" title="groovy-sql-4.0.24.module.md5">groovy-sql-4.0.24.module.md5</a>                      2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.module.sha1" title="groovy-sql-4.0.24.module.sha1">groovy-sql-4.0.24.module.sha1</a>                     2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.module.sha256" title="groovy-sql-4.0.24.module.sha256">groovy-sql-4.0.24.module.sha256</a>                   2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.module.sha512" title="groovy-sql-4.0.24.module.sha512">groovy-sql-4.0.24.module.sha512</a>                   2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.pom" title="groovy-sql-4.0.24.pom">groovy-sql-4.0.24.pom</a>                             2024-11-05 01:24     22570      
+<a href="groovy-sql-4.0.24.pom.asc" title="groovy-sql-4.0.24.pom.asc">groovy-sql-4.0.24.pom.asc</a>                         2024-11-05 01:24       848      
+<a href="groovy-sql-4.0.24.pom.asc.md5" title="groovy-sql-4.0.24.pom.asc.md5">groovy-sql-4.0.24.pom.asc.md5</a>                     2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.pom.asc.sha1" title="groovy-sql-4.0.24.pom.asc.sha1">groovy-sql-4.0.24.pom.asc.sha1</a>                    2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.pom.asc.sha256" title="groovy-sql-4.0.24.pom.asc.sha256">groovy-sql-4.0.24.pom.asc.sha256</a>                  2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.pom.asc.sha512" title="groovy-sql-4.0.24.pom.asc.sha512">groovy-sql-4.0.24.pom.asc.sha512</a>                  2024-11-05 01:24       128      
+<a href="groovy-sql-4.0.24.pom.md5" title="groovy-sql-4.0.24.pom.md5">groovy-sql-4.0.24.pom.md5</a>                         2024-11-05 01:24        32      
+<a href="groovy-sql-4.0.24.pom.sha1" title="groovy-sql-4.0.24.pom.sha1">groovy-sql-4.0.24.pom.sha1</a>                        2024-11-05 01:24        40      
+<a href="groovy-sql-4.0.24.pom.sha256" title="groovy-sql-4.0.24.pom.sha256">groovy-sql-4.0.24.pom.sha256</a>                      2024-11-05 01:24        64      
+<a href="groovy-sql-4.0.24.pom.sha512" title="groovy-sql-4.0.24.pom.sha512">groovy-sql-4.0.24.pom.sha512</a>                      2024-11-05 01:24       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/groovy.git '*4_0_24*' '*4.0.24*'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 345ms:
+c37125802f4ed0db459927b6782b4806cf1d331d	refs/tags/GROOVY_4_0_24
+7f0152fbf262a7534d4d9de6b8024293b0b55edb	refs/tags/GROOVY_4_0_24^{}
+
+ succeeded in 606ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 04:31:21 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6343d7a0f9b63a1b2d2574f2af3363d0"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+exec
+/usr/bin/bash -lc "rg -n 'GROOVY_|apache-groovy-src|archive.apache.org/dist/groovy|groovy-lang.org/docs|javadoc.io/doc' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 0ms:
+metadata/org.apache.directory.api/api-ldap-model/index.json:78:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-ldap-model/$version$/",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.activemq/activemq-openwire-legacy/$version$",
+metadata/io.smallrye.common/smallrye-common-function/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/$version$/",
+metadata/io.smallrye.common/smallrye-common-function/index.json:44:    "documentation-url" : "https://javadoc.io/doc/io.smallrye.common/smallrye-common-function/$version$/",
+metadata/org.codehaus.jackson/jackson-mapper-asl/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-mapper-asl/$version$",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.jackson/jackson-core-asl/$version$",
+metadata/org.antlr/antlr-runtime/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.antlr/antlr-runtime/$version$/",
+metadata/javax.persistence/persistence-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.persistence/persistence-api/$version$",
+metadata/io.github.java-diff-utils/java-diff-utils/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.github.java-diff-utils/java-diff-utils/$version$",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/$version$/index.html",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-metrics/$version$/index.html",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:26:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-sdk-metrics/$version$/index.html",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-io-jvm/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jetbrains.kotlinx/kotlinx-serialization-json-io-jvm/$version$/index.html",
+metadata/io.opentelemetry/opentelemetry-context/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-context/$version$/index.html",
+metadata/org.apache.groovy/groovy-test-junit5/index.json:7:    "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+metadata/org.codehaus.plexus/plexus-utils/index.json:7:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:162:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:176:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:190:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:204:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/plexus/plexus-utils/index.json:23:    "documentation-url" : "https://javadoc.io/doc/plexus/plexus-utils/$version$",
+metadata/net.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://javadoc.io/doc/net.jcip/jcip-annotations/$version$/index.html",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/$version$/index.html",
+metadata/org.aesh/readline/index.json:7:    "documentation-url" : "https://javadoc.io/doc/org.aesh/readline/$version$/index.html",
+metadata/org.aesh/readline/index.json:22:    "documentation-url" : "https://javadoc.io/doc/org.aesh/readline/$version$/index.html",
+metadata/org.aesh/readline/index.json:36:    "documentation-url" : "https://javadoc.io/doc/org.aesh/readline/$version$/index.html",
+metadata/org.jboss.javaee/jboss-jacc-api_JDK4/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.javaee/jboss-jacc-api_JDK4/$version$/",
+metadata/dev.equo.ide/solstice/index.json:8:    "documentation-url" : "https://javadoc.io/doc/dev.equo.ide/solstice/$version$",
+metadata/com.google.auto.value/auto-value-annotations/index.json:28:    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/$version$/index.html",
+metadata/javax.servlet.jsp/jsp-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/$version$",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/$version$",
+metadata/org.apache.james/apache-mime4j-dom/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.james/apache-mime4j-dom/$version$/",
+metadata/org.htrace/htrace-core/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.htrace/htrace-core/$version$",
+metadata/org.jboss.arquillian.test/arquillian-test-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.arquillian.test/arquillian-test-api/$version$",
+metadata/org.glassfish/javax.servlet/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.servlet/$version$",
+metadata/org.glassfish/javax.annotation/index.json:22:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.annotation/$version$",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src?ref=GROOVY_4_0_24 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/test?ref=GROOVY_4_0_24 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+exec
+/usr/bin/bash -lc 'curl -fsSL https://archive.apache.org/dist/groovy/4.0.24/sources/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 174ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/groovy/4.0.24/sources</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/groovy/4.0.24/">Parent Directory</a>                                         -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="apache-groovy-src-4.0.24.zip">apache-groovy-src-4.0.24.zip</a>        2024-11-08 02:06  9.1M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="apache-groovy-src-4.0.24.zip.asc">apache-groovy-src-4.0.24.zip.asc</a>    2024-11-08 02:06  848   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="apache-groovy-src-4.0.24.zip.sha256">apache-groovy-src-4.0.24.zip.sha256</a> 2024-11-08 02:06   66   
+<hr></pre>
+</body></html>
+
+ succeeded in 194ms:
+[
+  {
+    "name": "main",
+    "path": "subprojects/groovy-sql/src/main",
+    "sha": "3464602b0ba93817a2ef0486326df865eb4c7857",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/main?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/main",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/3464602b0ba93817a2ef0486326df865eb4c7857",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/main?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/3464602b0ba93817a2ef0486326df865eb4c7857",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/main"
+    }
+  },
+  {
+    "name": "spec",
+    "path": "subprojects/groovy-sql/src/spec",
+    "sha": "f03ef2cdf3f432b9dac6fa9d04061f5e78b52808",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/spec?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/spec",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/f03ef2cdf3f432b9dac6fa9d04061f5e78b52808",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/spec?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/f03ef2cdf3f432b9dac6fa9d04061f5e78b52808",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/spec"
+    }
+  },
+  {
+    "name": "test",
+    "path": "subprojects/groovy-sql/src/test",
+    "sha": "c16fec38bfa71eca664c6095115e3527fa132c9d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/test?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/test",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/c16fec38bfa71eca664c6095115e3527fa132c9d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/test?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/c16fec38bfa71eca664c6095115e3527fa132c9d",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/test"
+    }
+  }
+]
+
+ succeeded in 300ms:
+[
+  {
+    "name": "groovy",
+    "path": "subprojects/groovy-sql/src/test/groovy",
+    "sha": "64608e5f6ccab11803e1d6302d1952c1aa31d90d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/test/groovy?ref=GROOVY_4_0_24",
+    "html_url": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/test/groovy",
+    "git_url": "https://api.github.com/repos/apache/groovy/git/trees/64608e5f6ccab11803e1d6302d1952c1aa31d90d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/groovy/contents/subprojects/groovy-sql/src/test/groovy?ref=GROOVY_4_0_24",
+      "git": "https://api.github.com/repos/apache/groovy/git/trees/64608e5f6ccab11803e1d6302d1952c1aa31d90d",
+      "html": "https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-sql/src/test/groovy"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.groovy/groovy-test-junit5/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.24",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/groovy",
+    "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-javadoc.jar",
+    "description" : "groovy-test-junit5 provides Apache Groovy's integration with JUnit 5 and the JUnit Platform for running Groovy tests. It supplies the Groovy test runner plugin and helper code needed to execute JUnit Jupiter based test classes from Groovy projects.",
+    "tested-versions" : [
+      "4.0.24",
+      "4.0.25",
+      "4.0.26",
+      "4.0.27",
+      "4.0.28",
+      "4.0.29",
+      "4.0.30",
+      "4.0.31",
+      "4.0.32",
+      "5.0.0",
+      "5.0.1",
+      "5.0.2",
+      "5.0.3",
+      "5.0.4",
+      "5.0.5",
+      "5.0.6",
+      "6.0.0-alpha-1"
+    ],
+    "allowed-packages" : [
+      "groovy.junit5.plugin"
+    ]
+  }
+]
+
+codex
+The matching Groovy metadata in this repo already uses Maven Central for `-sources.jar` and `-javadoc.jar`, and the Apache source distribution ZIP for tests because Groovy’s Git tag uses underscores rather than the Maven version string. I’m going to follow that established pattern for `groovy-sql` and mark it as Groovy 4.0 language-specific while keeping it as a normal JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+index 52ad6f1ad3f5f18831f1a20cacc9d68481f086fd..10bc4b8b0bb04ee52bb0ffcccbbe8782e49aefea
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-javadoc.jar",
++  "description" : "Apache Groovy groovy-sql provides Groovy's SQL support, centered on the groovy.sql.Sql facade for executing queries, updates, stored procedures, and batch operations over JDBC. It adds Groovy-friendly database utilities such as closure-based row handling, named parameters, data set helpers, and simplified resource management for JVM applications.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+index 52ad6f1ad3f5f18831f1a20cacc9d68481f086fd..10bc4b8b0bb04ee52bb0ffcccbbe8782e49aefea
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-javadoc.jar",
++  "description" : "Apache Groovy groovy-sql provides Groovy's SQL support, centered on the groovy.sql.Sql facade for executing queries, updates, stored procedures, and batch operations over JDBC. It adds Groovy-friendly database utilities such as closure-based row handling, named parameters, data set helpers, and simplified resource management for JVM applications.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.groovy:groovy-sql:4.0.24",
+  "repository-url": "https://github.com/apache/groovy",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
+  "test-code-url": "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-javadoc.jar",
+  "description": "Apache Groovy groovy-sql provides Groovy's SQL support, centered on the groovy.sql.Sql facade for executing queries, updates, stored procedures, and batch operations over JDBC. It adds Groovy-friendly database utilities such as closure-based row handling, named parameters, data set helpers, and simplified resource management for JVM applications.",
+  "language": {
+    "name": "groovy",
+    "version": "4.0"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 04:31:54 GMT
+content-type: application/java-archive
+content-length: 64044
+cf-ray: a001556ebc43bbf4-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 597947
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/4.0.24/groovy-sql-4.0.24-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 04:31:54 GMT
+content-type: application/java-archive
+content-length: 191105
+cf-ray: a001556ebe03bc60-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1300858
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip | sed -n '1,8p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+index 52ad6f1ad3f5f18831f1a20cacc9d68481f086fd..10bc4b8b0bb04ee52bb0ffcccbbe8782e49aefea
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-javadoc.jar",
++  "description" : "Apache Groovy groovy-sql provides Groovy's SQL support, centered on the groovy.sql.Sql facade for executing queries, updates, stored procedures, and batch operations over JDBC. It adds Groovy-friendly database utilities such as closure-based row handling, named parameters, data set helpers, and simplified resource management for JVM applications.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 611ms:
+HTTP/1.1 200 OK
+Date: Sat, 23 May 2026 04:31:55 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Fri, 08 Nov 2024 02:06:26 GMT
+ETag: "90e888-6265d32c93c0b"
+Accept-Ranges: bytes
+Content-Length: 9496712
+
+codex
+Updated [org.apache.groovy-groovy-sql-4.0.24.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json) with the repository, source, test, documentation, two-sentence description, and Groovy language metadata.
+
+Validation done:
+- `jq` confirms valid JSON.
+- Rendered source, test ZIP, and javadoc URLs for `4.0.24` all return HTTP 200.
+- Left `not-for-native-image` absent because this is a JVM JAR artifact.
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+index 52ad6f1ad3f5f18831f1a20cacc9d68481f086fd..10bc4b8b0bb04ee52bb0ffcccbbe8782e49aefea
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-sql:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-sql/$version$/groovy-sql-$version$-javadoc.jar",
++  "description" : "Apache Groovy groovy-sql provides Groovy's SQL support, centered on the groovy.sql.Sql facade for executing queries, updates, stored procedures, and batch operations over JDBC. It adds Groovy-friendly database utilities such as closure-based row handling, named parameters, data set helpers, and simplified resource management for JVM applications.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+tokens used
+62,879
+Updated [org.apache.groovy-groovy-sql-4.0.24.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425/build/discovered-artifact-metadata/org.apache.groovy-groovy-sql-4.0.24.json) with the repository, source, test, documentation, two-sentence description, and Groovy language metadata.
+
+Validation done:
+- `jq` confirms valid JSON.
+- Rendered source, test ZIP, and javadoc URLs for `4.0.24` all return HTTP 200.
+- Left `not-for-native-image` absent because this is a JVM JAR artifact.
+Ran agent for org.apache.groovy:groovy-sql:4.0.24 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425/build/agent-artifact-discovery-logs/org.apache.groovy-groovy-sql-4.0.24.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2463-9a257425/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 18s
+9 actionable tasks: 9 executed
