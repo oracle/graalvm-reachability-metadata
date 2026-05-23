@@ -59,7 +59,7 @@ public class HazelcastIMapAdapterTest {
             }
             return defaultValue(proxy, method, args);
         };
-        return (IMap<Object, Object>) Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[] { IMap.class },
+        return (IMap<Object, Object>) Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[] {IMap.class },
                 handler);
     }
 
@@ -106,7 +106,7 @@ public class HazelcastIMapAdapterTest {
             return defaultValue(proxy, method, args);
         };
         return (LocalMapStats) Proxy.newProxyInstance(getClass().getClassLoader(),
-                new Class<?>[] { LocalMapStats.class }, handler);
+                new Class<?>[] {LocalMapStats.class }, handler);
     }
 
     private NearCacheStats createNearCacheStats() {
@@ -127,7 +127,7 @@ public class HazelcastIMapAdapterTest {
             return defaultValue(proxy, method, args);
         };
         return (NearCacheStats) Proxy.newProxyInstance(getClass().getClassLoader(),
-                new Class<?>[] { NearCacheStats.class }, handler);
+                new Class<?>[] {NearCacheStats.class }, handler);
     }
 
     private Object defaultValue(Object proxy, Method method, Object[] args) {
