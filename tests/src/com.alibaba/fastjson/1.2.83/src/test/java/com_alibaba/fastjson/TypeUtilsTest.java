@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.time.MonthDay;
 import java.time.Year;
@@ -38,7 +39,9 @@ import java.util.Optional;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import kotlin.Metadata;
+import kotlin.Pair;
+import oracle.sql.DATE;
+import oracle.sql.TIMESTAMP;
 import org.junit.jupiter.api.Test;
 
 public class TypeUtilsTest {
@@ -79,6 +82,16 @@ public class TypeUtilsTest {
     }
 
     @Test
+    void castToDateSupportsOracleJdbcTemporalTypes() throws Exception {
+        Timestamp timestamp = new Timestamp(1_000L);
+        Date oracleTimestamp = TypeUtils.castToDate(new TIMESTAMP(timestamp));
+        Date oracleDate = TypeUtils.castToDate(new DATE(timestamp));
+
+        assertThat(oracleTimestamp).isEqualTo(timestamp);
+        assertThat(oracleDate.getTime()).isEqualTo(timestamp.getTime());
+    }
+
+    @Test
     void castToJavaBeanCreatesProxyForInterfaces() {
         Map<String, Object> values = Collections.singletonMap("name", "fastjson");
         NamedView proxy = TypeUtils.castToJavaBean(values, NamedView.class, ParserConfig.getGlobalInstance());
@@ -110,8 +123,19 @@ public class TypeUtilsTest {
         List<FieldInfo> getters = TypeUtils.computeGetters(ConcreteAnnotatedBean.class, null, true);
         assertThat(getters).extracting(fieldInfo -> fieldInfo.name).contains("ifaceName", "abstractName", "publicValue");
 
-        List<FieldInfo> kotlinLikeGetters = TypeUtils.computeGetters(KotlinLikeBean.class, null, true);
-        assertThat(kotlinLikeGetters).extracting(fieldInfo -> fieldInfo.name).contains("value");
+        List<FieldInfo> kotlinGetters = TypeUtils.computeGetters(Pair.class, null, true);
+        assertThat(kotlinGetters).extracting(fieldInfo -> fieldInfo.name).contains("first", "second");
+    }
+
+    @Test
+    void kotlinConstructorParametersAreResolvedWithKotlinReflect() {
+        String[] parameterNames = TypeUtils.getKoltinConstructorParameters(Pair.class);
+        assertThat(parameterNames).contains("first", "second");
+    }
+
+    @Test
+    void hibernateInitializationDelegatesToHibernateUtility() {
+        assertThat(TypeUtils.isHibernateInitialized(new Object())).isTrue();
     }
 
     @Test
@@ -220,19 +244,6 @@ public class TypeUtilsTest {
         }
     }
 
-    @Metadata(k = 1, mv = {1, 9, 0}, d1 = {}, d2 = {})
-    public static class KotlinLikeBean {
-        private final String value;
-
-        public KotlinLikeBean(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
     public static class BaseFieldBean {
         public String baseValue;
     }
@@ -319,7 +330,6 @@ public class TypeUtilsTest {
             throw new ClassNotFoundException(name);
         }
     }
-
 }
 
 class TopLevelConstructorAnnotationMixin {
