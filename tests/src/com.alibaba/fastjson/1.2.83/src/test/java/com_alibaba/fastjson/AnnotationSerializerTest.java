@@ -18,7 +18,8 @@ import org.junit.jupiter.api.Test;
 public class AnnotationSerializerTest {
     @Test
     void runtimeAnnotationProxySerializesDeclaredMembers() {
-        SerializedAnnotation annotation = AnnotatedTarget.class.getAnnotation(SerializedAnnotation.class);
+        Class<AnnotatedTarget> annotatedTargetAnnotationAccess = AnnotatedTarget.class;
+        SerializedAnnotation annotation = annotatedTargetAnnotationAccess.getAnnotation(SerializedAnnotation.class);
 
         String json = JSON.toJSONString(annotation);
         JSONObject object = JSON.parseObject(json);

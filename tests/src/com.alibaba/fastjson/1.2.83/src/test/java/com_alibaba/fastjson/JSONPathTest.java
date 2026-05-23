@@ -18,7 +18,7 @@ public class JSONPathTest {
     @Test
     void arrayAddAppendsValuesToArrayProperty() {
         Map<String, Object> root = new HashMap<>();
-        root.put("names", new String[] { "fast", "json" });
+        root.put("names", new String[] {"fast", "json" });
 
         JSONPath.arrayAdd(root, "$.names", "native", "image");
 
@@ -28,7 +28,7 @@ public class JSONPathTest {
     @Test
     void patchAddAppendsValueToArrayProperty() {
         Map<String, Object> root = new HashMap<>();
-        root.put("names", new String[] { "fast", "json" });
+        root.put("names", new String[] {"fast", "json" });
 
         JSONPath.compile("$.names").patchAdd(root, "native", false);
 

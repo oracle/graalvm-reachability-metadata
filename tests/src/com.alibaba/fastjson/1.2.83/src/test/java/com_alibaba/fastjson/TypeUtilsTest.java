@@ -151,12 +151,13 @@ public class TypeUtilsTest {
         JSON.addMixInAnnotations(MethodAnnotationTarget.class, MethodAnnotationMixin.class);
         JSON.addMixInAnnotations(MethodParameterTarget.class, MethodParameterMixin.class);
         try {
+            TypeUtils typeUtilsAnnotationAccess = null;
             Field field = FieldAnnotationTarget.class.getField("name");
-            JSONField fieldAnnotation = TypeUtils.getAnnotation(field, JSONField.class);
+            JSONField fieldAnnotation = typeUtilsAnnotationAccess.getAnnotation(field, JSONField.class);
             assertThat(fieldAnnotation.name()).isEqualTo("mixedField");
 
             Method method = MethodAnnotationTarget.class.getMethod("getName");
-            JSONField methodAnnotation = TypeUtils.getAnnotation(method, JSONField.class);
+            JSONField methodAnnotation = typeUtilsAnnotationAccess.getAnnotation(method, JSONField.class);
             assertThat(methodAnnotation.name()).isEqualTo("mixedMethod");
 
             Method parameterMethod = MethodParameterTarget.class.getMethod("setName", String.class);
