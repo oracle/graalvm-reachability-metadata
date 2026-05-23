@@ -1,0 +1,1185 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e526e-f68a-7ef3-aaab-aec431a6bb19
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.jcraft:jsch:0.1.27
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "0.1.27" when "$version$" is replaced with "0.1.27".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.jcraft:jsch:0.1.27".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.1.27".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing discovered metadata style first, then verify the artifact’s Maven contents and upstream project/tag so the URL fields match local conventions.
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json && sed -n '1,160p' build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 47 May 23 03:24 build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+{
+  "coordinates" : "com.jcraft:jsch:0.1.27"
+}
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|documentation-url|test-code-url' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+
+web search: 
+web search: com.jcraft jsch 0.1.27 maven sources jar ...
+web search: 
+web search: https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/
+codex
+The local file only has the coordinate, so I’m checking Maven Central first because this prompt prefers Maven-hosted source and docs when present. Central has both `sources.jar` and `javadoc.jar` for `0.1.27`; I’m verifying whether there is any test artifact before writing the JSON.
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' -g '*.json' metadata tests build | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/com.google.truth/truth/index.json:    "repository-url" : "https://github.com/google/truth",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/io.suzaku/boopickle_2.13/index.json:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+metadata/io.suzaku/boopickle_3/index.json:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/com.google.javascript/closure-compiler-externs/index.json:    "repository-url" : "https://github.com/google/closure-compiler",
+metadata/org.apache.directory.api/api-i18n/index.json:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-i18n/index.json:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/net.bytebuddy/byte-buddy-agent/index.json:    "repository-url" : "https://github.com/raphw/byte-buddy",
+metadata/org.apache.directory.api/api-util/index.json:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+metadata/org.openjfx/javafx-base/index.json:    "repository-url": "https://github.com/openjdk/jfx",
+metadata/org.openjfx/javafx-base/index.json:    "repository-url": "https://github.com/javafxports/openjdk-jfx",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:    "repository-url" : "https://github.com/googleapis/java-firestore",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/io.smallrye.reactive/mutiny/index.json:    "repository-url" : "https://github.com/smallrye/smallrye-mutiny",
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/io.getquill/quill-engine_3/index.json:    "repository-url" : "https://github.com/zio/zio-quill",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/io.getquill/quill-engine_2.13/index.json:    "repository-url" : "https://github.com/zio/zio-quill",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/io.getquill/quill-util_3/index.json:    "repository-url" : "https://github.com/zio/zio-quill",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.8",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "repository-url" : "https://github.com/ben-manes/caffeine",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/com.google.api.grpc/proto-google-common-protos/index.json:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/jakarta.json/jakarta.json-api/index.json:    "repository-url" : "https://github.com/jakartaee/jsonp-api",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/org.playframework.twirl/twirl-api_3/index.json:    "repository-url" : "https://github.com/playframework/twirl",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-logging-v2/index.json:    "repository-url" : "https://github.com/googleapis/java-logging",
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "repository-url" : "https://github.com/profunktor/redis4cats",
+metadata/dev.profunktor/redis4cats-core_3/index.json:    "repository-url" : "https://github.com/profunktor/redis4cats",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "repository-url" : "https://github.com/apache/jackrabbit",
+metadata/com.google.api.grpc/proto-google-iam-v1/index.json:    "repository-url" : "https://github.com/googleapis/sdk-platform-java",
+metadata/com.google.re2j/re2j/index.json:    "repository-url" : "https://github.com/google/re2j",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/index.json:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "repository-url" : "https://github.com/googleapis/google-cloud-java",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/index.json:    "repository-url" : "https://github.com/googleapis/java-bigquerystorage",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.jcraft</groupId>
+  <artifactId>jsch</artifactId>
+  <version>0.1.27</version>
+  <name>JSch</name>
+  <description>JSch is a pure Java implementation of SSH2</description>
+  <url>http://www.jcraft.com/jsch/</url>
+
+  <organization>
+    <name>jcraft</name>
+    <url>http://www.jcraft.com/jsch</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <url>http://www.jcraft.com/jsch/LICENSE.txt</url>
+    </license>
+  </licenses>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jzlib</artifactId>
+      <version>1.0.7</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/jcraft/jsch/0.1.27</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/jcraft/jsch/0.1.27</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsch-0.1.27-javadoc.jar" title="jsch-0.1.27-javadoc.jar">jsch-0.1.27-javadoc.jar</a>                           2006-04-21 20:30    488364      
+<a href="jsch-0.1.27-javadoc.jar.md5" title="jsch-0.1.27-javadoc.jar.md5">jsch-0.1.27-javadoc.jar.md5</a>                       2006-04-21 20:30        36      
+<a href="jsch-0.1.27-javadoc.jar.sha1" title="jsch-0.1.27-javadoc.jar.sha1">jsch-0.1.27-javadoc.jar.sha1</a>                      2006-04-21 20:30        44      
+<a href="jsch-0.1.27-sources.jar" title="jsch-0.1.27-sources.jar">jsch-0.1.27-sources.jar</a>                           2006-04-21 20:30    170301      
+<a href="jsch-0.1.27-sources.jar.md5" title="jsch-0.1.27-sources.jar.md5">jsch-0.1.27-sources.jar.md5</a>                       2006-04-21 20:30        36      
+<a href="jsch-0.1.27-sources.jar.sha1" title="jsch-0.1.27-sources.jar.sha1">jsch-0.1.27-sources.jar.sha1</a>                      2006-04-21 20:30        44      
+<a href="jsch-0.1.27.jar" title="jsch-0.1.27.jar">jsch-0.1.27.jar</a>                                   2006-04-21 20:30    122011      
+<a href="jsch-0.1.27.jar.md5" title="jsch-0.1.27.jar.md5">jsch-0.1.27.jar.md5</a>                               2006-04-21 20:30        36      
+<a href="jsch-0.1.27.jar.sha1" title="jsch-0.1.27.jar.sha1">jsch-0.1.27.jar.sha1</a>                              2006-04-21 20:30        44      
+<a href="jsch-0.1.27.pom" title="jsch-0.1.27.pom">jsch-0.1.27.pom</a>                                   2006-04-21 20:30       965      
+<a href="jsch-0.1.27.pom.md5" title="jsch-0.1.27.pom.md5">jsch-0.1.27.pom.md5</a>                               2006-04-21 20:30        36      
+<a href="jsch-0.1.27.pom.sha1" title="jsch-0.1.27.pom.sha1">jsch-0.1.27.pom.sha1</a>                              2006-04-21 20:30        44      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar -o /tmp/jsch-0.1.27-sources.jar && jar tf /tmp/jsch-0.1.27-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 257ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/jcraft/
+com/jcraft/jsch/
+com/jcraft/jsch/Buffer.java
+com/jcraft/jsch/Channel.java
+com/jcraft/jsch/ChannelDirectTCPIP.java
+com/jcraft/jsch/ChannelExec.java
+com/jcraft/jsch/ChannelForwardedTCPIP.java
+com/jcraft/jsch/ChannelSession.java
+com/jcraft/jsch/ChannelSftp.java
+com/jcraft/jsch/ChannelShell.java
+com/jcraft/jsch/ChannelSubsystem.java
+com/jcraft/jsch/ChannelX11.java
+com/jcraft/jsch/Cipher.java
+com/jcraft/jsch/CipherNone.java
+com/jcraft/jsch/Compression.java
+com/jcraft/jsch/DH.java
+com/jcraft/jsch/DHG1.java
+com/jcraft/jsch/DHGEX.java
+com/jcraft/jsch/ForwardedTCPIPDaemon.java
+com/jcraft/jsch/HASH.java
+com/jcraft/jsch/HostKey.java
+com/jcraft/jsch/HostKeyRepository.java
+com/jcraft/jsch/Identity.java
+com/jcraft/jsch/IdentityFile.java
+com/jcraft/jsch/IO.java
+com/jcraft/jsch/jce/
+com/jcraft/jsch/jce/AES128CBC.java
+com/jcraft/jsch/jce/AES192CBC.java
+com/jcraft/jsch/jce/AES256CBC.java
+com/jcraft/jsch/jce/BlowfishCBC.java
+com/jcraft/jsch/jce/DH.java
+com/jcraft/jsch/jce/HMACMD5.java
+com/jcraft/jsch/jce/HMACMD596.java
+com/jcraft/jsch/jce/HMACSHA1.java
+com/jcraft/jsch/jce/HMACSHA196.java
+com/jcraft/jsch/jce/KeyPairGenDSA.java
+com/jcraft/jsch/jce/KeyPairGenRSA.java
+com/jcraft/jsch/jce/MD5.java
+com/jcraft/jsch/jce/Random.java
+com/jcraft/jsch/jce/SHA1.java
+com/jcraft/jsch/jce/SignatureDSA.java
+com/jcraft/jsch/jce/SignatureRSA.java
+com/jcraft/jsch/jce/TripleDESCBC.java
+com/jcraft/jsch/jcraft/
+com/jcraft/jsch/jcraft/Compression.java
+com/jcraft/jsch/JSch.java
+com/jcraft/jsch/JSchAuthCancelException.java
+com/jcraft/jsch/JSchException.java
+com/jcraft/jsch/JSchPartialAuthException.java
+com/jcraft/jsch/KeyExchange.java
+com/jcraft/jsch/KeyPair.java
+com/jcraft/jsch/KeyPairDSA.java
+com/jcraft/jsch/KeyPairGenDSA.java
+com/jcraft/jsch/KeyPairGenRSA.java
+com/jcraft/jsch/KeyPairRSA.java
+com/jcraft/jsch/KnownHosts.java
+com/jcraft/jsch/MAC.java
+com/jcraft/jsch/Packet.java
+com/jcraft/jsch/PortWatcher.java
+com/jcraft/jsch/Proxy.java
+com/jcraft/jsch/ProxyHTTP.java
+com/jcraft/jsch/ProxySOCKS4.java
+com/jcraft/jsch/ProxySOCKS5.java
+com/jcraft/jsch/Random.java
+com/jcraft/jsch/Request.java
+com/jcraft/jsch/RequestExec.java
+com/jcraft/jsch/RequestPtyReq.java
+com/jcraft/jsch/RequestSftp.java
+com/jcraft/jsch/RequestShell.java
+com/jcraft/jsch/RequestSignal.java
+com/jcraft/jsch/RequestSubsystem.java
+com/jcraft/jsch/RequestWindowChange.java
+com/jcraft/jsch/RequestX11.java
+com/jcraft/jsch/ServerSocketFactory.java
+com/jcraft/jsch/Session.java
+com/jcraft/jsch/SftpATTRS.java
+com/jcraft/jsch/SftpException.java
+com/jcraft/jsch/SftpProgressMonitor.java
+com/jcraft/jsch/SignatureDSA.java
+com/jcraft/jsch/SignatureRSA.java
+com/jcraft/jsch/SocketFactory.java
+com/jcraft/jsch/UIKeyboardInteractive.java
+com/jcraft/jsch/UserAuth.java
+com/jcraft/jsch/UserAuthKeyboardInteractive.java
+com/jcraft/jsch/UserAuthNone.java
+com/jcraft/jsch/UserAuthPassword.java
+com/jcraft/jsch/UserAuthPublicKey.java
+com/jcraft/jsch/UserInfo.java
+com/jcraft/jsch/Util.java
+
+web search: 
+web search: jsch 0.1.27.zip test sourceforge ...
+exec
+/usr/bin/bash -lc "curl -fsSL http://www.jcraft.com/jsch/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+exec
+/usr/bin/bash -lc "curl -I -LfsS https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar | sed -n '1,20p' && curl -I -LfsS https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+exec
+/usr/bin/bash -lc "curl -LfsS https://downloads.sourceforge.net/project/jsch/jsch/0.1.27/jsch-0.1.27.zip -o /tmp/jsch-0.1.27.zip && unzip -l /tmp/jsch-0.1.27.zip | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 465ms:
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>JSch - Java Secure Channel</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+
+    <div class="main">
+      <div id="header">
+        <div class="top">
+          <div class="title">
+            <h1>JCraft</h1>
+            <p>Code the Craft, Craft the Code<br /><br /></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <div class="left">
+          <div class="content_menu">
+            <div>Information</div>
+            <a href="/">Home</a>
+            <a href="/c-info.html">About</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/news/">News</a>
+          </div>
+<!--
+          <div class="content_menu">
+            <a href="/news/06.18.2009pr.html"><font size="-1">Our Craft on Boeing 787</font></a>
+          </div>
+-->
+          <div class="content_menu">
+            <div>Our Crafts</div>
+            <a href="/wiredx/">WiredX</a>
+            <a href="/weirdx/">WeirdX</a>
+            <a href="/jsch/">JSch</a>
+            <a href="/jzlib/">JZlib</a>
+            <!--<a href="/jxpie/">JXPie</a>-->
+            <!--<a href="/jrum/">JRum</a>-->
+            <a href="/jcterm/">JCTerm</a>
+            <!--<a href="/jroar/">JRoar</a>-->
+            <a href="/jorbis/">JOrbis</a>
+            <a href="/jhttptunnel/">JHttpTunnel</a>
+            <a href="/jrexec/">JRexec</a>
+            <!--<a href="/jdxpc/">JDxpc</a>-->
+            <!--<a href="/jesd/">JEsd</a>-->
+            <!--<a href="/jspringies/">JSpringies</a>-->
+          </div>
+<!--
+          <div class="content_menu">
+            <div>Eclipse Plug-ins</div>
+            <a href="/eclipse-jcterm/">JCTerm Plug-in</a>
+            <a href="/eclipse-sftp/">SFTP Plug-in</a>
+            <a href="/eclipse-cvsssh2/">CVS-SSH2 Plug-in</a>
+          </div>
+-->
+
+          
+<div class="content_menu">
+    <a href="./README">README</a>
+    <a href="./ChangeLog">ChangeLog</a>
+</div>
+<div class="content_menu">
+    <a href="http://ietf.org/html.charters/secsh-charter.html">IETF secsh</a>
+    <a href="http://www.jcraft.com/jsch/examples/">Examples</a>
+    <a href="http://www.jcraft.com/jcterm/">JCTerm</a>
+    <a href="http://www.jcraft.com/jsch-agent-proxy/">jsch-agent-proxy</a>
+    <a href="http://j2me.jsch.org/">JSch for J2ME</a>
+    <a href="http://wiki.jsch.org/">Wiki</a>
+</div>
+<div class="content_menu">
+  JSch is supported by <br />
+  <a href="http://sourceforge.net" target="_blank"><img src="http://sourceforge.net/sflogo.php?group_id=64920" border="0" alt="SourceForge Logo" /></a>
+</div> 
+<!--
+          <div class="content_menu">
+            <div>Screenshots</div>
+            <a href="#">WiredX</a>
+            <a href="#">WeirdX</a>
+          </div>
+-->
+          <br /><br />
+        </div><!-- end of left -->
+
+        <div class="right">
+
+          <h2>JSch - Java Secure Channel</h2>
+<p>
+       JSch is a pure Java implementation of
+               <a href="http://ietf.org/html.charters/secsh-charter.html" target="_blank">SSH2</a>.<br />
+              JSch allows you to connect to an sshd server and use port
+              forwarding, X11 forwarding, file transfer, etc., and
+              you can integrate its functionality into your own Java programs.
+              JSch is licensed under <a href="./LICENSE.txt">BSD style license</a>.
+
+</p>
+
+<br />
+<a name="whyjsch"></a>
+<h2>Why JSch?</h2>
+<p>
+            Originally, our motivation to develop this stuff is to
+            allow users of our pure java X servers,
+            <a href="http://wiredx.net/">WiredX</a><!--(<a href="/news/06.18.2009pr.html">,which boards Boeing 787 Dreamliner</a>)-->,
+            to enjoy secure X sessions. So, our efforts had
+            mostly targeted to implement the SSH2 protocol for X11 forwarding.
+            Of course, however, we are now also interested in adding other 
+            functionality like port forward, file transfer, terminal emulation, etc.
+</p>
+
+<br />
+<h2>SSH2</h2>
+      <p>
+             Needless to say, SSH provides support for secure remote login,
+             secure file transfer, and secure TCP/IP and X11 forwarding. 
+             It can automatically encrypt, authenticate, and compress 
+
+ succeeded in 638ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 01:24:54 GMT
+content-type: application/java-archive
+content-length: 488364
+cf-ray: a000437c1bba039c-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "6d31804691b85852c3b314ca8da6d8d8"
+last-modified: Fri, 21 Apr 2006 20:58:50 GMT
+x-checksum-md5: 6d31804691b85852c3b314ca8da6d8d8
+x-checksum-sha1: 430d8ca6d8238d42d97a18fa01002864a6ea3d6c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 23 May 2026 01:24:54 GMT
+content-type: text/html
+cf-ray: a000437e4a978628-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1849ms:
+Archive:  /tmp/jsch-0.1.27.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2006-04-18 20:20   jsch-0.1.27/
+    17599  2006-04-18 20:16   jsch-0.1.27/ChangeLog
+     8280  2006-04-18 20:20   jsch-0.1.27/README
+      295  2003-05-20 08:48   jsch-0.1.27/build.bat
+      342  2003-05-20 08:48   jsch-0.1.27/build.sh
+     2528  2003-05-20 08:48   jsch-0.1.27/build.xml
+        0  2003-05-20 08:48   jsch-0.1.27/dist/
+        0  2003-05-20 08:48   jsch-0.1.27/dist/lib/
+        0  2006-04-18 15:42   jsch-0.1.27/examples/
+     6827  2005-09-15 09:19   jsch-0.1.27/examples/README
+     2466  2005-07-06 06:42   jsch-0.1.27/examples/PortForwardingR.java
+     2611  2005-07-06 06:43   jsch-0.1.27/examples/ViaHTTP.java
+    13223  2006-04-17 08:16   jsch-0.1.27/examples/Sftp.java
+     2432  2005-07-06 06:43   jsch-0.1.27/examples/X11Forwarding.java
+     3538  2006-04-03 20:13   jsch-0.1.27/examples/Exec.java
+     2467  2005-11-21 02:05   jsch-0.1.27/examples/PortForwardingL.java
+     2518  2006-03-28 17:09   jsch-0.1.27/examples/Shell.java
+     2499  2005-07-06 06:43   jsch-0.1.27/examples/StreamForwarding.java
+     2549  2005-07-06 06:43   jsch-0.1.27/examples/UserAuthPubKey.java
+     3997  2006-02-14 19:05   jsch-0.1.27/examples/ScpTo.java
+     4616  2006-02-14 19:06   jsch-0.1.27/examples/ScpFrom.java
+     2273  2005-07-26 21:46   jsch-0.1.27/examples/Compression.java
+     3045  2006-03-27 21:10   jsch-0.1.27/examples/KnownHosts.java
+     4137  2006-03-28 17:09   jsch-0.1.27/examples/UserAuthKI.java
+     1538  2005-07-06 06:41   jsch-0.1.27/examples/KeyGen.java
+     1717  2005-07-06 06:41   jsch-0.1.27/examples/ChangePassphrase.java
+     2615  2005-07-06 06:43   jsch-0.1.27/examples/ViaSOCKS5.java
+     3161  2005-07-14 04:47   jsch-0.1.27/examples/Daemon.java
+     2522  2005-07-06 06:41   jsch-0.1.27/examples/AES.java
+     3030  2005-07-19 12:48   jsch-0.1.27/examples/Subsystem.java
+     4247  2006-02-14 19:05   jsch-0.1.27/examples/ScpToNoneCipher.java
+        0  2006-04-18 15:29   jsch-0.1.27/src/
+        0  2003-05-20 08:48   jsch-0.1.27/src/com/
+        0  2006-04-18 01:31   jsch-0.1.27/src/com/jcraft/
+        0  2006-04-18 15:42   jsch-0.1.27/src/com/jcraft/jsch/
+     5695  2006-03-28 16:29   jsch-0.1.27/src/com/jcraft/jsch/Buffer.java
+    13006  2006-04-18 08:33   jsch-0.1.27/src/com/jcraft/jsch/Channel.java
+     2332  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/RequestExec.java
+     1833  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/Cipher.java
+     5280  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/KeyExchange.java
+     1752  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/DH.java
+     1739  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/HASH.java
+     3858  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/IO.java
+     3483  2006-04-09 22:10   jsch-0.1.27/src/com/jcraft/jsch/Packet.java
+     1831  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/Proxy.java
+     1632  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/Random.java
+    43383  2006-04-18 15:37   jsch-0.1.27/src/com/jcraft/jsch/Session.java
+     7606  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/JSch.java
+     1674  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/Request.java
+     2153  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/UserAuth.java
+     1800  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/UserInfo.java
+     1761  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/MAC.java
+     5101  2006-04-17 07:01   jsch-0.1.27/src/com/jcraft/jsch/ProxyHTTP.java
+     8181  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/ChannelForwardedTCPIP.java
+        0  2006-04-18 15:42   jsch-0.1.27/src/com/jcraft/jsch/jce/
+     3666  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/jce/DH.java
+     2805  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/jce/BlowfishCBC.java
+     2516  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/jce/HMACMD5.java
+     2336  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/Random.java
+     2046  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/SHA1.java
+     5294  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/SignatureDSA.java
+     2519  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/HMACSHA1.java
+     2598  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/HMACSHA196.java
+     2594  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/HMACMD596.java
+     3228  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/TripleDESCBC.java
+     2043  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/MD5.java
+     3355  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/SignatureRSA.java
+     2653  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/KeyPairGenDSA.java
+     3122  2006-03-28 16:34   jsch-0.1.27/src/com/jcraft/jsch/jce/KeyPairGenRSA.java
+     2818  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/jce/AES128CBC.java
+     2815  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/jce/AES192CBC.java
+     2815  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/jce/AES256CBC.java
+     2218  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/RequestPtyReq.java
+     6037  2006-04-03 20:14   jsch-0.1.27/src/com/jcraft/jsch/ChannelX11.java
+     2794  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/ChannelSession.java
+     4674  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/UserAuthPassword.java
+     2195  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/RequestShell.java
+     2642  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/RequestX11.java
+    59034  2006-04-18 00:44   jsch-0.1.27/src/com/jcraft/jsch/ChannelSftp.java
+     5951  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/PortWatcher.java
+     2824  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/ChannelShell.java
+     5380  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/ChannelDirectTCPIP.java
+     2857  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/ChannelExec.java
+     7705  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/UserAuthPublicKey.java
+     1808  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/Identity.java
+     1858  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/SignatureRSA.java
+     1898  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/SignatureDSA.java
+     1805  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/Compression.java
+    10502  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/ProxySOCKS5.java
+     1707  2006-04-09 21:24   jsch-0.1.27/src/com/jcraft/jsch/JSchException.java
+     7726  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/Util.java
+    12605  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/KnownHosts.java
+     1876  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/SocketFactory.java
+        0  2006-04-18 15:20   jsch-0.1.27/src/com/jcraft/jsch/jcraft/
+     4573  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/jcraft/Compression.java
+     2140  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/RequestSignal.java
+     8718  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/SftpATTRS.java
+     1819  2006-04-17 04:14   jsch-0.1.27/src/com/jcraft/jsch/SftpException.java
+     3893  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/UserAuthNone.java
+     1765  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/SftpProgressMonitor.java
+     2704  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/RequestWindowChange.java
+     6439  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/UserAuthKeyboardInteractive.java
+     1762  2006-03-28 16:33   jsch-0.1.27/src/com/jcraft/jsch/UIKeyboardInteractive.java
+     6984  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/KeyPairDSA.java
+    16275  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/KeyPair.java
+     1723  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/KeyPairGenDSA.java
+    10087  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/KeyPairRSA.java
+     1777  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/KeyPairGenRSA.java
+     1836  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/JSchPartialAuthException.java
+     1808  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/JSchAuthCancelException.java
+     2355  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/RequestSftp.java
+    22893  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/IdentityFile.java
+     9105  2006-04-17 04:48   jsch-0.1.27/src/com/jcraft/jsch/DHG1.java
+     8934  2006-04-17 04:48   jsch-0.1.27/src/com/jcraft/jsch/DHGEX.java
+     2759  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/HostKey.java
+     1954  2006-03-28 16:31   jsch-0.1.27/src/com/jcraft/jsch/HostKeyRepository.java
+     1696  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/ForwardedTCPIPDaemon.java
+     2641  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/RequestSubsystem.java
+     2950  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/ChannelSubsystem.java
+     1744  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/ServerSocketFactory.java
+     1930  2006-03-28 16:30   jsch-0.1.27/src/com/jcraft/jsch/CipherNone.java
+     6967  2006-03-28 16:32   jsch-0.1.27/src/com/jcraft/jsch/ProxySOCKS4.java
+        0  2003-05-20 08:48   jsch-0.1.27/tools/
+        0  2003-05-20 08:48   jsch-0.1.27/tools/lib/
+        0  2003-05-20 08:48   jsch-0.1.27/tools/bin/
+     2946  2003-05-20 08:48   jsch-0.1.27/tools/bin/ant.bat
+     3280  2003-05-20 08:48   jsch-0.1.27/tools/bin/ant
+      281  2003-05-20 08:48   jsch-0.1.27/tools/bin/antRun.bat
+       77  2003-05-20 08:48   jsch-0.1.27/tools/bin/antRun
+     3736  2003-05-20 08:48   jsch-0.1.27/tools/bin/runant.pl
+      203  2003-05-20 08:48   jsch-0.1.27/tools/bin/lcp.bat
+     2705  2003-05-20 08:48   jsch-0.1.27/tools/bin/runant.py
+     1666  2006-03-28 17:11   jsch-0.1.27/LICENSE.txt
+---------                     -------
+   571616                     133 files
+
+web search: 
+web search: SourceForge jsch code repository CVS ...
+web search: 
+web search: repo1.maven.org maven2 com jcraft jsch 0.1.27 javadoc sources ...
+codex
+I found no Maven test-sources artifact and the upstream release ZIP for `0.1.27` contains source plus examples, but no dedicated test suite. I’m going to set `test-code-url` to `N/A`, keep the artifact as a normal JVM target, and omit the language/native-image exception fields.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..c410a71732e06301f57bab533fb3c6d680d715b8
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..c410a71732e06301f57bab533fb3c6d680d715b8
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+{
+  "coordinates": "com.jcraft:jsch:0.1.27",
+  "repository-url": "https://sourceforge.net/projects/jsch/",
+  "source-code-url": "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
+  "description": "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -LfsS https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar | sed -n '1,18p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 01:25:20 GMT
+content-type: application/java-archive
+content-length: 170301
+cf-ray: a00044233a998bbd-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 78263
+etag: "80b2f70737aaa85995e605c721a3ba49"
+last-modified: Fri, 21 Apr 2006 16:42:59 GMT
+x-checksum-md5: 80b2f70737aaa85995e605c721a3ba49
+x-checksum-sha1: 53cbcfb6365aecad6ecee405b3db6df48be42e43
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -LfsS https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar | sed -n '1,18p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 01:25:20 GMT
+content-type: application/java-archive
+content-length: 488364
+cf-ray: a00044233ecebc5f-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 26
+etag: "6d31804691b85852c3b314ca8da6d8d8"
+last-modified: Fri, 21 Apr 2006 20:58:50 GMT
+x-checksum-md5: 6d31804691b85852c3b314ca8da6d8d8
+x-checksum-sha1: 430d8ca6d8238d42d97a18fa01002864a6ea3d6c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -LfsS https://sourceforge.net/projects/jsch/ | sed -n '1,18p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..c410a71732e06301f57bab533fb3c6d680d715b8
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+ succeeded in 355ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 01:25:20 GMT
+content-type: text/html; charset=utf-8
+content-length: 122657
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1779461920>; rel=preload; as=script, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1779461920>; rel=preload; as=style, <https://a.fsdn.com/con/css/sandiego.css?1779461920>; rel=preload; as=style, <https://a.fsdn.com/con/js/min/sf.sandiego-head.js?1779461920>; rel=preload; as=script, <https://a.fsdn.com/con/css/top.css?1779461920>; rel=preload; as=style, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/google-sans-v67-latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/google-sans.css?1779461920>; rel=preload; as=style
+cross-origin-opener-policy: same-origin
+permissions-policy: geolocation=(), microphone=(), camera=(), payment=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: geolocation 'none'; microphone 'none'; camera 'none'; payment 'none'; document-domain 'none'; display-capture 'none'; autoplay 'none'
+x-frame-options: SAMEORIGIN
+content-security-policy: frame-ancestors 'self'; object-src 'none'; fenced-frame-src https:; upgrade-insecure-requests; frame-src 'self' a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.googletagmanager.com *.doubleclick.net *.gstatic.com *.recaptcha.net recaptcha.net *.youtube.com www.youtube-nocookie.com *.consentmanager.net player.twitch.tv app.hubspot.com; form-action https://sourceforge.net lists.sourceforge.net aistudio.google.com; script-src-attr 'unsafe-hashes' 'sha256-4d6SN0yYeMqJ0cKMQtg6WeJWMAytzagOyddgGs8IrQg=' 'sha256-tBDVzvq7nAZRA5cnijB1/8uEyvj+5hEDBhcx7F72AGE=' 'report-sample'; script-src 'self' *.licdn.com a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.cloudflareinsights.com *.google-analytics.com *.tiny.cloud *.recaptcha.net recaptcha.net *.gstatic.com *.googletagservices.com *.googlesyndication.com *.doubleclick.net *.googletagmanager.com *.consentmanager.net *.microsofttranslator.com translate.googleapis.com translate.google.cn *.gstatic.cn *.tds.bid esm.sh blob: *.adnxs.com *.bing.com *.slashdotmedia.com ml314.com j.6sc.co *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com fe.sitedataprocessing.com a.usbrowserspeed.com d-code.liadm.com frontend.id-visitors.com *.identitymatrix.ai 'unsafe-inline' 'unsafe-eval'
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=e9ee9d55-8934-49dd-9f80-db6a36789b3c; Max-Age=315360000; Path=/; expires=Tue, 20-May-2036 01:25:20 GMT; secure; HttpOnly
+set-cookie: __cf_bm=.a96iOlnRSM3ZtIKYvTwImPuKYhqS_Qv.DIxcwiGGbo-1779499520.5778716-1.0.1.1-yj.Or16kumPj6KrI3KrwmNMTITb9PcHWVoqKrykli.3cjZoSc18K_JPlrIG06jO2FCgdMvuGhUCWXXUCGe85785OKb8T5Tx1xmi3ozQENXTYuvjyApGIXp1qYUJWQd9D; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Sat, 23 May 2026 01:55:20 GMT
+cf-cache-status: DYNAMIC
+
+web search: 
+web search: JSch Java Secure Channel JCraft pure Java implementation of SSH2 ...
+exec
+/usr/bin/bash -lc "rg 'sourceforge.net/projects|jcraft.com/jsch|downloads.sourceforge.net' metadata -g 'index.json' | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+metadata/findbugs/annotations/index.json:    "source-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/findbugs/annotations/index.json:    "test-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/findbugs/annotations/index.json:    "documentation-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/org.jboss.netty/netty/index.json:    "test-code-url" : "https://sourceforge.net/projects/jboss/files/Netty%20Project/Netty%203.2.2.Final/netty-$version$-dist.tar.bz2/download",
+metadata/org.jboss.netty/netty/index.json:    "documentation-url" : "https://sourceforge.net/projects/jboss/files/Netty%20Project/Netty%203.2.2.Final/netty-$version$-dist.tar.bz2/download",
+metadata/backport-util-concurrent/backport-util-concurrent/index.json:    "test-code-url" : "https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/$version$/backport-util-concurrent-$version$-src.tar.gz/download",
+metadata/net.sf.kxml/kxml2/index.json:    "test-code-url" : "https://sourceforge.net/projects/kxml/files/kxml2/$version$/kxml2-src-$version$.zip/download",
+metadata/aopalliance/aopalliance/index.json:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/$version$/aopalliance.zip/download",
+
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..c410a71732e06301f57bab533fb3c6d680d715b8
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/net.sf.kxml/kxml2/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.3.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/$version$/kxml2-$version$-sources.jar",
+    "repository-url" : "https://sourceforge.net/p/kxml/code/",
+    "test-code-url" : "https://sourceforge.net/projects/kxml/files/kxml2/$version$/kxml2-src-$version$.zip/download",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/$version$/kxml2-$version$-javadoc.jar",
+    "description" : "kXML 2 is a small XML pull parser based on the common XML Pull API. It is designed for constrained Java environments such as applets, PersonalJava, and MIDP devices and includes XML serialization, kDOM, and WBXML support.",
+    "tested-versions" : [
+      "2.3.0"
+    ],
+    "allowed-packages" : [
+      "org.kxml2",
+      "org.xmlpull.v1"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/backport-util-concurrent/backport-util-concurrent/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/backport-util-concurrent/backport-util-concurrent/$version$/backport-util-concurrent-$version$-sources.jar",
+    "repository-url" : "svn://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/",
+    "test-code-url" : "https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/$version$/backport-util-concurrent-$version$-src.tar.gz/download",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/backport-util-concurrent/backport-util-concurrent/$version$/backport-util-concurrent-$version$-javadoc.jar",
+    "description" : "backport-util-concurrent is a backport of the JSR 166 concurrency APIs for pre-Java 5 runtimes. It provides executors, locks, blocking queues, atomics, concurrent collections, and related utilities for applications that need modern Java concurrency support on older Java platforms.",
+    "tested-versions" : [
+      "3.1"
+    ],
+    "allowed-packages" : [
+      "edu.emory.mathcs.backport.java.util"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/findbugs/annotations/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0",
+    "source-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+    "repository-url" : "https://sourceforge.net/p/findbugs/cvs/",
+    "test-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+    "documentation-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+    "description" : "FindBugs annotations provides Java annotations that let developers express nullness, warning-suppression, return-value, and override contracts for the FindBugs static analysis tool. The annotations are compile-time metadata used by FindBugs and related tooling to improve bug detection without adding runtime behavior.",
+    "tested-versions" : [
+      "1.0.0"
+    ],
+    "allowed-packages" : [
+      "edu.umd.cs.findbugs.annotations",
+      "net.jcip.annotations"
+    ]
+  }
+]
+
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..c410a71732e06301f57bab533fb3c6d680d715b8
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+exec
+/usr/bin/bash -lc "curl -I -LfsS https://sourceforge.net/p/jsch/code/ | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+exec
+/usr/bin/bash -lc "curl -fsSL https://sourceforge.net/projects/jsch/ | rg -o 'https://sourceforge.net/p/jsch/["'^" ]+'"' | head -30" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+exec
+/usr/bin/bash -lc "curl -I -LfsS https://sourceforge.net/p/jsch/cvs/ | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+exec
+/usr/bin/bash -lc "curl -I -LfsS https://sourceforge.net/p/jsch/jsch/ | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 328ms:
+ succeeded in 437ms:
+HTTP/2 301 
+date: Sat, 23 May 2026 01:25:40 GMT
+content-type: text/html; charset=UTF-8
+location: https://sourceforge.net/projects/jsch/
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+content-security-policy: frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; form-action https://sourceforge.net; frame-ancestors 'self'; upgrade-insecure-requests; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; object-src 'none'; script-src-attr 'none' 'report-sample'; fenced-frame-src https:
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=7c3c1cb2-f647-4d5c-bcd8-161c8f4351e3; Max-Age=315360000; Path=/; expires=Tue, 20-May-2036 01:25:40 GMT; secure; HttpOnly
+set-cookie: _csrf_token=e3b36a2906c38ddb100022628bc18b11207884f123d9103c034e3bbf0998f0a72f4442a4301c4b91; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=JBzF9xE7Kui076ay7vBd07YUfWzMG6uLlvAqq2cogsk-1779499540.659301-1.0.1.1-kYz.JZBFgikq1DVwS8p7jduQfaagF759hnm4bWnUoWt__w1SAR8pdROv2gG7gJQfFmPWclskHtjo_SvxvBt_ZYxuBdTeO0GToPyTq2qhAEabNk4y_SDq.ngU6FFnXLJ_; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Sat, 23 May 2026 01:55:40 GMT
+cf-cache-status: DYNAMIC
+cf-ray: a00044a11b2ebc5a-ZRH
+alt-svc: h3=":443"; ma=86400
+
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..c410a71732e06301f57bab533fb3c6d680d715b8
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+ succeeded in 446ms:
+HTTP/2 301 
+date: Sat, 23 May 2026 01:25:40 GMT
+content-type: text/html; charset=UTF-8
+location: https://sourceforge.net/projects/jsch/
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+content-security-policy: object-src 'none'; frame-ancestors 'self'; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; form-action https://sourceforge.net; fenced-frame-src https:; upgrade-insecure-requests; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; script-src-attr 'none' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=3ced33fe-ba1a-4f54-bb3d-efc77bc99e0b; Max-Age=315360000; Path=/; expires=Tue, 20-May-2036 01:25:40 GMT; secure; HttpOnly
+set-cookie: _csrf_token=45d5fe3e789bc581d25afbabef8db28598c894c907bf2621de0aab23d867dca0f568426a89f718ab; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=EBCxLzxFzLtgrtlNQbXGzuvIussS2alMY5OxYhU.VJs-1779499540.760544-1.0.1.1-5jDrC7f1ropI46KKxRaFo7qAsDeK6eFhCpNFrVeGVHSMwCpxMmwjMpDFWT0lUNNm19spMl5_nIqStACch919Cb9U5NBX96v2pOnNd7mkj354irfVE5o8vlap7BCT3_Op; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Sat, 23 May 2026 01:55:40 GMT
+cf-cache-status: DYNAMIC
+cf-ray: a00044a1b990e5d9-ZRH
+alt-svc: h3=":443"; ma=86400
+
+ succeeded in 468ms:
+HTTP/2 301 
+date: Sat, 23 May 2026 01:25:40 GMT
+content-type: text/html; charset=UTF-8
+location: https://sourceforge.net/projects/jsch/
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+content-security-policy: fenced-frame-src https:; form-action https://sourceforge.net; upgrade-insecure-requests; script-src-attr 'none' 'report-sample'; frame-src 'self' *.sf-syn.com *.google.com *.googlesyndication.com *.safeframe.usercontent.goog *.googletagmanager.com *.doubleclick.net *.googleadservices.com *.adtrafficquality.google *.recaptcha.net recaptcha.net www.youtube-nocookie.com *.youtube.com *.stripe.com *.plaid.com *.prosperstack.com *.consentmanager.net app.hubspot.com *.criteo.com *.openx.net player.twitch.tv; frame-ancestors 'self'; object-src 'none'; report-uri https://sourceforge.report-uri.com/r/d/csp/enforce; script-src 'self' a.fsdn.com *.sf-syn.com *.slashdotmedia.com ml314.com *.cloudflareinsights.com *.doubleclick.net *.google.com *.googlesyndication.com *.adtrafficquality.google *.ampproject.org *.criteo.net *.creativecdn.com *.crwdcntrl.net *.uidapi.com *.im-apps.net *.euid.eu *.openxcdn.net *.id5-sync.com cdn.jsdelivr.net/gh/prebid/shared-id/ *.pubmatic.com *.33across.com *.permutive.app *.google-analytics.com *.googletagmanager.com *.googletagservices.com  *.consentmanager.net *.microsofttranslator.com *.googleapis.com cdn.mxpnl.com *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com *.licdn.com 'unsafe-inline' 'unsafe-eval' 'report-sample'
+permissions-policy: microphone=(), geolocation=(), camera=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: microphone 'none'; geolocation 'none'; camera 'none'; document-domain 'none'; display 'none'; autoplay 'none'
+cross-origin-opener-policy: same-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=954d1952-81b6-4912-9c66-a7fef686363b; Max-Age=315360000; Path=/; expires=Tue, 20-May-2036 01:25:40 GMT; secure; HttpOnly
+set-cookie: _csrf_token=3ae3f9b0cffa53f65653f0560b9fff67229c7729a6a3bf147e380e3eb68a29aefad55a287905331c; secure; SameSite=Strict; Path=/
+set-cookie: __cf_bm=BERUcCVNmr6xH1M2Hw3._aitLSjIU4zPVbf4of09V30-1779499540.7613935-1.0.1.1-kPnjI4H4f8LgCTnhYk7pcBJe9Q.i.z59c9MB0hVbO_pIFHbPb6uryXnvnsI.cRGFEgW_8yEiKdZfZ4kTtO6dsD45UkAXUU7JdJD.4yfINZog7JKtHXhiD0y0L_amZ1yf; HttpOnly; SameSite=None; Secure; Path=/; Domain=sourceforge.net; Expires=Sat, 23 May 2026 01:55:40 GMT
+cf-cache-status: DYNAMIC
+cf-ray: a00044a1cae8be84-ZRH
+alt-svc: h3=":443"; ma=86400
+
+codex
+The JSON is valid and the substituted Maven source and Javadoc URLs both return HTTP 200. I noticed the repository’s checked-in metadata convention uses `repo.maven.apache.org` for Maven artifact URLs, so I’m aligning these two URLs to that canonical host.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..28d9af6ece7d922013260b405448d7e3b643fe14
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..28d9af6ece7d922013260b405448d7e3b643fe14
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+{
+  "coordinates": "com.jcraft:jsch:0.1.27",
+  "repository-url": "https://sourceforge.net/projects/jsch/",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
+  "description": "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -LfsS https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar | sed -n '1,16p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 01:25:56 GMT
+content-type: application/java-archive
+content-length: 170301
+cf-ray: a0004503d9efbac8-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 473299
+etag: "80b2f70737aaa85995e605c721a3ba49"
+last-modified: Fri, 21 Apr 2006 16:42:59 GMT
+x-checksum-md5: 80b2f70737aaa85995e605c721a3ba49
+x-checksum-sha1: 53cbcfb6365aecad6ecee405b3db6df48be42e43
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/ | rg 'test|sources|javadoc|jsch-0.1.27.jar'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+exec
+/usr/bin/bash -lc "curl -I -LfsS https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar | sed -n '1,16p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..28d9af6ece7d922013260b405448d7e3b643fe14
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+ succeeded in 247ms:
+<a href="jsch-0.1.27-javadoc.jar" title="jsch-0.1.27-javadoc.jar">jsch-0.1.27-javadoc.jar</a>                           2006-04-21 20:30    488364      
+<a href="jsch-0.1.27-javadoc.jar.md5" title="jsch-0.1.27-javadoc.jar.md5">jsch-0.1.27-javadoc.jar.md5</a>                       2006-04-21 20:30        36      
+<a href="jsch-0.1.27-javadoc.jar.sha1" title="jsch-0.1.27-javadoc.jar.sha1">jsch-0.1.27-javadoc.jar.sha1</a>                      2006-04-21 20:30        44      
+<a href="jsch-0.1.27-sources.jar" title="jsch-0.1.27-sources.jar">jsch-0.1.27-sources.jar</a>                           2006-04-21 20:30    170301      
+<a href="jsch-0.1.27-sources.jar.md5" title="jsch-0.1.27-sources.jar.md5">jsch-0.1.27-sources.jar.md5</a>                       2006-04-21 20:30        36      
+<a href="jsch-0.1.27-sources.jar.sha1" title="jsch-0.1.27-sources.jar.sha1">jsch-0.1.27-sources.jar.sha1</a>                      2006-04-21 20:30        44      
+<a href="jsch-0.1.27.jar" title="jsch-0.1.27.jar">jsch-0.1.27.jar</a>                                   2006-04-21 20:30    122011      
+<a href="jsch-0.1.27.jar.md5" title="jsch-0.1.27.jar.md5">jsch-0.1.27.jar.md5</a>                               2006-04-21 20:30        36      
+<a href="jsch-0.1.27.jar.sha1" title="jsch-0.1.27.jar.sha1">jsch-0.1.27.jar.sha1</a>                              2006-04-21 20:30        44      
+
+ succeeded in 239ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 01:25:56 GMT
+content-type: application/java-archive
+content-length: 488364
+cf-ray: a0004503c9d6a625-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "6d31804691b85852c3b314ca8da6d8d8"
+last-modified: Fri, 21 Apr 2006 20:58:50 GMT
+x-checksum-md5: 6d31804691b85852c3b314ca8da6d8d8
+x-checksum-sha1: 430d8ca6d8238d42d97a18fa01002864a6ea3d6c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..28d9af6ece7d922013260b405448d7e3b643fe14
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json && git status --short -- build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..28d9af6ece7d922013260b405448d7e3b643fe14
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+ succeeded in 335ms:
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/
+web search: 
+web search: sourceforge JSch Java Secure Channel project jsch
+codex
+Updated [com.jcraft-jsch-0.1.27.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json:1).
+
+I used Maven-hosted sources and Javadoc for `0.1.27`; Maven Central lists those artifacts and no test-sources artifact, so `test-code-url` is `N/A`. ([repo1.maven.org](https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/?utm_source=openai)) JSch is a normal Java/JVM SSH2 library, so I left `language` and `not-for-native-image` absent. ([sourceforge.net](https://sourceforge.net/projects/jsch/?utm_source=openai))
+
+Verified:
+- JSON parses with `jq`
+- substituted source URL returns HTTP 200
+- substituted documentation URL returns HTTP 200
+diff --git a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+index 525c7a2ae60c4ce99bac1d5081f61b9022573a54..28d9af6ece7d922013260b405448d7e3b643fe14
+--- a/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
++++ b/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.jcraft:jsch:0.1.27"
++  "coordinates" : "com.jcraft:jsch:0.1.27",
++  "repository-url" : "https://sourceforge.net/projects/jsch/",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/jcraft/jsch/$version$/jsch-$version$-javadoc.jar",
++  "description" : "JSch is a pure Java implementation of the SSH2 protocol. It lets Java applications connect to SSH servers for shells, command execution, port forwarding, X11 forwarding, and file transfer."
+ }
+
+tokens used
+85,546
+Updated [com.jcraft-jsch-0.1.27.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json:1).
+
+I used Maven-hosted sources and Javadoc for `0.1.27`; Maven Central lists those artifacts and no test-sources artifact, so `test-code-url` is `N/A`. ([repo1.maven.org](https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/?utm_source=openai)) JSch is a normal Java/JVM SSH2 library, so I left `language` and `not-for-native-image` absent. ([sourceforge.net](https://sourceforge.net/projects/jsch/?utm_source=openai))
+
+Verified:
+- JSON parses with `jq`
+- substituted source URL returns HTTP 200
+- substituted documentation URL returns HTTP 200
+Ran agent for com.jcraft:jsch:0.1.27 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861/build/agent-artifact-discovery-logs/com.jcraft-jsch-0.1.27.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2236-dd3a1861/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 22s
+9 actionable tasks: 9 executed
