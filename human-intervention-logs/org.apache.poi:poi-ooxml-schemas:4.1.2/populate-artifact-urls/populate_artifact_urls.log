@@ -1,0 +1,977 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e54db-a261-7560-87b6-688fa4bbe921
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.poi:poi-ooxml-schemas:4.1.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [4.1.2].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+- Entry selector: "metadata-version" = "4.1.2"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip
+- repository-url: https://github.com/apache/poi
+- test-code-url: https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases
+- documentation-url: https://poi.apache.org/apidocs/4.1/
+- description: Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.
+- language: <missing>
+
+Context:
+- Coordinate version: 4.1.2
+- Entry metadata-version: 4.1.2
+- Entry test-version: 4.1.2
+- Entry tested-versions: [4.1.2]
+codex
+I’ll verify the artifact URLs before touching the JSON. Since most fields already have values, the key question is whether any URL is stale under the maintenance rules and whether a language field should be added.
+web search: 
+web search: org.apache.poi poi-ooxml-schemas 4.1.2 maven sources jar tests jar javadoc ...
+codex
+The Maven Central entry exists for `poi-ooxml-schemas:4.1.2`, and javadoc.io exposes a versioned documentation page for the same artifact. I’m checking the local metadata next so edits stay limited to the selected entry.
+exec
+/usr/bin/bash -lc "jq '.[]? // . | select(.\"metadata-version\" == \"4.1.2\")' metadata/org.apache.poi/poi-ooxml-schemas/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "4.1.2",
+  "source-code-url": "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+  "repository-url": "https://github.com/apache/poi",
+  "test-code-url": "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+  "documentation-url": "https://poi.apache.org/apidocs/4.1/",
+  "description": "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+  "tested-versions": [
+    "4.1.2"
+  ],
+  "allowed-packages": [
+    "com.microsoft.schemas",
+    "org.etsi.uri.x01903.v13",
+    "org.openxmlformats.schemas.drawingml.x2006",
+    "org.openxmlformats.schemas.officeDocument.x2006",
+    "org.openxmlformats.schemas.presentationml.x2006.main",
+    "org.openxmlformats.schemas.spreadsheetml.x2006.main",
+    "org.openxmlformats.schemas.wordprocessingml.x2006.main",
+    "org.openxmlformats.schemas.xpackage.x2006.digitalSignature",
+    "org.w3.x2000.x09.xmldsig",
+    "schemaorg_apache_xmlbeans.system"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://archive.apache.org/dist/poi/release/src/poi-src-4.1.2-20200217.zip' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/4.1.2' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 111ms:
+
+  0  101M    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 200 OK
+Date: Sat, 23 May 2026 12:42:35 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Mon, 06 Jul 2020 14:19:27 GMT
+ETag: "65b8b72-5a9c68ff092fa"
+Accept-Ranges: bytes
+Content-Length: 106662770
+Content-Type: application/zip
+
+
+ succeeded in 189ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:-- HTTP/2 303 
+date: Sat, 23 May 2026 12:42:35 GMT
+content-length: 0
+location: /doc/org.apache.poi/poi-ooxml-schemas/4.1.2/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=3ArjFDaCYzXE00dB6a40oySf8eVQBChLDwvLW4oAWUwpte6xdiWtFu1uQo%2FD16UsCl91vYd8xWvtpipvHx2djUzmHVnRFpv7BYGT0Z9NWlsZp0cJHS1KLU2pFOG5kGJuo4It0lvtKgpa"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a004243118e83b64-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 23 May 2026 12:42:35 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=sHdW86b6PrA7tsaGZfUjmPFB7x2EodfnKsSSPI01GuFpdnKwDxIETVS8T7mgxLpN4uaPh5RTCBHys0L1bc835X0gnJ6G0yXmj4uRxZd2d7%2FJL9eAAAm00a9%2FlaQH6buAhnUbWB4YQgQ0"}]}
+server: cloudflare
+cf-ray: a0042431b98e3b64-GVA
+alt-svc: h3=":443"; ma=86400
+
+    0
+
+2026-05-23T12:42:45.750391Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+exec
+/usr/bin/bash -lc "pkill -f 'curl -I -L --fail https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases' || true" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ exited -1 in 0ms:
+ exited -1 in 20653ms:
+
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:06 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:07 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:09 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:10 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:11 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:12 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:13 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:14 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:15 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:16 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:17 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:18 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:19 --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:20 --:--:--     0
+web search: 
+web search: https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases
+codex
+The existing GitHub test URL resolves to the `REL_4_1_2` tag. I also found a better versioned docs target for this artifact on javadoc.io, so I’m checking whether Maven provides sources/tests because the request says those should win when available.
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --max-time 20 https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/poi-ooxml-schemas-4.1.2-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ exited 22 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 404 
+date: Sat, 23 May 2026 12:43:09 GMT
+content-type: text/html
+cf-ray: a0042508b905c8a4-ZRH
+cf-cache-status: HIT
+age: 3031
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/poi-ooxml-schemas-4.1.2-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fLs https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/poi/poi-ooxml-schemas/4.1.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/poi/poi-ooxml-schemas/4.1.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="poi-ooxml-schemas-4.1.2.jar" title="poi-ooxml-schemas-4.1.2.jar">poi-ooxml-schemas-4.1.2.jar</a>                       2020-02-10 19:44   7912488      
+<a href="poi-ooxml-schemas-4.1.2.jar.asc" title="poi-ooxml-schemas-4.1.2.jar.asc">poi-ooxml-schemas-4.1.2.jar.asc</a>                   2020-02-10 19:44       475      
+<a href="poi-ooxml-schemas-4.1.2.jar.md5" title="poi-ooxml-schemas-4.1.2.jar.md5">poi-ooxml-schemas-4.1.2.jar.md5</a>                   2020-02-10 19:44        62      
+<a href="poi-ooxml-schemas-4.1.2.jar.sha1" title="poi-ooxml-schemas-4.1.2.jar.sha1">poi-ooxml-schemas-4.1.2.jar.sha1</a>                  2020-02-10 19:44        70      
+<a href="poi-ooxml-schemas-4.1.2.pom" title="poi-ooxml-schemas-4.1.2.pom">poi-ooxml-schemas-4.1.2.pom</a>                       2020-02-10 19:44      2675      
+<a href="poi-ooxml-schemas-4.1.2.pom.asc" title="poi-ooxml-schemas-4.1.2.pom.asc">poi-ooxml-schemas-4.1.2.pom.asc</a>                   2020-02-10 19:44       475      
+<a href="poi-ooxml-schemas-4.1.2.pom.md5" title="poi-ooxml-schemas-4.1.2.pom.md5">poi-ooxml-schemas-4.1.2.pom.md5</a>                   2020-02-10 19:44        62      
+<a href="poi-ooxml-schemas-4.1.2.pom.sha1" title="poi-ooxml-schemas-4.1.2.pom.sha1">poi-ooxml-schemas-4.1.2.pom.sha1</a>                  2020-02-10 19:44        70      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --max-time 20 https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/poi-ooxml-schemas-4.1.2-tests.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ exited 22 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned errHTTP/2 404 
+date: Sat, 23 May 2026 12:43:09 GMT
+content-type: text/html
+cf-ray: a0042508bc69bc0e-ZRH
+cf-cache-status: HIT
+age: 179
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/poi-ooxml-schemas-4.1.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+or: 404
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --max-time 20 https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/poi-ooxml-schemas-4.1.2-test-sources.jar' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ exited 22 in 251ms:
+HTTP/2 404 
+date: Sat, 23 May 2026 12:43:09 GMT
+content-type: text/html
+cf-ray: a0042508bf21bc0b-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/poi-ooxml-schemas-4.1.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.apache.poi/poi-ooxml-schemas/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+?? metadata/org.apache.poi/poi-ooxml-schemas/index.json
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --max-time 20 https://poi.apache.org/apidocs/4.1/' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  2866    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+server: Apache
+x-frame-options: SAMEORIGIN
+last-modified: Mon, 16 Feb 2026 19:00:53 GMT
+etag: "b32-64af592f3a11c"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+referrer-policy: strict-origin
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 239
+date: Sat, 23 May 2026 12:43:24 GMT
+x-served-by: cache-hel1410020-HEL, cache-fra-eddf8230147-FRA
+x-cache: HIT, HIT
+x-cache-hits: 0, 0
+x-timer: S1779540204.428559,VS0,VE2
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 2866
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --max-time 20 https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/4.1.2' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+exec
+/usr/bin/bash -lc "curl -fLs --max-time 20 https://api.github.com/repos/apache/poi/contents/src/ooxml/testcases?ref=REL_4_1_2 | jq -r '.[0:5][] | .name'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 193ms:
+org
+
+ succeeded in 205ms:
+HTTP/2 303 
+date: Sat, 23 May 2026 12:43:24 GMT
+content-length: 0
+location: /doc/org.apache.poi/poi-ooxml-schemas/4.1.2/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=9JqCP5niN71Qgo%2BKq8Imz%2BW%2FD4xgj%2BuodIpO2hbA7M95Nnhj845KDq9YhJ%2FR6ktuB4Dt5nsCXONgTEUapo%2FuKb8G6UhF%2B1sXY5W%2FBJBspgSxWcNnWUN%2BvEjzbJ44SxFLVOP0D9z2hesB"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a00425659f213b51-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 23 May 2026 12:43:24 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=IB0sdJVDOx%2FlINu35fu3wYXaIpTucLeU7VkRj8c1il0URff60DW4c%2Bu8wJZ6nzlYrxVKmAhZm2KSo8EftBDm2wA7aTSBueU6SAIuAveVxlJz%2FEKe4dRL1Dva%2F8xJnrPI7peytAXAULNQ"}]}
+server: cloudflare
+cf-ray: a00425664faf3b51-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+codex
+Maven Central only has the binary JAR/POM for this artifact version, no sources or test artifacts, so the Apache release source archive and tagged upstream tests are the best available sources. The documentation URL is the only stale-looking field: it is `4.1`, while javadoc.io has an exact `4.1.2` artifact page.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.poi/poi-ooxml-schemas/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.1.2",
+    "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+    "repository-url" : "https://github.com/apache/poi",
+    "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
+    "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+    "tested-versions" : [
+      "4.1.2"
+    ],
+    "allowed-packages" : [
+      "com.microsoft.schemas",
+      "org.etsi.uri.x01903.v13",
+      "org.openxmlformats.schemas.drawingml.x2006",
+      "org.openxmlformats.schemas.officeDocument.x2006",
+      "org.openxmlformats.schemas.presentationml.x2006.main",
+      "org.openxmlformats.schemas.spreadsheetml.x2006.main",
+      "org.openxmlformats.schemas.wordprocessingml.x2006.main",
+      "org.openxmlformats.schemas.xpackage.x2006.digitalSignature",
+      "org.w3.x2000.x09.xmldsig",
+      "schemaorg_apache_xmlbeans.system"
+    ]
+  }
+]
+
+codex
+I’m going to update only the documentation URL to the exact artifact-version page and leave `language` absent because this is a Java library artifact, not Kotlin, Groovy, or Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+diff --git a/metadata/org.apache.poi/poi-ooxml-schemas/index.json b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+index fc1c3737394bdc53d9349de1ddc764f2b5acdc88..0ba0cf3c0fe27e25157a726284c4e0e0a018e8a9
+--- a/metadata/org.apache.poi/poi-ooxml-schemas/index.json
++++ b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+     "repository-url" : "https://github.com/apache/poi",
+     "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+-    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
++    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+     "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+     "tested-versions" : [
+       "4.1.2"
+
+diff --git a/metadata/org.apache.poi/poi-ooxml-schemas/index.json b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+index fc1c3737394bdc53d9349de1ddc764f2b5acdc88..0ba0cf3c0fe27e25157a726284c4e0e0a018e8a9
+--- a/metadata/org.apache.poi/poi-ooxml-schemas/index.json
++++ b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+     "repository-url" : "https://github.com/apache/poi",
+     "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+-    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
++    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+     "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+     "tested-versions" : [
+       "4.1.2"
+
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"4.1.2\") | {\"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", description, language}' metadata/org.apache.poi/poi-ooxml-schemas/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.apache.poi/poi-ooxml-schemas/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+{
+  "source-code-url": "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+  "repository-url": "https://github.com/apache/poi",
+  "test-code-url": "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+  "documentation-url": "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+  "description": "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+  "language": null
+}
+
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.poi/poi-ooxml-schemas/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+diff --git a/metadata/org.apache.poi/poi-ooxml-schemas/index.json b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+index fc1c3737394bdc53d9349de1ddc764f2b5acdc88..0ba0cf3c0fe27e25157a726284c4e0e0a018e8a9
+--- a/metadata/org.apache.poi/poi-ooxml-schemas/index.json
++++ b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+     "repository-url" : "https://github.com/apache/poi",
+     "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+-    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
++    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+     "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+     "tested-versions" : [
+       "4.1.2"
+
+exec
+/usr/bin/bash -lc "git status --short metadata/org.apache.poi/poi-ooxml-schemas/index.json && grep -n 'documentation-url\\|language' metadata/org.apache.poi/poi-ooxml-schemas/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+?? metadata/org.apache.poi/poi-ooxml-schemas/index.json
+8:    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+
+diff --git a/metadata/org.apache.poi/poi-ooxml-schemas/index.json b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+index fc1c3737394bdc53d9349de1ddc764f2b5acdc88..0ba0cf3c0fe27e25157a726284c4e0e0a018e8a9
+--- a/metadata/org.apache.poi/poi-ooxml-schemas/index.json
++++ b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+     "repository-url" : "https://github.com/apache/poi",
+     "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+-    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
++    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+     "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+     "tested-versions" : [
+       "4.1.2"
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/
+web search: 
+web search: Apache POI 4.1.2 apidocs poi-ooxml-schemas ...
+exec
+/usr/bin/bash -lc "curl -fLs https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/poi-ooxml-schemas-4.1.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.apache.poi</groupId>
+	<artifactId>poi-ooxml-schemas</artifactId>
+	<version>4.1.2</version>
+	<packaging>jar</packaging>
+	<name>Apache POI</name>
+	<url>http://poi.apache.org/</url>
+	<description>Apache POI - Java API To Access Microsoft Format Files</description>
+
+    <repositories>
+        <repository>
+            <id>apache-releases-repo</id>
+            <name>apache releases repo</name>
+            <url>https://repository.apache.org/content/repositories/releases</url>
+        </repository>
+    </repositories>
+
+  <mailingLists>
+    <mailingList>
+      <name>POI Users List</name>
+      <subscribe>user-subscribe@poi.apache.org</subscribe>
+      <unsubscribe>user-unsubscribe@poi.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/poi-user/</archive>
+    </mailingList>
+    <mailingList>
+      <name>POI Developer List</name>
+      <subscribe>dev-subscribe@poi.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@poi.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/poi-dev/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>http://www.apache.org/</url>
+  </organization>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fLs --max-time 20 https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml/4.1.2/ | sed -n '1,180p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/poi/poi-ooxml/4.1.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/poi/poi-ooxml/4.1.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="poi-ooxml-4.1.2-javadoc.jar" title="poi-ooxml-4.1.2-javadoc.jar">poi-ooxml-4.1.2-javadoc.jar</a>                       2020-02-10 19:44   2850195      
+<a href="poi-ooxml-4.1.2-javadoc.jar.asc" title="poi-ooxml-4.1.2-javadoc.jar.asc">poi-ooxml-4.1.2-javadoc.jar.asc</a>                   2020-02-10 19:44       475      
+<a href="poi-ooxml-4.1.2-javadoc.jar.md5" title="poi-ooxml-4.1.2-javadoc.jar.md5">poi-ooxml-4.1.2-javadoc.jar.md5</a>                   2020-02-10 19:44        62      
+<a href="poi-ooxml-4.1.2-javadoc.jar.sha1" title="poi-ooxml-4.1.2-javadoc.jar.sha1">poi-ooxml-4.1.2-javadoc.jar.sha1</a>                  2020-02-10 19:44        70      
+<a href="poi-ooxml-4.1.2-sources.jar" title="poi-ooxml-4.1.2-sources.jar">poi-ooxml-4.1.2-sources.jar</a>                       2020-02-10 19:44   1312171      
+<a href="poi-ooxml-4.1.2-sources.jar.asc" title="poi-ooxml-4.1.2-sources.jar.asc">poi-ooxml-4.1.2-sources.jar.asc</a>                   2020-02-10 19:44       475      
+<a href="poi-ooxml-4.1.2-sources.jar.md5" title="poi-ooxml-4.1.2-sources.jar.md5">poi-ooxml-4.1.2-sources.jar.md5</a>                   2020-02-10 19:44        62      
+<a href="poi-ooxml-4.1.2-sources.jar.sha1" title="poi-ooxml-4.1.2-sources.jar.sha1">poi-ooxml-4.1.2-sources.jar.sha1</a>                  2020-02-10 19:44        70      
+<a href="poi-ooxml-4.1.2.jar" title="poi-ooxml-4.1.2.jar">poi-ooxml-4.1.2.jar</a>                               2020-02-10 19:44   1888231      
+<a href="poi-ooxml-4.1.2.jar.asc" title="poi-ooxml-4.1.2.jar.asc">poi-ooxml-4.1.2.jar.asc</a>                           2020-02-10 19:44       475      
+<a href="poi-ooxml-4.1.2.jar.md5" title="poi-ooxml-4.1.2.jar.md5">poi-ooxml-4.1.2.jar.md5</a>                           2020-02-10 19:44        54      
+<a href="poi-ooxml-4.1.2.jar.sha1" title="poi-ooxml-4.1.2.jar.sha1">poi-ooxml-4.1.2.jar.sha1</a>                          2020-02-10 19:44        62      
+<a href="poi-ooxml-4.1.2.pom" title="poi-ooxml-4.1.2.pom">poi-ooxml-4.1.2.pom</a>                               2020-02-10 19:44      2869      
+<a href="poi-ooxml-4.1.2.pom.asc" title="poi-ooxml-4.1.2.pom.asc">poi-ooxml-4.1.2.pom.asc</a>                           2020-02-10 19:44       475      
+<a href="poi-ooxml-4.1.2.pom.md5" title="poi-ooxml-4.1.2.pom.md5">poi-ooxml-4.1.2.pom.md5</a>                           2020-02-10 19:44        54      
+<a href="poi-ooxml-4.1.2.pom.sha1" title="poi-ooxml-4.1.2.pom.sha1">poi-ooxml-4.1.2.pom.sha1</a>                          2020-02-10 19:44        62      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fLs --max-time 20 https://poi.apache.org/apidocs/4.1/index.html | sed -n '1,60p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<!-- NewPage -->
+<html lang="en">
+<head>
+<!-- Generated by javadoc -->
+<title>POI API Documentation</title>
+<script type="text/javascript">
+    tmpTargetPage = "" + window.location.search;
+    if (tmpTargetPage != "" && tmpTargetPage != "undefined")
+        tmpTargetPage = tmpTargetPage.substring(1);
+    if (tmpTargetPage.indexOf(":") != -1 || (tmpTargetPage != "" && !validURL(tmpTargetPage)))
+        tmpTargetPage = "undefined";
+    targetPage = tmpTargetPage;
+    function validURL(url) {
+        try {
+            url = decodeURIComponent(url);
+        }
+        catch (error) {
+            return false;
+        }
+        var pos = url.indexOf(".html");
+        if (pos == -1 || pos != url.length - 5)
+            return false;
+        var allowNumber = false;
+        var allowSep = false;
+        var seenDot = false;
+        for (var i = 0; i < url.length - 5; i++) {
+            var ch = url.charAt(i);
+            if ('a' <= ch && ch <= 'z' ||
+                    'A' <= ch && ch <= 'Z' ||
+                    ch == '$' ||
+                    ch == '_' ||
+                    ch.charCodeAt(0) > 127) {
+                allowNumber = true;
+                allowSep = true;
+            } else if ('0' <= ch && ch <= '9'
+                    || ch == '-') {
+                if (!allowNumber)
+                     return false;
+            } else if (ch == '/' || ch == '.') {
+                if (!allowSep)
+                    return false;
+                allowNumber = false;
+                allowSep = false;
+                if (ch == '.')
+                     seenDot = true;
+                if (ch == '/' && seenDot)
+                     return false;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+    function loadFrames() {
+        if (targetPage != "" && targetPage != "undefined")
+             top.classFrame.location = top.targetPage;
+    }
+</script>
+</head>
+
+diff --git a/metadata/org.apache.poi/poi-ooxml-schemas/index.json b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+index fc1c3737394bdc53d9349de1ddc764f2b5acdc88..0ba0cf3c0fe27e25157a726284c4e0e0a018e8a9
+--- a/metadata/org.apache.poi/poi-ooxml-schemas/index.json
++++ b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+     "repository-url" : "https://github.com/apache/poi",
+     "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+-    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
++    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+     "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+     "tested-versions" : [
+       "4.1.2"
+
+exec
+/usr/bin/bash -lc "curl -fLs --max-time 20 https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/4.1.2/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>poi-ooxml-schemas 4.1.2 javadoc (org.apache.poi)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/org.apache.poi">org.apache.poi</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						poi-ooxml-schemas
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/org.apache.poi/ooxml-schemas" class="dropdown-item">
+							ooxml-schemas
+						</a>
+						
+						<a href="/doc/org.apache.poi/openxml4j" class="dropdown-item">
+							openxml4j
+						</a>
+						
+						<a href="/doc/org.apache.poi/poi" class="dropdown-item">
+							poi
+						</a>
+						
+						<a href="/doc/org.apache.poi/poi-examples" class="dropdown-item">
+							poi-examples
+						</a>
+						
+						<a href="/doc/org.apache.poi/poi-excelant" class="dropdown-item">
+							poi-excelant
+						</a>
+						
+						<a href="/doc/org.apache.poi/poi-ooxml" class="dropdown-item">
+							poi-ooxml
+						</a>
+						
+						<a href="/doc/org.apache.poi/poi-ooxml-full" class="dropdown-item">
+							poi-ooxml-full
+
+diff --git a/metadata/org.apache.poi/poi-ooxml-schemas/index.json b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+index fc1c3737394bdc53d9349de1ddc764f2b5acdc88..0ba0cf3c0fe27e25157a726284c4e0e0a018e8a9
+--- a/metadata/org.apache.poi/poi-ooxml-schemas/index.json
++++ b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+     "repository-url" : "https://github.com/apache/poi",
+     "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+-    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
++    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+     "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+     "tested-versions" : [
+       "4.1.2"
+
+exec
+/usr/bin/bash -lc "curl -fLs --max-time 20 https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/4.1.2/index.html | rg -i 'No JavaDoc|org.openxmlformats|schemaorg|package' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+					<div><span class="text-monospace">package-list</span> path (used for javadoc generation <span class="text-monospace">-link</span> option)</div>
+						https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/4.1.2/package-list
+						<a href="/doc/org.apache.poi/poi-ooxml-schemas/4.1.2/package-list" target="_blank" class="float-right">
+  No JavaDoc is released for artifact <span class="font-italic">org.apache.poi:poi-ooxml-schemas:4.1.2</span>.
+
+diff --git a/metadata/org.apache.poi/poi-ooxml-schemas/index.json b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+index fc1c3737394bdc53d9349de1ddc764f2b5acdc88..0ba0cf3c0fe27e25157a726284c4e0e0a018e8a9
+--- a/metadata/org.apache.poi/poi-ooxml-schemas/index.json
++++ b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+     "repository-url" : "https://github.com/apache/poi",
+     "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+-    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
++    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+     "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+     "tested-versions" : [
+       "4.1.2"
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\" : \"N/A\"' metadata/org.apache.poi | head -20" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'poi.apache.org/apidocs/4.1' metadata/org.apache.poi metadata | head -20" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'javadoc.io/doc/org.apache.poi/poi-ooxml-schemas' metadata || true" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+metadata/org.apache.poi/poi-ooxml-schemas/index.json:    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail --max-time 20 https://archive.apache.org/dist/poi/release/bin/poi-bin-4.1.2-20200217.zip' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+diff --git a/metadata/org.apache.poi/poi-ooxml-schemas/index.json b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+index fc1c3737394bdc53d9349de1ddc764f2b5acdc88..0ba0cf3c0fe27e25157a726284c4e0e0a018e8a9
+--- a/metadata/org.apache.poi/poi-ooxml-schemas/index.json
++++ b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+     "repository-url" : "https://github.com/apache/poi",
+     "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+-    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
++    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+     "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+     "tested-versions" : [
+       "4.1.2"
+
+ succeeded in 112ms:
+
+  0 39.0M    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 200 OK
+Date: Sat, 23 May 2026 12:44:16 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Mon, 06 Jul 2020 14:19:12 GMT
+ETag: "27108c8-5a9c68f168df5"
+Accept-Ranges: bytes
+Content-Length: 40962248
+Content-Type: application/zip
+
+
+exec
+/usr/bin/bash -lc "curl -fLs --max-time 20 https://poi.apache.org/apidocs/4.1/allclasses-frame.html | rg 'org.openxmlformats.schemas|CTWorkbook|com.microsoft.schemas' | head -20" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+diff --git a/metadata/org.apache.poi/poi-ooxml-schemas/index.json b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+index fc1c3737394bdc53d9349de1ddc764f2b5acdc88..0ba0cf3c0fe27e25157a726284c4e0e0a018e8a9
+--- a/metadata/org.apache.poi/poi-ooxml-schemas/index.json
++++ b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+     "repository-url" : "https://github.com/apache/poi",
+     "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+-    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
++    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+     "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+     "tested-versions" : [
+       "4.1.2"
+
+ succeeded in 134ms:
+exec
+/usr/bin/bash -lc 'find metadata/org.apache.poi -maxdepth 2 -name index.json -print' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+metadata/org.apache.poi/poi-ooxml-schemas/index.json
+
+exec
+/usr/bin/bash -lc "rg 'poi-ooxml' metadata/org.apache.poi -n" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+metadata/org.apache.poi/poi-ooxml-schemas/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+
+diff --git a/metadata/org.apache.poi/poi-ooxml-schemas/index.json b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+index fc1c3737394bdc53d9349de1ddc764f2b5acdc88..0ba0cf3c0fe27e25157a726284c4e0e0a018e8a9
+--- a/metadata/org.apache.poi/poi-ooxml-schemas/index.json
++++ b/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+     "repository-url" : "https://github.com/apache/poi",
+     "test-code-url" : "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+-    "documentation-url" : "https://poi.apache.org/apidocs/4.1/",
++    "documentation-url" : "https://javadoc.io/doc/org.apache.poi/poi-ooxml-schemas/$version$",
+     "description" : "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+     "tested-versions" : [
+       "4.1.2"
+
+web search: 
+web search: "poi-bin-4.1.2" "apidocs" ...
+codex
+The exact javadoc.io artifact page renders, but it explicitly reports that no Javadoc was released for `poi-ooxml-schemas:4.1.2`, so it is not a useful documentation target. I’m reverting that change and preserving the existing Apache POI 4.1 API docs URL, which is the versioned project documentation already present.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15/metadata/org.apache.poi/poi-ooxml-schemas/index.json
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"4.1.2\")' metadata/org.apache.poi/poi-ooxml-schemas/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "4.1.2",
+  "source-code-url": "https://archive.apache.org/dist/poi/release/src/poi-src-$version$-20200217.zip",
+  "repository-url": "https://github.com/apache/poi",
+  "test-code-url": "https://github.com/apache/poi/tree/REL_4_1_2/src/ooxml/testcases",
+  "documentation-url": "https://poi.apache.org/apidocs/4.1/",
+  "description": "Apache POI OOXML Schemas provides generated XMLBeans classes for the Office Open XML schemas used by Apache POI's XSSF, XWPF, and XSLF support. It lets Java applications work with the full set of OOXML document schema types when reading and writing Microsoft Office files.",
+  "tested-versions": [
+    "4.1.2"
+  ],
+  "allowed-packages": [
+    "com.microsoft.schemas",
+    "org.etsi.uri.x01903.v13",
+    "org.openxmlformats.schemas.drawingml.x2006",
+    "org.openxmlformats.schemas.officeDocument.x2006",
+    "org.openxmlformats.schemas.presentationml.x2006.main",
+    "org.openxmlformats.schemas.spreadsheetml.x2006.main",
+    "org.openxmlformats.schemas.wordprocessingml.x2006.main",
+    "org.openxmlformats.schemas.xpackage.x2006.digitalSignature",
+    "org.w3.x2000.x09.xmldsig",
+    "schemaorg_apache_xmlbeans.system"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.apache.poi/poi-ooxml-schemas/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+?? metadata/org.apache.poi/poi-ooxml-schemas/index.json
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.apache.poi/poi-ooxml-schemas/index.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.apache.poi poi-ooxml-schemas 4.1.2 ...
+codex
+No persistent JSON changes were needed in [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15/metadata/org.apache.poi/poi-ooxml-schemas/index.json:1). The selected entry already has non-blank source, repository, test, documentation, and two-sentence description fields; `language` remains absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+I verified JSON validity with `jq empty`. Maven Central has no source/test artifacts for `poi-ooxml-schemas:4.1.2`, and javadoc.io reports no released Javadoc for that artifact version, so I preserved the existing versioned Apache POI documentation URL. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/?utm_source=openai))
+tokens used
+74,822
+No persistent JSON changes were needed in [index.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15/metadata/org.apache.poi/poi-ooxml-schemas/index.json:1). The selected entry already has non-blank source, repository, test, documentation, and two-sentence description fields; `language` remains absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+I verified JSON validity with `jq empty`. Maven Central has no source/test artifacts for `poi-ooxml-schemas:4.1.2`, and javadoc.io reports no released Javadoc for that artifact version, so I preserved the existing versioned Apache POI documentation URL. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/poi/poi-ooxml-schemas/4.1.2/?utm_source=openai))
+Ran agent for org.apache.poi:poi-ooxml-schemas:4.1.2 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15/build/agent-url-discovery-logs/org.apache.poi-poi-ooxml-schemas-4.1.2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2736-2a4cca15/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 38s
+9 actionable tasks: 1 executed, 8 up-to-date
