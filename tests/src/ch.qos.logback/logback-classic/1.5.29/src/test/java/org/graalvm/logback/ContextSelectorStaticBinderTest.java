@@ -37,6 +37,25 @@ public class ContextSelectorStaticBinderTest {
     }
   }
 
+  @Test
+  @ResourceLock("logback.contextSelector")
+  void initCreatesConfiguredContextSelectorDynamically() throws Exception {
+    String previousContextSelector = System.getProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
+    LoggerContext loggerContext = new LoggerContext();
+    try {
+      System.setProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR, DefaultContextSelector.class.getName());
+      ContextSelectorStaticBinder binder = new ContextSelectorStaticBinder();
+      binder.init(loggerContext, new Object());
+
+      ContextSelector contextSelector = binder.getContextSelector();
+      assertThat(contextSelector).isExactlyInstanceOf(DefaultContextSelector.class);
+      assertThat(contextSelector.getDefaultLoggerContext()).isSameAs(loggerContext);
+    } finally {
+      restoreContextSelectorProperty(previousContextSelector);
+      loggerContext.stop();
+    }
+  }
+
   private void restoreContextSelectorProperty(String previousContextSelector) {
     if (previousContextSelector == null) {
       System.clearProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
