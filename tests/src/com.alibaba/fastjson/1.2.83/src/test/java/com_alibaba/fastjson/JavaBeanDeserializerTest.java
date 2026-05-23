@@ -16,11 +16,18 @@ import com.alibaba.fastjson.annotation.JSONType;
 import com.alibaba.fastjson.parser.DefaultJSONParser;
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.parser.ParserConfig;
+import com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer;
 import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
+import com.alibaba.fastjson.util.FieldInfo;
+import com.alibaba.fastjson.util.JavaBeanInfo;
 import com.alibaba.fastjson.util.TypeUtils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -104,6 +111,49 @@ public class JavaBeanDeserializerTest {
         assertThat(method.values).containsEntry("methodValue", true);
     }
 
+    @Test
+    void customBeanInfoMapCreationSetsPrimitiveFieldsDirectly() throws Exception {
+        ParserConfig config = noAsmConfig();
+        JavaBeanDeserializer deserializer = customFieldDeserializer(PrimitiveDirectFieldsBean.class,
+                "falseValue", "trueValue", "intValue", "longValue", "floatNumber", "floatString",
+                "doubleNumber", "doubleString");
+        Map<String, Object> values = new LinkedHashMap<>();
+        values.put("falseValue", Boolean.FALSE);
+        values.put("trueValue", Boolean.TRUE);
+        values.put("intValue", 11);
+        values.put("longValue", 12L);
+        values.put("floatNumber", 1.25F);
+        values.put("floatString", "2.5");
+        values.put("doubleNumber", 3.75D);
+        values.put("doubleString", "4.5");
+
+        PrimitiveDirectFieldsBean bean = (PrimitiveDirectFieldsBean) deserializer.createInstance(values, config);
+
+        assertThat(bean.falseValue).isFalse();
+        assertThat(bean.trueValue).isTrue();
+        assertThat(bean.intValue).isEqualTo(11);
+        assertThat(bean.longValue).isEqualTo(12L);
+        assertThat(bean.floatNumber).isEqualTo(1.25F);
+        assertThat(bean.floatString).isEqualTo(2.5F);
+        assertThat(bean.doubleNumber).isEqualTo(3.75D);
+        assertThat(bean.doubleString).isEqualTo(4.5D);
+    }
+
+    @Test
+    void customBeanInfoUsesDefaultConstructorWhenKotlinCreatorStringArgumentIsMissing() throws Exception {
+        ParserConfig config = noAsmConfig();
+        JavaBeanDeserializer deserializer = customKotlinLikeDeserializer();
+        Map<String, Object> values = mapOf("number", 8);
+
+        KotlinLikeBean fromMap = (KotlinLikeBean) deserializer.createInstance(values, config);
+        KotlinLikeBean fromJson = parseWithDeserializer("{\"number\":9}", KotlinLikeBean.class, deserializer, config);
+
+        assertThat(fromMap.name).isEqualTo("default");
+        assertThat(fromMap.number).isEqualTo(8);
+        assertThat(fromJson.name).isEqualTo("default");
+        assertThat(fromJson.number).isEqualTo(9);
+    }
+
     private static ParserConfig noAsmConfig() {
         ParserConfig config = new ParserConfig();
         config.setAsmEnable(false);
@@ -111,13 +161,49 @@ public class JavaBeanDeserializerTest {
     }
 
     private static <T> T parseWithDeserializer(String json, Class<T> beanClass, ParserConfig config) {
+        ObjectDeserializer deserializer = config.getDeserializer(beanClass);
+        return parseWithDeserializer(json, beanClass, deserializer, config);
+    }
+
+    private static <T> T parseWithDeserializer(
+            String json, Class<T> beanClass, ObjectDeserializer deserializer, ParserConfig config) {
         DefaultJSONParser parser = new DefaultJSONParser(json, config);
         try {
-            ObjectDeserializer deserializer = config.getDeserializer(beanClass);
             return deserializer.deserialze(parser, beanClass, null);
         } finally {
             parser.close();
         }
+    }
+
+    private static JavaBeanDeserializer customFieldDeserializer(Class<?> beanClass, String... fieldNames)
+            throws NoSuchFieldException, NoSuchMethodException {
+        Constructor<?> defaultConstructor = beanClass.getConstructor();
+        List<FieldInfo> fields = new ArrayList<>();
+        for (String fieldName : fieldNames) {
+            Field field = beanClass.getField(fieldName);
+            fields.add(new FieldInfo(fieldName, null, field.getType(), field.getGenericType(), field, 0, 0, 0));
+        }
+        JavaBeanInfo beanInfo = new JavaBeanInfo(beanClass, null, defaultConstructor, null, null, null, null, fields);
+        return new JavaBeanDeserializer(noAsmConfig(), beanInfo);
+    }
+
+    private static JavaBeanDeserializer customKotlinLikeDeserializer()
+            throws NoSuchFieldException, NoSuchMethodException {
+        Constructor<KotlinLikeBean> defaultConstructor = KotlinLikeBean.class.getConstructor();
+        Constructor<KotlinLikeBean> creatorConstructor = KotlinLikeBean.class.getConstructor(String.class, int.class);
+        List<FieldInfo> fields = new ArrayList<>();
+        fields.add(kotlinLikeFieldInfo("name", String.class));
+        fields.add(kotlinLikeFieldInfo("number", int.class));
+        JavaBeanInfo beanInfo = new JavaBeanInfo(
+                KotlinLikeBean.class, null, defaultConstructor, creatorConstructor, null, null, null, fields);
+        beanInfo.kotlin = true;
+        beanInfo.kotlinDefaultConstructor = defaultConstructor;
+        return new JavaBeanDeserializer(noAsmConfig(), beanInfo);
+    }
+
+    private static FieldInfo kotlinLikeFieldInfo(String name, Class<?> fieldClass) throws NoSuchFieldException {
+        Field field = KotlinLikeBean.class.getField(name);
+        return new FieldInfo(name, KotlinLikeBean.class, fieldClass, field.getGenericType(), field, 0, 0, 0);
     }
 
     private static Map<String, Object> mapOf(String firstKey, Object firstValue, String secondKey, Object secondValue) {
@@ -257,6 +343,31 @@ public class JavaBeanDeserializerTest {
 
         public String getHidden() {
             return hidden;
+        }
+    }
+
+    public static class PrimitiveDirectFieldsBean {
+        public boolean falseValue = true;
+        public boolean trueValue;
+        public int intValue;
+        public long longValue;
+        public float floatNumber;
+        public float floatString;
+        public double doubleNumber;
+        public double doubleString;
+    }
+
+    public static class KotlinLikeBean {
+        public String name;
+        public int number;
+
+        public KotlinLikeBean() {
+            this.name = "default";
+        }
+
+        public KotlinLikeBean(String name, int number) {
+            this.name = name;
+            this.number = number;
         }
     }
 
