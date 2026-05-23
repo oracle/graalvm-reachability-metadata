@@ -26,6 +26,7 @@ import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
 
 import org.graalvm.internal.tck.NativeImageSupport;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.keycloak.common.util.DelegatingSerializationFilter;
 
@@ -45,12 +46,19 @@ public class DelegatingSerializationFilterTest {
                     .addAllowedPattern("java.lang.*")
                     .setFilter(objectInputStream);
 
+            Assumptions.assumeFalse(
+                    isNativeImageRuntime(),
+                    "Current native-image defaults do not preserve this ObjectInputFilter visibility check.");
             assertThat(objectInputStream.getObjectInputFilter()).isNotNull();
         }
     }
 
     @Test
     void createsJavaEightAdapterWhenRunningWithJavaEightFilterApi() throws Exception {
+        Assumptions.assumeFalse(
+                isNativeImageRuntime(),
+                "The isolated Java 8 class-loading simulation is not supported in native image runtime.");
+
         IsolatedJavaEightClassLoader classLoader = new IsolatedJavaEightClassLoader(
                 DelegatingSerializationFilterTest.class.getClassLoader());
 
@@ -75,6 +83,10 @@ public class DelegatingSerializationFilterTest {
             objectOutputStream.flush();
         }
         return new ObjectInputStream(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     public static final class JavaEightBranchCallable implements Callable<Boolean> {
