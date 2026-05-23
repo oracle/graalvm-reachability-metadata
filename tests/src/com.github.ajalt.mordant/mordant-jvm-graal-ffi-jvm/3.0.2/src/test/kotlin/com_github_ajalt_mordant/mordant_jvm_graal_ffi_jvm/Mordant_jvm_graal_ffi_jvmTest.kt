@@ -6,6 +6,10 @@
  */
 package com_github_ajalt_mordant.mordant_jvm_graal_ffi_jvm
 
+import com.github.ajalt.mordant.rendering.Size
+import com.github.ajalt.mordant.terminal.StandardTerminalInterface
+import com.github.ajalt.mordant.terminal.TerminalInfo
+import com.github.ajalt.mordant.terminal.TerminalInterface
 import com.github.ajalt.mordant.terminal.TerminalInterfaceProvider
 import com.github.ajalt.mordant.terminal.terminalinterface.nativeimage.TerminalInterfaceProviderNativeImage
 import org.assertj.core.api.Assertions.assertThat
@@ -30,5 +34,37 @@ public class TerminalInterfaceProviderNativeImageTest {
 
         assertThat(providers).isNotEmpty()
         assertThat(graalProviders).hasSize(1)
+    }
+
+    @Test
+    fun providerLoadSuppliesTerminalInterfaceWhenNativeBindingsAreAvailable(): Unit {
+        val terminalInterface: TerminalInterface? = TerminalInterfaceProviderNativeImage().load()
+
+        if (terminalInterface == null) {
+            assertThat(terminalInterface === null).isTrue()
+        } else {
+            assertThat(terminalInterface).isInstanceOf(StandardTerminalInterface::class.java)
+            val standardTerminalInterface = terminalInterface as StandardTerminalInterface
+            val inputInteractive: Boolean = standardTerminalInterface.stdinInteractive()
+            val outputInteractive: Boolean = standardTerminalInterface.stdoutInteractive()
+            val terminalInfo: TerminalInfo = terminalInterface.info(
+                ansiLevel = null,
+                hyperlinks = null,
+                outputInteractive = outputInteractive,
+                inputInteractive = inputInteractive,
+            )
+
+            assertThat(terminalInfo.inputInteractive).isEqualTo(inputInteractive)
+            assertThat(terminalInfo.outputInteractive).isEqualTo(outputInteractive)
+            assertThat(terminalInterface.shouldAutoUpdateSize()).isTrue()
+
+            val terminalSize: Size? = terminalInterface.getTerminalSize()
+            if (terminalSize == null) {
+                assertThat(terminalSize === null).isTrue()
+            } else {
+                assertThat(terminalSize.width).isPositive()
+                assertThat(terminalSize.height).isPositive()
+            }
+        }
     }
 }
