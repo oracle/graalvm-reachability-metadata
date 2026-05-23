@@ -11,7 +11,9 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.mongodb.morphia:morphia:$libraryVersion"
+    testImplementation("org.mongodb.morphia:morphia:$libraryVersion") {
+        exclude group: "cglib"
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
