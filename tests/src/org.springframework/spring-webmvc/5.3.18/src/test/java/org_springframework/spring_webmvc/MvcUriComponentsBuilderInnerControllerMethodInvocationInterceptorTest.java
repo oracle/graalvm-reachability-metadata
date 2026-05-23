@@ -33,6 +33,10 @@ public class MvcUriComponentsBuilderInnerControllerMethodInvocationInterceptorTe
                     .toUriString();
 
             assertThat(path).isEqualTo("/api/items/books/42");
+        } catch (ExceptionInInitializerError error) {
+            if (!hasUnsupportedFeatureErrorCause(error)) {
+                throw error;
+            }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -40,6 +44,17 @@ public class MvcUriComponentsBuilderInnerControllerMethodInvocationInterceptorTe
         } finally {
             restoreObjenesisIgnoreProperty(previousValue);
         }
+    }
+
+    private static boolean hasUnsupportedFeatureErrorCause(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private static void restoreObjenesisIgnoreProperty(String previousValue) {
