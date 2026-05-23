@@ -1,0 +1,2097 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e532d-a0bb-7873-a0d4-f5cb220b2ea1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.groovy:groovy-nio:4.0.24
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "4.0.24" when "$version$" is replaced with "4.0.24".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.apache.groovy:groovy-nio:4.0.24".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.24".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/Groovy sources, then update the JSON in place with only the requested keys.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json && sed -n '1,160p' build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+-rw-rw-r-- 1 vjovanov vjovanov 60 May 23 06:52 build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+{
+  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.apache\\.groovy:groovy-nio|groovy-nio|apache groovy\" build/discovered-artifact-metadata metadata tests -S" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json:2:  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
+metadata/org.apache.groovy/groovy-test-junit5/index.json:9:    "description" : "groovy-test-junit5 provides Apache Groovy's integration with JUnit 5 and the JUnit Platform for running Groovy tests. It supplies the Groovy test runner plugin and helper code needed to execute JUnit Jupiter based test classes from Groovy projects.",
+
+web search: 
+web search: Maven Central org.apache.groovy groovy-nio 4.0.24 sources jar pom scm url ...
+codex
+The local file is just a coordinate stub. I’m checking the published Maven artifacts first because the requested source and test links should prefer Maven when those jars are published.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' metadata/org.apache.groovy build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+metadata/org.apache.groovy/groovy-test-junit5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-sources.jar",
+metadata/org.apache.groovy/groovy-test-junit5/index.json:7:    "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+metadata/org.apache.groovy/groovy-test-junit5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.groovy</groupId>
+  <artifactId>groovy-nio</artifactId>
+  <version>4.0.24</version>
+  <name>Apache Groovy</name>
+  <description>Groovy: A powerful multi-faceted language for the JVM</description>
+  <url>https://groovy-lang.org</url>
+  <inceptionYear>2003</inceptionYear>
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>https://apache.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>glaforge</id>
+      <name>Guillaume Laforge</name>
+      <organization>Google</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bob</id>
+      <name>bob mcwhirter</name>
+      <email>bob@werken.com</email>
+      <organization>The Werken Company</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jstrachan</id>
+      <name>James Strachan</name>
+      <email>james@coredevelopers.com</email>
+      <organization>Core Developers Network</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>joe</id>
+      <name>Joe Walnes</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>skizz</id>
+      <name>Chris Stevenson</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jamiemc</id>
+      <name>Jamie McCrindle</name>
+      <organization>Three</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mattf</id>
+      <name>Matt Foemmel</name>
+      <organization>ThoughtWorks</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>alextkachman</id>
+      <name>Alex Tkachman</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>roshandawrani</id>
+      <name>Roshan Dawrani</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>spullara</id>
+      <name>Sam Pullara</name>
+      <email>sam@sampullara.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>kasper</id>
+      <name>Kasper Nielsen</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>travis</id>
+      <name>Travis Kay</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>zohar</id>
+      <name>Zohar Melamed</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jwilson</id>
+      <name>John Wilson</name>
+      <email>tug@wilson.co.uk</email>
+      <organization>The Wilson Partnership</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cpoirier</id>
+      <name>Chris Poirier</name>
+      <email>cpoirier@dreaming.org</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>ckl</id>
+      <name>Christiaan ten Klooster</name>
+      <email>ckl@dacelo.nl</email>
+      <organization>Dacelo WebDevelopment</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>goetze</id>
+      <name>Steve Goetze</name>
+      <email>goetze@dovetail.com</email>
+      <organization>Dovetailed Technologies, LLC</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bran</id>
+      <name>Bing Ran</name>
+      <email>b55r@sina.com</email>
+      <organization>Leadingcare</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jez</id>
+      <name>Jeremy Rayner</name>
+      <email>jeremy.rayner@gmail.com</email>
+      <organization>javanicus</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jstump</id>
+      <name>John Stump</name>
+      <email>johnstump2@yahoo.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>blackdrag</id>
+      <name>Jochen Theodorou</name>
+      <email>blackdrag@gmx.org</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>russel</id>
+      <name>Russel Winder</name>
+      <email>russel@winder.org.uk</email>
+      <organization>Concertant LLP &amp; It'z Interactive Ltd</organization>
+      <roles>
+        <role>Developer</role>
+        <role>Founder of Gant</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>phk</id>
+      <name>Pilho Kim</name>
+      <email>phkim@cluecom.co.kr</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>cstein</id>
+      <name>Christian Stein</name>
+      <email>sormuras@gmx.de</email>
+      <organization>CTSR.de</organization>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mittie</id>
+      <name>Dierk Koenig</name>
+      <organization>Karakun AG</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>paulk</id>
+      <name>Paul King</name>
+      <email>paulk@asert.com.au</email>
+      <organization>OCI, Australia</organization>
+      <roles>
+        <role>Project Manager</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>galleon</id>
+      <name>Guillaume Alleon</name>
+      <email>guillaume.alleon@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>user57</id>
+      <name>Jason Dillon</name>
+      <email>jason@planet57.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>shemnon</id>
+      <name>Danno Ferrin</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jwill</id>
+      <name>James Williams</name>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>timyates</id>
+      <name>Tim Yates</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>aalmiray</id>
+      <name>Andres Almiray</name>
+      <email>aalmiray@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mguillem</id>
+      <name>Marc Guillemot</name>
+      <email>mguillemot@yahoo.fr</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jimwhite</id>
+      <name>Jim White</name>
+      <email>jim@pagesmiths.com</email>
+      <organization>IFCX.org</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pniederw</id>
+      <name>Peter Niederwieser</name>
+      <email>pniederw@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>andresteingress</id>
+      <name>Andre Steingress</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>hamletdrc</id>
+      <name>Hamlet D'Arcy</name>
+      <email>hamletdrc@gmail.com</email>
+      <roles>
+        <role>Developer Emeritus</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>melix</id>
+      <name>Cedric Champeau</name>
+      <email>cedric.champeau@gmail.com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>pascalschumacher</id>
+      <name>Pascal Schumacher</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>sunlan</id>
+      <name>Daniel Sun</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>rpopma</id>
+      <name>Remko Popma</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>grocher</id>
+      <name>Graeme Rocher</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>emilles</id>
+      <name>Eric Milles</name>
+      <organization>Thomson Reuters</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Joern Eyrich</name>
+    </contributor>
+    <contributor>
+      <name>Robert Kuzelj</name>
+    </contributor>
+    <contributor>
+      <name>Rod Cope</name>
+    </contributor>
+    <contributor>
+      <name>Yuri Schimke</name>
+    </contributor>
+    <contributor>
+      <name>James Birchfield</name>
+    </contributor>
+    <contributor>
+      <name>Robert Fuller</name>
+    </contributor>
+    <contributor>
+      <name>Sergey Udovenko</name>
+    </contributor>
+    <contributor>
+      <name>Hallvard Traetteberg</name>
+    </contributor>
+    <contributor>
+      <name>Peter Reilly</name>
+    </contributor>
+    <contributor>
+      <name>Brian McCallister</name>
+    </contributor>
+    <contributor>
+      <name>Richard Monson-Haefel</name>
+    </contributor>
+    <contributor>
+      <name>Brian Larson</name>
+    </contributor>
+    <contributor>
+      <name>Artur Biesiadowski</name>
+      <email>abies@pg.gda.pl</email>
+    </contributor>
+    <contributor>
+      <name>Ivan Z. Ganza</name>
+    </contributor>
+    <contributor>
+      <name>Larry Jacobson</name>
+    </contributor>
+    <contributor>
+      <name>Jake Gage</name>
+    </contributor>
+    <contributor>
+      <name>Arjun Nayyar</name>
+    </contributor>
+    <contributor>
+      <name>Masato Nagai</name>
+    </contributor>
+    <contributor>
+      <name>Mark Chu-Carroll</name>
+    </contributor>
+    <contributor>
+      <name>Mark Turansky</name>
+    </contributor>
+    <contributor>
+      <name>Jean-Louis Berliet</name>
+    </contributor>
+    <contributor>
+      <name>Graham Miller</name>
+    </contributor>
+    <contributor>
+      <name>Marc Palmer</name>
+    </contributor>
+    <contributor>
+      <name>Tugdual Grall</name>
+    </contributor>
+    <contributor>
+      <name>Edwin Tellman</name>
+    </contributor>
+    <contributor>
+      <name>Evan "Hippy" Slatis</name>
+    </contributor>
+    <contributor>
+      <name>Mike Dillon</name>
+    </contributor>
+    <contributor>
+      <name>Bernhard Huber</name>
+    </contributor>
+    <contributor>
+      <name>Yasuharu Nakano</name>
+    </contributor>
+    <contributor>
+      <name>Marc DeXeT</name>
+    </contributor>
+    <contributor>
+      <name>Dejan Bosanac</name>
+      <email>dejan@nighttale.net</email>
+    </contributor>
+    <contributor>
+      <name>Denver Dino</name>
+    </contributor>
+    <contributor>
+      <name>Ted Naleid</name>
+    </contributor>
+    <contributor>
+      <name>Ted Leung</name>
+    </contributor>
+    <contributor>
+      <name>Merrick Schincariol</name>
+    </contributor>
+    <contributor>
+      <name>Chanwit Kaewkasi</name>
+    </contributor>
+    <contributor>
+      <name>Stefan Matthias Aust</name>
+    </contributor>
+    <contributor>
+      <name>Andy Dwelly</name>
+    </contributor>
+    <contributor>
+      <name>Philip Milne</name>
+    </contributor>
+    <contributor>
+      <name>Tiago Fernandez</name>
+    </contributor>
+    <contributor>
+      <name>Steve Button</name>
+    </contributor>
+    <contributor>
+      <name>Joachim Baumann</name>
+    </contributor>
+    <contributor>
+      <name>Jochen Eddel+</name>
+    </contributor>
+    <contributor>
+      <name>Ilinca V. Hallberg</name>
+    </contributor>
+    <contributor>
+      <name>Björn Westlin</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Glover</name>
+    </contributor>
+    <contributor>
+      <name>Brad Long</name>
+    </contributor>
+    <contributor>
+      <name>John Bito</name>
+    </contributor>
+    <contributor>
+      <name>Jim Jagielski</name>
+    </contributor>
+    <contributor>
+      <name>Rodolfo Velasco</name>
+    </contributor>
+    <contributor>
+      <name>John Hurst</name>
+    </contributor>
+    <contributor>
+      <name>Merlyn Albery-Speyer</name>
+    </contributor>
+    <contributor>
+      <name>jeremi Joslin</name>
+    </contributor>
+    <contributor>
+      <name>UEHARA Junji</name>
+    </contributor>
+    <contributor>
+      <name>NAKANO Yasuharu</name>
+    </contributor>
+    <contributor>
+      <name>Dinko Srkoc</name>
+    </contributor>
+    <contributor>
+      <name>Raffaele Cigni</name>
+    </contributor>
+    <contributor>
+      <name>Alberto Vilches Raton</name>
+    </contributor>
+    <contributor>
+      <name>Paulo Poiati</name>
+    </contributor>
+    <contributor>
+      <name>Alexander Klein</name>
+    </contributor>
+    <contributor>
+      <name>Adam Murdoch</name>
+    </contributor>
+    <contributor>
+      <name>David Durham</name>
+    </contributor>
+    <contributor>
+      <name>Daniel Henrique Alves Lima</name>
+    </contributor>
+    <contributor>
+      <name>John Wagenleitner</name>
+    </contributor>
+    <contributor>
+      <name>Colin Harrington</name>
+    </contributor>
+    <contributor>
+      <name>Brian Alexander</name>
+    </contributor>
+    <contributor>
+      <name>Jan Weitz</name>
+    </contributor>
+    <contributor>
+      <name>Chris K Wensel</name>
+    </contributor>
+    <contributor>
+      <name>David Sutherland</name>
+    </contributor>
+    <contributor>
+      <name>Mattias Reichel</name>
+    </contributor>
+    <contributor>
+      <name>David Lee</name>
+    </contributor>
+    <contributor>
+      <name>Sergei Egorov</name>
+    </contributor>
+    <contributor>
+      <name>Hein Meling</name>
+    </contributor>
+    <contributor>
+      <name>Michael Baehr</name>
+    </contributor>
+    <contributor>
+      <name>Craig Andrews</name>
+    </contributor>
+    <contributor>
+      <name>Peter Ledbrook</name>
+    </contributor>
+    <contributor>
+      <name>Scott Stirling</name>
+    </contributor>
+    <contributor>
+      <name>Thibault Kruse</name>
+    </contributor>
+    <contributor>
+      <name>Tim Tiemens</name>
+    </contributor>
+    <contributor>
+      <name>Mike Spille</name>
+    </contributor>
+    <contributor>
+      <name>Nikolay Chugunov</name>
+    </contributor>
+    <contributor>
+      <name>Francesco Durbin</name>
+    </contributor>
+    <contributor>
+      <name>Paolo Di Tommaso</name>
+    </contributor>
+    <contributor>
+      <name>Rene Scheibe</name>
+    </contributor>
+    <contributor>
+      <name>Matias Bjarland</name>
+    </contributor>
+    <contributor>
+      <name>Tomasz Bujok</name>
+    </contributor>
+    <contributor>
+      <name>Richard Hightower</name>
+    </contributor>
+    <contributor>
+      <name>Andrey Bloschetsov</name>
+    </contributor>
+    <contributor>
+      <name>Yu Kobayashi</name>
+    </contributor>
+    <contributor>
+      <name>Nick Grealy</name>
+    </contributor>
+    <contributor>
+      <name>Vaclav Pech</name>
+    </contributor>
+    <contributor>
+      <name>Chuck Tassoni</name>
+    </contributor>
+    <contributor>
+      <name>Steven Devijver</name>
+    </contributor>
+    <contributor>
+      <name>Ben Manes</name>
+    </contributor>
+    <contributor>
+      <name>Troy Heninger</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Eisenberg</name>
+    </contributor>
+    <contributor>
+      <name>Eric Milles</name>
+    </contributor>
+    <contributor>
+      <name>Kohsuke Kawaguchi</name>
+    </contributor>
+    <contributor>
+      <name>Scott Vlaminck</name>
+    </contributor>
+    <contributor>
+      <name>Hjalmar Ekengren</name>
+    </contributor>
+    <contributor>
+      <name>Rafael Luque</name>
+    </contributor>
+    <contributor>
+      <name>Joachim Heldmann</name>
+    </contributor>
+    <contributor>
+      <name>dgouyette</name>
+    </contributor>
+    <contributor>
+      <name>Marcin Grzejszczak</name>
+    </contributor>
+    <contributor>
+      <name>Pap Lőrinc</name>
+    </contributor>
+    <contributor>
+      <name>Guillaume Balaine</name>
+    </contributor>
+    <contributor>
+      <name>Santhosh Kumar T</name>
+    </contributor>
+    <contributor>
+      <name>Alan Green</name>
+    </contributor>
+    <contributor>
+      <name>Marty Saxton</name>
+    </contributor>
+    <contributor>
+      <name>Marcel Overdijk</name>
+    </contributor>
+    <contributor>
+      <name>Jonathan Carlson</name>
+    </contributor>
+    <contributor>
+      <name>Thomas Heller</name>
+    </contributor>
+    <contributor>
+      <name>John Stump</name>
+    </contributor>
+    <contributor>
+      <name>Ivan Ganza</name>
+    </contributor>
+    <contributor>
+      <name>Alex Popescu</name>
+    </contributor>
+    <contributor>
+      <name>Martin Kempf</name>
+    </contributor>
+    <contributor>
+      <name>Martin Ghados</name>
+    </contributor>
+    <contributor>
+      <name>Martin Stockhammer</name>
+    </contributor>
+    <contributor>
+      <name>Martin C. Martin</name>
+    </contributor>
+    <contributor>
+      <name>Alexey Verkhovsky</name>
+    </contributor>
+    <contributor>
+      <name>Alberto Mijares</name>
+    </contributor>
+    <contributor>
+      <name>Matthias Cullmann</name>
+    </contributor>
+    <contributor>
+      <name>Tomek Bujok</name>
+    </contributor>
+    <contributor>
+      <name>Stephane Landelle</name>
+    </contributor>
+    <contributor>
+      <name>Stephane Maldini</name>
+    </contributor>
+    <contributor>
+      <name>Mark Volkmann</name>
+    </contributor>
+    <contributor>
+      <name>Andrew Taylor</name>
+    </contributor>
+    <contributor>
+      <name>Vladimir Vivien</name>
+    </contributor>
+    <contributor>
+      <name>Vladimir Orany</name>
+    </contributor>
+    <contributor>
+      <name>Joe Wolf</name>
+    </contributor>
+    <contributor>
+      <name>Kent Inge Fagerland Simonsen</name>
+    </contributor>
+    <contributor>
+      <name>Tom Nichols</name>
+    </contributor>
+    <contributor>
+      <name>Ingo Hoffmann</name>
+    </contributor>
+    <contributor>
+      <name>Sergii Bondarenko</name>
+    </contributor>
+    <contributor>
+      <name>mgroovy</name>
+    </contributor>
+    <contributor>
+      <name>Dominik Przybysz</name>
+    </contributor>
+    <contributor>
+      <name>Jason Thomas</name>
+    </contributor>
+    <contributor>
+      <name>Trygve Amundsens</name>
+    </contributor>
+    <contributor>
+      <name>Morgan Hankins</name>
+    </contributor>
+    <contributor>
+      <name>Shruti Gupta</name>
+    </contributor>
+    <contributor>
+      <name>Ben Yu</name>
+    </contributor>
+    <contributor>
+      <name>Dejan Bosanac</name>
+    </contributor>
+    <contributor>
+      <name>Lidia Donajczyk-Lipinska</name>
+    </contributor>
+    <contributor>
+      <name>Peter Gromov</name>
+    </contributor>
+    <contributor>
+      <name>Johannes Link</name>
+    </contributor>
+    <contributor>
+      <name>Chris Reeves</name>
+    </contributor>
+    <contributor>
+      <name>Sean Timm</name>
+    </contributor>
+    <contributor>
+      <name>Dmitry Vyazelenko</name>
+    </contributor>
+  </contributors>
+  <mailingLists>
+    <mailingList>
+      <name>Groovy Developer List</name>
+      <archive>https://mail-archives.apache.org/mod_mbox/groovy-dev/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Groovy User List</name>
+      <archive>https://mail-archives.apache.org/mod_mbox/groovy-users/</archive>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:git:https://github.com/apache/groovy.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/groovy.git</developerConnection>
+    <url>https://github.com/apache/groovy.git</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.apache.org/jira/browse/GROOVY</url>
+  </issueManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.groovy</groupId>
+        <artifactId>groovy-bom</artifactId>
+        <version>4.0.24</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>4.0.24</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/groovy/groovy-nio/4.0.24</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/groovy/groovy-nio/4.0.24</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="groovy-nio-4.0.24-groovydoc.jar" title="groovy-nio-4.0.24-groovydoc.jar">groovy-nio-4.0.24-groovydoc.jar</a>                   2024-11-05 01:23     54580      
+<a href="groovy-nio-4.0.24-groovydoc.jar.asc" title="groovy-nio-4.0.24-groovydoc.jar.asc">groovy-nio-4.0.24-groovydoc.jar.asc</a>               2024-11-05 01:23       848      
+<a href="groovy-nio-4.0.24-groovydoc.jar.asc.md5" title="groovy-nio-4.0.24-groovydoc.jar.asc.md5">groovy-nio-4.0.24-groovydoc.jar.asc.md5</a>           2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24-groovydoc.jar.asc.sha1" title="groovy-nio-4.0.24-groovydoc.jar.asc.sha1">groovy-nio-4.0.24-groovydoc.jar.asc.sha1</a>          2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24-groovydoc.jar.asc.sha256" title="groovy-nio-4.0.24-groovydoc.jar.asc.sha256">groovy-nio-4.0.24-groovydoc.jar.asc.sha256</a>        2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24-groovydoc.jar.asc.sha512" title="groovy-nio-4.0.24-groovydoc.jar.asc.sha512">groovy-nio-4.0.24-groovydoc.jar.asc.sha512</a>        2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24-groovydoc.jar.md5" title="groovy-nio-4.0.24-groovydoc.jar.md5">groovy-nio-4.0.24-groovydoc.jar.md5</a>               2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24-groovydoc.jar.sha1" title="groovy-nio-4.0.24-groovydoc.jar.sha1">groovy-nio-4.0.24-groovydoc.jar.sha1</a>              2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24-groovydoc.jar.sha256" title="groovy-nio-4.0.24-groovydoc.jar.sha256">groovy-nio-4.0.24-groovydoc.jar.sha256</a>            2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24-groovydoc.jar.sha512" title="groovy-nio-4.0.24-groovydoc.jar.sha512">groovy-nio-4.0.24-groovydoc.jar.sha512</a>            2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24-javadoc.jar" title="groovy-nio-4.0.24-javadoc.jar">groovy-nio-4.0.24-javadoc.jar</a>                     2024-11-05 01:23    103902      
+<a href="groovy-nio-4.0.24-javadoc.jar.asc" title="groovy-nio-4.0.24-javadoc.jar.asc">groovy-nio-4.0.24-javadoc.jar.asc</a>                 2024-11-05 01:23       848      
+<a href="groovy-nio-4.0.24-javadoc.jar.asc.md5" title="groovy-nio-4.0.24-javadoc.jar.asc.md5">groovy-nio-4.0.24-javadoc.jar.asc.md5</a>             2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24-javadoc.jar.asc.sha1" title="groovy-nio-4.0.24-javadoc.jar.asc.sha1">groovy-nio-4.0.24-javadoc.jar.asc.sha1</a>            2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24-javadoc.jar.asc.sha256" title="groovy-nio-4.0.24-javadoc.jar.asc.sha256">groovy-nio-4.0.24-javadoc.jar.asc.sha256</a>          2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24-javadoc.jar.asc.sha512" title="groovy-nio-4.0.24-javadoc.jar.asc.sha512">groovy-nio-4.0.24-javadoc.jar.asc.sha512</a>          2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24-javadoc.jar.md5" title="groovy-nio-4.0.24-javadoc.jar.md5">groovy-nio-4.0.24-javadoc.jar.md5</a>                 2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24-javadoc.jar.sha1" title="groovy-nio-4.0.24-javadoc.jar.sha1">groovy-nio-4.0.24-javadoc.jar.sha1</a>                2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24-javadoc.jar.sha256" title="groovy-nio-4.0.24-javadoc.jar.sha256">groovy-nio-4.0.24-javadoc.jar.sha256</a>              2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24-javadoc.jar.sha512" title="groovy-nio-4.0.24-javadoc.jar.sha512">groovy-nio-4.0.24-javadoc.jar.sha512</a>              2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24-sources.jar" title="groovy-nio-4.0.24-sources.jar">groovy-nio-4.0.24-sources.jar</a>                     2024-11-05 01:23     19328      
+<a href="groovy-nio-4.0.24-sources.jar.asc" title="groovy-nio-4.0.24-sources.jar.asc">groovy-nio-4.0.24-sources.jar.asc</a>                 2024-11-05 01:23       848      
+<a href="groovy-nio-4.0.24-sources.jar.asc.md5" title="groovy-nio-4.0.24-sources.jar.asc.md5">groovy-nio-4.0.24-sources.jar.asc.md5</a>             2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24-sources.jar.asc.sha1" title="groovy-nio-4.0.24-sources.jar.asc.sha1">groovy-nio-4.0.24-sources.jar.asc.sha1</a>            2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24-sources.jar.asc.sha256" title="groovy-nio-4.0.24-sources.jar.asc.sha256">groovy-nio-4.0.24-sources.jar.asc.sha256</a>          2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24-sources.jar.asc.sha512" title="groovy-nio-4.0.24-sources.jar.asc.sha512">groovy-nio-4.0.24-sources.jar.asc.sha512</a>          2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24-sources.jar.md5" title="groovy-nio-4.0.24-sources.jar.md5">groovy-nio-4.0.24-sources.jar.md5</a>                 2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24-sources.jar.sha1" title="groovy-nio-4.0.24-sources.jar.sha1">groovy-nio-4.0.24-sources.jar.sha1</a>                2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24-sources.jar.sha256" title="groovy-nio-4.0.24-sources.jar.sha256">groovy-nio-4.0.24-sources.jar.sha256</a>              2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24-sources.jar.sha512" title="groovy-nio-4.0.24-sources.jar.sha512">groovy-nio-4.0.24-sources.jar.sha512</a>              2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24.jar" title="groovy-nio-4.0.24.jar">groovy-nio-4.0.24.jar</a>                             2024-11-05 01:23     16098      
+<a href="groovy-nio-4.0.24.jar.asc" title="groovy-nio-4.0.24.jar.asc">groovy-nio-4.0.24.jar.asc</a>                         2024-11-05 01:23       848      
+<a href="groovy-nio-4.0.24.jar.asc.md5" title="groovy-nio-4.0.24.jar.asc.md5">groovy-nio-4.0.24.jar.asc.md5</a>                     2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24.jar.asc.sha1" title="groovy-nio-4.0.24.jar.asc.sha1">groovy-nio-4.0.24.jar.asc.sha1</a>                    2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24.jar.asc.sha256" title="groovy-nio-4.0.24.jar.asc.sha256">groovy-nio-4.0.24.jar.asc.sha256</a>                  2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24.jar.asc.sha512" title="groovy-nio-4.0.24.jar.asc.sha512">groovy-nio-4.0.24.jar.asc.sha512</a>                  2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24.jar.md5" title="groovy-nio-4.0.24.jar.md5">groovy-nio-4.0.24.jar.md5</a>                         2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24.jar.sha1" title="groovy-nio-4.0.24.jar.sha1">groovy-nio-4.0.24.jar.sha1</a>                        2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24.jar.sha256" title="groovy-nio-4.0.24.jar.sha256">groovy-nio-4.0.24.jar.sha256</a>                      2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24.jar.sha512" title="groovy-nio-4.0.24.jar.sha512">groovy-nio-4.0.24.jar.sha512</a>                      2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24.module" title="groovy-nio-4.0.24.module">groovy-nio-4.0.24.module</a>                          2024-11-05 01:23      5805      
+<a href="groovy-nio-4.0.24.module.asc" title="groovy-nio-4.0.24.module.asc">groovy-nio-4.0.24.module.asc</a>                      2024-11-05 01:23       848      
+<a href="groovy-nio-4.0.24.module.asc.md5" title="groovy-nio-4.0.24.module.asc.md5">groovy-nio-4.0.24.module.asc.md5</a>                  2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24.module.asc.sha1" title="groovy-nio-4.0.24.module.asc.sha1">groovy-nio-4.0.24.module.asc.sha1</a>                 2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24.module.asc.sha256" title="groovy-nio-4.0.24.module.asc.sha256">groovy-nio-4.0.24.module.asc.sha256</a>               2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24.module.asc.sha512" title="groovy-nio-4.0.24.module.asc.sha512">groovy-nio-4.0.24.module.asc.sha512</a>               2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24.module.md5" title="groovy-nio-4.0.24.module.md5">groovy-nio-4.0.24.module.md5</a>                      2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24.module.sha1" title="groovy-nio-4.0.24.module.sha1">groovy-nio-4.0.24.module.sha1</a>                     2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24.module.sha256" title="groovy-nio-4.0.24.module.sha256">groovy-nio-4.0.24.module.sha256</a>                   2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24.module.sha512" title="groovy-nio-4.0.24.module.sha512">groovy-nio-4.0.24.module.sha512</a>                   2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24.pom" title="groovy-nio-4.0.24.pom">groovy-nio-4.0.24.pom</a>                             2024-11-05 01:23     22570      
+<a href="groovy-nio-4.0.24.pom.asc" title="groovy-nio-4.0.24.pom.asc">groovy-nio-4.0.24.pom.asc</a>                         2024-11-05 01:23       848      
+<a href="groovy-nio-4.0.24.pom.asc.md5" title="groovy-nio-4.0.24.pom.asc.md5">groovy-nio-4.0.24.pom.asc.md5</a>                     2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24.pom.asc.sha1" title="groovy-nio-4.0.24.pom.asc.sha1">groovy-nio-4.0.24.pom.asc.sha1</a>                    2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24.pom.asc.sha256" title="groovy-nio-4.0.24.pom.asc.sha256">groovy-nio-4.0.24.pom.asc.sha256</a>                  2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24.pom.asc.sha512" title="groovy-nio-4.0.24.pom.asc.sha512">groovy-nio-4.0.24.pom.asc.sha512</a>                  2024-11-05 01:23       128      
+<a href="groovy-nio-4.0.24.pom.md5" title="groovy-nio-4.0.24.pom.md5">groovy-nio-4.0.24.pom.md5</a>                         2024-11-05 01:23        32      
+<a href="groovy-nio-4.0.24.pom.sha1" title="groovy-nio-4.0.24.pom.sha1">groovy-nio-4.0.24.pom.sha1</a>                        2024-11-05 01:23        40      
+<a href="groovy-nio-4.0.24.pom.sha256" title="groovy-nio-4.0.24.pom.sha256">groovy-nio-4.0.24.pom.sha256</a>                      2024-11-05 01:23        64      
+<a href="groovy-nio-4.0.24.pom.sha512" title="groovy-nio-4.0.24.pom.sha512">groovy-nio-4.0.24.pom.sha512</a>                      2024-11-05 01:23       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: site:groovy-lang.org/releasenotes/groovy-4.0.html Groovy 4.0.24 ...
+exec
+/usr/bin/bash -lc "find metadata/org.apache.groovy -maxdepth 2 -name index.json -print | sort | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.24",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/groovy",
+    "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-javadoc.jar",
+    "description" : "groovy-test-junit5 provides Apache Groovy's integration with JUnit 5 and the JUnit Platform for running Groovy tests. It supplies the Groovy test runner plugin and helper code needed to execute JUnit Jupiter based test classes from Groovy projects.",
+    "tested-versions" : [
+      "4.0.24",
+      "4.0.25",
+      "4.0.26",
+      "4.0.27",
+      "4.0.28",
+      "4.0.29",
+      "4.0.30",
+      "4.0.31",
+      "4.0.32",
+      "5.0.0",
+      "5.0.1",
+      "5.0.2",
+      "5.0.3",
+      "5.0.4",
+      "5.0.5",
+      "5.0.6",
+      "6.0.0-alpha-1"
+    ],
+    "allowed-packages" : [
+      "groovy.junit5.plugin"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24-javadoc.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 04:53:04 GMT
+content-type: application/java-archive
+content-length: 103902
+cf-ray: a0017471ccad611f-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1843286
+etag: "49c2bfde1231707fa0b84a51a20b0dc9"
+last-modified: Tue, 05 Nov 2024 01:24:00 GMT
+x-checksum-md5: 49c2bfde1231707fa0b84a51a20b0dc9
+x-checksum-sha1: 121e0ed9c8515d59aa27801179e739b4a1e81a7e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 23 May 2026 04:53:05 GMT
+content-type: application/java-archive
+content-length: 19328
+cf-ray: a001747229fcbaad-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 731657
+etag: "f1823a95d368c40c60b204ff253a278e"
+last-modified: Tue, 05 Nov 2024 01:23:50 GMT
+x-checksum-md5: f1823a95d368c40c60b204ff253a278e
+x-checksum-sha1: fec14aa93e968bf4eb9bd38175642b63f57f24fe
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 123ms:
+HTTP/1.1 200 OK
+Date: Sat, 23 May 2026 04:53:05 GMT
+Server: Apache
+Vary: Slow,Glacial
+Last-Modified: Fri, 08 Nov 2024 02:06:26 GMT
+ETag: "90e888-6265d32c93c0b"
+Accept-Ranges: bytes
+Content-Length: 9496712
+Content-Type: application/zip
+
+
+codex
+Maven Central publishes the main jar, sources jar, and javadocs/groovydocs for this artifact, but no test-sources jar is listed. I’m checking the release source archive for the module’s test path and a concise module-specific description.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24-sources.jar -o "$tmp/sources.jar"; unzip -l "$tmp/sources.jar" | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+Archive:  /tmp/tmp.465YDBLDfV/sources.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  1980-02-01 00:00   META-INF/
+       25  1980-02-01 00:00   META-INF/MANIFEST.MF
+      895  1980-02-01 00:00   META-INF/groovy-release-info.properties
+    11358  1980-02-01 00:00   META-INF/LICENSE
+      167  1980-02-01 00:00   META-INF/NOTICE
+        0  1980-02-01 00:00   org/
+        0  1980-02-01 00:00   org/apache/
+        0  1980-02-01 00:00   org/apache/groovy/
+        0  1980-02-01 00:00   org/apache/groovy/nio/
+        0  1980-02-01 00:00   org/apache/groovy/nio/extensions/
+    89630  1980-02-01 00:00   org/apache/groovy/nio/extensions/NioExtensions.java
+        0  1980-02-01 00:00   org/apache/groovy/nio/runtime/
+     5283  1980-02-01 00:00   org/apache/groovy/nio/runtime/WritablePath.java
+---------                     -------
+   107358                     13 files
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24.jar -o "$tmp/main.jar"; jar tf "$tmp/main.jar" | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/groovy-release-info.properties
+META-INF/groovy/
+META-INF/groovy/org.codehaus.groovy.runtime.ExtensionModule
+org/
+org/apache/
+org/apache/groovy/
+org/apache/groovy/nio/
+org/apache/groovy/nio/extensions/
+org/apache/groovy/nio/extensions/NioExtensions.class
+org/apache/groovy/nio/runtime/
+org/apache/groovy/nio/runtime/WritablePath.class
+META-INF/INDEX.LIST
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip -o "$tmp/groovy.zip"; unzip -l "$tmp/groovy.zip" | rg '"'subprojects/groovy-nio|groovy-nio/.*/src/test|Nio|nio' | head -120; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 3151ms:
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/
+     1312  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/build.gradle
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/main/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/main/java/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/main/java/org/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/main/java/org/apache/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/main/java/org/apache/groovy/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/main/java/org/apache/groovy/nio/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/main/java/org/apache/groovy/nio/extensions/
+    89630  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/main/java/org/apache/groovy/nio/extensions/NioExtensions.java
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/main/java/org/apache/groovy/nio/runtime/
+     5283  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/main/java/org/apache/groovy/nio/runtime/WritablePath.java
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/test/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/test/groovy/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/test/groovy/org/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/test/groovy/org/apache/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/test/groovy/org/apache/groovy/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/test/groovy/org/apache/groovy/nio/
+        0  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/test/groovy/org/apache/groovy/nio/extensions/
+    14808  1980-02-01 00:00   groovy-4.0.24/subprojects/groovy-nio/src/test/groovy/org/apache/groovy/nio/extensions/NioExtensionsTest.groovy
+    15626  1980-02-01 00:00   groovy-4.0.24/src/main/java/org/codehaus/groovy/transform/stc/UnionTypeClassNode.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24.module | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.apache.groovy",
+    "module": "groovy-nio",
+    "version": "4.0.24",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "groovydocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "groovydoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "groovy-nio-4.0.24-groovydoc.jar",
+          "url": "groovy-nio-4.0.24-groovydoc.jar",
+          "size": 54580,
+          "sha512": "c94b96c04901f234b1987314b46901b2c8c3f1b8d527983639379e0f13280334dbb6d199f4f130269d43aa5055ba13afdad319c354e1f3390aa873e14a92f785",
+          "sha256": "66ec867122db8d5a3f59c135c58a6ba2254775d2c30f2d01d71a45e39b7b5046",
+          "sha1": "c742625c4c4ee99ccd4e203cbc5fe76e0bec7cc8",
+          "md5": "633acc1b0b767f566930d490619d3837"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "groovy-nio-4.0.24-javadoc.jar",
+          "url": "groovy-nio-4.0.24-javadoc.jar",
+          "size": 103902,
+          "sha512": "3040a2cdc60328848805237e413307b844107caf56f66e54271eba88ef9fb6f974b11ea83701d1172b173580f616ab23a898a0374b50a66cb30ed689e29efc21",
+          "sha256": "370ae634c620b7d23ce5402f5640c37878779ff51d100bd5950caa122fb3c4bc",
+          "sha1": "121e0ed9c8515d59aa27801179e739b4a1e81a7e",
+          "md5": "49c2bfde1231707fa0b84a51a20b0dc9"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "groovy-nio-4.0.24-sources.jar",
+          "url": "groovy-nio-4.0.24-sources.jar",
+          "size": 19328,
+          "sha512": "05d0957a0882464fa38619a7e6c44c101d4e6bfbae0c5bff867f01d216173cdaa8b479b5264957d02487eae17380c22b1b9700999d9b94b77e470d70a5c4ddd2",
+          "sha256": "028d46d20fcc8d174ecbbd47aafcf369fde5b0054f5db8f0b0ed71c9ef3b9c28",
+          "sha1": "fec14aa93e968bf4eb9bd38175642b63f57f24fe",
+          "md5": "f1823a95d368c40c60b204ff253a278e"
+        }
+      ]
+    },
+    {
+      "name": "groovyApiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy-bom",
+          "version": {
+            "requires": "4.0.24"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy",
+          "version": {
+            "requires": "4.0.24"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "groovy-nio-4.0.24.jar",
+          "url": "groovy-nio-4.0.24.jar",
+          "size": 16098,
+          "sha512": "47c21850b6513557a42c035e06eec93aca831ab9ac7f33526ef60dec2c0b4a20d9672623a1b9e44d72bb8cc5ffd73a68f28ca57d51cae1a9006f238019da8ac1",
+          "sha256": "70cd29eeeeb89f9c14f1db395433f1df42bc1dab339c5ddf91c0e7ab8505225c",
+          "sha1": "fa4f6bec68c45dcb874cdb008a2d4cb06e079a84",
+          "md5": "e70afe38d620e8a05ee8c92084773742"
+        }
+      ],
+      "capabilities": [
+        {
+          "group": "org.codehaus.groovy",
+          "name": "groovy-nio",
+          "version": "4.0.24"
+        },
+        {
+          "group": "org.apache.groovy",
+          "name": "groovy-nio",
+          "version": "4.0.24"
+        }
+      ]
+    },
+    {
+      "name": "groovyRuntimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy-bom",
+          "version": {
+            "requires": "4.0.24"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "org.apache.groovy",
+          "module": "groovy",
+          "version": {
+            "requires": "4.0.24"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "groovy-nio-4.0.24.jar",
+          "url": "groovy-nio-4.0.24.jar",
+          "size": 16098,
+          "sha512": "47c21850b6513557a42c035e06eec93aca831ab9ac7f33526ef60dec2c0b4a20d9672623a1b9e44d72bb8cc5ffd73a68f28ca57d51cae1a9006f238019da8ac1",
+          "sha256": "70cd29eeeeb89f9c14f1db395433f1df42bc1dab339c5ddf91c0e7ab8505225c",
+          "sha1": "fa4f6bec68c45dcb874cdb008a2d4cb06e079a84",
+          "md5": "e70afe38d620e8a05ee8c92084773742"
+        }
+      ],
+      "capabilities": [
+        {
+          "group": "org.codehaus.groovy",
+          "name": "groovy-nio",
+          "version": "4.0.24"
+        },
+        {
+          "group": "org.apache.groovy",
+          "name": "groovy-nio",
+          "version": "4.0.24"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24-sources.jar -o "$tmp/sources.jar"; unzip -p "$tmp/sources.jar" org/apache/groovy/nio/extensions/NioExtensions.java | sed -n '"'1,120p'; unzip -p \""'$tmp/sources.jar" org/apache/groovy/nio/runtime/WritablePath.java | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ */
+package org.apache.groovy.nio.extensions;
+
+import groovy.io.FileType;
+import groovy.io.FileVisitResult;
+import groovy.io.GroovyPrintWriter;
+import groovy.lang.Closure;
+import groovy.lang.MetaClass;
+import groovy.lang.Writable;
+import groovy.transform.NamedParam;
+import groovy.transform.stc.ClosureParams;
+import groovy.transform.stc.FromString;
+import groovy.transform.stc.PickFirstResolver;
+import groovy.transform.stc.SimpleType;
+import org.apache.groovy.nio.runtime.WritablePath;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import org.codehaus.groovy.runtime.DefaultGroovyMethodsSupport;
+import org.codehaus.groovy.runtime.FormatHelper;
+import org.codehaus.groovy.runtime.IOGroovyMethods;
+import org.codehaus.groovy.runtime.InvokerHelper;
+import org.codehaus.groovy.runtime.callsite.BooleanReturningMethodInvoker;
+import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.Closeable;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import static java.lang.Boolean.FALSE;
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
+
+/**
+ * This class defines new groovy methods for Readers, Writers, InputStreams and
+ * OutputStreams which appear on normal JDK classes inside the Groovy environment.
+ * Static methods are used with the first parameter being the destination class,
+ * i.e. <code>public static T eachLine(InputStream self, Closure c)</code>
+ * provides a <code>eachLine(Closure c)</code> method for <code>InputStream</code>.
+ * <p/>
+ * NOTE: While this class contains many 'public' static methods, it is
+ * primarily regarded as an internal class (its internal package name
+ * suggests this also). We value backwards compatibility of these
+ * methods when used within Groovy but value less backwards compatibility
+ * at the Java method call level. I.e. future versions of Groovy may
+ * remove or move a method call in this file but would normally
+ * aim to keep the method available from within Groovy.
+ */
+public class NioExtensions extends DefaultGroovyMethodsSupport {
+
+    /**
+     * Provide the standard Groovy <code>size()</code> method for <code>Path</code>.
+     *
+     * @param self a {@code Path} object
+     * @return the file's size (length)
+     * @since 2.3.0
+     */
+    public static long size(Path self) throws IOException {
+        return Files.size(self);
+    }
+
+    /**
+     * Create an object output stream for this path.
+     *
+     * @param self a {@code Path} object
+     * @return an object output stream
+     * @throws java.io.IOException if an IOException occurs.
+     * @since 2.3.0
+     */
+    public static ObjectOutputStream newObjectOutputStream(Path self) throws IOException {
+        return new ObjectOutputStream(Files.newOutputStream(self));
+    }
+
+    /**
+     * Create a new ObjectOutputStream for this path and then pass it to the
+     * closure.  This method ensures the stream is closed after the closure
+     * returns.
+     *
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ */
+package org.apache.groovy.nio.runtime;
+
+import groovy.lang.Writable;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.util.Iterator;
+
+/**
+ * A Writable Path.
+ */
+public class WritablePath implements Path, Writable {
+
+    private final String encoding;
+    private final Path delegate;
+
+    public WritablePath(final Path delegate) {
+        this(delegate, null);
+    }
+
+    public WritablePath(final Path delegate, final String encoding) {
+        this.encoding = encoding;
+        this.delegate = delegate;
+    }
+
+    @Override
+    public Writer writeTo(final Writer out) throws IOException {
+
+        try (Reader reader = (this.encoding == null)
+                ? new InputStreamReader(Files.newInputStream(this))
+                : new InputStreamReader(Files.newInputStream(this), Charset.forName(this.encoding))) {
+            int c = reader.read();
+
+            while (c != -1) {
+                out.write(c);
+                c = reader.read();
+            }
+        }
+        return out;
+    }
+
+    @Override
+    public FileSystem getFileSystem() {
+        return delegate.getFileSystem();
+    }
+
+    @Override
+    public boolean isAbsolute() {
+        return delegate.isAbsolute();
+    }
+
+    @Override
+    public Path getRoot() {
+        return delegate.getRoot();
+    }
+
+    @Override
+    public Path getFileName() {
+        return delegate.getFileName();
+    }
+
+    @Override
+    public Path getParent() {
+        return delegate.getParent();
+    }
+
+    @Override
+    public int getNameCount() {
+        return delegate.getNameCount();
+    }
+
+    @Override
+    public Path getName(int index) {
+        return delegate.getName(index);
+    }
+
+    @Override
+    public Path subpath(int beginIndex, int endIndex) {
+        return delegate.subpath(beginIndex, endIndex);
+    }
+
+    @Override
+    public boolean startsWith(Path other) {
+        return delegate.startsWith(other);
+    }
+
+    @Override
+    public boolean startsWith(String other) {
+        return delegate.startsWith(other);
+    }
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://docs.groovy-lang.org/docs/groovy-4.0.24/html/gapi/org/apache/groovy/nio/extensions/NioExtensions.html' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 144ms:
+HTTP/1.1 200 OK
+Date: Sat, 23 May 2026 04:53:21 GMT
+Server: Apache/2.4.29 (Ubuntu)
+Accept-Ranges: bytes
+X-Mod-Pagespeed: 1.13.35.2-0
+Vary: Accept-Encoding
+Content-Security-Policy: default-src 'self' data: 'unsafe-inline' https://www.apachecon.com/ https://analytics.apache.org/ http://analytics.apache.org/; frame-src 'self' https://docs.groovy-lang.org/; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://analytics.apache.org/; style-src 'self' 'unsafe-inline'; frame-ancestors 'self' https://groovy-lang.org/;
+Cache-Control: max-age=0, no-cache
+Content-Length: 235293
+Content-Type: text/html; charset=windows-1252
+
+
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24.pom ...
+web search: 
+web search: "org/apache/groovy/groovy-nio/4.0.24" "groovy-nio-4.0.24-sources.jar" ...
+exec
+/usr/bin/bash -lc "rg -n '\"language\"\\s*:' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+metadata/org.playframework.twirl/twirl-api_3/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:29:    "language" : {
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:10:    "language" : {
+metadata/com.github.ghostdogpr/caliban_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-diagrams_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-featurespec_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funspec_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:9:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:64:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:82:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:100:    "language" : {
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-dao/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-json/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-kotlin-datetime/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funsuite_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:10:    "language" : {
+metadata/org.playframework/play-json_3/index.json:10:    "language" : {
+metadata/org.playframework/play-configuration_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-flatspec_3/index.json:10:    "language" : {
+metadata/org.playframework/play-functional_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-wordspec_3/index.json:10:    "language" : {
+metadata/org.playframework/play-server_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/io.circe/circe-jawn_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:28:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_3/index.json:10:    "language" : {
+metadata/io.circe/circe-parser_3/index.json:10:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/io.circe/circe-core_3/index.json:10:    "language" : {
+metadata/io.circe/circe-core_3/index.json:28:    "language" : {
+metadata/io.circe/circe-core_3/index.json:50:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/com.typesafe.play/play_2.13/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-ws_2.13/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:38:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:61:    "language" : {
+
+exec
+/usr/bin/bash -lc "sed -n '1,24p' metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json && sed -n '1,20p' metadata/io.getquill/quill-engine_3/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "1.3.72",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/stdlib/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "1.3"
+    },
+    "tested-versions" : [
+      "1.3.72"
+    ],
+    "allowed-packages" : [
+      "kotlin"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "1.7.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.8.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/zio/zio-quill",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-javadoc.jar",
+    "description" : "ZIO Quill is a Scala library that provides a quoted DSL for expressing database queries and translating them to target languages such as SQL and CQL. The quill-engine module contains the shared query AST, normalization, idiom, dialect, and rendering infrastructure used by Quill contexts.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "4.8.4",
+      "4.8.5"
+    ],
+    "allowed-packages" : [
+      "io.getquill"
+    ]
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name '*.json' | head -5 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-nio/src/test \\
+  https://github.com/apache/groovy/tree/v4.0.24/subprojects/groovy-nio/src/test \\
+  https://github.com/apache/groovy/tree/4.0.24/subprojects/groovy-nio/src/test; do printf '%s -> ' \""'$url"; curl -fsSI -o /dev/null -w '"'%{http_code}\\n' \""'$url" || true; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-nio/src/main/java \\
+  https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-nio \\
+  https://github.com/apache/groovy/releases/tag/GROOVY_4_0_24; do printf '%s -> ' \""'$url"; curl -fsSI -o /dev/null -w '"'%{http_code}\\n' \""'$url" || true; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 1484ms:
+200
+https://github.com/apache/groovy/tree/v4.0.24/subprojects/groovy-nio/src/test -> curl: (22) The requested URL returned error: 404
+404
+https://github.com/apache/groovy/tree/4.0.24/subprojects/groovy-nio/src/test -> curl: (22) The requested URL returned error: 404
+404
+
+ succeeded in 1521ms:
+200
+https://github.com/apache/groovy/tree/GROOVY_4_0_24/subprojects/groovy-nio -> 200
+https://github.com/apache/groovy/releases/tag/GROOVY_4_0_24 -> 200
+
+exec
+/usr/bin/bash -lc "rg -n '\"name\"\\s*:\\s*\"groovy\"' metadata build -g '*.json' | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+codex
+I have enough evidence now: the artifact is a JVM jar with class files, so it remains a Native Image metadata target. I’m going to fill the discovered metadata with Maven Central source/docs links, the Apache release source archive for tests, and a Groovy language marker.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+index 421524fa9a3a4aa711f3df704c6a3e6bcad0978e..12327892417db5e01c2bfc069048fe9c759ca5c3
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-javadoc.jar",
++  "description" : "groovy-nio extends Apache Groovy with additional methods and runtime support for Java NIO Path, streams, readers, and writers. It provides Groovy-friendly file and directory operations, traversal, byte/text I/O, and writable path support for code that works with java.nio.file APIs.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+index 421524fa9a3a4aa711f3df704c6a3e6bcad0978e..12327892417db5e01c2bfc069048fe9c759ca5c3
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-javadoc.jar",
++  "description" : "groovy-nio extends Apache Groovy with additional methods and runtime support for Java NIO Path, streams, readers, and writers. It provides Groovy-friendly file and directory operations, traversal, byte/text I/O, and writable path support for code that works with java.nio.file APIs.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.groovy:groovy-nio:4.0.24",
+  "repository-url": "https://github.com/apache/groovy",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-sources.jar",
+  "test-code-url": "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-javadoc.jar",
+  "description": "groovy-nio extends Apache Groovy with additional methods and runtime support for Java NIO Path, streams, readers, and writers. It provides Groovy-friendly file and directory operations, traversal, byte/text I/O, and writable path support for code that works with java.nio.file APIs.",
+  "language": {
+    "name": "groovy",
+    "version": "4.0"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'python3 -m json.tool build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24-sources.jar' \\
+  'https://archive.apache.org/dist/groovy/4.0.24/sources/apache-groovy-src-4.0.24.zip' \\
+  'https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24-javadoc.jar'; do printf '%s -> ' \""'$url"; curl -fsSI -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+index 421524fa9a3a4aa711f3df704c6a3e6bcad0978e..12327892417db5e01c2bfc069048fe9c759ca5c3
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-javadoc.jar",
++  "description" : "groovy-nio extends Apache Groovy with additional methods and runtime support for Java NIO Path, streams, readers, and writers. It provides Groovy-friendly file and directory operations, traversal, byte/text I/O, and writable path support for code that works with java.nio.file APIs.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 276ms:
+200
+https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/4.0.24/groovy-nio-4.0.24-javadoc.jar -> 200
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "python3 - <<'PY'
+import json
+from pathlib import Path
+p=Path('build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json')
+data=json.loads(p.read_text())
+allowed={'coordinates','repository-url','source-code-url','test-code-url','documentation-url','description','language','not-for-native-image','reason','replacement'}
+print('unexpected keys:', sorted(set(data)-allowed))
+print('description sentence endings:', data['description'].count('.'))
+PY" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+unexpected keys: []
+description sentence endings: 4
+
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+index 421524fa9a3a4aa711f3df704c6a3e6bcad0978e..12327892417db5e01c2bfc069048fe9c759ca5c3
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-javadoc.jar",
++  "description" : "groovy-nio extends Apache Groovy with additional methods and runtime support for Java NIO Path, streams, readers, and writers. It provides Groovy-friendly file and directory operations, traversal, byte/text I/O, and writable path support for code that works with java.nio.file APIs.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+codex
+The JSON validates and the three rendered URLs return HTTP 200. I noticed the description included a dotted package name, so I’m removing that ambiguity to keep the field clearly at exactly two sentences.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+index 421524fa9a3a4aa711f3df704c6a3e6bcad0978e..6deb4c625c6ae6dfea9f44dfc01ccddb015da873
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-javadoc.jar",
++  "description" : "groovy-nio extends Apache Groovy with additional methods and runtime support for Java NIO Path, streams, readers, and writers. It provides Groovy-friendly file and directory operations, traversal, byte and text I/O, and writable path support for code that uses the Java NIO file API.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+index 421524fa9a3a4aa711f3df704c6a3e6bcad0978e..6deb4c625c6ae6dfea9f44dfc01ccddb015da873
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-javadoc.jar",
++  "description" : "groovy-nio extends Apache Groovy with additional methods and runtime support for Java NIO Path, streams, readers, and writers. It provides Groovy-friendly file and directory operations, traversal, byte and text I/O, and writable path support for code that uses the Java NIO file API.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24",
+  "repository-url" : "https://github.com/apache/groovy",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-sources.jar",
+  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-javadoc.jar",
+  "description" : "groovy-nio extends Apache Groovy with additional methods and runtime support for Java NIO Path, streams, readers, and writers. It provides Groovy-friendly file and directory operations, traversal, byte and text I/O, and writable path support for code that uses the Java NIO file API.",
+  "language" : {
+    "name" : "groovy",
+    "version" : "4.0"
+  }
+}
+
+exec
+/usr/bin/bash -lc "python3 - <<'PY'
+import json
+from pathlib import Path
+p=Path('build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json')
+data=json.loads(p.read_text())
+allowed={'coordinates','repository-url','source-code-url','test-code-url','documentation-url','description','language','not-for-native-image','reason','replacement'}
+print('valid json: yes')
+print('unexpected keys:', sorted(set(data)-allowed))
+print('description periods:', data['description'].count('.'))
+PY" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+valid json: yes
+unexpected keys: []
+description periods: 2
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+index 421524fa9a3a4aa711f3df704c6a3e6bcad0978e..6deb4c625c6ae6dfea9f44dfc01ccddb015da873
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-javadoc.jar",
++  "description" : "groovy-nio extends Apache Groovy with additional methods and runtime support for Java NIO Path, streams, readers, and writers. It provides Groovy-friendly file and directory operations, traversal, byte and text I/O, and writable path support for code that uses the Java NIO file API.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+web search: 
+web search: 
+web search: 
+web search: "groovy-nio-4.0.24-sources.jar" ...
+codex
+Updated [org.apache.groovy-groovy-nio-4.0.24.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json) with the repository, source, test, documentation, description, and Groovy `4.0` language fields.
+
+Validated the JSON, confirmed only allowed top-level keys are present, and checked that the rendered source/test/docs URLs for `4.0.24` return HTTP 200. I left `not-for-native-image` absent because the artifact is a JVM jar with class files.
+diff --git a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+index 421524fa9a3a4aa711f3df704c6a3e6bcad0978e..6deb4c625c6ae6dfea9f44dfc01ccddb015da873
+--- a/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
++++ b/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24"
++  "coordinates" : "org.apache.groovy:groovy-nio:4.0.24",
++  "repository-url" : "https://github.com/apache/groovy",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-sources.jar",
++  "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-nio/$version$/groovy-nio-$version$-javadoc.jar",
++  "description" : "groovy-nio extends Apache Groovy with additional methods and runtime support for Java NIO Path, streams, readers, and writers. It provides Groovy-friendly file and directory operations, traversal, byte and text I/O, and writable path support for code that uses the Java NIO file API.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+tokens used
+81,010
+Updated [org.apache.groovy-groovy-nio-4.0.24.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c/build/discovered-artifact-metadata/org.apache.groovy-groovy-nio-4.0.24.json) with the repository, source, test, documentation, description, and Groovy `4.0` language fields.
+
+Validated the JSON, confirmed only allowed top-level keys are present, and checked that the rendered source/test/docs URLs for `4.0.24` return HTTP 200. I left `not-for-native-image` absent because the artifact is a JVM jar with class files.
+Ran agent for org.apache.groovy:groovy-nio:4.0.24 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c/build/agent-artifact-discovery-logs/org.apache.groovy-groovy-nio-4.0.24.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2462-3eca810c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 22s
+9 actionable tasks: 9 executed
