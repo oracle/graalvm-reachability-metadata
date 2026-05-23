@@ -32,8 +32,7 @@ public class GenerateGettersAndSettersTest {
             GenerateGettersAndSetters.main(new String[] {
                     "-class", GenerateGettersAndSettersTarget.class.getName(), "-use-generics"
             });
-        }
-        finally {
+        } finally {
             System.setOut(previousOut);
             System.setErr(previousErr);
         }

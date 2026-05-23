@@ -37,8 +37,7 @@ public class PropertiesToAsciidocTest {
             Thread.currentThread().setContextClassLoader(resourceLoader);
             try {
                 PropertiesToAsciidoc.main(new String[] {protocolsDocument.toString(), installationDocument.toString()});
-            }
-            finally {
+            } finally {
                 Thread.currentThread().setContextClassLoader(previousLoader);
             }
 
@@ -48,8 +47,7 @@ public class PropertiesToAsciidocTest {
                     .contains("|print_down|Enables printing of down messages")
                     .contains("|print_up|Enables printing of up (received) messages")
                     .doesNotContain("${HDRS}");
-        }
-        finally {
+        } finally {
             deleteRecursively(resourceRoot);
             deleteRecursively(documentDirectory);
         }
@@ -75,8 +73,7 @@ public class PropertiesToAsciidocTest {
             paths.sorted(Comparator.reverseOrder()).forEach(current -> {
                 try {
                     Files.deleteIfExists(current);
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     throw new IllegalStateException(e);
                 }
             });
@@ -97,8 +94,7 @@ public class PropertiesToAsciidocTest {
             if (Files.exists(resource)) {
                 try {
                     return resource.toUri().toURL();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     throw new IllegalStateException("Could not create URL for " + resource, e);
                 }
             }

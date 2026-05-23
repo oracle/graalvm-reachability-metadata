@@ -41,8 +41,7 @@ public class XmlConfiguratorTest {
         System.setOut(new PrintStream(output, true, StandardCharsets.UTF_8));
         try {
             XmlConfigurator.main(new String[] {"-file", CONFIGURATION_RESOURCE});
-        }
-        finally {
+        } finally {
             System.setOut(previousOut);
             currentThread.setContextClassLoader(previousLoader);
         }
@@ -85,8 +84,7 @@ public class XmlConfiguratorTest {
                         };
                     }
                 });
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new IllegalStateException("Could not create in-memory URL for " + name, e);
             }
         }

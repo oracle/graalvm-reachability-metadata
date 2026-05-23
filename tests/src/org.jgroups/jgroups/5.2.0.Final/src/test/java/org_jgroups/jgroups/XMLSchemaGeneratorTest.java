@@ -35,12 +35,10 @@ public class XMLSchemaGeneratorTest {
                 Set<Class<?>> protocols = XMLSchemaGenerator.getClasses(Protocol.class, "org.jgroups.protocols");
 
                 assertThat(protocols).contains(HDRS.class);
-            }
-            finally {
+            } finally {
                 Thread.currentThread().setContextClassLoader(previousLoader);
             }
-        }
-        finally {
+        } finally {
             deleteRecursively(resourceRoot);
         }
     }
@@ -55,8 +53,7 @@ public class XMLSchemaGeneratorTest {
             Thread.currentThread().setContextClassLoader(resourceLoader);
             try {
                 XMLSchemaGenerator.main(new String[] {"-o", outputDirectory.toString()});
-            }
-            finally {
+            } finally {
                 Thread.currentThread().setContextClassLoader(previousLoader);
             }
 
@@ -66,8 +63,7 @@ public class XMLSchemaGeneratorTest {
             assertThat(schema).contains("name=\"HDRS\"")
                     .contains("name=\"print_down\"")
                     .contains("name=\"print_up\"");
-        }
-        finally {
+        } finally {
             deleteRecursively(resourceRoot);
             deleteRecursively(outputDirectory);
         }
@@ -92,8 +88,7 @@ public class XMLSchemaGeneratorTest {
             paths.sorted(Comparator.reverseOrder()).forEach(current -> {
                 try {
                     Files.deleteIfExists(current);
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     throw new IllegalStateException(e);
                 }
             });
@@ -114,8 +109,7 @@ public class XMLSchemaGeneratorTest {
             if (Files.exists(resource)) {
                 try {
                     return resource.toUri().toURL();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     throw new IllegalStateException("Could not create URL for " + resource, e);
                 }
             }

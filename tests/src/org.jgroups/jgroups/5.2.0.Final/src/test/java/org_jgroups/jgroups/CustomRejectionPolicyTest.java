@@ -34,8 +34,7 @@ public class CustomRejectionPolicyTest {
             assertThat(RecordingRejectedExecutionHandler.constructorCalls()).hasValue(1);
             assertThat(RecordingRejectedExecutionHandler.rejectedTask()).hasValue(task);
             assertThat(RecordingRejectedExecutionHandler.rejectedExecutor()).hasValue(executor);
-        }
-        finally {
+        } finally {
             executor.shutdownNow();
         }
     }

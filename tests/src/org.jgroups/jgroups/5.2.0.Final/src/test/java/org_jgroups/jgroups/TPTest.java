@@ -41,8 +41,7 @@ public class TPTest {
             assertThat(RecordingLocalTransport.startCalls()).hasValue(1);
             assertThat(RecordingLocalTransport.transport()).hasValue(transport);
             assertThat(transport.getLocalTransport()).isInstanceOf(RecordingLocalTransport.class);
-        }
-        finally {
+        } finally {
             transport.setLocalTransport((LocalTransport) null);
             transport.destroy();
         }
@@ -77,8 +76,7 @@ public class TPTest {
             assertThat(RecordingBundler.initCalls()).hasValue(1);
             assertThat(RecordingBundler.transport()).hasValue(transport);
             assertThat(transport.getBundler()).isInstanceOf(RecordingBundler.class);
-        }
-        finally {
+        } finally {
             transport.destroy();
         }
     }

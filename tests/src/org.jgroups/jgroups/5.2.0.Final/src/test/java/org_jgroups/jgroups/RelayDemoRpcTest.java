@@ -75,10 +75,10 @@ public class RelayDemoRpcTest {
         }
 
         void closeResources() throws IOException {
-            if(disp != null) {
+            if (disp != null) {
                 disp.close();
             }
-            if(ch != null) {
+            if (ch != null) {
                 ch.close();
             }
         }
@@ -94,7 +94,7 @@ public class RelayDemoRpcTest {
 
         @Override
         public int read() throws IOException {
-            if(index < input.length) {
+            if (index < input.length) {
                 return input[index++];
             }
             throw new IOException("scripted input exhausted");

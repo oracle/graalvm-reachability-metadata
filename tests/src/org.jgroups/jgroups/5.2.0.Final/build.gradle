@@ -9,6 +9,8 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String javaHome = System.getenv('JAVA_HOME')
+def testRuntimeClasspathArg = "-Djava.class.path=${-> sourceSets.test.runtimeClasspath.asPath}"
 
 dependencies {
     testImplementation "org.jgroups:jgroups:$libraryVersion"
@@ -27,7 +29,18 @@ tasks.withType(Test).configureEach {
     systemProperty "jgroups.use.jdk_logger", "true"
 }
 
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${javaHome}")
+    runtimeArgs.add(testRuntimeClasspathArg)
+}
+
 graalvmNative {
+    binaries {
+        test {
+            runtimeArgs("-Djava.home=${javaHome}")
+            runtimeArgs(testRuntimeClasspathArg)
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
