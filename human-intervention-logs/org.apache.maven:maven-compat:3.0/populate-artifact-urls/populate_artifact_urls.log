@@ -1,0 +1,711 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e52eb-5899-7493-9376-72cc299fbf84
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven:maven-compat:3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [3.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/metadata/org.apache.maven/maven-compat/index.json
+- Entry selector: "metadata-version" = "3.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar
+- repository-url: https://svn.apache.org/repos/asf/maven/maven-3
+- test-code-url: https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test/
+- documentation-url: https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar
+- description: Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.0
+- Entry metadata-version: 3.0
+- Entry test-version: 3.0
+- Entry tested-versions: [3.0]
+codex
+I’ll verify the existing URL templates against the 3.0 artifacts and upstream tag, then only patch fields that are actually missing or explicitly required by the instructions.
+web search: 
+web search: org.apache.maven maven-compat 3.0 source jar javadoc jar Maven Central ...
+codex
+The Maven Central listing confirms the 3.0 source and Javadoc artifacts exist; I’m checking the local JSON now and will verify the tag/test URL before editing.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.0\")' metadata/org.apache.maven/maven-compat/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar",
+  "repository-url": "https://svn.apache.org/repos/asf/maven/maven-3",
+  "test-code-url": "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test/",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar",
+  "description": "Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components.",
+  "tested-versions": [
+    "3.0"
+  ],
+  "allowed-packages": [
+    "org.apache.maven"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.apache.maven/maven-compat/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+?? metadata/org.apache.maven/maven-compat/index.json
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-javadoc.jar && curl -fsSI https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-compat/src/test/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 220ms:
+HTTP/1.1 200 OK
+Date: Sat, 23 May 2026 03:40:27 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Sat, 11 Sep 2010 20:19:40 GMT
+ETag: W/"996206//maven/maven-3/tags/maven-3.0/maven-compat/src/test"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/
+web search: 
+web search: site:svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-compat/src/test maven-compat src test
+codex
+The local entry already has nonblank source, repository, test, documentation, and description fields. I’m now checking the published POM/SCM metadata so I don’t incorrectly add a language field or treat an old-but-valid SVN URL as stale.
+exec
+/usr/bin/bash -lc "curl -fsS https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+    file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+    applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+    governing permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven</artifactId>
+    <version>3.0</version>
+  </parent>
+
+  <artifactId>maven-compat</artifactId>
+
+  <name>Maven Compat</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interpolation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-plexus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-file</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-connector-wagon</artifactId>
+      <version>${aetherVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>1.2_Java1.3</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <configuration>
+          <version>1.0.0</version>
+          <models>
+            <model>src/main/mdo/profiles.mdo</model>
+            <model>src/main/mdo/paramdoc.mdo</model>
+          </models>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsS https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-compat/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-test-sources.jar || true; curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-tests.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 116ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+    file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+    applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+    governing permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven</artifactId>
+    <version>3.0</version>
+  </parent>
+
+  <artifactId>maven-compat</artifactId>
+
+  <name>Maven Compat</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interpolation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-plexus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-file</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-connector-wagon</artifactId>
+      <version>${aetherVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>1.2_Java1.3</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <configuration>
+          <version>1.0.0</version>
+          <models>
+            <model>src/main/mdo/profiles.mdo</model>
+            <model>src/main/mdo/paramdoc.mdo</model>
+          </models>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ succeeded in 259ms:
+HTTP/2 404 
+date: Sat, 23 May 2026 03:40:42 GMT
+content-type: text/html
+cf-ray: a0010a6c2e9f03a5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+codex
+There is no Maven Central test-sources/tests classifier for `maven-compat:3.0`, so the SVN tag test directory remains the correct versioned test URL. The artifact POM also shows this is a Java Maven component, not a Kotlin/Groovy/Scala-specific library.
+exec
+/usr/bin/bash -lc "curl -fsS https://repo.maven.apache.org/maven2/org/apache/maven/maven/3.0/maven-3.0.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+    file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+    applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+    governing permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>15</version>
+    <relativePath>../pom/maven/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>maven</artifactId>
+  <version>3.0</version>
+  <packaging>pom</packaging>
+
+  <name>Apache Maven 3.x</name>
+  <description>Maven is a project development management and
+    comprehension tool. Based on the concept of a project object model:
+    builds, dependency management, documentation creation, site
+    publication, and distribution publication are all controlled from
+    the declarative file. Maven can be extended by plugins to utilise a
+    number of other development tools for reporting or the build
+    process.
+  </description>
+  <url>http://maven.apache.org/</url>
+  <inceptionYear>2001</inceptionYear>
+
+  <properties>
+    <classWorldsVersion>2.2.3</classWorldsVersion>
+    <commonsCliVersion>1.2</commonsCliVersion>
+    <easyMockVersion>1.2_Java1.3</easyMockVersion>
+    <junitVersion>3.8.2</junitVersion>
+    <plexusVersion>1.5.5</plexusVersion>
+    <plexusInterpolationVersion>1.14</plexusInterpolationVersion>
+    <plexusUtilsVersion>2.0.4</plexusUtilsVersion>
+    <sisuInjectVersion>1.4.2</sisuInjectVersion>
+    <wagonVersion>1.0-beta-6</wagonVersion>
+    <securityDispatcherVersion>1.3</securityDispatcherVersion>
+    <cipherVersion>1.4</cipherVersion>
+    <modelloVersion>1.4</modelloVersion>
+    <jxpathVersion>1.3</jxpathVersion>
+    <aetherVersion>1.7</aetherVersion>
+    <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+  </properties>
+
+  <mailingLists>
+    <mailingList>
+      <name>Maven Developer List</name>
+      <subscribe>dev-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@maven.apache.org</unsubscribe>
+      <post>dev@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-dev</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/dev@maven.apache.org/</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven-Developers-f179.html</otherArchive>
+        <otherArchive>http://maven.dev.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Maven User List</name>
+      <subscribe>users-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@maven.apache.org</unsubscribe>
+      <post>users@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-users</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/users@maven.apache.org/</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven---Users-f178.html</otherArchive>
+        <otherArchive>http://maven.users.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Maven Issues List</name>
+      <subscribe>issues-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>issues-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-issues/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/issues@maven.apache.org</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven---Issues-f15573.html</otherArchive>
+        <otherArchive>http://maven.issues.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Maven Commits List</name>
+      <subscribe>commits-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-commits</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/commits@maven.apache.org</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven---Commits-f15575.html</otherArchive>
+        <otherArchive>http://maven.commits.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <!--
+      duplication from parent pom - temporary until they inherit
+      properly
+    -->
+    <mailingList>
+      <name>Maven Announcements List</name>
+      <post>announce@maven.apache.org</post>
+      <subscribe>announce-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>announce-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-announce/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/announce@maven.apache.org</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven-Announcements-f15617.html</otherArchive>
+        <otherArchive>http://maven.announce.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Maven Notifications List</name>
+      <subscribe>notifications-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>notifications-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-notifications/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/notifications@maven.apache.org</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven---Notifications-f15574.html</otherArchive>
+        <otherArchive>http://maven.notifications.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+
+  <modules>
+    <module>maven-core</module>
+    <module>apache-maven</module>
+    <module>maven-model</module>
+    <module>maven-settings</module>
+    <module>maven-settings-builder</module>
+    <module>maven-artifact</module>
+    <module>maven-aether-provider</module>
+    <module>maven-repository-metadata</module>
+    <module>maven-plugin-api</module>
+    <module>maven-model-builder</module>
+    <module>maven-embedder</module>
+    <module>maven-compat</module>
+  </modules>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/maven-3/tags/maven-3.0</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MNG</url>
+  </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scp://people.apache.org/www/maven.apache.org/ref/${project.version}/</url>
+    </site>
+  </distributionManagement>
+
+  <!--bootstrap-start-comment-->
+  <dependencyManagement>
+    <!--bootstrap-end-comment-->
+    <dependencies>
+      <!--  Maven Modules -->
+      <!--bootstrap-start-comment-->
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings-builder</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-embedder</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model-builder</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-compat</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-repository-metadata</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!--bootstrap-end-comment-->
+      <!--  Plexus -->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>${plexusUtilsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-inject-plexus</artifactId>
+        <version>${sisuInjectVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-annotations</artifactId>
+        <version>${plexusVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-classworlds</artifactId>
+        <version>${classWorldsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-interpolation</artifactId>
+        <version>${plexusInterpolationVersion}</version>
+      </dependency>
+      <!--  Wagon -->
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://svn.apache.org/repos/asf/maven/maven-3/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+exec
+/usr/bin/bash -lc 'curl -fsSI https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-compat/src/test/java/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 119ms:
+HTTP/1.1 200 OK
+Date: Sat, 23 May 2026 03:40:47 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Mon, 26 Nov 2012 05:07:28 GMT
+ETag: W/"1413481//maven/maven-3"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+ succeeded in 121ms:
+HTTP/1.1 200 OK
+Date: Sat, 23 May 2026 03:40:47 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Sat, 11 Sep 2010 20:19:40 GMT
+ETag: W/"996206//maven/maven-3/tags/maven-3.0/maven-compat/src/test/java"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+codex
+All candidate templates render successfully for the only tested-version alias, `3.0`, and every requested field is already nonblank except `language`. Since the library is not Kotlin, Groovy, or Scala-specific, I’m leaving `language` absent as requested and doing a final JSON validation.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.apache.maven/maven-compat/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.maven/maven-compat/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.apache.maven/maven-compat/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+?? metadata/org.apache.maven/maven-compat/index.json
+
+web search: 
+web search: repo.maven.apache.org org/apache/maven/maven-compat/3.0 maven-compat-3.0-sources.jar ...
+codex
+No edits were needed in [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/metadata/org.apache.maven/maven-compat/index.json): the requested URL fields and two-sentence description are already nonblank and valid for tested-version alias `3.0`. Maven Central has the `3.0` sources and Javadoc artifacts, and the Maven 3.0 source repository points at the SVN `maven-3/tags/maven-3.0` tag. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/?utm_source=openai))
+
+I left `language` absent because `org.apache.maven:maven-compat` is a Java Maven compatibility component, not a Kotlin/Groovy/Scala-specific library. JSON validation passed with `jq empty`.
+tokens used
+37,865
+No edits were needed in [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/metadata/org.apache.maven/maven-compat/index.json): the requested URL fields and two-sentence description are already nonblank and valid for tested-version alias `3.0`. Maven Central has the `3.0` sources and Javadoc artifacts, and the Maven 3.0 source repository points at the SVN `maven-3/tags/maven-3.0` tag. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/?utm_source=openai))
+
+I left `language` absent because `org.apache.maven:maven-compat` is a Java Maven compatibility component, not a Kotlin/Groovy/Scala-specific library. JSON validation passed with `jq empty`.
+Ran agent for org.apache.maven:maven-compat:3.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/build/agent-url-discovery-logs/org.apache.maven-maven-compat-3.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 54s
+9 actionable tasks: 1 executed, 8 up-to-date

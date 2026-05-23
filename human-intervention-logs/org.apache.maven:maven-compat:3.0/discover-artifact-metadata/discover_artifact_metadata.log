@@ -1,0 +1,2135 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e52e8-e62c-75c3-91b2-7ba9e02b9cf6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven:maven-compat:3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.0" when "$version$" is replaced with "3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.apache.maven:maven-compat:3.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven Central and the upstream Apache Maven tag, then update the JSON in place using the repo’s existing formatting style.
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,160p' build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json && rg -n '\"coordinates\": \"org.apache.maven:maven-compat' build/discovered-artifact-metadata metadata || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+{
+  "coordinates" : "org.apache.maven:maven-compat:3.0"
+}
+
+web search: 
+web search: Maven Central org.apache.maven maven-compat 3.0 pom scm url source jar tests jar ...
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/
+web search: 
+web search: 
+codex
+Maven Central confirms this release has normal JVM `jar`, `sources.jar`, and `javadoc.jar` artifacts, but no obvious test JAR in the release directory. I’m checking the POM and upstream tag now so the repository and test URLs point at the right place.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+    file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+    applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+    governing permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven</artifactId>
+    <version>3.0</version>
+  </parent>
+
+  <artifactId>maven-compat</artifactId>
+
+  <name>Maven Compat</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interpolation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-plexus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-file</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-connector-wagon</artifactId>
+      <version>${aetherVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>1.2_Java1.3</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <configuration>
+          <version>1.0.0</version>
+          <models>
+            <model>src/main/mdo/profiles.mdo</model>
+            <model>src/main/mdo/paramdoc.mdo</model>
+          </models>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://maven.apache.org/ref/3.0/maven-compat/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+HTTP/2 200 
+server: Apache
+last-modified: Wed, 09 Mar 2022 07:20:12 GMT
+etag: "1e10-5d9c3eda8151e"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Sat, 23 May 2026 03:37:54 GMT
+x-served-by: cache-hel1410030-HEL, cache-fra-eddf8230197-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1779507475.741323,VS0,VE31
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 7696
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/maven/git/ref/tags/maven-3.0' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/apache/maven/tree/maven-3.0/maven-compat/src/test/java' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ exited 22 in 11054ms:
+curl: (22) The requested URL returned error: 504
+
+2026-05-23T03:38:10.197330Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+2026-05-23T03:38:10.400659Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+ succeeded in 56856ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 03:38:51 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6d7d3919f9846b84bc72bf08ba4f48b4"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=GpLQWv8Ed1Ns%2BulAq3rHn8jbZniXhofUuutsBbpnUp4%2Fy9TEYCmco%2FtOXZQt4bGCCBpQTOYQjt2qYWiIFcEwyj5DxYyq1UEg0H1gjU4srrdtsdLGrbANJEm%2BA9VlkvtIpF%2BAeTi2dhb1v7%2Fpu1OKyTElwt9kw100eF7AVIeBrp5ymkUSmAqIqYNUZQoD92%2FhkYSv3NdG9tUmVElydKF4YyOpHcxu%2BMwNLaKLYW235FgRoA9v8zzZ9n6Ea1bQEmVS4%2FusVQki%2B%2BCT138TUSfIUw%3D%3D--Y8zFY3Ak07yYLZeD--u3MxjMtXCA6WWhc0mqB1Xg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.625937784.1779507530; expires=Sun, 23 May 2027 03:38:50 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 23 May 2027 03:38:50 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620A:2E11B2:FDA974F:C6B0F04:6A112112
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"documentation-url\"|\"test-code-url\"' . -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+./metadata/org.apache.hadoop/hadoop-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.hadoop/hadoop-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-test-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:35:    "source-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common",
+./metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:37:    "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/test/java",
+./metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:38:    "documentation-url" : "https://hadoop.apache.org/docs/r$version$/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/apidocs/",
+./metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+./metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+./metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+./metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+./metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+./metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+./metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+./metadata/com.comcast/ip4s-core_3/index.json:7:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+./metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+./metadata/org.apache.httpcomponents.client5/httpclient5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-sources.jar",
+./metadata/org.apache.httpcomponents.client5/httpclient5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-tests.jar",
+./metadata/org.apache.httpcomponents.client5/httpclient5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+./metadata/com.google.dagger/dagger/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-sources.jar",
+./metadata/com.google.dagger/dagger/index.json:7:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+./metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+./metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+./metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+./metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+./metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+./metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+./metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+./metadata/org.apache.xbean/xbean-asm9-shaded/index.json:40:    "documentation-url" : "N/A",
+./metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+./metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/org.threeten/threetenbp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+./metadata/org.threeten/threetenbp/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+./metadata/org.threeten/threetenbp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
+./metadata/org.sonatype.sisu/sisu-inject-bean/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+./metadata/org.sonatype.sisu/sisu-inject-bean/index.json:7:    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-bean",
+./metadata/org.sonatype.sisu/sisu-inject-bean/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:6:    "test-code-url" : "N/A",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:21:    "test-code-url" : "N/A",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:35:    "test-code-url" : "N/A",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:49:    "test-code-url" : "N/A",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:50:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:63:    "test-code-url" : "N/A",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:64:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:75:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:77:    "test-code-url" : "N/A",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:78:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:89:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-sources.jar",
+./metadata/org.apache.hadoop/hadoop-yarn-api/index.json:91:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.apache\\.maven|maven-compat|Maven Compat' metadata build -g '*.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json:2:  "coordinates" : "org.apache.maven:maven-compat:3.0"
+metadata/org.apache.maven.wagon/wagon-http-shared/1.0-beta-2/reachability-metadata.json:5:        "typeReached": "org.apache.maven.wagon.shared.http.HtmlFileListParser"
+metadata/org.apache.maven.scm/maven-scm-api/index.json:20:      "org.apache.maven.scm"
+metadata/org.apache.maven.scm/maven-scm-api/index.json:34:      "org.apache.maven.scm"
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:14:      "org.apache.maven.wagon.shared.http"
+metadata/org.apache.maven.scm/maven-scm-api/1.10.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.scm.ScmFileSet"
+metadata/org.apache.maven.scm/maven-scm-api/1.10.0/reachability-metadata.json:11:        "typeReached": "org.apache.maven.scm.command.changelog.ChangeLogSet"
+metadata/org.apache.maven.scm/maven-scm-api/1.10.0/reachability-metadata.json:17:        "typeReached": "org.apache.maven.scm.util.AbstractConsumer"
+metadata/org.apache.maven.scm/maven-scm-api/1.10.0/reachability-metadata.json:23:        "typeReached": "org.apache.maven.scm.util.ThreadSafeDateFormat"
+metadata/org.apache.maven.scm/maven-scm-api/1.10.0/reachability-metadata.json:29:        "typeReached": "org.apache.maven.scm.util.ThreadSafeDateFormat$1"
+metadata/org.apache.maven.scm/maven-scm-api/1.10.0/reachability-metadata.json:35:        "typeReached": "org.apache.maven.scm.util.ThreadSafeDateFormat$1"
+metadata/org.apache.maven.scm/maven-scm-api/1.10.0/reachability-metadata.json:41:        "typeReached": "org.apache.maven.scm.command.changelog.ChangeLogSet"
+metadata/org.apache.maven.scm/maven-scm-api/1.10.0/reachability-metadata.json:47:        "typeReached": "org.apache.maven.scm.command.changelog.ChangeLogSet"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:17:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:29:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:41:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:53:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:65:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:77:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:89:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:101:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:113:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:125:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:137:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:149:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:161:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:173:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:185:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:197:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:209:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:221:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:233:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:245:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:257:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:269:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:281:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:293:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:305:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:317:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:329:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:341:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:353:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:365:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:377:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:389:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:401:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:413:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:425:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:437:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/1.0/reachability-metadata.json:449:        "typeReached": "org.apache.maven.wagon.providers.ssh.jsch.AbstractJschWagon"
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:14:      "org.apache.maven.wagon.providers.ssh.jsch"
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:28:      "org.apache.maven.wagon.providers.ssh.jsch"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:5:        "typeReached" : "org.apache.maven.wagon.shared.http.AbstractHttpClientWagon"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:11:        "typeReached" : "org.apache.maven.wagon.shared.http.AbstractHttpClientWagon"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:23:        "typeReached" : "org.apache.maven.wagon.shared.http.AbstractHttpClientWagon"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:35:        "typeReached" : "org.apache.maven.wagon.shared.http.AbstractHttpClientWagon"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:47:        "typeReached" : "org.apache.maven.wagon.shared.http.AbstractHttpClientWagon"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:59:        "typeReached" : "org.apache.maven.wagon.shared.http.AbstractHttpClientWagon"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:71:        "typeReached" : "org.apache.maven.wagon.shared.http.AbstractHttpClientWagon"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:83:        "typeReached" : "org.apache.maven.wagon.shared.http.AbstractHttpClientWagon"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:95:        "typeReached" : "org.apache.maven.wagon.shared.http.AbstractHttpClientWagon"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:107:        "typeReached" : "org.apache.maven.wagon.shared.http.HtmlFileListParser"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:114:        "typeReached" : "org.apache.maven.wagon.shared.http.HtmlFileListParser"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:121:        "typeReached" : "org.apache.maven.wagon.shared.http.HtmlFileListParser"
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:123:      "type" : "org.apache.maven.wagon.shared.http.HtmlFileListParser$Parser",
+metadata/org.apache.maven.wagon/wagon-http/1.0/reachability-metadata.json:128:        "typeReached" : "org.apache.maven.wagon.shared.http.HtmlFileListParser"
+metadata/org.apache.maven.wagon/wagon-http/index.json:14:      "org.apache.maven.wagon.providers.http",
+metadata/org.apache.maven.wagon/wagon-http/index.json:15:      "org.apache.maven.wagon.shared.http"
+metadata/org.apache.maven.wagon/wagon-ssh-common/1.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.wagon.providers.ssh.interactive.InteractiveUserInfo$1"
+metadata/org.apache.maven.wagon/wagon-ssh-common/1.0/reachability-metadata.json:11:        "typeReached": "org.apache.maven.wagon.providers.ssh.interactive.InteractiveUserInfo$1"
+metadata/org.apache.maven.wagon/wagon-ssh-common/1.0/reachability-metadata.json:13:      "type": "org.apache.maven.wagon.providers.ssh.interactive.InteractiveUserInfo"
+metadata/org.apache.maven.wagon/wagon-ssh-common/1.0/reachability-metadata.json:17:        "typeReached": "org.apache.maven.wagon.providers.ssh.knownhost.KnownHostsProvider$1"
+metadata/org.apache.maven.wagon/wagon-ssh-common/1.0/reachability-metadata.json:19:      "type": "org.apache.maven.wagon.providers.ssh.knownhost.KnownHostsProvider"
+metadata/org.apache.maven.wagon/wagon-ssh-common/index.json:41:      "org.apache.maven.wagon.providers.ssh"
+metadata/org.apache.maven.wagon/wagon-http-lightweight/1.0-beta-2/reachability-metadata.json:5:        "typeReached": "org.apache.maven.wagon.providers.http.LightweightHttpWagon"
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:14:      "org.apache.maven.wagon.providers.http",
+metadata/org.apache.maven.wagon/wagon-http-lightweight/index.json:29:      "org.apache.maven.wagon.providers.http"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.wagon.CommandExecutor$1"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0/reachability-metadata.json:11:        "typeReached": "org.apache.maven.wagon.CommandExecutor$1"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0/reachability-metadata.json:13:      "type": "org.apache.maven.wagon.CommandExecutor"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0/reachability-metadata.json:17:        "typeReached": "org.apache.maven.wagon.Wagon$1"
+metadata/org.apache.maven.wagon/wagon-provider-api/1.0/reachability-metadata.json:19:      "type": "org.apache.maven.wagon.Wagon"
+metadata/org.apache.maven.wagon/wagon-provider-api/index.json:41:      "org.apache.maven.wagon"
+metadata/org.apache.maven.surefire/surefire-logger-api/2.22.2/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugin.surefire.log.api.ConsoleLoggerDecorator"
+metadata/org.apache.maven.surefire/surefire-logger-api/2.22.2/reachability-metadata.json:7:      "type": "org.apache.maven.plugin.surefire.log.api.PrintStreamLogger",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:30:      "org.apache.maven.plugin.surefire.log.api"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:5:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:46:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:58:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:64:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:70:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:76:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:82:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:88:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:90:      "type" : "org.apache.maven.surefire.SpecificTestClassFilter",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:102:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:104:      "type" : "org.apache.maven.surefire.report.SimpleReportEntry",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:122:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:124:      "type" : "org.apache.maven.surefire.testset.TestArtifactInfo",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:137:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:139:      "type" : "org.apache.maven.surefire.booter.SurefireReflector$ClassLoaderProxy",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:144:            "org.apache.maven.surefire.booter.SurefireReflector",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:152:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:154:      "type" : "org.apache.maven.plugin.surefire.log.api.ConsoleLoggerDecorator",
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:166:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:168:      "type" : "org.apache.maven.surefire.booter.DirectoryScannerParametersAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:172:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:174:      "type" : "org.apache.maven.surefire.booter.ProviderPropertiesAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:178:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:180:      "type" : "org.apache.maven.surefire.booter.ReporterConfigurationAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:184:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:186:      "type" : "org.apache.maven.surefire.booter.Shutdown"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:190:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:192:      "type" : "org.apache.maven.surefire.booter.ShutdownAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:196:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:198:      "type" : "org.apache.maven.surefire.booter.SurefireClassLoadersAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:202:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:204:      "type" : "org.apache.maven.surefire.booter.TestArtifactInfoAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:208:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:210:      "type" : "org.apache.maven.surefire.booter.TestRequestAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:214:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:216:      "type" : "org.apache.maven.surefire.booter.MainCliOptionsAware"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:220:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:222:      "type" : "org.apache.maven.surefire.cli.CommandLineOption"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:226:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:228:      "type" : "org.apache.maven.surefire.providerapi.ProviderParameters"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:232:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:234:      "type" : "org.apache.maven.surefire.report.ReporterConfiguration"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:238:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:240:      "type" : "org.apache.maven.surefire.report.ReporterFactory"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:244:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:246:      "type" : "org.apache.maven.surefire.suite.RunResult"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:250:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:252:      "type" : "org.apache.maven.surefire.testset.DirectoryScannerParameters"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:256:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:258:      "type" : "org.apache.maven.surefire.testset.RunOrderParameters"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:262:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:264:      "type" : "org.apache.maven.surefire.testset.TestListResolver"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:268:        "typeReached" : "org.apache.maven.surefire.booter.SurefireReflector"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:270:      "type" : "org.apache.maven.surefire.testset.TestRequest"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:274:        "typeReached" : "org.apache.maven.surefire.util.DefaultScanResult"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:280:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.DirectoryScanner"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:286:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:292:        "typeReached" : "org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:298:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:300:      "type" : "org.apache.maven.plugin.surefire.log.api.ConsoleLoggerDecorator"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:304:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:306:      "type" : "org.apache.maven.surefire.SpecificTestClassFilter"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:310:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:312:      "type" : "org.apache.maven.surefire.report.SimpleReportEntry"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:316:        "typeReached" : "org.apache.maven.surefire.util.ReflectionUtils"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:318:      "type" : "org.apache.maven.surefire.testset.TestArtifactInfo"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:322:        "typeReached" : "org.apache.maven.surefire.util.DefaultScanResult"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:324:      "type" : "org.apache.maven.surefire.util.DefaultScanResult"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:328:        "typeReached" : "org.apache.maven.surefire.util.DefaultScanResult"
+metadata/org.apache.maven.surefire/surefire-api/2.22.2/reachability-metadata.json:330:      "type" : "org.apache.maven.surefire.util.TestsToRun"
+metadata/org.apache.maven.surefire/surefire-api/index.json:14:      "org.apache.maven.plugin.surefire.runorder",
+metadata/org.apache.maven.surefire/surefire-api/index.json:15:      "org.apache.maven.surefire"
+metadata/org.apache.maven.shared/maven-common-artifact-filters/index.json:15:      "org.apache.maven.shared.artifact.filter"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.2/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.2/reachability-metadata.json:11:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.2/reachability-metadata.json:17:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.2/reachability-metadata.json:23:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.2/reachability-metadata.json:31:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.2/reachability-metadata.json:33:      "glob": "META-INF/maven/org.apache.maven.plugins/maven-jar-plugin/plugin-help.xml"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.2/reachability-metadata.json:37:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-source-plugin/3.0.1/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugins.source.HelpMojo"
+metadata/org.apache.maven.plugins/maven-source-plugin/3.0.1/reachability-metadata.json:7:      "glob": "META-INF/maven/org.apache.maven.plugins/maven-source-plugin/plugin-help.xml"
+metadata/org.apache.maven.plugins/maven-source-plugin/index.json:13:      "org.apache.maven.plugin.source"
+metadata/org.apache.maven.plugins/maven-source-plugin/index.json:28:      "org.apache.maven.plugins.source"
+metadata/org.apache.maven.plugins/maven-source-plugin/index.json:42:      "org.apache.maven.plugins.source"
+metadata/org.apache.maven.plugins/maven-source-plugin/index.json:56:      "org.apache.maven.plugins.source"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.1/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.1/reachability-metadata.json:11:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.1/reachability-metadata.json:17:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.1/reachability-metadata.json:23:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.1/reachability-metadata.json:31:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.1/reachability-metadata.json:33:      "glob": "META-INF/maven/org.apache.maven.plugins/maven-jar-plugin/plugin-help.xml"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.1/reachability-metadata.json:37:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-source-plugin/2.2.1/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugin.source.HelpMojo"
+metadata/org.apache.maven.plugins/maven-source-plugin/2.2.1/reachability-metadata.json:7:      "glob": "META-INF/maven/org.apache.maven.plugins/maven-source-plugin/plugin-help.xml"
+metadata/org.apache.maven.plugins/maven-jar-plugin/index.json:13:      "org.apache.maven.plugins.jar"
+metadata/org.apache.maven.plugins/maven-jar-plugin/index.json:28:      "org.apache.maven.plugins.jar"
+metadata/org.apache.maven.plugins/maven-jar-plugin/index.json:42:      "org.apache.maven.plugins.jar"
+metadata/org.apache.maven.plugins/maven-source-plugin/3.0.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugins.source.HelpMojo"
+metadata/org.apache.maven.plugins/maven-source-plugin/3.0.0/reachability-metadata.json:7:      "glob": "META-INF/maven/org.apache.maven.plugins/maven-source-plugin/plugin-help.xml"
+metadata/org.apache.maven.plugins/maven-gpg-plugin/1.6/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugin.gpg.HelpMojo"
+metadata/org.apache.maven.plugins/maven-gpg-plugin/1.6/reachability-metadata.json:7:      "glob": "META-INF/maven/org.apache.maven.plugins/maven-gpg-plugin/plugin-help.xml"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.0/reachability-metadata.json:11:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.0/reachability-metadata.json:17:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.0/reachability-metadata.json:23:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.0/reachability-metadata.json:31:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.0/reachability-metadata.json:33:      "glob": "META-INF/maven/org.apache.maven.plugins/maven-jar-plugin/plugin-help.xml"
+metadata/org.apache.maven.plugins/maven-jar-plugin/3.2.0/reachability-metadata.json:37:        "typeReached": "org.apache.maven.plugins.jar.HelpMojo"
+metadata/org.apache.maven.plugins/maven-source-plugin/3.1.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugins.source.HelpMojo"
+metadata/org.apache.maven.plugins/maven-source-plugin/3.1.0/reachability-metadata.json:7:      "glob": "META-INF/maven/org.apache.maven.plugins/maven-source-plugin/plugin-help.xml"
+metadata/org.apache.maven.plugins/maven-gpg-plugin/index.json:14:      "org.apache.maven.plugin.gpg"
+metadata/org.apache.maven.plugins/maven-compiler-plugin/3.8.1/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugin.compiler.AbstractCompilerMojo"
+metadata/org.apache.maven.plugins/maven-compiler-plugin/3.8.1/reachability-metadata.json:7:      "type": "org.apache.maven.execution.MavenSession",
+metadata/org.apache.maven.plugins/maven-compiler-plugin/3.8.1/reachability-metadata.json:17:        "typeReached": "org.apache.maven.plugin.compiler.AbstractCompilerMojo"
+metadata/org.apache.maven.plugins/maven-compiler-plugin/3.8.1/reachability-metadata.json:19:      "type": "org.apache.maven.execution.DefaultMavenExecutionRequest",
+metadata/org.apache.maven.plugins/maven-compiler-plugin/3.8.1/reachability-metadata.json:35:        "typeReached": "org.apache.maven.plugin.compiler.HelpMojo"
+metadata/org.apache.maven.plugins/maven-compiler-plugin/3.8.1/reachability-metadata.json:37:      "glob": "META-INF/maven/org.apache.maven.plugins/maven-compiler-plugin/plugin-help.xml"
+metadata/org.apache.maven.plugins/maven-compiler-plugin/3.8.1/reachability-metadata.json:41:        "typeReached": "org.apache.maven.plugin.compiler.HelpMojo"
+metadata/org.apache.maven.doxia/doxia-module-apt/index.json:14:      "org.apache.maven.doxia.module.apt"
+metadata/org.apache.maven.plugins/maven-compiler-plugin/index.json:14:      "org.apache.maven.plugin"
+metadata/org.apache.maven.doxia/doxia-sink-api/1.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.doxia.sink.Sink$1"
+metadata/org.apache.maven.doxia/doxia-sink-api/1.0/reachability-metadata.json:11:        "typeReached": "org.apache.maven.doxia.sink.Sink$1"
+metadata/org.apache.maven.doxia/doxia-sink-api/1.0/reachability-metadata.json:13:      "type": "org.apache.maven.doxia.sink.Sink"
+metadata/org.apache.maven.doxia/doxia-core/1.7/reachability-metadata.json:5:        "typeReached" : "org.apache.maven.doxia.parser.AbstractXmlParser$CachedFileEntityResolver"
+metadata/org.apache.maven.doxia/doxia-core/1.7/reachability-metadata.json:11:        "typeReached" : "org.apache.maven.doxia.sink.impl.PipelineSink"
+metadata/org.apache.maven.doxia/doxia-core/1.7/reachability-metadata.json:15:          "org.apache.maven.doxia.sink.Sink"
+metadata/org.apache.maven.doxia/doxia-sink-api/index.json:31:      "org.apache.maven.doxia.sink",
+metadata/org.apache.maven.plugins/maven-surefire-plugin/2.22.2/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugin.surefire.HelpMojo"
+metadata/org.apache.maven.plugins/maven-surefire-plugin/2.22.2/reachability-metadata.json:7:      "glob": "META-INF/maven/org.apache.maven.plugins/maven-surefire-plugin/plugin-help.xml"
+metadata/org.apache.maven.plugins/maven-surefire-plugin/2.22.2/reachability-metadata.json:11:        "typeReached": "org.apache.maven.plugin.surefire.HelpMojo"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.doxia.Doxia$1"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:7:      "type": "org.apache.maven.doxia.Doxia"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:11:        "typeReached": "org.apache.maven.doxia.macro.Macro$1"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:13:      "type": "org.apache.maven.doxia.macro.Macro"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:17:        "typeReached": "org.apache.maven.doxia.macro.manager.MacroManager$1"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:19:      "type": "org.apache.maven.doxia.macro.manager.MacroManager"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:23:        "typeReached": "org.apache.maven.doxia.module.site.SiteModule$1"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:25:      "type": "org.apache.maven.doxia.module.site.SiteModule"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:29:        "typeReached": "org.apache.maven.doxia.module.site.manager.SiteModuleManager$1"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:31:      "type": "org.apache.maven.doxia.module.site.manager.SiteModuleManager"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:35:        "typeReached": "org.apache.maven.doxia.parser.Parser$1"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:37:      "type": "org.apache.maven.doxia.parser.Parser"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:41:        "typeReached": "org.apache.maven.doxia.parser.manager.ParserManager$1"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:43:      "type": "org.apache.maven.doxia.parser.manager.ParserManager"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:47:        "typeReached": "org.apache.maven.doxia.sink.PipelineSink"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:49:      "type": "org.apache.maven.doxia.sink.PipelineSink"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:53:        "typeReached": "org.apache.maven.doxia.sink.PipelineSink"
+metadata/org.apache.maven.doxia/doxia-core/1.0/reachability-metadata.json:57:          "org.apache.maven.doxia.sink.Sink"
+metadata/org.apache.maven.plugins/maven-surefire-plugin/index.json:14:      "org.apache.maven.plugin.surefire"
+metadata/org.apache.maven.doxia/doxia-core/index.json:23:      "org.apache.maven.doxia"
+metadata/org.apache.maven.doxia/doxia-core/index.json:38:      "org.apache.maven.doxia"
+metadata/org.apache.maven.doxia/doxia-module-xhtml/index.json:14:      "org.apache.maven.doxia.module.xhtml"
+metadata/org.apache.maven/maven-api-di/index.json:14:      "org.apache.maven.api.di",
+metadata/org.apache.maven/maven-api-di/index.json:15:      "org.apache.maven.di.tool"
+metadata/org.apache.maven/maven-artifact-manager/2.0.6/reachability-metadata.json:5:        "typeReached": "org.apache.maven.artifact.manager.WagonManager$1"
+metadata/org.apache.maven/maven-artifact-manager/2.0.6/reachability-metadata.json:11:        "typeReached": "org.apache.maven.artifact.manager.WagonManager$1"
+metadata/org.apache.maven/maven-artifact-manager/2.0.6/reachability-metadata.json:13:      "type": "org.apache.maven.artifact.manager.WagonManager"
+metadata/org.apache.maven/maven-artifact-manager/index.json:22:      "org.apache.maven.artifact"
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:19:      "org.apache.maven.usability.plugin"
+metadata/org.apache.maven/maven-plugin-api/2.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugin.Mojo$1"
+metadata/org.apache.maven/maven-plugin-api/2.0/reachability-metadata.json:11:        "typeReached": "org.apache.maven.plugin.Mojo$1"
+metadata/org.apache.maven/maven-plugin-api/2.0/reachability-metadata.json:13:      "type": "org.apache.maven.plugin.Mojo"
+metadata/org.apache.maven/maven-api-meta/index.json:24:      "org.apache.maven.api.annotations"
+metadata/org.apache.maven/maven-plugin-api/index.json:94:      "org.apache.maven.plugin"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:5:        "typeReached": "org.apache.maven.artifact.deployer.ArtifactDeployer$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:11:        "typeReached": "org.apache.maven.artifact.deployer.ArtifactDeployer$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:13:      "type": "org.apache.maven.artifact.deployer.ArtifactDeployer"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:17:        "typeReached": "org.apache.maven.artifact.factory.ArtifactFactory$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:19:      "type": "org.apache.maven.artifact.factory.ArtifactFactory"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:23:        "typeReached": "org.apache.maven.artifact.handler.ArtifactHandler$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:25:      "type": "org.apache.maven.artifact.handler.ArtifactHandler"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:29:        "typeReached": "org.apache.maven.artifact.handler.manager.ArtifactHandlerManager$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:31:      "type": "org.apache.maven.artifact.handler.manager.ArtifactHandlerManager"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:35:        "typeReached": "org.apache.maven.artifact.installer.ArtifactInstaller$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:37:      "type": "org.apache.maven.artifact.installer.ArtifactInstaller"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:41:        "typeReached": "org.apache.maven.artifact.metadata.ArtifactMetadataSource$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:43:      "type": "org.apache.maven.artifact.metadata.ArtifactMetadataSource"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:47:        "typeReached": "org.apache.maven.artifact.repository.ArtifactRepositoryFactory$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:49:      "type": "org.apache.maven.artifact.repository.ArtifactRepositoryFactory"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:53:        "typeReached": "org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:55:      "type": "org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:59:        "typeReached": "org.apache.maven.artifact.resolver.ArtifactResolver$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:61:      "type": "org.apache.maven.artifact.resolver.ArtifactResolver"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:65:        "typeReached": "org.apache.maven.artifact.resolver.ResolutionListener$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:67:      "type": "org.apache.maven.artifact.resolver.ResolutionListener"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:71:        "typeReached": "org.apache.maven.artifact.resolver.conflict.ConflictResolver$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:73:      "type": "org.apache.maven.artifact.resolver.conflict.ConflictResolver"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:77:        "typeReached": "org.apache.maven.artifact.transform.ArtifactTransformation$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:79:      "type": "org.apache.maven.artifact.transform.ArtifactTransformation"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:83:        "typeReached": "org.apache.maven.artifact.transform.ArtifactTransformationManager$1"
+metadata/org.apache.maven/maven-artifact/2.0.6/reachability-metadata.json:85:      "type": "org.apache.maven.artifact.transform.ArtifactTransformationManager"
+metadata/org.apache.maven/maven-error-diagnostics/2.0.6/reachability-metadata.json:5:        "typeReached": "org.apache.maven.usability.diagnostics.ErrorDiagnoser$1"
+metadata/org.apache.maven/maven-error-diagnostics/2.0.6/reachability-metadata.json:11:        "typeReached": "org.apache.maven.usability.diagnostics.ErrorDiagnoser$1"
+metadata/org.apache.maven/maven-error-diagnostics/2.0.6/reachability-metadata.json:13:      "type": "org.apache.maven.usability.diagnostics.ErrorDiagnoser"
+metadata/org.apache.maven/maven-artifact/index.json:22:      "org.apache.maven.artifact"
+metadata/org.apache.maven/maven-error-diagnostics/index.json:22:      "org.apache.maven.usability.diagnostics"
+metadata/org.apache.maven/maven-builder-support/index.json:48:      "org.apache.maven.building"
+metadata/org.apache.maven/maven-support/index.json:14:      "org.apache.maven.metadata.v4",
+metadata/org.apache.maven/maven-support/index.json:15:      "org.apache.maven.model.v4",
+metadata/org.apache.maven/maven-support/index.json:16:      "org.apache.maven.plugin.descriptor.io",
+metadata/org.apache.maven/maven-support/index.json:17:      "org.apache.maven.plugin.lifecycle.io",
+metadata/org.apache.maven/maven-support/index.json:18:      "org.apache.maven.settings.v4",
+metadata/org.apache.maven/maven-support/index.json:19:      "org.apache.maven.toolchain.v4"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:5:        "typeReached": "org.apache.maven.project.DefaultMavenProjectBuilder"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:11:        "typeReached": "org.apache.maven.profiles.activation.ProfileActivator$1"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:13:      "type": "org.apache.maven.profiles.activation.ProfileActivator"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:17:        "typeReached": "org.apache.maven.project.DefaultMavenProjectBuilder"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:19:      "type": "org.apache.maven.project.DefaultMavenProjectBuilder"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:23:        "typeReached": "org.apache.maven.project.MavenProjectBuilder$1"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:25:      "type": "org.apache.maven.project.MavenProjectBuilder"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:29:        "typeReached": "org.apache.maven.project.MavenProjectHelper$1"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:31:      "type": "org.apache.maven.project.MavenProjectHelper"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:35:        "typeReached": "org.apache.maven.project.inheritance.ModelInheritanceAssembler$1"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:37:      "type": "org.apache.maven.project.inheritance.ModelInheritanceAssembler"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:41:        "typeReached": "org.apache.maven.project.injection.ModelDefaultsInjector$1"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:43:      "type": "org.apache.maven.project.injection.ModelDefaultsInjector"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:47:        "typeReached": "org.apache.maven.project.injection.ProfileInjector$1"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:49:      "type": "org.apache.maven.project.injection.ProfileInjector"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:53:        "typeReached": "org.apache.maven.project.interpolation.ModelInterpolator$1"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:55:      "type": "org.apache.maven.project.interpolation.ModelInterpolator"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:59:        "typeReached": "org.apache.maven.project.path.PathTranslator$1"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:61:      "type": "org.apache.maven.project.path.PathTranslator"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:65:        "typeReached": "org.apache.maven.project.validation.ModelValidator$1"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:67:      "type": "org.apache.maven.project.validation.ModelValidator"
+metadata/org.apache.maven/maven-project/2.0.6/reachability-metadata.json:73:        "typeReached": "org.apache.maven.project.DefaultMavenProjectBuilder"
+metadata/org.apache.maven/maven-model/2.0.10/reachability-metadata.json:5:        "typeReached" : "org.apache.maven.model.io.xpp3.MavenXpp3Writer"
+metadata/org.apache.maven/maven-project/index.json:22:      "org.apache.maven"
+metadata/org.apache.maven/maven-model/index.json:15:      "org.apache.maven.model"
+metadata/org.apache.maven/maven-model/index.json:32:      "org.apache.maven.model"
+metadata/org.apache.maven/maven-monitor/index.json:22:      "org.apache.maven.monitor.event"
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:16:      "org.apache.maven.plugin"
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:35:      "org.apache.maven.plugin"
+metadata/org.apache.maven/maven-profile/2.0.6/reachability-metadata.json:5:        "typeReached": "org.apache.maven.profiles.MavenProfilesBuilder$1"
+metadata/org.apache.maven/maven-profile/2.0.6/reachability-metadata.json:11:        "typeReached": "org.apache.maven.profiles.MavenProfilesBuilder$1"
+metadata/org.apache.maven/maven-profile/2.0.6/reachability-metadata.json:13:      "type": "org.apache.maven.profiles.MavenProfilesBuilder"
+metadata/org.apache.maven/maven-profile/index.json:22:      "org.apache.maven.profiles"
+metadata/org.apache.maven/maven-plugin-descriptor/2.1.0/reachability-metadata.json:5:        "typeReached": "org.apache.maven.plugin.descriptor.PluginDescriptor"
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/maven-compat/3.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/maven-compat/3.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-compat-3.0-javadoc.jar" title="maven-compat-3.0-javadoc.jar">maven-compat-3.0-javadoc.jar</a>                      2010-10-04 11:53    934823      
+<a href="maven-compat-3.0-javadoc.jar.asc" title="maven-compat-3.0-javadoc.jar.asc">maven-compat-3.0-javadoc.jar.asc</a>                  2010-10-04 11:53       202      
+<a href="maven-compat-3.0-javadoc.jar.asc.md5" title="maven-compat-3.0-javadoc.jar.asc.md5">maven-compat-3.0-javadoc.jar.asc.md5</a>              2010-10-04 11:53        32      
+<a href="maven-compat-3.0-javadoc.jar.asc.sha1" title="maven-compat-3.0-javadoc.jar.asc.sha1">maven-compat-3.0-javadoc.jar.asc.sha1</a>             2010-10-04 11:53        40      
+<a href="maven-compat-3.0-javadoc.jar.md5" title="maven-compat-3.0-javadoc.jar.md5">maven-compat-3.0-javadoc.jar.md5</a>                  2010-10-04 11:53        32      
+<a href="maven-compat-3.0-javadoc.jar.sha1" title="maven-compat-3.0-javadoc.jar.sha1">maven-compat-3.0-javadoc.jar.sha1</a>                 2010-10-04 11:53        40      
+<a href="maven-compat-3.0-sources.jar" title="maven-compat-3.0-sources.jar">maven-compat-3.0-sources.jar</a>                      2010-10-04 11:53    247664      
+<a href="maven-compat-3.0-sources.jar.asc" title="maven-compat-3.0-sources.jar.asc">maven-compat-3.0-sources.jar.asc</a>                  2010-10-04 11:53       202      
+<a href="maven-compat-3.0-sources.jar.asc.md5" title="maven-compat-3.0-sources.jar.asc.md5">maven-compat-3.0-sources.jar.asc.md5</a>              2010-10-04 11:53        32      
+<a href="maven-compat-3.0-sources.jar.asc.sha1" title="maven-compat-3.0-sources.jar.asc.sha1">maven-compat-3.0-sources.jar.asc.sha1</a>             2010-10-04 11:53        40      
+<a href="maven-compat-3.0-sources.jar.md5" title="maven-compat-3.0-sources.jar.md5">maven-compat-3.0-sources.jar.md5</a>                  2010-10-04 11:53        32      
+<a href="maven-compat-3.0-sources.jar.sha1" title="maven-compat-3.0-sources.jar.sha1">maven-compat-3.0-sources.jar.sha1</a>                 2010-10-04 11:53        40      
+<a href="maven-compat-3.0.jar" title="maven-compat-3.0.jar">maven-compat-3.0.jar</a>                              2010-10-04 11:53    284889      
+<a href="maven-compat-3.0.jar.asc" title="maven-compat-3.0.jar.asc">maven-compat-3.0.jar.asc</a>                          2010-10-04 11:53       202      
+<a href="maven-compat-3.0.jar.asc.md5" title="maven-compat-3.0.jar.asc.md5">maven-compat-3.0.jar.asc.md5</a>                      2010-10-04 11:53        32      
+<a href="maven-compat-3.0.jar.asc.sha1" title="maven-compat-3.0.jar.asc.sha1">maven-compat-3.0.jar.asc.sha1</a>                     2010-10-04 11:53        40      
+<a href="maven-compat-3.0.jar.md5" title="maven-compat-3.0.jar.md5">maven-compat-3.0.jar.md5</a>                          2010-10-04 11:53        32      
+<a href="maven-compat-3.0.jar.sha1" title="maven-compat-3.0.jar.sha1">maven-compat-3.0.jar.sha1</a>                         2010-10-04 11:53        40      
+<a href="maven-compat-3.0.pom" title="maven-compat-3.0.pom">maven-compat-3.0.pom</a>                              2010-10-04 11:53      4021      
+<a href="maven-compat-3.0.pom.asc" title="maven-compat-3.0.pom.asc">maven-compat-3.0.pom.asc</a>                          2010-10-04 11:53       202      
+<a href="maven-compat-3.0.pom.asc.md5" title="maven-compat-3.0.pom.asc.md5">maven-compat-3.0.pom.asc.md5</a>                      2010-10-04 11:53        32      
+<a href="maven-compat-3.0.pom.asc.sha1" title="maven-compat-3.0.pom.asc.sha1">maven-compat-3.0.pom.asc.sha1</a>                     2010-10-04 11:53        40      
+<a href="maven-compat-3.0.pom.md5" title="maven-compat-3.0.pom.md5">maven-compat-3.0.pom.md5</a>                          2010-10-04 11:53        32      
+<a href="maven-compat-3.0.pom.sha1" title="maven-compat-3.0.pom.sha1">maven-compat-3.0.pom.sha1</a>                         2010-10-04 11:53        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/maven/git/matching-refs/tags/maven-3.0 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 344ms:
+[
+  {
+    "ref": "refs/tags/maven-3.0",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjA=",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0",
+    "object": {
+      "sha": "1970bee9fefc870438c04a38dbefa94c5dfd5ea4",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/1970bee9fefc870438c04a38dbefa94c5dfd5ea4"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-RC1",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtUkMx",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-RC1",
+    "object": {
+      "sha": "beece8fb7f122270268a6c0de8277c0d61f3272a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/beece8fb7f122270268a6c0de8277c0d61f3272a"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-RC2",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtUkMy",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-RC2",
+    "object": {
+      "sha": "ae6f046e47dad2ffd869a3f67a8ff84a0418464a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/ae6f046e47dad2ffd869a3f67a8ff84a0418464a"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-RC3",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtUkMz",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-RC3",
+    "object": {
+      "sha": "a3bd12b2e1e18b63b6cfb5a41aa8b7f89cbc0839",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/a3bd12b2e1e18b63b6cfb5a41aa8b7f89cbc0839"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-alpha-3",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtYWxwaGEtMw==",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-alpha-3",
+    "object": {
+      "sha": "624d957eb3b3617fbaaaa196e4272b7126a3c54a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/624d957eb3b3617fbaaaa196e4272b7126a3c54a"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-alpha-4",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtYWxwaGEtNA==",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-alpha-4",
+    "object": {
+      "sha": "c684d98c6a9a60ee4d9e543f6d59f5fe8de01177",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/c684d98c6a9a60ee4d9e543f6d59f5fe8de01177"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-alpha-5",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtYWxwaGEtNQ==",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-alpha-5",
+    "object": {
+      "sha": "cdb03cd4252b965c748383475cc28a70730cbd78",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/cdb03cd4252b965c748383475cc28a70730cbd78"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-alpha-6",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtYWxwaGEtNg==",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-alpha-6",
+    "object": {
+      "sha": "a1f0174af6b68d44345b42e8de19984da7511fcb",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/a1f0174af6b68d44345b42e8de19984da7511fcb"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-alpha-7",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtYWxwaGEtNw==",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-alpha-7",
+    "object": {
+      "sha": "478baa0b84de9eac7f732ec976d6a7528ab7ab99",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/478baa0b84de9eac7f732ec976d6a7528ab7ab99"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-beta-1",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtYmV0YS0x",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-beta-1",
+    "object": {
+      "sha": "db86a2c5f7b59aecc6c674504c795e5df06c00f0",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/db86a2c5f7b59aecc6c674504c795e5df06c00f0"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-beta-2",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtYmV0YS0y",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-beta-2",
+    "object": {
+      "sha": "0ab4596451703f20451e3429301b4f777db98747",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/0ab4596451703f20451e3429301b4f777db98747"
+    }
+  },
+  {
+    "ref": "refs/tags/maven-3.0-beta-3",
+    "node_id": "MDM6UmVmMjA2NDgzOnJlZnMvdGFncy9tYXZlbi0zLjAtYmV0YS0z",
+    "url": "https://api.github.com/repos/apache/maven/git/refs/tags/maven-3.0-beta-3",
+    "object": {
+      "sha": "e5e976edc49ae4cc4b41aae57c78e16fa35c1dd3",
+      "type": "tag",
+      "url": "https://api.github.com/repos/apache/maven/git/tags/e5e976edc49ae4cc4b41aae57c78e16fa35c1dd3"
+    }
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven/3.0/maven-3.0.pom | sed -n '/<url>/,/<\\/scm>/p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+  <url>http://maven.apache.org/</url>
+  <inceptionYear>2001</inceptionYear>
+
+  <properties>
+    <classWorldsVersion>2.2.3</classWorldsVersion>
+    <commonsCliVersion>1.2</commonsCliVersion>
+    <easyMockVersion>1.2_Java1.3</easyMockVersion>
+    <junitVersion>3.8.2</junitVersion>
+    <plexusVersion>1.5.5</plexusVersion>
+    <plexusInterpolationVersion>1.14</plexusInterpolationVersion>
+    <plexusUtilsVersion>2.0.4</plexusUtilsVersion>
+    <sisuInjectVersion>1.4.2</sisuInjectVersion>
+    <wagonVersion>1.0-beta-6</wagonVersion>
+    <securityDispatcherVersion>1.3</securityDispatcherVersion>
+    <cipherVersion>1.4</cipherVersion>
+    <modelloVersion>1.4</modelloVersion>
+    <jxpathVersion>1.3</jxpathVersion>
+    <aetherVersion>1.7</aetherVersion>
+    <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+  </properties>
+
+  <mailingLists>
+    <mailingList>
+      <name>Maven Developer List</name>
+      <subscribe>dev-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@maven.apache.org</unsubscribe>
+      <post>dev@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-dev</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/dev@maven.apache.org/</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven-Developers-f179.html</otherArchive>
+        <otherArchive>http://maven.dev.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Maven User List</name>
+      <subscribe>users-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@maven.apache.org</unsubscribe>
+      <post>users@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-users</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/users@maven.apache.org/</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven---Users-f178.html</otherArchive>
+        <otherArchive>http://maven.users.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Maven Issues List</name>
+      <subscribe>issues-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>issues-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-issues/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/issues@maven.apache.org</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven---Issues-f15573.html</otherArchive>
+        <otherArchive>http://maven.issues.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Maven Commits List</name>
+      <subscribe>commits-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-commits</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/commits@maven.apache.org</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven---Commits-f15575.html</otherArchive>
+        <otherArchive>http://maven.commits.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <!--
+      duplication from parent pom - temporary until they inherit
+      properly
+    -->
+    <mailingList>
+      <name>Maven Announcements List</name>
+      <post>announce@maven.apache.org</post>
+      <subscribe>announce-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>announce-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-announce/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/announce@maven.apache.org</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven-Announcements-f15617.html</otherArchive>
+        <otherArchive>http://maven.announce.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Maven Notifications List</name>
+      <subscribe>notifications-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>notifications-unsubscribe@maven.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-notifications/</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/notifications@maven.apache.org</otherArchive>
+        <otherArchive>http://old.nabble.com/Maven---Notifications-f15574.html</otherArchive>
+        <otherArchive>http://maven.notifications.markmail.org/</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+
+  <modules>
+    <module>maven-core</module>
+    <module>apache-maven</module>
+    <module>maven-model</module>
+    <module>maven-settings</module>
+    <module>maven-settings-builder</module>
+    <module>maven-artifact</module>
+    <module>maven-aether-provider</module>
+    <module>maven-repository-metadata</module>
+    <module>maven-plugin-api</module>
+    <module>maven-model-builder</module>
+    <module>maven-embedder</module>
+    <module>maven-compat</module>
+  </modules>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0</developerConnection>
+    <url>http://svn.apache.org/viewvc/maven/maven-3/tags/maven-3.0</url>
+  </scm>
+    <url>http://jira.codehaus.org/browse/MNG</url>
+  </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>scp://people.apache.org/www/maven.apache.org/ref/${project.version}/</url>
+    </site>
+  </distributionManagement>
+
+  <!--bootstrap-start-comment-->
+  <dependencyManagement>
+    <!--bootstrap-end-comment-->
+    <dependencies>
+      <!--  Maven Modules -->
+      <!--bootstrap-start-comment-->
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings-builder</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-embedder</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model-builder</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-compat</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-repository-metadata</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!--bootstrap-end-comment-->
+      <!--  Plexus -->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>${plexusUtilsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-inject-plexus</artifactId>
+        <version>${sisuInjectVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-annotations</artifactId>
+        <version>${plexusVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-classworlds</artifactId>
+        <version>${classWorldsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-interpolation</artifactId>
+        <version>${plexusInterpolationVersion}</version>
+      </dependency>
+      <!--  Wagon -->
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-api</artifactId>
+        <version>${wagonVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-file</artifactId>
+        <version>${wagonVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-http-lightweight</artifactId>
+        <version>${wagonVersion}</version>
+      </dependency>
+      <!--  Repository -->
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-api</artifactId>
+        <version>${aetherVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-impl</artifactId>
+        <version>${aetherVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-util</artifactId>
+        <version>${aetherVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-connector-wagon</artifactId>
+        <version>${aetherVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-container-default</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!--  Commons -->
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>${commonsCliVersion}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-jxpath</groupId>
+        <artifactId>commons-jxpath</artifactId>
+        <version>${jxpathVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-sec-dispatcher</artifactId>
+        <version>${securityDispatcherVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-cipher</artifactId>
+        <version>${cipherVersion}</version>
+      </dependency>
+      <!--bootstrap-start-comment-->
+      <dependency>
+        <groupId>easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>${easyMockVersion}</version>
+        <scope>test</scope>
+      </dependency>
+      <!--bootstrap-end-comment-->
+    </dependencies>
+    <!--bootstrap-start-comment-->
+  </dependencyManagement>
+  <!--bootstrap-end-comment-->
+  <!--bootstrap-start-comment-->
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junitVersion}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <!--bootstrap-end-comment-->
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-metadata</artifactId>
+          <version>${plexusVersion}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>generate-metadata</goal>
+                <goal>generate-test-metadata</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.0.2</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <tagBase>https://svn.apache.org/repos/asf/maven/maven-3/tags</tagBase>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <argLine>-Xmx256m</argLine>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.modello</groupId>
+          <artifactId>modello-maven-plugin</artifactId>
+          <version>${modelloVersion}</version>
+          <configuration>
+            <useJava5>true</useJava5>
+          </configuration>
+          <executions>
+            <execution>
+              <id>site-docs</id>
+              <phase>pre-site</phase>
+              <goals>
+                <goal>xdoc</goal>
+                <goal>xsd</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>standard</id>
+              <goals>
+                <goal>java</goal>
+                <goal>xpp3-reader</goal>
+                <goal>xpp3-writer</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>1.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.4.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>2.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.6</version>
+        <configuration>
+          <signature>
+            <groupId>org.codehaus.mojo.signature</groupId>
+            <artifactId>java15</artifactId>
+            <version>1.0</version>
+          </signature>
+        </configuration>
+        <executions>
+          <execution>
+            <id>check-java-1.5-compat</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>apache-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>source-release-assembly</id>
+                <configuration>
+                  <!-- we have a dedicated distribution module -->
+                  <skipAssembly>true</skipAssembly>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>reporting</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.5</version>
+          </plugin>
+          <plugin>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <configuration>
+              <targetJdk>1.5</targetJdk>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cobertura-maven-plugin</artifactId>
+            <version>2.2</version>
+            <reportSets>
+              <reportSet>
+                <!-- Disabled at it kills the site generation via a NoClassDefFoundError -->
+                <reports />
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+    <profile>
+      <id>maven-repo-local</id>
+      <activation>
+        <property>
+          <name>maven.repo.local</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemProperties combine.children="append">
+                <property>
+                  <!-- Pass this through to the tests (if set!) to have them pick the right repository -->
+                  <name>maven.repo.local</name>
+                  <value>${maven.repo.local}</value>
+                </property>
+              </systemProperties>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>m2e</id>
+      <properties>
+        <m2BuildDirectory>target</m2BuildDirectory>
+      </properties>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <directory>${m2BuildDirectory}</directory>
+        <plugins>
+          <plugin>
+            <groupId>org.maven.ide.eclipse</groupId>
+            <artifactId>lifecycle-mapping</artifactId>
+            <version>0.10.0</version>
+            <configuration>
+              <mappingId>customizable</mappingId>
+              <configurators>
+                <configurator id="org.maven.ide.eclipse.jdt.javaConfigurator" />
+                <configurator id="org.maven.ide.eclipse.modello.modelloConfigurator" />
+                <configurator id="org.maven.ide.eclipse.plexus.annotations.plexusConfigurator" />
+              </configurators>
+              <mojoExecutions>
+                <mojoExecution>org.apache.maven.plugins:maven-resources-plugin::</mojoExecution>
+              </mojoExecutions>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-test-sources.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/maven/contents/maven-compat/src/test?ref=maven-3.0 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/maven/maven-3.0/maven-compat/pom.xml | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 239ms:
+HTTP/2 404 
+date: Sat, 23 May 2026 03:39:08 GMT
+content-type: text/html
+cf-ray: a00108223c84e5d9-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 167ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!--
+    Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+    file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+    applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+    governing permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven</artifactId>
+    <version>3.0</version>
+  </parent>
+
+  <artifactId>maven-compat</artifactId>
+
+  <name>Maven Compat</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interpolation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-plexus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-file</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-connector-wagon</artifactId>
+      <version>${aetherVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>1.2_Java1.3</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <configuration>
+          <version>1.0.0</version>
+          <models>
+            <model>src/main/mdo/profiles.mdo</model>
+            <model>src/main/mdo/paramdoc.mdo</model>
+          </models>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ succeeded in 207ms:
+[
+  {
+    "name": "java",
+    "path": "maven-compat/src/test/java",
+    "sha": "eebb9773a4a898e8acc9f15d8a3fdfdd6b1f3b1d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/maven-compat/src/test/java?ref=maven-3.0",
+    "html_url": "https://github.com/apache/maven/tree/maven-3.0/maven-compat/src/test/java",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/eebb9773a4a898e8acc9f15d8a3fdfdd6b1f3b1d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/maven-compat/src/test/java?ref=maven-3.0",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/eebb9773a4a898e8acc9f15d8a3fdfdd6b1f3b1d",
+      "html": "https://github.com/apache/maven/tree/maven-3.0/maven-compat/src/test/java"
+    }
+  },
+  {
+    "name": "remote-repo",
+    "path": "maven-compat/src/test/remote-repo",
+    "sha": "3dfa153bbe6d0dcf9f5809b57c71b8bda52489af",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/maven-compat/src/test/remote-repo?ref=maven-3.0",
+    "html_url": "https://github.com/apache/maven/tree/maven-3.0/maven-compat/src/test/remote-repo",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/3dfa153bbe6d0dcf9f5809b57c71b8bda52489af",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/maven-compat/src/test/remote-repo?ref=maven-3.0",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/3dfa153bbe6d0dcf9f5809b57c71b8bda52489af",
+      "html": "https://github.com/apache/maven/tree/maven-3.0/maven-compat/src/test/remote-repo"
+    }
+  },
+  {
+    "name": "repository-system",
+    "path": "maven-compat/src/test/repository-system",
+    "sha": "e5766b39fae27205cf85567707abc314325b32cf",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/maven-compat/src/test/repository-system?ref=maven-3.0",
+    "html_url": "https://github.com/apache/maven/tree/maven-3.0/maven-compat/src/test/repository-system",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/e5766b39fae27205cf85567707abc314325b32cf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/maven-compat/src/test/repository-system?ref=maven-3.0",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/e5766b39fae27205cf85567707abc314325b32cf",
+      "html": "https://github.com/apache/maven/tree/maven-3.0/maven-compat/src/test/repository-system"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "maven-compat/src/test/resources",
+    "sha": "617c1f8cb78ef0cbcd85e8a883310bd63a333d95",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/maven/contents/maven-compat/src/test/resources?ref=maven-3.0",
+    "html_url": "https://github.com/apache/maven/tree/maven-3.0/maven-compat/src/test/resources",
+    "git_url": "https://api.github.com/repos/apache/maven/git/trees/617c1f8cb78ef0cbcd85e8a883310bd63a333d95",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/maven/contents/maven-compat/src/test/resources?ref=maven-3.0",
+      "git": "https://api.github.com/repos/apache/maven/git/trees/617c1f8cb78ef0cbcd85e8a883310bd63a333d95",
+      "html": "https://github.com/apache/maven/tree/maven-3.0/maven-compat/src/test/resources"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.apache.maven/maven-artifact/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-artifact/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-javadoc.jar",
+    "description" : "Maven Artifact is the Maven 2 library that represents project artifacts, coordinates, scopes, handlers, repositories, and artifact metadata used during dependency resolution. It also provides version and version-range parsing and comparison utilities used by Maven components to select, install, deploy, and resolve artifacts.",
+    "tested-versions" : [
+      "2.0.6",
+      "2.0.7",
+      "2.0.8",
+      "2.0.9",
+      "2.0.10",
+      "2.0.11",
+      "2.1.0",
+      "2.2.0",
+      "2.2.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.artifact"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,100p' metadata/org.apache.maven/maven-plugin-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-javadoc.jar",
+    "description" : "Maven Plugin API defines the core Mojo interfaces, exceptions, context access, and logging abstractions used to implement Maven plugins. It lets plugin code interact with Maven's execution model through a stable API without depending directly on Maven Core internals.",
+    "tested-versions" : [
+      "2.0",
+      "2.0.1",
+      "2.0.2",
+      "2.0.3",
+      "2.0.4",
+      "2.0.5",
+      "2.0.6",
+      "2.0.7",
+      "2.0.8",
+      "2.0.9",
+      "2.0.10",
+      "2.0.11",
+      "2.1.0",
+      "2.2.0",
+      "2.2.1",
+      "3.0",
+      "3.0.1",
+      "3.0.2",
+      "3.0.3",
+      "3.0.4",
+      "3.0.5",
+      "3.1.0",
+      "3.1.1",
+      "3.2.1",
+      "3.2.2",
+      "3.2.3",
+      "3.2.5",
+      "3.3.1",
+      "3.3.3",
+      "3.3.9",
+      "3.5.0",
+      "3.5.2",
+      "3.5.3",
+      "3.5.4",
+      "3.6.0",
+      "3.6.1",
+      "3.6.2",
+      "3.6.3",
+      "3.8.1",
+      "3.8.2",
+      "3.8.3",
+      "3.8.4",
+      "3.8.5",
+      "3.8.6",
+      "3.8.7",
+      "3.8.8",
+      "3.8.9",
+      "3.9.0",
+      "3.9.1",
+      "3.9.2",
+      "3.9.3",
+      "3.9.4",
+      "3.9.5",
+      "3.9.6",
+      "3.9.7",
+      "3.9.8",
+      "3.9.9",
+      "3.9.10",
+      "3.9.11",
+      "3.9.12",
+      "3.9.13",
+      "3.9.14",
+      "3.9.15",
+      "4.0.0-alpha-10",
+      "4.0.0-alpha-12",
+      "4.0.0-alpha-13",
+      "4.0.0-alpha-2",
+      "4.0.0-alpha-3",
+      "4.0.0-alpha-4",
+      "4.0.0-alpha-5",
+      "4.0.0-alpha-7",
+      "4.0.0-alpha-8",
+      "4.0.0-alpha-9",
+      "4.0.0-beta-3",
+      "4.0.0-beta-4",
+      "4.0.0-beta-5",
+      "4.0.0-rc-1",
+      "4.0.0-rc-2",
+      "4.0.0-rc-3",
+      "4.0.0-rc-4",
+      "4.0.0-rc-5"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven.plugin"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-sources.jar -o /tmp/maven-compat-3.0-sources.jar && jar tf /tmp/maven-compat-3.0-sources.jar | head -80' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0.jar -o /tmp/maven-compat-3.0.jar && jar tf /tmp/maven-compat-3.0.jar | rg '\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+org/apache/maven/artifact/ArtifactScopeEnum.class
+org/apache/maven/artifact/deployer/ArtifactDeployer.class
+org/apache/maven/artifact/deployer/ArtifactDeploymentException.class
+org/apache/maven/artifact/deployer/DefaultArtifactDeployer.class
+org/apache/maven/artifact/installer/ArtifactInstallationException.class
+org/apache/maven/artifact/installer/ArtifactInstaller.class
+org/apache/maven/artifact/installer/DefaultArtifactInstaller.class
+org/apache/maven/artifact/manager/DefaultWagonManager.class
+org/apache/maven/artifact/manager/WagonConfigurationException.class
+org/apache/maven/artifact/manager/WagonManager.class
+org/apache/maven/artifact/repository/ArtifactRepositoryFactory.class
+org/apache/maven/artifact/repository/DefaultArtifactRepository.class
+org/apache/maven/artifact/repository/DefaultArtifactRepositoryFactory.class
+org/apache/maven/artifact/repository/layout/FlatRepositoryLayout.class
+org/apache/maven/artifact/repository/LegacyLocalRepositoryManager$ArtifactMetadataAdapter.class
+org/apache/maven/artifact/repository/LegacyLocalRepositoryManager$ArtifactRepositoryAdapter.class
+org/apache/maven/artifact/repository/LegacyLocalRepositoryManager.class
+org/apache/maven/artifact/repository/metadata/DefaultRepositoryMetadataManager.class
+org/apache/maven/artifact/repository/metadata/GroupRepositoryMetadata.class
+org/apache/maven/artifact/repository/metadata/MetadataBridge$MetadataRepository.class
+
+ succeeded in 102ms:
+codex
+The upstream 3.0 POM still records the release SCM under Apache’s old SVN path, while the Apache GitHub mirror has the same `maven-3.0` tag. I’m going to use Maven Central for sources and javadoc, and the tagged upstream tree for tests because Central does not publish test sources for this artifact.
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-compat/src/test/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/maven/maven-3.0/maven-compat/src/main/java/org/apache/maven/repository/legacy/LegacyRepositorySystem.java | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://svn.apache.org/repos/asf/maven/maven-3/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 150ms:
+package org.apache.maven.repository.legacy;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.maven.RepositoryUtils;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.InvalidRepositoryException;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.metadata.ArtifactMetadata;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.repository.legacy.repository.ArtifactRepositoryFactory;
+import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
+import org.apache.maven.artifact.repository.Authentication;
+import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
+import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
+import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Exclusion;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.Repository;
+import org.apache.maven.model.RepositoryPolicy;
+import org.apache.maven.repository.DelegatingLocalArtifactRepository;
+import org.apache.maven.repository.LocalArtifactRepository;
+import org.apache.maven.repository.ArtifactTransferListener;
+import org.apache.maven.repository.MirrorSelector;
+import org.apache.maven.repository.Proxy;
+import org.apache.maven.repository.RepositorySystem;
+import org.apache.maven.repository.ArtifactDoesNotExistException;
+import org.apache.maven.repository.ArtifactTransferFailedException;
+import org.apache.maven.settings.Mirror;
+import org.apache.maven.settings.Server;
+import org.apache.maven.settings.building.SettingsProblem;
+import org.apache.maven.settings.crypto.DefaultSettingsDecryptionRequest;
+import org.apache.maven.settings.crypto.SettingsDecrypter;
+import org.apache.maven.settings.crypto.SettingsDecryptionRequest;
+import org.apache.maven.settings.crypto.SettingsDecryptionResult;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.StringUtils;
+import org.sonatype.aether.RepositorySystemSession;
+import org.sonatype.aether.repository.AuthenticationSelector;
+import org.sonatype.aether.repository.ProxySelector;
+import org.sonatype.aether.repository.RemoteRepository;
+
+/**
+ * @author Jason van Zyl
+ */
+@Component( role = RepositorySystem.class, hint = "default" )
+public class LegacyRepositorySystem
+    implements RepositorySystem
+{
+
+    @Requirement
+    private Logger logger;
+
+    @Requirement
+    private ArtifactFactory artifactFactory;
+
+    @Requirement
+    private ArtifactResolver artifactResolver;
+
+    @Requirement
+    private ArtifactRepositoryFactory artifactRepositoryFactory;
+
+    @Requirement( role = ArtifactRepositoryLayout.class )
+    private Map<String, ArtifactRepositoryLayout> layouts;
+
+    @Requirement
+    private WagonManager wagonManager;
+
+    @Requirement
+    private PlexusContainer plexus;
+
+    @Requirement
+    private MirrorSelector mirrorSelector;
+
+    @Requirement
+    private SettingsDecrypter settingsDecrypter;
+
+    public Artifact createArtifact( String groupId, String artifactId, String version, String scope, String type )
+    {
+        return artifactFactory.createArtifact( groupId, artifactId, version, scope, type );
+    }
+
+    public Artifact createArtifact( String groupId, String artifactId, String version, String packaging )
+    {
+        return artifactFactory.createBuildArtifact( groupId, artifactId, version, packaging );
+
+ succeeded in 152ms:
+HTTP/1.1 200 OK
+Date: Sat, 23 May 2026 03:39:27 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Sat, 11 Sep 2010 20:19:40 GMT
+ETag: W/"996206//maven/maven-3/tags/maven-3.0/maven-compat/src/test"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+ succeeded in 152ms:
+HTTP/1.1 200 OK
+Date: Sat, 23 May 2026 03:39:27 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Mon, 26 Nov 2012 05:07:28 GMT
+ETag: W/"1413481//maven/maven-3"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+ succeeded in 403ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 03:39:27 GMT
+content-type: application/java-archive
+content-length: 934823
+cf-ray: a00108967a9f1e6d-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "01ab05dd803c0951ecad8f8e08d4872e"
+last-modified: Mon, 04 Oct 2010 11:53:19 GMT
+x-checksum-md5: 01ab05dd803c0951ecad8f8e08d4872e
+x-checksum-sha1: 009555f387d21050207a5649cf28502efa7ea071
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I found JVM class files in the artifact, so it remains a Native Image metadata target; no `not-for-native-image` fields are needed. I’m replacing the placeholder JSON with the resolved coordinates, Maven Central source/javadoc artifacts, and the tagged upstream test suite URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+index 14d26e64a8dc0e79b81e15d65f45b0e3288634a7..c040356ff9a1c9a84bb95d1b36d0246191e824cc
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-compat:3.0"
++  "coordinates" : "org.apache.maven:maven-compat:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar",
++  "description" : "Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+index 14d26e64a8dc0e79b81e15d65f45b0e3288634a7..c040356ff9a1c9a84bb95d1b36d0246191e824cc
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-compat:3.0"
++  "coordinates" : "org.apache.maven:maven-compat:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar",
++  "description" : "Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.maven:maven-compat:3.0",
+  "repository-url": "https://svn.apache.org/repos/asf/maven/maven-3",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar",
+  "test-code-url": "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar",
+  "description": "Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-sources.jar \\
+  https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-compat/src/test \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-javadoc.jar; do \\
+  curl -o /dev/null -s -w '%{http_code} %{url_effective}\\n' \""'$url"; '"\\
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+index 14d26e64a8dc0e79b81e15d65f45b0e3288634a7..c040356ff9a1c9a84bb95d1b36d0246191e824cc
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-compat:3.0"
++  "coordinates" : "org.apache.maven:maven-compat:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar",
++  "description" : "Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components."
+ }
+
+ succeeded in 341ms:
+301 https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-compat/src/test
+200 https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-javadoc.jar
+
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+index 14d26e64a8dc0e79b81e15d65f45b0e3288634a7..b2710f0bde1bbeebec29291ecfaf2ea9a5925433
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-compat:3.0"
++  "coordinates" : "org.apache.maven:maven-compat:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar",
++  "description" : "Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+index 14d26e64a8dc0e79b81e15d65f45b0e3288634a7..b2710f0bde1bbeebec29291ecfaf2ea9a5925433
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-compat:3.0"
++  "coordinates" : "org.apache.maven:maven-compat:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar",
++  "description" : "Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components."
+ }
+
+exec
+/usr/bin/bash -lc "jq -e 'keys - [\"coordinates\", \"repository-url\", \"source-code-url\", \"test-code-url\", \"documentation-url\", \"description\", \"language\", \"not-for-native-image\", \"reason\", \"replacement\"] == []' build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 0ms:
+true
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json && git diff --no-index /dev/null build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-sources.jar \\
+  https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-compat/src/test/ \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-javadoc.jar; do \\
+  curl -o /dev/null -s -w '%{http_code} %{url_effective}\\n' \""'$url"; '"\\
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe
+ succeeded in 145ms:
+diff --git 1/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json 2/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+new file mode 100644
+index 0000000000..b2710f0bde
+--- /dev/null
++++ 2/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+@@ -0,0 +1,8 @@
++{
++  "coordinates" : "org.apache.maven:maven-compat:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar",
++  "description" : "Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components."
++}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+index 14d26e64a8dc0e79b81e15d65f45b0e3288634a7..b2710f0bde1bbeebec29291ecfaf2ea9a5925433
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-compat:3.0"
++  "coordinates" : "org.apache.maven:maven-compat:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar",
++  "description" : "Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components."
+ }
+
+ succeeded in 327ms:
+200 https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-3.0/maven-compat/src/test/
+200 https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/3.0/maven-compat-3.0-javadoc.jar
+
+codex
+Updated [org.apache.maven-maven-compat-3.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json).
+
+I verified the JSON is valid, the top-level keys are limited to the allowed set, and the source/test/documentation URLs resolve to HTTP 200 after replacing `$version$` with `3.0`. I left `language` and `not-for-native-image` absent because this is a normal JVM artifact with class files, not a language-specific or non-JVM artifact.
+diff --git a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+index 14d26e64a8dc0e79b81e15d65f45b0e3288634a7..b2710f0bde1bbeebec29291ecfaf2ea9a5925433
+--- a/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
++++ b/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.maven:maven-compat:3.0"
++  "coordinates" : "org.apache.maven:maven-compat:3.0",
++  "repository-url" : "https://svn.apache.org/repos/asf/maven/maven-3",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-sources.jar",
++  "test-code-url" : "https://svn.apache.org/repos/asf/maven/maven-3/tags/maven-$version$/maven-compat/src/test/",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-compat/$version$/maven-compat-$version$-javadoc.jar",
++  "description" : "Maven Compat provides Maven 2 compatibility APIs and implementations for Maven 3, including legacy artifact resolution, repository handling, profile and project builder support, and deprecated runtime services. It lets tools and plugins that rely on the older Maven compatibility layer interact with Maven 3 while bridging to newer Maven core and repository components."
+ }
+
+tokens used
+65,480
+Updated [org.apache.maven-maven-compat-3.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/build/discovered-artifact-metadata/org.apache.maven-maven-compat-3.0.json).
+
+I verified the JSON is valid, the top-level keys are limited to the allowed set, and the source/test/documentation URLs resolve to HTTP 200 after replacing `$version$` with `3.0`. I left `language` and `not-for-native-image` absent because this is a normal JVM artifact with class files, not a language-specific or non-JVM artifact.
+Ran agent for org.apache.maven:maven-compat:3.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/build/agent-artifact-discovery-logs/org.apache.maven-maven-compat-3.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2418-c3f2d3fe/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 45s
+9 actionable tasks: 9 executed
