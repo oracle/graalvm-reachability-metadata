@@ -14,7 +14,12 @@ dependencies {
     testImplementation("org.mongodb.morphia:morphia:$libraryVersion") {
         exclude group: "cglib"
     }
+    testImplementation 'cglib:cglib-nodep:2.2.2'
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
 }
 
 graalvmNative {
@@ -24,6 +29,11 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.add("--add-opens=java.base/java.lang=ALL-UNNAMED")
         }
     }
 }
