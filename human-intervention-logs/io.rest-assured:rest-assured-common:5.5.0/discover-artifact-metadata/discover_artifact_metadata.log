@@ -1,0 +1,1940 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.132.0
+--------
+workdir: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e53f2-e79f-71f2-9065-1fb4266cfa03
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.rest-assured:rest-assured-common:5.5.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "5.5.0" when "$version$" is replaced with "5.5.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "io.rest-assured:rest-assured-common:5.5.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "5.5.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against the existing metadata conventions first, then cross-check Maven/GitHub for the authoritative repository, source/test/doc URLs before writing the JSON.
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json && sed -n '1,220p' build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 66 May 23 10:28 build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+{
+  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "source-code-url|test-code-url|documentation-url" build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'rg -n "rest-assured|rest-assured-common|io.rest-assured" build/discovered-artifact-metadata metadata || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json:2:  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0"
+
+web search: 
+web search: Maven Central io.rest-assured rest-assured-common 5.5.0 pom repository source ...
+web search: 
+web search: https://repo1.maven.org/maven2/io/rest-assured/rest-assured-common/5.5.0/
+web search: 
+web search: https://github.com/rest-assured/rest-assured/tree/master/rest-assured-common
+codex
+Maven Central has a normal JAR plus sources and javadoc artifacts for `5.5.0`, so this looks like a JVM artifact that can be consumed by native-image. I’m checking the POM and repository tag now so the source/test/doc links point at the release, not the moving default branch.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/5.5.0/rest-assured-common-5.5.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+  ~ Copyright 2019 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured-parent</artifactId>
+        <version>5.5.0</version>
+    </parent>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>rest-assured-common</artifactId>
+    <packaging>bundle</packaging>
+    <version>5.5.0</version>
+    <name>rest-assured-common</name>
+    <url>https://rest-assured.io/</url>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                        	io.restassured.common.*, 
+                        	io.restassured.internal.common.*
+                        </Export-Package>
+                        <Import-Package>
+							groovy.*;version="${groovy.range}",
+                            org.apache.groovy.*;version="${groovy.range}",
+                            *
+						</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.basepom.maven</groupId>
+                <artifactId>duplicate-finder-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <!-- Test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/5.5.0/ | sed -n '1,140p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/rest-assured/rest-assured.git | rg '5\\.5\\.0|v5|rest-assured'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/5.5.0/rest-assured-common-5.5.0-sources.jar -o /tmp/rest-assured-common-5.5.0-sources.jar && jar tf /tmp/rest-assured-common-5.5.0-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/restassured/
+io/restassured/internal/
+io/restassured/internal/common/
+io/restassured/common/
+io/restassured/common/mapper/
+io/restassured/common/mapper/factory/
+io/restassured/common/mapper/resolver/
+io/restassured/common/exception/
+io/restassured/internal/common/ObjectDeserializationContextImpl.java
+io/restassured/common/mapper/TypeRef.java
+io/restassured/common/mapper/ObjectDeserializationContext.java
+io/restassured/common/mapper/DataToDeserialize.java
+io/restassured/common/mapper/factory/ObjectMapperFactory.java
+io/restassured/common/mapper/resolver/ObjectMapperResolver.java
+io/restassured/common/exception/PathException.java
+io/restassured/internal/common/path/
+io/restassured/internal/common/assertion/
+io/restassured/internal/common/path/ObjectConverter.java
+io/restassured/internal/common/assertion/HyphenQuoteFragmentEscaper.java
+io/restassured/internal/common/assertion/AssertParameter.java
+io/restassured/internal/common/assertion/AssertionSupport.java
+io/restassured/internal/common/assertion/Assertion.java
+io/restassured/internal/common/assertion/GetAtPathFragmentEscaper.java
+io/restassured/internal/common/assertion/PathFragmentEscaper.java
+io/restassured/internal/common/assertion/EndToEndQuoteFragmentEscaper.java
+io/restassured/internal/common/classpath/
+io/restassured/internal/common/classpath/ClassPathResolver.java
+io/restassured/internal/common/path/ObjectConverter.groovy
+io/restassured/internal/common/assertion/PathFragmentEscaper.groovy
+io/restassured/internal/common/assertion/Assertion.groovy
+io/restassured/internal/common/assertion/EndToEndQuoteFragmentEscaper.groovy
+io/restassured/internal/common/assertion/HyphenQuoteFragmentEscaper.groovy
+io/restassured/internal/common/assertion/AssertionSupport.groovy
+io/restassured/internal/common/assertion/GetAtPathFragmentEscaper.groovy
+io/restassured/internal/common/assertion/AssertParameter.groovy
+
+ succeeded in 294ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/rest-assured/rest-assured-common/5.5.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/rest-assured/rest-assured-common/5.5.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="rest-assured-common-5.5.0-javadoc.jar" title="rest-assured-common-5.5.0-javadoc.jar">rest-assured-common-5.5.0-javadoc.jar</a>             2024-07-05 13:06    138502      
+<a href="rest-assured-common-5.5.0-javadoc.jar.asc" title="rest-assured-common-5.5.0-javadoc.jar.asc">rest-assured-common-5.5.0-javadoc.jar.asc</a>         2024-07-05 13:06       488      
+<a href="rest-assured-common-5.5.0-javadoc.jar.md5" title="rest-assured-common-5.5.0-javadoc.jar.md5">rest-assured-common-5.5.0-javadoc.jar.md5</a>         2024-07-05 13:06        32      
+<a href="rest-assured-common-5.5.0-javadoc.jar.sha1" title="rest-assured-common-5.5.0-javadoc.jar.sha1">rest-assured-common-5.5.0-javadoc.jar.sha1</a>        2024-07-05 13:06        40      
+<a href="rest-assured-common-5.5.0-sources.jar" title="rest-assured-common-5.5.0-sources.jar">rest-assured-common-5.5.0-sources.jar</a>             2024-07-05 13:06     19749      
+<a href="rest-assured-common-5.5.0-sources.jar.asc" title="rest-assured-common-5.5.0-sources.jar.asc">rest-assured-common-5.5.0-sources.jar.asc</a>         2024-07-05 13:06       488      
+<a href="rest-assured-common-5.5.0-sources.jar.md5" title="rest-assured-common-5.5.0-sources.jar.md5">rest-assured-common-5.5.0-sources.jar.md5</a>         2024-07-05 13:06        32      
+<a href="rest-assured-common-5.5.0-sources.jar.sha1" title="rest-assured-common-5.5.0-sources.jar.sha1">rest-assured-common-5.5.0-sources.jar.sha1</a>        2024-07-05 13:06        40      
+<a href="rest-assured-common-5.5.0.jar" title="rest-assured-common-5.5.0.jar">rest-assured-common-5.5.0.jar</a>                     2024-07-05 13:06     52222      
+<a href="rest-assured-common-5.5.0.jar.asc" title="rest-assured-common-5.5.0.jar.asc">rest-assured-common-5.5.0.jar.asc</a>                 2024-07-05 13:06       488      
+<a href="rest-assured-common-5.5.0.jar.md5" title="rest-assured-common-5.5.0.jar.md5">rest-assured-common-5.5.0.jar.md5</a>                 2024-07-05 13:06        32      
+<a href="rest-assured-common-5.5.0.jar.sha1" title="rest-assured-common-5.5.0.jar.sha1">rest-assured-common-5.5.0.jar.sha1</a>                2024-07-05 13:06        40      
+<a href="rest-assured-common-5.5.0.pom" title="rest-assured-common-5.5.0.pom">rest-assured-common-5.5.0.pom</a>                     2024-07-05 13:06      3196      
+<a href="rest-assured-common-5.5.0.pom.asc" title="rest-assured-common-5.5.0.pom.asc">rest-assured-common-5.5.0.pom.asc</a>                 2024-07-05 13:06       488      
+<a href="rest-assured-common-5.5.0.pom.md5" title="rest-assured-common-5.5.0.pom.md5">rest-assured-common-5.5.0.pom.md5</a>                 2024-07-05 13:06        32      
+<a href="rest-assured-common-5.5.0.pom.sha1" title="rest-assured-common-5.5.0.pom.sha1">rest-assured-common-5.5.0.pom.sha1</a>                2024-07-05 13:06        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 324ms:
+5abfc6832c2f736b2296b6220cebd3768f40df3b	refs/tags/rest-assured-
+8880e7054a07e2062f4f09a077bb52aa28a5e8b2	refs/tags/rest-assured-^{}
+89dc8b5b32ca8d6625fee2b24df308c127226e27	refs/tags/rest-assured-1.0
+9f48dbcad5a93f11bfc09d1839d1f572499dcc06	refs/tags/rest-assured-1.0^{}
+664e8effe3a86a96e88868f71f4d20eaf4c181bc	refs/tags/rest-assured-1.0.1
+9eb33a70bfb7ede8788ffc940312c593109bb361	refs/tags/rest-assured-1.0.1^{}
+59a7c93327301e36a670d2273970a71d9c84dafc	refs/tags/rest-assured-1.0.2
+0a26c7e92c9b3a24c6fcf6f4e7015d8db561ce4d	refs/tags/rest-assured-1.0.2^{}
+d3dbec7c2018ffcffc2b116984165e05054fb147	refs/tags/rest-assured-1.0.3
+4f145584390b8b7423d4cd05674a31ab35416e70	refs/tags/rest-assured-1.0.3^{}
+390d564369601cd83a5da79ce270e82076c38253	refs/tags/rest-assured-1.1
+df1bc9979d696aa7192bfbeb3eda0f0c63e3ba87	refs/tags/rest-assured-1.1^{}
+b000b54581fda47085d275910fe6f5647082d119	refs/tags/rest-assured-1.1.1
+3af3dbe21aad336b631d890a0bbb2560d5fc4a53	refs/tags/rest-assured-1.1.1^{}
+c323aa457d6c7880c4d851fbd8cac3f001bba961	refs/tags/rest-assured-1.1.2
+38cb487e717b8ec468f38d2490936890886e35d1	refs/tags/rest-assured-1.1.2^{}
+456124ce55c8251530e61cff376ce62ad297ac19	refs/tags/rest-assured-1.1.5
+0669bd2574f204a42e7e0c3b25b542ab24e8fb4d	refs/tags/rest-assured-1.1.5^{}
+47f2babc04b7fb21d4147aeba2bceb28c8450df2	refs/tags/rest-assured-1.1.6
+97139447cf843560d2d9e93e2b480c7788b136c7	refs/tags/rest-assured-1.1.6^{}
+99cf8b7f39c26fd46d6a9ef39d2ca1f3d4c6a339	refs/tags/rest-assured-1.1.7
+2e54e28e7e94c30478212b21dea284bd146e49f4	refs/tags/rest-assured-1.1.7^{}
+bd8a95342cc974f7d511f68c20616dcc7d9f18c3	refs/tags/rest-assured-1.2
+555837134357e80bb0e43bd82aca2d4113788baa	refs/tags/rest-assured-1.2^{}
+b8f1d93e023c9f49035f127723eeaaf158bf97de	refs/tags/rest-assured-1.2.1
+78e299a64193cb35e1eb844c3c7df5a7c7e48e87	refs/tags/rest-assured-1.2.1^{}
+349b4c79225c4a7e3d0710afcb7035b7d4f27887	refs/tags/rest-assured-1.2.2
+a19b3a6e6276099375c917526cb36d7dbdfc1cf8	refs/tags/rest-assured-1.2.2^{}
+bfca32bd496aed5a660a27e31ab7a7b4365320e1	refs/tags/rest-assured-1.2.3
+b945577e64bbbf4ba3cc22593fad38cccf08961a	refs/tags/rest-assured-1.2.3^{}
+53dfdbfb15fbe5006d50d80057290245c8f6e0f2	refs/tags/rest-assured-1.3
+3eef428abb49291e52eb04c11cb10d336dcbfd31	refs/tags/rest-assured-1.3^{}
+1b0ffb226ccaa9a61235a3ecbe61f0cf3d9e3f42	refs/tags/rest-assured-1.3.1
+a9e790c8060ea664a1114b4348e8d881bc377f01	refs/tags/rest-assured-1.3.1^{}
+6541cb1d583aa20061b2ddddcebb0a1d672a3d39	refs/tags/rest-assured-1.4
+0f8287a0ab9b85ca1ddd4a42aaa233dc67bb257e	refs/tags/rest-assured-1.4^{}
+b86c6a85cce72d09d9690764088ef356d2e6fcdf	refs/tags/rest-assured-1.4.5
+87b574fb6496e7847f8a2e91c551d04a5f6c0cdd	refs/tags/rest-assured-1.4.5^{}
+5558f7f539e4f4a2bacc63c3ba89d06f907b1bff	refs/tags/rest-assured-1.5
+783adc5c23e5a91360a31fd7d254fad68666dd14	refs/tags/rest-assured-1.5^{}
+e8ae0e6578283e200527cab6a85f9944622e4be3	refs/tags/rest-assured-1.6
+2ea57e22535212b087b9fc89952bbab7f8847ac3	refs/tags/rest-assured-1.6^{}
+b5a2e138e9fc2afa5f014917121e8953ae09635a	refs/tags/rest-assured-1.6.1
+995e50ff470e0781242ea10549ed93f2462a4974	refs/tags/rest-assured-1.6.1^{}
+30859677edd25f9847429fb5673cf69f30e22132	refs/tags/rest-assured-1.6.2
+e72bf7657d7ed6b5b6ddf3583c86dd0917f54f5f	refs/tags/rest-assured-1.6.2^{}
+eae89b0feb2ce456748ad41bf6a49daef37dc268	refs/tags/rest-assured-1.7
+6f5ecda151aaca6f277c88dc23be82be42c50b0b	refs/tags/rest-assured-1.7^{}
+dfa1fcb460a8f99da3846a0d8932f1ef8a027472	refs/tags/rest-assured-1.7.1
+a7043a5f1dbc04d0b803c515e0e4e9421c4ad84e	refs/tags/rest-assured-1.7.1^{}
+f420c59b57d3d1189599b10cde7ee65b78e75fb4	refs/tags/rest-assured-1.7.2
+df22a4da21b1c12b703cf57b5820e4059e31b411	refs/tags/rest-assured-1.7.2^{}
+2007542ef6de034fdf7baf706c37717b12031f1b	refs/tags/rest-assured-1.8.0
+9601cc9aa05359b0945dbf5c0824dc49670e5553	refs/tags/rest-assured-1.8.0^{}
+7e14aecf71aec43d8de11a3cb9210bd56c12bb47	refs/tags/rest-assured-1.8.1
+bf91087b6a20b346878ec0adf9802f00ad2ad257	refs/tags/rest-assured-1.8.1^{}
+29b7b7da8959eac9fe69b2f34ad44135d59edd55	refs/tags/rest-assured-1.9.0
+36bb369d38e3c8ba8215fd288b5458e12d7e4079	refs/tags/rest-assured-1.9.0^{}
+c41a2126cffdc8c9d59c788ae59c92e1d69a9ac3	refs/tags/rest-assured-2.0.0
+1695519316eae3e4aab40a51a5113f69abba9cdc	refs/tags/rest-assured-2.0.0^{}
+d37553c1b53bd7e2e5cad7acaf81a2f00ee200ce	refs/tags/rest-assured-2.0.1
+6154b99b0d971abf08e1b4bb6137ec77b650d22d	refs/tags/rest-assured-2.0.1^{}
+186f54a0dadca9d9064af56958dc9839c09cac53	refs/tags/rest-assured-2.1.0
+b92038749bd2c7b2cf02eefcc164606464019a3d	refs/tags/rest-assured-2.1.0^{}
+e681ddd76d054c5f7dd29af26dfa249a68ff8bc7	refs/tags/rest-assured-2.2.0
+0fee1023a7062bae1a92d7241a89bd2dd93e792a	refs/tags/rest-assured-2.2.0^{}
+ebe10038556f17c88675c45b61586ac36f957353	refs/tags/rest-assured-2.3.0
+2cf6f43471abc5fe8c58d9612399f773c0adf738	refs/tags/rest-assured-2.3.0^{}
+92acfe0651753949b56440a5e3bfa4995f901506	refs/tags/rest-assured-2.3.1
+4c831f2a5320cd5ce0a0156beb267b07cf713787	refs/tags/rest-assured-2.3.1^{}
+f1b710eab2a0d0abcbf7c73a00a5ad40ec1045ac	refs/tags/rest-assured-2.3.2
+78c4c4eb60a9ff31e436aa8fbc00ab962023a9aa	refs/tags/rest-assured-2.3.2^{}
+cc3bd54633e5d344ba60b89ce4dbd1796f5a9d18	refs/tags/rest-assured-2.3.3
+5dcab353f7f5d6809000665ecdbffe089ed82c1b	refs/tags/rest-assured-2.3.3^{}
+df0bcf3201a59437214fc899132e09a921bab28f	refs/tags/rest-assured-2.3.4
+99a74ef6d1d4aa97e2db07616c92017682fef4cf	refs/tags/rest-assured-2.3.4^{}
+da6d8eaf35522678e9f2ae37c0686ece981110b5	refs/tags/rest-assured-2.4.0
+ec3f99af922fd7dc15c98edfe46f0d653b46118c	refs/tags/rest-assured-2.4.0^{}
+e273bd6cdc0faeda0666ec0b263cbdf7283cd406	refs/tags/rest-assured-2.4.1
+009446fde76bad277e8e9aa4bbe0149eb852e002	refs/tags/rest-assured-2.4.1^{}
+51ad780a0f188ab30ddb8aed9bfbe700af28a549	refs/tags/rest-assured-2.5.0
+14c7f8481ea478ffbaa1b5d8da32b1f15b8f6e4c	refs/tags/rest-assured-2.5.0^{}
+61bf7f948c817249a2d9bc069f1fb57276911921	refs/tags/rest-assured-2.6.0
+cba50351b79098b5800f10dc9101c44709d790da	refs/tags/rest-assured-2.6.0^{}
+29e1882dd154213994b230f19f6ab9d477219bf1	refs/tags/rest-assured-2.7.0
+e1abd9d6bb85ab7d359fcf12427b5c4119bda746	refs/tags/rest-assured-2.7.0^{}
+fbb398d8d0c7b076e017893aeecfe106f18ac4fc	refs/tags/rest-assured-2.8.0
+e27c196e29c5081765232fcbcc0fa48b2e09544c	refs/tags/rest-assured-2.8.0^{}
+ac2004f31f6accb7c4a83412d835021a8cd191f5	refs/tags/rest-assured-2.9.0
+fe56458d02eee9422689783d663b1111105f904e	refs/tags/rest-assured-2.9.0^{}
+ed1c07131785c81ee978752f854bde8fe59bcd4f	refs/tags/rest-assured-3.0.0
+7de78be03d21cf6c4a621c065765a354bb49f3cd	refs/tags/rest-assured-3.0.0^{}
+6ba94d7c82fd9aadb56d0de09ddf87123d1dc344	refs/tags/rest-assured-3.0.1
+a51e2a7b3a35fb2996b76fd314e25575f08de2ef	refs/tags/rest-assured-3.0.1^{}
+de497e74ef97222269d1f91a5337851737a35e4a	refs/tags/rest-assured-3.0.2
+ebb0efd933082dc5f6dd7ebde885dfb194e6a0aa	refs/tags/rest-assured-3.0.2^{}
+2636b01e41e9aca574027b3105bce2cd55594e8b	refs/tags/rest-assured-3.0.3
+c68a1ab1e8500dc3b6b1b8f6492c789575b69902	refs/tags/rest-assured-3.0.3^{}
+d4dafd7faa38ec90e378e23e52481967344eb37b	refs/tags/rest-assured-3.0.4
+cbbc33cad914e1ba4d414796d395a944b81306ae	refs/tags/rest-assured-3.0.4^{}
+cc21805b8b0b88c46896145d34a33be3a0d0c380	refs/tags/rest-assured-3.0.5
+8e73fd726a94a02e22e8191c47ecda4ae0ba98cc	refs/tags/rest-assured-3.0.5^{}
+9f485ff5ea40b695486d281dc48d5222929789b0	refs/tags/rest-assured-3.0.6
+b4ede26b6d615f110d454727a58a87fe6d77499d	refs/tags/rest-assured-3.0.6^{}
+3d88ee72a2f3e70958b190b760b1f9a2e03987dc	refs/tags/rest-assured-3.0.7
+a2f8fdcd73b0dc69f77bc3a73e5792a425e86b6b	refs/tags/rest-assured-3.0.7^{}
+2cba0a97decf0474a4510bef4d47bf51d3f6ae2b	refs/tags/rest-assured-3.1.0
+8c474247927402702360e495bf3114085e581ec0	refs/tags/rest-assured-3.1.0^{}
+7618e2318893c9346fa506c40c73c4e54407efc6	refs/tags/rest-assured-3.1.1
+b067d43e25f0fcf5fc88450a50283ff08f068e84	refs/tags/rest-assured-3.1.1^{}
+458ee8cba0618b7a4be52373c7e4e1ed7ce2734e	refs/tags/rest-assured-3.2.0
+7393ba7bf1e23378700c648ad1d33bf904afc84f	refs/tags/rest-assured-3.2.0^{}
+2aefd2ac752572cfd5002fbf1a38e28a7362024f	refs/tags/rest-assured-3.3.0
+4a99626a540105f173fac6c5efd35b1c4e3acf92	refs/tags/rest-assured-3.3.0^{}
+8cfe727dc706060c894d5805a2989e64715860f7	refs/tags/rest-assured-4.0.0
+5d5d88ad0825a0c1882ea19916c7e158244b22e5	refs/tags/rest-assured-4.0.0^{}
+4b1aa621cb35bc8ad0fd715c02b07672d91e4254	refs/tags/rest-assured-4.1.0
+d4f4e27872c259c93799fb831a948e41fe474429	refs/tags/rest-assured-4.1.0^{}
+6d678cef67d67ebff20935fefd22a24ce7651bc0	refs/tags/rest-assured-4.1.1
+1b3ab6791bd965da043962186bf83c6b0b8fa636	refs/tags/rest-assured-4.1.1^{}
+c185649a5f206eaba339ebb23f4912f5714ee657	refs/tags/rest-assured-4.1.2
+43902f8b6bea1105ef0df04a2ccdb3ce841b377f	refs/tags/rest-assured-4.1.2^{}
+f175e143f851259a1775858b73c6a9760d68f35a	refs/tags/rest-assured-4.2.0
+33666cb6e19f57a3db58775edbfdab425a92e92f	refs/tags/rest-assured-4.2.0^{}
+18dc5d67aaca9112c5ab369b7efbe475c7509dda	refs/tags/rest-assured-4.2.1
+fcab041fbf32112969e0ffb4fbb9e794b9e6c518	refs/tags/rest-assured-4.2.1^{}
+71597fd327fbda96c0acc597e02af825c2eac42d	refs/tags/rest-assured-4.3.0
+00495f81b027f7a79d7450b5b28ef21242f4453c	refs/tags/rest-assured-4.3.0^{}
+7f59f948c3c8e93e1c03813218914ced83404b19	refs/tags/rest-assured-4.3.1
+dbe19fd7bb9a67d946ee1a4d3d679a5bd0268141	refs/tags/rest-assured-4.3.1^{}
+2188d0199e34e17647431f5de8a7b2458bf8d2a5	refs/tags/rest-assured-4.3.2
+096525eb1f024b5e4a72c8b4cfc327f9e9ceb483	refs/tags/rest-assured-4.3.2^{}
+555428846acb0b0dba73b03cf17a732a9ee589a5	refs/tags/rest-assured-4.3.3
+6244bb1374707802d9d15629c82fa021fd427bf3	refs/tags/rest-assured-4.3.3^{}
+49bd3fb3611073f6f056a474f49b0b1f845cf99f	refs/tags/rest-assured-4.4.0
+275df07b674d716893c62582a33f51b47f2c027d	refs/tags/rest-assured-4.4.0^{}
+da694ebe6e6014637fdd980032bc17ae307d8d25	refs/tags/rest-assured-4.5.0
+58d5f1497624b5ead0763b5e118b74c94572d584	refs/tags/rest-assured-4.5.0^{}
+9ff2841adbb999679ff752160041187419f72097	refs/tags/rest-assured-4.5.1
+3b8505bda73feda620159e3d2bb0cbc3c8d50460	refs/tags/rest-assured-4.5.1^{}
+a8896fbb58b1313dac8205e8bf8b952ebb8509b8	refs/tags/rest-assured-5.0.0
+2e78356464152ee4b993935f282678ab15628170	refs/tags/rest-assured-5.0.0^{}
+18d66b4558bf95f291a2bb631e968b5cfafa3f72	refs/tags/rest-assured-5.0.1
+a42b9da7c66e8b73633a6ee7c28d982082f3d012	refs/tags/rest-assured-5.0.1^{}
+ae3a72d5e9553f8a34c426e79e21aa389229a666	refs/tags/rest-assured-5.1.0
+e703f88aac036401b14d7149681b6952c39946bc	refs/tags/rest-assured-5.1.0^{}
+62f0dfdf31625a585ae7e81b9b537c8028bd313d	refs/tags/rest-assured-5.1.1
+8dd520e58129e441c854723abd080240bc11410b	refs/tags/rest-assured-5.1.1^{}
+abe3375f3973560c140967af554d0771d52b1559	refs/tags/rest-assured-5.2.0
+c8e4ca53e4e0bc3ee761b5dbb07100b5c9fd74ae	refs/tags/rest-assured-5.2.0^{}
+6d4a72f390a46a8429d9f21bb63f73fbdd045c30	refs/tags/rest-assured-5.2.1
+47f2fd8fd9e097ecd8925008c3b0a85de66b1d1d	refs/tags/rest-assured-5.2.1^{}
+68b54f84288b793dc07fb72f9b20c59fa5261dd1	refs/tags/rest-assured-5.3.0
+ebbedc77222743624550e8e04ecbdd4f2c209932	refs/tags/rest-assured-5.3.0^{}
+405c9c45979839a28d6b93ff3fed7d8cbe173da4	refs/tags/rest-assured-5.3.1
+4d56c2a5fc044f4f7725725764320b1436dfd339	refs/tags/rest-assured-5.3.1^{}
+eda8e1f9287736465c46cac7397ba0666d0f674c	refs/tags/rest-assured-5.4.0
+e8c48e5da7c70f9cdba06dd6aa06c191eac6e39d	refs/tags/rest-assured-5.4.0^{}
+ea6250e3b54f72c6e248c267d74020a767885770	refs/tags/rest-assured-5.5.0
+bea603cb81ebe0fd1a2fda325f7d470064349470	refs/tags/rest-assured-5.5.0^{}
+070a1a546af930662ed0482fce39fc4e76dab9ab	refs/tags/rest-assured-5.5.1
+4d60f0a83b914a8e2814923172b51851f0877968	refs/tags/rest-assured-5.5.1^{}
+80b64b12b4a0eee1823477594e12b73acf8643cd	refs/tags/rest-assured-5.5.2
+bdf64e64fecca659b1f3211437392f26b02ba6f1	refs/tags/rest-assured-5.5.2^{}
+f9e09d4bbe57f7e616eef4c4e6c46d3b6c2c84c7	refs/tags/rest-assured-5.5.3
+95023abec95a9b6216d9126161741550a6b388e4	refs/tags/rest-assured-5.5.3^{}
+5255f52a9a736208290b62b2606953a02483a17d	refs/tags/rest-assured-5.5.4
+2a2f3386c8603a4d8690de3da58e8e18c441a43f	refs/tags/rest-assured-5.5.4^{}
+0be768db53142ebbd963961a0c9a42f6976de2d2	refs/tags/rest-assured-5.5.5
+ee33ab5d8e4e00b79ff396eff81fd46f34a4e7b6	refs/tags/rest-assured-5.5.5^{}
+d1ca1aa08b6b06eb57258fdbf88de1c90182b5e3	refs/tags/rest-assured-5.5.6
+86998d85c90bda783ef39abada02578c52c5a9fb	refs/tags/rest-assured-5.5.6^{}
+3e3e086c107b9bc9c2bcb3ce2c585a9ef89af60e	refs/tags/rest-assured-5.5.7
+02dbe4a6780be030d78cd03736abbb8baffdded1	refs/tags/rest-assured-5.5.7^{}
+fcfd048dc03a26ea51967c96c921fa231f515699	refs/tags/rest-assured-6.0.0
+0b3a0d9f280056a45c47c14b351e5285ed2455ed	refs/tags/rest-assured-6.0.0^{}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-parent/5.5.0/rest-assured-parent-5.5.0.pom' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright 2019 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>5</version>
+    </parent>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>rest-assured-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>5.5.0</version>
+    <url>https://rest-assured.io/</url>
+    <name>REST Assured Parent POM</name>
+    <description>Java DSL for easy testing of REST services</description>
+    <inceptionYear>2010</inceptionYear>
+    <issueManagement>
+        <system>GitHub Issue Tracking</system>
+        <url />
+    </issueManagement>
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Johan Haleby</name>
+            <id>johan.haleby</id>
+            <organization>Jayway</organization>
+            <organizationUrl>https://www.jayway.com</organizationUrl>
+            <email>johan.haleby at gmail.com</email>
+            <timezone>+1</timezone>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <properties>
+        <scm.branch>master</scm.branch>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <groovy.version>4.0.22</groovy.version>
+        <groovy.range>[4.0,5.0)</groovy.range>
+        <gmaven.version>1.5</gmaven.version>
+        <hamcrest.version>2.2</hamcrest.version>
+        <jackson1.version>1.9.11</jackson1.version>
+        <jackson2.version>2.17.1</jackson2.version>
+        <johnzon.version>1.1.11</johnzon.version>
+        <yasson.version>1.0.6</yasson.version>
+        <jakarta.json.version>1.1.6</jakarta.json.version>
+        <maven-javadoc.version>2.9.1</maven-javadoc.version>
+        <surefire.version>2.22.0</surefire.version>
+        <kotlin.version>2.0.0</kotlin.version>
+        <scala.version>3.3.1</scala.version>
+        <assertj-core.version>3.16.1</assertj-core.version>
+        <scribe.version>2.5.3</scribe.version>
+        <sundrio.version>0.103.1</sundrio.version>
+        <guava.version>33.2.1-jre</guava.version>
+        <dokka.version>1.9.20</dokka.version>
+    </properties>
+    <scm>
+        <url>https://github.com/rest-assured/rest-assured/tree/${scm.branch}</url>
+        <connection>scm:git:git://github.com/rest-assured/rest-assured.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/rest-assured/rest-assured.git</developerConnection>
+    </scm>
+    <mailingLists>
+        <mailingList>
+            <name>rest-assured mailing-list</name>
+            <archive>https://groups.google.com/group/rest-assured/topics</archive>
+        </mailingList>
+    </mailingLists>
+    <modules>
+        <module>modules</module>
+        <module>rest-assured</module>
+        <module>rest-assured-all</module>
+        <module>examples</module>
+        <module>json-path</module>
+        <module>rest-assured-common</module>
+        <module>xml-path</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>animal-sniffer-maven-plugin</artifactId>
+                    <version>1.15</version>
+                    <configuration>
+                        <signature>
+                            <groupId>org.codehaus.mojo.signature</groupId>
+                            <artifactId>java16</artifactId>
+                            <version>1.0</version>
+                        </signature>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>check-java-version-compatibility</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>gmaven-plugin</artifactId>
+                    <version>${gmaven.version}</version>
+                    <configuration>
+                        <providerSelection>2.0</providerSelection>
+                        <source />
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.codehaus.gmaven.runtime</groupId>
+                            <artifactId>gmaven-runtime-2.0</artifactId>
+                            <version>${gmaven.version}</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>org.apache.groovy</groupId>
+                                    <artifactId>groovy-all</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.groovy</groupId>
+                            <artifactId>groovy</artifactId>
+                            <version>${groovy.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generateStubs</goal>
+                                <goal>compile</goal>
+                                <goal>generateTestStubs</goal>
+                                <goal>testCompile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.basepom.maven</groupId>
+                    <artifactId>duplicate-finder-maven-plugin</artifactId>
+                    <version>1.3.0</version>
+                    <executions>
+                        <execution>
+                            <id>duplicate-check</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <failBuildInCaseOfDifferentContentConflict>true</failBuildInCaseOfDifferentContentConflict>
+                        <failBuildInCaseOfEqualContentConflict>true</failBuildInCaseOfEqualContentConflict>
+                        <failBuildInCaseOfConflict>true</failBuildInCaseOfConflict>
+                        <ignoredResourcePatterns>
+                            <ignoredResourcePattern>.*\.gitkeep$</ignoredResourcePattern>
+                            <ignoredResourcePattern>log4j\.properties</ignoredResourcePattern>
+                            <!-- Jetty about.html pages -->
+                            <ignoredResourcePattern>.*about\.html$</ignoredResourcePattern>
+                            <!--
+                                Found duplicate (but equal) resources in
+                                [com.github.fge:json-schema-core:1.2.5, com.github.fge:json-schema-validator:2.2.6]
+                            -->
+                            <ignoredResourcePattern>.*draftv[34]/schema$</ignoredResourcePattern>
+                            <!-- Scala lang -->
+                            <ignoredResourcePattern>rootdoc\.txt</ignoredResourcePattern>
+                        </ignoredResourcePatterns>
+                        <ignoredClassPatterns>
+                            <!-- Jigsaw project (Java 9) and later module-info classes. -->
+                            <ignoredClassPattern>.*\.module-info$</ignoredClassPattern>
+                            <ignoredClassPattern>javax\.activation.*</ignoredClassPattern>
+                            <!-- Some classes that are duplicated in the (optional) JAXB / Jakarta EE dependencies. -->
+                            <ignoredClassPattern>com\.sun\.istack.*</ignoredClassPattern>
+                            <ignoredClassPattern>com\.sun\.xml.*</ignoredClassPattern>
+                            <ignoredClassPattern>META-INF\.versions\.9\.com\.sun\.istack\.logging.*</ignoredClassPattern>
+                            <!-- Spring AOP -->
+                            <ignoredClassPattern>org\.aopalliance.*</ignoredClassPattern>
+                            <!-- OSGi -->
+                            <ignoredClassPattern>org\.osgi.*</ignoredClassPattern>
+                            <ignoredClassPattern>org\.ops4j.*</ignoredClassPattern>
+                        </ignoredClassPatterns>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc.version}</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+                    <excludes>
+                        <exclude>**/itest/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>surefire-itest</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/itest/**</include>
+                            </includes>
+                            <argLine>-Xmx1024m</argLine>
+                            <argLine>-Dfile.encoding=UTF-8</argLine>
+                            <argLine>-Duser.language=en</argLine>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.basepom.maven</groupId>
+                <artifactId>duplicate-finder-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven-javadoc.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.sundr</groupId>
+                        <artifactId>sundr-maven-plugin</artifactId>
+                        <version>${sundrio.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>generate-bom</goal>
+                                </goals>
+                                <configuration>
+                                    <boms>
+                                        <bom>
+                                            <artifactId>rest-assured-bom</artifactId>
+                                            <name>REST Assured: BOM</name>
+                                            <description>Centralized dependencyManagement for the Rest Assured Project</description>
+                                            <properties>
+                                                <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
+                                                <sonar.skip>true</sonar.skip>
+                                            </properties>
+                                            <modules>
+                                                <excludes>
+                                                    <exclude>io.rest-assured.examples:*</exclude>
+                                                </excludes>
+                                            </modules>
+                                        </bom>
+                                    </boms>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>dist</id>
+            <!-- Active profile when running release -->
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            <modules>
+                <module>dist</module>
+            </modules>
+        </profile>
+    </profiles>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.ccil.cowan.tagsoup</groupId>
+                <artifactId>tagsoup</artifactId>
+                <version>1.2.1</version>
+            </dependency>
+            <!-- Backward compatibility with JAXB (Jakarta EE 8?) -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>2.3.4</version>
+            </dependency>
+            <!-- Jakarta EE 9 -->
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>3.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.11</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>${jackson1.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>${jackson1.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.johnzon</groupId>
+                <artifactId>johnzon-mapper</artifactId>
+                <version>${johnzon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse</groupId>
+                <artifactId>yasson</artifactId>
+                <version>${yasson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.json</groupId>
+                <artifactId>jakarta.json-api</artifactId>
+                <version>${jakarta.json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.9.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.googlecode.json-simple</groupId>
+                <artifactId>json-simple</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>${hamcrest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-jdk8</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala3-interfaces</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>mockwebserver</artifactId>
+                <version>4.2.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/rest-assured/rest-assured/git/trees/rest-assured-5.5.0?recursive=1 | rg 'rest-assured-common/(src/test|src/main|README|pom.xml|src/docs)' | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/5.5.0/rest-assured-common-5.5.0.jar -o /tmp/rest-assured-common-5.5.0.jar && jar tf /tmp/rest-assured-common-5.5.0.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/io.rest-assured/
+META-INF/maven/io.rest-assured/rest-assured-common/
+META-INF/maven/io.rest-assured/rest-assured-common/pom.properties
+META-INF/maven/io.rest-assured/rest-assured-common/pom.xml
+io/
+io/restassured/
+io/restassured/common/
+io/restassured/common/exception/
+io/restassured/common/exception/PathException.class
+io/restassured/common/mapper/
+io/restassured/common/mapper/DataToDeserialize.class
+io/restassured/common/mapper/ObjectDeserializationContext.class
+io/restassured/common/mapper/TypeRef.class
+io/restassured/common/mapper/factory/
+io/restassured/common/mapper/factory/ObjectMapperFactory.class
+io/restassured/common/mapper/resolver/
+io/restassured/common/mapper/resolver/ObjectMapperResolver.class
+io/restassured/internal/
+io/restassured/internal/common/
+io/restassured/internal/common/ObjectDeserializationContextImpl.class
+io/restassured/internal/common/assertion/
+io/restassured/internal/common/assertion/AssertParameter.class
+io/restassured/internal/common/assertion/Assertion.class
+io/restassured/internal/common/assertion/AssertionSupport$1.class
+io/restassured/internal/common/assertion/AssertionSupport$2.class
+io/restassured/internal/common/assertion/AssertionSupport$3.class
+io/restassured/internal/common/assertion/AssertionSupport$4.class
+io/restassured/internal/common/assertion/AssertionSupport$5.class
+io/restassured/internal/common/assertion/AssertionSupport$6.class
+io/restassured/internal/common/assertion/AssertionSupport$7.class
+io/restassured/internal/common/assertion/AssertionSupport.class
+io/restassured/internal/common/assertion/EndToEndQuoteFragmentEscaper.class
+io/restassured/internal/common/assertion/GetAtPathFragmentEscaper.class
+io/restassured/internal/common/assertion/HyphenQuoteFragmentEscaper.class
+io/restassured/internal/common/assertion/PathFragmentEscaper.class
+io/restassured/internal/common/classpath/
+io/restassured/internal/common/classpath/ClassPathResolver.class
+io/restassured/internal/common/path/
+io/restassured/internal/common/path/ObjectConverter.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/5.5.0/rest-assured-common-5.5.0-javadoc.jar -o /tmp/rest-assured-common-5.5.0-javadoc.jar && jar tf /tmp/rest-assured-common-5.5.0-javadoc.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/restassured/
+io/restassured/internal/
+io/restassured/internal/common/
+io/restassured/internal/common/class-use/
+io/restassured/internal/common/classpath/
+io/restassured/internal/common/classpath/class-use/
+io/restassured/internal/common/path/
+io/restassured/internal/common/path/class-use/
+io/restassured/internal/common/assertion/
+io/restassured/internal/common/assertion/class-use/
+io/restassured/common/
+io/restassured/common/mapper/
+io/restassured/common/mapper/class-use/
+io/restassured/common/mapper/factory/
+io/restassured/common/mapper/factory/class-use/
+io/restassured/common/mapper/resolver/
+io/restassured/common/mapper/resolver/class-use/
+io/restassured/common/exception/
+io/restassured/common/exception/class-use/
+constant-values.html
+overview-tree.html
+index.html
+overview-frame.html
+allclasses-noframe.html
+serialized-form.html
+index-all.html
+deprecated-list.html
+io/restassured/internal/common/class-use/ObjectDeserializationContextImpl.html
+io/restassured/internal/common/classpath/class-use/ClassPathResolver.html
+io/restassured/internal/common/classpath/package-use.html
+io/restassured/internal/common/classpath/ClassPathResolver.html
+io/restassured/internal/common/classpath/package-frame.html
+io/restassured/internal/common/classpath/package-summary.html
+io/restassured/internal/common/classpath/package-tree.html
+io/restassured/internal/common/package-use.html
+io/restassured/internal/common/path/ObjectConverter.html
+io/restassured/internal/common/path/class-use/ObjectConverter.html
+io/restassured/internal/common/path/package-use.html
+io/restassured/internal/common/path/package-frame.html
+io/restassured/internal/common/path/package-summary.html
+io/restassured/internal/common/path/package-tree.html
+io/restassured/internal/common/assertion/class-use/HyphenQuoteFragmentEscaper.html
+io/restassured/internal/common/assertion/class-use/AssertParameter.html
+io/restassured/internal/common/assertion/class-use/AssertionSupport.html
+io/restassured/internal/common/assertion/class-use/Assertion.html
+io/restassured/internal/common/assertion/class-use/GetAtPathFragmentEscaper.html
+io/restassured/internal/common/assertion/class-use/PathFragmentEscaper.html
+io/restassured/internal/common/assertion/class-use/EndToEndQuoteFragmentEscaper.html
+io/restassured/internal/common/assertion/HyphenQuoteFragmentEscaper.html
+io/restassured/internal/common/assertion/AssertParameter.html
+io/restassured/internal/common/assertion/package-use.html
+io/restassured/internal/common/assertion/AssertionSupport.html
+io/restassured/internal/common/assertion/Assertion.html
+io/restassured/internal/common/assertion/GetAtPathFragmentEscaper.html
+io/restassured/internal/common/assertion/package-frame.html
+io/restassured/internal/common/assertion/package-summary.html
+io/restassured/internal/common/assertion/PathFragmentEscaper.html
+io/restassured/internal/common/assertion/EndToEndQuoteFragmentEscaper.html
+io/restassured/internal/common/assertion/package-tree.html
+io/restassured/internal/common/package-frame.html
+io/restassured/internal/common/package-summary.html
+io/restassured/internal/common/package-tree.html
+io/restassured/internal/common/ObjectDeserializationContextImpl.html
+io/restassured/common/mapper/class-use/TypeRef.html
+io/restassured/common/mapper/class-use/ObjectDeserializationContext.html
+io/restassured/common/mapper/class-use/DataToDeserialize.html
+io/restassured/common/mapper/TypeRef.html
+io/restassured/common/mapper/ObjectDeserializationContext.html
+io/restassured/common/mapper/package-use.html
+io/restassured/common/mapper/DataToDeserialize.html
+io/restassured/common/mapper/package-frame.html
+io/restassured/common/mapper/package-summary.html
+io/restassured/common/mapper/package-tree.html
+io/restassured/common/mapper/factory/class-use/ObjectMapperFactory.html
+io/restassured/common/mapper/factory/ObjectMapperFactory.html
+io/restassured/common/mapper/factory/package-use.html
+io/restassured/common/mapper/factory/package-frame.html
+io/restassured/common/mapper/factory/package-summary.html
+io/restassured/common/mapper/factory/package-tree.html
+io/restassured/common/mapper/resolver/class-use/ObjectMapperResolver.html
+io/restassured/common/mapper/resolver/package-use.html
+io/restassured/common/mapper/resolver/ObjectMapperResolver.html
+io/restassured/common/mapper/resolver/package-frame.html
+io/restassured/common/mapper/resolver/package-summary.html
+io/restassured/common/mapper/resolver/package-tree.html
+io/restassured/common/exception/class-use/PathException.html
+io/restassured/common/exception/package-use.html
+io/restassured/common/exception/PathException.html
+io/restassured/common/exception/package-frame.html
+io/restassured/common/exception/package-summary.html
+io/restassured/common/exception/package-tree.html
+script.js
+stylesheet.css
+overview-summary.html
+help-doc.html
+allclasses-frame.html
+package-list
+
+ succeeded in 11068ms:
+curl: (22) The requested URL returned error: 504
+
+codex
+The parent POM confirms the GitHub repository and the release tag name. The module’s Maven directory has sources and javadocs, but no test artifact, so I’m using the tagged GitHub test tree for the test-suite URL.
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/rest-assured/rest-assured/rest-assured-5.5.0/README.md | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src/main/java && curl -I -fsSL https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src/test/java && curl -I -fsSL https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src/test/groovy' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+exec
+/usr/bin/bash -lc "rm -rf /tmp/rest-assured-5.5.0 && git clone --depth 1 --branch rest-assured-5.5.0 --filter=blob:none https://github.com/rest-assured/rest-assured.git /tmp/rest-assured-5.5.0 && find /tmp/rest-assured-5.5.0/rest-assured-common -maxdepth 4 -type d | sort | sed -n '1,120p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://javadoc.io/doc/io.rest-assured/rest-assured-common/5.5.0/index.html && curl -I -fsSL https://javadoc.io/doc/io.rest-assured/rest-assured-common/5.5.0' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 162ms:
+![REST Assured](rest-assured-logo-green.png)
+
+[![Build Status](https://github.com/rest-assured/rest-assured/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/rest-assured/rest-assured/actions/workflows/ci.yml)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.rest-assured/rest-assured/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.rest-assured/rest-assured)
+<!-- [![Javadoc](https://javadoc-badge.appspot.com/io.rest-assured/rest-assured.svg)](http://www.javadoc.io/doc/io.rest-assured/rest-assured) -->
+
+
+Testing and validation of REST services in Java is harder than in dynamic languages 
+such as Ruby and Groovy. REST Assured brings the simplicity of using these 
+languages into the Java domain.
+
+
+## News
+* 2023-12-08: REST Assured 5.4.0 is released with several bug fixes and a [Kotlin Extension Module for Spring WebTest](https://github.com/rest-assured/rest-assured/wiki/Kotlin#kotlin-extension-module-for-spring-webtest). See [change log](https://raw.githubusercontent.com/rest-assured/rest-assured/master/changelog.txt) for more details.
+* 2023-09-08: REST Assured 5.3.2 is released with several bug fixes, better Spring MockMvc Support, better support for newer versions of Spring Security etc. See [change log](https://raw.githubusercontent.com/rest-assured/rest-assured/master/changelog.txt) for more details.
+* 2023-06-16: REST Assured 5.3.1 is released with several bug fixes and dependency upgrades. See [change log](https://raw.githubusercontent.com/rest-assured/rest-assured/master/changelog.txt) for more details.
+
+[Older News](https://github.com/rest-assured/rest-assured/wiki/OldNews)
+
+
+## Examples
+Here's an example of how to make a GET request and validate the JSON or XML response:
+
+```java
+get("/lotto").then().assertThat().body("lotto.lottoId", equalTo(5));
+```
+
+Get and verify all winner ids:
+
+```java
+get("/lotto").then().assertThat().body("lotto.winners.winnerId", hasItems(23, 54));
+```
+
+Using parameters:
+
+```java
+given().
+    param("key1", "value1").
+    param("key2", "value2").
+when().
+    post("/somewhere").
+then().
+    body(containsString("OK"));
+```
+
+Using X-Path (XML only):
+
+```java
+given().
+    params("firstName", "John", "lastName", "Doe").
+when().
+    post("/greetMe").
+then().
+    body(hasXPath("/greeting/firstName[text()='John']")).
+```
+
+Need authentication? REST Assured provides several authentication mechanisms:
+
+```java
+given().auth().basic(username, password).when().get("/secured").then().statusCode(200);
+```
+
+Getting and parsing a response body:
+
+```java
+// Example with JsonPath
+String json = get("/lotto").asString();
+List<String> winnerIds = from(json).get("lotto.winners.winnerId");
+    
+// Example with XmlPath
+String xml = post("/shopping").andReturn().body().asString();
+Node category = from(xml).get("shopping.category[0]");
+```
+
+REST Assured supports any HTTP method but has explicit support for *POST*, *GET*, *PUT*, *DELETE*, *OPTIONS*, *PATCH* and *HEAD* and includes specifying and validating e.g. parameters, headers, cookies and body easily.
+
+
+## Documentation
+
+* [Getting started](https://github.com/rest-assured/rest-assured/wiki/GettingStarted)
+
+ succeeded in 390ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 08:28:57 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/io.rest-assured/rest-assured-common/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=qtn4oxUAdVXajgRXKrarY%2F1hTuMJCJxr%2FU02nXXnNvLioQSyeVYGlXWtqxbsVkRJFVqN6hTfLk3nawEQs1rgOHcSiTujCRLmecBeIJT2Xd6wansLXE4cBhliKUHhO9GeGp1CQX9ndjsU"}]}
+server: cloudflare
+cf-ray: a002b0aa3b4c3b57-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Sat, 23 May 2026 08:28:57 GMT
+content-length: 0
+location: /doc/io.rest-assured/rest-assured-common/5.5.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=M5L2Ls1me%2Bz8QaaipQkFRtQMiWZ7npc5v83gdMQ5JgJCQWOTUFIwCbCHcrsLhYUhLoofXZeDNyff9OXxvjc6vTyFyi54wPnxLmZoH44pCQwlVd86vUGyODQoEGp2d%2FoPKZq3hDMkglVM"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a002b0ab2f463b52-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 23 May 2026 08:28:57 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/io.rest-assured/rest-assured-common/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=J6aCE9Nn2IZC5LB%2FwDjeojxAnCtU7F5dew%2FXtZgaoU0I1AawscMac%2FwpimpigG7dOKO%2BoWIERYxDo589F9t0yAFRvoqpfSe9CRnw7Jv8UXTRxTD05ZGuMFZPzCqc69kIaprBbigIY4TJ"}]}
+server: cloudflare
+cf-ray: a002b0abcfc23b52-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1584ms:
+Note: switching to 'bea603cb81ebe0fd1a2fda325f7d470064349470'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+Updating files:   0% (2/713)
+Updating files:   1% (8/713)
+Updating files:   2% (15/713)
+Updating files:   3% (22/713)
+Updating files:   4% (29/713)
+Updating files:   5% (36/713)
+Updating files:   6% (43/713)
+Updating files:   7% (50/713)
+Updating files:   8% (58/713)
+Updating files:   9% (65/713)
+Updating files:  10% (72/713)
+Updating files:  11% (79/713)
+Updating files:  12% (86/713)
+Updating files:  13% (93/713)
+Updating files:  14% (100/713)
+Updating files:  15% (107/713)
+Updating files:  16% (115/713)
+Updating files:  17% (122/713)
+Updating files:  18% (129/713)
+Updating files:  19% (136/713)
+Updating files:  20% (143/713)
+Updating files:  21% (150/713)
+Updating files:  22% (157/713)
+Updating files:  23% (164/713)
+Updating files:  24% (172/713)
+Updating files:  25% (179/713)
+Updating files:  26% (186/713)
+Updating files:  27% (193/713)
+Updating files:  28% (200/713)
+Updating files:  29% (207/713)
+Updating files:  30% (214/713)
+Updating files:  31% (222/713)
+Updating files:  32% (229/713)
+Updating files:  33% (236/713)
+Updating files:  34% (243/713)
+Updating files:  35% (250/713)
+Updating files:  36% (257/713)
+Updating files:  37% (264/713)
+Updating files:  38% (271/713)
+Updating files:  39% (279/713)
+Updating files:  40% (286/713)
+Updating files:  41% (293/713)
+Updating files:  42% (300/713)
+Updating files:  43% (307/713)
+Updating files:  44% (314/713)
+Updating files:  45% (321/713)
+Updating files:  46% (328/713)
+Updating files:  47% (336/713)
+Updating files:  48% (343/713)
+Updating files:  49% (350/713)
+Updating files:  50% (357/713)
+Updating files:  51% (364/713)
+Updating files:  52% (371/713)
+Updating files:  53% (378/713)
+Updating files:  54% (386/713)
+Updating files:  55% (393/713)
+Updating files:  56% (400/713)
+Updating files:  57% (407/713)
+Updating files:  58% (414/713)
+Updating files:  59% (421/713)
+Updating files:  60% (428/713)
+Updating files:  61% (435/713)
+Updating files:  62% (443/713)
+Updating files:  63% (450/713)
+Updating files:  64% (457/713)
+Updating files:  65% (464/713)
+Updating files:  66% (471/713)
+Updating files:  67% (478/713)
+Updating files:  68% (485/713)
+Updating files:  69% (492/713)
+Updating files:  70% (500/713)
+Updating files:  71% (507/713)
+Updating files:  72% (514/713)
+Updating files:  73% (521/713)
+Updating files:  74% (528/713)
+Updating files:  75% (535/713)
+Updating files:  76% (542/713)
+Updating files:  77% (550/713)
+Updating files:  78% (557/713)
+Updating files:  79% (564/713)
+Updating files:  80% (571/713)
+Updating files:  81% (578/713)
+Updating files:  82% (585/713)
+Updating files:  83% (592/713)
+Updating files:  84% (599/713)
+Updating files:  85% (607/713)
+Updating files:  86% (614/713)
+Updating files:  87% (621/713)
+Updating files:  88% (628/713)
+Updating files:  89% (635/713)
+Updating files:  90% (642/713)
+Updating files:  91% (649/713)
+Updating files:  92% (656/713)
+Updating files:  93% (664/713)
+Updating files:  94% (671/713)
+Updating files:  95% (678/713)
+Updating files:  96% (685/713)
+Updating files:  97% (692/713)
+Updating files:  98% (699/713)
+Updating files:  99% (706/713)
+Updating files: 100% (713/713)
+Updating files: 100% (713/713), done.
+/tmp/rest-assured-5.5.0/rest-assured-common
+/tmp/rest-assured-5.5.0/rest-assured-common/src
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy/io
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/java
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/java/io
+/tmp/rest-assured-5.5.0/rest-assured-common/src/test
+/tmp/rest-assured-5.5.0/rest-assured-common/src/test/java
+/tmp/rest-assured-5.5.0/rest-assured-common/src/test/java/io
+
+exec
+/usr/bin/bash -lc 'git -C /tmp/rest-assured-5.5.0 log -1 --decorate --oneline && git -C /tmp/rest-assured-5.5.0 ls-tree -d --name-only HEAD rest-assured-common/src/test rest-assured-common/src/main' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+bea603cb81 (grafted, HEAD, tag: rest-assured-5.5.0) [maven-release-plugin] prepare release rest-assured-5.5.0
+rest-assured-common/src/main
+rest-assured-common/src/test
+
+exec
+/usr/bin/bash -lc "find /tmp/rest-assured-5.5.0/rest-assured-common/src/test/java -type f | sort | sed -n '1,100p' && find /tmp/rest-assured-5.5.0/rest-assured-common/src/main -type f | sort | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+/tmp/rest-assured-5.5.0/rest-assured-common/src/test/java/io/restassured/internal/path/ObjectConverterTest.java
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy/io/restassured/internal/common/assertion/AssertParameter.groovy
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy/io/restassured/internal/common/assertion/Assertion.groovy
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy/io/restassured/internal/common/assertion/AssertionSupport.groovy
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy/io/restassured/internal/common/assertion/EndToEndQuoteFragmentEscaper.groovy
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy/io/restassured/internal/common/assertion/GetAtPathFragmentEscaper.groovy
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy/io/restassured/internal/common/assertion/HyphenQuoteFragmentEscaper.groovy
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy/io/restassured/internal/common/assertion/PathFragmentEscaper.groovy
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy/io/restassured/internal/common/classpath/ClassPathResolver.java
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/groovy/io/restassured/internal/common/path/ObjectConverter.groovy
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/java/io/restassured/common/exception/PathException.java
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/java/io/restassured/common/mapper/DataToDeserialize.java
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/java/io/restassured/common/mapper/ObjectDeserializationContext.java
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/java/io/restassured/common/mapper/TypeRef.java
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/java/io/restassured/common/mapper/factory/ObjectMapperFactory.java
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/java/io/restassured/common/mapper/resolver/ObjectMapperResolver.java
+/tmp/rest-assured-5.5.0/rest-assured-common/src/main/java/io/restassured/internal/common/ObjectDeserializationContextImpl.java
+
+exec
+/usr/bin/bash -lc 'rg -n "repo.maven.apache.org|javadoc.io|github.com/.*/tree/.*/src/test" . | head -80' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+./metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+./metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+./metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:61:            "repo.maven.apache.org"
+./metadata/org.apache.httpcomponents.core5/httpcore5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+./metadata/org.apache.httpcomponents.core5/httpcore5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-tests.jar",
+./metadata/org.apache.httpcomponents.core5/httpcore5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:63:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:66:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-mustmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-mustmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must",
+./metadata/org.scalatest/scalatest-mustmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+./metadata/org.apache.httpcomponents.core5/httpcore5-h2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5-h2/$version$/httpcore5-h2-$version$-sources.jar",
+./metadata/org.apache.httpcomponents.core5/httpcore5-h2/index.json:7:    "test-code-url" : "https://github.com/apache/httpcomponents-core/tree/rel/v$version$/httpcore5-h2/src/test/java",
+./metadata/org.apache.httpcomponents.core5/httpcore5-h2/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5-h2/$version$/httpcore5-h2-$version$-javadoc.jar",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/harness/tasks/FetchExistingLibrariesWithNewerVersionsTask.java:52:    private static final String MAVEN_CENTRAL_BASE_URL = "https://repo.maven.apache.org/maven2";
+./metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+./metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-diagrams_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-diagrams_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/diagrams-test/src/test/scala/org/scalatest/diagrams",
+./metadata/org.scalatest/scalatest-diagrams_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+./metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+./metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should",
+./metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-javadoc.jar",
+./metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+./metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+./metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-refspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:62:                    "source-code-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-sources.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:63:                    "documentation-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-featurespec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-featurespec_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test/src/test/scala/org/scalatest/featurespec",
+./metadata/org.scalatest/scalatest-featurespec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-funspec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_3/$version$/scalatest-funspec_3-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-funspec_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funspec-test/src/test/scala/org/scalatest/funspec",
+./metadata/org.scalatest/scalatest-funspec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_3/$version$/scalatest-funspec_3-$version$-javadoc.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+./metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+./metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+./metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+./metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:24:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:67:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+./metadata/org.eclipse.jetty/jetty-servlet/index.json:69:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+
+2026-05-23T08:29:24.166945Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+exec
+/usr/bin/bash -lc "ps -eo pid,ppid,stat,command | rg 'curl -I -fsSL https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src' || true" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+ 423680  422572 Ss   /usr/bin/bash -c curl -I -fsSL https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src/main/java && curl -I -fsSL https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src/test/java && curl -I -fsSL https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src/test/groovy
+ 423685  423680 S    curl -I -fsSL https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src/main/java
+ 423928  422572 Ss   /usr/bin/bash -c ps -eo pid,ppid,stat,command | rg 'curl -I -fsSL https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src' || true
+ 423930  423928 S    rg curl -I -fsSL https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src
+
+exec
+/usr/bin/bash -lc 'kill 423680 423685 || true' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+ exited -1 in 40928ms:
+exec
+/usr/bin/bash -lc "rg -n '\"language\"\\s*:' metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:38:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:61:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+metadata/org.tpolecat/typename_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.tpolecat/skunk-core_3/index.json:10:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:10:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:28:    "language" : {
+metadata/com.beachape/enumeratum-circe_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/com.beachape/enumeratum_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scalap/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/org.playframework.twirl/twirl-api_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:29:    "language" : {
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_2.13/index.json:33:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_2.13/index.json:48:    "language" : {
+metadata/com.typesafe.play/play-ws_2.13/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/twirl-api_2.13/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/com.github.fd4s/fs2-kafka_3/index.json:10:    "language" : {
+metadata/org.playframework/play-configuration_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+metadata/org.playframework/play-server_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/twirl-api_3/index.json:10:    "language" : {
+metadata/org.specs2/specs2-fp_3/index.json:10:    "language" : {
+metadata/org.specs2/specs2-fp_3/index.json:57:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/org.playframework/play-json_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-json_3/index.json:10:    "language" : {
+metadata/org.playframework/play-functional_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-functional_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/com.github.takayahilton/sql-formatter_2.13/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/fs2_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:10:    "language" : {
+metadata/com.github.ghostdogpr/caliban_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/org.log4s/log4s_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "rg -n '\"name\"\\s*:\\s*\"groovy\"|\"name\" : \"groovy\"|groovy' metadata | head -80" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+metadata/org.apache.groovy/groovy-test-junit5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-sources.jar",
+metadata/org.apache.groovy/groovy-test-junit5/index.json:6:    "repository-url" : "https://github.com/apache/groovy",
+metadata/org.apache.groovy/groovy-test-junit5/index.json:7:    "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+metadata/org.apache.groovy/groovy-test-junit5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-javadoc.jar",
+metadata/org.apache.groovy/groovy-test-junit5/index.json:9:    "description" : "groovy-test-junit5 provides Apache Groovy's integration with JUnit 5 and the JUnit Platform for running Groovy tests. It supplies the Groovy test runner plugin and helper code needed to execute JUnit Jupiter based test classes from Groovy projects.",
+metadata/org.apache.groovy/groovy-test-junit5/index.json:30:      "groovy.junit5.plugin"
+metadata/com.diffplug.spotless/spotless-lib-extra/3.0.0/reachability-metadata.json:51:        "typeReached" : "com.diffplug.spotless.extra.groovy.GrEclipseFormatterStep"
+metadata/com.diffplug.spotless/spotless-lib-extra/3.0.0/reachability-metadata.json:53:      "type" : "com.diffplug.spotless.extra.glue.groovy.GrEclipseFormatterStepImpl"
+metadata/com.diffplug.spotless/spotless-lib-extra/2.45.0/reachability-metadata.json:39:        "typeReached" : "com.diffplug.spotless.extra.groovy.GrEclipseFormatterStep"
+metadata/com.diffplug.spotless/spotless-lib-extra/2.45.0/reachability-metadata.json:41:      "type" : "com.diffplug.spotless.extra.glue.groovy.GrEclipseFormatterStepImpl"
+metadata/io.jsonwebtoken/jjwt-api/index.json:6:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/api/src/test/groovy/io/jsonwebtoken",
+metadata/io.jsonwebtoken/jjwt-api/index.json:21:    "test-code-url" : "https://github.com/jwtk/jjwt/tree/$version$/api/src/test/groovy/io/jsonwebtoken",
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:115:      "type": "groovy.grape.GrabAnnotationTransformation",
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:127:      "type": "groovy.lang.Script"
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:133:      "type": "groovy.lang.Script"
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:139:      "type": "groovyjarjarantlr.CommonToken"
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:826:      "type": "org.codehaus.groovy.antlr.GroovySourceAST",
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:838:      "type": "org.codehaus.groovy.ast.builder.AstBuilderTransformation",
+metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json:850:      "type": "org.codehaus.groovy.runtime.ScriptBytecodeAdapter"
+
+exec
+/usr/bin/bash -lc "sed -n '1,22p' metadata/org.apache.groovy/groovy-test-junit5/index.json; sed -n '1,18p' metadata/com.squareup.moshi/moshi-adapters/index.json; sed -n '1,18p' metadata/com.squareup.moshi/moshi-kotlin/index.json" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.24",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/groovy",
+    "test-code-url" : "https://archive.apache.org/dist/groovy/$version$/sources/apache-groovy-src-$version$.zip",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-javadoc.jar",
+    "description" : "groovy-test-junit5 provides Apache Groovy's integration with JUnit 5 and the JUnit Platform for running Groovy tests. It supplies the Groovy test runner plugin and helper code needed to execute JUnit Jupiter based test classes from Groovy projects.",
+    "tested-versions" : [
+      "4.0.24",
+      "4.0.25",
+      "4.0.26",
+      "4.0.27",
+      "4.0.28",
+      "4.0.29",
+      "4.0.30",
+      "4.0.31",
+      "4.0.32",
+      "5.0.0",
+      "5.0.1",
+      "5.0.2",
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.15.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-sources.jar",
+    "repository-url" : "https://github.com/square/moshi",
+    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-adapters/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-javadoc.jar",
+    "description" : "Moshi is a JSON library for Android, Java, and Kotlin that converts Java and Kotlin objects to and from JSON. The moshi-adapters artifact provides optional adapters for features such as enum fallbacks, polymorphic type handling, and RFC 3339 date support.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "1.8"
+    },
+    "tested-versions" : [
+      "1.15.2"
+    ],
+    "allowed-packages" : [
+      "com.squareup.moshi"
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.15.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-sources.jar",
+    "repository-url" : "https://github.com/square/moshi",
+    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-kotlin/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-javadoc.jar",
+    "description" : "Moshi is a JSON library for Android, Java, and Kotlin that converts Java and Kotlin objects to and from JSON. The moshi-kotlin artifact adds Kotlin reflection support through KotlinJsonAdapterFactory, honoring Kotlin nullability and default parameter values when binding JSON.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "1.8"
+    },
+    "tested-versions" : [
+      "1.15.2"
+    ],
+    "allowed-packages" : [
+      "com.squareup.moshi"
+
+exec
+/usr/bin/bash -lc "rg -n '\"name\" : \"groovy\"|\"name\"\\s*:\\s*\"groovy\"' metadata | head -40" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"name\"\\s*:\\s*\"kotlin\"|\"name\"\\s*:\\s*\"scala\"' metadata | head -10" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:11:      "name" : "kotlin",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:11:      "name" : "kotlin",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:11:      "name" : "kotlin",
+metadata/org.tpolecat/doobie-free_3/index.json:11:      "name" : "scala",
+metadata/org.tpolecat/doobie-free_3/index.json:39:      "name" : "scala",
+metadata/org.tpolecat/doobie-free_3/index.json:62:      "name" : "scala",
+metadata/org.tpolecat/typename_3/index.json:11:      "name" : "scala",
+metadata/org.tpolecat/sourcepos_3/index.json:11:      "name" : "scala",
+metadata/org.tpolecat/skunk-core_3/index.json:11:      "name" : "scala",
+metadata/com.comcast/ip4s-core_3/index.json:11:      "name" : "scala",
+
+exec
+/usr/bin/bash -lc "javap -classpath /tmp/rest-assured-common-5.5.0.jar io.restassured.internal.common.assertion.Assertion | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+Compiled from "Assertion.groovy"
+public interface io.restassured.internal.common.assertion.Assertion {
+  public abstract java.lang.Object getResult(java.lang.Object, java.lang.Object);
+  public abstract java.lang.String description();
+}
+
+exec
+/usr/bin/bash -lc "javap -classpath /tmp/rest-assured-common-5.5.0.jar io.restassured.internal.common.path.ObjectConverter | sed -n '1,80p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+Compiled from "ObjectConverter.groovy"
+public class io.restassured.internal.common.path.ObjectConverter implements groovy.lang.GroovyObject {
+  public static transient boolean __$stMC;
+  public static long __timeStamp;
+  public static long __timeStamp__239_neverHappen1720184779657;
+  public io.restassured.internal.common.path.ObjectConverter();
+  public static <T> T convertObjectTo(java.lang.Object, java.lang.Class<T>);
+  public static boolean canConvert(java.lang.Object, java.lang.Class);
+  public java.lang.Object this$dist$invoke$1(java.lang.String, java.lang.Object);
+  public void this$dist$set$1(java.lang.String, java.lang.Object);
+  public java.lang.Object this$dist$get$1(java.lang.String);
+  protected groovy.lang.MetaClass $getStaticMetaClass();
+  public groovy.lang.MetaClass getMetaClass();
+  public void setMetaClass(groovy.lang.MetaClass);
+  public java.lang.Object invokeMethod(java.lang.String, java.lang.Object);
+  public java.lang.Object getProperty(java.lang.String);
+  public void setProperty(java.lang.String, java.lang.Object);
+  public static void __$swapInit();
+  static {};
+  public void super$1$notify();
+  public int super$1$hashCode();
+  public java.lang.String super$1$toString();
+  public java.lang.Object super$1$clone();
+  public void super$1$wait(long, int);
+  public void super$1$wait(long);
+  public void super$1$wait();
+  public void super$1$notifyAll();
+  public boolean super$1$equals(java.lang.Object);
+  public void super$1$finalize();
+  public java.lang.Class super$1$getClass();
+  static java.lang.Class class$(java.lang.String);
+}
+
+web search: 
+web search: repo.maven.apache.org io/rest-assured/rest-assured-common/5.5.0 rest-assured-common-5.5.0-sources.jar ...
+web search: 
+web search: https://github.com/rest-assured/rest-assured/tree/rest-assured-5.5.0/rest-assured-common/src/test/java
+web search: 
+web search: central sonatype io.rest-assured rest-assured-common 5.5.0 pom groovy.version 4.0.22 scm github rest-assured
+codex
+I found the release-tagged test directory and confirmed the artifact JAR contains JVM class files, including Groovy-compiled classes, so it remains a Native Image metadata target. I’m going to write the Maven-hosted sources/javadoc URLs, the tagged GitHub test URL, and the Groovy language marker from the release’s `4.0.x` Groovy dependency.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+index 9b32a39e9921616c318c686c0a6977e8c5e1a90d..b73a911ea496c7b95e58604094840c570db8015a
+--- a/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0"
++  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-sources.jar",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/rest-assured-common/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-javadoc.jar",
++  "description" : "REST Assured Common provides shared mapper, path, assertion, and classpath helper classes used by REST Assured modules for testing and validating REST services on the JVM. It supplies object deserialization abstractions and internal utilities that support REST Assured's Java and Groovy friendly HTTP response parsing and assertions.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+index 9b32a39e9921616c318c686c0a6977e8c5e1a90d..b73a911ea496c7b95e58604094840c570db8015a
+--- a/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0"
++  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-sources.jar",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/rest-assured-common/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-javadoc.jar",
++  "description" : "REST Assured Common provides shared mapper, path, assertion, and classpath helper classes used by REST Assured modules for testing and validating REST services on the JVM. It supplies object deserialization abstractions and internal utilities that support REST Assured's Java and Groovy friendly HTTP response parsing and assertions.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/5.5.0/ ...
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+{
+  "coordinates": "io.rest-assured:rest-assured-common:5.5.0",
+  "repository-url": "https://github.com/rest-assured/rest-assured",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-sources.jar",
+  "test-code-url": "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/rest-assured-common/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-javadoc.jar",
+  "description": "REST Assured Common provides shared mapper, path, assertion, and classpath helper classes used by REST Assured modules for testing and validating REST services on the JVM. It supplies object deserialization abstractions and internal utilities that support REST Assured's Java and Groovy friendly HTTP response parsing and assertions.",
+  "language": {
+    "name": "groovy",
+    "version": "4.0"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'test -d /tmp/rest-assured-5.5.0/rest-assured-common/src/test/java && test -f /tmp/rest-assured-5.5.0/rest-assured-common/src/test/java/io/restassured/internal/path/ObjectConverterTest.java && echo tagged-test-tree-present' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+tagged-test-tree-present
+
+exec
+/usr/bin/bash -lc "ps -eo pid,ppid,stat,command | rg 'rest-assured/tree/rest-assured-5.5.0|curl -I -fsSL' || true" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+ 426494  422572 Ss   /usr/bin/bash -c ps -eo pid,ppid,stat,command | rg 'rest-assured/tree/rest-assured-5.5.0|curl -I -fsSL' || true
+ 426498  426494 S    rg rest-assured/tree/rest-assured-5.5.0|curl -I -fsSL
+
+exec
+/usr/bin/bash -lc "curl --max-time 20 -fsSI https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/5.5.0/rest-assured-common-5.5.0-sources.jar | sed -n '1,20p' && curl --max-time 20 -fsSI https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/5.5.0/rest-assured-common-5.5.0-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 23 May 2026 08:30:46 GMT
+content-type: application/java-archive
+content-length: 19749
+cf-ray: a002b3530f30cb74-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 696224
+etag: "b3cd1daacccf3d4e584b4fe507a3d1f6"
+last-modified: Fri, 05 Jul 2024 13:06:24 GMT
+x-checksum-md5: b3cd1daacccf3d4e584b4fe507a3d1f6
+x-checksum-sha1: f8d17c8461964f03404b4a0e5479bf3a96d46854
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sat, 23 May 2026 08:30:46 GMT
+content-type: application/java-archive
+content-length: 138502
+cf-ray: a002b3535823be8b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2450092
+etag: "cbd8c37a8760a0801c42bffa2adedec5"
+last-modified: Fri, 05 Jul 2024 13:06:24 GMT
+x-checksum-md5: cbd8c37a8760a0801c42bffa2adedec5
+x-checksum-sha1: da04808d0c61511cebd5f970a2328192c52d24ab
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+index 9b32a39e9921616c318c686c0a6977e8c5e1a90d..b73a911ea496c7b95e58604094840c570db8015a
+--- a/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0"
++  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-sources.jar",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/rest-assured-common/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-javadoc.jar",
++  "description" : "REST Assured Common provides shared mapper, path, assertion, and classpath helper classes used by REST Assured modules for testing and validating REST services on the JVM. It supplies object deserialization abstractions and internal utilities that support REST Assured's Java and Groovy friendly HTTP response parsing and assertions.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json' in /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+index 9b32a39e9921616c318c686c0a6977e8c5e1a90d..b73a911ea496c7b95e58604094840c570db8015a
+--- a/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0"
++  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-sources.jar",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/rest-assured-common/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-javadoc.jar",
++  "description" : "REST Assured Common provides shared mapper, path, assertion, and classpath helper classes used by REST Assured modules for testing and validating REST services on the JVM. It supplies object deserialization abstractions and internal utilities that support REST Assured's Java and Groovy friendly HTTP response parsing and assertions.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+ succeeded in 297ms:
+codex
+Updated [io.rest-assured-rest-assured-common-5.5.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json) with the repository, Maven sources/javadoc URLs, tagged GitHub test URL, two-sentence description, and `language` set to Groovy `4.0`.
+
+I left `not-for-native-image` absent because the artifact is a normal JVM JAR with class files, and Maven Central publishes the expected sources and javadoc artifacts for `5.5.0`. citeturn1search1 Validated the JSON with `jq` and checked the Maven URLs return `200`.
+diff --git a/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json b/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+index 9b32a39e9921616c318c686c0a6977e8c5e1a90d..b73a911ea496c7b95e58604094840c570db8015a
+--- a/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
++++ b/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0"
++  "coordinates" : "io.rest-assured:rest-assured-common:5.5.0",
++  "repository-url" : "https://github.com/rest-assured/rest-assured",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-sources.jar",
++  "test-code-url" : "https://github.com/rest-assured/rest-assured/tree/rest-assured-$version$/rest-assured-common/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/rest-assured/rest-assured-common/$version$/rest-assured-common-$version$-javadoc.jar",
++  "description" : "REST Assured Common provides shared mapper, path, assertion, and classpath helper classes used by REST Assured modules for testing and validating REST services on the JVM. It supplies object deserialization abstractions and internal utilities that support REST Assured's Java and Groovy friendly HTTP response parsing and assertions.",
++  "language" : {
++    "name" : "groovy",
++    "version" : "4.0"
++  }
+ }
+
+tokens used
+115,037
+Updated [io.rest-assured-rest-assured-common-5.5.0.json](/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50/build/discovered-artifact-metadata/io.rest-assured-rest-assured-common-5.5.0.json) with the repository, Maven sources/javadoc URLs, tagged GitHub test URL, two-sentence description, and `language` set to Groovy `4.0`.
+
+I left `not-for-native-image` absent because the artifact is a normal JVM JAR with class files, and Maven Central publishes the expected sources and javadoc artifacts for `5.5.0`. citeturn1search1 Validated the JSON with `jq` and checked the Maven URLs return `200`.
+Ran agent for io.rest-assured:rest-assured-common:5.5.0 (exit 0). Log: /home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50/build/agent-artifact-discovery-logs/io.rest-assured-rest-assured-common-5.5.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2674-3dd74f50/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 18s
+9 actionable tasks: 9 executed
