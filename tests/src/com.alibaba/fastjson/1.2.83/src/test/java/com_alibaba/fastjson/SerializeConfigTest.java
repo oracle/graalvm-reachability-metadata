@@ -16,6 +16,7 @@ import com.alibaba.fastjson.serializer.ObjectSerializer;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializeWriter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.common.collect.HashMultimap;
 
 import java.awt.Point;
 import java.io.IOException;
@@ -30,7 +31,7 @@ import springfox.documentation.spring.web.json.Json;
 
 public class SerializeConfigTest {
     @Test
-    void getObjectWriterRegistersBuiltInAwtJdk8OracleSpringfoxAndJodaSerializers() {
+    void getObjectWriterRegistersBuiltInAwtJdk8OracleSpringfoxGuavaAndJodaSerializers() {
         SerializeConfig config = new SerializeConfig();
 
         assertThat(config.getObjectWriter(Point.class)).isNotNull();
@@ -39,6 +40,7 @@ public class SerializeConfigTest {
         assertThat(config.getObjectWriter(LongAdder.class)).isNotNull();
         assertThat(config.getObjectWriter(DATE.class)).isNotNull();
         assertThat(config.getObjectWriter(Json.class)).isNotNull();
+        assertThat(config.getObjectWriter(HashMultimap.class)).isNotNull();
         assertThat(config.getObjectWriter(DateTime.class)).isNotNull();
     }
 
